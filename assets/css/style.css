@@ -331,9 +331,18 @@ main {
   gap: 15px;
 }
 
-.avatar-box {
+/* .avatar-box {
   background: var(--bg-gradient-onyx);
   border-radius: 20px;
+}*/
+
+.avatar-box img {
+  width: 80px; /* Fixed width */
+  height: 80px; /* Fixed height to maintain aspect ratio */
+  border-radius: 50%; /* Make the image circular */
+  object-fit: cover; /* Cover the entire area of the image element */
+  display: block; /* Ensure it’s displayed as a block element */
+  margin: 0 auto; /* Center the image horizontally */
 }
 
 .info-content .name {
