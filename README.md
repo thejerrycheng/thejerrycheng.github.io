@@ -1,44 +1,53 @@
-# vCard - Personal portfolio
+# Personal Portfolio - Jerry Cheng
 
-![GitHub repo size](https://img.shields.io/github/repo-size/codewithsadee/vcard-personal-portfolio)
-![GitHub stars](https://img.shields.io/github/stars/codewithsadee/vcard-personal-portfolio?style=social)
-![GitHub forks](https://img.shields.io/github/forks/codewithsadee/vcard-personal-portfolio?style=social)
-[![Twitter Follow](https://img.shields.io/twitter/follow/codewithsadee_?style=social)](https://twitter.com/intent/follow?screen_name=codewithsadee_)
-[![YouTube Video Views](https://img.shields.io/youtube/views/SoxmIlgf2zM?style=social)](https://youtu.be/SoxmIlgf2zM)
+Welcome to my personal portfolio website! This project showcases my skills, experience, and projects as a Robotics Engineer. The website is built using HTML, CSS, and JavaScript.
 
-vCard is a fully responsive personal portfolio website, responsive for all devices, built using HTML, CSS, and JavaScript.
+## Table of Contents
 
-## Demo
+- [About](#about)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contact](#contact)
+- [License](#license)
 
-![vCard Desktop Demo](./website-demo-image/desktop.png "Desktop Demo")
-![vCard Mobile Demo](./website-demo-image/mobile.png "Mobile Demo")
+## About
 
-## Prerequisites
+This website serves as my personal portfolio, highlighting my education, industry experience, and projects. It includes a section for downloading my resume, viewing detailed project descriptions, and contacting me directly.
 
-Before you begin, ensure you have met the following requirements:
+## Features
 
-* [Git](https://git-scm.com/downloads "Download Git") must be installed on your operating system.
+- **Responsive Design**: The website is fully responsive, ensuring it looks great on all devices.
+- **Interactive Navigation**: Smooth transitions between different sections of the website.
+- **Detailed Sections**: Includes sections for About, Resume, Projects, and Contact.
+- **Resume Download**: Option to download my resume as a PDF.
+- **Contact Form**: A functional contact form for direct communication.
 
-## Installing vCard
+## Installation
 
-To install **vCard**, follow these steps:
+To set up the website locally, follow these steps:
 
-Linux and macOS:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/thejerrycheng/personal-portfolio.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd personal-portfolio
+   ```
 
-```bash
-sudo git clone https://github.com/codewithsadee/vcard-personal-portfolio.git
-```
+## Usage
 
-Windows:
-
-```bash
-git clone https://github.com/codewithsadee/vcard-personal-portfolio.git
-```
+1. Open `index.html` in your preferred web browser to view the website.
+2. To modify the content, edit the HTML, CSS, and JavaScript files located in the `assets` folder.
 
 ## Contact
 
-If you want to contact me you can reach me at [Twitter](https://www.twitter.com/codewithsadee).
+You can reach me via email at [qilong.cheng@mail.utoronto.ca](mailto:qilong.cheng@mail.utoronto.ca).
+
+- **LinkedIn**: [linkedin.com/in/jerry-qilong-cheng-540039163](https://www.linkedin.com/in/jerry-qilong-cheng-540039163/)
+- **GitHub**: [github.com/thejerrycheng](https://github.com/thejerrycheng)
 
 ## License
 
-MIT
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
