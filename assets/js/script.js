@@ -1,18 +1,20 @@
 'use strict';
 
+
+
 // element toggle function
-const elementToggleFunc = function (elem) {
-  elem.classList.toggle("active");
-}
+const elementToggleFunc = function (elem) { elem.classList.toggle("active"); }
+
+
 
 // sidebar variables
 const sidebar = document.querySelector("[data-sidebar]");
 const sidebarBtn = document.querySelector("[data-sidebar-btn]");
 
 // sidebar toggle functionality for mobile
-sidebarBtn.addEventListener("click", function () {
-  elementToggleFunc(sidebar);
-});
+sidebarBtn.addEventListener("click", function () { elementToggleFunc(sidebar); });
+
+
 
 // testimonials variables
 const testimonialsItem = document.querySelectorAll("[data-testimonials-item]");
@@ -51,15 +53,15 @@ for (let i = 0; i < testimonialsItem.length; i++) {
 modalCloseBtn.addEventListener("click", testimonialsModalFunc);
 overlay.addEventListener("click", testimonialsModalFunc);
 
+
+
 // custom select variables
 const select = document.querySelector("[data-select]");
 const selectItems = document.querySelectorAll("[data-select-item]");
 const selectValue = document.querySelector("[data-selecct-value]");
 const filterBtn = document.querySelectorAll("[data-filter-btn]");
 
-select.addEventListener("click", function () {
-  elementToggleFunc(this);
-});
+select.addEventListener("click", function () { elementToggleFunc(this); });
 
 // add event in all select items
 for (let i = 0; i < selectItems.length; i++) {
@@ -111,6 +113,8 @@ for (let i = 0; i < filterBtn.length; i++) {
 
 }
 
+
+
 // contact form variables
 const form = document.querySelector("[data-form]");
 const formInputs = document.querySelectorAll("[data-form-input]");
@@ -130,45 +134,26 @@ for (let i = 0; i < formInputs.length; i++) {
   });
 }
 
-// // page navigation variables
-// const navigationLinks = document.querySelectorAll("[data-nav-link]");
-// const pages = document.querySelectorAll("[data-page]");
 
-// // add event to all nav link
-// for (let i = 0; i < navigationLinks.length; i++) {
-//   navigationLinks[i].addEventListener("click", function () {
 
-//     for (let j = 0; j < pages.length; j++) {
-//       if (this.dataset.navLink === pages[j].dataset.page) {
-//         pages[j].classList.add("active");
-//         navigationLinks[j].classList.add("active");
-//         window.scrollTo(0, 0);
-//       } else {
-//         pages[j].classList.remove("active");
-//         navigationLinks[j].classList.remove("active");
-//       }
-//     }
-
-//   });
-// }
-
-// Navigation functionality
-const navLinks = document.querySelectorAll("[data-nav-link]");
+// page navigation variables
+const navigationLinks = document.querySelectorAll("[data-nav-link]");
 const pages = document.querySelectorAll("[data-page]");
 
-navLinks.forEach(link => {
-  link.addEventListener("click", () => {
-    const targetPage = link.getAttribute("data-nav-link");
+// add event to all nav link
+for (let i = 0; i < navigationLinks.length; i++) {
+  navigationLinks[i].addEventListener("click", function () {
 
-    // Remove active class from all sections and links
-    pages.forEach(page => page.classList.remove("active"));
-    navLinks.forEach(nav => nav.classList.remove("active"));
+    for (let i = 0; i < pages.length; i++) {
+      if (this.innerHTML.toLowerCase() === pages[i].dataset.page) {
+        pages[i].classList.add("active");
+        navigationLinks[i].classList.add("active");
+        window.scrollTo(0, 0);
+      } else {
+        pages[i].classList.remove("active");
+        navigationLinks[i].classList.remove("active");
+      }
+    }
 
-    // Add active class to clicked link and corresponding page
-    document.querySelector(`[data-page="${targetPage}"]`).classList.add("active");
-    link.classList.add("active");
-
-    // Scroll to top of the page
-    window.scrollTo(0, 0);
   });
-});
+}
