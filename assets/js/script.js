@@ -130,24 +130,45 @@ for (let i = 0; i < formInputs.length; i++) {
   });
 }
 
-// page navigation variables
-const navigationLinks = document.querySelectorAll("[data-nav-link]");
+// // page navigation variables
+// const navigationLinks = document.querySelectorAll("[data-nav-link]");
+// const pages = document.querySelectorAll("[data-page]");
+
+// // add event to all nav link
+// for (let i = 0; i < navigationLinks.length; i++) {
+//   navigationLinks[i].addEventListener("click", function () {
+
+//     for (let j = 0; j < pages.length; j++) {
+//       if (this.dataset.navLink === pages[j].dataset.page) {
+//         pages[j].classList.add("active");
+//         navigationLinks[j].classList.add("active");
+//         window.scrollTo(0, 0);
+//       } else {
+//         pages[j].classList.remove("active");
+//         navigationLinks[j].classList.remove("active");
+//       }
+//     }
+
+//   });
+// }
+
+// Navigation functionality
+const navLinks = document.querySelectorAll("[data-nav-link]");
 const pages = document.querySelectorAll("[data-page]");
 
-// add event to all nav link
-for (let i = 0; i < navigationLinks.length; i++) {
-  navigationLinks[i].addEventListener("click", function () {
+navLinks.forEach(link => {
+  link.addEventListener("click", () => {
+    const targetPage = link.getAttribute("data-nav-link");
 
-    for (let j = 0; j < pages.length; j++) {
-      if (this.dataset.navLink === pages[j].dataset.page) {
-        pages[j].classList.add("active");
-        navigationLinks[j].classList.add("active");
-        window.scrollTo(0, 0);
-      } else {
-        pages[j].classList.remove("active");
-        navigationLinks[j].classList.remove("active");
-      }
-    }
+    // Remove active class from all sections and links
+    pages.forEach(page => page.classList.remove("active"));
+    navLinks.forEach(nav => nav.classList.remove("active"));
 
+    // Add active class to clicked link and corresponding page
+    document.querySelector(`[data-page="${targetPage}"]`).classList.add("active");
+    link.classList.add("active");
+
+    // Scroll to top of the page
+    window.scrollTo(0, 0);
   });
-}
+});
