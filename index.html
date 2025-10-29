@@ -502,13 +502,6 @@ J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
 
       <!-- Entry 2 -->
       <tr>
-        <td style="padding:8px;vertical-align:middle;width:65%;">
-          <h2 style="margin-bottom:8px;">News</h2>
-          <p style="font-size:15px;line-height:1.5em;">
-            <b>[04/2025]</b> Presented our <b>“VibraForge”</b> system at <b>CHI 2025</b> in Yokohama, Japan.
-          </p>
-        </td>
-
         <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
           <div data-carousel style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;">
             <div class="carousel-track" style="display:flex;transition:transform 0.5s ease;height:200px;">
@@ -653,8 +646,242 @@ J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
       }
     </script>
 
+<!-- ============================ Projects Section ========================== -->
+<!-- ======= Projects Section ======= -->
+<style>
+  /* Scoped to Projects block */
+  .projects-table { width:100%; max-width:800px; margin:auto; border-spacing:0 10px; border-collapse:separate; }
+  .proj-row td { vertical-align:middle; }
+  .proj-thumb { position:relative; width:100%; max-width:220px; }
+  .proj-thumb img { width:100%; display:block; border-radius:6px; }
+  .proj-thumb .hover-video {
+    position:absolute; inset:0; opacity:0; transition:opacity .25s ease;
+    border-radius:6px; overflow:hidden;
+  }
+  .proj-row:hover .hover-video { opacity:1; }
+  /* No link underlines in this section */
+  .projects-table a,
+  .projects-table a:link,
+  .projects-table a:visited,
+  .projects-table a:hover,
+  .projects-table a:active,
+  .projects-table a:focus {
+    text-decoration: none !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+    color: inherit;
+  }
+  .papertitle { font-weight:600; }
+  .proj-desc { margin-top:6px; font-size:14px; line-height:1.4em; }
+  .proj-year { float:right; color:#666; font-size:13px; margin-left:8px; }
+</style>
 
+<table class="projects-table">
+  <tbody>
+    <tr><td><h2>Projects</h2></td></tr>
 
+    <!-- Project: TINTIN Rocket Landing -->
+    <tr class="proj-row" data-proj="tintin">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="proj-thumb">
+          <img src="assets/images/projects/tintin.jpg" alt="TINTIN lunar landing RL" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/projects/tintin.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td style="padding:8px; width:80%;">
+        <span class="papertitle">TINTIN: RL-Based Lunar Rocket Landing</span>
+        <span class="proj-year">2025</span><br>
+        6-DoF variable-mass lander in MuJoCo with 2-DoF gimbaled thrust; PID baseline vs PPO policy; pose-targeted touchdown and fuel-efficiency metrics.
+        <p class="proj-desc"></p>
+      </td>
+    </tr>
+
+    <!-- Project: IRIS Cinema Arm -->
+    <tr class="proj-row" data-proj="iris">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="proj-thumb">
+          <img src="assets/images/projects/iris.jpg" alt="IRIS cinema robot arm" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/projects/iris.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td style="padding:8px; width:80%;">
+        <span class="papertitle">IRIS: Low-Cost 6-DOF Cinema Robot Arm</span>
+        <span class="proj-year">2024–2025</span><br>
+        Modular QDD drives, differential wrist, carbon-fiber links; ROS stack with vision-based imitation learning for reactive path planning and obstacle avoidance.
+        <p class="proj-desc"></p>
+      </td>
+    </tr>
+
+    <!-- Project: Biped VHC -->
+    <tr class="proj-row" data-proj="vhc-biped">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="proj-thumb">
+          <img src="assets/images/projects/vhc_biped.jpg" alt="Biped VHC walking" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/projects/vhc_biped.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td style="padding:8px; width:80%;">
+        <span class="papertitle">Geometric Nonlinear Control for Biped Walking</span>
+        <span class="proj-year">2023–2024</span><br>
+        Virtual Holonomic Constraints with polynomial gait design, feedback linearization, and terrain generalization to slopes and stairs.
+        <p class="proj-desc"></p>
+      </td>
+    </tr>
+
+    <!-- Project: Unicycle Robot -->
+    <tr class="proj-row" data-proj="unicycle">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="proj-thumb">
+          <img src="assets/images/projects/unicycle.jpg" alt="Unicycle robot" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/projects/unicycle.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td style="padding:8px; width:80%;">
+        <span class="papertitle">Unicycle Robot: Design & Control</span>
+        <span class="proj-year">2021–2022</span><br>
+        Generative-designed chassis with reaction wheels; custom STM32 controller; validation in ROS Gazebo and Simulink.
+        <p class="proj-desc"></p>
+      </td>
+    </tr>
+
+    <!-- Project: Aerospace Localization -->
+    <tr class="proj-row" data-proj="aero-localization">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="proj-thumb">
+          <img src="assets/images/projects/aero_localization.jpg" alt="Aerospace localization" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/projects/aero_localization.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td style="padding:8px; width:80%;">
+        <span class="papertitle">Localization for Aerospace Vehicles (IMU + Stereo)</span>
+        <span class="proj-year">2020–2021</span><br>
+        Batch Gauss-Newton fusion with EKF; compared batch vs sliding-window estimators for trajectory accuracy.
+        <p class="proj-desc"></p>
+      </td>
+    </tr>
+
+    <!-- Project: Turtlebot2 SLAM -->
+    <tr class="proj-row" data-proj="turtlebot2">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="proj-thumb">
+          <img src="assets/images/projects/turtlebot2.jpg" alt="Turtlebot2 SLAM & navigation" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/projects/turtlebot2.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td style="padding:8px; width:80%;">
+        <span class="papertitle">Turtlebot2 SLAM, Navigation & Perception</span>
+        <span class="proj-year">2019–2020</span><br>
+        Gmapping, frontier exploration, PID control; OpenCV perception and a CNN for 7-class emotion recognition.
+        <p class="proj-desc"></p>
+      </td>
+    </tr>
+
+    <!-- Project: Mobile Robot Mechatronics -->
+    <tr class="proj-row" data-proj="mobile-robot">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="proj-thumb">
+          <img src="assets/images/projects/mobile_robot.jpg" alt="Mobile robot mechatronics design" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/projects/mobile_robot.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td style="padding:8px; width:80%;">
+        <span class="papertitle">Mobile Robot Mechatronics Design Project</span>
+        <span class="proj-year">2019</span><br>
+        <em>MATLAB, SolidWorks</em> — Designed a 3D-printed Arduino-based mobile robot in Fusion 360; implemented localization and obstacle-avoidance for maze navigation in MATLAB; commanded the robot via Bluetooth.
+        <p class="proj-desc"></p>
+      </td>
+    </tr>
+
+    <!-- Project: 8×8×8 LED Cube -->
+    <tr class="proj-row" data-proj="led-cube">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="proj-thumb">
+          <img src="assets/images/projects/led_cube.jpg" alt="8x8x8 LED cube" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/projects/led_cube.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td style="padding:8px; width:80%;">
+        <span class="papertitle">8×8×8 LED Cube Embedded System</span>
+        <span class="proj-year">2018–2019</span><br>
+        ESP32-based driver with SPI multiplexing; API control; interactive 3D Snake and Pong demos.
+        <p class="proj-desc"></p>
+      </td>
+    </tr>
+
+    <!-- Project: CNC Plotting Machine -->
+    <tr class="proj-row" data-proj="cnc-plotter">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="proj-thumb">
+          <img src="assets/images/projects/cnc_plotter.jpg" alt="CNC plotting machine" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/projects/cnc_plotter.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td style="padding:8px; width:80%;">
+        <span class="papertitle">CNC Plotting Machine</span>
+        <span class="proj-year">2019</span><br>
+        3-DOF CNC with modified G-code pipeline and OpenCV image-to-pencil rendering.
+        <p class="proj-desc"></p>
+      </td>
+    </tr>
+
+    <!-- Project: Formula Drivetrain -->
+    <tr class="proj-row" data-proj="formula-drivetrain">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="proj-thumb">
+          <img src="assets/images/projects/formula_drivetrain.jpg" alt="Formula racing drivetrain" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/projects/formula_drivetrain.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td style="padding:8px; width:80%;">
+        <span class="papertitle">Electric Formula Racing Car Drive-train</span>
+        <span class="proj-year">2018–2019</span><br>
+        Planetary gearbox quadrupling torque at &gt;90% efficiency; kinematics, stress, thermal, and vibration analyses.
+        <p class="proj-desc"></p>
+      </td>
+    </tr>
+
+  </tbody>
+</table>
 
 
 
