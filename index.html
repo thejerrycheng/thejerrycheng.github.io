@@ -9,6 +9,61 @@
   }
 </style>
 
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Optional branded fonts (fast + widely available). Remove if you prefer system-only. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Inter (variable), Space Grotesk, JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ---------- Global font stacks ---------- */
+    :root {
+      /* Sans: prefer Inter if loaded; fall back to Apple/Windows/Linux system fonts */
+      --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+              "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
+              "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+
+      /* Headings: subtle tech vibe; falls back to --sans */
+      --headings: "Space Grotesk", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                  Roboto, "Helvetica Neue", Arial, sans-serif;
+
+      /* Mono: prefer JetBrains Mono; fall back to SF Mono / common monos */
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+              "Liberation Mono", "Source Code Pro", "IBM Plex Mono", monospace;
+    }
+
+    /* ---------- Apply globally ---------- */
+    html, body {
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: var(--headings);
+      letter-spacing: 0.2px;
+      font-feature-settings: "tnum" on; /* harmless if unsupported */
+    }
+
+    code, pre, kbd, samp {
+      font-family: var(--mono);
+      font-size: 0.95em;
+      line-height: 1.5;
+    }
+
+    /* Align numbers nicely in tables / meta text */
+    table, .pub-meta, .pub-desc {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+
+
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Jerry (Qilong) Cheng</title>
@@ -47,17 +102,44 @@
       <b><u>Robots:</u></b> I love building humanoids and cinematic arms that move and perceive as fluidly as humans—bridging art, intelligence, and motion.
       </p> -->
 
-      <p style="margin-top:18px;font-size:15px;">
+      <!-- <p style="margin-top:18px;font-size:15px;">
       <b>Email:</b> <a href="mailto:qilong.cheng@mail.utoronto.ca">qilong.cheng@mail.utoronto.ca</a>
+      </p> -->
+
+      <style>
+        .social-links{
+          text-align:center;
+          margin-top:24px;
+          font-size:15px;            /* adjust this if you want larger/smaller */
+          line-height:1.6;
+          font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                      "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
+        .social-links a{
+          text-decoration:none;
+        }
+        /* automatic separators between links */
+        .social-links a + a::before{
+          content:" | ";
+          color:#bdbdbd;
+          margin:0 8px;
+        }
+      </style>
+
+      <p class="social-links">
+        <a href="mailto:qilong.cheng@mail.utoronto.ca">Email</a>
+        <a href="data/resume.pdf">CV</a>
+        <a href="https://scholar.google.com/citations?user=iQuHS3MAAAAJ&hl=en">Scholar</a>
+        <a href="https://www.linkedin.com/in/jerry-qilong-cheng-540039163/">LinkedIn</a>
+        <a href="https://github.com/thejerrycheng">GitHub</a>
+        <a href="https://www.youtube.com/@thejerrycheng">YouTube</a>
+        <a href="https://www.tiktok.com/@USERNAME">TikTok</a> <!-- replace USERNAME -->
+        <a href="https://x.com/thejerrycheng">X</a>
+        <a href="https://www.instagram.com/thejerrycheng">Instagram</a>
       </p>
 
-      <p style="text-align:center;margin-top:24px;">
-      <a href="mailto:qilong.cheng@mail.utoronto.ca">Email</a> &nbsp;|&nbsp;
-      <a href="data/resume.pdf">CV</a> &nbsp;|&nbsp;
-      <a href="https://scholar.google.com/citations?user=iQuHS3MAAAAJ&hl=en">Scholar</a> &nbsp;|&nbsp;
-      <a href="https://www.linkedin.com/in/jerry-qilong-cheng-540039163/">LinkedIn</a> &nbsp;|&nbsp;
-      <a href="https://github.com/thejerrycheng">GitHub</a>
-      </p>
+
+
       </td>
       <td style="padding:2.5%;width:37%;max-width:37%">
       <a href="assets/images/profile_pic.png"><img style="width:100%;border-radius:50%;box-shadow:0 0 10px rgba(0,0,0,0.2);" src="assets/images/profile_pic.png" alt="profile photo"></a>
@@ -82,81 +164,13 @@
 
     <!-- ======= Research Interests Section ======= -->
 
-    <table style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
+    <!-- <table style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
       <tbody>
         <tr><td><h2>Research Interests</h2>
           <p>My research focuses on integrating learning-based control and perception for robots. Specifically, I develop reinforcement learning algorithms for visual loco-manipulation, imitation learning for exoskeletons, and vision-based control frameworks for biped and manipulator robots. I am also exploring unified policies that bridge hardware-aware and perception-driven intelligence.</p>
         </td></tr>
       </tbody>
-    </table>
-
-    <!-- ======= News Section ======= -->
-    <table style="width:100%;max-width:800px;margin:auto;border-spacing:0px;margin-top:30px;">
-      <tbody>
-        <tr>
-          <!-- Left side: News text -->
-          <td style="padding:8px;vertical-align:middle;width:65%;">
-            <h2 style="margin-bottom:8px;">News</h2>
-            <p style="font-size:15px;line-height:1.5em;">
-              <b>[10/20/2025]</b> Attended IROS 2025 in Hangzhou, China to present our paper <b>"AeroHaptix"</b>
-            </p>
-          </td>
-
-          <!-- Right side: Image carousel (one-at-a-time) -->
-          <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
-            <div style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;">
-              <!-- Track -->
-              <div id="newsCarousel"
-                  style="display:flex;transition:transform 0.5s ease; height:200px;">
-                <!-- Each slide takes full container width -->
-                <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
-                  <img src="assets/images/news/iros_2025/iros_sign.jpg" alt="IROS"
-                      style="height:200px;width:auto;max-width:100%;display:block;">
-                </div>
-                <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
-                  <img src="assets/images/news/iros_2025/group_pic.jpg" alt="Group Pic"
-                      style="height:200px;width:auto;max-width:100%;display:block;">
-                </div>
-                <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
-                  <img src="assets/images/news/iros_2025/unitree.jpg" alt="Unitree"
-                      style="height:200px;width:auto;max-width:100%;display:block;">
-                </div>
-              </div>
-
-              <!-- Navigation buttons -->
-              <button onclick="prevImage()" aria-label="Previous image"
-                      style="position:absolute;top:50%;left:5px;transform:translateY(-50%);
-                            background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;
-                            border-radius:4px;cursor:pointer;">&#10094;</button>
-              <button onclick="nextImage()" aria-label="Next image"
-                      style="position:absolute;top:50%;right:5px;transform:translateY(-50%);
-                            background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;
-                            border-radius:4px;cursor:pointer;">&#10095;</button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <script>
-      let currentIndex = 0;
-      const carousel = document.getElementById('newsCarousel');
-      const slides = Array.from(carousel.children);
-      const totalSlides = slides.length;
-
-      function showImage(index) {
-        currentIndex = ((index % totalSlides) + totalSlides) % totalSlides; // wrap
-        carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
-      }
-
-      function nextImage() { showImage(currentIndex + 1); }
-      function prevImage() { showImage(currentIndex - 1); }
-
-      // Keep alignment after a resize
-      window.addEventListener('resize', () => showImage(currentIndex));
-    </script>
-
-
+    </table> -->
 
 <!-- ======= Publications Section ======= -->
 <style>
@@ -366,6 +380,140 @@
 
   </tbody>
 </table>
+
+
+
+
+<!-- ================= News Section ======================= -->
+    <table style="width:100%;max-width:800px;margin:auto;border-spacing:0px;margin-top:30px;">
+      <tbody>
+
+        <!-- Entry 1 -->
+        <tr>
+          <!-- Left side -->
+          <td style="padding:8px;vertical-align:middle;width:65%;">
+            <h2 style="margin-bottom:8px;">News</h2>
+            <p style="font-size:15px;line-height:1.5em;">
+              <b>[10/20/2025]</b> Attended <b>IROS 2025</b> in Hangzhou, China to present our paper <b>“AeroHaptix”</b>.
+            </p>
+          </td>
+
+          <!-- Right side (Carousel) -->
+          <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
+            <div style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;">
+              <div id="newsCarousel" style="display:flex;transition:transform 0.5s ease;height:200px;">
+                <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
+                  <img src="assets/images/news/iros_2025/iros_sign.jpg" alt="IROS" style="height:200px;width:auto;max-width:100%;display:block;">
+                </div>
+                <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
+                  <img src="assets/images/news/iros_2025/group_pic.jpg" alt="Group Pic" style="height:200px;width:auto;max-width:100%;display:block;">
+                </div>
+                <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
+                  <img src="assets/images/news/iros_2025/unitree.jpg" alt="Unitree" style="height:200px;width:auto;max-width:100%;display:block;">
+                </div>
+              </div>
+
+              <!-- Navigation buttons -->
+              <button onclick="prevImage()" aria-label="Previous image"
+                style="position:absolute;top:50%;left:5px;transform:translateY(-50%);
+                      background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;
+                      border-radius:4px;cursor:pointer;">&#10094;</button>
+              <button onclick="nextImage()" aria-label="Next image"
+                style="position:absolute;top:50%;right:5px;transform:translateY(-50%);
+                      background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;
+                      border-radius:4px;cursor:pointer;">&#10095;</button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Entry 2 -->
+        <tr>
+          <td style="padding:8px;vertical-align:middle;width:65%;">
+            <p style="font-size:15px;line-height:1.5em;">
+              <b>[04/2025]</b> Presented our <b>“VibraForge”</b> system at <b>CHI 2025</b> in Yokohama, Japan.
+            </p>
+          </td>
+          <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
+            <div style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+              <img src="assets/images/news/chi_2025/vibraforge_chi.jpg" alt="CHI 2025 Yokohama"
+                  style="height:200px;width:auto;max-width:100%;display:block;">
+            </div>
+          </td>
+        </tr>
+
+        <!-- Entry 3 -->
+        <tr>
+          <td style="padding:8px;vertical-align:middle;width:65%;">
+            <p style="font-size:15px;line-height:1.5em;">
+              <b>[07/2024]</b> Presented monocular depth estimation work at the <b>Toronto Robotics Conference 2024</b> in Toronto, Canada.
+            </p>
+          </td>
+          <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
+            <div style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+              <img src="assets/images/news/toronto_robotics_2024/depth_estimation.jpg" alt="Toronto Robotics Conference 2024"
+                  style="height:200px;width:auto;max-width:100%;display:block;">
+            </div>
+          </td>
+        </tr>
+
+        <!-- Entry 4 -->
+        <tr>
+          <td style="padding:8px;vertical-align:middle;width:65%;">
+            <p style="font-size:15px;line-height:1.5em;">
+              <b>[11/2023]</b> Presented at <b>IEEE AIM 2023</b> in Seattle, WA, USA with our radar-inertial calibration work.
+            </p>
+          </td>
+          <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
+            <div style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+              <img src="assets/images/news/aim_2023/seattle_aim.jpg" alt="IEEE AIM 2023 Seattle"
+                  style="height:200px;width:auto;max-width:100%;display:block;">
+            </div>
+          </td>
+        </tr>
+
+        <!-- Entry 5 -->
+        <tr>
+          <td style="padding:8px;vertical-align:middle;width:65%;">
+            <p style="font-size:15px;line-height:1.5em;">
+              <b>[05/2023]</b> Demonstrated <b>“VibraForge”</b> at <b>ARIA 2023</b> in Toronto, Canada.
+            </p>
+          </td>
+          <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
+            <div style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+              <img src="assets/images/news/aria_2023/vibraforge_demo.jpg" alt="ARIA 2023 Toronto"
+                  style="height:200px;width:auto;max-width:100%;display:block;">
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <!-- Carousel JS -->
+    <script>
+      let currentIndex = 0;
+      const carousel = document.getElementById('newsCarousel');
+      const totalSlides = carousel.children.length;
+
+      function showImage(index) {
+        carousel.style.transform = `translateX(-${index * 100}%)`;
+      }
+
+      function nextImage() {
+        currentIndex = (currentIndex + 1) % totalSlides;
+        showImage(currentIndex);
+      }
+
+      function prevImage() {
+        currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+        showImage(currentIndex);
+      }
+    </script>
+
+
+
+
+
 
 
 <!-- ======= Research Experience Section ======= -->
