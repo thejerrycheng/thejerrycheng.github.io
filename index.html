@@ -1,5 +1,14 @@
 <!DOCTYPE HTML>
 <html lang="en">
+
+<style>
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+</style>
+
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Jerry (Qilong) Cheng</title>
@@ -7,7 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="stylesheet.css">
-    </head>
+  </head>
 
 
   <body>
@@ -70,7 +79,7 @@
       </tbody>
     </table>
 
-        <!-- ======= Research Interests Section ======= -->
+    <!-- ======= Research Interests Section ======= -->
 
     <table style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
       <tbody>
@@ -148,189 +157,212 @@
 
 
 
-    <!-- ======= Publication Section ======= -->
-    <table style="width:100%;max-width:800px;margin:auto;border-spacing:0px 10px;border-collapse:separate;">
+<!-- ======= Publications Section ======= -->
+<style>
+  /* Font: prefer Apple Helvetica / Helvetica Neue */
+  :root { --pubs-font: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+  .pubs-table,
+  .pubs-table td,
+  .pubs-table h2,
+  .pub-meta,
+  .pub-meta a,
+  .pub-desc {
+    font-family: var(--pubs-font);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Existing styles (keep these) */
+  .pubs-table { width:100%; max-width:800px; margin:auto; border-spacing:0 10px; border-collapse:separate; }
+  .pub-row td { vertical-align:middle; }
+  .pub-thumb { position:relative; width:100%; max-width:220px; }
+  .pub-thumb img { width:100%; display:block; border-radius:6px; }
+  .pub-thumb .hover-video {
+    position:absolute; inset:0; opacity:0; transition:opacity .25s ease;
+    border-radius:6px; overflow:hidden;
+  }
+  .pub-row:hover .hover-video { opacity:1; }
+  .pub-meta a { text-decoration:none; }
+  .pub-meta .papertitle { font-weight:600; }
+  .pub-desc { margin-top:6px; font-size:14px; line-height:1.4em; }
+</style>
+
+
+<table class="pubs-table">
   <tbody>
     <tr><td><h2>Publications</h2></td></tr>
 
-    <!-- Publication 1 Robot world problme-->
-    <tr onmouseout="pub1_stop()" onmouseover="pub1_start()">
-      <td style="padding:16px;width:20%;vertical-align:middle">
-        <div class="one">
-          <div class="two" id='pub2_image'><video width=100% muted autoplay loop>
-          <source src="/" type="video/mp4">
-          </video></div>
-          <img src='assets/images/publications/pub1.jpg' width="250">
+    <!-- Pub 1 -->
+    <tr class="pub-row" data-pub="1">
+      <td style="padding:5px; width:40%; text-align:center;">
+        <div class="pub-thumb">
+          <img src="assets/images/publications/pub1.jpg" alt="Robot-World & Hand-Eye Calibration thumbnail" loading="lazy">
         </div>
-        <script type="text/javascript">
-          function pub1_start(){document.getElementById('pub1_image').style.opacity="1";}
-          function pub1_stop(){document.getElementById('pub1_image').style.opacity="0";}
-          pub1_stop();
-        </script>
       </td>
-      <td style="padding:8px;width:80%;vertical-align:middle">
-        <a href="https://arxiv.org/abs/2409.17420"><span class="papertitle">A Certifiably Correct Algorithm for Generalized Robot-World and Hand-Eye Calibration</span></a>
-        <br>
-        E. Wise, P. Kaveti, <b>Q. Cheng</b>, W. Wang, H. Singh, J. Kelly, D. M. Rosen, and M. Giamou
-        <br>
-        <em>International Journal of Robotics Research (IJRR)</em>, 2025
-        <br>
-        <a href="https://arxiv.org/abs/2507.23045">arXiv</a>
-        <p style="margin-top:6px;font-size:14px;line-height:1.4em;">
+      <td class="pub-meta" style="padding:2px; width:100%;">
+        <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener noreferrer">
+          <span class="papertitle">A Certifiably Correct Algorithm for Generalized Robot-World and Hand-Eye Calibration</span>
+        </a><br>
+        E. Wise, P. Kaveti, <b>Q. Cheng</b>, W. Wang, H. Singh, J. Kelly, D. M. Rosen, and M. Giamou<br>
+        <em>International Journal of Robotics Research (IJRR)</em>, 2025<br>
+        <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener noreferrer">arXiv</a>
+        <p class="pub-desc">
           Introduces a certifiably correct calibration algorithm ensuring globally optimal robot-world and hand-eye alignment under general conditions.
         </p>
       </td>
     </tr>
 
-      <!-- Publication 2 -->
-      <tr onmouseout="pub2_stop()" onmouseover="pub2_start()">
-        <td style="padding:16px;width:20%;vertical-align:middle">
-          <div class="one">
-            <div class="two" id='pub2_image'><video width=100% muted autoplay loop>
-            <source src="images/pub2.mp4" type="video/mp4">
-            </video></div>
-            <img src='images/pub2.jpg' width="250">
+    <!-- Pub 2 -->
+    <tr class="pub-row" data-pub="2">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="pub-thumb">
+          <img src="assets/images/publications/pub2.jpg" alt="VibraForge thumbnail" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/publications/pub2.mp4" type="video/mp4">
+            </video>
           </div>
-          <script type="text/javascript">
-            function pub2_start(){document.getElementById('pub2_image').style.opacity="1";}
-            function pub2_stop(){document.getElementById('pub2_image').style.opacity="0";}
-            pub2_stop();
-          </script>
-        </td>
-        <td style="padding:8px;width:80%;vertical-align:middle">
-          <a href="https://arxiv.org/abs/2409.17420"><span class="papertitle">VibraForge: A Scalable Prototyping Toolkit For Creating Spatialized Vibrotactile Feedback Systems</span></a><br>
-          B. Huang, S. Ren, Y. Luo, <strong>Q. Cheng</strong>, H. Cai, Y. Sang, M. Sousa, P. H. Dietz, and D. Wigdor<br>
-          <em>CHI</em>, 2024<br>
-          <a href="https://arxiv.org/abs/2409.17420">arXiv</a>
-          <p></p>
-          <p>An open-source toolkit enabling rapid design and deployment of large-scale vibrotactile feedback systems for spatialized haptic interactions.</p>
-        </td>
-      </tr>
-
-    <!-- Publication 3 -->
-    <tr onmouseout="pub3_stop()" onmouseover="pub3_start()">
-      <td style="padding:16px;width:20%;vertical-align:middle">
-        <div class="one">
-          <div class="two" id='pub3_image'><video width=100% muted autoplay loop>
-          <source src="images/pub3.mp4" type="video/mp4">
-          </video></div>
-          <img src='images/pub3.jpg' width="250">
         </div>
-        <script type="text/javascript">
-          function pub3_start(){document.getElementById('pub3_image').style.opacity="1";}
-          function pub3_stop(){document.getElementById('pub3_image').style.opacity="0";}
-          pub3_stop();
-        </script>
       </td>
-      <td style="padding:8px;width:80%;vertical-align:middle">
-        <a href="https://arxiv.org/abs/2407.12105"><span class="papertitle">AeroHaptix: A Wearable Vibrotactile Feedback System for Enhancing Collision Avoidance in UAV Teleoperation</span></a><br>
-        B. Huang, Z. Wang, <strong>Q. Cheng</strong>, S. Ren, H. Cai, A. Alvarez Valdivia, K. Mahadevan, and D. Wigdor<br>
+      <td class="pub-meta" style="padding:8px; width:80%;">
+        <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener noreferrer">
+          <span class="papertitle">VibraForge: A Scalable Prototyping Toolkit For Creating Spatialized Vibrotactile Feedback Systems</span>
+        </a><br>
+        B. Huang, S. Ren, Y. Luo, <b>Q. Cheng</b>, H. Cai, Y. Sang, M. Sousa, P. H. Dietz, and D. Wigdor<br>
+        <em>CHI</em>, 2024<br>
+        <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener noreferrer">arXiv</a>
+        <p class="pub-desc">
+          An open-source toolkit enabling rapid design and deployment of large-scale vibrotactile feedback systems for spatialized haptic interactions.
+        </p>
+      </td>
+    </tr>
+
+    <!-- Pub 3 -->
+    <tr class="pub-row" data-pub="3">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="pub-thumb">
+          <img src="assets/images/publications/pub3.jpg" alt="AeroHaptix thumbnail" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/publications/pub3.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td class="pub-meta" style="padding:8px; width:80%;">
+        <a href="https://arxiv.org/abs/2407.12105" target="_blank" rel="noopener noreferrer">
+          <span class="papertitle">AeroHaptix: A Wearable Vibrotactile Feedback System for Enhancing Collision Avoidance in UAV Teleoperation</span>
+        </a><br>
+        B. Huang, Z. Wang, <b>Q. Cheng</b>, S. Ren, H. Cai, A. Alvarez Valdivia, K. Mahadevan, and D. Wigdor<br>
         <em>IEEE RA-L</em>, 2024<br>
-        <a href="https://arxiv.org/abs/2407.12105">arXiv</a>
-        <p></p>
-        <p>Introduces a wearable vibrotactile system integrated with UAV teleoperation, leveraging control barrier functions for safe human-drone interaction.</p>
+        <a href="https://arxiv.org/abs/2407.12105" target="_blank" rel="noopener noreferrer">arXiv</a>
+        <p class="pub-desc">
+          Introduces a wearable vibrotactile system integrated with UAV teleoperation, leveraging control barrier functions for safe human-drone interaction.
+        </p>
       </td>
     </tr>
 
-    <!-- Publication 4 -->
-    <tr onmouseout="pub4_stop()" onmouseover="pub4_start()">
-      <td style="padding:16px;width:20%;vertical-align:middle">
-        <div class="one">
-          <div class="two" id='pub4_image'><video width=100% muted autoplay loop>
-          <source src="images/pub4.mp4" type="video/mp4">
-          </video></div>
-          <img src='images/pub4.jpg' width="250">
+    <!-- Pub 4 -->
+    <tr class="pub-row" data-pub="4">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="pub-thumb">
+          <img src="assets/images/publications/pub4.jpg" alt="Radar Pair Calibration thumbnail" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/publications/pub4.mp4" type="video/mp4">
+            </video>
+          </div>
         </div>
-        <script type="text/javascript">
-          function pub4_start(){document.getElementById('pub4_image').style.opacity="1";}
-          function pub4_stop(){document.getElementById('pub4_image').style.opacity="0";}
-          pub4_stop();
-        </script>
       </td>
-      <td style="padding:8px;width:80%;vertical-align:middle">
-        <a href="https://ieeexplore.ieee.org/document/10196187"><span class="papertitle">Extrinsic Calibration of 2D Millimetre-Wavelength Radar Pairs Using Ego-Velocity Estimates</span></a><br>
-        <strong>Q. Cheng</strong>, E. Wise, and J. Kelly<br>
+      <td class="pub-meta" style="padding:8px; width:80%;">
+        <a href="https://ieeexplore.ieee.org/document/10196187" target="_blank" rel="noopener noreferrer">
+          <span class="papertitle">Extrinsic Calibration of 2D Millimetre-Wavelength Radar Pairs Using Ego-Velocity Estimates</span>
+        </a><br>
+        <b>Q. Cheng</b>, E. Wise, and J. Kelly<br>
         <em>IEEE AIM</em>, 2023<br>
-        <a href="https://ieeexplore.ieee.org/document/10196187">IEEE</a>
-        <p></p>
-        <p>Proposes a calibration framework for radar-radar pairs leveraging ego-motion cues without overlapping views for improved pose estimation accuracy.</p>
+        <a href="https://ieeexplore.ieee.org/document/10196187" target="_blank" rel="noopener noreferrer">IEEE</a>
+        <p class="pub-desc">
+          Proposes a calibration framework for radar-radar pairs leveraging ego-motion cues without overlapping views for improved pose estimation accuracy.
+        </p>
       </td>
     </tr>
 
-    <!-- Publication 5 -->
-    <tr onmouseout="pub5_stop()" onmouseover="pub5_start()">
-      <td style="padding:16px;width:20%;vertical-align:middle">
-        <div class="one">
-          <div class="two" id='pub5_image'><video width=100% muted autoplay loop>
-          <source src="images/pub5.mp4" type="video/mp4">
-          </video></div>
-          <img src='images/pub5.jpg' width="250">
+    <!-- Pub 5 -->
+    <tr class="pub-row" data-pub="5">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="pub-thumb">
+          <img src="assets/images/publications/pub5.jpg" alt="Radar-Camera Spatiotemporal Calibration thumbnail" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/publications/pub5.mp4" type="video/mp4">
+            </video>
+          </div>
         </div>
-        <script type="text/javascript">
-          function pub5_start(){document.getElementById('pub5_image').style.opacity="1";}
-          function pub5_stop(){document.getElementById('pub5_image').style.opacity="0";}
-          pub5_stop();
-        </script>
       </td>
-      <td style="padding:8px;width:80%;vertical-align:middle">
-        <a href="https://ieeexplore.ieee.org/abstract/document/10256219"><span class="papertitle">Spatiotemporal Calibration of 3D Millimetre-Wavelength Radar-Camera Pairs</span></a><br>
-        E. Wise, <strong>Q. Cheng</strong>, and J. Kelly<br>
+      <td class="pub-meta" style="padding:8px; width:80%;">
+        <a href="https://ieeexplore.ieee.org/abstract/document/10256219" target="_blank" rel="noopener noreferrer">
+          <span class="papertitle">Spatiotemporal Calibration of 3D Millimetre-Wavelength Radar-Camera Pairs</span>
+        </a><br>
+        E. Wise, <b>Q. Cheng</b>, and J. Kelly<br>
         <em>IEEE TRO</em>, 2022<br>
-        <a href="https://ieeexplore.ieee.org/abstract/document/10256219">IEEE</a>
-        <p></p>
-        <p>Introduces continuous-time B-spline calibration for radar-camera systems, outperforming state-of-the-art methods in robustness and precision.</p>
+        <a href="https://ieeexplore.ieee.org/abstract/document/10256219" target="_blank" rel="noopener noreferrer">IEEE</a>
+        <p class="pub-desc">
+          Introduces continuous-time B-spline calibration for radar-camera systems, outperforming state-of-the-art methods in robustness and precision.
+        </p>
       </td>
     </tr>
 
-    <!-- Publication 6 -->
-    <tr onmouseout="pub6_stop()" onmouseover="pub6_start()">
-      <td style="padding:16px;width:20%;vertical-align:middle">
-        <div class="one">
-          <div class="two" id='pub6_image'><video width=100% muted autoplay loop>
-          <source src="images/pub6.mp4" type="video/mp4">
-          </video></div>
-          <img src='images/pub6.jpg' width="250">
+    <!-- Pub 6 -->
+    <tr class="pub-row" data-pub="6">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="pub-thumb">
+          <img src="assets/images/publications/pub6.jpg" alt="Weakly Supervised Augmentation thumbnail" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/publications/pub6.mp4" type="video/mp4">
+            </video>
+          </div>
         </div>
-        <script type="text/javascript">
-          function pub6_start(){document.getElementById('pub6_image').style.opacity="1";}
-          function pub6_stop(){document.getElementById('pub6_image').style.opacity="0";}
-          pub6_stop();
-        </script>
       </td>
-      <td style="padding:8px;width:80%;vertical-align:middle">
-        <a href="https://ieeexplore.ieee.org/document/9745100"><span class="papertitle">Weakly Supervised Semantic and Attentive Data Mixing Augmentation for Fine-Grained Visual Categorization</span></a><br>
-        M. He, <strong>Q. Cheng</strong>, and G. Qi<br>
+      <td class="pub-meta" style="padding:8px; width:80%;">
+        <a href="https://ieeexplore.ieee.org/document/9745100" target="_blank" rel="noopener noreferrer">
+          <span class="papertitle">Weakly Supervised Semantic and Attentive Data Mixing Augmentation for Fine-Grained Visual Categorization</span>
+        </a><br>
+        M. He, <b>Q. Cheng</b>, and G. Qi<br>
         <em>IEEE Access</em>, 2022<br>
-        <a href="https://ieeexplore.ieee.org/document/9745100">IEEE</a>
-        <p></p>
-        <p>Proposes a weakly supervised attention-guided data augmentation strategy for fine-grained image classification tasks.</p>
+        <a href="https://ieeexplore.ieee.org/document/9745100" target="_blank" rel="noopener noreferrer">IEEE</a>
+        <p class="pub-desc">
+          Proposes a weakly supervised attention-guided data augmentation strategy for fine-grained image classification tasks.
+        </p>
       </td>
     </tr>
 
-    <!-- Publication 7 -->
-    <tr onmouseout="pub7_stop()" onmouseover="pub7_start()">
-      <td style="padding:16px;width:20%;vertical-align:middle">
-        <div class="one">
-          <div class="two" id='pub7_image'><video width=100% muted autoplay loop>
-          <source src="images/pub7.mp4" type="video/mp4">
-          </video></div>
-          <img src='images/pub7.jpg' width="250">
+    <!-- Pub 7 -->
+    <tr class="pub-row" data-pub="7">
+      <td style="padding:16px; width:20%; text-align:center;">
+        <div class="pub-thumb">
+          <img src="assets/images/publications/pub7.jpg" alt="Generative Design for Unicycle Robot thumbnail" loading="lazy">
+          <div class="hover-video">
+            <video width="100%" height="100%" muted autoplay loop playsinline>
+              <source src="assets/videos/publications/pub7.mp4" type="video/mp4">
+            </video>
+          </div>
         </div>
-        <script type="text/javascript">
-          function pub7_start(){document.getElementById('pub7_image').style.opacity="1";}
-          function pub7_stop(){document.getElementById('pub7_image').style.opacity="0";}
-          pub7_stop();
-        </script>
       </td>
-      <td style="padding:8px;width:80%;vertical-align:middle">
-        <a href="https://nanolithography.spiedigitallibrary.org/conference-proceedings-of-spie/12253/122530A/Generative-design-for-self-balancing-unicycle-robot-in-additive-manufacturing/10.1117/12.2639454.short"><span class="papertitle">Generative Design for Self-Balancing Unicycle Robot in Additive Manufacturing</span></a><br>
-        J. Chen, <strong>Q. Cheng</strong>, and M. Han<br>
+      <td class="pub-meta" style="padding:8px; width:80%;">
+        <a href="https://nanolithography.spiedigitallibrary.org/conference-proceedings-of-spie/12253/122530A/Generative-design-for-self-balancing-unicycle-robot-in-additive-manufacturing/10.1117/12.2639454.short" target="_blank" rel="noopener noreferrer">
+          <span class="papertitle">Generative Design for Self-Balancing Unicycle Robot in Additive Manufacturing</span>
+        </a><br>
+        J. Chen, <b>Q. Cheng</b>, and M. Han<br>
         <em>SPIE ACAIB</em>, 2022<br>
-        <a href="https://nanolithography.spiedigitallibrary.org/conference-proceedings-of-spie/12253/122530A/Generative-design-for-self-balancing-unicycle-robot-in-additive-manufacturing/10.1117/12.2639454.short">SPIE</a>
-        <p></p>
-        <p>Applies generative design and additive manufacturing techniques to develop a self-balancing unicycle robot prototype.</p>
+        <a href="https://nanolithography.spiedigitallibrary.org/conference-proceedings-of-spie/12253/122530A/Generative-design-for-self-balancing-unicycle-robot-in-additive-manufacturing/10.1117/12.2639454.short" target="_blank" rel="noopener noreferrer">SPIE</a>
+        <p class="pub-desc">
+          Applies generative design and additive manufacturing techniques to develop a self-balancing unicycle robot prototype.
+        </p>
       </td>
     </tr>
+
   </tbody>
 </table>
 
