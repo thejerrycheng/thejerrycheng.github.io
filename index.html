@@ -70,6 +70,7 @@
       </tbody>
     </table>
 
+        <!-- ======= Research Interests Section ======= -->
 
     <table style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
       <tbody>
@@ -79,30 +80,78 @@
       </tbody>
     </table>
 
+    <!-- ======= News Section ======= -->
+    <table style="width:100%;max-width:800px;margin:auto;border-spacing:0px;margin-top:30px;">
+      <tbody>
+        <tr>
+          <!-- Left side: News text -->
+          <td style="padding:8px;vertical-align:middle;width:65%;">
+            <h2 style="margin-bottom:8px;">News</h2>
+            <p style="font-size:15px;line-height:1.5em;">
+              <b>[10/20/2025]</b> Attended IROS 2025 in Hangzhou, China to present our paper <b>"AeroHaptix"</b>
+            </p>
+          </td>
+
+          <!-- Right side: Image carousel (one-at-a-time) -->
+          <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
+            <div style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;">
+              <!-- Track -->
+              <div id="newsCarousel"
+                  style="display:flex;transition:transform 0.5s ease; height:200px;">
+                <!-- Each slide takes full container width -->
+                <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
+                  <img src="assets/images/news/iros_2025/iros_sign.jpg" alt="IROS"
+                      style="height:200px;width:auto;max-width:100%;display:block;">
+                </div>
+                <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
+                  <img src="assets/images/news/iros_2025/group_pic.jpg" alt="Group Pic"
+                      style="height:200px;width:auto;max-width:100%;display:block;">
+                </div>
+                <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
+                  <img src="assets/images/news/iros_2025/unitree.jpg" alt="Unitree"
+                      style="height:200px;width:auto;max-width:100%;display:block;">
+                </div>
+              </div>
+
+              <!-- Navigation buttons -->
+              <button onclick="prevImage()" aria-label="Previous image"
+                      style="position:absolute;top:50%;left:5px;transform:translateY(-50%);
+                            background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;
+                            border-radius:4px;cursor:pointer;">&#10094;</button>
+              <button onclick="nextImage()" aria-label="Next image"
+                      style="position:absolute;top:50%;right:5px;transform:translateY(-50%);
+                            background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;
+                            border-radius:4px;cursor:pointer;">&#10095;</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <script>
+      let currentIndex = 0;
+      const carousel = document.getElementById('newsCarousel');
+      const slides = Array.from(carousel.children);
+      const totalSlides = slides.length;
+
+      function showImage(index) {
+        currentIndex = ((index % totalSlides) + totalSlides) % totalSlides; // wrap
+        carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+      }
+
+      function nextImage() { showImage(currentIndex + 1); }
+      function prevImage() { showImage(currentIndex - 1); }
+
+      // Keep alignment after a resize
+      window.addEventListener('resize', () => showImage(currentIndex));
+    </script>
+
+
+
+    <!-- ======= Publication Section ======= -->
     <table style="width:100%;max-width:800px;margin:auto;border-spacing:0px 10px;border-collapse:separate;">
   <tbody>
     <tr><td><h2>Publications</h2></td></tr>
-
-    <!-- ======= News Section ======= -->
-  <table style="width:100%;max-width:800px;margin:auto;border-spacing:0px;margin-top:30px;">
-    <tbody>
-      <tr>
-        <td style="padding:8px;vertical-align:middle;width:70%;">
-          <h2 style="margin-bottom:8px;">News</h2>
-          <p style="font-size:15px;line-height:1.5em;">
-            <b>[09/2025]</b> Invited talk on 
-            <i>Scalable Sim-to-Real Learning for General-Purpose Humanoid Skills</i> 
-            at <b>GRASP SFI Seminar</b>.
-          </p>
-        </td>
-
-        <td style="padding:8px;width:30%;vertical-align:middle;text-align:center;">
-          <img src="images/news/iros_2025.jpg" alt="GRASP SFI Talk" width="100%" style="border-radius:6px;">
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
 
     <!-- Publication 1 Robot world problme-->
     <tr onmouseout="pub1_stop()" onmouseover="pub1_start()">
@@ -285,6 +334,9 @@
   </tbody>
 </table>
 
+
+<!-- ======= Research Experience Section ======= -->
+
     </table>
 
     <table style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
@@ -299,6 +351,8 @@
         </td></tr>
       </tbody>
     </table>
+
+    <!-- ======= Technical Skills Section ======= -->
 
     <table style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
       <tbody>
