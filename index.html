@@ -40,14 +40,22 @@
   }
 </style>
 
+
+<!-- =============== Navigation Bar ================= -->
 <style>
+  :root{
+    --nav-height: 56px;
+    --nav-pad-x: 12px;   /* desktop link padding (left/right) */
+    --nav-pad-y: 8px;    /* desktop link padding (top/bottom) */
+  }
+
   .top-nav{
     position: fixed;
     top: 0; left: 0; right: 0;
-    height: 56px;
+    height: var(--nav-height);
     display: flex;
     align-items: center;
-    justify-content: center;   /* centers the content */
+    justify-content: center;
     padding: 0 16px;
     background: rgba(255,255,255,0.85);
     backdrop-filter: saturate(180%) blur(12px);
@@ -55,26 +63,100 @@
     border-bottom: 1px solid rgba(0,0,0,0.06);
     z-index: 999;
   }
+
+  /* Link row */
   .top-nav .links{
+    position: relative;
     display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-    justify-content: center;   /* centers items inside the links row */
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+
+    /* Mobile-friendly scrolling: prevents cramped/wrapped links */
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    overscroll-behavior-x: contain;
+    padding: 0 4px;      /* breathing room at edges */
   }
+  /* Hide scrollbars where possible */
+  .top-nav .links::-webkit-scrollbar{ display: none; }
+  .top-nav .links{ scrollbar-width: none; }
+
+  /* Link styling (adds padding around words) */
   .top-nav a{
     text-decoration: none;
     color: #222;
     font-size: 14px;
-    padding: 6px 8px;
-    border-radius: 8px;
+    line-height: 1;
+    padding: var(--nav-pad-y) var(--nav-pad-x);
+    border-radius: 9999px;                /* pill */
+    transition: background-color .15s ease, transform .08s ease;
   }
   .top-nav a:hover{ background: rgba(0,0,0,0.06); }
+  .top-nav a:active{ transform: translateY(1px); }
+  .top-nav a:focus-visible{
+    outline: 2px solid rgba(0,0,0,0.3);
+    outline-offset: 2px;
+  }
 
-  /* room under fixed nav */
+  /* Smooth scroll + offset for fixed nav */
   html{ scroll-behavior: smooth; }
-  [id]{ scroll-margin-top: 72px; }
-  body{ padding-top: 64px; }
+  [id]{ scroll-margin-top: calc(var(--nav-height) + 16px); }
+  body{ padding-top: calc(var(--nav-height) + 8px); }
+
+  /* Mobile: slightly larger tap targets, keep height stable */
+  @media (max-width: 700px){
+    :root{
+      --nav-pad-x: 14px;
+      --nav-pad-y: 10px;
+    }
+    .top-nav{ height: var(--nav-height); }
+    .top-nav a{ font-size: 15px; }        /* optional readability bump */
+  }
 </style>
+
+
+<style>
+  /* Mobile: stack About cells, show profile pic first */
+  @media (max-width: 700px) {
+    /* Turn the row into a flex container */
+    #about tbody tr {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    /* Make both cells full width when stacked */
+    #about tbody tr > td {
+      width: 100% !important;
+      max-width: 100% !important;
+      padding: 12px 2.5% !important;
+    }
+
+    /* Move the right cell (profile pic) above the text */
+    #about tbody tr > td:last-child {
+      order: -1;
+      text-align: center;
+    }
+
+    /* Tidy the profile image sizing on mobile */
+    #about tbody tr > td:last-child img {
+      width: 160px;            /* nice mobile size */
+      max-width: 60vw;         /* prevent overflow on tiny screens */
+      height: auto;
+      border-radius: 50%;
+      display: block;
+      margin: 0 auto 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    /* Slightly reduce heading size for small screens */
+    #about .name { font-size: 28px !important; }
+  }
+</style>
+
 
 
 <body>
@@ -204,10 +286,14 @@
 
 
 
-<!-- ======= Publications Section ======= -->
+<!-- ======= Publications Section (width-aligned + consistent thumbs) ======= -->
+<!-- ======= Publications: width-aligned, no-crop thumbnails ======= -->
 <style>
-  /* Font: prefer Apple Helvetica / Helvetica Neue */
-  :root { --pubs-font: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  :root {
+    --pubs-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --pub-thumb-h: 168px;     /* desktop thumbnail box height */
+    --pub-thumb-h-sm: 132px;  /* mobile thumbnail box height  */
+  }
 
   .pubs-table,
   .pubs-table td,
@@ -220,20 +306,83 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Existing styles (keep these) */
-  .pubs-table { width:100%; max-width:800px; margin:auto; border-spacing:0 10px; border-collapse:separate; }
-  .pub-row td { vertical-align:middle; }
-  .pub-thumb { position:relative; width:100%; max-width:220px; }
-  .pub-thumb img { width:100%; display:block; border-radius:6px; }
-  .pub-thumb .hover-video {
-    position:absolute; inset:0; opacity:0; transition:opacity .25s ease;
-    border-radius:6px; overflow:hidden;
+  /* Keep width consistent with other sections */
+  .pubs-table {
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    border-spacing: 0 10px;
+    border-collapse: separate;
   }
-  .pub-row:hover .hover-video { opacity:1; }
-  .pub-meta a { text-decoration:none; }
-  .pub-meta .papertitle { font-weight:600; }
-  .pub-desc { margin-top:6px; font-size:14px; line-height:1.4em; }
+
+  .pub-row td { vertical-align: middle; }
+
+  /* Enforce consistent column widths (override any inline widths) */
+  .pub-row > td:first-child { width: 40% !important; padding: 6px 8px; text-align: center; }
+  .pub-row > td:last-child  { width: 60% !important; padding: 4px 0; }
+
+  /* No-crop thumbnail box */
+  .pub-thumb {
+    position: relative;
+    width: 100%;
+    max-width: 220px;           /* same scale as your existing layout */
+    height: var(--pub-thumb-h); /* fixed box height for consistency */
+    margin: 0 auto;
+    border-radius: 6px;
+    overflow: hidden;           /* keeps rounded corners, doesn't affect contain-sizing */
+    display: flex;              /* center media inside box */
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Images: shrink to fit (no cropping), keep aspect ratio */
+  .pub-thumb img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    display: block;
+    border-radius: 6px;
+  }
+
+  /* Hover video overlay, also no-crop + centered */
+  .pub-thumb .hover-video {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity .25s ease;
+    border-radius: 6px;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pub-row:hover .hover-video { opacity: 1; }
+  .pub-thumb .hover-video video {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    display: block;
+    border-radius: 6px;
+  }
+
+  .pub-meta a { text-decoration: none; }
+  .pub-meta .papertitle { font-weight: 600; }
+  .pub-desc { margin-top: 6px; font-size: 14px; line-height: 1.4em; }
+
+  /* Mobile tweaks */
+  @media (max-width: 540px) {
+    .pubs-table { border-spacing: 0 8px; }
+    .pub-thumb {
+      max-width: 200px;             /* slightly narrower on small screens */
+      height: var(--pub-thumb-h-sm);
+    }
+    .pub-meta .papertitle { font-size: 16px; }
+    .pub-desc { font-size: 13px; }
+  }
 </style>
+
 
 
 <table id="publications" class="pubs-table">
@@ -256,8 +405,8 @@
         <a href="" target="_blank" rel="noopener noreferrer">
           <span class="papertitle">Evolution of Humanoid Locomotion Control</span>
         </a><br>
-        Y. Gu, G. Shi, F. Shi, I. Chang, Y. Wang, <b>Q. Cheng</b>, Z. Olkin, I. Lopez-Sanchez, Y. Feng,
-J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
+            Y. Gu, G. Shi, F. Shi, I. Chang, Y. Wang, <b>Q. Cheng</b>, Z. Olkin, I. Lopez-Sanchez, Y. Feng,
+            J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
         <em>Science Robotics (Under review)</em>, 2025<br>
         <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener noreferrer">arXiv</a>
         <p class="pub-desc">
@@ -462,6 +611,82 @@ J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
 
 
 <!-- ================= News Section ======================= -->
+<!-- News: responsive, no image width shrink on mobile -->
+<style>
+  /* Normalize table width like other sections */
+  #news {
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    border-spacing: 0;
+  }
+
+  /* Ensure a consistent carousel structure */
+  #news [data-carousel] {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 6px;
+  }
+  #news .carousel-track {
+    display: flex;
+    transition: transform 0.5s ease;
+  }
+  #news .carousel-track > div {
+    min-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Desktop: keep your current 200px height */
+  @media (min-width: 701px) {
+    #news [data-carousel],
+    #news .carousel-track,
+    #news .carousel-track > div { height: 200px; }
+
+    /* Desktop image sizing (can be contain/cover; keeping your current logic) */
+    #news .carousel-track img {
+      height: 100%;
+      width: auto;
+      display: block;
+    }
+  }
+
+  /* Mobile: stack columns; images keep full width (no width shrink), auto height */
+  @media (max-width: 700px) {
+    /* Stack each row into two blocks */
+    #news tr,
+    #news td {
+      display: block;
+      width: 100% !important;
+    }
+    #news td { padding: 8px 0 !important; }
+
+    /* Let carousel height follow image height */
+    #news [data-carousel],
+    #news .carousel-track,
+    #news .carousel-track > div {
+      height: auto !important;
+    }
+
+    /* Key part: fill width, keep aspect ratio; never clamp smaller */
+    #news .carousel-track img {
+      width: 100% !important;      /* fill container width */
+      height: auto !important;     /* preserve aspect ratio */
+      max-width: none !important;  /* prevent unintended shrinking */
+      display: block;
+    }
+
+    /* Keep nav buttons centered vertically for variable heights */
+    #news [data-carousel] button {
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+    }
+  }
+</style>
+
+
     <table id="news" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;margin-top:30px;">
       <tbody>
 
@@ -652,34 +877,73 @@ J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
       }
     </script>
 
-<!-- ============================ Projects Section ========================== -->
-<!-- ======= Projects Section ======= -->
+<!-- ======= Projects Section (aligned with Publications) ======= -->
 <style>
-  /* Scoped to Projects block */
-  .projects-table { width:100%; max-width:800px; margin:auto; border-spacing:0 10px; border-collapse:separate; }
-  .proj-row td { vertical-align:middle; }
-  .proj-thumb { position:relative; width:100%; max-width:220px; }
-  .proj-thumb img { width:100%; display:block; border-radius:6px; }
-  .proj-thumb .hover-video {
-    position:absolute; inset:0; opacity:0; transition:opacity .25s ease;
-    border-radius:6px; overflow:hidden;
+  /* Give the image column more room */
+  #projects .thumb-td { width: 45%; }
+  #projects .info-td  { width: 55%; }
+
+  /* Let the thumbnail fill its column (≈360px within the 800px table) */
+  #projects .proj-thumb { max-width: none; }
+
+  /* Mobile: keep thumbs reasonable */
+  @media (max-width: 540px) {
+    #projects .proj-thumb { max-width: 200px; }
   }
-  .proj-row:hover .hover-video { opacity:1; }
-  /* No link underlines in this section */
-  .projects-table a,
-  .projects-table a:link,
-  .projects-table a:visited,
-  .projects-table a:hover,
-  .projects-table a:active,
-  .projects-table a:focus {
-    text-decoration: none !important;
-    border-bottom: none !important;
-    box-shadow: none !important;
-    color: inherit;
+  
+  /* Scoped to Projects only */
+  #projects.projects-table {
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    border-spacing: 0 10px;           /* same rhythm as publications */
+    border-collapse: separate;
   }
-  .papertitle { font-weight:600; }
-  .proj-desc { margin-top:6px; font-size:14px; line-height:1.4em; }
-  .proj-year { float:right; color:#666; font-size:13px; margin-left:8px; }
+  #projects .proj-row td { vertical-align: middle; }
+
+  /* Column widths to mirror Publications (thumb left, text right) */
+  #projects .thumb-td { padding: 5px; width: 40%; text-align: center; }
+  #projects .info-td  { padding: 2px;  width: 100%; }
+
+  /* Thumbnail + hover video (same look/feel as pubs) */
+  #projects .proj-thumb {
+    position: relative;
+    width: 100%;
+    max-width: 220px;                 /* matches .pub-thumb */
+    margin: 0 auto;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  #projects .proj-thumb img,
+  #projects .proj-thumb video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  #projects .hover-video {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity .25s ease;
+    border-radius: 6px;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  #projects .proj-row:hover .hover-video { opacity: 1; }
+
+  /* Typography aligns with pubs block */
+  #projects .papertitle { font-weight: 600; }
+  #projects .proj-year  { float: right; color: #666; font-size: 13px; margin-left: 8px; }
+  #projects .proj-desc  { margin-top: 6px; font-size: 14px; line-height: 1.4em; }
+
+  /* Mobile tweaks: slightly smaller fonts and thumbs, keep two columns */
+  @media (max-width: 540px) {
+    #projects .proj-thumb { max-width: 180px; }
+    #projects .info-td    { padding: 4px; }
+    #projects .papertitle { font-size: 16px; }
+    #projects .proj-year  { font-size: 12px; }
+    #projects .proj-desc  { font-size: 13px; }
+  }
 </style>
 
 <table id="projects" class="projects-table">
@@ -688,17 +952,17 @@ J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
 
     <!-- Project: TINTIN Rocket Landing -->
     <tr class="proj-row" data-proj="tintin">
-      <td style="padding:16px; width:20%; text-align:center;">
+      <td class="thumb-td">
         <div class="proj-thumb">
           <img src="assets/images/projects/rocket/overview.jpg" alt="TINTIN lunar landing RL" loading="lazy">
           <div class="hover-video">
-            <video width="100%" height="100%" muted autoplay loop playsinline>
+            <video muted autoplay loop playsinline>
               <source src="assets/videos/projects/tintin.mp4" type="video/mp4">
             </video>
           </div>
         </div>
       </td>
-      <td style="padding:8px; width:100%;">
+      <td class="info-td">
         <span class="papertitle">TINTIN: RL-Based Lunar Rocket Landing</span>
         <span class="proj-year">2025</span><br>
         6-DoF variable-mass lander in MuJoCo with 2-DoF gimbaled thrust; PID baseline vs PPO policy; pose-targeted touchdown and fuel-efficiency metrics.
@@ -708,17 +972,17 @@ J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
 
     <!-- Project: IRIS Cinema Arm -->
     <tr class="proj-row" data-proj="iris">
-      <td style="padding:16px; width:20%; text-align:center;">
+      <td class="thumb-td">
         <div class="proj-thumb">
           <img src="assets/images/projects/iris/iris_real_life.jpg" alt="IRIS cinema robot arm" loading="lazy">
           <div class="hover-video">
-            <video width="100%" height="100%" muted autoplay loop playsinline>
+            <video muted autoplay loop playsinline>
               <source src="assets/videos/projects/iris.mp4" type="video/mp4">
             </video>
           </div>
         </div>
       </td>
-      <td style="padding:8px; width:100%;">
+      <td class="info-td">
         <span class="papertitle">IRIS: Low-Cost 6-DOF Cinema Robot Arm</span>
         <span class="proj-year">2024–2025</span><br>
         Modular QDD drives, differential wrist, carbon-fiber links; ROS stack with vision-based imitation learning for reactive path planning and obstacle avoidance.
@@ -728,17 +992,17 @@ J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
 
     <!-- Project: Biped VHC -->
     <tr class="proj-row" data-proj="vhc-biped">
-      <td style="padding:16px; width:20%; text-align:center;">
+      <td class="thumb-td">
         <div class="proj-thumb">
           <img src="assets/images/projects/" alt="Biped VHC walking" loading="lazy">
           <div class="hover-video">
-            <video width="100%" height="100%" muted autoplay loop playsinline>
+            <video muted autoplay loop playsinline>
               <source src="assets/videos/projects/vhc_biped.mp4" type="video/mp4">
             </video>
           </div>
         </div>
       </td>
-      <td style="padding:8px; width:80%;">
+      <td class="info-td">
         <span class="papertitle">Geometric Nonlinear Control for Biped Walking</span>
         <span class="proj-year">2023–2024</span><br>
         Virtual Holonomic Constraints with polynomial gait design, feedback linearization, and terrain generalization to slopes and stairs.
@@ -748,17 +1012,17 @@ J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
 
     <!-- Project: Unicycle Robot -->
     <tr class="proj-row" data-proj="unicycle">
-      <td style="padding:16px; width:20%; text-align:center;">
+      <td class="thumb-td">
         <div class="proj-thumb">
           <img src="assets/images/projects/unicycle.jpg" alt="Unicycle robot" loading="lazy">
           <div class="hover-video">
-            <video width="100%" height="100%" muted autoplay loop playsinline>
+            <video muted autoplay loop playsinline>
               <source src="assets/videos/projects/unicycle.mp4" type="video/mp4">
             </video>
           </div>
         </div>
       </td>
-      <td style="padding:8px; width:80%;">
+      <td class="info-td">
         <span class="papertitle">Unicycle Robot: Design & Control</span>
         <span class="proj-year">2021–2022</span><br>
         Generative-designed chassis with reaction wheels; custom STM32 controller; validation in ROS Gazebo and Simulink.
@@ -768,17 +1032,17 @@ J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
 
     <!-- Project: Aerospace Localization -->
     <tr class="proj-row" data-proj="aero-localization">
-      <td style="padding:16px; width:20%; text-align:center;">
+      <td class="thumb-td">
         <div class="proj-thumb">
           <img src="assets/images/projects/aero_localization.jpg" alt="Aerospace localization" loading="lazy">
           <div class="hover-video">
-            <video width="100%" height="100%" muted autoplay loop playsinline>
+            <video muted autoplay loop playsinline>
               <source src="assets/videos/projects/aero_localization.mp4" type="video/mp4">
             </video>
           </div>
         </div>
       </td>
-      <td style="padding:8px; width:80%;">
+      <td class="info-td">
         <span class="papertitle">Localization for Aerospace Vehicles (IMU + Stereo)</span>
         <span class="proj-year">2020–2021</span><br>
         Batch Gauss-Newton fusion with EKF; compared batch vs sliding-window estimators for trajectory accuracy.
@@ -788,17 +1052,17 @@ J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
 
     <!-- Project: Turtlebot2 SLAM -->
     <tr class="proj-row" data-proj="turtlebot2">
-      <td style="padding:16px; width:20%; text-align:center;">
+      <td class="thumb-td">
         <div class="proj-thumb">
           <img src="assets/images/projects/turtlebot2.jpg" alt="Turtlebot2 SLAM & navigation" loading="lazy">
           <div class="hover-video">
-            <video width="100%" height="100%" muted autoplay loop playsinline>
+            <video muted autoplay loop playsinline>
               <source src="assets/videos/projects/turtlebot2.mp4" type="video/mp4">
             </video>
           </div>
         </div>
       </td>
-      <td style="padding:8px; width:80%;">
+      <td class="info-td">
         <span class="papertitle">Turtlebot2 SLAM, Navigation & Perception</span>
         <span class="proj-year">2019–2020</span><br>
         Gmapping, frontier exploration, PID control; OpenCV perception and a CNN for 7-class emotion recognition.
@@ -808,17 +1072,17 @@ J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
 
     <!-- Project: Mobile Robot Mechatronics -->
     <tr class="proj-row" data-proj="mobile-robot">
-      <td style="padding:16px; width:20%; text-align:center;">
+      <td class="thumb-td">
         <div class="proj-thumb">
           <img src="assets/images/projects/mobile_robot.jpg" alt="Mobile robot mechatronics design" loading="lazy">
           <div class="hover-video">
-            <video width="100%" height="100%" muted autoplay loop playsinline>
+            <video muted autoplay loop playsinline>
               <source src="assets/videos/projects/mobile_robot.mp4" type="video/mp4">
             </video>
           </div>
         </div>
       </td>
-      <td style="padding:8px; width:80%;">
+      <td class="info-td">
         <span class="papertitle">Mobile Robot Mechatronics Design Project</span>
         <span class="proj-year">2019</span><br>
         <em>MATLAB, SolidWorks</em> — Designed a 3D-printed Arduino-based mobile robot in Fusion 360; implemented localization and obstacle-avoidance for maze navigation in MATLAB; commanded the robot via Bluetooth.
@@ -828,17 +1092,17 @@ J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
 
     <!-- Project: 8×8×8 LED Cube -->
     <tr class="proj-row" data-proj="led-cube">
-      <td style="padding:16px; width:20%; text-align:center;">
+      <td class="thumb-td">
         <div class="proj-thumb">
           <img src="assets/images/projects/led_cube.jpg" alt="8x8x8 LED cube" loading="lazy">
           <div class="hover-video">
-            <video width="100%" height="100%" muted autoplay loop playsinline>
+            <video muted autoplay loop playsinline>
               <source src="assets/videos/projects/led_cube.mp4" type="video/mp4">
             </video>
           </div>
         </div>
       </td>
-      <td style="padding:8px; width:80%;">
+      <td class="info-td">
         <span class="papertitle">8×8×8 LED Cube Embedded System</span>
         <span class="proj-year">2018–2019</span><br>
         ESP32-based driver with SPI multiplexing; API control; interactive 3D Snake and Pong demos.
@@ -848,17 +1112,17 @@ J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
 
     <!-- Project: CNC Plotting Machine -->
     <tr class="proj-row" data-proj="cnc-plotter">
-      <td style="padding:16px; width:20%; text-align:center;">
+      <td class="thumb-td">
         <div class="proj-thumb">
           <img src="assets/images/projects/cnc_plotter.jpg" alt="CNC plotting machine" loading="lazy">
           <div class="hover-video">
-            <video width="100%" height="100%" muted autoplay loop playsinline>
+            <video muted autoplay loop playsinline>
               <source src="assets/videos/projects/cnc_plotter.mp4" type="video/mp4">
             </video>
           </div>
         </div>
       </td>
-      <td style="padding:8px; width:80%;">
+      <td class="info-td">
         <span class="papertitle">CNC Plotting Machine</span>
         <span class="proj-year">2019</span><br>
         3-DOF CNC with modified G-code pipeline and OpenCV image-to-pencil rendering.
@@ -868,17 +1132,17 @@ J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
 
     <!-- Project: Formula Drivetrain -->
     <tr class="proj-row" data-proj="formula-drivetrain">
-      <td style="padding:16px; width:20%; text-align:center;">
+      <td class="thumb-td">
         <div class="proj-thumb">
           <img src="assets/images/projects/formula_drivetrain.jpg" alt="Formula racing drivetrain" loading="lazy">
           <div class="hover-video">
-            <video width="100%" height="100%" muted autoplay loop playsinline>
+            <video muted autoplay loop playsinline>
               <source src="assets/videos/projects/formula_drivetrain.mp4" type="video/mp4">
             </video>
           </div>
         </div>
       </td>
-      <td style="padding:8px; width:80%;">
+      <td class="info-td">
         <span class="papertitle">Electric Formula Racing Car Drive-train</span>
         <span class="proj-year">2018–2019</span><br>
         Planetary gearbox quadrupling torque at &gt;90% efficiency; kinematics, stress, thermal, and vibration analyses.
@@ -888,7 +1152,6 @@ J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
 
   </tbody>
 </table>
-
 
 
 
