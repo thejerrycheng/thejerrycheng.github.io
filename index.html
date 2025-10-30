@@ -240,7 +240,7 @@
 
       <p class="social-links">
         <a href="mailto:qilong.cheng@mail.utoronto.ca">Email</a>
-        <a href="data/resume.pdf">CV</a>
+        <a href="assets/pdf/resume.pdf">CV</a>
         <a href="https://scholar.google.com/citations?user=iQuHS3MAAAAJ&hl=en">Scholar</a>
         <a href="https://www.linkedin.com/in/jerry-qilong-cheng-540039163/">LinkedIn</a>
         <a href="https://github.com/thejerrycheng">GitHub</a>
@@ -854,6 +854,28 @@
         </td>
       </tr>
 
+      
+      <tr>
+        <td style="padding:8px;vertical-align:middle;width:65%;">
+          <p style="font-size:15px;line-height:1.5em;">
+            <b>[06/2023]</b> Graduated from the University of Toronto with a Bachelor's of Applied Science (B.A.S.) degree.
+          </p>
+        </td>
+        <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
+          <div data-carousel style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;">
+            <div class="carousel-track" style="display:flex;transition:transform 0.5s ease;height:200px;">
+              <div style="min-width:100%;display:flex;align-items:center;justify-content:center;">
+                <img src="assets/images/news/undergrad_convocation/convocation.jpg" alt="Undergraduate Convocation" style="height:200px;width:auto;max-width:100%;display:block;">
+              </div>
+            </div>
+            <!-- <button onclick="carouselMove(this,-1)" aria-label="Previous image"
+              style="position:absolute;top:50%;left:5px;transform:translateY(-50%);background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">&#10094;</button>
+            <button onclick="carouselMove(this,1)" aria-label="Next image"
+              style="position:absolute;top:50%;right:5px;transform:translateY(-50%);background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">&#10095;</button> -->
+          </div>
+        </td>
+      </tr>
+
 
     <!-- Carousel JS -->
     <script>
@@ -878,45 +900,40 @@
 
 <!-- ======= Projects Section (aligned with Publications) ======= -->
 <style>
-  /* Give the image column more room */
-  #projects .thumb-td { width: 45%; }
-  #projects .info-td  { width: 55%; }
+  /* ================= Projects (cleaned + links support) ================= */
 
-  /* Let the thumbnail fill its column (≈360px within the 800px table) */
-  #projects .proj-thumb { max-width: none; }
-
-  /* Mobile: keep thumbs reasonable */
-  @media (max-width: 540px) {
-    #projects .proj-thumb { max-width: 200px; }
-  }
-  
-  /* Scoped to Projects only */
+  /* Container matches other sections */
   #projects.projects-table {
     width: 100%;
     max-width: 800px;
     margin: auto;
-    border-spacing: 0 10px;           /* same rhythm as publications */
+    border-spacing: 0 10px;
     border-collapse: separate;
   }
   #projects .proj-row td { vertical-align: middle; }
 
-  /* Column widths to mirror Publications (thumb left, text right) */
-  #projects .thumb-td { padding: 5px; width: 40%; text-align: center; }
-  #projects .info-td  { padding: 2px;  width: 100%; }
+  /* Consistent two-column layout (wider image column) */
+  #projects .thumb-td { padding: 5px; width: 45%; text-align: center; }
+  #projects .info-td  { padding: 2px; width: 55%; }
 
-  /* Thumbnail + hover video (same look/feel as pubs) */
+  /* Thumbnail + hover video */
   #projects .proj-thumb {
     position: relative;
     width: 100%;
-    max-width: 220px;                 /* matches .pub-thumb */
+    max-width: none;               /* let it fill the thumb column */
     margin: 0 auto;
     border-radius: 6px;
     overflow: hidden;
   }
-  #projects .proj-thumb img,
+  #projects .proj-thumb img {
+    width: 100%;
+    height: auto;                  /* no crop */
+    display: block;
+  }
   #projects .proj-thumb video {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;             /* fill box on hover */
     display: block;
   }
   #projects .hover-video {
@@ -925,31 +942,55 @@
     opacity: 0;
     transition: opacity .25s ease;
     border-radius: 6px;
-    overflow: hidden;
     pointer-events: none;
   }
   #projects .proj-row:hover .hover-video { opacity: 1; }
 
-  /* Typography aligns with pubs block */
+  /* Typography aligned with publications */
   #projects .papertitle { font-weight: 600; }
   #projects .proj-year  { float: right; color: #666; font-size: 13px; margin-left: 8px; }
   #projects .proj-desc  { margin-top: 6px; font-size: 14px; line-height: 1.4em; }
 
-  /* Mobile tweaks: slightly smaller fonts and thumbs, keep two columns */
+  /* Link pills for PDF/YouTube/etc. */
+  #projects .proj-links {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  #projects .proj-links a{
+    display: inline-block;
+    font-size: 13px;
+    line-height: 1;
+    padding: 6px 10px;
+    border: 1px solid rgba(0,0,0,0.15);
+    border-radius: 9999px;
+    text-decoration: none;
+    color: #222;
+    transition: background-color .15s ease, border-color .15s ease;
+  }
+  #projects .proj-links a:hover{
+    background: rgba(0,0,0,0.06);
+    border-color: rgba(0,0,0,0.25);
+  }
+
+  /* Mobile tweaks: keep two columns, slightly smaller fonts */
   @media (max-width: 540px) {
-    #projects .proj-thumb { max-width: 180px; }
-    #projects .info-td    { padding: 4px; }
+    #projects .thumb-td { width: 44%; }
+    #projects .info-td  { width: 56%; padding: 4px; }
     #projects .papertitle { font-size: 16px; }
     #projects .proj-year  { font-size: 12px; }
     #projects .proj-desc  { font-size: 13px; }
+    #projects .proj-links a { font-size: 12px; padding: 6px 9px; }
   }
 </style>
+
 
 <table id="projects" class="projects-table">
   <tbody>
     <tr><td><h2>Projects</h2></td></tr>
 
-    <!-- Project: TINTIN Rocket Landing -->
+    <!-- Project: TINTIN Rocket Landing (with PDF + YouTube links) -->
     <tr class="proj-row" data-proj="tintin">
       <td class="thumb-td">
         <div class="proj-thumb">
@@ -965,11 +1006,16 @@
         <span class="papertitle">TINTIN: RL-Based Lunar Rocket Landing</span>
         <span class="proj-year">2025</span><br>
         6-DoF variable-mass lander in MuJoCo with 2-DoF gimbaled thrust; PID baseline vs PPO policy; pose-targeted touchdown and fuel-efficiency metrics.
+        <div class="proj-links">
+          <!-- replace hrefs with your real URLs -->
+          <a href="assets/pdfs/projects/tintin.pdf" target="_blank" rel="noopener" aria-label="TINTIN project PDF">PDF</a>
+          <a href="https://youtu.be/TINTIN_DEMO" target="_blank" rel="noopener" aria-label="TINTIN project video on YouTube">YouTube</a>
+        </div>
         <p class="proj-desc"></p>
       </td>
     </tr>
 
-    <!-- Project: IRIS Cinema Arm -->
+    <!-- Project: IRIS Cinema Arm (with PDF + YouTube links) -->
     <tr class="proj-row" data-proj="iris">
       <td class="thumb-td">
         <div class="proj-thumb">
@@ -985,9 +1031,15 @@
         <span class="papertitle">IRIS: Low-Cost 6-DOF Cinema Robot Arm</span>
         <span class="proj-year">2024–2025</span><br>
         Modular QDD drives, differential wrist, carbon-fiber links; ROS stack with vision-based imitation learning for reactive path planning and obstacle avoidance.
+        <div class="proj-links">
+          <!-- replace hrefs with your real URLs -->
+          <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener" aria-label="IRIS project PDF">PDF</a>
+          <a href="https://www.youtube.com/watch?v=tUJCzzHMhkU&list=PL5hrJ0xlpQr8OD-3luKAu9CUlmj_8L284&index=6" target="_blank" rel="noopener" aria-label="IRIS project video on YouTube">YouTube</a>
+        </div>
         <p class="proj-desc"></p>
       </td>
     </tr>
+
 
     <!-- Project: Biped VHC -->
     <tr class="proj-row" data-proj="vhc-biped">
