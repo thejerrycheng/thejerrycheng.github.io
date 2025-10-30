@@ -192,8 +192,8 @@
       <tr>
       <td style="padding:2.5%;width:63%;vertical-align:middle">
       
-        <p class="name" style="text-align:center;font-size:36px;font-weight:bold;margin:0;">
-          Jerry (Qilong) Cheng
+        <p class="name" style="text-align:center;font-size:30px;font-weight:bold;margin:0;">
+          Jerry (Qilong) Cheng 「程启龙」
         </p>
 
         <p style="font-size:15px;line-height:1.6;margin-top:10px;">
@@ -201,12 +201,12 @@
           <a href="https://engineering.nyu.edu" target="_blank" rel="noopener">New York University</a>, working on humanoid locomotion using reinforcement learning.
           Previously, I worked in the
           <a href="https://starslab.ca" target="_blank" rel="noopener">Space and Terrestrial Autonomous Robotics Systems (STARS) Lab</a>
-          with <a href="https://www.cs.toronto.edu/~jkelly/" target="_blank" rel="noopener"><strong>Prof. Jonathan Kelly</strong></a>,
+          with <a href="https://starslab.ca/people/prof-jonathan-kelly/" target="_blank" rel="noopener"><strong>Prof. Jonathan Kelly</strong></a>,
           the <a href="https://www.dgp.toronto.edu/" target="_blank" rel="noopener">Dynamic Graphics Project (DGP) Lab</a>
-          with <a href="https://www.danielwigdor.com/" target="_blank" rel="noopener"><strong>Prof. Daniel Wigdor</strong></a>,
+          with <a href="https://danielwigdor.com" target="_blank" rel="noopener"><strong>Prof. Daniel Wigdor</strong></a>,
           and the <a href="https://robotics.utoronto.ca" target="_blank" rel="noopener">University of Toronto Robotics Institute</a>
-          with <a href="https://mattmackay.me/" target="_blank" rel="noopener"><strong>Prof. Matthew Mackay</strong></a> and
-          <a href="https://www.mie.utoronto.ca/faculty/bereyhi-ali/" target="_blank" rel="noopener"><strong>Prof. Ali Bereyhi</strong></a>.
+          with <a href="https://www.mie.utoronto.ca/faculty_staff/mackay/" target="_blank" rel="noopener"><strong>Prof. Matthew Mackay</strong></a> and
+          <a href="https://www.bereyhi.com" target="_blank" rel="noopener"><strong>Prof. Ali Bereyhi</strong></a>.
         </p>
 
         <p style="margin-top:16px;font-size:15px;line-height:1.6;">
@@ -286,8 +286,7 @@
 
 
 
-<!-- ======= Publications Section (width-aligned + consistent thumbs) ======= -->
-<!-- ======= Publications: width-aligned, no-crop thumbnails ======= -->
+<!-- ======= Publications Section ======= -->
 <style>
   :root {
     --pubs-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -612,16 +611,12 @@
 
 <!-- ================= News Section ======================= -->
 <!-- News: responsive, no image width shrink on mobile -->
+<!-- News: responsive side-by-side (no re-order), image width preserved -->
 <style>
-  /* Normalize table width like other sections */
-  #news {
-    width: 100%;
-    max-width: 800px;
-    margin: auto;
-    border-spacing: 0;
-  }
+  /* Match other sections */
+  #news { width:100%; max-width:800px; margin:auto; border-spacing:0; }
 
-  /* Ensure a consistent carousel structure */
+  /* Base carousel structure */
   #news [data-carousel] {
     position: relative;
     width: 100%;
@@ -638,53 +633,57 @@
     align-items: center;
     justify-content: center;
   }
-
-  /* Desktop: keep your current 200px height */
-  @media (min-width: 701px) {
+  /* Desktop defaults */
+  @media (min-width: 701px){
     #news [data-carousel],
     #news .carousel-track,
     #news .carousel-track > div { height: 200px; }
-
-    /* Desktop image sizing (can be contain/cover; keeping your current logic) */
-    #news .carousel-track img {
-      height: 100%;
-      width: auto;
-      display: block;
-    }
+    #news .carousel-track img { height: 100%; width: auto; display: block; }
   }
 
-  /* Mobile: stack columns; images keep full width (no width shrink), auto height */
-  @media (max-width: 700px) {
-    /* Stack each row into two blocks */
-    #news tr,
-    #news td {
-      display: block;
-      width: 100% !important;
+  /* Mobile: keep text + image on same line, do not reorder */
+  @media (max-width: 700px){
+    /* Turn each row into a 2-col grid: text flexes, image stays a usable width */
+    #news tr {
+      display: grid;
+      grid-template-columns: 1fr 280px; /* text | image (fixed) */
+      align-items: center;
+      column-gap: 10px;
     }
-    #news td { padding: 8px 0 !important; }
+    /* Remove table-cell shrink tricks */
+    #news td { display: block; width: auto !important; padding: 6px 0 !important; }
 
-    /* Let carousel height follow image height */
+    /* Text sizing tweaks */
+    #news td:first-child h2 { font-size: 18px; margin: 0 0 6px; }
+    #news td:first-child p  { font-size: 13.5px; line-height: 1.45; }
+
+    /* Keep the image area consistent height; image fills by height (no crop) */
     #news [data-carousel],
     #news .carousel-track,
-    #news .carousel-track > div {
-      height: auto !important;
-    }
-
-    /* Key part: fill width, keep aspect ratio; never clamp smaller */
+    #news .carousel-track > div { height: 180px; }
     #news .carousel-track img {
-      width: 100% !important;      /* fill container width */
-      height: auto !important;     /* preserve aspect ratio */
-      max-width: none !important;  /* prevent unintended shrinking */
+      height: 100% !important;   /* preserve visual size */
+      width: auto !important;    /* do not force a smaller width */
+      max-width: none !important;
       display: block;
     }
 
-    /* Keep nav buttons centered vertically for variable heights */
+    /* Keep nav arrows vertically centered for variable heights */
     #news [data-carousel] button {
       top: 50% !important;
       transform: translateY(-50%) !important;
     }
   }
+
+  /* Ultra-small phones: slightly narrower image column + thumb height */
+  @media (max-width: 360px){
+    #news tr { grid-template-columns: 1fr 240px; }
+    #news [data-carousel],
+    #news .carousel-track,
+    #news .carousel-track > div { height: 160px; }
+  }
 </style>
+
 
 
     <table id="news" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;margin-top:30px;">
