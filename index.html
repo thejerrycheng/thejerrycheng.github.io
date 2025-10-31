@@ -474,6 +474,7 @@
 </style> -->
 
 <!-- ======= Publications (desktop 45/55; mobile stacks; robust on iOS) ======= -->
+<!-- ======= Publications (desktop 45/55; mobile stacks; robust on iOS) ======= -->
 <style>
   :root{
     --pubs-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -511,7 +512,7 @@
   /* No-crop media box */
   .pub-thumb{
     position:relative;
-    width:100%; 
+    width:100%;
     height:var(--pub-thumb-h);
     margin:0 auto;
     border-radius:6px;
@@ -519,7 +520,7 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    /* background:#fafafa; */
+    background:#fafafa;
   }
 
   /* Images/videos fit without cropping */
@@ -587,123 +588,128 @@
   }
 </style>
 
-<!-- ==== Add under your existing Publications <style> block ==== -->
-<style>
-  /* Link pills for pubs (match Projects) */
-  #publications .pub-links{
-    margin-top:8px;
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-  }
-  #publications .pub-links a{
-    display:inline-block;
-    font-size:13px;
-    line-height:1;
-    padding:6px 10px;
-    border:1px solid rgba(0,0,0,0.15);
-    border-radius:9999px;
-    text-decoration:none;
-    color:#222;
-    transition:background-color .15s ease, border-color .15s ease;
-  }
-  #publications .pub-links a:hover{
-    background:rgba(0,0,0,0.06);
-    border-color:rgba(0,0,0,0.25);
-  }
-  @media (max-width:540px){
-    #publications .pub-links a{ font-size:12px; padding:6px 9px; }
-  }
-</style>
 
+<script>
+  // Pre-warm and auto-play all hover videos so they are already running
+  // behind the image; the fade-in on hover is instant.
+  (function(){
+    const vids = document.querySelectorAll('#publications .hover-video video');
+
+    vids.forEach(v => {
+      // Ensure correct attrs regardless of HTML
+      v.muted = true;
+      v.loop = true;
+      v.playsInline = true;
+      v.setAttribute('preload', 'auto');
+
+      // Kickstart playback ASAP
+      const tryPlay = () => {
+        const p = v.play();
+        if (p && typeof p.catch === 'function') {
+          p.catch(()=>{ /* ignore autoplay restrictions (shouldn't happen when muted) */ });
+        }
+      };
+
+      if (v.readyState >= 2) { // HAVE_CURRENT_DATA
+        tryPlay();
+      } else {
+        v.addEventListener('loadeddata', tryPlay, { once:true });
+        // Fallback in case 'loadeddata' is delayed:
+        setTimeout(tryPlay, 100);
+      }
+    });
+  })();
+</script>
 
 
 <table id="publications" class="pubs-table">
   <tbody>
     <tr><td><h2>Publications</h2></td></tr>
 
-        <!-- Pub SR - Locomotion Survey-->
-    <tr class="pub-row" data-pub="1">
-      <td style="padding:5px; width:40%; text-align:center;">
+       !-- Pub SR - Locomotion Survey -->
+    <tr class="pub-row" data-pub="sr-loco">
+      <td>
         <div class="pub-thumb">
-          <img src="assets/images/publications/locomotion_survey.jpg" alt="Locomotion Survey" loading="lazy">
+          <!-- Give width/height to help Safari layout; they will scale down via CSS -->
+          <img src="assets/images/publications/locomotion_survey.jpg"
+               alt="Locomotion Survey"
+               decoding="async" width="900" height="600">
           <div class="hover-video">
-            <video width="100%" height="100%" muted autoplay loop playsinline>
+            <video muted autoplay loop playsinline preload="none">
               <source src="assets/videos/publications/pub6.mp4" type="video/mp4">
             </video>
           </div>
         </div>
       </td>
-      <td class="pub-meta" style="padding:2px; width:100%;">
-        <a href="" target="_blank" rel="noopener noreferrer">
+      <td class="pub-meta">
+        <a href="" target="_blank" rel="noopener">
           <span class="papertitle">Evolution of Humanoid Locomotion Control</span>
         </a><br>
-            Y. Gu, G. Shi, F. Shi, I. Chang, Y. Wang, <b>Q. Cheng</b>, Z. Olkin, I. Lopez-Sanchez, Y. Feng,
-            J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
+        Y. Gu, G. Shi, F. Shi, I. Chang, Y. Wang, <b>Q. Cheng</b>, Z. Olkin, I. Lopez-Sanchez, Y. Feng,
+        J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
         <em>Science Robotics (Under review)</em>, 2025<br>
-        <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener noreferrer">arXiv</a>
+        <div class="pub-links">
+          <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener">arXiv</a>
+          <!-- <a href="https://github.com/..." target="_blank" rel="noopener">Code</a> -->
+          <!-- <a href="https://youtube.com/..." target="_blank" rel="noopener">YouTube</a> -->
+        </div>
         <p class="pub-desc">
           A comprehensive review and perspective of humanoid locomotion control methods, spanning classical to learning-based approaches to emerging trends.
         </p>
       </td>
     </tr>
 
-
-
     <!-- Pub: IRIS MEng Thesis -->
     <tr class="pub-row" data-pub="iris-thesis">
-      <td style="padding:5px; width:40%; text-align:center;">
+      <td>
         <div class="pub-thumb">
-          <!-- Use a thesis cover image if you have one -->
           <img src="assets/images/projects/iris/iris_design.jpg"
-              alt="IRIS cinema robot arm thesis cover" loading="lazy">
+               alt="IRIS cinema robot arm thesis cover"
+               decoding="async" width="900" height="600">
         </div>
       </td>
-      <td class="pub-meta" style="padding:2px; width:100%;">
-        <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener noreferrer">
-          <span class="papertitle"><b>Master's Thesis</b>: Design and Development of IRIS: An Intelligent Robotic Imaging System — A Low-Cost, 3D-Printed Cinema Robot Arm for Dynamic Shot Automation</span>
+      <td class="pub-meta">
+        <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener">
+          <span class="papertitle">Design and Development of IRIS: An Intelligent Robotic Imaging System — A Low-Cost, 3D-Printed Cinema Robot Arm for Dynamic Shot Automation</span>
         </a><br>
         <b>Q. Cheng</b>, M. Mackay, A. Bereyhi<br>
         <em>Master of Engineering Thesis, University of Toronto</em>, 2025<br>
-
         <div class="pub-links">
-          <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener" aria-label="IRIS Thesis PDF">PDF</a>
-          <a href="https://www.youtube.com/watch?v=tUJCzzHMhkU&list=PL5hrJ0xlpQr8OD-3luKAu9CUlmj_8L284&index=6"
-            target="_blank" rel="noopener" aria-label="IRIS video on YouTube">YouTube</a>
-          <!-- Optional, if you publish code:
-          <a href="https://github.com/youruser/iris" target="_blank" rel="noopener" aria-label="IRIS thesis code on GitHub">Code</a>
-          -->
+          <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener">PDF</a>
+          <a href="https://www.youtube.com/watch?v=tUJCzzHMhkU&list=PL5hrJ0xlpQr8OD-3luKAu9CUlmj_8L284&index=6" target="_blank" rel="noopener">YouTube</a>
+          <!-- <a href="https://github.com/youruser/iris" target="_blank" rel="noopener">Code</a> -->
         </div>
-
         <p class="pub-desc">
-          Low-cost, fully 3D-printed 6-DoF cinema robot arm (IRIS) with Unitree FOC actuators, a differential wrist,
-          and a vision-conditioned imitation-learning stack in ROS; ~1.5 kg payload and ±5 mm repeatability.
+          Low-cost, fully 3D-printed 6-DoF cinema robot arm (IRIS) with FOC actuators, differential wrist, and a vision-conditioned imitation-learning stack in ROS.
         </p>
       </td>
     </tr>
 
-
-    <!-- Pub 1 -->
-    <tr class="pub-row" data-pub="1">
-      <td style="padding:5px; width:40%; text-align:center;">
+    <!-- Robot-World / Hand–Eye -->
+    <tr class="pub-row" data-pub="rwh-eye">
+      <td>
         <div class="pub-thumb">
-          <img src="assets/images/publications/robot_world.jpg" alt="Robot-World & Hand-Eye Calibration thumbnail" loading="lazy">
+          <img src="assets/images/publications/robot_world.jpg"
+               alt="Robot-World & Hand-Eye Calibration"
+               decoding="async" width="900" height="600">
           <div class="hover-video">
-            <video width="100%" height="100%" muted autoplay loop playsinline>
+            <video muted autoplay loop playsinline preload="none">
               <source src="assets/videos/publications/pub6.mp4" type="video/mp4">
             </video>
           </div>
         </div>
       </td>
-      <td class="pub-meta" style="padding:2px; width:100%;">
-        <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener noreferrer">
+      <td class="pub-meta">
+        <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener">
           <span class="papertitle">A Certifiably Correct Algorithm for Generalized Robot-World and Hand-Eye Calibration</span>
         </a><br>
         E. Wise, P. Kaveti, <b>Q. Cheng</b>, W. Wang, H. Singh, J. Kelly, D. M. Rosen, and M. Giamou<br>
         <em>IJRR (Under review)</em>, 2025<br>
-        <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener noreferrer">arXiv</a>
+        <div class="pub-links">
+          <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener">arXiv</a>
+        </div>
         <p class="pub-desc">
-          Introduces a certifiably correct calibration algorithm ensuring globally optimal robot-world and hand-eye alignment under general conditions.
+          Certifiably correct calibration achieving globally optimal robot-world and hand-eye alignment under general conditions.
         </p>
       </td>
     </tr>
@@ -1357,7 +1363,7 @@ document.addEventListener('DOMContentLoaded', function () {
           <img src="assets/images/projects/iris/iris_real_life.jpg" alt="IRIS cinema robot arm" loading="lazy">
           <div class="hover-video">
             <video muted autoplay loop playsinline>
-              <source src="assets/videos/projects/iris.mp4" type="video/mp4">
+              <source src="assets/videos/iris_moving_compressed.mp4" type="video/mp4">
             </video>
           </div>
         </div>
