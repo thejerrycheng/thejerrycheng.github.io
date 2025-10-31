@@ -1107,40 +1107,41 @@
   }
 </style>
 
+<!-- JS: wait for DOM, set the right attributes, and play/pause on hover/focus -->
 <script>
-  // Auto-configure project hover videos: muted, loop, inline, play on hover/focus, pause on leave
-  (function () {
-    const thumbs = document.querySelectorAll('#projects .proj-thumb');
-    thumbs.forEach((thumb) => {
-      const video = thumb.querySelector('.hover-video video');
-      if (!video) return;
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('#projects .proj-thumb').forEach((thumb) => {
+    const vid = thumb.querySelector('.hover-video video');
+    if (!vid) return;
 
-      // Ensure correct attributes for autoplay without controls
-      video.muted = true;
-      video.loop = true;
-      video.playsInline = true;         // iOS inline playback
-      video.autoplay = true;            // allow immediate play
-      video.setAttribute('preload', 'metadata');
-      video.removeAttribute('controls');
+    // Ensure autoplay policies are satisfied
+    vid.muted = true;
+    vid.loop = true;
+    vid.playsInline = true;
+    vid.setAttribute('muted', '');                 // Safari quirk
+    vid.setAttribute('webkit-playsinline', '');    // iOS Safari
+    vid.removeAttribute('controls');
+    vid.preload = 'metadata';
 
-      // Start paused; play only while hovered/focused
-      try { video.pause(); } catch (e) {}
+    // Prime autoplay permission (silent play, then pause)
+    vid.play().then(() => vid.pause()).catch(() => {});
 
-      const play = () => { video.play().catch(() => {}); };
-      const pause = () => { try { video.pause(); } catch (e) {} };
+    const play  = () => { try { vid.currentTime = 0; vid.play(); } catch(e){} };
+    const pause = () => { try { vid.pause(); } catch(e){} };
 
-      // Mouse / keyboard accessibility
-      thumb.addEventListener('mouseenter', play);
-      thumb.addEventListener('mouseleave', pause);
-      thumb.addEventListener('focusin', play);
-      thumb.addEventListener('focusout', pause);
+    // Mouse + keyboard
+    thumb.addEventListener('mouseenter', play);
+    thumb.addEventListener('mouseleave', pause);
+    thumb.addEventListener('focusin', play);
+    thumb.addEventListener('focusout', pause);
 
-      // Touch fallback (tap starts; next tap elsewhere will blur/leave)
-      thumb.addEventListener('touchstart', play, { passive: true });
-      thumb.addEventListener('touchend', pause,   { passive: true });
-    });
-  })();
+    // Touch fallback (tap to play while finger is down)
+    thumb.addEventListener('touchstart', play,  { passive: true });
+    thumb.addEventListener('touchend',   pause, { passive: true });
+  });
+});
 </script>
+
 
 
 <table id="projects" class="projects-table">
@@ -1303,8 +1304,8 @@
       <td class="thumb-td">
         <div class="proj-thumb">
           <img src="assets/images/projects/led_cube/cover.jpg" alt="8x8x8 LED cube" loading="lazy">
-          <div class="hover-video">
-            <video muted autoplay loop playsinline>
+          <div class="hover-video" aria-hidden="true">
+            <video muted playsinline webkit-playsinline loop preload="metadata">
               <source src="assets/videos/led_cube.mp4" type="video/mp4">
             </video>
           </div>
@@ -1317,6 +1318,7 @@
         <p class="proj-desc"></p>
       </td>
     </tr>
+
 
     <!-- Project: CNC Plotting Machine -->
     <tr class="proj-row" data-proj="cnc-plotter">
