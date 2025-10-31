@@ -899,91 +899,92 @@
     </script>
 
 <!-- ======= Projects Section (aligned with Publications) ======= -->
+<!-- ======= Projects Section (aligned with Publications) ======= -->
 <style>
-  /* ================= Projects (cleaned + links support) ================= */
+  /* ================= Projects (uniform media height + links) ================= */
+
+  /* Shared heights (tweak as you like) */
+  :root{
+    --proj-thumb-h-desktop: 220px;
+    --proj-thumb-h-mobile: 180px;
+  }
 
   /* Container matches other sections */
-  #projects.projects-table {
-    width: 100%;
-    max-width: 800px;
-    margin: auto;
-    border-spacing: 0 10px;
-    border-collapse: separate;
+  #projects.projects-table{
+    width:100%;
+    max-width:800px;
+    margin:auto;
+    border-spacing:0 10px;
+    border-collapse:separate;
   }
-  #projects .proj-row td { vertical-align: middle; }
+  #projects .proj-row td{ vertical-align:middle; }
 
-  /* Consistent two-column layout (wider image column) */
-  #projects .thumb-td { padding: 5px; width: 45%; text-align: center; }
-  #projects .info-td  { padding: 2px; width: 55%; }
+  /* Two-column layout */
+  #projects .thumb-td{ padding:5px; width:45%; text-align:center; }
+  #projects .info-td { padding:2px;  width:55%; }
 
-  /* Thumbnail + hover video */
-  #projects .proj-thumb {
-    position: relative;
-    width: 100%;
-    max-width: none;               /* let it fill the thumb column */
-    margin: 0 auto;
-    border-radius: 6px;
-    overflow: hidden;
+  /* Thumbnail box with fixed height = uniform across rows */
+  #projects .proj-thumb{
+    position:relative;
+    width:100%;
+    height:var(--proj-thumb-h-desktop);   /* << uniform height */
+    margin:0 auto;
+    border-radius:6px;
+    overflow:hidden;                      /* hide stray bars if any */
+    background:#f6f6f6;                   /* subtle backdrop for letterboxing */
+    display:flex;                          /* centers non-overlay content */
+    align-items:center;
+    justify-content:center;
   }
-  #projects .proj-thumb img {
-    width: 100%;
-    height: auto;                  /* no crop */
-    display: block;
-  }
-  #projects .proj-thumb video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;             /* fill box on hover */
-    display: block;
-  }
-  #projects .hover-video {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity .25s ease;
-    border-radius: 6px;
-    pointer-events: none;
-  }
-  #projects .proj-row:hover .hover-video { opacity: 1; }
 
-  /* Typography aligned with publications */
-  #projects .papertitle { font-weight: 600; }
-  #projects .proj-year  { float: right; color: #666; font-size: 13px; margin-left: 8px; }
-  #projects .proj-desc  { margin-top: 6px; font-size: 14px; line-height: 1.4em; }
+  /* Media fit: no cropping, preserve aspect ratio */
+  #projects .proj-thumb img,
+  #projects .proj-thumb video{
+    width:100%;
+    height:100%;
+    object-fit:contain;                   /* << key: same height, no crop */
+    display:block;
+  }
+
+  /* Hover video overlay (same box, same height) */
+  #projects .hover-video{
+    position:absolute; inset:0;
+    opacity:0; transition:opacity .25s ease;
+    border-radius:6px; pointer-events:none;
+  }
+  #projects .proj-row:hover .hover-video{ opacity:1; }
+
+  /* Typography */
+  #projects .papertitle{ font-weight:600; }
+  #projects .proj-year { float:right; color:#666; font-size:13px; margin-left:8px; }
+  #projects .proj-desc { margin-top:6px; font-size:14px; line-height:1.4em; }
 
   /* Link pills for PDF/YouTube/etc. */
-  #projects .proj-links {
-    margin-top: 8px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+  #projects .proj-links{
+    margin-top:8px; display:flex; flex-wrap:wrap; gap:8px;
   }
   #projects .proj-links a{
-    display: inline-block;
-    font-size: 13px;
-    line-height: 1;
-    padding: 6px 10px;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 9999px;
-    text-decoration: none;
-    color: #222;
-    transition: background-color .15s ease, border-color .15s ease;
+    display:inline-block; font-size:13px; line-height:1;
+    padding:6px 10px; border:1px solid rgba(0,0,0,0.15);
+    border-radius:9999px; text-decoration:none; color:#222;
+    transition:background-color .15s ease, border-color .15s ease;
   }
   #projects .proj-links a:hover{
-    background: rgba(0,0,0,0.06);
-    border-color: rgba(0,0,0,0.25);
+    background:rgba(0,0,0,0.06); border-color:rgba(0,0,0,0.25);
   }
 
-  /* Mobile tweaks: keep two columns, slightly smaller fonts */
-  @media (max-width: 540px) {
-    #projects .thumb-td { width: 44%; }
-    #projects .info-td  { width: 56%; padding: 4px; }
-    #projects .papertitle { font-size: 16px; }
-    #projects .proj-year  { font-size: 12px; }
-    #projects .proj-desc  { font-size: 13px; }
-    #projects .proj-links a { font-size: 12px; padding: 6px 9px; }
+  /* Mobile: keep two columns, slightly shorter uniform height + smaller text */
+  @media (max-width:540px){
+    #projects .thumb-td{ width:44%; }
+    #projects .info-td { width:56%; padding:4px; }
+    #projects .proj-thumb{ height:var(--proj-thumb-h-mobile); }  /* << uniform mobile height */
+    #projects .papertitle{ font-size:16px; }
+    #projects .proj-year { font-size:12px; }
+    #projects .proj-desc { font-size:13px; }
+    #projects .proj-links a{ font-size:12px; padding:6px 9px; }
   }
 </style>
+
 
 
 <table id="projects" class="projects-table">
@@ -1045,10 +1046,10 @@
     <tr class="proj-row" data-proj="vhc-biped">
       <td class="thumb-td">
         <div class="proj-thumb">
-          <img src="assets/images/projects/" alt="Biped VHC walking" loading="lazy">
+          <img src="assets/images/projects/biped_vhc/stair_walking.jpg" alt="Biped VHC walking" loading="lazy">
           <div class="hover-video">
             <video muted autoplay loop playsinline>
-              <source src="assets/videos/projects/vhc_biped.mp4" type="video/mp4">
+              <source src="assets/videos/walking_stairs.mp4" type="video/mp4">
             </video>
           </div>
         </div>
