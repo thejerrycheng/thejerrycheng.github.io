@@ -472,8 +472,7 @@
     .pub-desc{ font-size:13px; }
   }
 </style> -->
-
-<!-- ======= Publications (desktop 45/55; mobile stacks; robust on iOS) ======= -->
+<!-- ======= Publications (desktop 45/55; mobile full-width text) ======= -->
 <style>
   :root{
     --pub-thumb-h-desktop: 220px;
@@ -482,7 +481,7 @@
     --pubs-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
 
-  /* Container matches Projects width */
+  /* Container matches Projects width (desktop) */
   #publications.pubs-table{
     width:100%;
     max-width:800px;
@@ -516,7 +515,7 @@
     justify-content:center;
   }
 
-  /* Base media (image & video) – no crop */
+  /* Base media */
   #publications .pub-thumb img,
   #publications .pub-thumb video{
     width:100%;
@@ -535,8 +534,6 @@
     z-index:1;
     display:flex; align-items:center; justify-content:center;
   }
-
-  /* Enable hover/focus swap ONLY if .has-video is present */
   #publications .pub-thumb.has-video:hover .hover-video,
   #publications .pub-thumb.has-video:focus-within .hover-video{ opacity:1; }
   #publications .pub-thumb.has-video:hover img,
@@ -550,7 +547,7 @@
   #publications .pub-meta .papertitle{ font-weight:600; }
   #publications .pub-desc{ margin-top:6px; font-size:14px; line-height:1.4em; }
 
-  /* Link pills (PDF/Code/YouTube) */
+  /* Link pills */
   #publications .pub-links{
     margin-top:8px; display:flex; flex-wrap:wrap; gap:8px;
   }
@@ -564,59 +561,34 @@
     background:rgba(0,0,0,0.06); border-color:rgba(0,0,0,0.25);
   }
 
-  /* Mobile: stack media on top, sensible size */
-  @media (max-width:540px){
-    #publications{ border-spacing:0 8px; }
-    #publications .pub-row{ display:block; }
-    #publications .pub-row > td{
-      display:block; width:100% !important; padding:6px 0 !important;
-    }
-    #publications .pub-thumb{
-      width:min(92vw, var(--pub-max-w-mobile));
-      height:var(--pub-thumb-h-mobile);
-      margin:0 auto 8px;
-    }
-    #publications .pub-meta .papertitle{ font-size:16px; }
-    #publications .pub-desc{ font-size:13px; }
-  }
-</style>
-
-<style>
   /* --- Publications carousel inside .pub-thumb --- */
   #publications .pub-carousel {
     position: relative;
     width: 100%;
-    height: 100%;              /* match .pub-thumb height */
+    height: 100%;
     overflow: hidden;
     border-radius: 6px;
   }
-
   #publications .pub-carousel .carousel-track{
     display: flex;
     height: 100%;
     transition: transform .45s ease;
     will-change: transform;
   }
-
   #publications .pub-carousel .slide{
     position: relative;
     flex: 0 0 100%;
     height: 100%;
     display:flex; align-items:center; justify-content:center;
   }
-
-  /* Media in slide (preserve your no-crop contain) */
   #publications .pub-carousel .slide img,
   #publications .pub-carousel .slide video{
     width:100%; height:100%; object-fit:contain; display:block; border-radius:6px;
   }
-
-  /* Hover video overlay per slide (same behavior but scoped) */
   #publications .pub-carousel .slide .hover-video{
     position:absolute; inset:0; opacity:0; transition:opacity .2s ease;
     pointer-events:none; display:flex; align-items:center; justify-content:center; z-index:1;
   }
-  /* Only fade when this slide actually has a video */
   #publications .pub-carousel .slide.has-video:hover .hover-video,
   #publications .pub-carousel .slide.has-video:focus-within .hover-video{ opacity:1; }
   #publications .pub-carousel .slide.has-video:hover img,
@@ -634,26 +606,50 @@
   #publications .pub-carousel .nav-btn:disabled{ opacity:.5; cursor:default; }
   #publications .pub-carousel .nav-btn.prev{ left:8px; }
   #publications .pub-carousel .nav-btn.next{ right:8px; }
-
-  /* Hide arrows entirely if only one slide (set via JS) */
   #publications .pub-carousel.single .nav-btn{ display:none !important; }
 
-  /* Mobile keeps same height set by your .pub-thumb media query */
+  /* ===== Mobile: edge-to-edge text & media ===== */
   @media (max-width:540px){
+    /* Let the whole publications block span full viewport width */
+    #publications.pubs-table{
+      max-width:none;
+      width:100vw;
+      margin-left:calc(50% - 50vw);  /* bleed to edges while centered parent remains */
+      margin-right:calc(50% - 50vw);
+      border-spacing:0;              /* remove row gaps on mobile */
+      table-layout:auto;             /* free the table */
+    }
+
+    /* Stack rows; each cell becomes full-width block */
+    #publications .pub-row{ display:block; }
+    #publications .pub-row > td{
+      display:block;
+      width:100% !important;
+      padding:12px 16px !important;  /* comfy side padding for text */
+    }
+
+    /* Media still gets a fixed height but now uses full viewport width */
+    #publications .pub-thumb{
+      width:100%;
+      height:var(--pub-thumb-h-mobile);
+      margin:0;
+      border-radius:0;               /* optional: flush media to edges; comment out to keep radius */
+    }
+
+    /* Tweak typography slightly for smaller screens */
+    #publications .pub-meta .papertitle{ font-size:16.5px; }
+    #publications .pub-desc{ font-size:13.5px; }
+
+    /* Keep carousel arrows centered relative to the mobile media box */
     #publications .pub-carousel .nav-btn{ top:50%; transform:translateY(-50%); }
   }
 
-  
-</style>
-
-<style>
-  /* Mark the visible slide */
-  #publications .pub-carousel .slide.active { /* hook for styling if ever needed */ }
-
-  /* On hover, if the active slide has a video: show video, hide image */
+  /* Optional hook (unused but safe) */
+  #publications .pub-carousel .slide.active{}
   #publications .pub-carousel:hover .slide.active.has-video .hover-video{ opacity:1; }
   #publications .pub-carousel:hover .slide.active.has-video img{ opacity:0; }
 </style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   /* ---------- A) Carousels ---------- */
@@ -1592,11 +1588,11 @@ document.addEventListener('DOMContentLoaded', function () {
       <td class="thumb-td">
         <div class="proj-thumb">
           <img src="assets/images/publications/mono_dep_pipeline.png" alt="Monocular Depth Estimation results" loading="lazy">
-          <div class="hover-video">
+          <!-- <div class="hover-video">
             <video muted autoplay loop playsinline>
               <source src="assets/videos/walking_stairs.mp4" type="video/mp4">
             </video>
-          </div>
+          </div> -->
         </div>
       </td>
       <td class="info-td">
@@ -1627,11 +1623,92 @@ document.addEventListener('DOMContentLoaded', function () {
       </td>
       <td class="info-td">
         <span class="papertitle">Geometric Nonlinear Control for Biped Walking</span>
-        <span class="proj-year">2023–2024</span><br>
+        <span class="proj-year">2024</span><br>
         Virtual Holonomic Constraints with polynomial gait design, feedback linearization, and terrain generalization to slopes and stairs.
         <p class="proj-desc"></p>
       </td>
     </tr>
+
+    <!-- Project: Aerospace Localization -->
+    <tr class="proj-row" data-proj="aero-localization">
+      <td class="thumb-td">
+        <div class="proj-thumb">
+          <img src="assets/images/projects/localization_barfoot/localization.jpg" alt="Aerospace localization" loading="lazy">
+          <div class="hover-video">
+            <video muted autoplay loop playsinline>
+              <source src="assets/videos/lost_in_the_woods_animation_best_result_new-2.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td class="info-td">
+        <span class="papertitle">Localization for Aerospace Vehicles (IMU + Stereo)</span>
+        <span class="proj-year">2023</span><br>
+        Batch Gauss-Newton fusion with EKF; compared batch vs sliding-window estimators for trajectory accuracy.
+        <p class="proj-desc"></p>
+      </td>
+    </tr>
+
+      <!-- Project: Mobile Robot Mechatronics -->
+    <tr class="proj-row" data-proj="mobile-robot">
+      <td class="thumb-td">
+        <div class="proj-thumb">
+          <img src="assets/images/projects/arduino/robot.jpg" alt="Mobile robot mechatronics design" loading="lazy">
+          <div class="hover-video">
+            <video muted autoplay loop playsinline>
+              <source src="assets/videos/arduino_mobile_robot.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td class="info-td">
+        <span class="papertitle">Mobile Robot Mechatronics Design Project</span>
+        <span class="proj-year">2023</span><br>
+        <em>MATLAB, SolidWorks</em> — Designed a 3D-printed Arduino-based mobile robot in Fusion 360; implemented localization and obstacle-avoidance for maze navigation in MATLAB; commanded the robot via Bluetooth.
+        <p class="proj-desc"></p>
+      </td>
+    </tr>
+
+    <!-- Project: 8×8×8 LED Cube -->
+    <tr class="proj-row" data-proj="led-cube">
+      <td class="thumb-td">
+        <div class="proj-thumb">
+          <img src="assets/images/projects/led_cube/cover.jpg" alt="8x8x8 LED cube" loading="lazy">
+          <div class="hover-video" aria-hidden="true">
+            <video muted playsinline webkit-playsinline loop preload="metadata">
+              <source src="assets/videos/led_cube.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td class="info-td">
+        <span class="papertitle">8×8×8 LED Cube Embedded System</span>
+        <span class="proj-year">2022</span><br>
+        ESP32-based driver with SPI multiplexing; API control; interactive 3D Snake and Pong demos.
+        <p class="proj-desc"></p>
+      </td>
+    </tr>
+
+    <!-- Project: Turtlebot2 SLAM -->
+    <tr class="proj-row" data-proj="turtlebot2">
+      <td class="thumb-td">
+        <div class="proj-thumb">
+          <img src="assets/images/projects/turtlebot_mapping.jpeg" alt="Turtlebot2 SLAM & navigation" loading="lazy">
+          <div class="hover-video">
+            <video muted autoplay loop playsinline>
+              <source src="assets/videos/turtlebot_localization.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td class="info-td">
+        <span class="papertitle">Turtlebot2 SLAM, Navigation & Perception</span>
+        <span class="proj-year">2022</span><br>
+        Gmapping, frontier exploration, PID control; OpenCV perception and a CNN for 7-class emotion recognition.
+        <p class="proj-desc"></p>
+      </td>
+    </tr>
+
 
     <!-- Project: Unicycle Robot -->
     <!-- <tr class="proj-row" data-proj="unicycle">
@@ -1653,85 +1730,6 @@ document.addEventListener('DOMContentLoaded', function () {
       </td>
     </tr> -->
 
-    <!-- Project: Aerospace Localization -->
-    <tr class="proj-row" data-proj="aero-localization">
-      <td class="thumb-td">
-        <div class="proj-thumb">
-          <img src="assets/images/projects/localization_barfoot/localization.jpg" alt="Aerospace localization" loading="lazy">
-          <div class="hover-video">
-            <video muted autoplay loop playsinline>
-              <source src="assets/videos/lost_in_the_woods_animation_best_result_new-2.mp4" type="video/mp4">
-            </video>
-          </div>
-        </div>
-      </td>
-      <td class="info-td">
-        <span class="papertitle">Localization for Aerospace Vehicles (IMU + Stereo)</span>
-        <span class="proj-year">2020–2021</span><br>
-        Batch Gauss-Newton fusion with EKF; compared batch vs sliding-window estimators for trajectory accuracy.
-        <p class="proj-desc"></p>
-      </td>
-    </tr>
-
-    <!-- Project: Turtlebot2 SLAM -->
-    <tr class="proj-row" data-proj="turtlebot2">
-      <td class="thumb-td">
-        <div class="proj-thumb">
-          <img src="assets/images/projects/turtlebot_mapping.jpeg" alt="Turtlebot2 SLAM & navigation" loading="lazy">
-          <div class="hover-video">
-            <video muted autoplay loop playsinline>
-              <source src="assets/videos/turtlebot_localization.mp4" type="video/mp4">
-            </video>
-          </div>
-        </div>
-      </td>
-      <td class="info-td">
-        <span class="papertitle">Turtlebot2 SLAM, Navigation & Perception</span>
-        <span class="proj-year">2019–2020</span><br>
-        Gmapping, frontier exploration, PID control; OpenCV perception and a CNN for 7-class emotion recognition.
-        <p class="proj-desc"></p>
-      </td>
-    </tr>
-
-    <!-- Project: Mobile Robot Mechatronics -->
-    <tr class="proj-row" data-proj="mobile-robot">
-      <td class="thumb-td">
-        <div class="proj-thumb">
-          <img src="assets/images/projects/arduino/robot.jpg" alt="Mobile robot mechatronics design" loading="lazy">
-          <div class="hover-video">
-            <video muted autoplay loop playsinline>
-              <source src="assets/videos/arduino_mobile_robot.mp4" type="video/mp4">
-            </video>
-          </div>
-        </div>
-      </td>
-      <td class="info-td">
-        <span class="papertitle">Mobile Robot Mechatronics Design Project</span>
-        <span class="proj-year">2019</span><br>
-        <em>MATLAB, SolidWorks</em> — Designed a 3D-printed Arduino-based mobile robot in Fusion 360; implemented localization and obstacle-avoidance for maze navigation in MATLAB; commanded the robot via Bluetooth.
-        <p class="proj-desc"></p>
-      </td>
-    </tr>
-
-    <!-- Project: 8×8×8 LED Cube -->
-    <tr class="proj-row" data-proj="led-cube">
-      <td class="thumb-td">
-        <div class="proj-thumb">
-          <img src="assets/images/projects/led_cube/cover.jpg" alt="8x8x8 LED cube" loading="lazy">
-          <div class="hover-video" aria-hidden="true">
-            <video muted playsinline webkit-playsinline loop preload="metadata">
-              <source src="assets/videos/led_cube.mp4" type="video/mp4">
-            </video>
-          </div>
-        </div>
-      </td>
-      <td class="info-td">
-        <span class="papertitle">8×8×8 LED Cube Embedded System</span>
-        <span class="proj-year">2018–2019</span><br>
-        ESP32-based driver with SPI multiplexing; API control; interactive 3D Snake and Pong demos.
-        <p class="proj-desc"></p>
-      </td>
-    </tr>
 
 
     <!-- Project: CNC Plotting Machine
@@ -1768,7 +1766,7 @@ document.addEventListener('DOMContentLoaded', function () {
       </td>
       <td class="info-td">
         <span class="papertitle">Electric Formula Racing Car Drive-train</span>
-        <span class="proj-year">2018–2019</span><br>
+        <span class="proj-year">2022</span><br>
         Planetary gearbox quadrupling torque at &gt;90% efficiency; kinematics, stress, thermal, and vibration analyses.
         <p class="proj-desc"></p>
       </td>
