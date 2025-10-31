@@ -474,46 +474,41 @@
 </style> -->
 
 <!-- ======= Publications (desktop 45/55; mobile stacks; robust on iOS) ======= -->
-<!-- ======= Publications (desktop 45/55; mobile stacks; robust on iOS) ======= -->
+<!-- ======= Publications (hover-to-play like Projects) ======= -->
 <style>
   :root{
+    --pub-thumb-h-desktop: 220px;
+    --pub-thumb-h-mobile: 180px;
+    --pub-max-w-mobile: 420px;
     --pubs-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --pub-thumb-h: 220px;          /* desktop fixed box height */
-    --pub-thumb-h-sm: 180px;       /* mobile box height */
-    --pub-thumb-max-w-sm: 420px;   /* mobile max width for media */
   }
 
-  .pubs-table,
-  .pubs-table td,
-  .pubs-table h2,
-  .pub-meta,
-  .pub-meta a,
-  .pub-desc{
-    font-family: var(--pubs-font);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Match Projects width */
-  .pubs-table{
+  /* Container matches Projects width */
+  #publications.pubs-table{
     width:100%;
     max-width:800px;
     margin:auto;
     border-spacing:0 10px;
     border-collapse:separate;
-    table-layout: fixed;          /* more predictable column behavior */
+    table-layout:fixed;
   }
-  .pub-row td{ vertical-align:middle; }
+  #publications .pub-row td{ vertical-align:middle; }
+  #publications, #publications td, #publications h2, #publications .pub-meta,
+  #publications .pub-meta a, #publications .pub-desc{
+    font-family:var(--pubs-font);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
 
-  /* Desktop two columns = 45/55 split */
-  .pub-row > td:first-child{ width:45% !important; padding:6px 8px; text-align:center; }
-  .pub-row > td:last-child { width:55% !important; padding:4px 0; }
+  /* Desktop 45/55 split */
+  #publications .pub-row > td:first-child{ width:45% !important; padding:6px 8px; text-align:center; }
+  #publications .pub-row > td:last-child { width:55% !important; padding:4px 0; }
 
-  /* No-crop media box */
-  .pub-thumb{
+  /* Media box (uniform height) */
+  #publications .pub-thumb{
     position:relative;
     width:100%;
-    height:var(--pub-thumb-h);
+    height:var(--pub-thumb-h-desktop);
     margin:0 auto;
     border-radius:6px;
     overflow:hidden;
@@ -522,36 +517,36 @@
     justify-content:center;
   }
 
-  /* Images/videos fit without cropping */
-  .pub-thumb img,
-  .pub-thumb video{
-    max-width:100%;
-    max-height:100%;
-    width:auto;
-    height:auto;
+  /* Base media (image & video) – no crop */
+  #publications .pub-thumb img,
+  #publications .pub-thumb video{
+    width:100%;
+    height:100%;
+    object-fit:contain;
     display:block;
     border-radius:6px;
   }
 
-  /* Hover video layer on desktop only */
-  .pub-thumb .hover-video{
+  /* Hover behavior: fade img out, video in */
+  #publications .pub-thumb img{ transition:opacity .2s ease; }
+  #publications .hover-video{
     position:absolute; inset:0;
-    opacity:0; transition:opacity .25s ease;
+    opacity:0; transition:opacity .2s ease;
+    border-radius:6px; pointer-events:none;
+    z-index:1;
     display:flex; align-items:center; justify-content:center;
-    pointer-events:none; border-radius:6px;
   }
-  .pub-row:hover .hover-video{ opacity:1; }
+  #publications .pub-row:hover .hover-video,
+  #publications .pub-row:focus-within .hover-video{ opacity:1; }
+  #publications .pub-row:hover .pub-thumb img,
+  #publications .pub-row:focus-within .pub-thumb img{ opacity:0; }
 
-  /* Disable hover layer entirely on touch devices (prevents iOS render issues) */
-  @media (hover:none) and (pointer:coarse){
-    .pub-thumb .hover-video{ display:none !important; }
-  }
+  /* Text */
+  #publications .pub-meta a{ text-decoration:none; }
+  #publications .pub-meta .papertitle{ font-weight:600; }
+  #publications .pub-desc{ margin-top:6px; font-size:14px; line-height:1.4em; }
 
-  .pub-meta a{ text-decoration:none; }
-  .pub-meta .papertitle{ font-weight:600; }
-  .pub-desc{ margin-top:6px; font-size:14px; line-height:1.4em; }
-
-  /* Link pills (PDF / Code / YouTube) */
+  /* Link pills (PDF/Code/YouTube) */
   #publications .pub-links{
     margin-top:8px; display:flex; flex-wrap:wrap; gap:8px;
   }
@@ -565,60 +560,57 @@
     background:rgba(0,0,0,0.06); border-color:rgba(0,0,0,0.25);
   }
 
-  /* ===== Mobile: image on top, then text; eager load, sensible size ===== */
+  /* Mobile: stack media on top, sensible size */
   @media (max-width:540px){
-    .pubs-table{ border-spacing:0 8px; }
-
-    /* stack within the same row without breaking table semantics in Safari */
-    .pub-row > td{ display:block; width:100% !important; padding:6px 0 !important; }
-
-    .pub-thumb{
-      width:min(92vw, var(--pub-thumb-max-w-sm));
-      height:var(--pub-thumb-h-sm);
+    #publications{ border-spacing:0 8px; }
+    #publications .pub-row{ display:block; }
+    #publications .pub-row > td{
+      display:block; width:100% !important; padding:6px 0 !important;
+    }
+    #publications .pub-thumb{
+      width:min(92vw, var(--pub-max-w-mobile));
+      height:var(--pub-thumb-h-mobile);
       margin:0 auto 8px;
     }
-
-    /* make text a touch smaller */
-    .pub-meta .papertitle{ font-size:16px; }
-    .pub-desc{ font-size:13px; }
-
-    /* hide hover video layer on mobile */
-    .pub-thumb .hover-video{ display:none !important; }
+    #publications .pub-meta .papertitle{ font-size:16px; }
+    #publications .pub-desc{ font-size:13px; }
   }
 </style>
 
-
 <script>
-  // Pre-warm and auto-play all hover videos so they are already running
-  // behind the image; the fade-in on hover is instant.
-  (function(){
-    const vids = document.querySelectorAll('#publications .hover-video video');
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('#publications .pub-thumb').forEach((thumb) => {
+    const vid = thumb.querySelector('.hover-video video');
+    if (!vid) return;
 
-    vids.forEach(v => {
-      // Ensure correct attrs regardless of HTML
-      v.muted = true;
-      v.loop = true;
-      v.playsInline = true;
-      v.setAttribute('preload', 'auto');
+    // Satisfy autoplay policies & iOS quirks
+    vid.muted = true;
+    vid.loop = true;
+    vid.playsInline = true;
+    vid.setAttribute('muted', '');
+    vid.setAttribute('webkit-playsinline', '');
+    vid.removeAttribute('controls');
+    vid.preload = 'metadata';
 
-      // Kickstart playback ASAP
-      const tryPlay = () => {
-        const p = v.play();
-        if (p && typeof p.catch === 'function') {
-          p.catch(()=>{ /* ignore autoplay restrictions (shouldn't happen when muted) */ });
-        }
-      };
+    // Prime autoplay permission (silent play, then pause)
+    vid.play().then(() => vid.pause()).catch(() => {});
 
-      if (v.readyState >= 2) { // HAVE_CURRENT_DATA
-        tryPlay();
-      } else {
-        v.addEventListener('loadeddata', tryPlay, { once:true });
-        // Fallback in case 'loadeddata' is delayed:
-        setTimeout(tryPlay, 100);
-      }
-    });
-  })();
+    const play  = () => { try { vid.currentTime = 0; vid.play(); } catch(e){} };
+    const pause = () => { try { vid.pause(); } catch(e){} };
+
+    // Mouse + keyboard focus
+    thumb.addEventListener('mouseenter', play);
+    thumb.addEventListener('mouseleave', pause);
+    thumb.addEventListener('focusin', play);
+    thumb.addEventListener('focusout', pause);
+
+    // Touch fallback: play while finger is down
+    thumb.addEventListener('touchstart', play,  { passive: true });
+    thumb.addEventListener('touchend',   pause, { passive: true });
+  });
+});
 </script>
+
 
 
 <table id="publications" class="pubs-table">
@@ -674,7 +666,7 @@
       </td>
       <td class="pub-meta">
         <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener">
-          <span class="papertitle">Design and Development of IRIS: An Intelligent Robotic Imaging System — A Low-Cost, 3D-Printed Cinema Robot Arm for Dynamic Shot Automation</span>
+          <span class="papertitle">Master's Thesis: Design and Development of IRIS: An Intelligent Robotic Imaging System — A Low-Cost, 3D-Printed Cinema Robot Arm for Dynamic Shot Automation</span>
         </a><br>
         <b>Q. Cheng</b>, M. Mackay, A. Bereyhi<br>
         <em>Master of Engineering Thesis, University of Toronto</em>, 2025<br>
@@ -776,11 +768,11 @@
       </td>
     </tr>
 
-    <!-- Radar-Camera Calibration -->
+    <!-- 2D Radar-radar Calibration -->
     <tr class="pub-row" data-pub="4">
       <td style="padding:16px; width:20%; text-align:center;">
         <div class="pub-thumb">
-          <img src="assets/images/publications/3d_radar_camera.jpg" alt="Radar Pair Calibration thumbnail" loading="lazy">
+          <img src="assets/images/publications/2d_radar_radar.jpg" alt="Radar Pair Calibration thumbnail" loading="lazy">
           <div class="hover-video">
             <video width="100%" height="100%" muted autoplay loop playsinline>
               <source src="assets/videos/publications/pub4.mp4" type="video/mp4">
@@ -795,7 +787,7 @@
         <b>Q. Cheng</b>, E. Wise, and J. Kelly<br>
         <em>IEEE AIM</em>, 2023<br>
         <div class="pub-links">
-          <a href="https://arxiv.org/abs/2211.01871" target="_blank" rel="noopener">arXiv</a>
+          <a href="https://arxiv.org/abs/2302.00660" target="_blank" rel="noopener">arXiv</a>
           <!-- <a href="https://github.com/..." target="_blank" rel="noopener">Code</a> -->
           <!-- <a href="https://youtube.com/..." target="_blank" rel="noopener">YouTube</a> -->
         </div>
@@ -805,11 +797,11 @@
       </td>
     </tr>
 
-    <!-- Radar–Radar Extrinsic -->
+    <!-- 3D Radar–camera Calibration -->
     <tr class="pub-row" data-pub="5">
       <td style="padding:16px; width:20%; text-align:center;">
         <div class="pub-thumb">
-          <img src="assets/images/publications/2d_radar_radar.jpg" alt="Radar-Camera Spatiotemporal Calibration thumbnail" loading="lazy">
+          <img src="assets/images/publications/3d_radar_camera.jpg" alt="Radar-Camera Spatiotemporal Calibration thumbnail" loading="lazy">
           <div class="hover-video">
             <video width="100%" height="100%" muted autoplay loop playsinline>
               <source src="assets/videos/publications/pub5.mp4" type="video/mp4">
