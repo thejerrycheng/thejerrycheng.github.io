@@ -192,11 +192,11 @@
       <tr>
       <td style="padding:2.5%;width:63%;vertical-align:middle">
       
-        <p class="name" style="text-align:center;font-size:25px;font-weight:bold;margin:0;">
+        <p class="name" style="text-align:center;font-size:30px;font-weight:bold;margin:0;">
           Jerry (Qilong) Cheng 「程启龙」
         </p>
 
-        <p style="font-size:15px;line-height:1.6;margin-top:10px;">
+        <p style="font-size:17px;line-height:1.6;margin-top:10px;">
           I am a <strong>Research Fellow</strong> at
           <a href="https://engineering.nyu.edu" target="_blank" rel="noopener">New York University</a>, working on humanoid locomotion using reinforcement learning.
           Previously, I worked in the
@@ -209,11 +209,11 @@
           <a href="https://www.bereyhi.com" target="_blank" rel="noopener"><strong>Prof. Ali Bereyhi</strong></a>.
         </p>
 
-        <p style="margin-top:16px;font-size:15px;line-height:1.6;">
-          <em><strong>Research Interests:</strong></em>
-          learning-based control and vision-driven policies for robots. I design
-          <strong>reinforcement learning</strong> methods for visual loco-manipulation in bipedal and manipulator systems,
-          with an emphasis on <strong>hardware-aware, perception-integrated intelligence</strong> for robust, adaptive real-world behavior.
+        <p style="margin-top:16px;font-size:20px;line-height:1.6;">
+          <strong>Research Interests:</strong>
+        </p>
+        <p style="margin-top:16px;font-size:17px;line-height:1.6;">
+          My research interests lie in developing unified policies that integrate <b>visual perception</b>, <b>loco-manipulation</b>, and <b>dexterous manipulation</b> for robotic systems. I am also a strong believer that <em>"Those who are truly serious about software should design their own hardware"</em>.
         </p>
 
 
@@ -425,7 +425,6 @@
     margin:0 auto;
     border-radius:6px;
     overflow:hidden;
-    background:#f6f6f6;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -786,6 +785,35 @@
         <td style="padding:8px;vertical-align:middle;width:65%;">
           <h2 style="margin-bottom:8px;">News</h2>
           <p style="font-size:15px;line-height:1.5em;">
+            <b>[11/2025]</b> Graduated with a Master's of Engineering degree at the University of Toronto.
+          </p>
+        </td>
+
+        <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
+          <div data-carousel style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;">
+            <div class="carousel-track" style="display:flex;transition:transform 0.5s ease;height:200px;">
+              <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
+                <img src="assets/images/news/master_convocation/grad.jpg" alt="Graduation" style="height:200px;width:auto;max-width:100%;display:block;">
+              </div>
+            </div>
+
+            <!-- <button onclick="carouselMove(this,-1)" aria-label="Previous image"
+              style="position:absolute;top:50%;left:5px;transform:translateY(-50%);
+                    background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;
+                    border-radius:4px;cursor:pointer;">&#10094;</button>
+            <button onclick="carouselMove(this,1)" aria-label="Next image"
+              style="position:absolute;top:50%;right:5px;transform:translateY(-50%);
+                    background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;
+                    border-radius:4px;cursor:pointer;">&#10095;</button> -->
+          </div>
+        </td>
+      </tr>
+  
+
+        <!-- Entry 1 -->
+      <tr>
+        <td style="padding:8px;vertical-align:middle;width:65%;">
+          <p style="font-size:15px;line-height:1.5em;">
             <b>[10/2025]</b> Attended <b>IROS 2025</b> in Hangzhou, China to present our paper <b>“AeroHaptix”</b>.
           </p>
         </td>
@@ -991,17 +1019,14 @@
     </script>
 
 <!-- ======= Projects Section (aligned with Publications) ======= -->
-<!-- ======= Projects Section (aligned with Publications) ======= -->
+<!-- ======= Projects: hover-to-play video (image hides), loop, no controls ======= -->
 <style>
-  /* ================= Projects (uniform media height + links) ================= */
-
-  /* Shared heights (tweak as you like) */
   :root{
     --proj-thumb-h-desktop: 220px;
     --proj-thumb-h-mobile: 180px;
   }
 
-  /* Container matches other sections */
+  /* Container */
   #projects.projects-table{
     width:100%;
     max-width:800px;
@@ -1015,45 +1040,51 @@
   #projects .thumb-td{ padding:5px; width:45%; text-align:center; }
   #projects .info-td { padding:2px;  width:55%; }
 
-  /* Thumbnail box with fixed height = uniform across rows */
+  /* Media box (uniform height across rows) */
   #projects .proj-thumb{
     position:relative;
     width:100%;
-    height:var(--proj-thumb-h-desktop);   /* << uniform height */
+    height:var(--proj-thumb-h-desktop);
     margin:0 auto;
     border-radius:6px;
-    overflow:hidden;                      /* hide stray bars if any */
-    display:flex;                          /* centers non-overlay content */
+    overflow:hidden;
+    display:flex;
     align-items:center;
     justify-content:center;
   }
 
-  /* Media fit: no cropping, preserve aspect ratio */
+  /* Base media */
   #projects .proj-thumb img,
   #projects .proj-thumb video{
     width:100%;
     height:100%;
-    object-fit:contain;                   /* << key: same height, no crop */
+    object-fit:contain;       /* no crop; shrink to fit */
     display:block;
+    border-radius:6px;
   }
 
-  /* Hover video overlay (same box, same height) */
+  /* Fade image out on hover/focus, fade video overlay in */
+  #projects .proj-thumb img{ transition:opacity .2s ease; }
   #projects .hover-video{
     position:absolute; inset:0;
-    opacity:0; transition:opacity .25s ease;
+    opacity:0; transition:opacity .2s ease;
     border-radius:6px; pointer-events:none;
+    z-index:1;                      /* ensure it sits above the img */
+    display:flex; align-items:center; justify-content:center;
   }
-  #projects .proj-row:hover .hover-video{ opacity:1; }
+  /* On row hover/focus-within: hide img, show video */
+  #projects .proj-row:hover .hover-video,
+  #projects .proj-row:focus-within .hover-video{ opacity:1; }
+  #projects .proj-row:hover .proj-thumb img,
+  #projects .proj-row:focus-within .proj-thumb img{ opacity:0; }
 
   /* Typography */
   #projects .papertitle{ font-weight:600; }
   #projects .proj-year { float:right; color:#666; font-size:13px; margin-left:8px; }
   #projects .proj-desc { margin-top:6px; font-size:14px; line-height:1.4em; }
 
-  /* Link pills for PDF/YouTube/etc. */
-  #projects .proj-links{
-    margin-top:8px; display:flex; flex-wrap:wrap; gap:8px;
-  }
+  /* Link pills */
+  #projects .proj-links{ margin-top:8px; display:flex; flex-wrap:wrap; gap:8px; }
   #projects .proj-links a{
     display:inline-block; font-size:13px; line-height:1;
     padding:6px 10px; border:1px solid rgba(0,0,0,0.15);
@@ -1064,11 +1095,11 @@
     background:rgba(0,0,0,0.06); border-color:rgba(0,0,0,0.25);
   }
 
-  /* Mobile: keep two columns, slightly shorter uniform height + smaller text */
+  /* Mobile: slightly shorter media box + smaller text, keep two columns */
   @media (max-width:540px){
     #projects .thumb-td{ width:44%; }
     #projects .info-td { width:56%; padding:4px; }
-    #projects .proj-thumb{ height:var(--proj-thumb-h-mobile); }  /* << uniform mobile height */
+    #projects .proj-thumb{ height:var(--proj-thumb-h-mobile); }
     #projects .papertitle{ font-size:16px; }
     #projects .proj-year { font-size:12px; }
     #projects .proj-desc { font-size:13px; }
@@ -1076,6 +1107,40 @@
   }
 </style>
 
+<script>
+  // Auto-configure project hover videos: muted, loop, inline, play on hover/focus, pause on leave
+  (function () {
+    const thumbs = document.querySelectorAll('#projects .proj-thumb');
+    thumbs.forEach((thumb) => {
+      const video = thumb.querySelector('.hover-video video');
+      if (!video) return;
+
+      // Ensure correct attributes for autoplay without controls
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;         // iOS inline playback
+      video.autoplay = true;            // allow immediate play
+      video.setAttribute('preload', 'metadata');
+      video.removeAttribute('controls');
+
+      // Start paused; play only while hovered/focused
+      try { video.pause(); } catch (e) {}
+
+      const play = () => { video.play().catch(() => {}); };
+      const pause = () => { try { video.pause(); } catch (e) {} };
+
+      // Mouse / keyboard accessibility
+      thumb.addEventListener('mouseenter', play);
+      thumb.addEventListener('mouseleave', pause);
+      thumb.addEventListener('focusin', play);
+      thumb.addEventListener('focusout', pause);
+
+      // Touch fallback (tap starts; next tap elsewhere will blur/leave)
+      thumb.addEventListener('touchstart', play, { passive: true });
+      thumb.addEventListener('touchend', pause,   { passive: true });
+    });
+  })();
+</script>
 
 
 <table id="projects" class="projects-table">
@@ -1237,10 +1302,10 @@
     <tr class="proj-row" data-proj="led-cube">
       <td class="thumb-td">
         <div class="proj-thumb">
-          <img src="assets/images/projects/led_cube.jpg" alt="8x8x8 LED cube" loading="lazy">
+          <img src="assets/images/projects/led_cube/cover.jpg" alt="8x8x8 LED cube" loading="lazy">
           <div class="hover-video">
             <video muted autoplay loop playsinline>
-              <source src="assets/videos/projects/led_cube.mp4" type="video/mp4">
+              <source src="assets/videos/led_cube.mp4" type="video/mp4">
             </video>
           </div>
         </div>
