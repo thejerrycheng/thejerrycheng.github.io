@@ -287,7 +287,7 @@
 
 
 <!-- ======= Publications Section ======= -->
-<style>
+<!-- <style>
   :root {
     --pubs-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
     --pub-thumb-h: 168px;     /* desktop thumbnail box height */
@@ -379,6 +379,98 @@
     }
     .pub-meta .papertitle { font-size: 16px; }
     .pub-desc { font-size: 13px; }
+  }
+</style> -->
+
+<!-- ======= Publications: mobile stacks image on top, sized appropriately ======= -->
+<style>
+  :root{
+    --pubs-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --pub-thumb-h: 220px;                 /* desktop box height */
+    --pub-thumb-h-sm-min: 140px;          /* mobile min height */
+    --pub-thumb-h-sm-max: 200px;          /* mobile max height */
+  }
+
+  .pubs-table,
+  .pubs-table td,
+  .pubs-table h2,
+  .pub-meta,
+  .pub-meta a,
+  .pub-desc{
+    font-family: var(--pubs-font);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Match Projects container width */
+  .pubs-table{
+    width:100%;
+    max-width:800px;
+    margin:auto;
+    border-spacing:0 10px;
+    border-collapse:separate;
+  }
+  .pub-row td{ vertical-align:middle; }
+
+  /* Same 45/55 split as Projects on desktop */
+  .pub-row > td:first-child{ width:45% !important; padding:6px 8px; text-align:center; }
+  .pub-row > td:last-child { width:55% !important; padding:4px 0; }
+
+  /* Uniform no-crop media box */
+  .pub-thumb{
+    position:relative;
+    width:100%;
+    max-width:none;
+    height:var(--pub-thumb-h);
+    margin:0 auto;
+    border-radius:6px;
+    overflow:hidden;
+    background:#f6f6f6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .pub-thumb img,
+  .pub-thumb .hover-video video{
+    width:100%;
+    height:100%;
+    object-fit:contain;    /* shrink to fit, no cropping */
+    display:block;
+    border-radius:6px;
+  }
+  .pub-thumb .hover-video{
+    position:absolute; inset:0;
+    opacity:0; transition:opacity .25s ease;
+    pointer-events:none; border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .pub-row:hover .hover-video{ opacity:1; }
+
+  .pub-meta a{ text-decoration:none; }
+  .pub-meta .papertitle{ font-weight:600; }
+  .pub-desc{ margin-top:6px; font-size:14px; line-height:1.4em; }
+
+  /* ===== Mobile: stack image (top) then text (bottom); keep image “not too big” ===== */
+  @media (max-width:540px){
+    /* Stack each publication vertically */
+    .pubs-table .pub-row{ display:block; }
+    .pubs-table .pub-row > td{
+      display:block;
+      width:100% !important;
+      padding:6px 0 !important;
+    }
+
+    /* Resize the media box to a sensible mobile size */
+    .pubs-table .pub-thumb{
+      /* limit width so it doesn't dominate; center it */
+      width:min(92vw, 420px);
+      height:clamp(var(--pub-thumb-h-sm-min), 42vw, var(--pub-thumb-h-sm-max));
+      margin:0 auto 8px;
+    }
+
+    /* Slightly smaller text on mobile */
+    .pub-meta .papertitle{ font-size:16px; }
+    .pub-desc{ font-size:13px; }
   }
 </style>
 
@@ -931,7 +1023,6 @@
     margin:0 auto;
     border-radius:6px;
     overflow:hidden;                      /* hide stray bars if any */
-    background:#f6f6f6;                   /* subtle backdrop for letterboxing */
     display:flex;                          /* centers non-overlay content */
     align-items:center;
     justify-content:center;
