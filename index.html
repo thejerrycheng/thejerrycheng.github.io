@@ -474,7 +474,6 @@
 </style> -->
 
 <!-- ======= Publications (desktop 45/55; mobile stacks; robust on iOS) ======= -->
-<!-- ======= Publications (hover-to-play like Projects) ======= -->
 <style>
   :root{
     --pub-thumb-h-desktop: 220px;
@@ -527,19 +526,24 @@
     border-radius:6px;
   }
 
-  /* Hover behavior: fade img out, video in */
+  /* Hover behavior: only when a video exists */
   #publications .pub-thumb img{ transition:opacity .2s ease; }
-  #publications .hover-video{
+  #publications .pub-thumb .hover-video{
     position:absolute; inset:0;
     opacity:0; transition:opacity .2s ease;
     border-radius:6px; pointer-events:none;
     z-index:1;
     display:flex; align-items:center; justify-content:center;
   }
-  #publications .pub-row:hover .hover-video,
-  #publications .pub-row:focus-within .hover-video{ opacity:1; }
-  #publications .pub-row:hover .pub-thumb img,
-  #publications .pub-row:focus-within .pub-thumb img{ opacity:0; }
+
+  /* Enable hover/focus swap ONLY if .has-video is present */
+  #publications .pub-thumb.has-video:hover .hover-video,
+  #publications .pub-thumb.has-video:focus-within .hover-video{ opacity:1; }
+  #publications .pub-thumb.has-video:hover img,
+  #publications .pub-thumb.has-video:focus-within img{ opacity:0; }
+
+  /* If no video, ensure overlay never shows */
+  #publications .pub-thumb:not(.has-video) .hover-video{ display:none !important; }
 
   /* Text */
   #publications .pub-meta a{ text-decoration:none; }
@@ -577,28 +581,195 @@
   }
 </style>
 
+<style>
+  /* --- Publications carousel inside .pub-thumb --- */
+  #publications .pub-carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;              /* match .pub-thumb height */
+    overflow: hidden;
+    border-radius: 6px;
+  }
+
+  #publications .pub-carousel .carousel-track{
+    display: flex;
+    height: 100%;
+    transition: transform .45s ease;
+    will-change: transform;
+  }
+
+  #publications .pub-carousel .slide{
+    position: relative;
+    flex: 0 0 100%;
+    height: 100%;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* Media in slide (preserve your no-crop contain) */
+  #publications .pub-carousel .slide img,
+  #publications .pub-carousel .slide video{
+    width:100%; height:100%; object-fit:contain; display:block; border-radius:6px;
+  }
+
+  /* Hover video overlay per slide (same behavior but scoped) */
+  #publications .pub-carousel .slide .hover-video{
+    position:absolute; inset:0; opacity:0; transition:opacity .2s ease;
+    pointer-events:none; display:flex; align-items:center; justify-content:center; z-index:1;
+  }
+  /* Only fade when this slide actually has a video */
+  #publications .pub-carousel .slide.has-video:hover .hover-video,
+  #publications .pub-carousel .slide.has-video:focus-within .hover-video{ opacity:1; }
+  #publications .pub-carousel .slide.has-video:hover img,
+  #publications .pub-carousel .slide.has-video:focus-within img{ opacity:0; transition:opacity .2s ease; }
+
+  /* Arrows */
+  #publications .pub-carousel .nav-btn{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:34px; height:34px; border-radius:9999px; border:1px solid rgba(0,0,0,.2);
+    background:rgba(255,255,255,.85); backdrop-filter:saturate(1.8) blur(2px);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    font-size:20px; line-height:1; padding:0; user-select:none;
+  }
+  #publications .pub-carousel .nav-btn:hover{ background:#fff; }
+  #publications .pub-carousel .nav-btn:disabled{ opacity:.5; cursor:default; }
+  #publications .pub-carousel .nav-btn.prev{ left:8px; }
+  #publications .pub-carousel .nav-btn.next{ right:8px; }
+
+  /* Hide arrows entirely if only one slide (set via JS) */
+  #publications .pub-carousel.single .nav-btn{ display:none !important; }
+
+  /* Mobile keeps same height set by your .pub-thumb media query */
+  @media (max-width:540px){
+    #publications .pub-carousel .nav-btn{ top:50%; transform:translateY(-50%); }
+  }
+
+  
+</style>
+
+<style>
+  /* Mark the visible slide */
+  #publications .pub-carousel .slide.active { /* hook for styling if ever needed */ }
+
+  /* On hover, if the active slide has a video: show video, hide image */
+  #publications .pub-carousel:hover .slide.active.has-video .hover-video{ opacity:1; }
+  #publications .pub-carousel:hover .slide.active.has-video img{ opacity:0; }
+</style>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('#publications .pub-thumb').forEach((thumb) => {
+  /* ---------- A) Carousels ---------- */
+  document.querySelectorAll('#publications [data-pub-carousel]').forEach((carousel) => {
+    const track   = carousel.querySelector('.carousel-track');
+    const slides  = Array.from(carousel.querySelectorAll('.slide'));
+    const prevBtn = carousel.querySelector('.nav-btn.prev');
+    const nextBtn = carousel.querySelector('.nav-btn.next');
+
+    let index = 0;
+    const count = slides.length;
+
+    // Hide arrows if single slide
+    if (count <= 1) { carousel.classList.add('single'); }
+
+    // Mark slides with video; prep videos, but do NOT autoplay yet
+    slides.forEach(s => {
+      const v = s.querySelector('.hover-video video');
+      if (v) {
+        s.classList.add('has-video');
+        v.muted = true; v.loop = true; v.playsInline = true;
+        v.setAttribute('muted',''); v.setAttribute('webkit-playsinline','');
+        v.removeAttribute('controls'); v.preload = 'metadata';
+        // Prime autoplay permission silently, then pause
+        v.play().then(()=>v.pause()).catch(()=>{});
+      } else {
+        const hv = s.querySelector('.hover-video');
+        if (hv) hv.style.display = 'none';
+      }
+    });
+
+    const setActive = () => {
+      slides.forEach((s,i)=> s.classList.toggle('active', i === index));
+    };
+
+    const pauseAll = () => {
+      slides.forEach(s => {
+        const v = s.querySelector('video');
+        if (v) { try { v.pause(); } catch(e){} }
+      });
+    };
+
+    const update = () => {
+      track.style.transform = `translateX(${-index * 100}%)`;
+      setActive();
+      if (prevBtn) prevBtn.disabled = (index === 0);
+      if (nextBtn) nextBtn.disabled = (index === count - 1);
+      // Pause all by default; on hover we'll play the active one
+      pauseAll();
+      // If user is currently hovering, auto-play the active slide's video
+      if (carousel.matches(':hover')) {
+        const v = slides[index].querySelector('video');
+        if (v) { try { v.currentTime = 0; v.play(); } catch(e){} }
+      }
+    };
+
+    const go = (dir) => {
+      const next = Math.max(0, Math.min(count - 1, index + dir));
+      if (next !== index) { index = next; update(); }
+    };
+
+    prevBtn && prevBtn.addEventListener('click', () => go(-1));
+    nextBtn && nextBtn.addEventListener('click', () => go(1));
+
+    // Play/pause on hover of the whole carousel (not just the video overlay)
+    const playActiveIfAny = () => {
+      const v = slides[index].querySelector('video');
+      if (v) { try { v.currentTime = 0; v.play(); } catch(e){} }
+    };
+    const pauseActiveIfAny = () => {
+      const v = slides[index].querySelector('video');
+      if (v) { try { v.pause(); } catch(e){} }
+    };
+    carousel.addEventListener('mouseenter', playActiveIfAny);
+    carousel.addEventListener('mouseleave', pauseActiveIfAny);
+
+    // Basic swipe
+    let startX = 0, dx = 0, touching = false;
+    const onStart = (e) => { touching = true; startX = (e.touches? e.touches[0].clientX : e.clientX); dx = 0; };
+    const onMove  = (e) => { if (!touching) return; const x = (e.touches? e.touches[0].clientX : e.clientX); dx = x - startX; };
+    const onEnd   = () => {
+      if (!touching) return; touching = false;
+      const thresh = 50;
+      if (dx >  thresh) go(-1);
+      if (dx < -thresh) go( 1);
+    };
+    carousel.addEventListener('touchstart', onStart, {passive:true});
+    carousel.addEventListener('touchmove',  onMove,  {passive:true});
+    carousel.addEventListener('touchend',   onEnd,   {passive:true});
+
+    // Initial state
+    update();
+  });
+
+  /* ---------- B) Non-carousel thumbs (single image+optional video) ---------- */
+  document.querySelectorAll('#publications .pub-thumb:not(:has([data-pub-carousel]))').forEach((thumb) => {
     const vid = thumb.querySelector('.hover-video video');
-    if (!vid) return;
 
-    // Satisfy autoplay policies & iOS quirks
-    vid.muted = true;
-    vid.loop = true;
-    vid.playsInline = true;
-    vid.setAttribute('muted', '');
-    vid.setAttribute('webkit-playsinline', '');
-    vid.removeAttribute('controls');
-    vid.preload = 'metadata';
+    if (!vid) {
+      const hv = thumb.querySelector('.hover-video');
+      if (hv) hv.style.display = 'none';
+      thumb.classList.remove('has-video');
+      return;
+    }
 
-    // Prime autoplay permission (silent play, then pause)
-    vid.play().then(() => vid.pause()).catch(() => {});
+    thumb.classList.add('has-video');
+
+    // Prep video but don't run until hover
+    vid.muted = true; vid.loop = true; vid.playsInline = true;
+    vid.setAttribute('muted',''); vid.setAttribute('webkit-playsinline','');
+    vid.removeAttribute('controls'); vid.preload = 'metadata';
+    vid.play().then(()=>vid.pause()).catch(()=>{});
 
     const play  = () => { try { vid.currentTime = 0; vid.play(); } catch(e){} };
     const pause = () => { try { vid.pause(); } catch(e){} };
 
-    // Mouse + keyboard focus
     thumb.addEventListener('mouseenter', play);
     thumb.addEventListener('mouseleave', pause);
     thumb.addEventListener('focusin', play);
@@ -613,32 +784,69 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+
 <table id="publications" class="pubs-table">
   <tbody>
     <tr><td><h2>Publications</h2></td></tr>
 
-       <!-- Pub SR - Locomotion Survey -->
+    
+    <!-- Pub SR - Locomotion Survey -->
     <tr class="pub-row" data-pub="sr-loco">
-      <td>
+      <td style="padding:6px 8px; text-align:center;">
         <div class="pub-thumb">
-          <!-- Give width/height to help Safari layout; they will scale down via CSS -->
-          <img src="assets/images/publications/locomotion_survey.jpg"
-               alt="Locomotion Survey"
-               decoding="async" width="900" height="600">
-          <div class="hover-video">
-            <video muted autoplay loop playsinline preload="none">
-              <source src="assets/videos/publications/pub6.mp4" type="video/mp4">
-            </video>
+          <div class="pub-carousel" data-pub-carousel>
+            <div class="carousel-track">
+              <!-- Slide 1 -->
+              <div class="slide">
+                <img src="assets/images/publications/sr_modeling.jpg"
+                    alt="Locomotion Survey 1"
+                    decoding="async" width="900" height="600">
+                <div class="hover-video"></div>
+              </div>
+              <!-- Slide 2 -->
+              <div class="slide">
+                <img src="assets/images/publications/sr_control_flow.jpg"
+                    alt="Locomotion Survey 2"
+                    decoding="async" width="900" height="600">
+                <div class="hover-video"></div>
+              </div>
+              <!-- Slide 3 -->
+              <div class="slide">
+                <img src="assets/images/publications/sr_categories.jpg"
+                    alt="Locomotion Survey 3"
+                    decoding="async" width="900" height="600">
+                <div class="hover-video"></div>
+              </div>
+              <!-- Slide 4 -->
+              <div class="slide">
+                <img src="assets/images/publications/sr_first_figure.jpg"
+                    alt="Locomotion Survey 4"
+                    decoding="async" width="900" height="600">
+                <div class="hover-video"></div>
+              </div>
+              <!-- Slide 5 -->
+              <div class="slide">
+                <img src="assets/images/publications/sr_shift.jpg"
+                    alt="Locomotion Survey 4"
+                    decoding="async" width="900" height="600">
+                <div class="hover-video"></div>
+              </div>
+            </div>
+
+            <!-- Nav buttons -->
+            <button class="nav-btn prev" aria-label="Previous slide">‹</button>
+            <button class="nav-btn next" aria-label="Next slide">›</button>
           </div>
         </div>
       </td>
+
       <td class="pub-meta">
         <a href="" target="_blank" rel="noopener">
           <span class="papertitle">Evolution of Humanoid Locomotion Control</span>
         </a><br>
         Y. Gu, G. Shi, F. Shi, I. Chang, Y. Wang, <b>Q. Cheng</b>, Z. Olkin, I. Lopez-Sanchez, Y. Feng,
         J. Zhang, A. D. Ames, H. Su, and K. Sreenath<br>
-        <em>Science Robotics (Under review)</em>, 2025<br>
+        <em>Science Robotics (Under Review)</em>, 2025<br>
         <div class="pub-links">
           <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener">arXiv</a>
           <!-- <a href="https://github.com/..." target="_blank" rel="noopener">Code</a> -->
@@ -649,6 +857,32 @@ document.addEventListener('DOMContentLoaded', function () {
         </p>
       </td>
     </tr>
+
+
+     <!-- Robot-World / Hand–Eye -->
+    <tr class="pub-row" data-pub="rwh-eye">
+      <td>
+        <div class="pub-thumb">
+          <img src="assets/images/publications/robot_world.jpg"
+               alt="Robot-World & Hand-Eye Calibration"
+               decoding="async" width="900" height="600">
+        </div>
+      </td>
+      <td class="pub-meta">
+        <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener">
+          <span class="papertitle">A Certifiably Correct Algorithm for Generalized Robot-World and Hand-Eye Calibration</span>
+        </a><br>
+        E. Wise, P. Kaveti, <b>Q. Cheng</b>, W. Wang, H. Singh, J. Kelly, D. M. Rosen, and M. Giamou<br>
+        <em>IJRR (Under Review)</em>, 2025<br>
+        <div class="pub-links">
+          <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener">arXiv</a>
+        </div>
+        <p class="pub-desc">
+          Certifiably correct calibration achieving globally optimal robot-world and hand-eye alignment under general conditions.
+        </p>
+      </td>
+    </tr>
+    
 
     <!-- Pub: IRIS MEng Thesis -->
     <tr class="pub-row" data-pub="iris-thesis">
@@ -664,6 +898,7 @@ document.addEventListener('DOMContentLoaded', function () {
           </div>
         </div>
       </td>
+      
       <td class="pub-meta">
         <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener">
           <span class="papertitle">Master's Thesis: Design and Development of IRIS: An Intelligent Robotic Imaging System — A Low-Cost, 3D-Printed Cinema Robot Arm for Dynamic Shot Automation</span>
@@ -681,34 +916,7 @@ document.addEventListener('DOMContentLoaded', function () {
       </td>
     </tr>
 
-    <!-- Robot-World / Hand–Eye -->
-    <tr class="pub-row" data-pub="rwh-eye">
-      <td>
-        <div class="pub-thumb">
-          <img src="assets/images/publications/robot_world.jpg"
-               alt="Robot-World & Hand-Eye Calibration"
-               decoding="async" width="900" height="600">
-          <div class="hover-video">
-            <video muted autoplay loop playsinline preload="none">
-              <source src="assets/videos/publications/pub6.mp4" type="video/mp4">
-            </video>
-          </div>
-        </div>
-      </td>
-      <td class="pub-meta">
-        <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener">
-          <span class="papertitle">A Certifiably Correct Algorithm for Generalized Robot-World and Hand-Eye Calibration</span>
-        </a><br>
-        E. Wise, P. Kaveti, <b>Q. Cheng</b>, W. Wang, H. Singh, J. Kelly, D. M. Rosen, and M. Giamou<br>
-        <em>IJRR (Under review)</em>, 2025<br>
-        <div class="pub-links">
-          <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener">arXiv</a>
-        </div>
-        <p class="pub-desc">
-          Certifiably correct calibration achieving globally optimal robot-world and hand-eye alignment under general conditions.
-        </p>
-      </td>
-    </tr>
+   
 
     <!-- VibraForge -->
     <tr class="pub-row" data-pub="2">
@@ -717,7 +925,7 @@ document.addEventListener('DOMContentLoaded', function () {
           <img src="assets/images/publications/nebula_suite.jpg" alt="VibraForge thumbnail" loading="lazy" decoding="async" width="900" height="600">
           <div class="hover-video">
             <video width="100%" height="100%" muted autoplay loop playsinline>
-              <source src="assets/videos/publications/pub2.mp4" type="video/mp4">
+              <source src="assets/videos/toolkit_unboxing.mp4" type="video/mp4">
             </video>
           </div>
         </div>
@@ -727,11 +935,11 @@ document.addEventListener('DOMContentLoaded', function () {
           <span class="papertitle">VibraForge: A Scalable Prototyping Toolkit For Creating Spatialized Vibrotactile Feedback Systems</span>
         </a><br>
         B. Huang, S. Ren, Y. Luo, <b>Q. Cheng</b>, H. Cai, Y. Sang, M. Sousa, P. H. Dietz, and D. Wigdor<br>
-        <em>CHI</em>, 2024<br>
+        <em>CHI</em>, 2025<br>
         <div class="pub-links">
           <a href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener">arXiv</a>
-          <!-- <a href="https://github.com/..." target="_blank" rel="noopener">Code</a> -->
-          <!-- <a href="https://youtube.com/..." target="_blank" rel="noopener">YouTube</a> -->
+          <a href="https://github.com/huangbj16/VibraForge" target="_blank" rel="noopener">Code</a>
+          <a href="https://www.youtube.com/watch?v=uVssIDGKS-U&list=PL5hrJ0xlpQr9NXqQIKAuI2mUovgFscNgk" target="_blank" rel="noopener">Video</a>
         </div>
         <p class="pub-desc">
           An open-source toolkit enabling rapid design and deployment of large-scale vibrotactile feedback systems for spatialized haptic interactions.
@@ -739,7 +947,7 @@ document.addEventListener('DOMContentLoaded', function () {
       </td>
     </tr>
 
-    <!-- AeroHaptix -->
+        <!-- AeroHaptix -->
     <tr class="pub-row" data-pub="3">
       <td style="padding:16px; width:20%; text-align:center;">
         <div class="pub-thumb">
@@ -759,14 +967,17 @@ document.addEventListener('DOMContentLoaded', function () {
         <em>IEEE RA-L</em>, 2024<br>
         <div class="pub-links">
           <a href="https://arxiv.org/abs/2407.12105" target="_blank" rel="noopener">arXiv</a>
-          <!-- <a href="https://github.com/..." target="_blank" rel="noopener">Code</a> -->
-          <!-- <a href="https://youtube.com/..." target="_blank" rel="noopener">YouTube</a> -->
+          <a href="https://github.com/huangbj16/DroneSimulation" target="_blank" rel="noopener">Code</a>
+          <a href="https://www.youtube.com/watch?v=ezIZrVmYYpI&list=PL5hrJ0xlpQr9NXqQIKAuI2mUovgFscNgk&index=2" target="_blank" rel="noopener">Video</a>
         </div>
         <p class="pub-desc">
           Introduces a wearable vibrotactile system integrated with UAV teleoperation, leveraging control barrier functions for safe human-drone interaction.
         </p>
       </td>
     </tr>
+
+
+
 
     <!-- 2D Radar-radar Calibration -->
     <tr class="pub-row" data-pub="4">
@@ -789,7 +1000,7 @@ document.addEventListener('DOMContentLoaded', function () {
         <div class="pub-links">
           <a href="https://arxiv.org/abs/2302.00660" target="_blank" rel="noopener">arXiv</a>
           <!-- <a href="https://github.com/..." target="_blank" rel="noopener">Code</a> -->
-          <!-- <a href="https://youtube.com/..." target="_blank" rel="noopener">YouTube</a> -->
+          <a href="https://www.youtube.com/watch?v=hfXdG6j3sjE" target="_blank" rel="noopener">Video</a>
         </div>
         <p class="pub-desc">
           Proposes a calibration framework for radar-radar pairs leveraging ego-motion cues without overlapping views for improved pose estimation accuracy.
@@ -1376,30 +1587,32 @@ document.addEventListener('DOMContentLoaded', function () {
       </td>
     </tr>
 
-    <!-- Project: IRIS Cinema Arm (with PDF + YouTube links) -->
-    <tr class="proj-row" data-proj="iris">
+    <!-- Project: Monocular Depth Estimation -->
+    <tr class="proj-row" data-proj="mono_est">
       <td class="thumb-td">
         <div class="proj-thumb">
-          <img src="assets/images/projects/iris/iris_real_life.jpg" alt="IRIS cinema robot arm" loading="lazy">
+          <img src="assets/images/publications/mono_dep_pipeline.png" alt="Monocular Depth Estimation results" loading="lazy">
           <div class="hover-video">
             <video muted autoplay loop playsinline>
-              <source src="assets/videos/iris_moving_compressed.mp4" type="video/mp4">
+              <source src="assets/videos/walking_stairs.mp4" type="video/mp4">
             </video>
           </div>
         </div>
       </td>
       <td class="info-td">
-        <span class="papertitle">IRIS: Low-Cost 6-DOF Cinema Robot Arm</span>
-        <span class="proj-year">2024–2025</span><br>
-        Modular QDD drives, differential wrist, carbon-fiber links; ROS stack with vision-based imitation learning for reactive path planning and obstacle avoidance.
+        <span class="papertitle">Monocular Depth Estimation for Human-Robot Locomotion</span>
+        <span class="proj-year">2024</span><br>
+        Monocular depth pipeline for human-robot walking environments: ZoeDepth baseline, metric reprojection to 3D point clouds, and iterative RANSAC to extract stair planes and dimensions.
         <div class="proj-links">
           <!-- replace hrefs with your real URLs -->
-          <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener" aria-label="IRIS project PDF">PDF</a>
-          <a href="https://www.youtube.com/watch?v=tUJCzzHMhkU&list=PL5hrJ0xlpQr8OD-3luKAu9CUlmj_8L284&index=6" target="_blank" rel="noopener" aria-label="IRIS project video on YouTube">YouTube</a>
+          <a href="https://www.researchgate.net/publication/382269581_Monocular_depth_estimation_of_human-robot_walking_environments_using_deep_learning" target="_blank" rel="noopener" aria-label="research_gate">ResearchGate</a>
+          <!-- <a href="" target="_blank" rel="noopener" aria-label="TINTIN project video on YouTube">YouTube</a> -->
         </div>
         <p class="proj-desc"></p>
       </td>
     </tr>
+
+ -->
 
 
     <!-- Project: Biped VHC -->
