@@ -274,204 +274,6 @@
       </tbody>
     </table>
 
-    <!-- ======= Research Interests Section ======= -->
-
-    <!-- <table style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
-      <tbody>
-        <tr><td><h2>Research Interests</h2>
-          <p>My research focuses on integrating learning-based control and perception for robots. Specifically, I develop reinforcement learning algorithms for visual loco-manipulation, imitation learning for exoskeletons, and vision-based control frameworks for biped and manipulator robots. I am also exploring unified policies that bridge hardware-aware and perception-driven intelligence.</p>
-        </td></tr>
-      </tbody>
-    </table> -->
-
-
-
-<!-- ======= Publications Section ======= -->
-<!-- <style>
-  :root {
-    --pubs-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --pub-thumb-h: 168px;     /* desktop thumbnail box height */
-    --pub-thumb-h-sm: 132px;  /* mobile thumbnail box height  */
-  }
-
-  .pubs-table,
-  .pubs-table td,
-  .pubs-table h2,
-  .pub-meta,
-  .pub-meta a,
-  .pub-desc {
-    font-family: var(--pubs-font);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Keep width consistent with other sections */
-  .pubs-table {
-    width: 100%;
-    max-width: 800px;
-    margin: auto;
-    border-spacing: 0 10px;
-    border-collapse: separate;
-  }
-
-  .pub-row td { vertical-align: middle; }
-
-  /* Enforce consistent column widths (override any inline widths) */
-  .pub-row > td:first-child { width: 40% !important; padding: 6px 8px; text-align: center; }
-  .pub-row > td:last-child  { width: 60% !important; padding: 4px 0; }
-
-  /* No-crop thumbnail box */
-  .pub-thumb {
-    position: relative;
-    width: 100%;
-    max-width: 220px;           /* same scale as your existing layout */
-    height: var(--pub-thumb-h); /* fixed box height for consistency */
-    margin: 0 auto;
-    border-radius: 6px;
-    overflow: hidden;           /* keeps rounded corners, doesn't affect contain-sizing */
-    display: flex;              /* center media inside box */
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Images: shrink to fit (no cropping), keep aspect ratio */
-  .pub-thumb img {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    display: block;
-    border-radius: 6px;
-  }
-
-  /* Hover video overlay, also no-crop + centered */
-  .pub-thumb .hover-video {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity .25s ease;
-    border-radius: 6px;
-    pointer-events: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .pub-row:hover .hover-video { opacity: 1; }
-  .pub-thumb .hover-video video {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    display: block;
-    border-radius: 6px;
-  }
-
-  .pub-meta a { text-decoration: none; }
-  .pub-meta .papertitle { font-weight: 600; }
-  .pub-desc { margin-top: 6px; font-size: 14px; line-height: 1.4em; }
-
-  /* Mobile tweaks */
-  @media (max-width: 540px) {
-    .pubs-table { border-spacing: 0 8px; }
-    .pub-thumb {
-      max-width: 200px;             /* slightly narrower on small screens */
-      height: var(--pub-thumb-h-sm);
-    }
-    .pub-meta .papertitle { font-size: 16px; }
-    .pub-desc { font-size: 13px; }
-  }
-</style> -->
-
-<!-- ======= Publications: mobile stacks image on top, sized appropriately ======= -->
-<!-- <style>
-  :root{
-    --pubs-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --pub-thumb-h: 220px;                 /* desktop box height */
-    --pub-thumb-h-sm-min: 140px;          /* mobile min height */
-    --pub-thumb-h-sm-max: 200px;          /* mobile max height */
-  }
-
-  .pubs-table,
-  .pubs-table td,
-  .pubs-table h2,
-  .pub-meta,
-  .pub-meta a,
-  .pub-desc{
-    font-family: var(--pubs-font);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Match Projects container width */
-  .pubs-table{
-    width:100%;
-    max-width:800px;
-    margin:auto;
-    border-spacing:0 10px;
-    border-collapse:separate;
-  }
-  .pub-row td{ vertical-align:middle; }
-
-  /* Same 45/55 split as Projects on desktop */
-  .pub-row > td:first-child{ width:45% !important; padding:6px 8px; text-align:center; }
-  .pub-row > td:last-child { width:55% !important; padding:4px 0; }
-
-  /* Uniform no-crop media box */
-  .pub-thumb{
-    position:relative;
-    width:100%;
-    max-width:none;
-    height:var(--pub-thumb-h);
-    margin:0 auto;
-    border-radius:6px;
-    overflow:hidden;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-  .pub-thumb img,
-  .pub-thumb .hover-video video{
-    width:100%;
-    height:100%;
-    object-fit:contain;    /* shrink to fit, no cropping */
-    display:block;
-    border-radius:6px;
-  }
-  .pub-thumb .hover-video{
-    position:absolute; inset:0;
-    opacity:0; transition:opacity .25s ease;
-    pointer-events:none; border-radius:6px;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .pub-row:hover .hover-video{ opacity:1; }
-
-  .pub-meta a{ text-decoration:none; }
-  .pub-meta .papertitle{ font-weight:600; }
-  .pub-desc{ margin-top:6px; font-size:14px; line-height:1.4em; }
-
-  /* ===== Mobile: stack image (top) then text (bottom); keep image “not too big” ===== */
-  @media (max-width:540px){
-    /* Stack each publication vertically */
-    .pubs-table .pub-row{ display:block; }
-    .pubs-table .pub-row > td{
-      display:block;
-      width:100% !important;
-      padding:6px 0 !important;
-    }
-
-    /* Resize the media box to a sensible mobile size */
-    .pubs-table .pub-thumb{
-      /* limit width so it doesn't dominate; center it */
-      width:min(92vw, 420px);
-      height:clamp(var(--pub-thumb-h-sm-min), 42vw, var(--pub-thumb-h-sm-max));
-      margin:0 auto 8px;
-    }
-
-    /* Slightly smaller text on mobile */
-    .pub-meta .papertitle{ font-size:16px; }
-    .pub-desc{ font-size:13px; }
-  }
-</style> -->
 <!-- ======= Publications (desktop 45/55; mobile full-width text) ======= -->
 <style>
   :root{
@@ -608,33 +410,67 @@
   #publications .pub-carousel .nav-btn.next{ right:8px; }
   #publications .pub-carousel.single .nav-btn{ display:none !important; }
 
-  /* ===== Mobile: edge-to-edge text & media ===== */
-  @media (max-width:540px){
-    /* Let the whole publications block span full viewport width */
-    #publications.pubs-table{
-      max-width:none;
-      width:100vw;
-      margin-left:calc(50% - 50vw);  /* bleed to edges while centered parent remains */
-      margin-right:calc(50% - 50vw);
-      border-spacing:0;              /* remove row gaps on mobile */
-      table-layout:auto;             /* free the table */
-    }
+  /* ===== Mobile: true full-width (edge-to-edge) ===== */
+@media (max-width:540px){
+  /* Prevent tiny right-side scrollbars when using vw */
+  html, body { overflow-x:hidden; }
 
-    /* Stack rows; each cell becomes full-width block */
-    #publications .pub-row{ display:block; }
-    #publications .pub-row > td{
-      display:block;
-      width:100% !important;
-      padding:12px 16px !important;  /* comfy side padding for text */
-    }
+  /* Let the publications table escape any centered parent and fill the viewport */
+  #publications.pubs-table{
+    max-width:none;
+    width:100vw;                 /* full viewport width */
+    margin-left:calc(50% - 50vw);
+    margin-right:calc(50% - 50vw);
+    border-spacing:0;
+    table-layout:auto;
+  }
 
-    /* Media still gets a fixed height but now uses full viewport width */
-    #publications .pub-thumb{
-      width:100%;
-      height:var(--pub-thumb-h-mobile);
-      margin:0;
-      border-radius:0;               /* optional: flush media to edges; comment out to keep radius */
-    }
+  /* Stack each row; both cells become full-width blocks */
+  #publications .pub-row{ display:block; }
+  #publications .pub-row > td{
+    display:block;
+    width:100% !important;
+    padding:0 !important;        /* remove extra gutters here; add below per section */
+  }
+
+  /* Media: make the box itself span the viewport width */
+  #publications .pub-thumb{
+    width:100vw;                 /* ensures true edge-to-edge even inside tables */
+    height:var(--pub-thumb-h-mobile);
+    margin:0;
+    border-radius:0;             /* flush to edges; comment out to keep radius */
+  }
+
+  /* Ensure inner media isn’t capped by any inherited max-width */
+  #publications .pub-thumb img,
+  #publications .pub-thumb video,
+  #publications .pub-carousel .slide img,
+  #publications .pub-carousel .slide video{
+    width:100%;
+    height:100%;
+    max-width:none !important;
+    object-fit:contain;
+    display:block;
+  }
+
+  /* Keep carousel arrows centered relative to the media box */
+  #publications .pub-carousel .nav-btn{
+    top:50%;
+    transform:translateY(-50%);
+  }
+
+  /* Text block: comfy side padding and readable sizes */
+  #publications .pub-meta{
+    padding:12px 16px !important;
+  }
+  #publications .pub-meta .papertitle{ font-size:16.5px; }
+  #publications .pub-desc{ font-size:13.5px; }
+
+  /* Link pill spacing under text on mobile */
+  #publications .pub-links{
+    margin:10px 16px 0 16px;
+  }
+}
 
     /* Tweak typography slightly for smaller screens */
     #publications .pub-meta .papertitle{ font-size:16.5px; }
@@ -1429,7 +1265,6 @@ document.addEventListener('DOMContentLoaded', function () {
     </script>
 
 <!-- ======= Projects Section (aligned with Publications) ======= -->
-<!-- ======= Projects: hover-to-play video (image hides), loop, no controls ======= -->
 <style>
   :root{
     --proj-thumb-h-desktop: 220px;
@@ -1575,7 +1410,6 @@ document.addEventListener('DOMContentLoaded', function () {
         <span class="proj-year">2025</span><br>
         6-DoF variable-mass lander in MuJoCo with 2-DoF gimbaled thrust; PID baseline vs PPO policy; pose-targeted touchdown and fuel-efficiency metrics.
         <div class="proj-links">
-          <!-- replace hrefs with your real URLs -->
           <a href="assets/pdfs/projects/tintin.pdf" target="_blank" rel="noopener" aria-label="TINTIN project PDF">PDF</a>
           <a href="https://youtu.be/TINTIN_DEMO" target="_blank" rel="noopener" aria-label="TINTIN project video on YouTube">YouTube</a>
         </div>
@@ -1625,6 +1459,10 @@ document.addEventListener('DOMContentLoaded', function () {
         <span class="papertitle">Geometric Nonlinear Control for Biped Walking</span>
         <span class="proj-year">2024</span><br>
         Virtual Holonomic Constraints with polynomial gait design, feedback linearization, and terrain generalization to slopes and stairs.
+        <div class="proj-links">
+          <a href="assets/pdf/projects/ECE1658_final_report-3.pdf" target="_blank" rel="noopener" aria-label="Biped VHC project PDF">PDF</a>
+          <!-- <a href="https://youtu.be/TINTIN_DEMO" target="_blank" rel="noopener" aria-label="Biped VHC project video on YouTube">YouTube</a> -->
+        </div>
         <p class="proj-desc"></p>
       </td>
     </tr>
@@ -1636,7 +1474,7 @@ document.addEventListener('DOMContentLoaded', function () {
           <img src="assets/images/projects/localization_barfoot/localization.jpg" alt="Aerospace localization" loading="lazy">
           <div class="hover-video">
             <video muted autoplay loop playsinline>
-              <source src="assets/videos/lost_in_the_woods_animation_best_result_new-2.mp4" type="video/mp4">
+              <source src="assets/videos/state_estimation_teaser.mp4" type="video/mp4">
             </video>
           </div>
         </div>
