@@ -417,79 +417,82 @@
   #publications .pub-carousel.single .nav-btn{ display:none !important; }
 
   /* ===== Mobile: true full-width (edge-to-edge) ===== */
-@media (max-width:540px){
-  /* Prevent tiny right-side scrollbars when using vw */
+/* ===== Publications: robust mobile stack (iOS-safe) ===== */
+@media (max-width: 600px){
+  /* Stop any horizontal scroll/bleed */
   html, body { overflow-x:hidden; }
 
-  /* Let the publications table escape any centered parent and fill the viewport */
+  /* Make the publications table behave like a block container */
   #publications.pubs-table{
-    max-width:none;
-    width:100vw;                 /* full viewport width */
-    margin-left:calc(50% - 50vw);
-    margin-right:calc(50% - 50vw);
-    border-spacing:0;
-    table-layout:auto;
+    display:block;          /* critical: tables otherwise fight widths */
+    width:100%;
+    max-width:100%;
+    margin:0 auto;
+    border-spacing:0 !important;
+    table-layout:auto !important;
+    box-sizing:border-box;
   }
 
-  /* Stack each row; both cells become full-width blocks */
-  #publications .pub-row{ display:block; }
+  /* Each pub row becomes a block (stacked) */
+  #publications .pub-row{
+    display:block;
+    margin:0;
+    border-bottom: 12px solid transparent; /* spacing between items */
+  }
+
+  /* Cells become full-width blocks */
   #publications .pub-row > td{
     display:block;
     width:100% !important;
-    padding:0 !important;        /* remove extra gutters here; add below per section */
+    max-width:100% !important;
+    padding:0 !important;        /* remove inherited gutters */
+    box-sizing:border-box;
   }
 
-  /* Media: make the box itself span the viewport width */
+  /* Media box: full width; choose a stable mobile height */
   #publications .pub-thumb{
-    width:100vw;                 /* ensures true edge-to-edge even inside tables */
-    height:var(--pub-thumb-h-mobile);
+    position:relative;
+    width:100%;
+    /* 56.25vw gives a 16:9 feel without bleeding; also cap height */
+    height:min(56.25vw, 260px);
     margin:0;
-    border-radius:0;             /* flush to edges; comment out to keep radius */
+    border-radius:0;             /* clean edge-to-edge look */
+    overflow:hidden;
   }
 
-  /* Ensure inner media isn’t capped by any inherited max-width */
+  /* Media inside box must not be capped by old max-widths */
   #publications .pub-thumb img,
-  #publications .pub-thumb video,
-  #publications .pub-carousel .slide img,
-  #publications .pub-carousel .slide video{
-    width:100%;
-    height:100%;
+  #publications .pub-thumb video{
+    width:100% !important;
+    height:100% !important;
     max-width:none !important;
     object-fit:contain;
     display:block;
   }
 
-  /* Keep carousel arrows centered relative to the media box */
+  /* Carousel arrows kept centered on mobile */
   #publications .pub-carousel .nav-btn{
     top:50%;
     transform:translateY(-50%);
   }
 
-  /* Text block: comfy side padding and readable sizes */
+  /* Text block with comfy padding */
   #publications .pub-meta{
-    padding:12px 16px !important;
+    padding:14px 16px !important;
   }
-  #publications .pub-meta .papertitle{ font-size:16.5px; }
-  #publications .pub-desc{ font-size:13.5px; }
-
-  /* Link pill spacing under text on mobile */
-  #publications .pub-links{
-    margin:10px 16px 0 16px;
-  }
+  #publications .pub-meta .papertitle{ font-size:16.5px; line-height:1.25; }
+  #publications .pub-desc{ font-size:13.5px; line-height:1.45; }
 }
 
-    /* Tweak typography slightly for smaller screens */
-    #publications .pub-meta .papertitle{ font-size:16.5px; }
-    #publications .pub-desc{ font-size:13.5px; }
+/* Desktop column split still applies above 600px */
+@media (min-width: 601px){
+  #publications .pub-row > td:first-child{ width:45% !important; padding:6px 8px; text-align:center; }
+  #publications .pub-row > td:last-child { width:55% !important; padding:4px 0; }
+}
 
-    /* Keep carousel arrows centered relative to the mobile media box */
-    #publications .pub-carousel .nav-btn{ top:50%; transform:translateY(-50%); }
-  }
+/* Remove any earlier 100vw margin hacks that might remain */
+#publications.pubs-table{ margin-left:auto; margin-right:auto; }
 
-  /* Optional hook (unused but safe) */
-  #publications .pub-carousel .slide.active{}
-  #publications .pub-carousel:hover .slide.active.has-video .hover-video{ opacity:1; }
-  #publications .pub-carousel:hover .slide.active.has-video img{ opacity:0; }
 </style>
 
 <style>
@@ -1679,6 +1682,10 @@ document.addEventListener('DOMContentLoaded', function () {
         <span class="papertitle">Electric Formula Racing Car Drive-train</span>
         <span class="proj-year">2022</span><br>
         Planetary gearbox quadrupling torque at &gt;90% efficiency; kinematics, stress, thermal, and vibration analyses.
+        <div class="proj-links">
+          <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener" aria-label="Electric Formula Racing Car Drive-train PDF">PDF</a>
+          <!-- <a href="https://youtu.be/TINTIN_DEMO" target="_blank" rel="noopener" aria-label="TINTIN project video on YouTube">Video</a> -->
+        </div>
         <p class="proj-desc"></p>
       </td>
     </tr>
