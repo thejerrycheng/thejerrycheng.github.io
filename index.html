@@ -486,6 +486,57 @@
   #publications .pub-carousel:hover .slide.active.has-video img{ opacity:0; }
 </style>
 
+<style>
+  /* Prevent mobile horizontal scroll from 100vw bleed */
+  @media (max-width:540px){
+    html, body { overflow-x: hidden; }
+  }
+
+  /* ===== Mobile: make the publications section truly full-width ===== */
+  @media (max-width:540px){
+    /* Make the TABLE act like a block that can bleed edge-to-edge */
+    #publications.pubs-table{
+      display:block;              /* critical: tables resist width hacks */
+      max-width:none;
+      width:100vw;
+      margin-left:calc(50% - 50vw);
+      margin-right:calc(50% - 50vw);
+      border-spacing:0;
+      table-layout:auto;
+      box-sizing:border-box;
+    }
+
+    /* Stack cells and remove fixed widths from desktop */
+    #publications .pub-row{ display:block; }
+    #publications .pub-row > td{
+      display:block;
+      width:100% !important;
+      padding:0 !important;       /* reset, we’ll control padding on inner blocks */
+    }
+
+    /* Media (image/video) goes full width; keep your mobile height */
+    #publications .pub-thumb{
+      width:100%;
+      height:var(--pub-thumb-h-mobile);
+      margin:0;
+      border-radius:0;
+    }
+
+    /* Ensure text spans the FULL line with comfy side padding */
+    #publications .pub-meta{
+      max-width:none !important;
+      width:100% !important;
+      padding:12px 16px !important;   /* this is the only horizontal inset */
+      box-sizing:border-box;
+    }
+
+    /* Optional: slightly larger title on phones */
+    #publications .pub-meta .papertitle{ font-size:16.5px; }
+    #publications .pub-desc{ font-size:13.5px; }
+  }
+</style>
+
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   /* ---------- A) Carousels ---------- */
@@ -1483,6 +1534,10 @@ document.addEventListener('DOMContentLoaded', function () {
         <span class="papertitle">Localization for Aerospace Vehicles (IMU + Stereo)</span>
         <span class="proj-year">2023</span><br>
         Batch Gauss-Newton fusion with EKF; compared batch vs sliding-window estimators for trajectory accuracy.
+        <div class="proj-links">
+          <a href="assets/pdf/projects/AER1513_assignment_3-3.pdf" target="_blank" rel="noopener" aria-label="Aerospace Localization project PDF">PDF</a>
+          <!-- <a href="https://youtu.be/TINTIN_DEMO" target="_blank" rel="noopener" aria-label="Biped VHC project video on YouTube">YouTube</a> -->
+        </div>
         <p class="proj-desc"></p>
       </td>
     </tr>
