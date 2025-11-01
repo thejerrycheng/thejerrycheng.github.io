@@ -281,7 +281,7 @@
     </table>
 
 <!-- ======= Publications (desktop 45/55; mobile full-width text) ======= -->
-<style>
+<!-- <style>
   :root{
     --pub-thumb-h-desktop: 220px;
     --pub-thumb-h-mobile: 180px;
@@ -493,8 +493,107 @@
 /* Remove any earlier 100vw margin hacks that might remain */
 #publications.pubs-table{ margin-left:auto; margin-right:auto; }
 
-</style>
+</style> -->
 
+<style>
+/* ======= Publications (aligned with Projects; two-column even on mobile) ======= */
+:root{
+  --pub-thumb-h-desktop: 220px;
+  --pub-thumb-h-mobile: 180px;
+}
+
+/* Container */
+#publications.pubs-table{
+  width:100%;
+  max-width:800px;
+  margin:auto;
+  border-spacing:0 10px;
+  border-collapse:separate;
+  table-layout:fixed;
+}
+#publications .pub-row td{ vertical-align:middle; }
+
+/* Two-column layout (match Projects) */
+#publications .pub-row > td:first-child{ padding:5px !important; width:45% !important; text-align:center; }
+#publications .pub-row > td:last-child { padding:2px !important; width:55% !important; }
+
+/* Media box (uniform height across rows) */
+#publications .pub-thumb{
+  position:relative;
+  width:100%;
+  height:var(--pub-thumb-h-desktop);
+  margin:0 auto;
+  border-radius:6px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Base media */
+#publications .pub-thumb img,
+#publications .pub-thumb video{
+  width:100%;
+  height:100%;
+  object-fit:contain;   /* no crop; shrink to fit */
+  display:block;
+  border-radius:6px;
+}
+
+/* Hover video overlay (no :has; iOS-safe with JS below) */
+#publications .pub-thumb img{ transition:opacity .2s ease; }
+#publications .hover-video{
+  position:absolute; inset:0;
+  opacity:0; transition:opacity .2s ease;
+  border-radius:6px; pointer-events:none;
+  z-index:1;
+  display:flex; align-items:center; justify-content:center;
+}
+#publications .pub-row:hover .hover-video,
+#publications .pub-row:focus-within .hover-video{ opacity:1; }
+#publications .pub-row:hover .pub-thumb img,
+#publications .pub-row:focus-within .pub-thumb img{ opacity:0; }
+
+/* Typography & links */
+#publications .papertitle{ font-weight:600; }
+#publications .pub-desc { margin-top:6px; font-size:14px; line-height:1.4em; }
+#publications .pub-links{ margin-top:8px; display:flex; flex-wrap:wrap; gap:8px; }
+#publications .pub-links a{
+  display:inline-block; font-size:13px; line-height:1;
+  padding:6px 10px; border:1px solid rgba(0,0,0,0.15);
+  border-radius:9999px; text-decoration:none; color:#222;
+  transition:background-color .15s ease, border-color .15s ease;
+}
+#publications .pub-links a:hover{
+  background:rgba(0,0,0,0.06); border-color:rgba(0,0,0,0.25);
+}
+
+/* Optional: if you use the in-thumb carousel */
+#publications .pub-carousel .nav-btn{
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:34px; height:34px; border-radius:9999px; border:1px solid rgba(0,0,0,.2);
+  background:rgba(255,255,255,.85); backdrop-filter:saturate(1.8) blur(2px);
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  font-size:20px; line-height:1; padding:0; user-select:none;
+}
+#publications .pub-carousel .nav-btn.prev{ left:8px; }
+#publications .pub-carousel .nav-btn.next{ right:8px; }
+
+/* ===== Mobile: keep two columns; just tighten widths & heights ===== */
+@media (max-width:540px){
+  html, body{ overflow-x:hidden; } /* belt-and-suspenders; prevents border bleed */
+
+  #publications .pub-row > td:first-child{ width:44% !important; }
+  #publications .pub-row > td:last-child { width:56% !important; padding:4px !important; }
+
+  #publications .pub-thumb{ height:var(--pub-thumb-h-mobile); }
+
+  #publications .papertitle{ font-size:16px; }
+  #publications .pub-desc { font-size:13px; }
+  #publications .pub-links a{ font-size:12px; padding:6px 9px; }
+}
+
+</style>
 <style>
   /* Prevent mobile horizontal scroll from 100vw bleed */
   @media (max-width:540px){
@@ -1593,7 +1692,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ESP32-based driver with SPI multiplexing; API control; interactive 3D Snake and Pong demos.
         <div class="proj-links">
           <a href="assets/pdf/projects/MIE438_Final_Report.pdf" target="_blank" rel="noopener" aria-label="8x8x8 LED Cube Embedded System PDF">PDF</a>
-          <!-- <a href="https://youtu.be/TINTIN_DEMO" target="_blank" rel="noopener" aria-label="TINTIN project video on YouTube">Video</a> -->
+          <a href="https://www.youtube.com/watch?v=cC_NXlKTEwk&list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV" target="_blank" rel="noopener" aria-label="TINTIN project video on YouTube">Video</a>
         </div>
         <p class="proj-desc"></p>
       </td>
@@ -1618,6 +1717,30 @@ document.addEventListener('DOMContentLoaded', function () {
         <div class="proj-links">
           <a href="assets/pdf/projects/mie443_merged_contest_1_2.pdf" target="_blank" rel="noopener" aria-label="Turtlebot2 SLAM, Navigation & Perception PDF">PDF</a>
           <!-- <a href="https://youtu.be/TINTIN_DEMO" target="_blank" rel="noopener" aria-label="TINTIN project video on YouTube">Video</a> -->
+        </div>
+        <p class="proj-desc"></p>
+      </td>
+    </tr>
+
+    <!-- Project: Formula Drivetrain -->
+    <tr class="proj-row" data-proj="formula-drivetrain">
+      <td class="thumb-td">
+        <div class="proj-thumb">
+          <img src="assets/images/projects/formula_car.JPG" alt="Formula racing drivetrain" loading="lazy">
+          <div class="hover-video">
+            <video muted autoplay loop playsinline>
+              <source src="assets/videos/gearbox.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </td>
+      <td class="info-td">
+        <span class="papertitle">Electric Formula Racing Car Drive-train</span>
+        <span class="proj-year">2022</span><br>
+        Planetary gearbox quadrupling torque at &gt;90% efficiency; kinematics, stress, thermal, and vibration analyses.
+        <div class="proj-links">
+          <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener" aria-label="Electric Formula Racing Car Drive-train PDF">PDF</a>
+          <a href="https://www.youtube.com/watch?v=lSZsrUMRv3I&list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV&index=2" target="_blank" rel="noopener" aria-label="TINTIN project video on YouTube">Video</a>
         </div>
         <p class="proj-desc"></p>
       </td>
@@ -1666,29 +1789,6 @@ document.addEventListener('DOMContentLoaded', function () {
       </td>
     </tr> -->
 
-    <!-- Project: Formula Drivetrain -->
-    <tr class="proj-row" data-proj="formula-drivetrain">
-      <td class="thumb-td">
-        <div class="proj-thumb">
-          <img src="assets/images/projects/formula_car.JPG" alt="Formula racing drivetrain" loading="lazy">
-          <div class="hover-video">
-            <video muted autoplay loop playsinline>
-              <source src="assets/videos/gearbox.mp4" type="video/mp4">
-            </video>
-          </div>
-        </div>
-      </td>
-      <td class="info-td">
-        <span class="papertitle">Electric Formula Racing Car Drive-train</span>
-        <span class="proj-year">2022</span><br>
-        Planetary gearbox quadrupling torque at &gt;90% efficiency; kinematics, stress, thermal, and vibration analyses.
-        <div class="proj-links">
-          <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener" aria-label="Electric Formula Racing Car Drive-train PDF">PDF</a>
-          <!-- <a href="https://youtu.be/TINTIN_DEMO" target="_blank" rel="noopener" aria-label="TINTIN project video on YouTube">Video</a> -->
-        </div>
-        <p class="proj-desc"></p>
-      </td>
-    </tr>
 
   </tbody>
 </table>
