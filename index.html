@@ -107,55 +107,249 @@
   [id]{ scroll-margin-top: calc(var(--nav-height) + 16px); }
   body{ padding-top: calc(var(--nav-height) + 8px); }
 
-  /* Mobile: slightly larger tap targets, keep height stable */
-  @media (max-width: 700px){
-    :root{
-      --nav-pad-x: 14px;
-      --nav-pad-y: 10px;
-    }
-    .top-nav{ height: var(--nav-height); }
-    .top-nav a{ font-size: 15px; }        /* optional readability bump */
-  }
+  /
 </style>
 
-
+<!-- ======= Publications: single layout for all screen sizes (no mobile overrides) ======= -->
 <style>
-  /* Mobile: stack About cells, show profile pic first */
-  @media (max-width: 700px) {
-    /* Turn the row into a flex container */
-    #about tbody tr {
-      display: flex;
-      flex-wrap: wrap;
-    }
-
-    /* Make both cells full width when stacked */
-    #about tbody tr > td {
-      width: 100% !important;
-      max-width: 100% !important;
-      padding: 12px 2.5% !important;
-    }
-
-    /* Move the right cell (profile pic) above the text */
-    #about tbody tr > td:last-child {
-      order: -1;
-      text-align: center;
-    }
-
-    /* Tidy the profile image sizing on mobile */
-    #about tbody tr > td:last-child img {
-      width: 160px;            /* nice mobile size */
-      max-width: 60vw;         /* prevent overflow on tiny screens */
-      height: auto;
-      border-radius: 50%;
-      display: block;
-      margin: 0 auto 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
-
-    /* Slightly reduce heading size for small screens */
-    #about .name { font-size: 28px !important; }
+  :root{
+    --pub-thumb-h-desktop: 220px;
+    --pubs-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
+
+  /* Container (same everywhere) */
+  #publications.pubs-table{
+    width:100%;
+    max-width:800px;
+    margin:auto;
+    border-spacing:0 10px;
+    border-collapse:separate;
+    table-layout:fixed;
+  }
+  #publications .pub-row td{ vertical-align:middle; }
+  #publications, #publications td, #publications h2, #publications .pub-meta,
+  #publications .pub-meta a, #publications .pub-desc{
+    font-family:var(--pubs-font);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  /* Two-column split (applies to all sizes) */
+  #publications .pub-row > td:first-child{ width:45% !important; padding:6px 8px; text-align:center; }
+  #publications .pub-row > td:last-child { width:55% !important; padding:4px 0; }
+
+  /* Media box (uniform height) */
+  #publications .pub-thumb{
+    position:relative;
+    width:100%;
+    height:var(--pub-thumb-h-desktop);
+    margin:0 auto;
+    border-radius:6px;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  /* Base media */
+  #publications .pub-thumb img,
+  #publications .pub-thumb video{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+    border-radius:6px;
+  }
+
+  /* Hover behavior: only when a video exists */
+  #publications .pub-thumb img{ transition:opacity .2s ease; }
+  #publications .pub-thumb .hover-video{
+    position:absolute; inset:0;
+    opacity:0; transition:opacity .2s ease;
+    border-radius:6px; pointer-events:none;
+    z-index:1;
+    display:flex; align-items:center; justify-content:center;
+  }
+  #publications .pub-thumb.has-video:hover .hover-video,
+  #publications .pub-thumb.has-video:focus-within .hover-video{ opacity:1; }
+  #publications .pub-thumb.has-video:hover img,
+  #publications .pub-thumb.has-video:focus-within img{ opacity:0; }
+
+  /* If no video, never show overlay */
+  #publications .pub-thumb:not(.has-video) .hover-video{ display:none !important; }
+
+  /* Text */
+  #publications .pub-meta a{ text-decoration:none; }
+  #publications .pub-meta .papertitle{ font-weight:600; }
+  #publications .pub-desc{ margin-top:6px; font-size:14px; line-height:1.4em; }
+
+  /* Link pills */
+  #publications .pub-links{
+    margin-top:8px; display:flex; flex-wrap:wrap; gap:8px;
+  }
+  #publications .pub-links a{
+    display:inline-block; font-size:13px; line-height:1;
+    padding:6px 10px; border:1px solid rgba(0,0,0,0.15);
+    border-radius:9999px; text-decoration:none; color:#222;
+    transition:background-color .15s ease, border-color .15s ease;
+  }
+  #publications .pub-links a:hover{
+    background:rgba(0,0,0,0.06); border-color:rgba(0,0,0,0.25);
+  }
+
+  /* --- Optional carousel inside .pub-thumb (works everywhere) --- */
+  #publications .pub-carousel { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 6px; }
+  #publications .pub-carousel .carousel-track{ display: flex; height: 100%; transition: transform .45s ease; will-change: transform; }
+  #publications .pub-carousel .slide{ position: relative; flex: 0 0 100%; height: 100%; display:flex; align-items:center; justify-content:center; }
+  #publications .pub-carousel .slide img,
+  #publications .pub-carousel .slide video{ width:100%; height:100%; object-fit:contain; display:block; border-radius:6px; }
+  #publications .pub-carousel .slide .hover-video{
+    position:absolute; inset:0; opacity:0; transition:opacity .2s ease;
+    pointer-events:none; display:flex; align-items:center; justify-content:center; z-index:1;
+  }
+  #publications .pub-carousel .slide.has-video:hover .hover-video,
+  #publications .pub-carousel .slide.has-video:focus-within .hover-video{ opacity:1; }
+  #publications .pub-carousel .slide.has-video:hover img,
+  #publications .pub-carousel .slide.has-video:focus-within img{ opacity:0; transition:opacity .2s ease; }
+
+  /* Arrows (always visible if >1 slide) */
+  #publications .pub-carousel .nav-btn{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:34px; height:34px; border-radius:9999px; border:1px solid rgba(0,0,0,.2);
+    background:rgba(255,255,255,.85); backdrop-filter:saturate(1.8) blur(2px);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    font-size:20px; line-height:1; padding:0; user-select:none;
+  }
+  #publications .pub-carousel .nav-btn:hover{ background:#fff; }
+  #publications .pub-carousel .nav-btn:disabled{ opacity:.5; cursor:default; }
+  #publications .pub-carousel .nav-btn.prev{ left:8px; }
+  #publications .pub-carousel .nav-btn.next{ right:8px; }
+  #publications .pub-carousel.single .nav-btn{ display:none !important; }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  /* ---------- A) Carousels ---------- */
+  document.querySelectorAll('#publications [data-pub-carousel]').forEach((carousel) => {
+    const track   = carousel.querySelector('.carousel-track');
+    const slides  = Array.from(carousel.querySelectorAll('.slide'));
+    const prevBtn = carousel.querySelector('.nav-btn.prev');
+    const nextBtn = carousel.querySelector('.nav-btn.next');
+
+    let index = 0;
+    const count = slides.length;
+
+    if (count <= 1) { carousel.classList.add('single'); }
+
+    // Prep any videos but don't autoplay yet
+    slides.forEach(s => {
+      const v = s.querySelector('.hover-video video');
+      if (v) {
+        s.classList.add('has-video');
+        v.muted = true; v.loop = true; v.playsInline = true;
+        v.setAttribute('muted',''); v.setAttribute('webkit-playsinline','');
+        v.removeAttribute('controls'); v.preload = 'metadata';
+        v.play().then(()=>v.pause()).catch(()=>{});
+      } else {
+        const hv = s.querySelector('.hover-video');
+        if (hv) hv.style.display = 'none';
+      }
+    });
+
+    const setActive = () => {
+      slides.forEach((s,i)=> s.classList.toggle('active', i === index));
+    };
+
+    const pauseAll = () => {
+      slides.forEach(s => {
+        const v = s.querySelector('video');
+        if (v) { try { v.pause(); } catch(e){} }
+      });
+    };
+
+    const update = () => {
+      track.style.transform = `translateX(${-index * 100}%)`;
+      setActive();
+      if (prevBtn) prevBtn.disabled = (index === 0);
+      if (nextBtn) nextBtn.disabled = (index === count - 1);
+      pauseAll();
+      if (carousel.matches(':hover')) {
+        const v = slides[index].querySelector('video');
+        if (v) { try { v.currentTime = 0; v.play(); } catch(e){} }
+      }
+    };
+
+    const go = (dir) => {
+      const next = Math.max(0, Math.min(count - 1, index + dir));
+      if (next !== index) { index = next; update(); }
+    };
+
+    prevBtn && prevBtn.addEventListener('click', () => go(-1));
+    nextBtn && nextBtn.addEventListener('click', () => go(1));
+
+    const playActiveIfAny = () => {
+      const v = slides[index].querySelector('video');
+      if (v) { try { v.currentTime = 0; v.play(); } catch(e){} }
+    };
+    const pauseActiveIfAny = () => {
+      const v = slides[index].querySelector('video');
+      if (v) { try { v.pause(); } catch(e){} }
+    };
+    carousel.addEventListener('mouseenter', playActiveIfAny);
+    carousel.addEventListener('mouseleave', pauseActiveIfAny);
+
+    // Basic swipe
+    let startX = 0, dx = 0, touching = false;
+    const onStart = (e) => { touching = true; startX = (e.touches? e.touches[0].clientX : e.clientX); dx = 0; };
+    const onMove  = (e) => { if (!touching) return; const x = (e.touches? e.touches[0].clientX : e.clientX); dx = x - startX; };
+    const onEnd   = () => {
+      if (!touching) return; touching = false;
+      const thresh = 50;
+      if (dx >  thresh) go(-1);
+      if (dx < -thresh) go( 1);
+    };
+    carousel.addEventListener('touchstart', onStart, {passive:true});
+    carousel.addEventListener('touchmove',  onMove,  {passive:true});
+    carousel.addEventListener('touchend',   onEnd,   {passive:true});
+
+    update();
+  });
+
+  /* ---------- B) Non-carousel thumbs (single image + optional video) ---------- */
+  document.querySelectorAll('#publications .pub-thumb').forEach((thumb) => {
+    // If this thumb contains a carousel, skip (handled above)
+    if (thumb.querySelector('[data-pub-carousel]')) return;
+
+    const vid = thumb.querySelector('.hover-video video');
+
+    if (!vid) {
+      const hv = thumb.querySelector('.hover-video');
+      if (hv) hv.style.display = 'none';
+      thumb.classList.remove('has-video');
+      return;
+    }
+
+    thumb.classList.add('has-video');
+
+    vid.muted = true; vid.loop = true; vid.playsInline = true;
+    vid.setAttribute('muted',''); vid.setAttribute('webkit-playsinline','');
+    vid.removeAttribute('controls'); vid.preload = 'metadata';
+    vid.play().then(()=>vid.pause()).catch(()=>{});
+
+    const play  = () => { try { vid.currentTime = 0; vid.play(); } catch(e){} };
+    const pause = () => { try { vid.pause(); } catch(e){} };
+
+    thumb.addEventListener('mouseenter', play);
+    thumb.addEventListener('mouseleave', pause);
+    thumb.addEventListener('focusin', play);
+    thumb.addEventListener('focusout', pause);
+
+    // Touch fallback: play while finger is down
+    thumb.addEventListener('touchstart', play,  { passive: true });
+    thumb.addEventListener('touchend',   pause, { passive: true });
+  });
+});
+</script>
 
 
 
@@ -280,16 +474,14 @@
       </tbody>
     </table>
 
-<!-- ======= Publications (desktop 45/55; mobile full-width text) ======= -->
-<!-- <style>
+<<!-- ======= Publications (single layout: 45/55 on all screens) ======= -->
+<style>
   :root{
-    --pub-thumb-h-desktop: 220px;
-    --pub-thumb-h-mobile: 180px;
-    --pub-max-w-mobile: 420px;
+    --pub-thumb-h: 220px;
     --pubs-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
 
-  /* Container matches Projects width (desktop) */
+  /* Container */
   #publications.pubs-table{
     width:100%;
     max-width:800px;
@@ -299,22 +491,33 @@
     table-layout:fixed;
   }
   #publications .pub-row td{ vertical-align:middle; }
-  #publications, #publications td, #publications h2, #publications .pub-meta,
-  #publications .pub-meta a, #publications .pub-desc{
+  #publications,
+  #publications td,
+  #publications h2,
+  #publications .pub-meta,
+  #publications .pub-meta a,
+  #publications .pub-desc{
     font-family:var(--pubs-font);
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
   }
 
-  /* Desktop 45/55 split */
-  #publications .pub-row > td:first-child{ width:45% !important; padding:6px 8px; text-align:center; }
-  #publications .pub-row > td:last-child { width:55% !important; padding:4px 0; }
+  /* Two-column split (applies to all sizes) */
+  #publications .pub-row > td:first-child{
+    width:45% !important;
+    padding:6px 8px;
+    text-align:center;
+  }
+  #publications .pub-row > td:last-child{
+    width:55% !important;
+    padding:4px 0;
+  }
 
   /* Media box (uniform height) */
   #publications .pub-thumb{
     position:relative;
     width:100%;
-    height:var(--pub-thumb-h-desktop);
+    height:var(--pub-thumb-h);
     margin:0 auto;
     border-radius:6px;
     overflow:hidden;
@@ -336,313 +539,130 @@
   /* Hover behavior: only when a video exists */
   #publications .pub-thumb img{ transition:opacity .2s ease; }
   #publications .pub-thumb .hover-video{
-    position:absolute; inset:0;
-    opacity:0; transition:opacity .2s ease;
-    border-radius:6px; pointer-events:none;
+    position:absolute;
+    inset:0;
+    opacity:0;
+    transition:opacity .2s ease;
+    border-radius:6px;
+    pointer-events:none;
     z-index:1;
-    display:flex; align-items:center; justify-content:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
   }
   #publications .pub-thumb.has-video:hover .hover-video,
   #publications .pub-thumb.has-video:focus-within .hover-video{ opacity:1; }
   #publications .pub-thumb.has-video:hover img,
   #publications .pub-thumb.has-video:focus-within img{ opacity:0; }
 
-  /* If no video, ensure overlay never shows */
+  /* If no video, never show overlay */
   #publications .pub-thumb:not(.has-video) .hover-video{ display:none !important; }
 
   /* Text */
+  #publicitions .pub-meta a{ text-decoration:none; } /* (typo fixed below) */
   #publications .pub-meta a{ text-decoration:none; }
   #publications .pub-meta .papertitle{ font-weight:600; }
   #publications .pub-desc{ margin-top:6px; font-size:14px; line-height:1.4em; }
 
   /* Link pills */
   #publications .pub-links{
-    margin-top:8px; display:flex; flex-wrap:wrap; gap:8px;
+    margin-top:8px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
   }
   #publications .pub-links a{
-    display:inline-block; font-size:13px; line-height:1;
-    padding:6px 10px; border:1px solid rgba(0,0,0,0.15);
-    border-radius:9999px; text-decoration:none; color:#222;
+    display:inline-block;
+    font-size:13px;
+    line-height:1;
+    padding:6px 10px;
+    border:1px solid rgba(0,0,0,0.15);
+    border-radius:9999px;
+    text-decoration:none;
+    color:#222;
     transition:background-color .15s ease, border-color .15s ease;
   }
   #publications .pub-links a:hover{
-    background:rgba(0,0,0,0.06); border-color:rgba(0,0,0,0.25);
+    background:rgba(0,0,0,0.06);
+    border-color:rgba(0,0,0,0.25);
   }
 
-  /* --- Publications carousel inside .pub-thumb --- */
-  #publications .pub-carousel {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    border-radius: 6px;
+  /* --- Optional carousel inside .pub-thumb (works everywhere) --- */
+  #publications .pub-carousel{
+    position:relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    border-radius:6px;
   }
   #publications .pub-carousel .carousel-track{
-    display: flex;
-    height: 100%;
-    transition: transform .45s ease;
-    will-change: transform;
+    display:flex;
+    height:100%;
+    transition:transform .45s ease;
+    will-change:transform;
   }
   #publications .pub-carousel .slide{
-    position: relative;
-    flex: 0 0 100%;
-    height: 100%;
-    display:flex; align-items:center; justify-content:center;
+    position:relative;
+    flex:0 0 100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
   }
   #publications .pub-carousel .slide img,
   #publications .pub-carousel .slide video{
-    width:100%; height:100%; object-fit:contain; display:block; border-radius:6px;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+    border-radius:6px;
   }
   #publications .pub-carousel .slide .hover-video{
-    position:absolute; inset:0; opacity:0; transition:opacity .2s ease;
-    pointer-events:none; display:flex; align-items:center; justify-content:center; z-index:1;
+    position:absolute;
+    inset:0;
+    opacity:0;
+    transition:opacity .2s ease;
+    pointer-events:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:1;
   }
   #publications .pub-carousel .slide.has-video:hover .hover-video,
   #publications .pub-carousel .slide.has-video:focus-within .hover-video{ opacity:1; }
   #publications .pub-carousel .slide.has-video:hover img,
-  #publications .pub-carousel .slide.has-video:focus-within img{ opacity:0; transition:opacity .2s ease; }
+  #publications .pub-carousel .slide.has-video:focus-within img{
+    opacity:0;
+    transition:opacity .2s ease;
+  }
 
-  /* Arrows */
+  /* Arrows (shown if >1 slide) */
   #publications .pub-carousel .nav-btn{
-    position:absolute; top:50%; transform:translateY(-50%);
-    width:34px; height:34px; border-radius:9999px; border:1px solid rgba(0,0,0,.2);
-    background:rgba(255,255,255,.85); backdrop-filter:saturate(1.8) blur(2px);
-    display:flex; align-items:center; justify-content:center; cursor:pointer;
-    font-size:20px; line-height:1; padding:0; user-select:none;
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:34px;
+    height:34px;
+    border-radius:9999px;
+    border:1px solid rgba(0,0,0,.2);
+    background:rgba(255,255,255,.85);
+    backdrop-filter:saturate(1.8) blur(2px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-size:20px;
+    line-height:1;
+    padding:0;
+    user-select:none;
   }
   #publications .pub-carousel .nav-btn:hover{ background:#fff; }
   #publications .pub-carousel .nav-btn:disabled{ opacity:.5; cursor:default; }
   #publications .pub-carousel .nav-btn.prev{ left:8px; }
   #publications .pub-carousel .nav-btn.next{ right:8px; }
   #publications .pub-carousel.single .nav-btn{ display:none !important; }
-
-  /* ===== Mobile: true full-width (edge-to-edge) ===== */
-/* ===== Publications: robust mobile stack (iOS-safe) ===== */
-@media (max-width: 600px){
-  /* Stop any horizontal scroll/bleed */
-  html, body { overflow-x:hidden; }
-
-  /* Make the publications table behave like a block container */
-  #publications.pubs-table{
-    display:block;          /* critical: tables otherwise fight widths */
-    width:100%;
-    max-width:100%;
-    margin:0 auto;
-    border-spacing:0 !important;
-    table-layout:auto !important;
-    box-sizing:border-box;
-  }
-
-  /* Each pub row becomes a block (stacked) */
-  #publications .pub-row{
-    display:block;
-    margin:0;
-    border-bottom: 12px solid transparent; /* spacing between items */
-  }
-
-  /* Cells become full-width blocks */
-  #publications .pub-row > td{
-    display:block;
-    width:100% !important;
-    max-width:100% !important;
-    padding:0 !important;        /* remove inherited gutters */
-    box-sizing:border-box;
-  }
-
-  /* Media box: full width; choose a stable mobile height */
-  #publications .pub-thumb{
-    position:relative;
-    width:100%;
-    /* 56.25vw gives a 16:9 feel without bleeding; also cap height */
-    height:min(56.25vw, 260px);
-    margin:0;
-    border-radius:0;             /* clean edge-to-edge look */
-    overflow:hidden;
-  }
-
-  /* Media inside box must not be capped by old max-widths */
-  #publications .pub-thumb img,
-  #publications .pub-thumb video{
-    width:100% !important;
-    height:100% !important;
-    max-width:none !important;
-    object-fit:contain;
-    display:block;
-  }
-
-  /* Carousel arrows kept centered on mobile */
-  #publications .pub-carousel .nav-btn{
-    top:50%;
-    transform:translateY(-50%);
-  }
-
-  /* Text block with comfy padding */
-  #publications .pub-meta{
-    padding:14px 16px !important;
-  }
-  #publications .pub-meta .papertitle{ font-size:16.5px; line-height:1.25; }
-  #publications .pub-desc{ font-size:13.5px; line-height:1.45; }
-}
-
-/* Desktop column split still applies above 600px */
-@media (min-width: 601px){
-  #publications .pub-row > td:first-child{ width:45% !important; padding:6px 8px; text-align:center; }
-  #publications .pub-row > td:last-child { width:55% !important; padding:4px 0; }
-}
-
-/* Remove any earlier 100vw margin hacks that might remain */
-#publications.pubs-table{ margin-left:auto; margin-right:auto; }
-
-</style> -->
-
-<style>
-/* ======= Publications (aligned with Projects; two-column even on mobile) ======= */
-:root{
-  --pub-thumb-h-desktop: 220px;
-  --pub-thumb-h-mobile: 180px;
-}
-
-/* Container */
-#publications.pubs-table{
-  width:100%;
-  max-width:800px;
-  margin:auto;
-  border-spacing:0 10px;
-  border-collapse:separate;
-  table-layout:fixed;
-}
-#publications .pub-row td{ vertical-align:middle; }
-
-/* Two-column layout (match Projects) */
-#publications .pub-row > td:first-child{ padding:5px !important; width:45% !important; text-align:center; }
-#publications .pub-row > td:last-child { padding:2px !important; width:55% !important; }
-
-/* Media box (uniform height across rows) */
-#publications .pub-thumb{
-  position:relative;
-  width:100%;
-  height:var(--pub-thumb-h-desktop);
-  margin:0 auto;
-  border-radius:6px;
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-/* Base media */
-#publications .pub-thumb img,
-#publications .pub-thumb video{
-  width:100%;
-  height:100%;
-  object-fit:contain;   /* no crop; shrink to fit */
-  display:block;
-  border-radius:6px;
-}
-
-/* Hover video overlay (no :has; iOS-safe with JS below) */
-#publications .pub-thumb img{ transition:opacity .2s ease; }
-#publications .hover-video{
-  position:absolute; inset:0;
-  opacity:0; transition:opacity .2s ease;
-  border-radius:6px; pointer-events:none;
-  z-index:1;
-  display:flex; align-items:center; justify-content:center;
-}
-#publications .pub-row:hover .hover-video,
-#publications .pub-row:focus-within .hover-video{ opacity:1; }
-#publications .pub-row:hover .pub-thumb img,
-#publications .pub-row:focus-within .pub-thumb img{ opacity:0; }
-
-/* Typography & links */
-#publications .papertitle{ font-weight:600; }
-#publications .pub-desc { margin-top:6px; font-size:14px; line-height:1.4em; }
-#publications .pub-links{ margin-top:8px; display:flex; flex-wrap:wrap; gap:8px; }
-#publications .pub-links a{
-  display:inline-block; font-size:13px; line-height:1;
-  padding:6px 10px; border:1px solid rgba(0,0,0,0.15);
-  border-radius:9999px; text-decoration:none; color:#222;
-  transition:background-color .15s ease, border-color .15s ease;
-}
-#publications .pub-links a:hover{
-  background:rgba(0,0,0,0.06); border-color:rgba(0,0,0,0.25);
-}
-
-/* Optional: if you use the in-thumb carousel */
-#publications .pub-carousel .nav-btn{
-  position:absolute; top:50%; transform:translateY(-50%);
-  width:34px; height:34px; border-radius:9999px; border:1px solid rgba(0,0,0,.2);
-  background:rgba(255,255,255,.85); backdrop-filter:saturate(1.8) blur(2px);
-  display:flex; align-items:center; justify-content:center; cursor:pointer;
-  font-size:20px; line-height:1; padding:0; user-select:none;
-}
-#publications .pub-carousel .nav-btn.prev{ left:8px; }
-#publications .pub-carousel .nav-btn.next{ right:8px; }
-
-/* ===== Mobile: keep two columns; just tighten widths & heights ===== */
-@media (max-width:540px){
-  html, body{ overflow-x:hidden; } /* belt-and-suspenders; prevents border bleed */
-
-  #publications .pub-row > td:first-child{ width:44% !important; }
-  #publications .pub-row > td:last-child { width:56% !important; padding:4px !important; }
-
-  #publications .pub-thumb{ height:var(--pub-thumb-h-mobile); }
-
-  #publications .papertitle{ font-size:16px; }
-  #publications .pub-desc { font-size:13px; }
-  #publications .pub-links a{ font-size:12px; padding:6px 9px; }
-}
-
 </style>
-<style>
-  /* Prevent mobile horizontal scroll from 100vw bleed */
-  @media (max-width:540px){
-    html, body { overflow-x: hidden; }
-  }
 
-  /* ===== Mobile: make the publications section truly full-width ===== */
-  @media (max-width:540px){
-    /* Make the TABLE act like a block that can bleed edge-to-edge */
-    #publications.pubs-table{
-      display:block;              /* critical: tables resist width hacks */
-      max-width:none;
-      width:100vw;
-      margin-left:calc(50% - 50vw);
-      margin-right:calc(50% - 50vw);
-      border-spacing:0;
-      table-layout:auto;
-      box-sizing:border-box;
-    }
-
-    /* Stack cells and remove fixed widths from desktop */
-    #publications .pub-row{ display:block; }
-    #publications .pub-row > td{
-      display:block;
-      width:100% !important;
-      padding:0 !important;       /* reset, we’ll control padding on inner blocks */
-    }
-
-    /* Media (image/video) goes full width; keep your mobile height */
-    #publications .pub-thumb{
-      width:100%;
-      height:var(--pub-thumb-h-mobile);
-      margin:0;
-      border-radius:0;
-    }
-
-    /* Ensure text spans the FULL line with comfy side padding */
-    #publications .pub-meta{
-      max-width:none !important;
-      width:100% !important;
-      padding:12px 16px !important;   /* this is the only horizontal inset */
-      box-sizing:border-box;
-    }
-
-    /* Optional: slightly larger title on phones */
-    #publications .pub-meta .papertitle{ font-size:16.5px; }
-    #publications .pub-desc{ font-size:13.5px; }
-  }
-</style>
 
 
 <script>
