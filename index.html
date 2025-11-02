@@ -41,6 +41,46 @@
 </style>
 
 
+<style>
+  /* Mobile: stack About cells, show profile pic first */
+  @media (max-width: 700px) {
+    /* Turn the row into a flex container */
+    #about tbody tr {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    /* Make both cells full width when stacked */
+    #about tbody tr > td {
+      width: 100% !important;
+      max-width: 100% !important;
+      padding: 12px 2.5% !important;
+    }
+
+    /* Move the right cell (profile pic) above the text */
+    #about tbody tr > td:last-child {
+      order: -1;
+      text-align: center;
+    }
+
+    /* Tidy the profile image sizing on mobile */
+    #about tbody tr > td:last-child img {
+      width: 160px;            /* nice mobile size */
+      max-width: 60vw;         /* prevent overflow on tiny screens */
+      height: auto;
+      border-radius: 50%;
+      display: block;
+      margin: 0 auto 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    /* Slightly reduce heading size for small screens */
+    #about .name { font-size: 28px !important; }
+  }
+</style>
+
+
+
 <!-- =============== Navigation Bar ================= -->
 <style>
   :root{
@@ -117,48 +157,6 @@
     .top-nav a{ font-size: 15px; }        /* optional readability bump */
   }
 </style>
-
-
-<style>
-  /* Mobile: stack About cells, show profile pic first */
-  @media (max-width: 700px) {
-    /* Turn the row into a flex container */
-    #about tbody tr {
-      display: flex;
-      flex-wrap: wrap;
-    }
-
-    /* Make both cells full width when stacked */
-    #about tbody tr > td {
-      width: 100% !important;
-      max-width: 100% !important;
-      padding: 12px 2.5% !important;
-    }
-
-    /* Move the right cell (profile pic) above the text */
-    #about tbody tr > td:last-child {
-      order: -1;
-      text-align: center;
-    }
-
-    /* Tidy the profile image sizing on mobile */
-    #about tbody tr > td:last-child img {
-      width: 160px;            /* nice mobile size */
-      max-width: 60vw;         /* prevent overflow on tiny screens */
-      height: auto;
-      border-radius: 50%;
-      display: block;
-      margin: 0 auto 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
-
-    /* Slightly reduce heading size for small screens */
-    #about .name { font-size: 28px !important; }
-  }
-</style>
-
-
-
 <body>
   <nav class="top-nav" role="navigation" aria-label="Primary">
     <!-- <div class="brand">Jerry Cheng</div> -->
@@ -267,6 +265,64 @@
       </table>
       </body>
 
+<!---------------- Education Section --------------------------->
+    <style>
+      /* 1) Shared title sizing for Publications + Education */
+      :root{
+        /* adjust these two numbers if you ever want a different size */
+        --pub-title-size: 50px;       /* desktop/tablet */
+        --pub-title-size-mobile: 16.5px; /* phones */
+      }
+
+      /* 2) Ensure Publications titles use the variable */
+      #publications .pub-meta .papertitle{
+        font-size: var(--pub-title-size);
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      /* 3) Make Education use the same font + size */
+      #education,
+      #education *{
+        font-family: -apple-system, BlinkMacSystemFont,
+                    "SF Pro Text","SF Pro Display",
+                    "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        color: #111;
+      }
+
+      #education h2{
+        font-size: var(--pub-title-size);   /* same as publication title */
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        margin: 8px 0 12px;
+      }
+
+      /* Optional: keep body text tidy */
+      #education p{
+        font-size: 15px;
+        line-height: 1.55;
+        margin: 10px 0;
+      }
+      #education b{ font-weight: 600; }
+      #education i{ color:#555; }
+      #education a{
+        color: inherit; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.08);
+      }
+      #education a:hover{ border-bottom-color: rgba(0,0,0,0.30); }
+
+      /* 4) Mobile: apply the same mobile size to BOTH */
+      @media (max-width: 700px){
+        #publications .pub-meta .papertitle,
+        #education h2{
+          font-size: var(--pub-title-size-mobile);
+        }
+      }
+    </style>
+    
+
+
     <table id="education" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
       <tbody>
         <tr><td><h2>Education</h2>
@@ -280,8 +336,8 @@
       </tbody>
     </table>
 
-<!-- ======= Publications (desktop 45/55; mobile full-width text) ======= -->
-<!-- ======= Publications (single layout: 45/55 on all screens) ======= -->
+
+<!-- ======= Publications - optimized for mobile ======= -->
 <style>
   :root{
     --pub-thumb-h: 220px;
@@ -470,7 +526,6 @@
   #publications .pub-carousel.single .nav-btn{ display:none !important; }
 </style>
 
-
 <style>
   /* Prevent mobile horizontal scroll from 100vw bleed */
   @media (max-width:540px){
@@ -520,6 +575,66 @@
     #publications .pub-desc{ font-size:13.5px; }
   }
 </style>
+
+<style>
+  /* Mobile: stack Publications rows, show media first */
+  @media (max-width: 700px){
+    /* Let the table row behave like a flex container */
+    #publications.pubs-table .pub-row{
+      display:flex;
+      flex-wrap:wrap;
+    }
+
+    /* Both cells become full-width blocks */
+    #publications.pubs-table .pub-row > td{
+      width:100% !important;
+      max-width:100% !important;
+      padding:12px 2.5% !important;   /* comfy side insets, matches About */
+      box-sizing:border-box;
+    }
+
+    /* Ensure the media cell appears first (image/video above text) */
+    #publications.pubs-table .pub-row > td:first-child{
+      order:-1;             /* put media on top */
+      text-align:center;    /* center thumbnails on mobile */
+    }
+
+    /* Mobile-friendly media box */
+    #publications .pub-thumb{
+      width:100%;
+      height:clamp(180px, 58vw, 300px);  /* responsive height */
+      margin:0 auto;
+      border-radius:6px;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    #publications .pub-thumb img,
+    #publications .pub-thumb video{
+      width:100% !important;
+      height:100% !important;
+      max-width:none !important;
+      object-fit:contain;
+      display:block;
+      border-radius:6px;
+    }
+
+    /* Keep carousel arrows centered vertically on mobile */
+    #publications .pub-carousel .nav-btn{
+      top:50%;
+      transform:translateY(-50%);
+    }
+
+    /* Tweak text spacing/sizing for small screens */
+    #publications .pub-meta .papertitle{ font-size:16.5px; line-height:1.25; }
+    #publications .pub-desc{ font-size:13.5px; line-height:1.45; }
+
+    /* Prevent horizontal scroll */
+    html, body { overflow-x:hidden; }
+  }
+</style>
+
 
 
 <script>
