@@ -810,6 +810,16 @@
 </style>
 
 <style>
+  /* When a card is "playing", show video overlay and hide the img */
+  #publications .pub-thumb.playing .hover-video,
+  #projects     .proj-thumb.playing .hover-video{ opacity:1; }
+
+  #publications .pub-thumb.playing img,
+  #projects     .proj-thumb.playing img{ opacity:0; }
+</style>
+
+
+<style>
   /* Mobile: add comfy left/right padding around each publication card */
   @media (max-width:700px){
     /* give the whole publications section side gutters */
@@ -963,6 +973,79 @@ document.addEventListener('DOMContentLoaded', function () {
     thumb.addEventListener('touchstart', play,  { passive: true });
     thumb.addEventListener('touchend',   pause, { passive: true });
   });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const isCoarse = window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
+
+  if (!isCoarse) return; // desktop stays hover-based
+
+  // Helper: wire up tap-to-toggle for a given thumb + its video (if any)
+  function enableTapToggle(thumb, videoSelector='video'){
+    const vid = thumb.querySelector(videoSelector);
+    if (!vid) return;
+
+    // Make sure prior touchstart/touchend hover logic doesn't interfere
+    thumb.replaceWith(thumb.cloneNode(true)); // remove old listeners quickly
+    const fresh = document.querySelector('[data-uid="'+(thumb.dataset.uid||'')+'"]') || document.querySelectorAll('#publications .pub-thumb, #projects .proj-thumb')[0] || thumb;
+
+    // Re-select video after clone fallback
+    const el = thumb.isConnected ? thumb : fresh;
+    const v  = el.querySelector(videoSelector);
+    if (!v) return;
+
+    // Safe video setup
+    v.muted = true; v.loop = true; v.playsInline = true;
+    v.setAttribute('muted',''); v.setAttribute('webkit-playsinline','');
+    v.removeAttribute('controls'); v.preload = 'metadata';
+
+    // Tap toggles play/pause + img/video visibility
+    const toggle = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (el.classList.contains('playing')){
+        try { v.pause(); } catch(e){}
+        el.classList.remove('playing');
+      } else {
+        try { v.currentTime = 0; v.play(); } catch(e){}
+        el.classList.add('playing');
+      }
+    };
+
+    el.addEventListener('click', toggle);
+  }
+
+  // Publications: single-thumb cards (non-carousel)
+  document.querySelectorAll('#publications .pub-thumb').forEach((thumb, i) => {
+    // mark for clone fallback
+    thumb.dataset.uid = 'pubthumb-' + i;
+    // only enable if a video overlay exists
+    if (thumb.querySelector('.hover-video video')) {
+      enableTapToggle(thumb, '.hover-video video');
+    }
+  });
+
+  // Projects
+  document.querySelectorAll('#projects .proj-thumb').forEach((thumb, i) => {
+    thumb.dataset.uid = 'projthumb-' + i;
+    if (thumb.querySelector('.hover-video video')) {
+      enableTapToggle(thumb, '.hover-video video');
+    }
+  });
+
+  // Optional: pause any playing video when user taps elsewhere
+  document.addEventListener('click', function (e) {
+    const playing = document.querySelectorAll('#publications .pub-thumb.playing, #projects .proj-thumb.playing');
+    playing.forEach(el => {
+      if (!el.contains(e.target)){
+        const v = el.querySelector('video');
+        if (v){ try { v.pause(); } catch(_){} }
+        el.classList.remove('playing');
+      }
+    });
+  }, true);
 });
 </script>
 
@@ -1372,21 +1455,165 @@ document.addEventListener('DOMContentLoaded', function () {
     #news .carousel-track > div { height: 160px; }
   }
 </style>
+<!-- <style>
+  :root{
+    --news-card-pad-x: 15px;   /* inner left/right padding */
+    --news-card-pad-y: 12px;   /* inner top/bottom padding */
+    --news-media-radius: 8px;  /* rounded media inside card */
+  }
+
+  /* Section frame */
+  #news{
+    width:100%;
+    max-width:800px;
+    margin:auto;
+    border-spacing:0;
+    padding-left:15px;          /* section gutters to match pubs mobile */
+    padding-right:15px;
+    box-sizing:border-box;
+  }
+
+  /* Stack entries as cards with gap */
+  #news tbody{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  /* Each row becomes a card */
+  #news tr{
+    display:grid;
+    grid-template-columns: 1fr 320px;     /* text | media */
+    align-items:center;
+    column-gap:12px;
+
+    background:#fff;
+    border:1px solid rgba(0,0,0,0.12);
+    border-radius:10px;
+    box-shadow:0 1px 0 rgba(0,0,0,0.03);
+    overflow:hidden;
+  }
+
+  /* Inner padding for both text + media cells */
+  #news td{
+    display:block;
+    padding: var(--news-card-pad-y) var(--news-card-pad-x);
+    box-sizing:border-box;
+    background:transparent;
+  }
+
+  /* Media cell: keep inner padding but also rounded media */
+  #news [data-carousel]{
+    position:relative;
+    width:100%;
+    height:200px;
+    overflow:hidden;
+    border-radius: var(--news-media-radius);
+    /* This ensures the media respects cell padding */
+    box-sizing:border-box;
+  }
+
+  /* Track/slides */
+  #news .carousel-track{
+    display:flex;
+    height:100%;
+    transition: transform .5s ease;
+  }
+  #news .carousel-track > div{
+    min-width:100%;
+    display:flex; align-items:center; justify-content:center;
+    padding:0; /* keep media edge-to-edge inside the rounded box */
+    box-sizing:border-box;
+  }
+  #news .carousel-track img{
+    height:100%; width:auto; display:block;
+  }
+
+  /* Arrow buttons */
+  #news [data-carousel] button{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:34px; height:34px; border-radius:9999px;
+    border:1px solid rgba(0,0,0,.2);
+    background:rgba(255,255,255,.85);
+    backdrop-filter:saturate(1.8) blur(2px);
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; line-height:1; padding:0;
+  }
+  #news [data-carousel] button:hover{ background:#fff; }
+  #news [data-carousel] .prev{ left:8px; }
+  #news [data-carousel] .next{ right:8px; }
+
+  /* -------- Mobile tweaks -------- */
+  @media (max-width:700px){
+    #news tr{
+      grid-template-columns: 1fr 280px;
+      column-gap:10px;
+    }
+    #news td:first-child h2{ font-size:18px; margin:0 0 6px; }
+    #news td:first-child p { font-size:13.5px; line-height:1.45; }
+
+    #news [data-carousel],
+    #news .carousel-track,
+    #news .carousel-track > div{ height:180px; }
+    #news .carousel-track img{
+      height:100% !important; width:auto !important; max-width:none !important;
+    }
+  }
+
+  @media (max-width:360px){
+    #news tr{ grid-template-columns: 1fr 240px; }
+    #news [data-carousel],
+    #news .carousel-track,
+    #news .carousel-track > div{ height:160px; }
+  }
+</style> -->
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const isCoarse = window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
+    if (!isCoarse) return;
+
+    document.querySelectorAll('#news [data-carousel]').forEach(wrap => {
+      const track = wrap.querySelector('.carousel-track');
+      const slides = track ? track.children.length : 0;
+      if (!track || slides <= 1) return;
+
+      let idx = 0;
+      const go = (d) => { idx = (idx + d + slides) % slides; track.style.transform = `translateX(-${idx*100}%)`; };
+
+      // Tap anywhere on the media to go next
+      wrap.addEventListener('click', () => go(1));
+
+      // Keep arrow buttons working too if present
+      const prev = wrap.querySelector('.prev');
+      const next = wrap.querySelector('.next');
+      prev && prev.addEventListener('click', (e)=>{ e.stopPropagation(); go(-1); });
+      next && next.addEventListener('click', (e)=>{ e.stopPropagation(); go(1);  });
+    });
+  });
+</script>
 
 
 
-    <table id="news" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;margin-top:30px;">
-      <tbody>
+  <!-- News title outside the cards -->
+  <h2 id="news-title" style="
+    width:100%;max-width:800px;margin:30px auto 10px;
+    font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-size:var(--section-title-size,25px);font-weight:700;letter-spacing:-0.01em;color:#111;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  ">News</h2>
 
-        <!-- Entry 1 -->
+  <table id="news" style="width:100%;max-width:800px;margin:auto;border-spacing:0;">
+    <tbody>
+
+      <!-- Entry 1 (title removed from here) -->
       <tr>
         <td style="padding:8px;vertical-align:middle;width:65%;">
-          <h2 style="margin-bottom:8px;">News</h2>
           <p style="font-size:15px;line-height:1.5em;">
             <b>[11/2025]</b> Graduated with a Master's of Engineering (M.Eng.) degree at the University of Toronto.
           </p>
         </td>
-
         <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
           <div data-carousel style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;">
             <div class="carousel-track" style="display:flex;transition:transform 0.5s ease;height:200px;">
@@ -1394,19 +1621,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 <img src="assets/images/news/master_convocation/grad.jpg" alt="Graduation" style="height:200px;width:auto;max-width:100%;display:block;">
               </div>
             </div>
-
-            <!-- <button onclick="carouselMove(this,-1)" aria-label="Previous image"
-              style="position:absolute;top:50%;left:5px;transform:translateY(-50%);
-                    background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;
-                    border-radius:4px;cursor:pointer;">&#10094;</button>
-            <button onclick="carouselMove(this,1)" aria-label="Next image"
-              style="position:absolute;top:50%;right:5px;transform:translateY(-50%);
-                    background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;
-                    border-radius:4px;cursor:pointer;">&#10095;</button> -->
           </div>
         </td>
       </tr>
-  
+    
 
         <!-- Entry 1 -->
       <tr>
