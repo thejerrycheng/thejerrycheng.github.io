@@ -16,6 +16,73 @@
   <!-- Your stylesheet (ensure it's UTF-8 too; see note below) -->
   <link rel="stylesheet" href="stylesheet.css">
 
+
+
+  <style>
+  /* === Section title + mobile padding overrides (drop-in) === */
+  :root{
+    /* One source of truth for section H2 sizes */
+    --section-title-size: 25px;          /* desktop/tablet */
+    --section-title-size-mobile: 18px; /* phones */
+  }
+
+  /* Apply the same H2 styling across sections/tables */
+  #about h2,
+  #education h2,
+  #publications h2,
+  #news h2,
+  #projects h2,
+  #experience h2,
+  #skills h2{
+    font-family: -apple-system, BlinkMacSystemFont,
+                 "SF Pro Text","SF Pro Display",
+                 "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: var(--section-title-size);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 8px 0 12px;
+    color: #111;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Make the Publications title follow the same rule */
+  #publications h2 { font-size: var(--section-title-size); }
+
+  /* Mobile tweaks: consistent title size + tighter side padding */
+  @media (max-width: 700px){
+    #about h2,
+    #education h2,
+    #publications h2,
+    #news h2,
+    #projects h2,
+    #experience h2,
+    #skills h2{
+      font-size: var(--section-title-size-mobile);
+    }
+
+    /* Reduce the “big gutters” around text blocks on phones */
+    #about td,
+    #education td,
+    #publications td,
+    #news td,
+    #projects td,
+    #experience td,
+    #skills td{
+      padding-left: 12px !important;
+      padding-right: 12px !important;
+    }
+
+    /* Slightly trim paragraph spacing for denser mobile flow */
+    #about p, #education p, #publications p, #news p, #projects p, #experience p, #skills p{
+      margin-top: 8px;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+  }
+</style>
+
+
   <style>
     :root {
       --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -266,7 +333,7 @@
       </body>
 
 <!---------------- Education Section --------------------------->
-    <style>
+    <!-- <style>
       /* 1) Shared title sizing for Publications + Education */
       :root{
         /* adjust these two numbers if you ever want a different size */
@@ -319,7 +386,7 @@
           font-size: var(--pub-title-size-mobile);
         }
       }
-    </style>
+    </style> -->
     
 
 
