@@ -8,6 +8,24 @@
   <meta name="author" content="Jerry Cheng">
   <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 
+  <title>Jerry (Qilong) Cheng — Robotics & RL for Humanoids, Vision-Driven Control</title>
+  <meta name="description" content="Jerry Cheng: robotics researcher focused on humanoid locomotion, reinforcement learning, and vision-driven control. IRIS cinema robot arm, calibration, and haptics.">
+  <link rel="canonical" href="https://thejerrycheng.github.io/">
+  <meta name="robots" content="index,follow">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Jerry (Qilong) Cheng — Robotics & RL</title>
+
+    <!-- Google Search Console verification -->
+    <meta name="google-site-verification" content="YOUR_TOKEN_HERE">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- your other links, fonts, stylesheet.css, etc. -->
+  </head>
+
+
+
   <!-- Fonts (optional) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,6 +33,35 @@
 
   <!-- Your stylesheet (ensure it's UTF-8 too; see note below) -->
   <link rel="stylesheet" href="stylesheet.css">
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Jerry (Qilong) Cheng",
+  "alternateName": "Qilong Cheng",
+  "url": "https://thejerrycheng.github.io/",
+  "image": "https://thejerrycheng.github.io/assets/images/profile_pic.png",
+  "jobTitle": "Research Fellow",
+  "affiliation": [{
+    "@type": "Organization",
+    "name": "New York University"
+  },{
+    "@type": "Organization",
+    "name": "University of Toronto Robotics Institute"
+  }],
+  "knowsAbout": ["Humanoid locomotion","Reinforcement learning","Robot control","State estimation","Imitation learning","Cinema robot arms"],
+  "sameAs": [
+    "https://scholar.google.com/citations?user=iQuHS3MAAAAJ",
+    "https://www.linkedin.com/in/jerry-qilong-cheng-540039163/",
+    "https://github.com/thejerrycheng",
+    "https://x.com/thejerrycheng",
+    "https://www.youtube.com/@thejerrycheng",
+    "https://www.instagram.com/thejerrycheng"
+  ]
+}
+</script>
+
 
 
 
@@ -226,17 +273,19 @@
 </style>
 <body>
   <nav class="top-nav" role="navigation" aria-label="Primary">
-    <!-- <div class="brand">Jerry Cheng</div> -->
-    <div class="links">
-      <a href="#about">About</a>
-      <a href="#education">Education</a>
-      <a href="#publications">Publications</a>
-      <a href="#news">News</a>
-      <a href="#experience">Experience</a>
-      <a href="#projects">Projects</a>
-      <a href="#skills">Skills</a>
-    </div>
-  </nav>
+  <div class="links">
+    <a href="#about">About</a>
+    <a href="#education">Education</a>
+    <a href="#publications">Publications</a>
+    <a href="#news">News</a>
+    <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
+    <a href="#skills">Skills</a>
+    <a href="#startups">Startups</a>
+    <a href="blogs.html" target="_blank" rel="noopener">Blogs</a>
+  </div>
+</nav>
+  <!-- =============== End Navigation Bar ================= -->
 
 
 
@@ -1829,6 +1878,96 @@ document.addEventListener('DOMContentLoaded', function () {
       </tbody>
     </table>
 
+    <!-- ======= Startups Section ======= -->
+<style>
+  /* Card grid for startups (re-usable, minimal) */
+  #startups .grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:12px;
+  }
+  #startups .card{
+    border:1px solid rgba(0,0,0,0.12);
+    border-radius:10px;
+    padding:12px;
+    background:#fff;
+  }
+  #startups .card h3{
+    margin:0 0 6px 0;
+    font-size:16px;
+    font-weight:600;
+  }
+  #startups .card .meta{
+    font-size:13px;
+    color:#666;
+    margin-bottom:6px;
+  }
+  #startups .card p{
+    margin:6px 0 10px 0;
+    font-size:14px;
+    line-height:1.45;
+  }
+  #startups .links{
+    display:flex; flex-wrap:wrap; gap:8px;
+  }
+  #startups .links a{
+    display:inline-block;
+    font-size:12.5px; line-height:1;
+    padding:6px 10px;
+    border:1px solid rgba(0,0,0,0.15);
+    border-radius:9999px; text-decoration:none; color:#222;
+    transition:background-color .15s ease, border-color .15s ease;
+  }
+  #startups .links a:hover{
+    background:rgba(0,0,0,0.06); border-color:rgba(0,0,0,0.25);
+  }
+  @media (max-width:700px){
+    #startups .grid{ grid-template-columns: 1fr; }
+  }
+</style>
+
+<table id="startups" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;margin-top:26px;">
+  <tbody>
+    <tr><td><h2>Startups</h2></td></tr>
+    <tr>
+      <td style="padding:8px 0;">
+        <div class="grid">
+          <!-- Startup 1 -->
+          <div class="card">
+            <h3>IRIS Motion (Cinema Robot Arm)</h3>
+            <div class="meta">Robotics • 2025–present</div>
+            <p>
+              Low-cost, 3D-printed 6-DoF cinema robot arm with FOC actuators and a vision-conditioned imitation-learning stack for dynamic camera moves.
+            </p>
+            <div class="links">
+              <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener">Tech Brief</a>
+              <a href="https://www.youtube.com/@thejerrycheng" target="_blank" rel="noopener">Demo Video</a>
+              <!-- <a href="https://your-site.com" target="_blank" rel="noopener">Website</a> -->
+              <!-- <a href="assets/pdf/iris_pitch_deck.pdf" target="_blank" rel="noopener">Pitch Deck</a> -->
+            </div>
+          </div>
+
+          <!-- Startup 2 -->
+          <div class="card">
+            <h3>GouPals (Cross-border Shopper Network)</h3>
+            <div class="meta">Marketplace • 2024–2025</div>
+            <p>
+              Connects buyers with travelers to source hard-to-find goods across countries, with integrated guidance for purchase, delivery, and verification.
+            </p>
+            <div class="links">
+              <!-- Replace with real links when ready -->
+              <a href="assets/pdf/startups/goupals_onepager.pdf" target="_blank" rel="noopener">One-Pager</a>
+              <a href="assets/pdf/startups/goupals_pitch.pdf" target="_blank" rel="noopener">Pitch Deck</a>
+              <!-- <a href="https://goupals.app" target="_blank" rel="noopener">Website</a> -->
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
     <!-- ======= Technical Skills Section ======= -->
 
     <table id="skills"style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
@@ -1853,4 +1992,78 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   </body>
+</html>
+
+
+
+<!-- blogs.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Blogs — Jerry (Qilong) Cheng</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+              "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
+              "Segoe UI Emoji","Segoe UI Symbol", sans-serif;
+      --headings: "Space Grotesk", Inter, -apple-system, BlinkMacSystemFont,
+                  "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --section-title-size: 18px;
+      --section-title-size-mobile: 16.5px;
+    }
+    html, body { font-family: var(--sans); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; margin:0; background:#fff; }
+    h1,h2,h3,h4 { font-family: var(--headings); letter-spacing:.2px; }
+    a{ color:inherit; text-decoration:none; border-bottom:1px solid rgba(0,0,0,0.12); }
+    a:hover{ border-bottom-color: rgba(0,0,0,0.3); }
+
+    .wrap{ width:100%; max-width:800px; margin:auto; padding:16px; }
+    h2{
+      font-size:var(--section-title-size);
+      font-weight:700; letter-spacing:-0.01em; margin:8px 0 12px; color:#111;
+    }
+
+    .post{
+      border:1px solid rgba(0,0,0,0.12);
+      border-radius:10px; padding:14px; margin:10px 0;
+      background:#fff;
+    }
+    .post h3{ margin:0 0 6px 0; font-size:16.5px; }
+    .post .meta{ font-size:13px; color:#666; margin-bottom:6px; }
+    .post p{ margin:6px 0 0 0; font-size:14.5px; line-height:1.5; }
+
+    @media (max-width:700px){
+      .wrap{ padding-left:12px; padding-right:12px; }
+      h2{ font-size:var(--section-title-size-mobile); }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h2>Blog Posts</h2>
+
+    <!-- Example posts -->
+    <article class="post">
+      <h3><a href="blog/rl-vs-mpc.html">RL vs MPC for Humanoid Locomotion — Practical Tradeoffs</a></h3>
+      <div class="meta">Nov 2025 • Control, Robotics</div>
+      <p>Short note comparing WBC-QP/CLF-QP trackers vs contact-implicit MPC and how I blend them with residual RL.</p>
+    </article>
+
+    <article class="post">
+      <h3><a href="blog/iris-actuators.html">Design Notes from Building a Low-Cost Cinema Robot Arm</a></h3>
+      <div class="meta">Oct 2025 • Hardware, Mechatronics</div>
+      <p>FOC choices, differential wrist, carbon vs aluminum linkages, and supply chain lessons.</p>
+    </article>
+
+    <!-- Add more posts as needed -->
+  </div>
+</body>
 </html>
