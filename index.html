@@ -23,7 +23,7 @@
 
   <!-- Styles -->
   <link rel="stylesheet" href="stylesheet.css">
-</head>
+<!-- </head> -->
 
 <!-- Fonts (optional) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
@@ -283,17 +283,6 @@
   <!-- =============== End Navigation Bar ================= -->
 
 
-
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Jerry (Qilong) Cheng </title>
-    <meta name="author" content="Jerry Cheng">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="stylesheet.css">
-  </head>
-
-
   <body>
     <body>
       <table id="about" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
@@ -305,7 +294,7 @@
           Jerry (Qilong) Cheng 「程启龙
         </p>
 
-        <p style="font-size:17px;line-height:1.6;margin-top:10px;">
+        <!-- <p style="font-size:17px;line-height:1.6;margin-top:10px;">
           I am a <strong>Research Fellow</strong> at 
           <a href="https://engineering.nyu.edu" target="_blank" rel="noopener">New York University</a>, 
           working on reinforcement learning for humanoid locomotion and control.
@@ -319,7 +308,12 @@
           <a href="https://robotics.utoronto.ca" target="_blank" rel="noopener">University of Toronto Robotics Institute</a> 
           (<a href="https://www.mie.utoronto.ca/faculty_staff/mackay/" target="_blank" rel="noopener"><strong>Prof. Matthew Mackay</strong></a>, 
           <a href="https://www.bereyhi.com" target="_blank" rel="noopener"><strong>Prof. Ali Bereyhi</strong></a>).
+        </p> -->
+
+        <p style="font-size:17px;line-height:1.6;margin-top:10px;">
+          I’m a <strong>Research Fellow</strong> at <a href="https://engineering.nyu.edu" target="_blank" rel="noopener">NYU</a> working on RL for humanoid locomotion, with prior work in state estimation (<a href="https://starslab.ca" target="_blank" rel="noopener">STARS Lab</a>, <a href="https://starslab.ca/people/prof-jonathan-kelly/" target="_blank" rel="noopener"><strong>Prof. Jonathan Kelly</strong></a>), haptics/HRI (<a href="https://www.dgp.toronto.edu/" target="_blank" rel="noopener">DGP Lab</a>, <a href="https://danielwigdor.com" target="_blank" rel="noopener"><strong>Prof. Daniel Wigdor</strong></a>), and learning-driven manipulation/control (<a href="https://robotics.utoronto.ca" target="_blank" rel="noopener">UofT Robotics Institute</a>, <a href="https://www.mie.utoronto.ca/faculty_staff/mackay/" target="_blank" rel="noopener"><strong>Prof. Matthew Mackay</strong></a>; <a href="https://www.bereyhi.com" target="_blank" rel="noopener"><strong>Prof. Ali Bereyhi</strong></a>).
         </p>
+
 
 
         <p style="font-size:20px; line-height:1.3; margin:12px 0 4px;">
@@ -759,6 +753,88 @@
     html, body { overflow-x:hidden; }
   }
 </style>
+
+<style>
+  /* === Publications: card-style like Startups === */
+
+  /* spacing between cards */
+  #publications.pubs-table{ border-spacing:0 12px; }
+
+  /* DESKTOP/TABLET: fake a single card by splitting border across the two cells */
+  #publications .pub-row > td:first-child{
+    background:#fff;
+    border:1px solid rgba(0,0,0,0.12);
+    border-right:none;                      /* remove center seam */
+    border-radius:10px 0 0 10px;            /* left corners rounded */
+    overflow:hidden;                        /* clip media to radius */
+    box-shadow:0 0 0 rgba(0,0,0,0);         /* keep flat (optional) */
+  }
+  #publications .pub-row > td:last-child{
+    background:#fff;
+    border:1px solid rgba(0,0,0,0.12);
+    border-left:none;                       /* remove center seam */
+    border-radius:0 10px 10px 0;            /* right corners rounded */
+    padding:12px 14px;                      /* comfy text insets */
+  }
+
+  /* Make thumbnails respect the rounded corners */
+  #publications .pub-thumb{ border-radius:10px 0 0 10px; }
+  #publications .pub-thumb img,
+  #publications .pub-thumb video{ border-radius:inherit; }
+
+  /* HOVER polish (optional) */
+  #publications .pub-row:hover > td{
+    border-color:rgba(0,0,0,0.18);
+  }
+
+  /* MOBILE: row becomes flex (you already do this) so we can put one border on the whole card */
+  @media (max-width:700px){
+    #publications .pub-row{
+      border:1px solid rgba(0,0,0,0.12);
+      border-radius:10px;
+      background:#fff;
+      overflow:hidden;                      /* clip media corners */
+      margin:0 0 12px 0;                    /* card gap (backup) */
+    }
+    /* remove the per-cell borders so we don’t get doubles */
+    #publications .pub-row > td{
+      border:none !important;
+      padding:12px 14px !important;
+      background:transparent;
+    }
+    /* media block on top gets no extra padding */
+    #publications .pub-row > td:first-child{ padding:0 !important; }
+    /* rounded corners for media when stacked */
+    #publications .pub-thumb{ border-radius:10px 10px 0 0; }
+  }
+</style>
+
+<style>
+  /* Mobile: add comfy left/right padding around each publication card */
+  @media (max-width:700px){
+    /* give the whole publications section side gutters */
+    #publications.pubs-table{
+      padding-left:15px;
+      padding-right:15px;
+      box-sizing:border-box;
+    }
+    /* and space each card from the edges */
+    #publications .pub-row{
+      margin:0 0 15px 0;        /* bottom gap between cards */
+    }
+    /* optional: extra inner padding so text doesn't touch borders */
+    #publications .pub-row > td{
+      padding-left:15px !important;
+      padding-right:15px !important;
+    }
+    /* media (top of card) should still be edge-to-edge inside the card */
+    #publications .pub-row > td:first-child{
+      padding-left:0 !important;
+      padding-right:0 !important;
+    }
+  }
+</style>
+
 
 
 
@@ -2008,59 +2084,49 @@ document.addEventListener('DOMContentLoaded', function () {
 <!-- blogs.html -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Blogs — Jerry (Qilong) Cheng</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="author" content="Jerry Cheng">
-  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+            "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
+            "Segoe UI Emoji","Segoe UI Symbol", sans-serif;
+    --headings: "Space Grotesk", Inter, -apple-system, BlinkMacSystemFont,
+                "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --section-title-size: 18px;
+    --section-title-size-mobile: 16.5px;
+  }
+  html, body { font-family: var(--sans); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; margin:0; background:#fff; }
+  h1,h2,h3,h4 { font-family: var(--headings); letter-spacing:.2px; }
+  a{ color:inherit; text-decoration:none; border-bottom:1px solid rgba(0,0,0,0.12); }
+  a:hover{ border-bottom-color: rgba(0,0,0,0.3); }
 
-  <style>
-    :root{
-      --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-              "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
-              "Segoe UI Emoji","Segoe UI Symbol", sans-serif;
-      --headings: "Space Grotesk", Inter, -apple-system, BlinkMacSystemFont,
-                  "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      --section-title-size: 18px;
-      --section-title-size-mobile: 16.5px;
-    }
-    html, body { font-family: var(--sans); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; margin:0; background:#fff; }
-    h1,h2,h3,h4 { font-family: var(--headings); letter-spacing:.2px; }
-    a{ color:inherit; text-decoration:none; border-bottom:1px solid rgba(0,0,0,0.12); }
-    a:hover{ border-bottom-color: rgba(0,0,0,0.3); }
+  .wrap{ width:100%; max-width:800px; margin:auto; padding:16px; }
+  h2{
+    font-size:var(--section-title-size);
+    font-weight:700; letter-spacing:-0.01em; margin:8px 0 12px; color:#111;
+  }
 
-    .wrap{ width:100%; max-width:800px; margin:auto; padding:16px; }
-    h2{
-      font-size:var(--section-title-size);
-      font-weight:700; letter-spacing:-0.01em; margin:8px 0 12px; color:#111;
-    }
+  .post{
+    border:1px solid rgba(0,0,0,0.12);
+    border-radius:10px; padding:14px; margin:10px 0;
+    background:#fff;
+  }
+  .post h3{ margin:0 0 6px 0; font-size:16.5px; }
+  .post .meta{ font-size:13px; color:#666; margin-bottom:6px; }
+  .post p{ margin:6px 0 0 0; font-size:14.5px; line-height:1.5; }
 
-    .post{
-      border:1px solid rgba(0,0,0,0.12);
-      border-radius:10px; padding:14px; margin:10px 0;
-      background:#fff;
-    }
-    .post h3{ margin:0 0 6px 0; font-size:16.5px; }
-    .post .meta{ font-size:13px; color:#666; margin-bottom:6px; }
-    .post p{ margin:6px 0 0 0; font-size:14.5px; line-height:1.5; }
+  @media (max-width:700px){
+    .wrap{ padding-left:12px; padding-right:12px; }
+    h2{ font-size:var(--section-title-size-mobile); }
+  }
+</style>
 
-    @media (max-width:700px){
-      .wrap{ padding-left:12px; padding-right:12px; }
-      h2{ font-size:var(--section-title-size-mobile); }
-    }
-  </style>
-</head>
-<body>
+<!-- <body>
   <div class="wrap">
-    <h2>Blog Posts</h2>
+    <h2>Blog Posts</h2> -->
 
     <!-- Example posts -->
-    <article class="post">
+    <!-- <article class="post">
       <h3><a href="blog/rl-vs-mpc.html">RL vs MPC for Humanoid Locomotion — Practical Tradeoffs</a></h3>
       <div class="meta">Nov 2025 • Control, Robotics</div>
       <p>Short note comparing WBC-QP/CLF-QP trackers vs contact-implicit MPC and how I blend them with residual RL.</p>
@@ -2070,9 +2136,11 @@ document.addEventListener('DOMContentLoaded', function () {
       <h3><a href="blog/iris-actuators.html">Design Notes from Building a Low-Cost Cinema Robot Arm</a></h3>
       <div class="meta">Oct 2025 • Hardware, Mechatronics</div>
       <p>FOC choices, differential wrist, carbon vs aluminum linkages, and supply chain lessons.</p>
-    </article>
+    </article> -->
 
     <!-- Add more posts as needed -->
-  </div>
-</body>
+  <!-- </div>
+</body> -->
+
+
 </html>
