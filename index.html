@@ -29,6 +29,27 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
+<!-- Inside <head> of index.html -->
+<link rel="prefetch" href="blog.html" as="document">
+
+
+<!-- Social preview defaults -->
+<meta property="og:site_name" content="Jerry (Qilong) Cheng">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jerry (Qilong) Cheng — Robotics, Humanoid Locomotion & RL">
+<meta property="og:description" content="Robotics researcher focused on humanoid locomotion, reinforcement learning, and vision-driven control.">
+<meta property="og:url" content="https://thejerrycheng.github.io/">
+<meta property="og:image" content="https://thejerrycheng.github.io/assets/images/og/site-hero.jpg">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jerry (Qilong) Cheng — Robotics, Humanoid Locomotion & RL">
+<meta name="twitter:description" content="Humanoid locomotion, RL, and vision-driven control.">
+<meta name="twitter:image" content="https://thejerrycheng.github.io/assets/images/og/site-hero.jpg">
+
+
+<link rel="alternate" type="application/rss+xml" title="Jerry’s Blog" href="feed.xml">
+
+
 
 <!-- Your stylesheet (ensure it's UTF-8 too; see note below) -->
 <link rel="stylesheet" href="stylesheet.css">
@@ -334,7 +355,9 @@
       <a class="navlink" href="#projects">Projects</a>
       <a class="navlink" href="#skills">Skills</a>
       <a class="navlink" href="#startups">Startups</a>
-      <a class="navlink" href="blogs.html" target="_blank" rel="noopener">Blogs</a>
+      <!-- In the desktop .links group on index.html -->
+      <a class="navlink" href="blog.html">Blogs</a>
+
     </div>
 
     <!-- Right: Menu (mobile) -->
@@ -466,7 +489,7 @@
         <a href="https://www.instagram.com/thejerrycheng">Instagram</a>
       </p>
 
-      <p style="font-size:17px;line-height:1.6;margin-top:10px;color:red;">
+      <p style="font-size:17px;line-height:1.6;margin-top:10px;color:red;font-weight:bold;"></p>
         I'm currently looking for PhD opportunities or Industry positions in Robotics starting Fall 2026! 
       </p>
 
@@ -2494,6 +2517,39 @@ document.addEventListener('DOMContentLoaded', function () {
     h2{ font-size:var(--section-title-size-mobile); }
   }
 </style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Jerry (Qilong) Cheng",
+  "url": "https://thejerrycheng.github.io/",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://thejerrycheng.github.io/search?q={query}",
+    "query-input": "required name=query"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "Jerry’s Blog",
+  "url": "https://thejerrycheng.github.io/blog.html",
+  "description": "Notes on robotics, RL, control, and hardware builds.",
+  "publisher": {
+    "@type": "Person",
+    "name": "Jerry (Qilong) Cheng",
+    "url": "https://thejerrycheng.github.io/"
+  }
+}
+</script>
+
+<!-- Somewhere in your footer on index.html -->
+<!-- <p><a href="blog.html">Read the blog →</a></p> -->
+
 
 <!-- <body>
   <div class="wrap">
