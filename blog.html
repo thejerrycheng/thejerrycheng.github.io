@@ -1,20 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Blog — Jerry (Qilong) Cheng</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Short notes on robotics, RL, control, and hardware builds.">
+  <style>
+    :root{
+      --ink:#111; --muted:#666; --hairline:rgba(0,0,0,0.08);
+      --wrap: 820px;
+    }
+    body{
+      margin:0; color:var(--ink);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",
+                   "Helvetica Neue",Helvetica,Arial,sans-serif;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      background:#fff;
+    }
+    .wrap{ max-width:var(--wrap); margin:40px auto; padding:0 16px; }
+    h2{ font-size:28px; letter-spacing:-0.01em; margin:0 0 20px; }
+    .post{ padding:18px 0; border-top:0.5px solid var(--hairline); }
+    .post:first-of-type{ border-top:0; padding-top:0; }
+    .post h3{ margin:0 0 6px; font-size:22px; line-height:1.25; }
+    .post h3 a{ color:var(--ink); text-decoration:none; }
+    .post h3 a:hover{ text-decoration:underline; }
+    .meta{ color:var(--muted); font-size:14px; margin-bottom:10px; }
+    .post p{ font-size:16px; line-height:1.6; margin:10px 0; }
+    .thumb{
+      position:relative; width:100%; height:auto; overflow:hidden;
+      border-radius:12px; border:0.5px solid var(--hairline);
+      margin:10px 0 8px;
+    }
+    .thumb img{ display:block; width:100%; height:auto; }
+    .more{ font-size:15px; }
+    .more a{ color:#0b5fff; text-decoration:none; }
+    .more a:hover{ text-decoration:underline; }
+    .bullets{ margin:8px 0 0 0; padding-left:18px; }
+    .bullets li{ margin:4px 0; }
+    @media (max-width:600px){
+      h2{ font-size:24px; }
+      .post h3{ font-size:20px; }
+    }
+  </style>
+</head>
 <body>
   <div class="wrap">
-    <h2>Blog Posts</h2> -->
+    <h2>Blog Posts</h2> 
 
-    <!-- Example posts -->
+    <!-- NEO X1 / NEO Home Robot -->
+    <article class="post">
+      <h3><a href="blog/neo-x1-robot.html">NEO X1 (1X): Human-in-the-Loop Today, Autonomy Tomorrow</a></h3>
+      <div class="meta">Nov 2025 • Robotics, Control</div>
+
+      <!-- Hero image (credit: 1X/press coverage) -->
+      <a class="thumb" href="https://www.1x.tech/neo" target="_blank" rel="noopener">
+        <img
+          src="https://cdn.mos.cms.futurecdn.net/m8h6v3q8hE4qTVp2eN7B6o.jpg"
+          alt="1X NEO Home Robot press image">
+      </a>
+
+      <p>
+        1X announced <em>NEO</em>, a consumer-facing humanoid aimed at real homes rather than labs. 
+        The notable choice here isn’t a flashy demo—it’s the product strategy:
+        start with <strong>human-in-the-loop operation</strong> (scheduled expert tele-assists and remote piloting)
+        to safely cover the long tail of household edge cases, then ratchet up autonomy as the data and policies improve.
+      </p>
+
+      <ul class="bullets">
+        <li><strong>Why human-in-the-loop?</strong> Homes are adversarial: pets, cables, soft objects, reflective surfaces, toys. Expert-guided sessions both “get the job done now” and create high-value demonstrations for future autonomy (think: DAGGER-like data with strong safety guardrails). :contentReference[oaicite:0]{index=0}</li>
+        <li><strong>Hardware snapshot.</strong> ~5′6″, ~66 lb; lift ≈154 lb, carry ≈55 lb; tendon drives, soft 3D-lattice suit, ~22 dB operation; 4-hour runtime, self-charging. :contentReference[oaicite:1]{index=1}</li>
+        <li><strong>Compute & I/O.</strong> Nvidia-class onboard compute (Jetson Thor-based), dual 8.85 MP fisheye, 4-mic beamforming, Wi-Fi/5G. :contentReference[oaicite:2]{index=2}</li>
+        <li><strong>Pricing.</strong> $20,000 ownership (Early Access) or $499/mo subscription, $200 refundable deposit, US deliveries starting 2026. :contentReference[oaicite:3]{index=3}</li>
+      </ul>
+
+      <p>
+        The honest catch: this is <em>not</em> zero-trust, fully autonomous out of the box. 
+        You’ll allow scheduled expert guidance and accept limits (no outdoor use, water-sensitive body, child/pet cautions). 
+        In exchange, you get a system that actually completes chores and steadily improves—an approach that trades bravado for learning velocity. :contentReference[oaicite:4]{index=4}
+      </p>
+
+      <p class="more">
+        Links: 
+        <a href="https://www.1x.tech/neo" target="_blank" rel="noopener">Product page</a> •
+        <a href="https://www.1x.tech/order" target="_blank" rel="noopener">Order & pricing</a> •
+        <a href="https://www.techradar.com/home/smart-home/you-can-pre-order-this-charming-neo-home-robot-today-to-do-all-your-chores-but-theres-a-big-catch" target="_blank" rel="noopener">Coverage (TechRadar)</a> •
+        <a href="https://www.therobotreport.com/1x-announces-pre-order-launch-neo-humanoid-robot/" target="_blank" rel="noopener">Coverage (The Robot Report)</a>
+      </p>
+    </article>
+
+    <!-- RL vs MPC (existing) -->
     <article class="post">
       <h3><a href="blog/rl-vs-mpc.html">RL vs MPC for Humanoid Locomotion — Practical Tradeoffs</a></h3>
       <div class="meta">Nov 2025 • Control, Robotics</div>
+      <a class="thumb" href="blog/rl-vs-mpc.html">
+        <img src="assets/images/blog/rl-vs-mpc.jpg" alt="RL vs MPC sketch">
+      </a>
       <p>Short note comparing WBC-QP/CLF-QP trackers vs contact-implicit MPC and how I blend them with residual RL.</p>
     </article>
 
+    <!-- IRIS Actuators (existing) -->
     <article class="post">
       <h3><a href="blog/iris-actuators.html">Design Notes from Building a Low-Cost Cinema Robot Arm</a></h3>
       <div class="meta">Oct 2025 • Hardware, Mechatronics</div>
+      <a class="thumb" href="blog/iris-actuators.html">
+        <img src="assets/images/blog/iris-actuators.jpg" alt="IRIS robot actuators and differential wrist">
+      </a>
       <p>FOC choices, differential wrist, carbon vs aluminum linkages, and supply chain lessons.</p>
     </article>
-
-    <!-- Add more posts as needed -->
-  </div> 
+  </div>
 </body>
+</html>
