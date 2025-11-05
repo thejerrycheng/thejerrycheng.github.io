@@ -2,80 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Blog — Jerry (Qilong) Cheng</title>
+  <title>NEO X1 (1X): Human-in-the-Loop Today, Autonomy Tomorrow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Short notes on robotics, RL, control, and hardware builds.">
-  <link rel="canonical" href="blog.html">
-
-
+  <meta name="description" content="Notes on 1X NEO X1: why human-in-the-loop first, pricing, and implications for safety/data.">
+  <link rel="canonical" href="../blog/neo-x1-robot.html">
   <style>
-    :root{
-      --ink:#111; --muted:#666; --hairline:rgba(0,0,0,0.12);
-      --wrap: 800px; --nav-height: 52px; --nav-blur: 14px; --nav-hairline: rgba(0,0,0,0.08);
-      --card-bg:#fff; --card-br: 12px; --card-border: 1px solid var(--hairline);
-      --card-shadow: 0 6px 18px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
-      --card-shadow-hover: 0 12px 28px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-    }
-    html, body{
-      margin:0; background:#fff; color:var(--ink);
+    :root{ --ink:#111; --muted:#666; --hairline:rgba(0,0,0,0.12); --wrap:800px;
+           --nav-height:52px; --nav-blur:14px; --nav-hairline:rgba(0,0,0,0.08);
+           --card-bg:#fff; --card-br:14px; --card-border:1px solid var(--hairline);
+           --card-shadow:0 6px 18px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.04); }
+    html,body{ margin:0; background:#fff; color:var(--ink);
       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif;
-      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-    }
-    h1,h2,h3{
-      font-family:"Space Grotesk",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-      letter-spacing:.2px;
-    }
-    a{ color:inherit; text-decoration:none; border-bottom:1px solid rgba(0,0,0,0.12); }
-    a:hover{ border-bottom-color:rgba(0,0,0,0.3); }
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    h1,h2,h3{ font-family:"Space Grotesk",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; letter-spacing:.2px; }
+    a{ color:inherit; text-decoration:none; border-bottom:1px solid rgba(0,0,0,.12); }
+    a:hover{ border-bottom-color:rgba(0,0,0,.3); }
 
     /* Nav */
-    .top-nav{
-      position:fixed; inset:0 0 auto 0; height:var(--nav-height);
-      background:rgba(255,255,255,0.82);
-      backdrop-filter:saturate(180%) blur(var(--nav-blur));
+    .top-nav{ position:fixed; inset:0 0 auto 0; height:var(--nav-height);
+      background:rgba(255,255,255,.82); backdrop-filter:saturate(180%) blur(var(--nav-blur));
       -webkit-backdrop-filter:saturate(180%) blur(var(--nav-blur));
-      border-bottom:.5px solid var(--nav-hairline); z-index:999;
-    }
-    .nav-inner{
-      height:100%; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px;
-      padding:0 16px; max-width:var(--wrap); margin:0 auto; letter-spacing:-0.01em;
-    }
+      border-bottom:.5px solid var(--nav-hairline); z-index:999; }
+    .nav-inner{ height:100%; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px; padding:0 16px; max-width:var(--wrap); margin:0 auto; }
     .brand a{ display:inline-flex; align-items:center; gap:6px; border-bottom:0; padding:10px 12px; border-radius:10px; }
-    .brand a:hover{ background:rgba(0,0,0,0.06); }
+    .brand a:hover{ background:rgba(0,0,0,.06); }
     .brand .dot{ width:8px; height:8px; border-radius:50%; background:#000; opacity:.85; }
-    .links{ display:flex; gap:10px; overflow-x:auto; white-space:nowrap; padding:0 4px; }
-    .links::-webkit-scrollbar{ display:none; } .links{ scrollbar-width:none; }
-    .navlink{ border-bottom:0; padding:10px 12px; border-radius:9999px; font-size:14px; }
-    .navlink:hover{ background:rgba(0,0,0,0.06); }
-    .navlink[aria-current="page"]{ background:rgba(0,0,0,0.06); }
+    .links{ display:none; } /* detail page: keep nav minimal; mobile menu still available if desired */
     .menu-btn{ display:none; }
 
-    html{ scroll-behavior:smooth; }
-    body{ padding-top: calc(var(--nav-height) + 8px); }
+    body{ padding-top:calc(var(--nav-height) + 8px); }
+    .wrap{ width:100%; max-width:var(--wrap); margin:24px auto 60px; padding:0 16px; }
 
-    /* Cards grid */
-    .wrap{ width:100%; max-width:var(--wrap); margin: 24px auto 60px; padding: 0 16px; }
-    h2{ font-size:18px; font-weight:700; letter-spacing:-0.01em; margin: 8px 0 14px; }
-    .cards{ display:grid; gap:14px; }
-    @media (min-width:920px){ .cards{ grid-template-columns:1fr 1fr; } }
+    /* Post card */
+    .post{ background:var(--card-bg); border:var(--card-border); border-radius:var(--card-br); box-shadow:var(--card-shadow); overflow:hidden; }
+    .hero img{ display:block; width:100%; height:auto; border-bottom:1px solid var(--hairline); }
+    .body{ padding:16px 18px 22px; }
+    .meta{ color:var(--muted); font-size:13px; margin-bottom:10px; }
+    h1{ font-size:26px; line-height:1.25; margin:0 0 6px; }
+    p{ font-size:16px; line-height:1.65; margin:10px 0; }
+    ul{ padding-left:18px; margin:10px 0; }
+    li{ margin:6px 0; }
 
-    .card{
-      background:var(--card-bg); border:var(--card-border); border-radius:var(--card-br);
-      box-shadow:var(--card-shadow); overflow:hidden;
-      transition:transform .16s ease, box-shadow .16s ease;
-    }
-    .card:hover{ transform:translateY(-2px); box-shadow:var(--card-shadow-hover); }
-    .card a{ border-bottom:0; }
-
-    .card-media{ display:block; width:100%; background:#fafafa; border-bottom:1px solid var(--hairline); }
-    .card-media img{ display:block; width:100%; height:auto; }
-
-    .card-body{ padding:12px 14px 14px; }
-    .card-body h3{ margin:0 0 6px; font-size:18px; line-height:1.35; }
-    .meta{ color:var(--muted); font-size:13px; margin-bottom:8px; }
-    .card-body p{ font-size:15px; line-height:1.55; margin:8px 0 0; }
+    .subtle{ color:var(--muted); font-size:14px; }
+    .navrow{ display:flex; justify-content:space-between; gap:10px; margin-top:16px; }
+    .navrow a{ border-bottom:0; }
+    .back{ display:inline-block; margin:16px 0; font-size:14px; }
   </style>
 </head>
+<body>
 
 
 <!-- =============== Apple-style Nav (EXACT match to index) ================= -->
@@ -286,71 +260,50 @@
 </script>
 <!-- =============== End Apple-style Nav ================= -->
 
-
-<body>
-  <!-- Nav -->
-  <nav class="top-nav" aria-label="Primary">
-    <div class="nav-inner">
-      <div class="brand">
-        <a href="index.html#about" aria-label="Go to About / Home"><span class="dot" aria-hidden="true"></span>About</a>
-      </div>
-      <div class="links" aria-hidden="true">
-        <a class="navlink" href="index.html#education">Education</a>
-        <a class="navlink" href="index.html#publications">Publications</a>
-        <a class="navlink" href="index.html#news">News</a>
-        <a class="navlink" href="index.html#experience">Experience</a>
-        <a class="navlink" href="index.html#projects">Projects</a>
-        <a class="navlink" href="index.html#skills">Skills</a>
-        <a class="navlink" href="index.html#startups">Startups</a>
-        <a class="navlink" href="blog.html" aria-current="page">Blog</a>
-      </div>
-      <button class="menu-btn" hidden>Menu</button>
-    </div>
-  </nav>
-
-  <!-- Blog cards -->
   <div class="wrap">
-    <h2>Blog Posts</h2>
+    <a class="back" href="../blog.html">← Back to Blog</a>
 
-    <div class="cards">
-      <!-- LINKING EXAMPLE #1 -->
-      <article class="card">
-        <!-- Image clicks through to detail page -->
-        <a class="card-media" href="blog/neo-x1-robot.html" aria-label="Open NEO X1 blog post">
-          <img src="assets/images/blog/neo-hero.jpg" alt="1X NEO Home Robot">
-        </a>
-        <div class="card-body">
-          <!-- Title also clicks through (same href) -->
-          <h3><a href="blog/neo-x1-robot.html">NEO X1 (1X): Human-in-the-Loop Today, Autonomy Tomorrow</a></h3>
-          <div class="meta">Nov 2025 • Robotics, Control</div>
-          <p>Why 1X’s consumer humanoid starts with expert tele-assist, what it means for safety/data, and how the $20k vs subscription model pencils out.</p>
-        </div>
-      </article>
+    <article class="post">
+      <div class="hero">
+        <!-- Replace with local image if you have one: ../assets/images/blog/neo-hero.jpg -->
+        <img src="https://cdn.mos.cms.futurecdn.net/m8h6v3q8hE4qTVp2eN7B6o.jpg" alt="1X NEO Home Robot">
+      </div>
+      <div class="body">
+        <h1>NEO X1 (1X): Human-in-the-Loop Today, Autonomy Tomorrow</h1>
+        <div class="meta">Nov 2025 • Robotics, Control</div>
 
-      <!-- LINKING EXAMPLE #2 -->
-      <article class="card">
-        <a class="card-media" href="blog/rl-vs-mpc.html" aria-label="Open RL vs MPC blog post">
-          <img src="assets/images/blog/rl-vs-mpc.jpg" alt="RL vs MPC sketch">
-        </a>
-        <div class="card-body">
-          <h3><a href="blog/rl-vs-mpc.html">RL vs MPC for Humanoid Locomotion — Practical Tradeoffs</a></h3>
-          <div class="meta">Nov 2025 • Control, Robotics</div>
-          <p>WBC-QP/CLF-QP trackers vs contact-implicit MPC, and how residual RL glues them together in practice.</p>
-        </div>
-      </article>
+        <p><strong>Thesis.</strong> 1X’s NEO X1 leans into a pragmatic truth: homes are adversarial. Starting with human-in-the-loop operation (expert tele-assist, scheduled guidance) increases task completion now and accrues the real-world demonstrations needed for safer autonomy later.</p>
 
-      <!-- LINKING EXAMPLE #3 -->
-      <article class="card">
-        <a class="card-media" href="blog/iris-actuators.html" aria-label="Open IRIS actuators blog post">
-          <img src="assets/images/blog/iris-actuators.jpg" alt="IRIS actuators and differential wrist">
-        </a>
-        <div class="card-body">
-          <h3><a href="blog/iris-actuators.html">Design Notes from Building a Low-Cost Cinema Robot Arm</a></h3>
-          <div class="meta">Oct 2025 • Hardware, Mechatronics</div>
-          <p>FOC choices, differential wrist, carbon vs aluminum linkages, and supply chain lessons from the IRIS build.</p>
+        <h3>Why not “full autonomy” on day one?</h3>
+        <p>Domestic environments throw long-tail edge cases—soft objects, pets, glossy surfaces, clutter. Human tele-operation handles these reliably while collecting data. Think of it as data-efficient apprenticeship learning rather than brittle one-shot autonomy.</p>
+
+        <h3>Hardware snapshot</h3>
+        <ul>
+          <li>Humanoid form factor; soft, compliant shell; quiet operation for home use.</li>
+          <li>Tendon-drive style actuation targeting low inertia and safer contacts.</li>
+          <li>Modern embedded compute, stereo fisheyes, mic array; Wi-Fi/5G connectivity.</li>
+        </ul>
+
+        <h3>Pricing & access</h3>
+        <p>Early access offers a buy-out (~$20k) or subscription tier. The value case hinges on how many chores NEO can reliably offload per week and how quickly tele-assisted tasks translate into autonomous ones.</p>
+
+        <h3>What I’m watching</h3>
+        <ul>
+          <li><strong>Learning velocity.</strong> How fast do tele-assisted tasks become self-serve?</li>
+          <li><strong>Safety & privacy.</strong> Clear UX for scheduled assistance and data sharing.</li>
+          <li><strong>Reliability KPIs.</strong> Chore completion rates, reset-free runtimes, and household coverage.</li>
+        </ul>
+
+        <p class="subtle">Links: <a href="https://www.1x.tech/neo" target="_blank" rel="noopener">Product</a> ·
+          <a href="https://www.1x.tech/order" target="_blank" rel="noopener">Order & pricing</a> ·
+          <a href="https://www.techradar.com/home/smart-home/you-can-pre-order-this-charming-neo-home-robot-today-to-do-all-your-chores-but-theres-a-big-catch" target="_blank" rel="noopener">Coverage</a></p>
+
+        <div class="navrow">
+          <a href="iris-actuators.html">← Previous</a>
+          <a href="rl-vs-mpc.html">Next →</a>
         </div>
-      </article>
-    </div>
+      </div>
+    </article>
   </div>
 </body>
 </html>

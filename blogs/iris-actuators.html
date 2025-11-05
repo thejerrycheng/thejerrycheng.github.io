@@ -2,80 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Blog — Jerry (Qilong) Cheng</title>
+  <title>Design Notes from Building a Low-Cost Cinema Robot Arm</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Short notes on robotics, RL, control, and hardware builds.">
-  <link rel="canonical" href="blog.html">
-
-
+  <meta name="description" content="FOC choices, differential wrist, carbon vs aluminum, and supply chain lessons.">
+  <link rel="canonical" href="../blog/iris-actuators.html">
   <style>
-    :root{
-      --ink:#111; --muted:#666; --hairline:rgba(0,0,0,0.12);
-      --wrap: 800px; --nav-height: 52px; --nav-blur: 14px; --nav-hairline: rgba(0,0,0,0.08);
-      --card-bg:#fff; --card-br: 12px; --card-border: 1px solid var(--hairline);
-      --card-shadow: 0 6px 18px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
-      --card-shadow-hover: 0 12px 28px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-    }
-    html, body{
-      margin:0; background:#fff; color:var(--ink);
+    :root{ --ink:#111; --muted:#666; --hairline:rgba(0,0,0,0.12); --wrap:800px;
+           --nav-height:52px; --nav-blur:14px; --nav-hairline:rgba(0,0,0,0.08);
+           --card-bg:#fff; --card-br:14px; --card-border:1px solid var(--hairline);
+           --card-shadow:0 6px 18px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.04); }
+    html,body{ margin:0; background:#fff; color:var(--ink);
       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif;
-      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-    }
-    h1,h2,h3{
-      font-family:"Space Grotesk",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-      letter-spacing:.2px;
-    }
-    a{ color:inherit; text-decoration:none; border-bottom:1px solid rgba(0,0,0,0.12); }
-    a:hover{ border-bottom-color:rgba(0,0,0,0.3); }
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    h1,h2,h3{ font-family:"Space Grotesk",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; letter-spacing:.2px; }
+    a{ color:inherit; text-decoration:none; border-bottom:1px solid rgba(0,0,0,.12); }
+    a:hover{ border-bottom-color:rgba(0,0,0,.3); }
 
-    /* Nav */
-    .top-nav{
-      position:fixed; inset:0 0 auto 0; height:var(--nav-height);
-      background:rgba(255,255,255,0.82);
-      backdrop-filter:saturate(180%) blur(var(--nav-blur));
+    .top-nav{ position:fixed; inset:0 0 auto 0; height:var(--nav-height);
+      background:rgba(255,255,255,.82); backdrop-filter:saturate(180%) blur(var(--nav-blur));
       -webkit-backdrop-filter:saturate(180%) blur(var(--nav-blur));
-      border-bottom:.5px solid var(--nav-hairline); z-index:999;
-    }
-    .nav-inner{
-      height:100%; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px;
-      padding:0 16px; max-width:var(--wrap); margin:0 auto; letter-spacing:-0.01em;
-    }
+      border-bottom:.5px solid var(--nav-hairline); z-index:999; }
+    .nav-inner{ height:100%; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px; padding:0 16px; max-width:var(--wrap); margin:0 auto; }
     .brand a{ display:inline-flex; align-items:center; gap:6px; border-bottom:0; padding:10px 12px; border-radius:10px; }
-    .brand a:hover{ background:rgba(0,0,0,0.06); }
+    .brand a:hover{ background:rgba(0,0,0,.06); }
     .brand .dot{ width:8px; height:8px; border-radius:50%; background:#000; opacity:.85; }
-    .links{ display:flex; gap:10px; overflow-x:auto; white-space:nowrap; padding:0 4px; }
-    .links::-webkit-scrollbar{ display:none; } .links{ scrollbar-width:none; }
-    .navlink{ border-bottom:0; padding:10px 12px; border-radius:9999px; font-size:14px; }
-    .navlink:hover{ background:rgba(0,0,0,0.06); }
-    .navlink[aria-current="page"]{ background:rgba(0,0,0,0.06); }
-    .menu-btn{ display:none; }
+    .links,.menu-btn{ display:none; }
 
-    html{ scroll-behavior:smooth; }
-    body{ padding-top: calc(var(--nav-height) + 8px); }
+    body{ padding-top:calc(var(--nav-height) + 8px); }
+    .wrap{ width:100%; max-width:var(--wrap); margin:24px auto 60px; padding:0 16px; }
 
-    /* Cards grid */
-    .wrap{ width:100%; max-width:var(--wrap); margin: 24px auto 60px; padding: 0 16px; }
-    h2{ font-size:18px; font-weight:700; letter-spacing:-0.01em; margin: 8px 0 14px; }
-    .cards{ display:grid; gap:14px; }
-    @media (min-width:920px){ .cards{ grid-template-columns:1fr 1fr; } }
-
-    .card{
-      background:var(--card-bg); border:var(--card-border); border-radius:var(--card-br);
-      box-shadow:var(--card-shadow); overflow:hidden;
-      transition:transform .16s ease, box-shadow .16s ease;
-    }
-    .card:hover{ transform:translateY(-2px); box-shadow:var(--card-shadow-hover); }
-    .card a{ border-bottom:0; }
-
-    .card-media{ display:block; width:100%; background:#fafafa; border-bottom:1px solid var(--hairline); }
-    .card-media img{ display:block; width:100%; height:auto; }
-
-    .card-body{ padding:12px 14px 14px; }
-    .card-body h3{ margin:0 0 6px; font-size:18px; line-height:1.35; }
-    .meta{ color:var(--muted); font-size:13px; margin-bottom:8px; }
-    .card-body p{ font-size:15px; line-height:1.55; margin:8px 0 0; }
+    .post{ background:var(--card-bg); border:var(--card-border); border-radius:var(--card-br); box-shadow:var(--card-shadow); overflow:hidden; }
+    .hero img{ display:block; width:100%; height:auto; border-bottom:1px solid var(--hairline); }
+    .body{ padding:16px 18px 22px; }
+    .meta{ color:var(--muted); font-size:13px; margin-bottom:10px; }
+    h1{ font-size:26px; line-height:1.25; margin:0 0 6px; }
+    p{ font-size:16px; line-height:1.65; margin:10px 0; }
+    ul{ padding-left:18px; margin:10px 0; } li{ margin:6px 0; }
+    .subtle{ color:var(--muted); font-size:14px; }
+    .navrow{ display:flex; justify-content:space-between; gap:10px; margin-top:16px; }
+    .back{ display:inline-block; margin:16px 0; font-size:14px; }
   </style>
 </head>
+<body>
+
 
 
 <!-- =============== Apple-style Nav (EXACT match to index) ================= -->
@@ -286,71 +255,41 @@
 </script>
 <!-- =============== End Apple-style Nav ================= -->
 
-
-<body>
-  <!-- Nav -->
-  <nav class="top-nav" aria-label="Primary">
-    <div class="nav-inner">
-      <div class="brand">
-        <a href="index.html#about" aria-label="Go to About / Home"><span class="dot" aria-hidden="true"></span>About</a>
-      </div>
-      <div class="links" aria-hidden="true">
-        <a class="navlink" href="index.html#education">Education</a>
-        <a class="navlink" href="index.html#publications">Publications</a>
-        <a class="navlink" href="index.html#news">News</a>
-        <a class="navlink" href="index.html#experience">Experience</a>
-        <a class="navlink" href="index.html#projects">Projects</a>
-        <a class="navlink" href="index.html#skills">Skills</a>
-        <a class="navlink" href="index.html#startups">Startups</a>
-        <a class="navlink" href="blog.html" aria-current="page">Blog</a>
-      </div>
-      <button class="menu-btn" hidden>Menu</button>
-    </div>
-  </nav>
-
-  <!-- Blog cards -->
   <div class="wrap">
-    <h2>Blog Posts</h2>
+    <a class="back" href="../blog.html">← Back to Blog</a>
 
-    <div class="cards">
-      <!-- LINKING EXAMPLE #1 -->
-      <article class="card">
-        <!-- Image clicks through to detail page -->
-        <a class="card-media" href="blog/neo-x1-robot.html" aria-label="Open NEO X1 blog post">
-          <img src="assets/images/blog/neo-hero.jpg" alt="1X NEO Home Robot">
-        </a>
-        <div class="card-body">
-          <!-- Title also clicks through (same href) -->
-          <h3><a href="blog/neo-x1-robot.html">NEO X1 (1X): Human-in-the-Loop Today, Autonomy Tomorrow</a></h3>
-          <div class="meta">Nov 2025 • Robotics, Control</div>
-          <p>Why 1X’s consumer humanoid starts with expert tele-assist, what it means for safety/data, and how the $20k vs subscription model pencils out.</p>
-        </div>
-      </article>
+    <article class="post">
+      <div class="hero">
+        <img src="../assets/images/blog/iris-actuators.jpg" alt="IRIS actuators and differential wrist">
+      </div>
+      <div class="body">
+        <h1>Design Notes from Building a Low-Cost Cinema Robot Arm</h1>
+        <div class="meta">Oct 2025 • Hardware, Mechatronics</div>
 
-      <!-- LINKING EXAMPLE #2 -->
-      <article class="card">
-        <a class="card-media" href="blog/rl-vs-mpc.html" aria-label="Open RL vs MPC blog post">
-          <img src="assets/images/blog/rl-vs-mpc.jpg" alt="RL vs MPC sketch">
-        </a>
-        <div class="card-body">
-          <h3><a href="blog/rl-vs-mpc.html">RL vs MPC for Humanoid Locomotion — Practical Tradeoffs</a></h3>
-          <div class="meta">Nov 2025 • Control, Robotics</div>
-          <p>WBC-QP/CLF-QP trackers vs contact-implicit MPC, and how residual RL glues them together in practice.</p>
-        </div>
-      </article>
+        <h3>Why differential wrist?</h3>
+        <p>It lets two motors share load across pitch/roll, reducing motor size at the end effector and improving dynamic response for fast pans/tilts.</p>
 
-      <!-- LINKING EXAMPLE #3 -->
-      <article class="card">
-        <a class="card-media" href="blog/iris-actuators.html" aria-label="Open IRIS actuators blog post">
-          <img src="assets/images/blog/iris-actuators.jpg" alt="IRIS actuators and differential wrist">
-        </a>
-        <div class="card-body">
-          <h3><a href="blog/iris-actuators.html">Design Notes from Building a Low-Cost Cinema Robot Arm</a></h3>
-          <div class="meta">Oct 2025 • Hardware, Mechatronics</div>
-          <p>FOC choices, differential wrist, carbon vs aluminum linkages, and supply chain lessons from the IRIS build.</p>
+        <h3>FOC choices</h3>
+        <ul>
+          <li>Low-kv motors + high pole count → smoother low-speed control for slow cinematic moves.</li>
+          <li>Current sensing close to the phase → better torque estimation and quieter operation.</li>
+        </ul>
+
+        <h3>Carbon vs aluminum</h3>
+        <ul>
+          <li>Carbon links cut weight and inertia at the cost of more complex joints and bonding.</li>
+          <li>Aluminum is forgiving for rapid iteration and surviving “oops” moments.</li>
+        </ul>
+
+        <h3>Supply chain notes</h3>
+        <p>Order motor/gearbox batches with 10–15% buffer, and standardize connectors/fasteners early—your future self will thank you.</p>
+
+        <div class="navrow">
+          <a href="rl-vs-mpc.html">← Previous</a>
+          <a href="neo-x1-robot.html">Next →</a>
         </div>
-      </article>
-    </div>
+      </div>
+    </article>
   </div>
 </body>
 </html>
