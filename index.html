@@ -208,7 +208,8 @@
     #about .name { font-size: 28px !important; }
   }
 </style>
-<!-- =============== Apple-style Nav (About/Home on left, Menu on right) ================= -->
+
+<!-- =============== Apple-style Nav (EXACT match to index) ================= -->
 <style>
   :root{
     --nav-height: 52px;
@@ -217,7 +218,7 @@
     --ink: #111;
   }
 
-  /* Global SF system stack + smoothing */
+  /* Global SF stack + smoothing */
   .top-nav, .top-nav *{
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
                  "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -234,6 +235,8 @@
     -webkit-backdrop-filter: saturate(180%) blur(var(--nav-blur));
     border-bottom: 0.5px solid var(--hairline);
     z-index: 999;
+    /* subtle drop shadow like index */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06), 0 1px 0 rgba(0,0,0,0.06);
   }
   .nav-inner{
     height: 100%;
@@ -245,18 +248,21 @@
     max-width: 980px; margin: 0 auto;
   }
 
-  /* Left: About/Home (always visible) */
+  /* Left: About/Home */
   .brand a{
     display:inline-flex; align-items:center; gap:6px;
     font-size: 15px; color: var(--ink); text-decoration:none;
-    padding: 10px 12px; border-radius: 10px;
-    transition: background-color .15s ease, transform .08s ease;
+    padding: 10px 12px; border-radius: 9999px;
+    /* ringed “chip” like index */
+    background: rgba(255,255,255,0.9);
+    box-shadow: inset 0 0 0 1px var(--hairline);
+    transition: background-color .15s ease, transform .08s ease, box-shadow .15s ease;
   }
-  .brand a:hover{ background: rgba(0,0,0,0.06); }
+  .brand a:hover{ background: rgba(0,0,0,0.04); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12); }
   .brand a:active{ transform: translateY(1px); }
   .brand .dot{
     width: 8px; height: 8px; border-radius: 50%;
-    background: #000; opacity: .85; /* subtle “logo” dot */
+    background: #000; opacity: .85;
   }
 
   /* Center: desktop links */
@@ -269,23 +275,28 @@
   .top-nav a.navlink{
     text-decoration:none; color: var(--ink); font-size:14px; line-height:1;
     padding: 10px 12px; border-radius: 9999px;
-    transition: background-color .15s ease, transform .08s ease;
+    /* ringed “chip” */
+    background: rgba(255,255,255,0.9);
+    box-shadow: inset 0 0 0 1px var(--hairline);
+    transition: background-color .15s ease, transform .08s ease, box-shadow .15s ease;
   }
-  .top-nav a.navlink:hover{ background: rgba(0,0,0,0.06); }
+  .top-nav a.navlink:hover{ background: rgba(0,0,0,0.04); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12); }
   .top-nav a.navlink:active{ transform: translateY(1px); }
   .top-nav a.navlink:focus-visible{ outline:2px solid rgba(0,0,0,0.3); outline-offset:2px; }
+  .top-nav a.navlink[aria-current="page"]{ background: rgba(0,0,0,0.06); }
 
-  /* Right: Menu button (mobile) */
+  /* Right: Menu button (mobile) — same chip w/ ring */
   .menu-btn{
     justify-self: end;
     display:none;
     font-size:15px; color: var(--ink);
-    padding: 10px 14px; border-radius: 12px;
-    border: 0.5px solid var(--hairline);
+    padding: 10px 14px; border-radius: 9999px;
+    border: none;
     background: rgba(255,255,255,0.9);
-    transition: background-color .15s ease, transform .08s ease, border-color .15s ease;
+    box-shadow: inset 0 0 0 1px var(--hairline);
+    transition: background-color .15s ease, transform .08s ease, box-shadow .15s ease;
   }
-  .menu-btn:hover{ background: rgba(0,0,0,0.04); }
+  .menu-btn:hover{ background: rgba(0,0,0,0.04); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12); }
   .menu-btn:active{ transform: translateY(1px); }
 
   /* Floating sheet */
@@ -327,10 +338,8 @@
   @media (max-width: 700px){
     .links{ display:none; }
     .menu-btn{ display:inline-flex; align-items:center; gap:8px; }
-    .nav-inner{ grid-template-columns: auto 1fr auto; } /* brand-left, empty middle, menu-right */
+    .nav-inner{ grid-template-columns: auto 1fr auto; }
   }
-
-  /* Motion-reduced fallback */
   @media (prefers-reduced-motion: reduce){
     .mobile-menu{ transition:none; }
   }
@@ -338,32 +347,29 @@
 
 <nav class="top-nav" role="navigation" aria-label="Primary">
   <div class="nav-inner">
-    <!-- Left: About / Home -->
+    <!-- Left: About / Home (from blog page, go back to index anchors) -->
     <div class="brand">
-      <a href="#about" aria-label="Go to About / Home">
+      <a href="index.html#about" aria-label="Go to About / Home">
         <span class="dot" aria-hidden="true"></span>
         About
       </a>
     </div>
 
-    <!-- Center: Desktop links -->
+    <!-- Center: Desktop links (point to index anchors; Blog is current page) -->
     <div class="links" aria-hidden="true">
-      <a class="navlink" href="#education">Education</a>
-      <a class="navlink" href="#publications">Publications</a>
-      <a class="navlink" href="#news">News</a>
-      <a class="navlink" href="#experience">Experience</a>
-      <a class="navlink" href="#projects">Projects</a>
-      <a class="navlink" href="#skills">Skills</a>
-      <a class="navlink" href="#startups">Startups</a>
-      <!-- In the desktop .links group on index.html -->
-      <a class="navlink" href="blog.html">Blogs</a>
-
+      <a class="navlink" href="index.html#education">Education</a>
+      <a class="navlink" href="index.html#publications">Publications</a>
+      <a class="navlink" href="index.html#news">News</a>
+      <a class="navlink" href="index.html#experience">Experience</a>
+      <a class="navlink" href="index.html#projects">Projects</a>
+      <a class="navlink" href="index.html#skills">Skills</a>
+      <a class="navlink" href="index.html#startups">Startups</a>
+      <a class="navlink" href="blog.html" aria-current="page">Blog</a>
     </div>
 
     <!-- Right: Menu (mobile) -->
     <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">
-      Menu
-      <span aria-hidden="true">▾</span>
+      Menu <span aria-hidden="true">▾</span>
     </button>
   </div>
 </nav>
@@ -372,15 +378,16 @@
 <div id="navBackdrop" class="nav-backdrop" hidden></div>
 
 <div id="mobileMenu" class="mobile-menu" role="menu" aria-labelledby="menuButton" hidden>
-  <a role="menuitem" href="#education">Education</a>
-  <a role="menuitem" href="#publications">Publications</a>
-  <a role="menuitem" href="#news">News</a>
-  <a role="menuitem" href="#experience">Experience</a>
-  <a role="menuitem" href="#projects">Projects</a>
-  <a role="menuitem" href="#skills">Skills</a>
-  <a role="menuitem" href="#startups">Startups</a>
+  <!-- same destinations as desktop, but stacked -->
+  <a role="menuitem" href="index.html#education">Education</a>
+  <a role="menuitem" href="index.html#publications">Publications</a>
+  <a role="menuitem" href="index.html#news">News</a>
+  <a role="menuitem" href="index.html#experience">Experience</a>
+  <a role="menuitem" href="index.html#projects">Projects</a>
+  <a role="menuitem" href="index.html#skills">Skills</a>
+  <a role="menuitem" href="index.html#startups">Startups</a>
   <hr>
-  <a role="menuitem" href="blogs.html" target="_blank" rel="noopener">Blogs ↗</a>
+  <a role="menuitem" href="blog.html" aria-current="page">Blog</a>
 </div>
 
 <script>
