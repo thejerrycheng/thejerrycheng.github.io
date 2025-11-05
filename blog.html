@@ -7,187 +7,286 @@
   <meta name="description" content="Short notes on robotics, RL, control, and hardware builds.">
   <link rel="canonical" href="blog.html">
 
+
   <style>
     :root{
-      /* Global look & feel */
-      --ink:#111;
-      --muted:#666;
-      --hairline:rgba(0,0,0,0.12);
-      --wrap: 800px;
-
-      /* Nav tokens (Apple-ish) */
-      --nav-height: 52px;
-      --nav-blur: 14px;
-      --nav-hairline: rgba(0,0,0,0.08);
-
-      /* Card tokens */
-      --card-bg:#fff;
-      --card-br: 12px;
-      --card-border: 1px solid var(--hairline);
+      --ink:#111; --muted:#666; --hairline:rgba(0,0,0,0.12);
+      --wrap: 800px; --nav-height: 52px; --nav-blur: 14px; --nav-hairline: rgba(0,0,0,0.08);
+      --card-bg:#fff; --card-br: 12px; --card-border: 1px solid var(--hairline);
       --card-shadow: 0 6px 18px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
       --card-shadow-hover: 0 12px 28px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
     }
-
-    /* Base */
     html, body{
       margin:0; background:#fff; color:var(--ink);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
-                   "Helvetica Neue", Helvetica, Arial, "Noto Sans", sans-serif;
-      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
     }
-    h1,h2,h3,h4{
-      font-family: "Space Grotesk", Inter, -apple-system, BlinkMacSystemFont,
-                   "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    h1,h2,h3{
+      font-family:"Space Grotesk",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
       letter-spacing:.2px;
     }
     a{ color:inherit; text-decoration:none; border-bottom:1px solid rgba(0,0,0,0.12); }
-    a:hover{ border-bottom-color: rgba(0,0,0,0.3); }
+    a:hover{ border-bottom-color:rgba(0,0,0,0.3); }
 
-    /* ======= Top Nav (same as index) ======= */
+    /* Nav */
     .top-nav{
-      position: fixed; inset: 0 0 auto 0;
-      height: var(--nav-height);
-      background: rgba(255,255,255,0.82);
-      backdrop-filter: saturate(180%) blur(var(--nav-blur));
-      -webkit-backdrop-filter: saturate(180%) blur(var(--nav-blur));
-      border-bottom: 0.5px solid var(--nav-hairline);
-      z-index: 999;
+      position:fixed; inset:0 0 auto 0; height:var(--nav-height);
+      background:rgba(255,255,255,0.82);
+      backdrop-filter:saturate(180%) blur(var(--nav-blur));
+      -webkit-backdrop-filter:saturate(180%) blur(var(--nav-blur));
+      border-bottom:.5px solid var(--nav-hairline); z-index:999;
     }
     .nav-inner{
-      height: 100%;
-      display: grid;
-      grid-template-columns: 1fr auto 1fr; /* left brand | center links | right menu */
-      align-items: center;
-      gap: 12px;
-      padding: 0 16px;
-      max-width: var(--wrap);
-      margin: 0 auto;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
-                   "Helvetica Neue", Helvetica, Arial, sans-serif;
-      letter-spacing: -0.01em;
+      height:100%; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px;
+      padding:0 16px; max-width:var(--wrap); margin:0 auto; letter-spacing:-0.01em;
     }
-    /* Left: About / Home */
-    .brand a{
-      display:inline-flex; align-items:center; gap:6px;
-      font-size:15px; color:var(--ink); border-bottom:0;
-      padding:10px 12px; border-radius:10px;
-      transition: background-color .15s ease, transform .08s ease;
-    }
-    .brand a:hover{ background: rgba(0,0,0,0.06); }
-    .brand a:active{ transform: translateY(1px); }
+    .brand a{ display:inline-flex; align-items:center; gap:6px; border-bottom:0; padding:10px 12px; border-radius:10px; }
+    .brand a:hover{ background:rgba(0,0,0,0.06); }
     .brand .dot{ width:8px; height:8px; border-radius:50%; background:#000; opacity:.85; }
-
-    /* Center: desktop links */
-    .links{
-      display:flex; justify-content:center; align-items:center; gap:10px;
-      overflow-x:auto; white-space:nowrap; padding:0 4px;
-    }
+    .links{ display:flex; gap:10px; overflow-x:auto; white-space:nowrap; padding:0 4px; }
     .links::-webkit-scrollbar{ display:none; } .links{ scrollbar-width:none; }
-    .navlink{
-      border-bottom:0;
-      text-decoration:none; color:var(--ink); font-size:14px; line-height:1;
-      padding:10px 12px; border-radius:9999px;
-      transition: background-color .15s ease, transform .08s ease;
-    }
-    .navlink:hover{ background: rgba(0,0,0,0.06); }
-    .navlink:active{ transform: translateY(1px); }
-    .navlink[aria-current="page"]{ background: rgba(0,0,0,0.06); }
+    .navlink{ border-bottom:0; padding:10px 12px; border-radius:9999px; font-size:14px; }
+    .navlink:hover{ background:rgba(0,0,0,0.06); }
+    .navlink[aria-current="page"]{ background:rgba(0,0,0,0.06); }
+    .menu-btn{ display:none; }
 
-    /* Right: Menu (mobile) */
-    .menu-btn{
-      justify-self:end; display:none; border-bottom:0;
-      font-size:15px; color:var(--ink);
-      padding:10px 14px; border-radius:12px;
-      border:0.5px solid var(--nav-hairline);
-      background: rgba(255,255,255,0.9);
-      transition: background-color .15s ease, transform .08s ease, border-color .15s ease;
-    }
-    .menu-btn:hover{ background: rgba(0,0,0,0.04); }
-    .menu-btn:active{ transform: translateY(1px); }
-
-    /* Floating mobile menu sheet */
-    .mobile-menu{
-      position: fixed;
-      top: calc(var(--nav-height) + 8px);
-      right: 12px;
-      width: min(88vw, 340px);
-      background:#fff;
-      border:0.5px solid var(--nav-hairline);
-      border-radius:14px;
-      box-shadow: 0 24px 50px rgba(0,0,0,0.16), 0 2px 8px rgba(0,0,0,0.06);
-      padding:8px; z-index:1000;
-      opacity:0; transform: translateY(-8px) scale(0.98);
-      pointer-events:none; transition: transform .18s ease, opacity .18s ease;
-    }
-    .mobile-menu.open{ opacity:1; transform: translateY(0) scale(1); pointer-events:auto; }
-    .mobile-menu a{
-      display:block; padding:12px 12px;
-      border-radius:10px; color:var(--ink); text-decoration:none; border-bottom:0; font-size:16px;
-      transition: background-color .15s ease;
-    }
-    .mobile-menu a:hover{ background: rgba(0,0,0,0.06); }
-    .mobile-menu hr{ border:0; height:1px; background: var(--nav-hairline); margin:6px 0; }
-    .nav-backdrop{ position: fixed; inset:0; background: rgba(0,0,0,0.05); z-index: 999; }
-
-    /* Smooth anchors + space under fixed nav */
     html{ scroll-behavior:smooth; }
-    [id]{ scroll-margin-top: calc(var(--nav-height) + 16px); }
     body{ padding-top: calc(var(--nav-height) + 8px); }
 
-    /* Mobile: collapse center links, show menu */
-    @media (max-width:700px){
-      .links{ display:none; }
-      .menu-btn{ display:inline-flex; align-items:center; gap:8px; }
-      .nav-inner{ grid-template-columns: auto 1fr auto; }
-    }
-    @media (prefers-reduced-motion: reduce){
-      .mobile-menu{ transition:none; }
-    }
-
-    /* ======= Blog list (Card style) ======= */
+    /* Cards grid */
     .wrap{ width:100%; max-width:var(--wrap); margin: 24px auto 60px; padding: 0 16px; }
     h2{ font-size:18px; font-weight:700; letter-spacing:-0.01em; margin: 8px 0 14px; }
-
-    .cards{ display: grid; gap: 14px; }
-    /* optional two-up on wider screens — comment out if you prefer single column */
-    @media (min-width: 920px){
-      .cards{ grid-template-columns: 1fr 1fr; }
-    }
+    .cards{ display:grid; gap:14px; }
+    @media (min-width:920px){ .cards{ grid-template-columns:1fr 1fr; } }
 
     .card{
-      background: var(--card-bg);
-      border: var(--card-border);
-      border-radius: var(--card-br);
-      box-shadow: var(--card-shadow);
-      overflow: hidden; /* clip the image corners */
-      transition: transform .16s ease, box-shadow .16s ease;
+      background:var(--card-bg); border:var(--card-border); border-radius:var(--card-br);
+      box-shadow:var(--card-shadow); overflow:hidden;
+      transition:transform .16s ease, box-shadow .16s ease;
     }
-    .card:hover{ transform: translateY(-2px); box-shadow: var(--card-shadow-hover); }
+    .card:hover{ transform:translateY(-2px); box-shadow:var(--card-shadow-hover); }
     .card a{ border-bottom:0; }
 
-    .card-media{
-      display:block; width:100%; border-bottom: 1px solid var(--hairline);
-      background:#fafafa;
-    }
+    .card-media{ display:block; width:100%; background:#fafafa; border-bottom:1px solid var(--hairline); }
     .card-media img{ display:block; width:100%; height:auto; }
 
-    .card-body{ padding: 12px 14px 14px; }
+    .card-body{ padding:12px 14px 14px; }
     .card-body h3{ margin:0 0 6px; font-size:18px; line-height:1.35; }
-    .card-body .meta{ color:var(--muted); font-size:13px; margin-bottom:8px; }
+    .meta{ color:var(--muted); font-size:13px; margin-bottom:8px; }
     .card-body p{ font-size:15px; line-height:1.55; margin:8px 0 0; }
   </style>
 </head>
 
+<!-- =============== Apple-style Nav (About/Home on left, Menu on right) ================= -->
+<style>
+  :root{
+    --nav-height: 52px;
+    --nav-blur: 14px;
+    --hairline: rgba(0,0,0,0.08);
+    --ink: #111;
+  }
+
+  /* Global SF system stack + smoothing */
+  .top-nav, .top-nav *{
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+                 "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+  }
+
+  .top-nav{
+    position: fixed; inset: 0 0 auto 0;
+    height: var(--nav-height);
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: saturate(180%) blur(var(--nav-blur));
+    -webkit-backdrop-filter: saturate(180%) blur(var(--nav-blur));
+    border-bottom: 0.5px solid var(--hairline);
+    z-index: 999;
+  }
+  .nav-inner{
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; /* left brand | center links | right menu */
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+    max-width: 980px; margin: 0 auto;
+  }
+
+  /* Left: About/Home (always visible) */
+  .brand a{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size: 15px; color: var(--ink); text-decoration:none;
+    padding: 10px 12px; border-radius: 10px;
+    transition: background-color .15s ease, transform .08s ease;
+  }
+  .brand a:hover{ background: rgba(0,0,0,0.06); }
+  .brand a:active{ transform: translateY(1px); }
+  .brand .dot{
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #000; opacity: .85; /* subtle “logo” dot */
+  }
+
+  /* Center: desktop links */
+  .links{
+    display:flex; justify-content:center; align-items:center; gap:10px;
+    overflow-x:auto; white-space:nowrap; padding: 0 4px;
+  }
+  .links::-webkit-scrollbar{ display:none; } .links{ scrollbar-width:none; }
+
+  .top-nav a.navlink{
+    text-decoration:none; color: var(--ink); font-size:14px; line-height:1;
+    padding: 10px 12px; border-radius: 9999px;
+    transition: background-color .15s ease, transform .08s ease;
+  }
+  .top-nav a.navlink:hover{ background: rgba(0,0,0,0.06); }
+  .top-nav a.navlink:active{ transform: translateY(1px); }
+  .top-nav a.navlink:focus-visible{ outline:2px solid rgba(0,0,0,0.3); outline-offset:2px; }
+  .top-nav a.navlink[aria-current="page"]{ background: rgba(0,0,0,0.06); }
+
+  /* Right: Menu button (mobile) */
+  .menu-btn{
+    justify-self: end;
+    display:none;
+    font-size:15px; color: var(--ink);
+    padding: 10px 14px; border-radius: 12px;
+    border: 0.5px solid var(--hairline);
+    background: rgba(255,255,255,0.9);
+    transition: background-color .15s ease, transform .08s ease, border-color .15s ease;
+  }
+  .menu-btn:hover{ background: rgba(0,0,0,0.04); }
+  .menu-btn:active{ transform: translateY(1px); }
+
+  /* Floating sheet */
+  .mobile-menu{
+    position: fixed;
+    top: calc(var(--nav-height) + 8px);
+    right: 12px;
+    width: min(88vw, 340px);
+    background:#fff;
+    border: 0.5px solid var(--hairline);
+    border-radius: 14px;
+    box-shadow: 0 24px 50px rgba(0,0,0,0.16), 0 2px 8px rgba(0,0,0,0.06);
+    padding: 8px; z-index: 1000;
+
+    opacity:0; transform: translateY(-8px) scale(0.98);
+    pointer-events:none; transition: transform .18s ease, opacity .18s ease;
+  }
+  .mobile-menu.open{
+    opacity:1; transform: translateY(0) scale(1); pointer-events:auto;
+  }
+  .mobile-menu a{
+    display:block; padding:12px 12px;
+    border-radius:10px; color:var(--ink); text-decoration:none; font-size:16px;
+    transition: background-color .15s ease;
+  }
+  .mobile-menu a:hover{ background: rgba(0,0,0,0.06); }
+  .mobile-menu hr{
+    border:0; height:1px; background: var(--hairline); margin:6px 0;
+  }
+
+  .nav-backdrop{ position: fixed; inset:0; background: rgba(0,0,0,0.05); z-index: 999; }
+
+  /* Fixed-nav spacing + smooth anchor offset */
+  html{ scroll-behavior: smooth; }
+  [id]{ scroll-margin-top: calc(var(--nav-height) + 16px); }
+  body{ padding-top: calc(var(--nav-height) + 8px); }
+
+  /* Mobile behavior */
+  @media (max-width: 700px){
+    .links{ display:none; }
+    .menu-btn{ display:inline-flex; align-items:center; gap:8px; }
+    .nav-inner{ grid-template-columns: auto 1fr auto; } /* brand-left, empty middle, menu-right */
+  }
+
+  /* Motion-reduced fallback */
+  @media (prefers-reduced-motion: reduce){
+    .mobile-menu{ transition:none; }
+  }
+</style>
+
+<nav class="top-nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <!-- Left: About / Home (from blog page, go back to index anchors) -->
+    <div class="brand">
+      <a href="index.html#about" aria-label="Go to About / Home">
+        <span class="dot" aria-hidden="true"></span>
+        About
+      </a>
+    </div>
+
+    <!-- Center: Desktop links (point to index anchors; Blog is current page) -->
+    <div class="links" aria-hidden="true">
+      <a class="navlink" href="index.html#education">Education</a>
+      <a class="navlink" href="index.html#publications">Publications</a>
+      <a class="navlink" href="index.html#news">News</a>
+      <a class="navlink" href="index.html#experience">Experience</a>
+      <a class="navlink" href="index.html#projects">Projects</a>
+      <a class="navlink" href="index.html#skills">Skills</a>
+      <a class="navlink" href="index.html#startups">Startups</a>
+      <a class="navlink" href="blog.html" aria-current="page">Blog</a>
+    </div>
+
+    <!-- Right: Menu (mobile) -->
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">
+      Menu <span aria-hidden="true">▾</span>
+    </button>
+  </div>
+</nav>
+
+<!-- Backdrop + Floating sheet -->
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+
+<div id="mobileMenu" class="mobile-menu" role="menu" aria-labelledby="menuButton" hidden>
+  <!-- Note: these also go back to index anchors from the blog page -->
+  <a role="menuitem" href="index.html#education">Education</a>
+  <a role="menuitem" href="index.html#publications">Publications</a>
+  <a role="menuitem" href="index.html#news">News</a>
+  <a role="menuitem" href="index.html#experience">Experience</a>
+  <a role="menuitem" href="index.html#projects">Projects</a>
+  <a role="menuitem" href="index.html#skills">Skills</a>
+  <a role="menuitem" href="index.html#startups">Startups</a>
+  <hr>
+  <a role="menuitem" href="blog.html" aria-current="page">Blog</a>
+</div>
+
+<script>
+  (() => {
+    const btn = document.getElementById('menuButton');
+    const panel = document.getElementById('mobileMenu');
+    const backdrop = document.getElementById('navBackdrop');
+
+    const openMenu = () => {
+      panel.hidden = false; backdrop.hidden = false;
+      requestAnimationFrame(() => panel.classList.add('open'));
+      btn.setAttribute('aria-expanded','true');
+    };
+    const closeMenu = () => {
+      panel.classList.remove('open');
+      btn.setAttribute('aria-expanded','false');
+      setTimeout(() => { panel.hidden = true; backdrop.hidden = true; }, 160);
+    };
+    const toggleMenu = () => (btn.getAttribute('aria-expanded') === 'true') ? closeMenu() : openMenu();
+
+    btn.addEventListener('click', toggleMenu);
+    backdrop.addEventListener('click', closeMenu);
+    window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') closeMenu(); });
+    panel.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+    panel.addEventListener('click', e => e.stopPropagation());
+  })();
+</script>
+<!-- =============== End Apple-style Nav ================= -->
+
+
+
 <body>
-  <!-- ======= Apple-style Nav (About/Home left, Menu right) ======= -->
-  <nav class="top-nav" role="navigation" aria-label="Primary">
+  <!-- Nav -->
+  <nav class="top-nav" aria-label="Primary">
     <div class="nav-inner">
-      <!-- Left: About / Home -->
       <div class="brand">
         <a href="index.html#about" aria-label="Go to About / Home"><span class="dot" aria-hidden="true"></span>About</a>
       </div>
-
-      <!-- Center: Desktop links (same order as index) -->
       <div class="links" aria-hidden="true">
         <a class="navlink" href="index.html#education">Education</a>
         <a class="navlink" href="index.html#publications">Publications</a>
@@ -198,100 +297,53 @@
         <a class="navlink" href="index.html#startups">Startups</a>
         <a class="navlink" href="blog.html" aria-current="page">Blog</a>
       </div>
-
-      <!-- Right: Menu (mobile) -->
-      <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">
-        Menu <span aria-hidden="true">▾</span>
-      </button>
+      <button class="menu-btn" hidden>Menu</button>
     </div>
   </nav>
 
-  <!-- Backdrop + Floating sheet (mobile) -->
-  <div id="navBackdrop" class="nav-backdrop" hidden></div>
-  <div id="mobileMenu" class="mobile-menu" role="menu" aria-labelledby="menuButton" hidden>
-    <a role="menuitem" href="index.html#education">Education</a>
-    <a role="menuitem" href="index.html#publications">Publications</a>
-    <a role="menuitem" href="index.html#news">News</a>
-    <a role="menuitem" href="index.html#experience">Experience</a>
-    <a role="menuitem" href="index.html#projects">Projects</a>
-    <a role="menuitem" href="index.html#skills">Skills</a>
-    <a role="menuitem" href="index.html#startups">Startups</a>
-    <hr>
-    <a role="menuitem" href="blog.html" aria-current="page">Blog</a>
-  </div>
-
-  <!-- ======= Blog cards ======= -->
+  <!-- Blog cards -->
   <div class="wrap">
     <h2>Blog Posts</h2>
 
     <div class="cards">
-      <!-- Card: NEO X1 -->
+      <!-- LINKING EXAMPLE #1 -->
       <article class="card">
-        <a class="card-media" href="blog/neo-x1-robot.html">
-          <!-- Swap to your hosted image if you prefer: assets/images/blog/neo-hero.jpg -->
-          <img src="https://cdn.mos.cms.futurecdn.net/m8h6v3q8hE4qTVp2eN7B6o.jpg" alt="1X NEO Home Robot press image">
+        <!-- Image clicks through to detail page -->
+        <a class="card-media" href="blog/neo-x1-robot.html" aria-label="Open NEO X1 blog post">
+          <img src="assets/images/blog/neo-hero.jpg" alt="1X NEO Home Robot">
         </a>
         <div class="card-body">
+          <!-- Title also clicks through (same href) -->
           <h3><a href="blog/neo-x1-robot.html">NEO X1 (1X): Human-in-the-Loop Today, Autonomy Tomorrow</a></h3>
           <div class="meta">Nov 2025 • Robotics, Control</div>
-          <p>
-            Why 1X’s consumer humanoid starts with expert tele-assist and scheduled guidance,
-            what that means for safety/data, and how the $20k buy-out vs subscription pencils out.
-          </p>
+          <p>Why 1X’s consumer humanoid starts with expert tele-assist, what it means for safety/data, and how the $20k vs subscription model pencils out.</p>
         </div>
       </article>
 
-      <!-- Card: RL vs MPC -->
+      <!-- LINKING EXAMPLE #2 -->
       <article class="card">
-        <a class="card-media" href="blog/rl-vs-mpc.html">
+        <a class="card-media" href="blog/rl-vs-mpc.html" aria-label="Open RL vs MPC blog post">
           <img src="assets/images/blog/rl-vs-mpc.jpg" alt="RL vs MPC sketch">
         </a>
         <div class="card-body">
           <h3><a href="blog/rl-vs-mpc.html">RL vs MPC for Humanoid Locomotion — Practical Tradeoffs</a></h3>
           <div class="meta">Nov 2025 • Control, Robotics</div>
-          <p>Short note comparing WBC-QP/CLF-QP trackers vs contact-implicit MPC and how I blend them with residual RL.</p>
+          <p>WBC-QP/CLF-QP trackers vs contact-implicit MPC, and how residual RL glues them together in practice.</p>
         </div>
       </article>
 
-      <!-- Card: IRIS Actuators -->
+      <!-- LINKING EXAMPLE #3 -->
       <article class="card">
-        <a class="card-media" href="blog/iris-actuators.html">
-          <img src="assets/images/blog/iris-actuators.jpg" alt="IRIS robot actuators and differential wrist">
+        <a class="card-media" href="blog/iris-actuators.html" aria-label="Open IRIS actuators blog post">
+          <img src="assets/images/blog/iris-actuators.jpg" alt="IRIS actuators and differential wrist">
         </a>
         <div class="card-body">
           <h3><a href="blog/iris-actuators.html">Design Notes from Building a Low-Cost Cinema Robot Arm</a></h3>
           <div class="meta">Oct 2025 • Hardware, Mechatronics</div>
-          <p>FOC choices, differential wrist, carbon vs aluminum linkages, and supply chain lessons.</p>
+          <p>FOC choices, differential wrist, carbon vs aluminum linkages, and supply chain lessons from the IRIS build.</p>
         </div>
       </article>
     </div>
   </div>
-
-  <script>
-    // Mobile menu interactions (same behavior as index)
-    (() => {
-      const btn = document.getElementById('menuButton');
-      const panel = document.getElementById('mobileMenu');
-      const backdrop = document.getElementById('navBackdrop');
-
-      const openMenu = () => {
-        panel.hidden = false; backdrop.hidden = false;
-        requestAnimationFrame(() => panel.classList.add('open'));
-        btn.setAttribute('aria-expanded','true');
-      };
-      const closeMenu = () => {
-        panel.classList.remove('open');
-        btn.setAttribute('aria-expanded','false');
-        setTimeout(() => { panel.hidden = true; backdrop.hidden = true; }, 160);
-      };
-      const toggleMenu = () => (btn.getAttribute('aria-expanded') === 'true') ? closeMenu() : openMenu();
-
-      btn.addEventListener('click', toggleMenu);
-      backdrop.addEventListener('click', closeMenu);
-      window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') closeMenu(); });
-      panel.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
-      panel.addEventListener('click', e => e.stopPropagation());
-    })();
-  </script>
 </body>
 </html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>RL vs MPC for Humanoid Locomotion — Practical Tradeoffs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Short note on WBC-QP/CLF-QP trackers vs contact-implicit MPC and residual RL.">
+  <link rel="canonical" href="../blog/rl-vs-mpc.html">
+  <style>
+    :root{ --ink:#111; --muted:#666; --hairline:rgba(0,0,0,0.12); --wrap:800px;
+           --nav-height:52px; --nav-blur:14px; --nav-hairline:rgba(0,0,0,0.08);
+           --card-bg:#fff; --card-br:14px; --card-border:1px solid var(--hairline);
+           --card-shadow:0 6px 18px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.04); }
+    html,body{ margin:0; background:#fff; color:var(--ink);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    h1,h2,h3{ font-family:"Space Grotesk",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; letter-spacing:.2px; }
+    a{ color:inherit; text-decoration:none; border-bottom:1px solid rgba(0,0,0,.12); }
+    a:hover{ border-bottom-color:rgba(0,0,0,.3); }
+
+    .top-nav{ position:fixed; inset:0 0 auto 0; height:var(--nav-height);
+      background:rgba(255,255,255,.82); backdrop-filter:saturate(180%) blur(var(--nav-blur));
+      -webkit-backdrop-filter:saturate(180%) blur(var(--nav-blur));
+      border-bottom:.5px solid var(--nav-hairline); z-index:999; }
+    .nav-inner{ height:100%; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px; padding:0 16px; max-width:var(--wrap); margin:0 auto; }
+    .brand a{ display:inline-flex; align-items:center; gap:6px; border-bottom:0; padding:10px 12px; border-radius:10px; }
+    .brand a:hover{ background:rgba(0,0,0,.06); }
+    .brand .dot{ width:8px; height:8px; border-radius:50%; background:#000; opacity:.85; }
+    .links,.menu-btn{ display:none; }
+
+    body{ padding-top:calc(var(--nav-height) + 8px); }
+    .wrap{ width:100%; max-width:var(--wrap); margin:24px auto 60px; padding:0 16px; }
+
+    .post{ background:var(--card-bg); border:var(--card-border); border-radius:var(--card-br); box-shadow:var(--card-shadow); overflow:hidden; }
+    .hero img{ display:block; width:100%; height:auto; border-bottom:1px solid var(--hairline); }
+    .body{ padding:16px 18px 22px; }
+    .meta{ color:var(--muted); font-size:13px; margin-bottom:10px; }
+    h1{ font-size:26px; line-height:1.25; margin:0 0 6px; }
+    p{ font-size:16px; line-height:1.65; margin:10px 0; }
+    ul{ padding-left:18px; margin:10px 0; } li{ margin:6px 0; }
+    .subtle{ color:var(--muted); font-size:14px; }
+    .navrow{ display:flex; justify-content:space-between; gap:10px; margin-top:16px; }
+    .back{ display:inline-block; margin:16px 0; font-size:14px; }
+  </style>
+</head>
+<body>
+  <nav class="top-nav" aria-label="Primary">
+    <div class="nav-inner">
+      <div class="brand"><a href="../index.html#about"><span class="dot"></span>About</a></div>
+      <div></div>
+      <div><a class="subtle" href="../blog.html" style="border-bottom:0;">Blog Index →</a></div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <a class="back" href="../blog.html">← Back to Blog</a>
+
+    <article class="post">
+      <div class="hero">
+        <img src="../assets/images/blog/rl-vs-mpc.jpg" alt="RL vs MPC sketch">
+      </div>
+      <div class="body">
+        <h1>RL vs MPC for Humanoid Locomotion — Practical Tradeoffs</h1>
+        <div class="meta">Nov 2025 • Control, Robotics</div>
+
+        <p><strong>Quick take.</strong> WBC-QP/CLF-QP are excellent <em>myopic trackers</em> that enforce contact and torque limits but don’t natively pick contact modes. MPC, especially contact-implicit MPC, can discover/select modes and plan several steps ahead—but at a compute and modeling cost. Residual RL glues them: MPC gives stable priors; RL adapts contacts and nuisances.</p>
+
+        <h3>When I reach for MPC</h3>
+        <ul>
+          <li>Contact sequencing matters (stepping locations/timing) and horizons of 0.3–1.0s help.</li>
+          <li>Model is decent; I can afford RTI or sampling + warm starts.</li>
+        </ul>
+
+        <h3>When I reach for RL</h3>
+        <ul>
+          <li>Messy terrain, frictional uncertainty, or frequent impacts.</li>
+          <li>We can generate data in sim and need robustness over elegance.</li>
+        </ul>
+
+        <h3>Best of both</h3>
+        <ul>
+          <li>MPC for global intent + feasibility; residual RL for contact finesse and disturbance rejection.</li>
+          <li>Safety layer: CLF-QP or projection to keep torques/COP/GRFs feasible.</li>
+        </ul>
+
+        <div class="navrow">
+          <a href="neo-x1-robot.html">← Previous</a>
+          <a href="iris-actuators.html">Next →</a>
+        </div>
+      </div>
+    </article>
+  </div>
+</body>
+</html>

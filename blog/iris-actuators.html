@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Design Notes from Building a Low-Cost Cinema Robot Arm</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="FOC choices, differential wrist, carbon vs aluminum, and supply chain lessons.">
+  <link rel="canonical" href="../blog/iris-actuators.html">
+  <style>
+    :root{ --ink:#111; --muted:#666; --hairline:rgba(0,0,0,0.12); --wrap:800px;
+           --nav-height:52px; --nav-blur:14px; --nav-hairline:rgba(0,0,0,0.08);
+           --card-bg:#fff; --card-br:14px; --card-border:1px solid var(--hairline);
+           --card-shadow:0 6px 18px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.04); }
+    html,body{ margin:0; background:#fff; color:var(--ink);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    h1,h2,h3{ font-family:"Space Grotesk",Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; letter-spacing:.2px; }
+    a{ color:inherit; text-decoration:none; border-bottom:1px solid rgba(0,0,0,.12); }
+    a:hover{ border-bottom-color:rgba(0,0,0,.3); }
+
+    .top-nav{ position:fixed; inset:0 0 auto 0; height:var(--nav-height);
+      background:rgba(255,255,255,.82); backdrop-filter:saturate(180%) blur(var(--nav-blur));
+      -webkit-backdrop-filter:saturate(180%) blur(var(--nav-blur));
+      border-bottom:.5px solid var(--nav-hairline); z-index:999; }
+    .nav-inner{ height:100%; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px; padding:0 16px; max-width:var(--wrap); margin:0 auto; }
+    .brand a{ display:inline-flex; align-items:center; gap:6px; border-bottom:0; padding:10px 12px; border-radius:10px; }
+    .brand a:hover{ background:rgba(0,0,0,.06); }
+    .brand .dot{ width:8px; height:8px; border-radius:50%; background:#000; opacity:.85; }
+    .links,.menu-btn{ display:none; }
+
+    body{ padding-top:calc(var(--nav-height) + 8px); }
+    .wrap{ width:100%; max-width:var(--wrap); margin:24px auto 60px; padding:0 16px; }
+
+    .post{ background:var(--card-bg); border:var(--card-border); border-radius:var(--card-br); box-shadow:var(--card-shadow); overflow:hidden; }
+    .hero img{ display:block; width:100%; height:auto; border-bottom:1px solid var(--hairline); }
+    .body{ padding:16px 18px 22px; }
+    .meta{ color:var(--muted); font-size:13px; margin-bottom:10px; }
+    h1{ font-size:26px; line-height:1.25; margin:0 0 6px; }
+    p{ font-size:16px; line-height:1.65; margin:10px 0; }
+    ul{ padding-left:18px; margin:10px 0; } li{ margin:6px 0; }
+    .subtle{ color:var(--muted); font-size:14px; }
+    .navrow{ display:flex; justify-content:space-between; gap:10px; margin-top:16px; }
+    .back{ display:inline-block; margin:16px 0; font-size:14px; }
+  </style>
+</head>
+<body>
+  <nav class="top-nav" aria-label="Primary">
+    <div class="nav-inner">
+      <div class="brand"><a href="../index.html#about"><span class="dot"></span>About</a></div>
+      <div></div>
+      <div><a class="subtle" href="../blog.html" style="border-bottom:0;">Blog Index →</a></div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <a class="back" href="../blog.html">← Back to Blog</a>
+
+    <article class="post">
+      <div class="hero">
+        <img src="../assets/images/blog/iris-actuators.jpg" alt="IRIS actuators and differential wrist">
+      </div>
+      <div class="body">
+        <h1>Design Notes from Building a Low-Cost Cinema Robot Arm</h1>
+        <div class="meta">Oct 2025 • Hardware, Mechatronics</div>
+
+        <h3>Why differential wrist?</h3>
+        <p>It lets two motors share load across pitch/roll, reducing motor size at the end effector and improving dynamic response for fast pans/tilts.</p>
+
+        <h3>FOC choices</h3>
+        <ul>
+          <li>Low-kv motors + high pole count → smoother low-speed control for slow cinematic moves.</li>
+          <li>Current sensing close to the phase → better torque estimation and quieter operation.</li>
+        </ul>
+
+        <h3>Carbon vs aluminum</h3>
+        <ul>
+          <li>Carbon links cut weight and inertia at the cost of more complex joints and bonding.</li>
+          <li>Aluminum is forgiving for rapid iteration and surviving “oops” moments.</li>
+        </ul>
+
+        <h3>Supply chain notes</h3>
+        <p>Order motor/gearbox batches with 10–15% buffer, and standardize connectors/fasteners early—your future self will thank you.</p>
+
+        <div class="navrow">
+          <a href="rl-vs-mpc.html">← Previous</a>
+          <a href="neo-x1-robot.html">Next →</a>
+        </div>
+      </div>
+    </article>
+  </div>
+</body>
+</html>
