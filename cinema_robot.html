@@ -6,8 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
   <!-- Google Model Viewer -->
-  <script type="module"
-    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
     :root {
@@ -17,24 +16,33 @@
       --radius-xl: 26px;
     }
 
+    /* GLOBAL SAFE LIMITS */
+    html, body {
+      overflow-x: hidden !important;
+      max-width: 100%;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    *, *::before, *::after {
+      box-sizing: inherit;
+      max-width: 100%;
+    }
+
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
-      "Segoe UI", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--text-main);
-      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
 
-    body.no-scroll {
-      overflow: hidden;
-    }
-
-    /* HERO SECTION */
+    /* HERO AREA */
     .hero {
       width: 100%;
-      padding: clamp(40px, 8vw, 100px) 16px;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: clamp(40px, 8vw, 100px) clamp(20px, 6vw, 32px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -59,61 +67,52 @@
       animation: fadeIn 1.2s ease forwards 0.45s;
     }
 
-/* VIEWER CONTAINER */
-#viewer3d {
-  position: relative;
-  width: 100%;
-  max-width: 900px;
-  height: min(70vh, 600px);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  margin-bottom: 40px;
-  background: #ffffff;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1);
-  opacity: 0;
-  transform: translateY(20px);
-  animation: floatIn 1.2s ease forwards 0.6s;
-}
+    /* SAFE WRAPPER FOR LEFT/RIGHT MARGINS */
+    .viewer-wrapper {
+      width: 100%;
+      padding-left: clamp(12px, 5vw, 28px);
+      padding-right: clamp(12px, 5vw, 28px);
+    }
 
-model-viewer {
-  width: 100%;
-  height: 100%;
-  background: #ffffff;
-  --poster-color: transparent;
-  border-radius: var(--radius-xl);
-}
+    /* VIEWER BOX */
+    #viewer3d {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      height: min(70vh, 600px);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin: 0 auto 40px;
+      background: #ffffff;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: floatIn 1.2s ease forwards 0.6s;
+    }
 
-/* Mobile support */
-@media(max-width: 768px) {
-  #viewer3d {
-    height: 55vh;        /* fits most phones */
-    max-height: 480px;
-  }
-}
-
-@media(max-width: 480px) {
-  #viewer3d {
-    height: 45vh;        /* optimized for iPhone */
-    max-height: 420px;
-  }
-
-  .glass-button {
-    width: 36px;
-    height: 36px;
-  }
-}
-
-
-    /* MODEL-VIEWER */
     model-viewer {
       width: 100%;
       height: 100%;
-      background: #ffffff;
       --poster-color: transparent;
+      background: white;
       border-radius: var(--radius-xl);
     }
 
-    /* Apple-style blur loading */
+    /* MOBILE HEIGHT ADJUSTMENTS */
+    @media(max-width: 768px) {
+      #viewer3d {
+        height: 55vh;
+        max-height: 480px;
+      }
+    }
+    @media(max-width: 480px) {
+      #viewer3d {
+        height: 45vh;
+        max-height: 420px;
+      }
+    }
+
+    /* LOADING BLUR BACKDROP */
     .viewer-loading {
       position: absolute;
       inset: 0;
@@ -125,41 +124,38 @@ model-viewer {
       z-index: 9;
       transition: opacity 0.35s ease;
     }
-
     .viewer-loading.hide {
       opacity: 0;
       pointer-events: none;
     }
-
     .spinner {
       width: 40px;
       height: 40px;
       border-radius: 50%;
       border: 3px solid rgba(0,0,0,0.12);
       border-top-color: rgba(0,0,0,0.8);
-      animation: spin 0.8s linear infinite;
+      animation: spin .8s linear infinite;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* Apple Glass Buttons */
+    /* CONTROLS */
     .viewer-controls {
       position: absolute;
       right: 16px;
       bottom: 16px;
       display: flex;
-      gap: 10px;
-      z-index: 20;
+      flex-direction: row;
+      gap: 12px;
+      touch-action: manipulation;
+      z-index: 30;
     }
 
     .glass-button {
-      width: 40px;
-      height: 40px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       border: 1px solid rgba(255,255,255,0.85);
-      background: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.75);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
       display: flex;
@@ -169,29 +165,40 @@ model-viewer {
       color: #111;
       transition: 0.25s ease;
       box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+      padding: 8px;
     }
 
-    .glass-button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 12px 26px rgba(0,0,0,0.22);
+    .glass-button:active {
+      transform: scale(0.93);
     }
 
     .glass-button.active {
       background: rgba(17,17,17,0.92);
-      color: #fff;
+      color: white;
     }
 
     .glass-button svg {
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       stroke-width: 1.8;
       stroke: currentColor;
       fill: none;
     }
 
     @media(max-width:480px) {
-      #viewer3d { height: 320px; }
-      .glass-button { width: 38px; height: 38px; }
+      .viewer-controls {
+        right: 12px;
+        bottom: 12px;
+        gap: 10px;
+      }
+      .glass-button {
+        width: 46px;
+        height: 46px;
+      }
+      .glass-button svg {
+        width: 20px;
+        height: 20px;
+      }
     }
 
     @keyframes fadeIn { to { opacity: 1; } }
@@ -206,56 +213,52 @@ model-viewer {
     <h1 class="hero-title">Cinema Robot Arm<br>for Film Production</h1>
 
     <p class="hero-subtitle">
-      A fully engineered 6-axis cinema robot arm designed to deliver smooth motion control,
-      precise tracking shots, and studio-grade reliability for real film production environments.
+      A fully engineered 6-axis cinema robot arm designed for smooth motion control,
+      precise tracking shots, and studio-grade reliability.
     </p>
 
-    <!-- Viewer container -->
-    <div id="viewer3d">
+    <div class="viewer-wrapper">
+      <div id="viewer3d">
 
-      <!-- MODEL VIEWER -->
-    <model-viewer id="robotViewer"
-        src="/assets/models/cinema_robot.glb"
-        camera-controls
-        auto-rotate
-        auto-rotate-delay="0"
-        exposure="1"
-        shadow-intensity="1"
-        touch-action="pan-y"
-        ar
-    ></model-viewer>
+        <model-viewer id="robotViewer"
+          src="/assets/models/cinema_robot.glb"
+          camera-controls
+          auto-rotate
+          auto-rotate-delay="0"
+          exposure="1"
+          shadow-intensity="1"
+          touch-action="pan-y"
+          ar>
+        </model-viewer>
 
-      <!-- Loading -->
-      <div id="viewer-loading" class="viewer-loading">
-        <div class="spinner"></div>
-      </div>
+        <div id="viewer-loading" class="viewer-loading">
+          <div class="spinner"></div>
+        </div>
 
-      <!-- Apple UI -->
-      <div class="viewer-controls">
+        <div class="viewer-controls">
 
-        <!-- RESET -->
-        <button id="btn-reset" class="glass-button">
-          <svg viewBox="0 0 24 24">
-            <path d="M7 8H3.5M3.5 8L6 5.5M3.5 8L6 10.5" />
-            <path d="M7 8a7 7 0 1 1-1.2 7.3" />
-          </svg>
-        </button>
+          <button id="btn-reset" class="glass-button">
+            <svg viewBox="0 0 24 24">
+              <path d="M7 8H3.5M3.5 8L6 5.5M3.5 8L6 10.5" />
+              <path d="M7 8a7 7 0 1 1-1.2 7.3" />
+            </svg>
+          </button>
 
-        <!-- ROTATE -->
-        <button id="btn-rotate" class="glass-button active">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 3.5a8.5 8.5 0 1 1-6 2.5"/>
-            <path d="M8 4H4.5M4.5 4L7 1.5M4.5 4L7 6.5" />
-          </svg>
-        </button>
+          <button id="btn-rotate" class="glass-button active">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 3.5a8.5 8.5 0 1 1-6 2.5" />
+              <path d="M8 4H4.5M4.5 4L7 1.5M4.5 4L7 6.5" />
+            </svg>
+          </button>
 
-        <!-- FULLSCREEN -->
-        <button id="btn-fullscreen" class="glass-button">
-          <svg id="icon-fullscreen" viewBox="0 0 24 24">
-            <rect x="6.5" y="5.5" width="11" height="13" rx="2" />
-            <path d="M9 9h6M9 15h6" />
-          </svg>
-        </button>
+          <button id="btn-fullscreen" class="glass-button">
+            <svg id="icon-fullscreen" viewBox="0 0 24 24">
+              <rect x="6.5" y="5.5" width="11" height="13" rx="2" />
+              <path d="M9 9h6M9 15h6" />
+            </svg>
+          </button>
+
+        </div>
 
       </div>
     </div>
@@ -270,47 +273,46 @@ model-viewer {
     const btnFullscreen = document.getElementById("btn-fullscreen");
     const iconFullscreen = document.getElementById("icon-fullscreen");
 
-    /* Hide loading when ready */
     viewer.addEventListener("load", () => {
       loading.classList.add("hide");
     });
 
-    /* Reset camera */
-    btnReset.addEventListener("click", () => {
+    function tapSafe(button, handler) {
+      button.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handler();
+      });
+      button.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handler();
+      }, { passive: false });
+    }
+
+    tapSafe(btnReset, () => {
       viewer.cameraOrbit = "0deg 75deg 3m";
       viewer.cameraTarget = "0m 0m 0m";
     });
 
-    /* Toggle auto-rotate */
-    btnRotate.addEventListener("click", () => {
-      const enabled = viewer.autoRotate;
-      viewer.autoRotate = !enabled;
+    tapSafe(btnRotate, () => {
+      viewer.autoRotate = !viewer.autoRotate;
       btnRotate.classList.toggle("active", viewer.autoRotate);
     });
 
-    /* Fullscreen toggle */
-    btnFullscreen.addEventListener("click", () => {
+    tapSafe(btnFullscreen, () => {
       const container = document.getElementById("viewer3d");
-
-      if (!document.fullscreenElement) {
-        container.requestFullscreen?.();
-      } else {
-        document.exitFullscreen?.();
-      }
+      if (!document.fullscreenElement) container.requestFullscreen?.();
+      else document.exitFullscreen?.();
     });
 
-    /* Change fullscreen icon */
     document.addEventListener("fullscreenchange", () => {
-      const fs = document.fullscreenElement;
-
-      if (fs) {
-        // Turn into an X
+      if (document.fullscreenElement) {
         iconFullscreen.innerHTML = `<path d="M7 7l10 10M17 7L7 17"/>`;
         btnFullscreen.classList.add("active");
       } else {
-        // Restore rectangle
         iconFullscreen.innerHTML = `
-          <rect x="6.5" y="5.5" width="11" height="13" rx="2" />
+          <rect x="6.5" y="5.5" width="11" height="13" rx="2"/>
           <path d="M9 9h6M9 15h6" />
         `;
         btnFullscreen.classList.remove("active");
