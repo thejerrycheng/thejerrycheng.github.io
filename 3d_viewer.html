@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>GLB Debug Viewer</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Model Viewer -->
+  <script type="module"
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <style>
+    body { margin:0; background:#111; }
+    model-viewer {
+      width: 100vw;
+      height: 100vh;
+      background: #222;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- DEBUG: SHOW PATH AND ERRORS -->
+  <p style="color:white; position:fixed; top:0; left:0; z-index:10;">
+    Loading: assets/models/cinema_robot.glb
+  </p>
+
+  <model-viewer id="mv"
+    src="assets/models/cinema_robot.glb"
+    camera-controls
+    auto-rotate
+    disable-tap
+    exposure="1"
+    shadow-intensity="1"
+    ar>
+  </model-viewer>
+
+  <script>
+    const mv = document.getElementById("mv");
+
+    mv.addEventListener("error", (e) => {
+      console.error("MODEL VIEWER ERROR:", e);
+      alert("Model failed to load. Check console for details.");
+    });
+
+    mv.addEventListener("load", () => {
+      console.log("Model loaded successfully!");
+      alert("Model loaded successfully!");
+    });
+  </script>
+</body>
+</html>

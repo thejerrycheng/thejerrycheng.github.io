@@ -5,19 +5,22 @@
   <title>Cinema Robot Arm — Jerry Cheng</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
+  <!-- Google Model Viewer -->
+  <script type="module"
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
   <style>
     :root {
       --bg: #f8f6f0;
       --text-main: #111;
       --text-muted: #666;
-      --accent: #ff5a3c;
       --radius-xl: 26px;
     }
 
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
-        "Segoe UI", sans-serif;
+      "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--text-main);
       overflow-x: hidden;
@@ -35,14 +38,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       text-align: center;
     }
 
     .hero-title {
       font-size: clamp(36px, 7vw, 72px);
       font-weight: 700;
-      line-height: 1.05;
       margin: 0 0 20px;
       opacity: 0;
       animation: fadeIn 1.2s ease forwards 0.2s;
@@ -50,45 +51,48 @@
 
     .hero-subtitle {
       font-size: clamp(16px, 4vw, 20px);
-      max-width: min(90%, 700px);
+      max-width: 700px;
       color: var(--text-muted);
       margin: 0 auto 40px;
       opacity: 0;
-      animation: fadeIn 1.2s ease forwards 0.45s;
       line-height: 1.45;
+      animation: fadeIn 1.2s ease forwards 0.45s;
     }
 
-    /* 3D VIEWER SHELL */
+    /* VIEWER CONTAINER */
     #viewer3d {
       position: relative;
       width: 100%;
       max-width: 900px;
-      height: clamp(280px, 55vh, 600px);
-      background: #ffffff;
+      height: clamp(300px, 60vh, 600px);
       border-radius: var(--radius-xl);
-      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      margin-bottom: 40px;
+      background: #ffffff;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.1);
       opacity: 0;
       transform: translateY(20px);
       animation: floatIn 1.2s ease forwards 0.6s;
-      margin-bottom: 40px;
-      overflow: hidden;
     }
 
-    #viewer3d-canvas {
+    /* MODEL-VIEWER */
+    model-viewer {
       width: 100%;
       height: 100%;
+      background: #ffffff;
+      --poster-color: transparent;
+      border-radius: var(--radius-xl);
     }
 
-    /* Loading overlay (Apple-style blur) */
+    /* Apple-style blur loading */
     .viewer-loading {
       position: absolute;
       inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(248, 246, 240, 0.6);
+      background: rgba(248, 246, 240, 0.7);
       backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
       z-index: 9;
       transition: opacity 0.35s ease;
     }
@@ -101,155 +105,68 @@
     .spinner {
       width: 40px;
       height: 40px;
-      border-radius: 999px;
-      border: 3px solid rgba(0, 0, 0, 0.12);
-      border-top-color: rgba(0, 0, 0, 0.8);
+      border-radius: 50%;
+      border: 3px solid rgba(0,0,0,0.12);
+      border-top-color: rgba(0,0,0,0.8);
       animation: spin 0.8s linear infinite;
     }
 
-    /* Glass controls (Apple-style) */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Apple Glass Buttons */
     .viewer-controls {
       position: absolute;
       right: 16px;
       bottom: 16px;
       display: flex;
       gap: 10px;
-      z-index: 10;
+      z-index: 20;
     }
 
     .glass-button {
       width: 40px;
       height: 40px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.85);
-      background: linear-gradient(
-        145deg,
-        rgba(255, 255, 255, 0.9),
-        rgba(255, 255, 255, 0.65)
-      );
-      box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.18),
-        0 0 0 0 rgba(0, 0, 0, 0.1);
-      display: inline-flex;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      padding: 0;
-      outline: none;
-      border-radius: 999px;
       color: #111;
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease,
-        background 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease;
+      transition: 0.25s ease;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+    }
+
+    .glass-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.22);
+    }
+
+    .glass-button.active {
+      background: rgba(17,17,17,0.92);
+      color: #fff;
     }
 
     .glass-button svg {
       width: 20px;
       height: 20px;
+      stroke-width: 1.8;
       stroke: currentColor;
       fill: none;
-      stroke-width: 1.8;
-      vector-effect: non-scaling-stroke;
     }
 
-    .glass-button:active {
-      transform: translateY(1px) scale(0.97);
-      box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.25),
-        0 0 0 0 rgba(0, 0, 0, 0.1);
+    @media(max-width:480px) {
+      #viewer3d { height: 320px; }
+      .glass-button { width: 38px; height: 38px; }
     }
 
-    .glass-button:hover {
-      box-shadow:
-        0 12px 26px rgba(0, 0, 0, 0.22),
-        0 0 0 0 rgba(0, 0, 0, 0.1);
-    }
-
-    .glass-button.active {
-      background: rgba(17, 17, 17, 0.92);
-      color: #f8f6f0;
-      border-color: rgba(0, 0, 0, 0.15);
-      box-shadow:
-        0 10px 24px rgba(0, 0, 0, 0.4),
-        0 0 0 0 rgba(0, 0, 0, 0.15);
-    }
-
-    /* SR-only labels for accessibility */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
-    }
-
-    @keyframes floatIn {
-      to {
-        opacity: 1;
-        transform: translateY(0px);
-      }
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* Fullscreen styles */
-    #viewer3d:fullscreen {
-      width: 100vw;
-      height: 100vh;
-      max-width: 100vw;
-      border-radius: 0;
-      box-shadow: none;
-    }
-
-    #viewer3d:-webkit-full-screen {
-      width: 100vw;
-      height: 100vh;
-      max-width: 100vw;
-      border-radius: 0;
-      box-shadow: none;
-    }
-
-    /* MOBILE TWEAKS */
-    @media (max-width: 480px) {
-      .hero {
-        padding-top: 60px;
-      }
-
-      #viewer3d {
-        height: 320px;
-      }
-
-      .viewer-controls {
-        right: 12px;
-        bottom: 12px;
-        gap: 8px;
-      }
-
-      .glass-button {
-        width: 38px;
-        height: 38px;
-      }
-    }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes floatIn { to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 
@@ -260,249 +177,115 @@
     <h1 class="hero-title">Cinema Robot Arm<br>for Film Production</h1>
 
     <p class="hero-subtitle">
-      My complete MEng thesis project — a fully engineered 6-axis cinema robot arm
-      designed to deliver smooth motion control, precise tracking shots, and
-      studio-grade reliability for real film production environments.
+      A fully engineered 6-axis cinema robot arm designed to deliver smooth motion control,
+      precise tracking shots, and studio-grade reliability for real film production environments.
     </p>
 
+    <!-- Viewer container -->
     <div id="viewer3d">
-      <div id="viewer3d-canvas"></div>
 
-      <!-- Loading overlay -->
+      <!-- MODEL VIEWER -->
+      <model-viewer id="robotViewer"
+        src="./assets/models/cinema_robot.glb"
+        camera-controls
+        auto-rotate
+        auto-rotate-delay="0"
+        exposure="1.1"
+        shadow-intensity="1"
+        touch-action="pan-y"
+      ></model-viewer>
+
+      <!-- Loading -->
       <div id="viewer-loading" class="viewer-loading">
-        <div class="spinner" aria-hidden="true"></div>
-        <span class="sr-only">Loading 3D model…</span>
+        <div class="spinner"></div>
       </div>
 
-      <!-- Apple-style glass controls -->
+      <!-- Apple UI -->
       <div class="viewer-controls">
-        <!-- Reset View -->
-        <button id="btn-reset" class="glass-button" type="button">
-          <span class="sr-only">Reset view</span>
-          <!-- SF Symbols style: arrow.counterclockwise -->
-          <svg viewBox="0 0 24 24" aria-hidden="true">
+
+        <!-- RESET -->
+        <button id="btn-reset" class="glass-button">
+          <svg viewBox="0 0 24 24">
             <path d="M7 8H3.5M3.5 8L6 5.5M3.5 8L6 10.5" />
             <path d="M7 8a7 7 0 1 1-1.2 7.3" />
           </svg>
         </button>
 
-        <!-- Auto Rotate -->
-        <button id="btn-rotate" class="glass-button active" type="button">
-          <span class="sr-only">Toggle auto-rotate</span>
-          <!-- SF-ish: playpause / circular arrows hybrid -->
-          <svg id="icon-rotate" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 3.5a8.5 8.5 0 1 1-6.01 2.49" />
+        <!-- ROTATE -->
+        <button id="btn-rotate" class="glass-button active">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 3.5a8.5 8.5 0 1 1-6 2.5"/>
             <path d="M8 4H4.5M4.5 4L7 1.5M4.5 4L7 6.5" />
           </svg>
         </button>
 
-        <!-- Fullscreen -->
-        <button id="btn-fullscreen" class="glass-button" type="button">
-          <span class="sr-only">Toggle fullscreen</span>
-          <!-- SF style: rectangle.expand.vertical -->
-          <svg id="icon-fullscreen" viewBox="0 0 24 24" aria-hidden="true">
+        <!-- FULLSCREEN -->
+        <button id="btn-fullscreen" class="glass-button">
+          <svg id="icon-fullscreen" viewBox="0 0 24 24">
             <rect x="6.5" y="5.5" width="11" height="13" rx="2" />
             <path d="M9 9h6M9 15h6" />
           </svg>
         </button>
+
       </div>
     </div>
 
   </section>
 
-  <!-- 3D MODEL LOADER -->
-  <script type="module">
-    import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.158/build/three.module.js";
-    import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.158/examples/jsm/loaders/GLTFLoader.js";
-    import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.158/examples/jsm/controls/OrbitControls.js";
-
-    let scene, camera, renderer, controls, model;
-    let autoRotateEnabled = true;
-
-    const container = document.getElementById("viewer3d");
-    const canvasContainer = document.getElementById("viewer3d-canvas");
-    const loadingOverlay = document.getElementById("viewer-loading");
+  <script>
+    const viewer = document.getElementById("robotViewer");
+    const loading = document.getElementById("viewer-loading");
     const btnReset = document.getElementById("btn-reset");
     const btnRotate = document.getElementById("btn-rotate");
     const btnFullscreen = document.getElementById("btn-fullscreen");
     const iconFullscreen = document.getElementById("icon-fullscreen");
 
-    init();
-    loadModel();
+    /* Hide loading when ready */
+    viewer.addEventListener("load", () => {
+      loading.classList.add("hide");
+    });
 
-    function init() {
-      scene = new THREE.Scene();
-      scene.background = new THREE.Color(0xf8f6f0);
+    /* Reset camera */
+    btnReset.addEventListener("click", () => {
+      viewer.cameraOrbit = "0deg 75deg 3m";
+      viewer.cameraTarget = "0m 0m 0m";
+    });
 
-      const width = container.clientWidth;
-      const height = container.clientHeight;
+    /* Toggle auto-rotate */
+    btnRotate.addEventListener("click", () => {
+      const enabled = viewer.autoRotate;
+      viewer.autoRotate = !enabled;
+      btnRotate.classList.toggle("active", viewer.autoRotate);
+    });
 
-      camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-      camera.position.set(3, 2, 5);
+    /* Fullscreen toggle */
+    btnFullscreen.addEventListener("click", () => {
+      const container = document.getElementById("viewer3d");
 
-      renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(width, height);
-      renderer.shadowMap.enabled = true;
-      canvasContainer.appendChild(renderer.domElement);
-
-      // Lights
-      const hemi = new THREE.HemisphereLight(0xffffff, 0xdddddd, 1.15);
-      scene.add(hemi);
-
-      const dir = new THREE.DirectionalLight(0xffffff, 1);
-      dir.position.set(5, 5, 5);
-      dir.castShadow = true;
-      scene.add(dir);
-
-      // Controls
-      controls = new OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.04;
-      controls.autoRotate = true;
-      controls.autoRotateSpeed = 1.1;
-
-      // UI events
-      setupUI();
-
-      animate();
-    }
-
-    function loadModel() {
-      const loader = new GLTFLoader();
-
-      loader.load(
-        "./models/cinema_robot.glb",
-        (gltf) => {
-          model = gltf.scene;
-          model.scale.set(1.4, 1.4, 1.4);
-          model.position.set(0, -0.5, 0);
-          scene.add(model);
-
-          // Hide loading overlay when ready
-          if (loadingOverlay) {
-            loadingOverlay.classList.add("hide");
-          }
-        },
-        undefined,
-        (err) => {
-          console.error("Model failed:", err);
-          if (loadingOverlay) {
-            loadingOverlay.classList.add("hide");
-          }
-        }
-      );
-    }
-
-    function setupUI() {
-      // Reset view
-      btnReset.addEventListener("click", () => {
-        camera.position.set(3, 2, 5);
-        controls.target.set(0, 0, 0);
-        controls.update();
-      });
-
-      // Auto-rotate toggle
-      btnRotate.addEventListener("click", () => {
-        autoRotateEnabled = !autoRotateEnabled;
-        controls.autoRotate = autoRotateEnabled;
-        btnRotate.classList.toggle("active", autoRotateEnabled);
-      });
-
-      // Fullscreen toggle
-      btnFullscreen.addEventListener("click", () => {
-        toggleFullscreen();
-      });
-
-      // Sync on manual fullscreen exit (Esc, etc.)
-      document.addEventListener("fullscreenchange", handleFullscreenChange);
-      document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
-    }
-
-    function toggleFullscreen() {
-      const isFullscreen =
-        document.fullscreenElement === container ||
-        document.webkitFullscreenElement === container;
-
-      if (!isFullscreen) {
-        // Enter fullscreen
-        if (container.requestFullscreen) {
-          container.requestFullscreen();
-        } else if (container.webkitRequestFullscreen) {
-          container.webkitRequestFullscreen();
-        }
+      if (!document.fullscreenElement) {
+        container.requestFullscreen?.();
       } else {
-        // Exit fullscreen
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen();
-        }
+        document.exitFullscreen?.();
       }
-    }
+    });
 
-    function handleFullscreenChange() {
-      const isNowFullscreen =
-        document.fullscreenElement === container ||
-        document.webkitFullscreenElement === container;
+    /* Change fullscreen icon */
+    document.addEventListener("fullscreenchange", () => {
+      const fs = document.fullscreenElement;
 
-      if (isNowFullscreen) {
-        document.body.classList.add("no-scroll");
+      if (fs) {
+        // Turn into an X
+        iconFullscreen.innerHTML = `<path d="M7 7l10 10M17 7L7 17"/>`;
         btnFullscreen.classList.add("active");
-
-        // Change icon to "X" (SF: xmark-ish)
-        iconFullscreen.innerHTML = "";
-        const ns = "http://www.w3.org/2000/svg";
-        const path1 = document.createElementNS(ns, "path");
-        path1.setAttribute("d", "M7 7l10 10M17 7L7 17");
-        iconFullscreen.appendChild(path1);
       } else {
-        document.body.classList.remove("no-scroll");
+        // Restore rectangle
+        iconFullscreen.innerHTML = `
+          <rect x="6.5" y="5.5" width="11" height="13" rx="2" />
+          <path d="M9 9h6M9 15h6" />
+        `;
         btnFullscreen.classList.remove("active");
-
-        // Restore "rectangle" icon
-        iconFullscreen.innerHTML = "";
-        const ns = "http://www.w3.org/2000/svg";
-        const rect = document.createElementNS(ns, "rect");
-        rect.setAttribute("x", "6.5");
-        rect.setAttribute("y", "5.5");
-        rect.setAttribute("width", "11");
-        rect.setAttribute("height", "13");
-        rect.setAttribute("rx", "2");
-        const line1 = document.createElementNS(ns, "path");
-        line1.setAttribute("d", "M9 9h6");
-        const line2 = document.createElementNS(ns, "path");
-        line2.setAttribute("d", "M9 15h6");
-        iconFullscreen.appendChild(rect);
-        iconFullscreen.appendChild(line1);
-        iconFullscreen.appendChild(line2);
       }
-
-      // On fullscreen change, also fix renderer size
-      onResize();
-    }
-
-    function animate() {
-      requestAnimationFrame(animate);
-
-      if (model) {
-        model.position.y = -0.5 + Math.sin(Date.now() * 0.0015) * 0.03;
-      }
-
-      controls.update();
-      renderer.render(scene, camera);
-    }
-
-    function onResize() {
-      const width = container.clientWidth;
-      const height = container.clientHeight;
-
-      renderer.setSize(width, height);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-    }
-
-    // Resize
-    window.addEventListener("resize", onResize);
+    });
   </script>
 
 </body>
