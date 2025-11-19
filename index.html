@@ -459,8 +459,6 @@
         </p>
 
 
-
-
       <style>
         .social-links{
           text-align:center;
@@ -591,6 +589,8 @@
         </td></tr>
       </tbody>
     </table>
+
+
 
 
 <!-- ======= Publications - optimized for mobile ======= -->
@@ -1113,81 +1113,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-<!-- <script>
-document.addEventListener('DOMContentLoaded', function () {
-  const isCoarse = window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
-
-  if (!isCoarse) return; // desktop stays hover-based
-
-  // Helper: wire up tap-to-toggle for a given thumb + its video (if any)
-  function enableTapToggle(thumb, videoSelector='video'){
-    const vid = thumb.querySelector(videoSelector);
-    if (!vid) return;
-
-    // Make sure prior touchstart/touchend hover logic doesn't interfere
-    thumb.replaceWith(thumb.cloneNode(true)); // remove old listeners quickly
-    const fresh = document.querySelector('[data-uid="'+(thumb.dataset.uid||'')+'"]') || document.querySelectorAll('#publications .pub-thumb, #projects .proj-thumb')[0] || thumb;
-
-    // Re-select video after clone fallback
-    const el = thumb.isConnected ? thumb : fresh;
-    const v  = el.querySelector(videoSelector);
-    if (!v) return;
-
-    // Safe video setup
-    v.muted = true; v.loop = true; v.playsInline = true;
-    v.setAttribute('muted',''); v.setAttribute('webkit-playsinline','');
-    v.removeAttribute('controls'); v.preload = 'metadata';
-
-    // Tap toggles play/pause + img/video visibility
-    const toggle = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (el.classList.contains('playing')){
-        try { v.pause(); } catch(e){}
-        el.classList.remove('playing');
-      } else {
-        try { v.currentTime = 0; v.play(); } catch(e){}
-        el.classList.add('playing');
-      }
-    };
-
-    el.addEventListener('click', toggle);
-  }
-
-  // Publications: single-thumb cards (non-carousel)
-  document.querySelectorAll('#publications .pub-thumb').forEach((thumb, i) => {
-    // mark for clone fallback
-    thumb.dataset.uid = 'pubthumb-' + i;
-    // only enable if a video overlay exists
-    if (thumb.querySelector('.hover-video video')) {
-      enableTapToggle(thumb, '.hover-video video');
-    }
-  });
-
-  // Projects
-  document.querySelectorAll('#projects .proj-thumb').forEach((thumb, i) => {
-    thumb.dataset.uid = 'projthumb-' + i;
-    if (thumb.querySelector('.hover-video video')) {
-      enableTapToggle(thumb, '.hover-video video');
-    }
-  });
-
-  // Optional: pause any playing video when user taps elsewhere
-  document.addEventListener('click', function (e) {
-    const playing = document.querySelectorAll('#publications .pub-thumb.playing, #projects .proj-thumb.playing');
-    playing.forEach(el => {
-      if (!el.contains(e.target)){
-        const v = el.querySelector('video');
-        if (v){ try { v.pause(); } catch(_){} }
-        el.classList.remove('playing');
-      }
-    });
-  }, true);
-});
-</script> -->
-
-
-
 
 <table id="publications" class="pubs-table">
   <tbody>
@@ -1312,6 +1237,7 @@ document.addEventListener('DOMContentLoaded', function () {
         <div class="pub-links">
           <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener">Paper</a>
           <a href="https://www.youtube.com/watch?v=tUJCzzHMhkU&list=PL5hrJ0xlpQr8OD-3luKAu9CUlmj_8L284&index=6" target="_blank" rel="noopener">Video</a>
+          <a href="cinema_robot.html">Website</a>
           <!-- <a href="https://github.com/youruser/iris" target="_blank" rel="noopener">Code</a> -->
         </div>
         <p class="pub-desc">
