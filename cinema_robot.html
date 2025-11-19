@@ -1,32 +1,20 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
-  <title>Cinema Robot Arm — Jerry Cheng</title>
+  <title>IRIS — Cinema Robot Arm</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-  <!-- Google Model Viewer -->
+  <!-- Model Viewer -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
     :root {
-      --bg: #f8f6f0;
+      --bg: #faf8f2;
       --text-main: #111;
       --text-muted: #666;
       --radius-xl: 26px;
-    }
-
-    /* GLOBAL SAFE LIMITS */
-    html, body {
-      overflow-x: hidden !important;
-      max-width: 100%;
-      box-sizing: border-box;
-      position: relative;
-    }
-
-    *, *::before, *::after {
-      box-sizing: inherit;
-      max-width: 100%;
     }
 
     body {
@@ -34,15 +22,17 @@
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--text-main);
+      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* HERO AREA */
-    .hero {
+    /* ===========================
+          GLOBAL LAYOUT
+    ============================ */
+    section {
       width: 100%;
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: clamp(40px, 8vw, 100px) clamp(20px, 6vw, 32px);
+      padding: clamp(40px, 8vw, 100px) 16px;
+      box-sizing: border-box;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -50,7 +40,7 @@
     }
 
     .hero-title {
-      font-size: clamp(36px, 7vw, 72px);
+      font-size: clamp(32px, 6vw, 72px);
       font-weight: 700;
       margin: 0 0 20px;
       opacity: 0;
@@ -59,60 +49,58 @@
 
     .hero-subtitle {
       font-size: clamp(16px, 4vw, 20px);
-      max-width: 700px;
+      max-width: 760px;
       color: var(--text-muted);
       margin: 0 auto 40px;
-      opacity: 0;
       line-height: 1.45;
+      opacity: 0;
       animation: fadeIn 1.2s ease forwards 0.45s;
     }
 
-    /* SAFE WRAPPER FOR LEFT/RIGHT MARGINS */
+    /* ===========================
+          VIEWER CONTAINER
+    ============================ */
     .viewer-wrapper {
-      width: 100%;
-      padding-left: clamp(12px, 5vw, 28px);
-      padding-right: clamp(12px, 5vw, 28px);
-    }
-
-    /* VIEWER BOX */
-    #viewer3d {
       position: relative;
       width: 100%;
       max-width: 900px;
+    }
+
+    #viewer3d {
+      width: 100%;
       height: min(70vh, 600px);
       border-radius: var(--radius-xl);
-      overflow: hidden;
-      margin: 0 auto 40px;
-      background: #ffffff;
+      background: #fff;
       box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
       opacity: 0;
       transform: translateY(20px);
       animation: floatIn 1.2s ease forwards 0.6s;
+      position: relative;
     }
 
     model-viewer {
       width: 100%;
       height: 100%;
       --poster-color: transparent;
-      background: white;
-      border-radius: var(--radius-xl);
     }
 
-    /* MOBILE HEIGHT ADJUSTMENTS */
-    @media(max-width: 768px) {
+    /* Mobile viewer optimization */
+    @media (max-width: 768px) {
       #viewer3d {
         height: 55vh;
-        max-height: 480px;
-      }
-    }
-    @media(max-width: 480px) {
-      #viewer3d {
-        height: 45vh;
-        max-height: 420px;
       }
     }
 
-    /* LOADING BLUR BACKDROP */
+    @media (max-width: 480px) {
+      #viewer3d {
+        height: 45vh;
+      }
+    }
+
+    /* ===========================
+          LOADING
+    ============================ */
     .viewer-loading {
       position: absolute;
       inset: 0;
@@ -124,97 +112,171 @@
       z-index: 9;
       transition: opacity 0.35s ease;
     }
+
     .viewer-loading.hide {
       opacity: 0;
       pointer-events: none;
     }
+
     .spinner {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      border: 3px solid rgba(0,0,0,0.12);
-      border-top-color: rgba(0,0,0,0.8);
-      animation: spin .8s linear infinite;
+      border: 3px solid rgba(0, 0, 0, 0.12);
+      border-top-color: rgba(0, 0, 0, 0.8);
+      animation: spin 0.8s linear infinite;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* CONTROLS */
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ===========================
+          VIEWER BUTTONS
+    ============================ */
     .viewer-controls {
       position: absolute;
       right: 16px;
       bottom: 16px;
       display: flex;
-      flex-direction: row;
-      gap: 12px;
-      touch-action: manipulation;
-      z-index: 30;
+      gap: 10px;
+      z-index: 20;
     }
 
     .glass-button {
-      width: 48px;
-      height: 48px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.85);
-      background: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      color: #111;
       transition: 0.25s ease;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
-      padding: 8px;
-    }
-
-    .glass-button:active {
-      transform: scale(0.93);
     }
 
     .glass-button.active {
-      background: rgba(17,17,17,0.92);
-      color: white;
+      background: rgba(17, 17, 17, 0.92);
+      color: #fff;
+    }
+
+    .glass-button:hover {
+      transform: translateY(-1px);
     }
 
     .glass-button svg {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       stroke-width: 1.8;
       stroke: currentColor;
       fill: none;
     }
 
-    @media(max-width:480px) {
-      .viewer-controls {
-        right: 12px;
-        bottom: 12px;
-        gap: 10px;
-      }
+    /* Mobile buttons */
+    @media (max-width: 480px) {
       .glass-button {
-        width: 46px;
-        height: 46px;
-      }
-      .glass-button svg {
-        width: 20px;
-        height: 20px;
+        width: 34px;
+        height: 34px;
       }
     }
 
-    @keyframes fadeIn { to { opacity: 1; } }
-    @keyframes floatIn { to { opacity: 1; transform: translateY(0); } }
+    /* ===========================
+          SCROLL INDICATOR
+    ============================ */
+    .scroll-indicator {
+      position: fixed;
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 999;
+    }
+
+    .scroll-track {
+      width: 40px;
+      padding: 30px 0;
+      background: #f3f1eb;
+      border-radius: 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 26px;
+      position: relative;
+    }
+
+    .scroll-dot {
+      width: 8px;
+      height: 14px;
+      background: #cacaca;
+      border-radius: 6px;
+    }
+
+    .scroll-thumb {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #111;
+      border-radius: 999px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition: height 0.15s, top 0.15s;
+    }
+
+    /* Hide on small screens */
+    @media (max-width: 768px) {
+      .scroll-indicator {
+        display: none;
+      }
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes floatIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
 
 <body>
 
-  <section class="hero">
 
-    <h1 class="hero-title">Cinema Robot Arm<br>for Film Production</h1>
+  <!-- ===========================
+        SCROLL INDICATOR (RIGHT)
+  ============================ -->
+  <div class="scroll-indicator">
+    <div class="scroll-track">
+      <div class="scroll-thumb"></div>
+      <div class="scroll-dot" data-target="#s1"></div>
+      <div class="scroll-dot" data-target="#s2"></div>
+      <div class="scroll-dot" data-target="#s3"></div>
+      <div class="scroll-dot" data-target="#s4"></div>
+      <div class="scroll-dot" data-target="#s5"></div>
+    </div>
+  </div>
+
+
+
+  <!-- ===========================
+          SECTION 1 — HERO
+  ============================ -->
+  <section id="s1">
+
+    <h1 class="hero-title">IRIS<br>The Accessible Cinema Robot Arm</h1>
 
     <p class="hero-subtitle">
-      A fully engineered 6-axis cinema robot arm designed for smooth motion control,
-      precise tracking shots, and studio-grade reliability.
+      Professional motion control reimagined for everyone.<br>
+      IRIS brings cinema-grade precision, high-speed movement, and intuitive control  
+      to creators — at a fraction of the cost of traditional $100k systems.
     </p>
 
     <div class="viewer-wrapper">
@@ -265,6 +327,123 @@
 
   </section>
 
+
+
+  <!-- ===========================
+          SECTION 2 — What is IRIS?
+  ============================ -->
+  <section id="s2">
+
+    <h2 class="hero-title" style="font-size: clamp(28px,5vw,48px);">
+      A Cinema Robot, Reimagined.
+    </h2>
+
+    <p class="hero-subtitle">
+      Cinema robots traditionally come from industrial automation — massive robotic arms  
+      adapted to carry high-speed cinema cameras. They deliver movements impossible for humans:  
+      sub-millimeter repeatability, ultra-fast arcs, and perfectly repeatable paths for VFX and product shoots.
+      <br><br>
+      IRIS brings that capability to every creator.
+    </p>
+
+  </section>
+
+
+
+  <!-- ===========================
+          SECTION 3 — Why Cinema Robots Are Expensive
+  ============================ -->
+  <section id="s3">
+
+    <h2 class="hero-title" style="font-size: clamp(28px,5vw,48px);">
+      Why Cinema Robots Cost $100,000+
+    </h2>
+
+    <p class="hero-subtitle">
+      Systems like Bolt or KUKA combine industrial-grade actuators, multi-axis control systems,  
+      and proprietary motion software — requiring trained operators and massive budgets.
+      <br><br>
+      IRIS eliminates these barriers through a complete redesign of hardware, firmware,  
+      and motion-intelligent software.
+    </p>
+
+  </section>
+
+
+
+  <!-- ===========================
+          SECTION 4 — Three Objectives
+  ============================ -->
+  <section id="s4">
+
+    <h2 class="hero-title" style="font-size: clamp(28px,5vw,48px);">
+      Designed with Three Objectives.
+    </h2>
+
+    <p class="hero-subtitle" style="max-width:800px;">
+      IRIS is built on a full mechanical, electrical, and algorithmic redesign  
+      aimed at bringing cinematic motion control to everyday creators.
+    </p>
+
+    <div style="max-width:900px; text-align:left; margin-top:40px;">
+
+      <h3 style="font-size:24px; font-weight:600;">1. Make cinema robotics affordable.</h3>
+      <p class="hero-subtitle" style="text-align:left; margin-bottom:28px;">
+        Traditional systems cost $100k–$250k.  
+        IRIS reduces this by over 100× using custom actuators, optimized 3D-printed structures,  
+        and simplified electronics — targeting a sub-$1,000 system.
+      </p>
+
+      <h3 style="font-size:24px; font-weight:600;">2. Deliver true cinematic performance.</h3>
+      <p class="hero-subtitle" style="text-align:left; margin-bottom:28px;">
+        IRIS maintains key traits of cinema robots: high-speed motion, precise keyframing,  
+        and repeatable paths suitable for product cinematography and slow-motion commercial shoots.
+      </p>
+
+      <h3 style="font-size:24px; font-weight:600;">3. Make it intuitive and learning-free.</h3>
+      <p class="hero-subtitle" style="text-align:left;">
+        Instead of industrial interfaces, IRIS provides a modern UI designed  
+        for creators — no robotics background needed.
+      </p>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- ===========================
+          SECTION 5 — Comparison Grid
+  ============================ -->
+  <section id="s5">
+
+    <h2 class="hero-title" style="font-size: clamp(28px,5vw,48px);">
+      IRIS vs Traditional Cinema Robots
+    </h2>
+
+    <div style="margin-top:40px; max-width:900px; width:100%;">
+      <table style="width:100%; border-collapse:collapse; font-size:16px;">
+        <tr style="border-bottom:1px solid #ddd;">
+          <th style="padding:12px; text-align:left;">Feature</th>
+          <th style="padding:12px; text-align:center;">IRIS</th>
+          <th style="padding:12px; text-align:center;">Traditional</th>
+        </tr>
+        <tr><td style="padding:12px;">Cost</td><td style="text-align:center;">Under $1k</td><td style="text-align:center;">$100k–$250k</td></tr>
+        <tr><td style="padding:12px;">Setup Difficulty</td><td style="text-align:center;">Minutes</td><td style="text-align:center;">Hours</td></tr>
+        <tr><td style="padding:12px;">Software Complexity</td><td style="text-align:center;">Simple</td><td style="text-align:center;">Industrial</td></tr>
+        <tr><td style="padding:12px;">Learning Curve</td><td style="text-align:center;">Beginner-friendly</td><td style="text-align:center;">Trained Operator</td></tr>
+        <tr><td style="padding:12px;">Portability</td><td style="text-align:center;">Lightweight</td><td style="text-align:center;">Heavy</td></tr>
+        <tr><td style="padding:12px;">Precision</td><td style="text-align:center;">High</td><td style="text-align:center;">High</td></tr>
+      </table>
+    </div>
+
+  </section>
+
+
+
+  <!-- ===========================
+          SCRIPT — Viewer Controls
+  ============================ -->
   <script>
     const viewer = document.getElementById("robotViewer");
     const loading = document.getElementById("viewer-loading");
@@ -277,33 +456,20 @@
       loading.classList.add("hide");
     });
 
-    function tapSafe(button, handler) {
-      button.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handler();
-      });
-      button.addEventListener("touchstart", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handler();
-      }, { passive: false });
-    }
-
-    tapSafe(btnReset, () => {
+    btnReset.addEventListener("click", () => {
       viewer.cameraOrbit = "0deg 75deg 3m";
       viewer.cameraTarget = "0m 0m 0m";
     });
 
-    tapSafe(btnRotate, () => {
+    btnRotate.addEventListener("click", () => {
       viewer.autoRotate = !viewer.autoRotate;
       btnRotate.classList.toggle("active", viewer.autoRotate);
     });
 
-    tapSafe(btnFullscreen, () => {
-      const container = document.getElementById("viewer3d");
-      if (!document.fullscreenElement) container.requestFullscreen?.();
-      else document.exitFullscreen?.();
+    btnFullscreen.addEventListener("click", () => {
+      const box = document.getElementById("viewer3d");
+      if (!document.fullscreenElement) box.requestFullscreen();
+      else document.exitFullscreen();
     });
 
     document.addEventListener("fullscreenchange", () => {
@@ -313,11 +479,65 @@
       } else {
         iconFullscreen.innerHTML = `
           <rect x="6.5" y="5.5" width="11" height="13" rx="2"/>
-          <path d="M9 9h6M9 15h6" />
+          <path d="M9 9h6M9 15h6"/>
         `;
         btnFullscreen.classList.remove("active");
       }
     });
+  </script>
+
+
+  <!-- ===========================
+          SCRIPT — Scroll Indicator
+  ============================ -->
+  <script>
+    const dots = document.querySelectorAll(".scroll-dot");
+    const thumb = document.querySelector(".scroll-thumb");
+
+    const DOT_H = 14;
+    const GAP = 26;
+    const BASE = 30;
+    const SPACING = DOT_H + GAP;
+
+    const sections = [...dots].map(d => document.querySelector(d.dataset.target));
+
+    function updateScroll() {
+      let idx = 0;
+      const mid = window.scrollY + window.innerHeight * 0.4;
+
+      sections.forEach((s, i) => {
+        if (mid >= s.offsetTop) idx = i;
+      });
+
+      const current = sections[idx];
+      const next = sections[idx + 1];
+
+      const dotCenter = BASE + idx * SPACING + DOT_H / 2;
+
+      if (!next) {
+        thumb.style.height = "10px";
+        thumb.style.top = dotCenter + "px";
+        return;
+      }
+
+      const start = current.offsetTop;
+      const end = next.offsetTop;
+
+      let progress = (window.scrollY - start) / (end - start);
+      progress = Math.max(0, Math.min(1, progress));
+
+      const minH = 10;
+      const maxH = SPACING - 4;
+
+      const newH = minH + (maxH - minH) * progress;
+      const newTop = dotCenter - newH / 2;
+
+      thumb.style.height = newH + "px";
+      thumb.style.top = newTop + "px";
+    }
+
+    window.addEventListener("scroll", updateScroll);
+    updateScroll();
   </script>
 
 </body>
