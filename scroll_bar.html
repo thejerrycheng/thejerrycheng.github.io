@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  height: 3000px;
+  background: #faf8f2;
+}
+
+/* Container */
+.scroll-indicator {
+  position: fixed;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Track */
+.scroll-track {
+  width: 40px;
+  padding: 30px 0;
+  background: #f3f1eb;
+  border-radius: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  position: relative;
+}
+
+/* Gray dots */
+.scroll-dot {
+  width: 8px;
+  height: 14px;
+  background: #cacaca;
+  border-radius: 6px;
+}
+
+/* Liquid thumb */
+.scroll-thumb {
+  position: absolute;
+  width: 10px;
+  height: 10px;              /* base size */
+  background: #111;
+  border-radius: 999px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: height 0.15s ease, top 0.15s ease;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Indicator -->
+<div class="scroll-indicator">
+  <div class="scroll-track">
+
+    <div class="scroll-thumb"></div>
+
+    <!-- Dot 1 = hero -->
+    <div class="scroll-dot" data-target=".hero"></div>
+
+    <!-- Dot 2 = intro -->
+    <div class="scroll-dot" data-target="#intro"></div>
+
+    <!-- Dot 3 = services -->
+    <div class="scroll-dot" data-target="#services"></div>
+
+    <!-- Dot 4 = tech -->
+    <div class="scroll-dot" data-target="#tech"></div>
+
+    <!-- Dot 5 = design -->
+    <div class="scroll-dot" data-target="#design"></div>
+
+    <!-- Dot 6 = FAQ -->
+    <div class="scroll-dot" data-target="#faqs"></div>
+
+  </div>
+</div>
+
+
+<!-- Fake sections -->
+<div id="s1" style="margin-top:100px;"></div>
+<div id="s2" style="margin-top:600px;"></div>
+<div id="s3" style="margin-top:600px;"></div>
+<div id="s4" style="margin-top:600px;"></div>
+<div id="s5" style="margin-top:600px;"></div>
+
+<script>
+const dots = document.querySelectorAll(".scroll-dot");
+const thumb = document.querySelector(".scroll-thumb");
+
+const DOT_H = 14;
+const GAP = 26;
+const BASE = 30;
+const SPACING = DOT_H + GAP;
+
+const sections = [...dots].map(d => document.querySelector(d.dataset.target));
+
+function updateScroll() {
+  let idx = 0;
+  const mid = window.scrollY + window.innerHeight * 0.4;
+
+  sections.forEach((s, i) => {
+    if (mid >= s.offsetTop) idx = i;
+  });
+
+  const current = sections[idx];
+  const next = sections[idx + 1];
+
+  const dotCenter = BASE + idx * SPACING + (DOT_H / 2);
+
+  if (!next) {
+    thumb.style.height = "10px";
+    thumb.style.top = dotCenter + "px";
+    return;
+  }
+
+  const start = current.offsetTop;
+  const end = next.offsetTop;
+
+  let progress = (window.scrollY - start) / (end - start);
+  progress = Math.max(0, Math.min(1, progress));
+
+  const minH = 10;
+  const maxH = SPACING - 4;
+
+  const newH = minH + (maxH - minH) * progress;
+
+  /* CRITICAL FIX: RECENTER VERTICALLY */
+  const newTop = dotCenter - newH / 2;
+
+  thumb.style.height = newH + "px";
+  thumb.style.top = newTop + "px";
+}
+
+window.addEventListener("scroll", updateScroll);
+updateScroll();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1015 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Daylight Robotics — The Helpful Home Robot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --bg-alt: #ffffff;
+      --text-main: #111111;
+      --text-muted: #555555;
+      --accent: #ff5a3c;
+      --border-subtle: #e0e0e0;
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.08);
+      --max-width: 1080px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      color: var(--text-main);
+      background-color: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 8px;
+    }
+
+    .page {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 20px 20px 80px;
+    }
+   /* --- Liquid Scroll Indicator (Sunday.ai style) --- */
+    .scroll-indicator {
+    position: fixed;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9999;
+    }
+
+    .scroll-track {
+    width: 40px;
+    padding: 30px 0;
+    background: #f3f1eb;
+    border-radius: 26px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    position: relative;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.06);
+    }
+
+    .scroll-dot {
+    width: 8px;
+    height: 14px;
+    background: #c7c7c7;
+    opacity: 0.55;
+    border-radius: 8px;
+    transition: opacity 0.2s, background 0.2s;
+    cursor: pointer;
+    }
+
+    .scroll-dot.active {
+    background: #111;
+    opacity: 1;
+    }
+
+    /* Liquid growing bead */
+    .scroll-thumb {
+    position: absolute;
+    width: 10px;
+    height: 10px;          /* base dot size */
+    background: #111;
+    border-radius: 999px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    top: 30px;
+    transition: height 0.15s ease, top 0.15s ease;
+    will-change: height, top;
+    cursor: grab;
+    }
+
+    .scroll-thumb:active {
+    cursor: grabbing;
+    }
+
+
+    /* Hero */
+
+    .hero {
+      padding-top: 40px;
+      padding-bottom: 48px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 32px;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-size: clamp(32px, 5vw, 44px);
+      line-height: 1.05;
+      margin: 0 0 12px;
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 380px;
+      margin-bottom: 16px;
+    }
+
+    .hero-meta {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #888;
+      margin-bottom: 22px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .btn-primary {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(255, 90, 60, 0.45);
+    }
+
+    .btn-secondary {
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .hero-footnote {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .hero-visual {
+      background: var(--bg-alt);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .hero-tagline {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+    }
+
+    .robot-card {
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at 10% 0%, #fff0ea, #ffffff);
+      padding: 22px;
+      min-height: 190px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .robot-name {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .robot-copy {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 360px;
+    }
+
+    .robot-status {
+      font-size: 13px;
+      margin-top: 10px;
+      color: #666;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Sections */
+
+    .section {
+      margin-top: 56px;
+    }
+
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .section-kicker {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .section-title {
+      font-size: 26px;
+      margin: 0;
+    }
+
+    .section-lead {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 520px;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 28px;
+    }
+
+    .card {
+      background: var(--bg-alt);
+      border-radius: var(--radius-xl);
+      padding: 20px 22px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .card + .card {
+      margin-top: 18px;
+    }
+
+    .card-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      margin: 0 0 4px;
+    }
+
+    .card-text {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #f0f0f0;
+    }
+
+    /* “Works in your home” grid */
+
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .scenario {
+      background: var(--bg-alt);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .scenario-tag {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+    }
+
+    .scenario-title {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .scenario-body {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .scenario-meta {
+      font-size: 11px;
+      color: #777;
+      margin-top: 4px;
+    }
+
+    /* FAQ */
+
+    .faq-list {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    details.faq-item {
+      background: var(--bg-alt);
+      border-radius: 18px;
+      padding: 14px 16px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    details.faq-item summary {
+      list-style: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    details.faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-chevron {
+      font-size: 16px;
+      transform: translateY(1px);
+    }
+
+    details[open] .faq-chevron {
+      transform: rotate(90deg);
+    }
+
+    details.faq-item p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+
+    /* Call-to-action / footer */
+
+    .cta-block {
+      margin-top: 50px;
+      background: linear-gradient(135deg, #ffe6dd, #ffffff);
+      border-radius: var(--radius-xl);
+      padding: 24px 22px;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .cta-title {
+      font-size: 20px;
+      margin: 0 0 4px;
+    }
+
+    .cta-text {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 360px;
+    }
+
+    .newsletter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .newsletter input {
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      min-width: 220px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .newsletter button {
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: none;
+      background: #111;
+      color: #fff;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(0, 0, 0, 0.06);
+      font-size: 12px;
+      color: #777;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .footer-links a {
+      opacity: 0.8;
+    }
+
+    .footer-links a:hover {
+      opacity: 1;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 800px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .hero-visual {
+        order: -1;
+      }
+      .two-column {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .scenario-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .site-header-inner {
+        padding-inline: 16px;
+      }
+      .page {
+        padding-inline: 16px;
+      }
+      .nav-links {
+        display: none; /* simple mobile collapse */
+      }
+    }
+  </style>
+</head>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const dots = document.querySelectorAll(".scroll-dot");
+  const thumb = document.querySelector(".scroll-thumb");
+
+  const DOT_H = 14;
+  const GAP = 28;
+  const BASE = 30;
+  const SPACING = DOT_H + GAP;
+
+  const sections = [...dots].map(dot =>
+    document.querySelector(dot.dataset.target)
+  );
+
+
+  /* CLICK DOT → SCROLL TO SECTION */
+  dots.forEach((dot, i) => {
+    dot.addEventListener("click", () => {
+      const sec = sections[i];
+      if (!sec) return;
+      sec.scrollIntoView({ behavior: "smooth" });
+    });
+  });
+
+
+  /* --------- SCROLL SYNC + LIQUID GROWTH --------- */
+  function syncScroll() {
+    let index = 0;
+    const mid = window.scrollY + window.innerHeight * 0.4;
+
+    sections.forEach((sec, i) => {
+      if (mid >= sec.offsetTop) index = i;
+    });
+
+    dots.forEach(d => d.classList.remove("active"));
+    dots[index].classList.add("active");
+
+    const current = sections[index];
+    const next = sections[index + 1];
+
+    const dotCenter = BASE + index * SPACING + DOT_H / 2;
+
+    if (!next) {
+      thumb.style.height = "10px";
+      thumb.style.top = dotCenter + "px";
+      return;
+    }
+
+    const start = current.offsetTop;
+    const end = next.offsetTop;
+    let p = (window.scrollY - start) / (end - start);
+    p = Math.max(0, Math.min(1, p));
+
+    const minH = 10;
+    const maxH = SPACING - 4;
+
+    const newH = minH + (maxH - minH) * p;
+    const newTop = dotCenter - newH / 2;
+
+    thumb.style.height = newH + "px";
+    thumb.style.top = newTop + "px";
+  }
+
+  window.addEventListener("scroll", syncScroll);
+  syncScroll();
+
+
+  /* --------- DRAGGING --------- */
+  let dragging = false;
+  let startY = 0;
+  let startTop = 0;
+
+  thumb.addEventListener("mousedown", e => {
+    dragging = true;
+    startY = e.clientY;
+    startTop = parseFloat(thumb.style.top);
+    document.body.style.userSelect = "none";
+  });
+
+  document.addEventListener("mousemove", e => {
+    if (!dragging) return;
+
+    const dy = e.clientY - startY;
+    let newTop = startTop + dy;
+
+    const minTop = BASE - 10;
+    const maxTop = BASE + SPACING * (dots.length - 1);
+
+    newTop = Math.max(minTop, Math.min(newTop, maxTop));
+    thumb.style.top = newTop + "px";
+
+    const approximateIndex = Math.round((newTop - BASE) / SPACING);
+    const sec = sections[approximateIndex];
+
+    if (sec) {
+      window.scrollTo({ top: sec.offsetTop, behavior: "auto" });
+    }
+  });
+
+  document.addEventListener("mouseup", () => {
+    dragging = false;
+    document.body.style.userSelect = "";
+  });
+
+});
+</script>
+
+
+
+
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div class="brand-text">Daylight Robotics</div>
+      </div>
+      <nav class="nav-links">
+        <a href="#intro">Story</a>
+        <a href="#services">Skills</a>
+        <a href="#tech">Technology</a>
+        <a href="#design">Design</a>
+        <a href="#faqs">FAQs</a>
+        <a href="#beta" class="nav-cta">Beta Program</a>
+      </nav>
+    </div>
+  </header>
+
+    <div class="scroll-indicator">
+    <div class="scroll-track">
+
+        <div class="scroll-thumb"></div>
+
+        <!-- Dot 1 = hero -->
+        <div class="scroll-dot" data-target=".hero"></div>
+
+        <!-- Dot 2 = intro -->
+        <div class="scroll-dot" data-target="#intro"></div>
+
+        <!-- Dot 3 = services -->
+        <div class="scroll-dot" data-target="#services"></div>
+
+        <!-- Dot 4 = tech -->
+        <div class="scroll-dot" data-target="#tech"></div>
+
+        <!-- Dot 5 = design -->
+        <div class="scroll-dot" data-target="#design"></div>
+
+        <!-- Dot 6 = FAQ -->
+        <div class="scroll-dot" data-target="#faqs"></div>
+
+    </div>
+    </div>
+
+
+
+
+
+  <main class="page">
+    <!-- Hero -->
+    <section class="hero">
+      <div>
+        <div class="hero-eyebrow">Our story</div>
+        <h1 class="hero-title">The helpful home robot.</h1>
+        <p class="hero-subtitle">
+          A household robot that quietly takes care of repetitive chores,
+          so you can focus on what actually matters.
+        </p>
+        <div class="hero-meta">Beta launching 2026</div>
+        <div class="hero-actions">
+          <button class="btn-primary">Apply for beta access</button>
+          <button class="btn-secondary">Watch product overview</button>
+        </div>
+        <div class="hero-footnote">
+          Limited seats for founding households. Early feedback shapes the product.
+        </div>
+      </div>
+
+      <aside class="hero-visual">
+        <div class="hero-tagline">Say hello to Lumo</div>
+        <div class="robot-card">
+          <div>
+            <div class="robot-name">Lumo, your everyday robot.</div>
+            <p class="robot-copy">
+              Built for busy homes, Lumo clears tables, loads dishes, and
+              handles delicate objects without supervision.
+            </p>
+            <p class="robot-status">Autonomous chores • Real homes • No training required.</p>
+          </div>
+          <div class="pill-row">
+            <span class="pill">Clears tables</span>
+            <span class="pill">Loads dishwasher</span>
+            <span class="pill">Handles glassware</span>
+            <span class="pill">Learns new skills</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Introduction / Services -->
+    <section class="section" id="intro">
+      <div class="section-header">
+        <div class="section-kicker">Introduction</div>
+        <h2 class="section-title">Mundane, made magical.</h2>
+        <p class="section-lead">
+          Lumo is powered by modern robotics and large-scale learning, turning
+          everyday chores into something you never have to think about.
+        </p>
+      </div>
+
+      <div class="two-column">
+        <div>
+          <div class="card">
+            <div class="card-label">The idea</div>
+            <h3 class="card-title">Robots that give you time back.</h3>
+            <p class="card-text">
+              We believe home robots should feel invisible most of the time:
+              quietly moving around your space, picking things up, tidying after
+              meals, and resetting the room for the next day.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Services</div>
+            <h3 class="card-title">We start with repetitive chores.</h3>
+            <p class="card-text">
+              Clearing dishes, handling utensils, carrying cups, sorting socks,
+              wiping crumbs, and more. We focus on a few high-impact chores and
+              make them work in real, messy homes.
+            </p>
+            <div class="chips">
+              <span class="chip">Kitchen reset</span>
+              <span class="chip">Table clearing</span>
+              <span class="chip">Dishwasher loading</span>
+              <span class="chip">Laundry aids</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="card-label">Watch</div>
+            <h3 class="card-title">Lumo in the kitchen.</h3>
+            <p class="card-text">
+              Picture a quiet robot rolling up after dinner: plates disappear
+              from the table, scraps end up in the compost, and the dishwasher
+              starts while you’re already on the couch.
+            </p>
+            <p class="card-text" style="margin-top: 10px; font-size: 12px;">
+              <strong>Uncut demo:</strong> One continuous take of Lumo clearing,
+              sorting, and loading — no teleoperation overlays.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Works in your home -->
+    <section class="section" id="services">
+      <div class="section-header">
+        <div class="section-kicker">Made for real life</div>
+        <h2 class="section-title">Lumo works in homes it has never seen.</h2>
+        <p class="section-lead">
+          Every home is different. We design for that chaos from day one, not as
+          an afterthought.
+        </p>
+      </div>
+
+      <div class="scenario-grid">
+        <article class="scenario">
+          <div class="scenario-tag">Kitchen</div>
+          <div class="scenario-title">Clearing the dinner table</div>
+          <div class="scenario-body">
+            Lumo collects plates, cups, and utensils, scrapes leftovers, and
+            queues the dishwasher cycle.
+          </div>
+          <div class="scenario-meta">Autonomous • 4× speed demo</div>
+        </article>
+
+        <article class="scenario">
+          <div class="scenario-tag">Living room</div>
+          <div class="scenario-title">Resetting the room</div>
+          <div class="scenario-body">
+            Toys, books, and scattered items are moved back to their “home”
+            spots without you needing to point at each one.
+          </div>
+          <div class="scenario-meta">Learns from demonstrations</div>
+        </article>
+
+        <article class="scenario">
+          <div class="scenario-tag">Laundry</div>
+          <div class="scenario-title">Sorting the small stuff</div>
+          <div class="scenario-body">
+            Socks, small garments, and everyday items get sorted and folded,
+            so the remaining laundry feels manageable.
+          </div>
+          <div class="scenario-meta">New skills each month</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Technology -->
+    <section class="section" id="tech">
+      <div class="section-header">
+        <div class="section-kicker">Technology</div>
+        <h2 class="section-title">From imitation to intuition.</h2>
+        <p class="section-lead">
+          Lumo learns from dense human motion data, distilled into a compact
+          model that runs fully on the robot.
+        </p>
+      </div>
+
+      <div class="two-column">
+        <div>
+          <div class="card">
+            <div class="card-label">Skill capture</div>
+            <h3 class="card-title">Teach Lumo like you’d teach a person.</h3>
+            <p class="card-text">
+              Instead of teleoperating a robot in your home, we use wearable
+              devices to record how people naturally move and manipulate objects.
+              Those movements are turned into reusable skills for Lumo.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Onboard intelligence</div>
+            <h3 class="card-title">Fast decisions, right where they happen.</h3>
+            <p class="card-text">
+              Motion planning, perception, and control all run on Lumo without
+              streaming video to the cloud. That means lower latency and better
+              privacy by design.
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="card-label">Learning loop</div>
+            <h3 class="card-title">More homes, better skills.</h3>
+            <p class="card-text">
+              Our early households send back anonymized motion data that
+              help Lumo generalize across layouts, lighting, and clutter.
+              Every new environment makes the system more robust.
+            </p>
+            <div class="chips">
+              <span class="chip">Dense motion data</span>
+              <span class="chip">On-device models</span>
+              <span class="chip">Continuous improvement</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Design -->
+    <section class="section" id="design">
+      <div class="section-header">
+        <div class="section-kicker">Design</div>
+        <h2 class="section-title">Designed for homes, not labs.</h2>
+        <p class="section-lead">
+          Soft edges, calm motion, and a footprint that fits next to your
+          furniture — Lumo is meant to live where you live.
+        </p>
+      </div>
+
+      <div class="two-column">
+        <div>
+          <div class="card">
+            <div class="card-label">Safety</div>
+            <h3 class="card-title">Low center of gravity, soft shell.</h3>
+            <p class="card-text">
+              A stable wheelbase and compliant actuators help Lumo stay balanced
+              and gentle to the touch, even when carrying delicate items.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-label">Aesthetic</div>
+            <h3 class="card-title">Tidy, neutral, and customizable.</h3>
+            <p class="card-text">
+              Choose between multiple finishes and accent colors to blend Lumo
+              into your space instead of making it the centerpiece.
+            </p>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-label">Everyday care</div>
+            <h3 class="card-title">Easy to wipe, easy to maintain.</h3>
+            <p class="card-text">
+              The outer shell is designed to be cleaned with common household
+              products. No exposed screws, no sharp corners, and no complex
+              routines.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQs -->
+    <section class="section" id="faqs">
+      <div class="section-header">
+        <div class="section-kicker">FAQs</div>
+        <h2 class="section-title">Answers to common questions.</h2>
+        <p class="section-lead">
+          We’re starting with a small number of homes and expanding as we learn.
+        </p>
+      </div>
+
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>
+            What can Lumo do today?
+            <span class="faq-chevron">›</span>
+          </summary>
+          <p>
+            Lumo can clear tables, carry dishes, load compatible dishwashers,
+            and handle small laundry items like socks. We’re steadily adding
+            more skills as our test homes use the system.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            When will Lumo be available to buy?
+            <span class="faq-chevron">›</span>
+          </summary>
+          <p>
+            We’re currently in a limited beta with selected households.
+            We expect to share pricing and availability after we complete this
+            beta and are confident in long-term reliability.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            Does Lumo send video to the cloud?
+            <span class="faq-chevron">›</span>
+          </summary>
+          <p>
+            No. Lumo processes visual data on-device. We use separate opt-in
+            data collection channels to improve our models while protecting
+            your everyday privacy.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            How big is Lumo?
+            <span class="faq-chevron">›</span>
+          </summary>
+          <p>
+            Lumo is roughly the height of a side table in its resting posture,
+            and can reach up to cabinet height when needed. Exact dimensions
+            will be published closer to launch.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <!-- Beta CTA + Newsletter -->
+    <section class="section" id="beta">
+      <div class="cta-block">
+        <div>
+          <h3 class="cta-title">Be one of our founding homes.</h3>
+          <p class="cta-text">
+            Early access, direct input on product decisions, and a robot
+            that’s tuned around how your household actually works.
+          </p>
+        </div>
+        <button class="btn-primary">Apply to the beta program</button>
+      </div>
+
+      <div class="cta-block" style="margin-top: 20px;">
+        <div>
+          <h3 class="cta-title">Get updates in your inbox.</h3>
+          <p class="cta-text">
+            Occasional emails about progress, behind-the-scenes stories,
+            and opportunities to participate in studies.
+          </p>
+        </div>
+        <form class="newsletter" onsubmit="event.preventDefault(); alert('Subscribed (demo)');">
+          <input type="email" placeholder="you@example.com" required />
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      <div>© 2025 Daylight Robotics Inc.</div>
+      <div class="footer-links">
+        <a href="#">Technology</a>
+        <a href="#">Journal</a>
+        <a href="#">Careers</a>
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

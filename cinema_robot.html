@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Cinema Robot Arm — Jerry Cheng</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --bg: #f8f6f0;
+      --text-main: #111;
+      --text-muted: #666;
+      --accent: #ff5a3c;
+      --radius-xl: 26px;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+      "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    /* --- HERO FULLSCREEN CENTERED --- */
+    .hero {
+      min-height: 100vh;
+      width: 100%;
+      padding: 80px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hero-title {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 700;
+      line-height: 1.05;
+      margin: 0 0 20px;
+      opacity: 0;
+      animation: fadeIn 1.2s ease forwards 0.2s;
+    }
+
+    .hero-subtitle {
+      font-size: 20px;
+      max-width: 700px;
+      color: var(--text-muted);
+      margin: 0 auto 40px;
+      opacity: 0;
+      animation: fadeIn 1.2s ease forwards 0.45s;
+    }
+
+    /* 3D MODEL VIEWER, CENTERED */
+    #viewer3d {
+      width: min(90vw, 900px);
+      height: min(70vh, 600px);
+      background: #ffffff;
+      border-radius: var(--radius-xl);
+      box-shadow: 0 30px 70px rgba(0,0,0,0.1);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: floatIn 1.2s ease forwards 0.6s;
+    }
+
+    /* Floating motion */
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes floatIn {
+      to { opacity: 1; transform: translateY(0px); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HERO -->
+  <section class="hero">
+
+    <h1 class="hero-title">Cinema Robot Arm<br>for Film Production</h1>
+
+    <p class="hero-subtitle">
+      My complete MEng thesis project — a fully engineered 6-axis cinema robot arm
+      designed to deliver smooth motion control, precise tracking shots, and 
+      studio-grade reliability for real film production environments.
+    </p>
+
+    <div id="viewer3d"></div>
+
+  </section>
+
+  <!-- 3D MODEL LOADER -->
+  <script type="module">
+    import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.158/build/three.module.js";
+    import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.158/examples/jsm/loaders/GLTFLoader.js";
+    import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.158/examples/jsm/controls/OrbitControls.js";
+
+    let scene, camera, renderer, controls, model;
+
+    init();
+    loadModel();
+
+    function init() {
+      const container = document.getElementById("viewer3d");
+
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xf8f6f0);
+
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+      camera.position.set(3, 2, 5);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(width, height);
+      renderer.shadowMap.enabled = true;
+      container.appendChild(renderer.domElement);
+
+      /* Lights */
+      const hemi = new THREE.HemisphereLight(0xffffff, 0xdddddd, 1.15);
+      scene.add(hemi);
+
+      const dir = new THREE.DirectionalLight(0xffffff, 1);
+      dir.position.set(5, 5, 5);
+      dir.castShadow = true;
+      scene.add(dir);
+
+      /* Controls */
+      controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.04;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 1.1;
+
+      animate();
+    }
+
+    function loadModel() {
+      const loader = new GLTFLoader();
+      loader.load(
+        "./models/cinema_robot.glb",
+
+        (gltf) => {
+          model = gltf.scene;
+
+          model.scale.set(1.4, 1.4, 1.4);
+          model.position.set(0, -0.5, 0);
+
+          model.traverse((n) => {
+            if (n.isMesh) {
+              n.castShadow = true;
+              n.receiveShadow = true;
+            }
+          });
+
+          scene.add(model);
+        },
+        undefined,
+        (err) => console.error("Model failed to load:", err)
+      );
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      if (model) {
+        model.position.y = -0.5 + Math.sin(Date.now() * 0.0015) * 0.03;
+      }
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    // Resize
+    window.addEventListener("resize", () => {
+      const container = document.getElementById("viewer3d");
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      renderer.setSize(width, height);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    });
+  </script>
+
+</body>
+</html>
