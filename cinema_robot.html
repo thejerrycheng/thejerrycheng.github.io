@@ -59,21 +59,50 @@
       animation: fadeIn 1.2s ease forwards 0.45s;
     }
 
-    /* VIEWER CONTAINER */
-    #viewer3d {
-      position: relative;
-      width: 100%;
-      max-width: 900px;
-      height: clamp(300px, 60vh, 600px);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      margin-bottom: 40px;
-      background: #ffffff;
-      box-shadow: 0 30px 70px rgba(0,0,0,0.1);
-      opacity: 0;
-      transform: translateY(20px);
-      animation: floatIn 1.2s ease forwards 0.6s;
-    }
+/* VIEWER CONTAINER */
+#viewer3d {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  height: min(70vh, 600px);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  margin-bottom: 40px;
+  background: #ffffff;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: floatIn 1.2s ease forwards 0.6s;
+}
+
+model-viewer {
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  --poster-color: transparent;
+  border-radius: var(--radius-xl);
+}
+
+/* Mobile support */
+@media(max-width: 768px) {
+  #viewer3d {
+    height: 55vh;        /* fits most phones */
+    max-height: 480px;
+  }
+}
+
+@media(max-width: 480px) {
+  #viewer3d {
+    height: 45vh;        /* optimized for iPhone */
+    max-height: 420px;
+  }
+
+  .glass-button {
+    width: 36px;
+    height: 36px;
+  }
+}
+
 
     /* MODEL-VIEWER */
     model-viewer {
@@ -185,7 +214,7 @@
     <div id="viewer3d">
 
       <!-- MODEL VIEWER -->
-      <model-viewer id="robotViewer"
+    <model-viewer id="robotViewer"
         src="./assets/models/cinema_robot.glb"
         camera-controls
         auto-rotate
@@ -193,7 +222,8 @@
         exposure="1.1"
         shadow-intensity="1"
         touch-action="pan-y"
-      ></model-viewer>
+        ar
+    ></model-viewer>
 
       <!-- Loading -->
       <div id="viewer-loading" class="viewer-loading">
