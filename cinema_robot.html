@@ -184,6 +184,93 @@
       }
     }
 
+ /* ======================================================
+      LIQUID MERGE-FROM-BAR POPUP — SPRING / BOUNCY
+   ====================================================== */
+.scroll-menu {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  width: 40px;
+  height: 200px;
+  background: #f3f1eb;          /* SAME as scroll bar */
+  border-radius: 26px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3000;
+  overflow: hidden;
+
+  /* CRITICAL: SPRING EXPANSION CURVE */
+  transform: translateY(-50%) scaleX(0.15);
+  transform-origin: right center;
+
+  transition:
+    opacity 0.25s ease,
+    border-radius 0.20s ease,
+    /* spring bounce curve */
+    transform 0.55s cubic-bezier(0.25, 1.55, 0.45, 0.95),
+    width 0.55s cubic-bezier(0.25, 1.55, 0.45, 0.95),
+    height 0.55s cubic-bezier(0.25, 1.55, 0.45, 0.95);
+}
+
+/* WHEN OPEN */
+.scroll-menu.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(-50%) scaleX(1); /* expands horizontally */
+  width: 260px;
+  height: auto;
+  border-radius: 26px;
+}
+
+/* INNER CONTENT — delayed fade so spring happens first */
+.scroll-menu-inner {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: 0.12s; /* AFTER the spring bounce */
+}
+
+.scroll-menu.show .scroll-menu-inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* MENU ITEMS */
+.scroll-menu-item {
+  padding: 14px 24px;
+  font-size: 15px;
+  color: #111;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateX(12px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+  transition-delay: 0.15s;
+}
+
+.scroll-menu.show .scroll-menu-item {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-menu-item:hover {
+  background: #e7e4dd;
+  border-radius: 10px;
+}
+
+
+    /* ========== DRAG CURSOR STYLE ========== */
+    .scroll-thumb {
+    cursor: grab;
+    }
+
+    .scroll-thumb.dragging {
+    cursor: grabbing;
+    }
+
+
     /* ===========================
           SCROLL INDICATOR
     ============================ */
@@ -194,6 +281,7 @@
       transform: translateY(-50%);
       z-index: 999;
     }
+    
 
     .scroll-track {
       width: 40px;
@@ -215,15 +303,18 @@
     }
 
     .scroll-thumb {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background: #111;
-      border-radius: 999px;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      transition: height 0.15s, top 0.15s;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #111;
+    border-radius: 999px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: height 0.12s cubic-bezier(0.22, 1, 0.36, 1),
+                top 0.12s cubic-bezier(0.22, 1, 0.36, 1);
     }
+
+
 
     /* Hide on small screens */
     @media (max-width: 768px) {
@@ -256,13 +347,25 @@
   <div class="scroll-indicator">
     <div class="scroll-track">
       <div class="scroll-thumb"></div>
-      <div class="scroll-dot" data-target="#s1"></div>
-      <div class="scroll-dot" data-target="#s2"></div>
-      <div class="scroll-dot" data-target="#s3"></div>
-      <div class="scroll-dot" data-target="#s4"></div>
-      <div class="scroll-dot" data-target="#s5"></div>
+      <div class="scroll-dot" data-target="s1"></div>
+      <div class="scroll-dot" data-target="s2"></div>
+      <div class="scroll-dot" data-target="s3"></div>
+      <div class="scroll-dot" data-target="s4"></div>
+      <div class="scroll-dot" data-target="s5"></div>
     </div>
   </div>
+
+  <!-- POPUP MENU FOR SECTIONS -->
+<div id="scroll-menu" class="scroll-menu">
+  <div class="scroll-menu-inner">
+    <div class="scroll-menu-item" data-target="s1">Overview</div>
+    <div class="scroll-menu-item" data-target="s2">What is IRIS?</div>
+    <div class="scroll-menu-item" data-target="s3">Why Robots Are Expensive</div>
+    <div class="scroll-menu-item" data-target="s4">Three Objectives</div>
+    <div class="scroll-menu-item" data-target="s5">Comparison Grid</div>
+  </div>
+</div>
+
 
 
 
@@ -439,105 +542,208 @@
   </section>
 
 
+<!-- ===========================
+      SCRIPT — Viewer Controls + Scroll Bar + Popup
+=========================== -->
+<script>
+/* ============================================================
+     ELEMENTS
+============================================================ */
+const dots = document.querySelectorAll(".scroll-dot");
+const thumb = document.querySelector(".scroll-thumb");
+const menu = document.getElementById("scroll-menu");
+const menuInner = document.querySelector(".scroll-menu-inner");
+const menuItems = document.querySelectorAll(".scroll-menu-item");
+const scrollTrack = document.querySelector(".scroll-track");
 
-  <!-- ===========================
-          SCRIPT — Viewer Controls
-  ============================ -->
-  <script>
-    const viewer = document.getElementById("robotViewer");
-    const loading = document.getElementById("viewer-loading");
-    const btnReset = document.getElementById("btn-reset");
-    const btnRotate = document.getElementById("btn-rotate");
-    const btnFullscreen = document.getElementById("btn-fullscreen");
-    const iconFullscreen = document.getElementById("icon-fullscreen");
+const DOT_H = 14;
+const GAP = 26;
+const BASE = 30;
+const SPACING = DOT_H + GAP;
 
-    viewer.addEventListener("load", () => {
-      loading.classList.add("hide");
-    });
+const MIN_H = 10;
+const MAX_H = SPACING - 6;
 
-    btnReset.addEventListener("click", () => {
-      viewer.cameraOrbit = "0deg 75deg 3m";
-      viewer.cameraTarget = "0m 0m 0m";
-    });
+const sections = [...dots].map(d => document.getElementById(d.dataset.target));
 
-    btnRotate.addEventListener("click", () => {
-      viewer.autoRotate = !viewer.autoRotate;
-      btnRotate.classList.toggle("active", viewer.autoRotate);
-    });
+/* ============================================================
+      PRECOMPUTE SECTION OFFSETS
+============================================================ */
+const sectionRanges = sections.map((sec, i) => {
+  const start = sec.offsetTop;
+  const end = sections[i + 1] ? sections[i + 1].offsetTop : document.body.scrollHeight;
+  return { start, end, range: end - start };
+});
 
-    btnFullscreen.addEventListener("click", () => {
-      const box = document.getElementById("viewer3d");
-      if (!document.fullscreenElement) box.requestFullscreen();
-      else document.exitFullscreen();
-    });
+/* ============================================================
+      LIQUID ANIMATION STATE
+============================================================ */
+let prevScroll = window.scrollY;
+let targetTop = 0;
+let targetHeight = MIN_H;
 
-    document.addEventListener("fullscreenchange", () => {
-      if (document.fullscreenElement) {
-        iconFullscreen.innerHTML = `<path d="M7 7l10 10M17 7L7 17"/>`;
-        btnFullscreen.classList.add("active");
-      } else {
-        iconFullscreen.innerHTML = `
-          <rect x="6.5" y="5.5" width="11" height="13" rx="2"/>
-          <path d="M9 9h6M9 15h6"/>
-        `;
-        btnFullscreen.classList.remove("active");
-      }
-    });
-  </script>
+let currentTop = 0;
+let currentHeight = MIN_H;
+
+/* ============================================================
+      LIQUID THUMB SCROLL LOGIC (ALWAYS ELONGATING)
+============================================================ */
+function computeTargetFromScroll() {
+  const scroll = window.scrollY;
+
+  // which section are we in?
+  let idx = 0;
+  sectionRanges.forEach((r, i) => {
+    if (scroll >= r.start) idx = i;
+  });
+
+  const r = sectionRanges[idx];
+  const dotCenter = BASE + idx * SPACING + DOT_H / 2;
+
+  // distance from section top (0 → 1)
+  const dist = Math.abs(scroll - r.start);
+  const localProgress = Math.min(1, dist / r.range);
+
+  // velocity gives stretch direction
+  const velocity = scroll - prevScroll;
+  prevScroll = scroll;
+
+  const velNorm = Math.max(-1, Math.min(1, velocity / 60));
+  const stretchDir = velNorm >= 0 ? 1 : -1;
+
+  // liquid elongation
+  const elongation =
+    localProgress * 0.55 +
+    Math.abs(velNorm) * 0.65;
+
+  let newH = MIN_H + (MAX_H - MIN_H) * elongation;
+  newH = Math.max(MIN_H, Math.min(MAX_H, newH));
+
+  const baseTop = dotCenter - MIN_H / 2;
+
+  const newTop =
+    stretchDir === 1
+      ? baseTop
+      : baseTop - (newH - MIN_H);
+
+  targetTop = newTop;
+  targetHeight = newH;
+}
+
+/* ============================================================
+      THUMB DRAGGING → PAGE SCROLL
+============================================================ */
+let dragging = false;
+let dragOffset = 0;
+
+thumb.addEventListener("mousedown", (e) => {
+  dragging = true;
+  dragOffset = e.clientY - thumb.getBoundingClientRect().top;
+  thumb.classList.add("dragging");
+  menu.classList.remove("show");
+});
+
+document.addEventListener("mouseup", () => {
+  dragging = false;
+  thumb.classList.remove("dragging");
+});
+
+document.addEventListener("mousemove", (e) => {
+  if (!dragging) return;
+
+  const trackRect = scrollTrack.getBoundingClientRect();
+  const posY = e.clientY - trackRect.top - dragOffset;
+
+  const percent = Math.max(0, Math.min(1, posY / trackRect.height));
+
+  const scrollTarget =
+    percent * (document.body.scrollHeight - window.innerHeight);
+
+  window.scrollTo({ top: scrollTarget, behavior: "auto" });
+
+  computeTargetFromScroll();
+});
+
+/* ============================================================
+      POPUP — MERGES OUT OF BAR (SPRING)
+============================================================ */
+function alignMenuToBar() {
+  const trackRect = scrollTrack.getBoundingClientRect();
+  const centerY = trackRect.top + trackRect.height / 2;
+  menu.style.top = `${centerY}px`;
+}
+
+scrollTrack.addEventListener("click", (e) => {
+  // ignore dots / thumb
+  if (e.target.classList.contains("scroll-thumb")) return;
+  if (e.target.classList.contains("scroll-dot")) return;
+
+  const opening = !menu.classList.contains("show");
+
+  if (opening) {
+    alignMenuToBar();
+
+    // reset spring animation so it bounces every time:
+    menu.classList.remove("show");
+    void menu.offsetWidth;
+
+    menu.classList.add("show");
+  } else {
+    menu.classList.remove("show");
+  }
+});
+
+window.addEventListener("scroll", () => {
+  if (menu.classList.contains("show")) alignMenuToBar();
+});
+
+document.addEventListener("mousemove", () => {
+  if (menu.classList.contains("show")) alignMenuToBar();
+});
+
+/* section click */
+menuItems.forEach((item) => {
+  item.addEventListener("click", () => {
+    const sec = document.getElementById(item.dataset.target);
+    menu.classList.remove("show");
+    sec.scrollIntoView({ behavior: "smooth" });
+  });
+});
+
+/* ============================================================
+      DOT CLICK
+============================================================ */
+dots.forEach((dot, idx) => {
+  dot.addEventListener("click", () => {
+    sections[idx].scrollIntoView({ behavior: "smooth" });
+  });
+});
+
+/* ============================================================
+      ANIMATION LOOP
+============================================================ */
+function animate() {
+  requestAnimationFrame(animate);
+
+  if (!dragging) computeTargetFromScroll();
+
+  const follow = 0.22;
+  const settle = 0.18;
+
+  currentTop += (targetTop - currentTop) * follow;
+  currentHeight += (targetHeight - currentHeight) * settle;
+
+  thumb.style.top = currentTop + "px";
+  thumb.style.height = currentHeight + "px";
+}
+
+window.addEventListener("scroll", computeTargetFromScroll);
+computeTargetFromScroll();
+animate();
+</script>
 
 
-  <!-- ===========================
-          SCRIPT — Scroll Indicator
-  ============================ -->
-  <script>
-    const dots = document.querySelectorAll(".scroll-dot");
-    const thumb = document.querySelector(".scroll-thumb");
 
-    const DOT_H = 14;
-    const GAP = 26;
-    const BASE = 30;
-    const SPACING = DOT_H + GAP;
-
-    const sections = [...dots].map(d => document.querySelector(d.dataset.target));
-
-    function updateScroll() {
-      let idx = 0;
-      const mid = window.scrollY + window.innerHeight * 0.4;
-
-      sections.forEach((s, i) => {
-        if (mid >= s.offsetTop) idx = i;
-      });
-
-      const current = sections[idx];
-      const next = sections[idx + 1];
-
-      const dotCenter = BASE + idx * SPACING + DOT_H / 2;
-
-      if (!next) {
-        thumb.style.height = "10px";
-        thumb.style.top = dotCenter + "px";
-        return;
-      }
-
-      const start = current.offsetTop;
-      const end = next.offsetTop;
-
-      let progress = (window.scrollY - start) / (end - start);
-      progress = Math.max(0, Math.min(1, progress));
-
-      const minH = 10;
-      const maxH = SPACING - 4;
-
-      const newH = minH + (maxH - minH) * progress;
-      const newTop = dotCenter - newH / 2;
-
-      thumb.style.height = newH + "px";
-      thumb.style.top = newTop + "px";
-    }
-
-    window.addEventListener("scroll", updateScroll);
-    updateScroll();
-  </script>
 
 </body>
 </html>
