@@ -12,7 +12,7 @@
 
   <style>
     :root {
-      --bg: #faf8f2;
+      /* --bg: #faf8f2; */
       --text-main: #111;
       --text-muted: #666;
       --radius-xl: 26px;
@@ -77,6 +77,185 @@
     background: rgba(0,0,0,0.06);
     }
 
+/* SECTION SPACING */
+.section-light {
+  padding: clamp(40px, 6vw, 80px) 16px;
+  text-align: center;
+}
+
+/* TITLES */
+#s1 .hero-title {
+  font-size: clamp(34px, 7vw, 77px);   /* largest on the page */
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 18px;
+}
+
+/* HERO fade-in (Apple style) */
+#s1 .hero-title,
+#s1 .hero-subtitle,
+#s1 .viewer-wrapper {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeUp 1.2s ease-out forwards;
+}
+
+#s1 .hero-title {
+  animation-delay: 0.15s;
+}
+
+#s1 .hero-subtitle {
+  animation-delay: 0.35s;
+}
+
+#s1 .viewer-wrapper {
+  animation-delay: 0.55s;
+}
+
+/* Keyframes */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-section .hero-title,
+.fade-section .hero-subtitle,
+.fade-section img,
+.fade-section table {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+}
+
+.fade-section.visible .hero-title {
+  transition-delay: 0.1s;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-section.visible .hero-subtitle {
+  transition-delay: 0.25s;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-section.visible img,
+.fade-section.visible table {
+  transition-delay: 0.45s;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* --------------------------------------------------------
+   Scroll Animation Base Styles
+---------------------------------------------------------*/
+.fade-section {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+  will-change: opacity, transform;
+}
+
+.fade-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+section:not(#s1) .hero-title {
+  font-size: clamp(22px, 4vw, 55px);   /* smaller + consistent */
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin-bottom: 16px;
+}
+
+
+/* SUBTITLES */
+.hero-subtitle {
+  font-size: clamp(16px, 2vw, 20px);
+  color: #444;
+  line-height: 1.55;
+  margin: 0 auto;
+}
+
+/* WHITE TEXT FOR VIDEO */
+.iris-title-white { color: #fff; }
+.iris-sub-white   { color: #fff; }
+
+/* IMAGES */
+.section-image {
+  width: 100%;
+  max-width: 900px;
+  max-height: 520px;       /* <-- limit height here */
+  object-fit: contain;     /* preserve full image */
+  margin: 40px auto 0 auto;
+  border-radius: 22px;
+  display: block;
+}
+
+/* TABLE */
+.table-container {
+  max-width: 900px;
+  width: 100%;
+  margin: 40px auto 0 auto;
+  padding: 0 16px;
+}
+
+.comparison-table {
+  width: 100%;
+  font-size: 17px;
+  border-collapse: separate;
+  border-spacing: 0 14px;
+}
+
+.comparison-table th {
+  padding: 10px 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.comparison-table td {
+  padding: 8px 0;
+  color: #333;
+}
+
+/* VIDEO */
+.iris-video-container {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  border-radius: 26px;
+  overflow: hidden;
+}
+
+.iris-video {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.iris-text-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 16px;
+  text-align: center;
+  z-index: 2;
+}
+
+
 
 
 
@@ -95,12 +274,13 @@
 
 
     .hero-title {
-      font-size: clamp(32px, 6vw, 72px);
-      font-weight: 700;
-      margin: 0 0 20px;
-      opacity: 0;
-      animation: fadeIn 1.2s ease forwards 0.2s;
+    font-size: clamp(22px, 4vw, 60px);   /* smaller, tighter, cleaner */
+    font-weight: 700;
+    margin: 0 0 18px;
+    opacity: 0;
+    animation: fadeIn 1.2s ease forwards 0.2s;
     }
+
 
     .hero-subtitle {
       font-size: clamp(16px, 4vw, 20px);
@@ -678,23 +858,20 @@
   </section>
 
 
-
 <!-- ===========================
-        SECTION 2 — What is IRIS?
+        SECTION 2 — Intro Video
 ============================ -->
-<section id="s2">
+<section id="s2" class="section-light fade-section">
 
   <div class="iris-video-container">
 
-    <!-- WHITE TEXT ON TOP OF VIDEO -->
     <div class="iris-text-overlay">
       <h2 class="hero-title iris-title-white">A Cinema Robot, Reimagined.</h2>
 
       <p class="hero-subtitle iris-sub-white">
-        Cinema robots traditionally come from industrial automation — massive robotic arms
-        adapted to carry high-speed cinema cameras. They deliver movements impossible for humans:
-        sub-millimeter repeatability, ultra-fast arcs, and perfectly repeatable paths for VFX and product shoots.
-        <br><br>
+        Cinema robots come from industrial automation — massive robotic arms adapted for cameras.
+        They deliver movements impossible for humans: ultra-smooth arcs, sub-millimeter precision,
+        and repeatable paths for VFX and product shoots.<br><br>
         IRIS brings that capability to every creator.
       </p>
     </div>
@@ -709,166 +886,144 @@
 
 
 
+<!-- ===========================
+        SECTION 3 — Industry Problem
+============================ -->
+<section id="s3" class="section-light fade-section">
+  <h2 class="hero-title">Cinema Robots Were Never Designed for Creators.</h2>
 
-  <!-- ===========================
-          SECTION 3 — Why Cinema Robots Are Expensive
-  ============================ -->
-  <section id="s3">
+  <p class="hero-subtitle" style="max-width:780px;">
+    Traditional motion-control robots were built for factories, not film sets. They’re massive,
+    expensive, and require trained operators. Great for big studios — inaccessible for everyone else.
+  </p>
 
-    <h2 class="hero-title" style="font-size: clamp(28px,5vw,48px);">
-      Why Cinema Robots Cost $100,000+
-    </h2>
-
-    <p class="hero-subtitle">
-      Systems like Bolt or KUKA combine industrial-grade actuators, multi-axis control systems,  
-      and proprietary motion software — requiring trained operators and massive budgets.
-      <br><br>
-      IRIS eliminates these barriers through a complete redesign of hardware, firmware,  
-      and motion-intelligent software.
-    </p>
-
-  </section>
+  <img src="MPR/sota.png"
+       class="section-image"
+       alt="Cinema Robot Landscape">
+</section>
 
 
 
-  <!-- ===========================
-          SECTION 4 — Three Objectives
-  ============================ -->
-  <section id="s4">
+<!-- ===========================
+        SECTION 4 — Reinvention
+============================ -->
+<section id="s4" class="section-light fade-section">
+  <h2 class="hero-title">We Rebuilt the Cinema Robot from Scratch.</h2>
 
-    <h2 class="hero-title" style="font-size: clamp(28px,5vw,48px);">
-      Designed with Three Objectives.
-    </h2>
+  <p class="hero-subtitle" style="max-width:780px;">
+    Instead of shrinking industrial hardware, IRIS is a clean-sheet redesign — custom mechanics,
+    lightweight structure, and intelligent motion software. Everything optimized for shooting,
+    not manufacturing.
+  </p>
 
-    <p class="hero-subtitle" style="max-width:800px;">
-      IRIS is built on a full mechanical, electrical, and algorithmic redesign  
-      aimed at bringing cinematic motion control to everyday creators.
-    </p>
-
-    <div style="max-width:900px; text-align:left; margin-top:40px;">
-
-      <h3 style="font-size:24px; font-weight:600;">1. Make cinema robotics affordable.</h3>
-      <p class="hero-subtitle" style="text-align:left; margin-bottom:28px;">
-        Traditional systems cost $100k–$250k.  
-        IRIS reduces this by over 100× using custom actuators, optimized 3D-printed structures,  
-        and simplified electronics — targeting a sub-$1,000 system.
-      </p>
-
-      <h3 style="font-size:24px; font-weight:600;">2. Deliver true cinematic performance.</h3>
-      <p class="hero-subtitle" style="text-align:left; margin-bottom:28px;">
-        IRIS maintains key traits of cinema robots: high-speed motion, precise keyframing,  
-        and repeatable paths suitable for product cinematography and slow-motion commercial shoots.
-      </p>
-
-      <h3 style="font-size:24px; font-weight:600;">3. Make it intuitive and learning-free.</h3>
-      <p class="hero-subtitle" style="text-align:left;">
-        Instead of industrial interfaces, IRIS provides a modern UI designed  
-        for creators — no robotics background needed.
-      </p>
-
-    </div>
-
-  </section>
+  <img src="MPR/part_list.png"
+       class="section-image"
+       alt="IRIS Architecture">
+</section>
 
 
 
-  <!-- ===========================
-          SECTION 5 — Comparison Grid
-  ============================ -->
-<section id="s5">
+<!-- ===========================
+        SECTION 5 — Performance
+============================ -->
+<section id="s5" class="section-light fade-section">
+  <h2 class="hero-title">Smooth. Fast. Repeatable.</h2>
 
-  <h2 class="hero-title" style="font-size: clamp(28px,5vw,48px); margin-bottom: 40px;">
-    IRIS vs Traditional Cinema Robots
-  </h2>
+  <p class="hero-subtitle" style="max-width:760px;">
+    IRIS delivers motion that feels alive — ultra-smooth paths, rapid acceleration,
+    and repeatability for precision takes. Perfect for product shots, slow-motion arcs,
+    and high-speed creative work.
+  </p>
 
-  <div style="
-      max-width: 900px;
-      width: 100%;
-      padding: 0 16px;
-    ">
+  <img src="MPR/line_graph.png"
+       class="section-image"
+       alt="Motion Performance Graph">
+</section>
 
-    <table style="
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0 18px;
-        font-size: 17px;
-        font-weight: 400;
-      ">
 
-      <!-- header -->
-      <tr>
-        <th style="
-            width: 30%;
-            text-align: center;
-            font-size: 20px;
-            font-weight: 600;
-            padding-bottom: 10px;
-            padding-top: 10px;
-          ">Feature</th>
 
-        <th style="
-            width: 35%;
-            text-align: center;
-            font-size: 20px;
-            font-weight: 600;
-            padding-bottom: 10px;
-            padding-top: 10px;
-          ">IRIS</th>
+<!-- ===========================
+        SECTION 6 — Control
+============================ -->
+<section id="s6" class="section-light fade-section">
+  <h2 class="hero-title">Control, Reimagined.</h2>
 
-        <th style="
-            width: 35%;
-            text-align: center;
-            font-size: 20px;
-            font-weight: 600;
-            padding-bottom: 10px;
-            padding-top: 10px;
-          ">Traditional</th>
-      </tr>
+  <p class="hero-subtitle" style="max-width:740px;">
+    No industrial UI. No training. Just a modern app made for creators — adjust keyframes,
+    preview paths, and run shots with a tap.
+  </p>
 
-      <!-- divider -->
-      <tr><td colspan="3" style="height:1px; background:#e4e4e4;"></td></tr>
+  <img src="MPR/app.png"
+       class="section-image"
+       style="max-width:800px;"
+       alt="IRIS Mobile App">
+</section>
 
-      <!-- rows -->
-      <tr>
-        <td style="padding: 6px 0;">Cost</td>
-        <td style="padding: 6px 0; color:#333;">Under $1k</td>
-        <td style="padding: 6px 0; color:#666;">$100k–$250k</td>
-      </tr>
+
+
+<!-- ===========================
+        SECTION 7 — Versatility
+============================ -->
+<section id="s7" class="section-light fade-section">
+  <h2 class="hero-title">Built for Everything You Shoot.</h2>
+
+  <p class="hero-subtitle" style="max-width:760px;">
+    IRIS is fast enough for action, precise enough for VFX, and compact enough for apartments,
+    studios, and small sets. It goes wherever your creativity goes.
+  </p>
+
+  <img src="MPR/bimanual.png"
+       class="section-image"
+       alt="IRIS Workspace">
+</section>
+
+
+
+<!-- ===========================
+        SECTION 8 — Dimensions
+============================ -->
+<section id="s8" class="section-light fade-section">
+  <h2 class="hero-title">Compact by Design.</h2>
+
+  <p class="hero-subtitle" style="max-width:740px;">
+    IRIS fits into your workflow — lightweight, portable, and designed for creators with limited space.
+    No rigging. No setup crew.
+  </p>
+
+  <img src="MPR/dimension.png"
+       class="section-image"
+       alt="IRIS Dimensions">
+</section>
+
+
+
+<!-- ===========================
+        SECTION 9 — Comparison Table
+============================ -->
+<section id="s9" class="section-light fade-section">
+
+  <h2 class="hero-title">IRIS vs Traditional Robots</h2>
+
+  <div class="table-container">
+
+    <table class="comparison-table">
 
       <tr>
-        <td style="padding: 6px 0;">Setup Difficulty</td>
-        <td style="padding: 6px 0; color:#333;">Minutes</td>
-        <td style="padding: 6px 0; color:#666;">Hours</td>
+        <th>Feature</th>
+        <th>IRIS</th>
+        <th>Traditional</th>
       </tr>
 
-      <tr>
-        <td style="padding: 6px 0;">Software Complexity</td>
-        <td style="padding: 6px 0; color:#333;">Simple</td>
-        <td style="padding: 6px 0; color:#666;">Industrial</td>
-      </tr>
-
-      <tr>
-        <td style="padding: 6px 0;">Learning Curve</td>
-        <td style="padding: 6px 0; color:#333;">Beginner-friendly</td>
-        <td style="padding: 6px 0; color:#666;">Trained Operator</td>
-      </tr>
-
-      <tr>
-        <td style="padding: 6px 0;">Portability</td>
-        <td style="padding: 6px 0; color:#333;">Lightweight</td>
-        <td style="padding: 6px 0; color:#666;">Heavy</td>
-      </tr>
-
-      <tr>
-        <td style="padding: 6px 0;">Precision</td>
-        <td style="padding: 6px 0; color:#333;">High</td>
-        <td style="padding: 6px 0; color:#666;">High</td>
-      </tr>
+      <tr><td>Price</td><td>Under $1k</td><td>$100k–$250k</td></tr>
+      <tr><td>Setup</td><td>Minutes</td><td>Hours</td></tr>
+      <tr><td>Control</td><td>Mobile App</td><td>Industrial UI</td></tr>
+      <tr><td>Learning Curve</td><td>No Training</td><td>Professional Operator</td></tr>
+      <tr><td>Portability</td><td>Desk-Sized</td><td>Heavy, Fixed</td></tr>
+      <tr><td>Use Case</td><td>Creators & Studios</td><td>Large Productions</td></tr>
 
     </table>
 
   </div>
-
 </section>
 
 
@@ -1359,6 +1514,24 @@ document.querySelectorAll(".dropdown-item").forEach((link) => {
 });
 
 </script>
+
+<script>
+  const observer = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+        }
+      });
+    },
+    { threshold: 0.18 }
+  );
+
+  document.querySelectorAll(".fade-section").forEach(sec => {
+    observer.observe(sec);
+  });
+</script>
+
 
 
 
