@@ -6,8 +6,9 @@
   <title>IRIS — Cinema Robot Arm</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-  <!-- Model Viewer -->
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+<script type="module"
+  src="https://unpkg.com/@google/model-viewer@3.3.0/dist/model-viewer.min.js">
+</script>
 
   <style>
     :root {
@@ -184,51 +185,64 @@
       }
     }
 
- /* ======================================================
-      LIQUID MERGE-FROM-BAR POPUP — SPRING / BOUNCY
-   ====================================================== */
+/* ======================================================
+   POPUP MENU MERGING OUT OF SCROLL BAR
+   (PERFECT ALIGNMENT + SPRING + MATCHED HEIGHT)
+====================================================== */
 .scroll-menu {
   position: fixed;
-  right: 20px;
+
+  /* Align horizontally with scroll bar (NOT offset) */
+  right: calc(20px + 40px);  /* 20px (bar offset) + 40px (bar width) */
+  /* This ensures the popup STARTS exactly where the scroll bar ends */
+
   top: 50%;
+
+  /* START collapsed width = scroll bar width */
   width: 40px;
-  height: 200px;
-  background: #f3f1eb;          /* SAME as scroll bar */
+
+  /* START collapsed height = MATCH scroll bar */
+  height: 200px;   /* THIS gets dynamically updated from JS */
+
+  background: #f3f1eb;
   border-radius: 26px;
   opacity: 0;
   pointer-events: none;
-  z-index: 3000;
   overflow: hidden;
+  z-index: 3000;
 
-  /* CRITICAL: SPRING EXPANSION CURVE */
+  /* Merge-from-bar: horizontal scale spring only */
   transform: translateY(-50%) scaleX(0.15);
   transform-origin: right center;
 
   transition:
     opacity 0.25s ease,
     border-radius 0.20s ease,
-    /* spring bounce curve */
+    /* BOUNCY HORIZONTAL SPRING */
     transform 0.55s cubic-bezier(0.25, 1.55, 0.45, 0.95),
-    width 0.55s cubic-bezier(0.25, 1.55, 0.45, 0.95),
-    height 0.55s cubic-bezier(0.25, 1.55, 0.45, 0.95);
+    width 0.55s cubic-bezier(0.25, 1.55, 0.45, 0.95);
 }
 
-/* WHEN OPEN */
+/* FINAL FORM */
 .scroll-menu.show {
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(-50%) scaleX(1); /* expands horizontally */
+
+  /* expand horizontally ONLY */
+  transform: translateY(-50%) scaleX(1);
   width: 260px;
-  height: auto;
+
+  /* height stays fixed from JS sync */
   border-radius: 26px;
 }
 
-/* INNER CONTENT — delayed fade so spring happens first */
+
+/* INNER CONTENT — fades in after the spring */
 .scroll-menu-inner {
   opacity: 0;
   transform: translateY(12px);
   transition: 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: 0.12s; /* AFTER the spring bounce */
+  transition-delay: 0.12s; /* starts after the main spring motion */
 }
 
 .scroll-menu.show .scroll-menu-inner {
@@ -259,6 +273,7 @@
   background: #e7e4dd;
   border-radius: 10px;
 }
+
 
 
     /* ========== DRAG CURSOR STYLE ========== */
@@ -385,7 +400,7 @@
       <div id="viewer3d">
 
         <model-viewer id="robotViewer"
-          src="/assets/models/cinema_robot.glb"
+          src="assets/models/cinema_robot.glb"
           camera-controls
           auto-rotate
           auto-rotate-delay="0"
@@ -742,6 +757,58 @@ computeTargetFromScroll();
 animate();
 </script>
 
+
+<script>
+// ==============================
+// MODEL VIEWER BUTTON CONTROLS
+// ==============================
+const viewer = document.getElementById("robotViewer");
+const loadingOverlay = document.getElementById("viewer-loading");
+
+const btnReset = document.getElementById("btn-reset");
+const btnRotate = document.getElementById("btn-rotate");
+const btnFullscreen = document.getElementById("btn-fullscreen");
+
+// Hide loading spinner when model finishes loading
+viewer.addEventListener("load", () => {
+  loadingOverlay.classList.add("hide");
+});
+
+// ========== RESET CAMERA ==========
+btnReset.addEventListener("click", () => {
+  viewer.cameraOrbit = "0deg 75deg 1.5m";  // default camera
+  viewer.fieldOfView = "45deg";
+});
+
+// ========== AUTO ROTATE ON/OFF ==========
+btnRotate.addEventListener("click", () => {
+  if (viewer.autoRotate) {
+    viewer.autoRotate = false;
+    btnRotate.classList.remove("active");
+  } else {
+    viewer.autoRotate = true;
+    btnRotate.classList.add("active");
+  }
+});
+
+// ========== FULLSCREEN ==========
+btnFullscreen.addEventListener("click", () => {
+  if (!document.fullscreenElement) {
+    viewer.requestFullscreen();
+    btnFullscreen.classList.add("active");
+  } else {
+    document.exitFullscreen();
+    btnFullscreen.classList.remove("active");
+  }
+});
+
+// Remove active when exiting fullscreen manually
+document.addEventListener("fullscreenchange", () => {
+  if (!document.fullscreenElement) {
+    btnFullscreen.classList.remove("active");
+  }
+});
+</script>
 
 
 
