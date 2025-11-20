@@ -27,6 +27,46 @@
       -webkit-font-smoothing: antialiased;
     }
 
+
+    /* Desktop link style */
+    .desktop-nav a {
+    color:#111;
+    text-decoration:none;
+    position:relative;
+    }
+
+    .desktop-nav a::after {
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-2px;
+    width:0%;
+    height:1px;
+    background:#111;
+    transition:width 0.25s ease;
+    }
+
+    .desktop-nav a:hover::after {
+    width:100%;
+    }
+
+    /* Mobile view */
+    @media (max-width: 768px) {
+    .desktop-nav {
+        display:none;
+    }
+    #hamburger {
+        display:flex !important;
+    }
+    #mobileMenu a {
+        color:#111;
+        text-decoration:none;
+    }
+    }
+
+
+
+
     /* ===========================
           GLOBAL LAYOUT
     ============================ */
@@ -381,6 +421,101 @@
   </div>
 </div>
 
+ <!-- MOBILE: Apple pill-shaped menu button -->
+  <div id="hamburger" style="
+    display:none;
+    width: 44px;
+    height: 28px;
+    border-radius: 32px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    cursor:pointer;
+    transition: background 0.25s ease;
+  ">
+    <div id="hamLines" style="
+      width: 18px;
+      height: 2px;
+      background:#111;
+      position:relative;
+      transition:0.25s ease;
+    ">
+      <div style="position:absolute; width:18px; height:2px; background:#111; top:-6px;"></div>
+      <div style="position:absolute; width:18px; height:2px; background:#111; top:6px;"></div>
+    </div>
+  </div>
+
+</header>
+
+<!-- MOBILE SLIDE MENU -->
+<div id="mobileMenu" style="
+  position: fixed;
+  top:0;
+  right:-100%;
+  width:75%;
+  height:100vh;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding:80px 24px;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  gap:26px;
+  font-size:20px;
+  transition:right 0.35s ease;
+  z-index:9990;
+">
+  <a href="#s1">Home</a>
+  <a href="#s2">Features</a>
+  <a href="#s3">Specs</a>
+  <a href="#s5">Comparison</a>
+  <a href="#contact">Contact</a>
+</div>
+
+
+
+<!-- Top Navigation Bar -->
+<header id="topNav" style="
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  z-index: 9999;
+">
+
+  <!-- Logo -->
+  <div style="font-size: 20px; font-weight: 600; color: #111;">
+    Motion Picture Robotics
+  </div>
+
+  <!-- Menu -->
+  <nav style="display: flex; gap: 28px; font-size: 15px; font-weight: 500;">
+    <a href="#s1" style="color:#111; text-decoration:none;">Home</a>
+    <a href="#s2" style="color:#111; text-decoration:none;">Features</a>
+    <a href="#s3" style="color:#111; text-decoration:none;">Specs</a>
+    <a href="#s5" style="color:#111; text-decoration:none;">Comparison</a>
+    <a href="#contact" style="color:#111; text-decoration:none;">Contact</a>
+  </nav>
+
+</header>
+
+<!-- Spacer -->
+<div style="height:60px;"></div>
 
 
 
@@ -681,6 +816,7 @@
 <!-- ===========================
       SCRIPT — Viewer Controls + Scroll Bar + Popup
 =========================== -->
+
 <script>
 /* ============================================================
      ELEMENTS
@@ -1004,6 +1140,69 @@ btnFullscreen.addEventListener("click", () => {
 document.addEventListener("fullscreenchange", () => {
   if (!document.fullscreenElement) {
     btnFullscreen.classList.remove("active");
+  }
+});
+</script>
+
+
+<script>
+let lastScrollY = window.scrollY;
+const nav = document.getElementById("topNav");
+const hamburger = document.getElementById("hamburger");
+const mobileMenu = document.getElementById("mobileMenu");
+let menuOpen = false;
+let isClickingNav = false;
+
+// Prevent hiding when interacting with navigation
+nav.addEventListener("mousedown", () => isClickingNav = true);
+nav.addEventListener("mouseup",   () => setTimeout(() => isClickingNav=false,150));
+
+window.addEventListener("scroll", () => {
+  if (isClickingNav || menuOpen) return;
+
+  const currentY = window.scrollY;
+
+  // Always show when near top
+  if (currentY < 30) {
+    nav.style.transform = "translateY(0)";
+    nav.style.height = "60px";
+    nav.style.boxShadow = "none";
+    lastScrollY = currentY;
+    return;
+  }
+
+  // Shrink on slight scroll
+  if (currentY > 30) {
+    nav.style.height = "48px";
+  }
+
+  // Scroll down → hide
+  if (currentY > lastScrollY) {
+    nav.style.transform = "translateY(-100%)";
+    nav.style.boxShadow = "none";
+  }
+  // Scroll up → show
+  else {
+    nav.style.transform = "translateY(0)";
+    nav.style.boxShadow = "0 6px 20px rgba(0,0,0,0.08)";
+  }
+
+  lastScrollY = currentY;
+});
+
+// Mobile hamburger toggle
+hamburger.addEventListener("click", () => {
+  menuOpen = !menuOpen;
+
+  if (menuOpen) {
+    mobileMenu.style.right = "0";
+    nav.style.transform = "translateY(0)";
+    document.getElementById("hamLines").style.transform = "rotate(45deg)";
+    document.getElementById("hamLines").style.background = "transparent";
+  } else {
+    mobileMenu.style.right = "-100%";
+    document.getElementById("hamLines").style.transform = "rotate(0)";
+    document.getElementById("hamLines").style.background = "#111";
   }
 });
 </script>
