@@ -65,6 +65,19 @@
     }
 
 
+    .dropdown-item {
+    color: #111;
+    text-decoration: none;
+    padding: 12px 4px;
+    border-radius: 12px;
+    transition: background 0.2s ease;
+    }
+
+    .dropdown-item:hover {
+    background: rgba(0,0,0,0.06);
+    }
+
+
 
 
     /* ===========================
@@ -377,6 +390,30 @@
         display: none;
       }
     }
+    /* --- MOBILE NAVIGATION REWRITE --- */
+    @media (max-width: 768px) {
+
+    /* Hide desktop nav entirely */
+    header nav {
+        display: none !important;
+    }
+
+    /* Show hamburger button in top-right */
+    #hamburger {
+        position: absolute;
+        right: 18px;
+        top: 14px;
+        display: flex !important;
+        z-index: 99999;
+    }
+
+    /* Shrink Motion Picture Robotics logo */
+    #brandTitle {
+        font-size: 16px !important;
+        white-space: nowrap;
+    }
+    }
+
 
     @keyframes fadeIn {
       to {
@@ -451,29 +488,36 @@
 </header>
 
 <!-- MOBILE SLIDE MENU -->
+<!-- Apple-glass Top Dropdown Menu -->
 <div id="mobileMenu" style="
   position: fixed;
-  top:0;
-  right:-100%;
-  width:75%;
-  height:100vh;
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding:80px 24px;
-  box-sizing:border-box;
-  display:flex;
-  flex-direction:column;
-  gap:26px;
-  font-size:20px;
-  transition:right 0.35s ease;
-  z-index:9990;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  padding: 70px 24px 28px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+
+  /* 🔥 KEY FIX */
+  transform: translateY(-100%);
+  transition: transform 0.35s cubic-bezier(.25,1,.30,1);
+
+  z-index: 9990;
 ">
-  <a href="#s1">Home</a>
-  <a href="#s2">Features</a>
-  <a href="#s3">Specs</a>
-  <a href="#s5">Comparison</a>
-  <a href="#contact">Contact</a>
+  <a class="dropdown-item" href="#s1">Home</a>
+  <a class="dropdown-item" href="#s2">Features</a>
+  <a class="dropdown-item" href="#s3">Specs</a>
+  <a class="dropdown-item" href="#s5">Comparison</a>
+  <a class="dropdown-item" href="#contact">Contact</a>
 </div>
 
 
@@ -499,9 +543,10 @@
 ">
 
   <!-- Logo -->
-  <div style="font-size: 20px; font-weight: 600; color: #111;">
-    Motion Picture Robotics
-  </div>
+<div id="brandTitle" style="font-size: 20px; font-weight: 600; color: #111;">
+  Motion Picture Robotics
+</div>
+
 
   <!-- Menu -->
   <nav style="display: flex; gap: 28px; font-size: 15px; font-weight: 500;">
@@ -991,6 +1036,8 @@ function alignMenuToBar() {
   menu.style.top = `${centerY}px`;
 }
 
+
+
 // open/close on track click
 scrollTrack.addEventListener("click", (e) => {
   // ignore dots and thumb
@@ -1103,6 +1150,17 @@ const btnReset = document.getElementById("btn-reset");
 const btnRotate = document.getElementById("btn-rotate");
 const btnFullscreen = document.getElementById("btn-fullscreen");
 
+function resetHamburgerIcon() {
+  const ham = document.getElementById("hamLines");
+  ham.style.transform = "rotate(0)";
+  ham.style.background = "#111";
+
+  // Restore the top & bottom bars
+  ham.children[0].style.transform = "translateY(0)";
+  ham.children[1].style.transform = "translateY(0)";
+}
+
+
 // Hide loading spinner when model finishes loading
 viewer.addEventListener("load", () => {
   loadingOverlay.classList.add("hide");
@@ -1195,16 +1253,48 @@ hamburger.addEventListener("click", () => {
   menuOpen = !menuOpen;
 
   if (menuOpen) {
-    mobileMenu.style.right = "0";
+    mobileMenu.style.transform = "translateY(0)";
+    
     nav.style.transform = "translateY(0)";
     document.getElementById("hamLines").style.transform = "rotate(45deg)";
     document.getElementById("hamLines").style.background = "transparent";
   } else {
-    mobileMenu.style.right = "-100%";
+    mobileMenu.style.transform = "translateY(-100%)";
     document.getElementById("hamLines").style.transform = "rotate(0)";
     document.getElementById("hamLines").style.background = "#111";
   }
 });
+
+// Hide menu when clicking outside
+document.addEventListener("click", (e) => {
+  if (!menuOpen) return;
+
+  const insideMenu = mobileMenu.contains(e.target);
+  const insideHamburger = hamburger.contains(e.target);
+
+  if (!insideMenu && !insideHamburger) {
+    menuOpen = false;
+    mobileMenu.style.transform = "translateY(-100%)";
+    resetHamburgerIcon();
+  }
+});
+
+// Hide menu while scrolling
+window.addEventListener("scroll", () => {
+  if (!menuOpen) return;
+  menuOpen = false;
+  mobileMenu.style.transform = "translateY(-100%)";
+  resetHamburgerIcon();
+});
+
+// Hide when clicking a menu link
+document.querySelectorAll(".dropdown-item").forEach((link) => {
+  link.addEventListener("click", () => {
+    menuOpen = false;
+    mobileMenu.style.transform = "translateY(-100%)";
+  });
+});
+
 </script>
 
 
