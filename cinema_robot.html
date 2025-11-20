@@ -84,14 +84,15 @@
           GLOBAL LAYOUT
     ============================ */
     section {
-      width: 100%;
-      padding: clamp(40px, 8vw, 100px) 16px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
+    width: 100%;
+    padding: clamp(28px, 6vw, 20px) 16px; /* ↓ smaller padding */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     }
+
 
     .hero-title {
       font-size: clamp(32px, 6vw, 72px);
@@ -427,6 +428,58 @@
         transform: translateY(0);
       }
     }
+/* ===========================
+      SECTION 2 — TEXT ON VIDEO
+=========================== */
+
+.iris-video-container {
+  position: relative;
+  width: 100%;
+  max-width: 900px;               /* SAME AS OTHER SECTIONS */
+  margin: 0 auto;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.iris-video {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* TEXT LAYER (NO background overlay) */
+.iris-text-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 16px;
+  text-align: center;
+  pointer-events: none;      /* text doesn't block clicks on scrolling */
+}
+
+/* White text */
+.iris-title-white {
+  color: #ffffff;
+}
+
+.iris-sub-white {
+  color: #f1f1f1;            /* slightly softer white for readability */
+  max-width: 760px;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .iris-text-overlay {
+    padding: 30px 16px;
+  }
+}
+
+
+
   </style>
 </head>
 
@@ -626,24 +679,34 @@
 
 
 
-  <!-- ===========================
-          SECTION 2 — What is IRIS?
-  ============================ -->
-  <section id="s2">
+<!-- ===========================
+        SECTION 2 — What is IRIS?
+============================ -->
+<section id="s2">
 
-    <h2 class="hero-title" style="font-size: clamp(28px,5vw,48px);">
-      A Cinema Robot, Reimagined.
-    </h2>
+  <div class="iris-video-container">
 
-    <p class="hero-subtitle">
-      Cinema robots traditionally come from industrial automation — massive robotic arms  
-      adapted to carry high-speed cinema cameras. They deliver movements impossible for humans:  
-      sub-millimeter repeatability, ultra-fast arcs, and perfectly repeatable paths for VFX and product shoots.
-      <br><br>
-      IRIS brings that capability to every creator.
-    </p>
+    <!-- WHITE TEXT ON TOP OF VIDEO -->
+    <div class="iris-text-overlay">
+      <h2 class="hero-title iris-title-white">A Cinema Robot, Reimagined.</h2>
 
-  </section>
+      <p class="hero-subtitle iris-sub-white">
+        Cinema robots traditionally come from industrial automation — massive robotic arms
+        adapted to carry high-speed cinema cameras. They deliver movements impossible for humans:
+        sub-millimeter repeatability, ultra-fast arcs, and perfectly repeatable paths for VFX and product shoots.
+        <br><br>
+        IRIS brings that capability to every creator.
+      </p>
+    </div>
+
+    <video class="iris-video" autoplay muted loop playsinline>
+      <source src="MPR/cover_video.mp4" type="video/mp4" />
+    </video>
+
+  </div>
+
+</section>
+
 
 
 
