@@ -679,8 +679,54 @@ document.addEventListener("mousemove", (e) => {
   computeTargetFromScroll();
 });
 
+// /* ============================================================
+//       POPUP — MERGES OUT OF BAR (SPRING)
+// ============================================================ */
+// function alignMenuToBar() {
+//   const trackRect = scrollTrack.getBoundingClientRect();
+//   const centerY = trackRect.top + trackRect.height / 2;
+//   menu.style.top = `${centerY}px`;
+// }
+
+// scrollTrack.addEventListener("click", (e) => {
+//   // ignore dots / thumb
+//   if (e.target.classList.contains("scroll-thumb")) return;
+//   if (e.target.classList.contains("scroll-dot")) return;
+
+//   const opening = !menu.classList.contains("show");
+
+//   if (opening) {
+//     alignMenuToBar();
+
+//     // reset spring animation so it bounces every time:
+//     menu.classList.remove("show");
+//     void menu.offsetWidth;
+
+//     menu.classList.add("show");
+//   } else {
+//     menu.classList.remove("show");
+//   }
+// });
+
+// window.addEventListener("scroll", () => {
+//   if (menu.classList.contains("show")) alignMenuToBar();
+// });
+
+// document.addEventListener("mousemove", () => {
+//   if (menu.classList.contains("show")) alignMenuToBar();
+// });
+
+// /* section click */
+// menuItems.forEach((item) => {
+//   item.addEventListener("click", () => {
+//     const sec = document.getElementById(item.dataset.target);
+//     menu.classList.remove("show");
+//     sec.scrollIntoView({ behavior: "smooth" });
+//   });
+// });
+
 /* ============================================================
-      POPUP — MERGES OUT OF BAR (SPRING)
+      POPUP MENU — MERGES FROM SCROLL BAR + AUTO-HIDE
 ============================================================ */
 function alignMenuToBar() {
   const trackRect = scrollTrack.getBoundingClientRect();
@@ -688,8 +734,9 @@ function alignMenuToBar() {
   menu.style.top = `${centerY}px`;
 }
 
+// open/close on track click
 scrollTrack.addEventListener("click", (e) => {
-  // ignore dots / thumb
+  // ignore dots and thumb
   if (e.target.classList.contains("scroll-thumb")) return;
   if (e.target.classList.contains("scroll-dot")) return;
 
@@ -698,32 +745,62 @@ scrollTrack.addEventListener("click", (e) => {
   if (opening) {
     alignMenuToBar();
 
-    // reset spring animation so it bounces every time:
+    // restart animation
     menu.classList.remove("show");
     void menu.offsetWidth;
 
     menu.classList.add("show");
   } else {
-    menu.classList.remove("show");
+    hideMenu();
+  }
+
+  // prevent event from closing immediately
+  e.stopPropagation();
+});
+
+// auto-hide function
+function hideMenu() {
+  menu.classList.remove("show");
+}
+
+// hide when clicking outside menu
+document.addEventListener("click", (e) => {
+  if (menu.classList.contains("show")) {
+    const inside =
+      menu.contains(e.target) ||
+      scrollTrack.contains(e.target);
+    if (!inside) hideMenu();
   }
 });
 
+// hide when scrolling
+let scrollTimeout;
+window.addEventListener("scroll", () => {
+  if (menu.classList.contains("show")) hideMenu();
+});
+
+// hide when dragging scroll thumb
+thumb.addEventListener("mousedown", () => {
+  if (menu.classList.contains("show")) hideMenu();
+});
+
+// hide when selecting menu items
+menuItems.forEach((item) => {
+  item.addEventListener("click", () => {
+    const sec = document.getElementById(item.dataset.target);
+    hideMenu();
+    sec.scrollIntoView({ behavior: "smooth" });
+  });
+});
+
+// realignment if needed
 window.addEventListener("scroll", () => {
   if (menu.classList.contains("show")) alignMenuToBar();
 });
-
 document.addEventListener("mousemove", () => {
   if (menu.classList.contains("show")) alignMenuToBar();
 });
 
-/* section click */
-menuItems.forEach((item) => {
-  item.addEventListener("click", () => {
-    const sec = document.getElementById(item.dataset.target);
-    menu.classList.remove("show");
-    sec.scrollIntoView({ behavior: "smooth" });
-  });
-});
 
 /* ============================================================
       DOT CLICK
