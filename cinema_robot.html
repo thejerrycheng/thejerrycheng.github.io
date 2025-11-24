@@ -153,60 +153,6 @@
 }
 
 
-/* ===========================
-   Sunday Robotics Word Collapse
-=========================== */
-
-.sunday-section {
-  position: relative;
-  padding-top: 200px;
-  padding-bottom: 200px;
-}
-
-.sunday-words {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 120px;  /* large initial spacing like Sunday Robotics */
-  margin-bottom: 120px;
-  transition: gap 0.6s ease;
-}
-
-.sunday-word {
-  font-size: clamp(40px, 7vw, 77px);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.9s ease, transform 0.9s ease;
-}
-
-.sunday-section.visible .sunday-word {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* collapsed state (activated by JS when scrolled) */
-.sunday-words.collapsed {
-  gap: 12px !important;
-}
-
-/* Subtitle hidden until collapse completes */
-.sunday-subtitle {
-  max-width: 760px;
-  font-size: 18px;
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-  margin: 0 auto 60px;
-}
-
-.sunday-subtitle.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-
 /* --------------------------------------------------------
    Scroll Animation Base Styles
 ---------------------------------------------------------*/
@@ -562,61 +508,6 @@ section:not(#s1) .hero-title {
   border-radius: 10px;
 }
 
-/* Apple-style CTA Buttons */
-.hero-cta {
-  display: flex;
-  gap: 18px;
-  margin: 32px auto 44px;
-  justify-content: center;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 1.2s ease-out forwards;
-  animation-delay: 0.45s;
-}
-
-.cta-primary,
-.cta-secondary {
-  padding: 12px 26px;
-  font-size: 17px;
-  font-weight: 500;
-  border-radius: 999px;
-  text-decoration: none;
-  transition: all 0.25s ease;
-}
-
-/* Primary button (blue Apple-style) */
-.cta-primary {
-  background: #0071e3;
-  color: #fff;
-}
-
-.cta-primary:hover {
-  background: #0b78ec;
-  transform: translateY(-2px);
-}
-
-/* Secondary button (transparent) */
-.cta-secondary {
-  background: rgba(0,0,0,0.06);
-  color: #111;
-  backdrop-filter: blur(12px);
-}
-
-.cta-secondary:hover {
-  background: rgba(0,0,0,0.12);
-  transform: translateY(-2px);
-}
-
-/* Mobile stacking */
-@media (max-width: 600px) {
-  .hero-cta {
-    flex-direction: column;
-    gap: 14px;
-    width: 100%;
-    max-width: 240px;
-  }
-}
-
 
 
     /* ========== DRAG CURSOR STYLE ========== */
@@ -717,9 +608,6 @@ section:not(#s1) .hero-title {
         transform: translateY(0);
       }
     }
-
-
-
 /* ===========================
       SECTION 2 — TEXT ON VIDEO
 =========================== */
