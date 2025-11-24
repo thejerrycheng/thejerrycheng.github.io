@@ -473,7 +473,7 @@
 
 
 
-        <p style="font-size:20px; line-height:1.3; margin:12px 0 4px;">
+        <p style="font-size:24px; line-height:1.3; margin:12px 0 4px;">
           <strong>Research Interests</strong>
         </p>
         <p style="font-size:17px; line-height:1.5; margin:0 0 10px;">
@@ -688,6 +688,14 @@
     transition:transform .45s ease;
     will-change:transform;
   }
+
+  .carousel-track > div {
+    min-width: 100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+
   #publications .pub-carousel .slide{
     position:relative;
     flex:0 0 100%;
@@ -1498,404 +1506,437 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 
-
-<!-- ================= News Section ======================= -->
-<!-- News: responsive, no image width shrink on mobile -->
-<!-- News: responsive side-by-side (no re-order), image width preserved -->
-<style>
-  /* Match other sections */
-  #news { width:100%; max-width:800px; margin:auto; border-spacing:0; }
-
-  /* Base carousel structure */
-  #news [data-carousel] {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    border-radius: 6px;
-  }
-  #news .carousel-track {
-    display: flex;
-    transition: transform 0.5s ease;
-  }
-  #news .carousel-track > div {
-    min-width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  /* Desktop defaults */
-  @media (min-width: 701px){
-    #news [data-carousel],
-    #news .carousel-track,
-    #news .carousel-track > div { height: 200px; }
-    #news .carousel-track img { height: 100%; width: auto; display: block; }
-  }
-
-  /* Mobile: keep text + image on same line, do not reorder */
-  @media (max-width: 700px){
-    /* Turn each row into a 2-col grid: text flexes, image stays a usable width */
-    #news tr {
-      display: grid;
-      grid-template-columns: 1fr 280px; /* text | image (fixed) */
-      align-items: center;
-      column-gap: 10px;
-    }
-    /* Remove table-cell shrink tricks */
-    #news td { display: block; width: auto !important; padding: 6px 0 !important; }
-
-    /* Text sizing tweaks */
-    #news td:first-child h2 { font-size: 18px; margin: 0 0 6px; }
-    #news td:first-child p  { font-size: 13.5px; line-height: 1.45; }
-
-    /* Keep the image area consistent height; image fills by height (no crop) */
-    #news [data-carousel],
-    #news .carousel-track,
-    #news .carousel-track > div { height: 180px; }
-    #news .carousel-track img {
-      height: 100% !important;   /* preserve visual size */
-      width: auto !important;    /* do not force a smaller width */
-      max-width: none !important;
-      display: block;
-    }
-
-    /* Keep nav arrows vertically centered for variable heights */
-    #news [data-carousel] button {
-      top: 50% !important;
-      transform: translateY(-50%) !important;
-    }
-  }
-
-  /* Ultra-small phones: slightly narrower image column + thumb height */
-  @media (max-width: 360px){
-    #news tr { grid-template-columns: 1fr 240px; }
-    #news [data-carousel],
-    #news .carousel-track,
-    #news .carousel-track > div { height: 160px; }
-  }
-</style>
+<!-- ======================================================
+                       NEWS SECTION
+     Full Working Version — Horizontal Scroll Cards
+====================================================== -->
 
 <style>
-  /* === Mobile: match NEWS title margin to Publications title === */
-  @media (max-width:700px){
-    #news-title,         /* if your title is an ID */
-    #news h1,
-    #news h2,
-    #news .section-title /* fallback selectors */
-    {
-      padding-left:15px;
-      padding-right:15px;
-      box-sizing:border-box;
-      margin-top:0;
-      margin-bottom:12px;
-    }
+/* Wrapper */
+#news-wrapper {
+  width: 100%;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 0;
+  box-sizing: border-box;
+}
 
-    /* Also match the table/content margins */
-    #news{
-      padding-left:15px;
-      padding-right:15px;
-      box-sizing:border-box;
-    }
+/* Title – preserved exactly like your original style */
+/* #news-title {
+  font-family:-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: var(--section-title-size, 25px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #111;
+  margin: 0 0 18px;
+} */
+
+
+
+/* Horizontal scroll container */
+#news-horizontal {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 15px;
+  -webkit-overflow-scrolling: touch;
+}
+#news-horizontal::-webkit-scrollbar { display:none; }
+
+/* News Card */
+.news-card {
+  flex: 0 0 90%;
+  max-width: 90%;
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  gap: 16px;
+  scroll-snap-align: start;
+  align-items: flex-start;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  box-sizing: border-box;
+}
+
+/* Text column */
+.news-text {
+  flex: 1;
+  min-width: 0;
+}
+.news-text p {
+  font-size: 15px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Image column */
+.news-media {
+  width: 220px;
+  height: 160px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  background:#f4f4f4;
+  flex-shrink:0;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* PERFECT aspect-ratio preservation + centered */
+.news-media img {
+  max-height: 160px;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+  margin: auto;
+}
+
+/* Carousel track */
+.carousel-track {
+  display: flex;
+  transition: transform .45s ease;
+}
+
+/* Image nav arrows */
+.carousel-btn {
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:28px;
+  height:28px;
+  border:none;
+  background:rgba(0,0,0,0.45);
+  color:white;
+  border-radius:50%;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  z-index:10;
+}
+
+.carousel-btn svg {
+  width:14px;
+  height:14px;
+  stroke:white;
+  stroke-width:2.2;
+  fill:none;
+}
+
+.carousel-track > div {
+  min-width: 100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+
+.carousel-btn.left { left:6px; }
+.carousel-btn.right { right:6px; }
+
+/* Timeline */
+#news-timeline {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:26px;
+  margin-top:14px;
+}
+
+.timeline-item {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+}
+
+.news-dot {
+  width:10px;
+  height:10px;
+  background:#ccc;
+  border-radius:50%;
+  cursor:pointer;
+  transition:.25s;
+}
+.news-dot.active {
+  background:#111;
+  transform:scale(1.3);
+}
+
+.timeline-label {
+  font-size:12px;
+  font-family:-apple-system, BlinkMacSystemFont, "SF Pro Text";
+  color:#444;
+}
+
+/* Mobile layout */
+@media(max-width:550px){
+  .news-card {
+    flex-direction: column;
+    flex: 0 0 95%;
+    max-width: 95%;
   }
+  .news-media {
+    width:100%;
+    height:180px;
+  }
+}
 </style>
 
-<style>
-  /* === Mobile: unify News Title style with other section titles === */
-  @media (max-width:700px){
-
-    #news-title,
-    #news h1,
-    #news h2,
-    #news .section-title {
-
-      /* Full-bleed alignment (matching Publications + Startups titles) */
-      display:block;
-      width:100vw;
-      margin-left:calc(50% - 50vw) !important;
-      margin-right:calc(50% - 50vw) !important;
-      padding-left:15px !important;
-      padding-right:15px !important;
-      box-sizing:border-box;
-
-      /* Unified title style (same across your whole site) */
-      font-size:22px !important;          /* same size as Publications */
-      line-height:1.25;
-      font-weight:700 !important;
-      letter-spacing:-0.01em;
-      margin-top:0;
-      margin-bottom:14px;
-      color:#111;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-  }
-</style>
 
 
+<!-- ======================================================
+                         HTML CARDS
+====================================================== -->
+
+<div id="news-wrapper">
+  <!-- Consistent section container (same as Education / Publications) -->
+  <div id="news" style="width:100%; max-width:800px; margin: 0 auto; padding: 0 16px;">
+    <h2 class="section-title">News</h2>
+  </div>
+
+
+
+  <div id="news-horizontal">
+
+    <!-- CARD 1 -->
+    <div class="news-card" id="news-1">
+      <div class="news-text">
+        <p><b>[11/2025]</b> Graduated with a Master's of Engineering degree at the University of Toronto.</p>
+      </div>
+      <div class="news-media" data-carousel>
+        <button class="carousel-btn left" onclick="carouselMove(this,-1)">
+          <svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg>
+        </button>
+
+        <button class="carousel-btn right" onclick="carouselMove(this,1)">
+          <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
+
+        <div class="carousel-track">
+          <div><img src="assets/images/news/master_convocation/grad.jpg"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 2 -->
+    <div class="news-card" id="news-2">
+      <div class="news-text">
+        <p><b>[10/2025]</b> Attended IROS 2025 in Hangzhou, China and presented “AeroHaptix”.</p>
+      </div>
+      <div class="news-media" data-carousel>
+        <button class="carousel-btn left" onclick="carouselMove(this,-1)">
+          <svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg>
+        </button>
+
+        <button class="carousel-btn right" onclick="carouselMove(this,1)">
+          <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
+
+        <div class="carousel-track">
+          <div><img src="assets/images/news/iros_2025/iros_sign.jpg"></div>
+          <div><img src="assets/images/news/iros_2025/group_pic.jpg"></div>
+          <div><img src="assets/images/news/iros_2025/unitree.jpg"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 3 -->
+    <div class="news-card" id="news-3">
+      <div class="news-text">
+        <p><b>[04/2025]</b> Attended CHI 2025 in Yokohama, Japan and presented “VibraForge”.</p>
+      </div>
+      <div class="news-media" data-carousel>
+        <button class="carousel-btn left" onclick="carouselMove(this,-1)">
+          <svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg>
+        </button>
+
+        <button class="carousel-btn right" onclick="carouselMove(this,1)">
+          <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
+
+        <div class="carousel-track">
+          <div><img src="assets/images/news/chi_2025/1.jpg"></div>
+          <div><img src="assets/images/news/chi_2025/2.jpg"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 4 -->
+    <div class="news-card" id="news-4">
+      <div class="news-text">
+        <p><b>[11/2024]</b> Presented at ARIA 2024 in Toronto with our VibraForge toolkits.</p>
+      </div>
+      <div class="news-media" data-carousel>
+        <button class="carousel-btn left" onclick="carouselMove(this,-1)">
+          <svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg>
+        </button>
+
+        <button class="carousel-btn right" onclick="carouselMove(this,1)">
+          <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
+
+        <div class="carousel-track">
+          <div><img src="assets/images/news/aria_2024/1.png"></div>
+          <div><img src="assets/images/news/aria_2024/2.png"></div>
+          <div><img src="assets/images/news/aria_2024/3.png"></div>
+          <div><img src="assets/images/news/aria_2024/4.png"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 5 -->
+    <div class="news-card" id="news-5">
+      <div class="news-text">
+        <p><b>[07/2024]</b> Presented monocular depth estimation work at the Toronto Robotics Conference 2024.</p>
+      </div>
+      <div class="news-media" data-carousel>
+        <button class="carousel-btn left" onclick="carouselMove(this,-1)">
+          <svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg>
+        </button>
+
+        <button class="carousel-btn right" onclick="carouselMove(this,1)">
+          <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
+
+        <div class="carousel-track">
+          <div><img src="assets/images/news/trc_2024/1.jpg"></div>
+          <div><img src="assets/images/news/trc_2024/2.jpg"></div>
+          <div><img src="assets/images/news/trc_2024/3.jpg"></div>
+          <div><img src="assets/images/news/trc_2024/4.jpg"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 6 -->
+    <div class="news-card" id="news-6">
+      <div class="news-text">
+        <p><b>[11/2023]</b> Demonstrated “VibraForge” at ARIA 2023 in Toronto.</p>
+      </div>
+      <div class="news-media" data-carousel>
+       <button class="carousel-btn left" onclick="carouselMove(this,-1)">
+        <svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg>
+      </button>
+
+      <button class="carousel-btn right" onclick="carouselMove(this,1)">
+        <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      </button>
+
+        <div class="carousel-track">
+          <div><img src="assets/images/news/aria_2023/1.png"></div>
+          <div><img src="assets/images/news/aria_2023/2.png"></div>
+          <div><img src="assets/images/news/aria_2023/3.png"></div>
+          <div><img src="assets/images/news/aria_2023/4.png"></div>
+          <div><img src="assets/images/news/aria_2023/5.png"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 7 -->
+    <div class="news-card" id="news-7">
+      <div class="news-text">
+        <p><b>[06/2023]</b> Graduated from the University of Toronto with a Bachelor’s of Applied Science.</p>
+      </div>
+      <div class="news-media" data-carousel>
+        <button class="carousel-btn left" onclick="carouselMove(this,-1)">
+          <svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg>
+        </button>
+
+        <button class="carousel-btn right" onclick="carouselMove(this,1)">
+          <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
+
+        <div class="carousel-track">
+          <div><img src="assets/images/news/undergrad_convocation/convocation.jpg"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <!-- ======================================================
+                           TIMELINE
+  ====================================================== -->
+  <div id="news-timeline">
+    <div class="timeline-item"><div class="news-dot active" data-target="1"></div><div class="timeline-label">11/25</div></div>
+    <div class="timeline-item"><div class="news-dot" data-target="2"></div><div class="timeline-label">10/25</div></div>
+    <div class="timeline-item"><div class="news-dot" data-target="3"></div><div class="timeline-label">04/25</div></div>
+    <div class="timeline-item"><div class="news-dot" data-target="4"></div><div class="timeline-label">11/24</div></div>
+    <div class="timeline-item"><div class="news-dot" data-target="5"></div><div class="timeline-label">07/24</div></div>
+    <div class="timeline-item"><div class="news-dot" data-target="6"></div><div class="timeline-label">11/23</div></div>
+    <div class="timeline-item"><div class="news-dot" data-target="7"></div><div class="timeline-label">06/23</div></div>
+  </div>
+</div>
+
+
+
+<!-- ======================================================
+                        JAVASCRIPT
+====================================================== -->
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const isCoarse = window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
-    if (!isCoarse) return;
+/* Scroll → Update timeline dot */
+const scroller = document.getElementById("news-horizontal");
+const dots = document.querySelectorAll(".news-dot");
+const cards = document.querySelectorAll(".news-card");
 
-    document.querySelectorAll('#news [data-carousel]').forEach(wrap => {
-      const track = wrap.querySelector('.carousel-track');
-      const slides = track ? track.children.length : 0;
-      if (!track || slides <= 1) return;
+dots.forEach(dot=>{
+  dot.addEventListener("click",()=>{
+    const index = Number(dot.dataset.target) - 1;
+    scroller.scrollTo({ left: cards[index].offsetLeft - 16, behavior:"smooth" });
 
-      let idx = 0;
-      const go = (d) => { idx = (idx + d + slides) % slides; track.style.transform = `translateX(-${idx*100}%)`; };
-
-      // Tap anywhere on the media to go next
-      wrap.addEventListener('click', () => go(1));
-
-      // Keep arrow buttons working too if present
-      const prev = wrap.querySelector('.prev');
-      const next = wrap.querySelector('.next');
-      prev && prev.addEventListener('click', (e)=>{ e.stopPropagation(); go(-1); });
-      next && next.addEventListener('click', (e)=>{ e.stopPropagation(); go(1);  });
-    });
+    dots.forEach(d=>d.classList.remove("active"));
+    dot.classList.add("active");
   });
+});
+
+scroller.addEventListener("scroll",()=>{
+  let minDist = Infinity;
+  let active = 0;
+
+  cards.forEach((card,i)=>{
+    const d = Math.abs(card.offsetLeft - scroller.scrollLeft);
+    if(d < minDist){ minDist = d; active = i; }
+  });
+
+  dots.forEach(d=>d.classList.remove("active"));
+  dots[active].classList.add("active");
+});
+
+/* Image carousel */
+function carouselMove(btn, dir){
+  const media = btn.closest("[data-carousel]");
+  const track = media.querySelector(".carousel-track");
+  const slides = track.children.length;
+
+  if(!media.carouselIndex) media.carouselIndex = 0;
+  media.carouselIndex = (media.carouselIndex + dir + slides) % slides;
+
+  track.style.transform = `translateX(-${media.carouselIndex * 100}%)`;
+}
+
+document.querySelectorAll("[data-carousel]").forEach(media => {
+  const track = media.querySelector(".carousel-track");
+  const slides = track.children.length;
+
+  const leftBtn  = media.querySelector(".carousel-btn.left");
+  const rightBtn = media.querySelector(".carousel-btn.right");
+
+  if (slides <= 1) {
+    leftBtn.style.display = "none";
+    rightBtn.style.display = "none";
+  }
+});
+
 </script>
 
-
-
-  <!-- News title outside the cards -->
-  <h2 id="news-title" style="
-    width:100%;max-width:800px;margin:30px auto 10px;
-    font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif;
-    font-size:var(--section-title-size,25px);font-weight:700;letter-spacing:-0.01em;color:#111;
-    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
-  ">News</h2>
-
-  <table id="news" style="width:100%;max-width:800px;margin:auto;border-spacing:0;">
-    <tbody>
-
-      <!-- Entry 1 (title removed from here) -->
-      <tr>
-        <td style="padding:8px;vertical-align:middle;width:65%;">
-          <p style="font-size:15px;line-height:1.5em;">
-            <b>[11/2025]</b> Graduated with a Master's of Engineering (M.Eng.) degree at the University of Toronto.
-          </p>
-        </td>
-        <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
-          <div data-carousel style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;">
-            <div class="carousel-track" style="display:flex;transition:transform 0.5s ease;height:200px;">
-              <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/master_convocation/grad.jpg" alt="Graduation" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-    
-
-        <!-- Entry 1 -->
-      <tr>
-        <td style="padding:8px;vertical-align:middle;width:65%;">
-          <p style="font-size:15px;line-height:1.5em;">
-            <b>[10/2025]</b> Attended <b>IROS 2025</b> in Hangzhou, China to present our paper <b>“AeroHaptix”</b>.
-          </p>
-        </td>
-
-        <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
-          <div data-carousel style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;">
-            <div class="carousel-track" style="display:flex;transition:transform 0.5s ease;height:200px;">
-              <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/iros_2025/iros_sign.jpg" alt="IROS" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-              <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/iros_2025/group_pic.jpg" alt="Group Pic" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-              <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/iros_2025/unitree.jpg" alt="Unitree" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-            </div>
-
-            <button onclick="carouselMove(this,-1)" aria-label="Previous image"
-              style="position:absolute;top:50%;left:5px;transform:translateY(-50%);
-                    background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;
-                    border-radius:4px;cursor:pointer;">&#10094;</button>
-            <button onclick="carouselMove(this,1)" aria-label="Next image"
-              style="position:absolute;top:50%;right:5px;transform:translateY(-50%);
-                    background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;
-                    border-radius:4px;cursor:pointer;">&#10095;</button>
-          </div>
-        </td>
-      </tr>
-
-      <!-- Entry 2 -->
-      <tr>
-        <td style="padding:8px;vertical-align:middle;width:65%;">
-          <p style="font-size:15px;line-height:1.5em;">
-            <b>[04/2025]</b> Attended <b>CHI 2025</b> in Yokohama, Japan, and presented paper <b>VibraForge</b>.
-          </p>
-        </td>
-
-        <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
-          <div data-carousel style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;">
-            <div class="carousel-track" style="display:flex;transition:transform 0.5s ease;height:200px;">
-              <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/chi_2025/1.jpg" alt="CHI" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-              <div style="min-width:100%;height:200px;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/chi_2025/2.jpg" alt="Slide 2" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-            </div>
-
-            <button onclick="carouselMove(this,-1)" aria-label="Previous image"
-              style="position:absolute;top:50%;left:5px;transform:translateY(-50%);
-                    background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;
-                    border-radius:4px;cursor:pointer;">&#10094;</button>
-            <button onclick="carouselMove(this,1)" aria-label="Next image"
-              style="position:absolute;top:50%;right:5px;transform:translateY(-50%);
-                    background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;
-                    border-radius:4px;cursor:pointer;">&#10095;</button>
-          </div>
-        </td>
-      </tr>
-
-      <!-- Entry 4 -->
-      <tr>
-        <td style="padding:8px;vertical-align:middle;width:65%;">
-          <p style="font-size:15px;line-height:1.5em;">
-            <b>[11/2024]</b> Presented at <b>ARIA</b> in Toronto, ON, Canada with our VibraForge work and demonstrated the toolkits.
-          </p>
-        </td>
-        <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
-          <div data-carousel style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;">
-            <div class="carousel-track" style="display:flex;transition:transform 0.5s ease;height:200px;">
-              <div style="min-width:100%;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/aria_2024/1.png" alt="ARIA 2024 - venue" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-              <div style="min-width:100%;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/aria_2024/2.png" alt="ARIA 2024  - talk" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-              <div style="min-width:100%;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/aria_2024/3.png" alt="ARIA 2024 - poster" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-              <div style="min-width:100%;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/aria_2024/4.png" alt="ARIA 2024 - skyline" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-            </div>
-            <button onclick="carouselMove(this,-1)" aria-label="Previous image"
-              style="position:absolute;top:50%;left:5px;transform:translateY(-50%);background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">&#10094;</button>
-            <button onclick="carouselMove(this,1)" aria-label="Next image"
-              style="position:absolute;top:50%;right:5px;transform:translateY(-50%);background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">&#10095;</button>
-          </div>
-        </td>
-      </tr>
-
-
-       <!-- Entry 3 -->
-      <tr>
-        <td style="padding:8px;vertical-align:middle;width:65%;">
-          <p style="font-size:15px;line-height:1.5em;">
-            <b>[07/2024]</b> Presented monocular depth estimation work at the <b>Toronto Robotics Conference 2024</b> in Toronto, Canada.
-          </p>
-        </td>
-        <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
-          <div data-carousel style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;">
-            <div class="carousel-track" style="display:flex;transition:transform 0.5s ease;height:200px;">
-              <div style="min-width:100%;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/trc_2024/1.jpg" alt="TRC 2024 - depth demo" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-              <div style="min-width:100%;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/trc_2024/2.jpg" alt="TRC 2024 - poster" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-              <div style="min-width:100%;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/trc_2024/3.jpg" alt="TRC 2024 - talk" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-              <div style="min-width:100%;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/trc_2024/4.jpg" alt="TRC 2024 - group" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-            </div>
-            <button onclick="carouselMove(this,-1)" aria-label="Previous image"
-              style="position:absolute;top:50%;left:5px;transform:translateY(-50%);background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">&#10094;</button>
-            <button onclick="carouselMove(this,1)" aria-label="Next image"
-              style="position:absolute;top:50%;right:5px;transform:translateY(-50%);background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">&#10095;</button>
-          </div>
-        </td>
-      </tr>
-
-      
-
-      <!-- Entry 5 -->
-      <tr>
-        <td style="padding:8px;vertical-align:middle;width:65%;">
-          <p style="font-size:15px;line-height:1.5em;">
-            <b>[11/2023]</b> Demonstrated <b>“VibraForge”</b> at <b>ARIA 2023</b> in Toronto, Canada.
-          </p>
-        </td>
-        <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
-          <div data-carousel style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;">
-            <div class="carousel-track" style="display:flex;transition:transform 0.5s ease;height:200px;">
-              <div style="min-width:100%;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/aria_2023/1.png" alt="ARIA 2023 - demo" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-              <div style="min-width:100%;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/aria_2023/2.png" alt="ARIA 2023 - poster" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-              <div style="min-width:100%;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/aria_2023/3.png" alt="ARIA 2023 - device close-up" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-              <div style="min-width:100%;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/aria_2023/4.png" alt="ARIA 2023 - audience" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-              <div style="min-width:100%;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/aria_2023/5.png" alt="ARIA 2023 - closing remarks" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-            </div>
-            <button onclick="carouselMove(this,-1)" aria-label="Previous image"
-              style="position:absolute;top:50%;left:5px;transform:translateY(-50%);background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">&#10094;</button>
-            <button onclick="carouselMove(this,1)" aria-label="Next image"
-              style="position:absolute;top:50%;right:5px;transform:translateY(-50%);background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">&#10095;</button>
-          </div>
-        </td>
-      </tr>
-
-      
-      <tr>
-        <td style="padding:8px;vertical-align:middle;width:65%;">
-          <p style="font-size:15px;line-height:1.5em;">
-            <b>[06/2023]</b> Graduated from the University of Toronto with a Bachelor's of Applied Science (B.A.S.) degree.
-          </p>
-        </td>
-        <td style="padding:8px;width:35%;vertical-align:middle;text-align:center;">
-          <div data-carousel style="position:relative;width:100%;height:200px;overflow:hidden;border-radius:6px;">
-            <div class="carousel-track" style="display:flex;transition:transform 0.5s ease;height:200px;">
-              <div style="min-width:100%;display:flex;align-items:center;justify-content:center;">
-                <img src="assets/images/news/undergrad_convocation/convocation.jpg" alt="Undergraduate Convocation" style="height:200px;width:auto;max-width:100%;display:block;">
-              </div>
-            </div>
-            <!-- <button onclick="carouselMove(this,-1)" aria-label="Previous image"
-              style="position:absolute;top:50%;left:5px;transform:translateY(-50%);background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">&#10094;</button>
-            <button onclick="carouselMove(this,1)" aria-label="Next image"
-              style="position:absolute;top:50%;right:5px;transform:translateY(-50%);background-color:rgba(0,0,0,0.5);color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">&#10095;</button> -->
-          </div>
-        </td>
-      </tr>
-
-
-    <!-- Carousel JS -->
-    <script>
-      let currentIndex = 0;
-      const carousel = document.getElementById('newsCarousel');
-      const totalSlides = carousel.children.length;
-
-      function showImage(index) {
-        carousel.style.transform = `translateX(-${index * 100}%)`;
-      }
-
-      function nextImage() {
-        currentIndex = (currentIndex + 1) % totalSlides;
-        showImage(currentIndex);
-      }
-
-      function prevImage() {
-        currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
-        showImage(currentIndex);
-      }
-    </script>
 
 <!-- ======= Projects Section (aligned with Publications) ======= -->
 <style>
