@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Join Us — Motion Picture Robotics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <style>
+    :root {
+      --bg: #faf8f2;
+      --text-main: #111;
+      --text-muted: #666;
+      --radius-xl: 26px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      color: var(--text-main);
+    }
+
+    section {
+      width: 100%;
+      padding: clamp(40px, 6vw, 120px) 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    .title {
+      font-size: clamp(46px, 7vw, 72px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp 1.2s ease-out forwards 0.15s;
+    }
+
+    .subtitle {
+      font-size: clamp(18px, 2vw, 22px);
+      max-width: 760px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp 1.2s ease-out forwards 0.35s;
+    }
+
+    .roles {
+      margin-top: 60px;
+      width: 100%;
+      max-width: 900px;
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    /* --- CARD --- */
+    .role-card {
+      padding: 26px;
+      background: #fff;
+      border-radius: var(--radius-xl);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+      text-align: left;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .role-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.10);
+    }
+
+    .role-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    /* --- MODAL BACKDROP --- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.28);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 9999;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* --- MODAL WINDOW --- */
+    .modal-window {
+      width: 100%;
+      max-width: 520px;
+      background: #fff;
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      transform: translateY(40px);
+      opacity: 0;
+      transition: transform 0.35s cubic-bezier(.25,1,.30,1),
+                  opacity 0.35s ease;
+    }
+
+    .modal-window.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .modal-title {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .modal-text {
+      font-size: 16px;
+      line-height: 1.55;
+      color: #444;
+      white-space: pre-line;
+    }
+
+    .close-btn {
+      margin-top: 26px;
+      padding: 10px 24px;
+      border-radius: 999px;
+      background: #111;
+      color: white;
+      cursor: pointer;
+      display: inline-block;
+      transition: 0.25s ease;
+      font-size: 15px;
+      text-decoration: none;
+    }
+
+    .close-btn:hover {
+      background: #222;
+      transform: translateY(-2px);
+    }
+
+    .apply-button {
+      margin-top: 60px;
+      padding: 14px 32px;
+      font-size: 18px;
+      border-radius: 999px;
+      background: #111;
+      color: white;
+      text-decoration: none;
+      transition: 0.25s ease;
+    }
+
+    .apply-button:hover {
+      transform: translateY(-3px);
+      background: #222;
+    }
+
+    /* One card per line */
+    .one-per-line {
+    display: grid;
+    grid-template-columns: 1fr;  /* FORCE ONLY ONE PER LINE */
+    gap: 18px;
+    }
+
+    /* Location text */
+    .role-location {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #888;
+    }
+
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+
+<body>
+
+<section>
+
+    <h1 class="title">Join Motion Picture Robotics</h1>
+
+    <p class="subtitle">
+        Our mission is simple but ambitious:<br><br>
+        <strong>Bridge art and technology.</strong><br><br>
+        We believe robotics is not just mechanics or control —  
+        it is choreography, movement, emotion, timing, lighting, and storytelling.<br><br>
+        IRIS is our first step toward making cinematic creativity accessible to everyone.
+    </p>
+
+    <div class="roles one-per-line">
+
+    <div class="role-card" data-role="designer">
+        <div class="role-title">Designer</div>
+        <div class="role-location">New York</div>
+    </div>
+
+    <div class="role-card" data-role="embedded">
+        <div class="role-title">Embedded Engineer</div>
+        <div class="role-location">New York</div>
+    </div>
+
+    <div class="role-card" data-role="control_low">
+        <div class="role-title">Control Engineer — Low Level</div>
+        <div class="role-location">New York</div>
+    </div>
+
+    <div class="role-card" data-role="control_high">
+        <div class="role-title">Control Engineer — High Level (IL + MPC)</div>
+        <div class="role-location">New York</div>
+    </div>
+
+    <div class="role-card" data-role="perception">
+        <div class="role-title">Perception Engineer</div>
+        <div class="role-location">New York</div>
+    </div>
+
+    <div class="role-card" data-role="ios">
+        <div class="role-title">iOS Developer</div>
+        <div class="role-location">New York</div>
+    </div>
+
+    <div class="role-card" data-role="marketing">
+        <div class="role-title">Marketing & Growth</div>
+        <div class="role-location">New York</div>
+    </div>
+
+    <div class="role-card" data-role="motor">
+        <div class="role-title">Actuator / Motor Engineer</div>
+        <div class="role-location">New York</div>
+    </div>
+
+    </div>
+
+
+
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLScESjoB3uqixUef7xc3AHxvGvMiKHB6wQeyqSMNLvsbqFLoNg/viewform?usp=dialog" class="apply-button">Apply or Join as Co-Founder</a>
+
+
+</section>
+
+
+<!-- ===========================
+      MODAL OVERLAY
+=========================== -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-window" id="modalWindow">
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-text" id="modalText"></div>
+    <div class="close-btn" id="closeBtn">Close</div>
+  </div>
+</div>
+
+
+<script>
+const descriptions = {
+
+  designer: {
+    title: "Designer",
+    text: `You will define the physical identity and aesthetic language of IRIS — the cinema robot arm.
+
+Overview:
+We are looking for an industrial designer obsessed with simplicity, functionality, and elegance. Someone who understands how form follows function, and can translate engineering constraints into iconic product design.
+
+Responsibilities:
+• Industrial design of the robot arm, joints, and base  
+• 3D modeling for manufacturing and presentation (Fusion360, SolidWorks, Blender)  
+• Sheet metal + aluminum enclosure design for strength, manufacturability, and aesthetics  
+• Surface design, curvature, edge detailing, CAD refinement  
+• Create high-quality renderings, marketing visuals, and concept mockups  
+• Work closely with mechanical + motor engineers to make designs manufacturable  
+
+Requirements:
+• Strong foundation in industrial design and mechanical design principles  
+• Experience with aluminum, sheet metal, extrusion, plastics  
+• Skilled in 3D CAD and rendering tools  
+• A deep appreciation for minimal, functional design (Apple, Dyson, Leica aesthetic)  
+
+Plus:
+• Experience with CMF (Color, Material, Finish)  
+• Portfolio demonstrating both hardware + digital product design`
+  },
+
+
+  embedded: {
+    title: "Embedded Engineer",
+    text: `You will lead the embedded systems architecture of IRIS — integrating actuators, sensors, displays, and cameras into one seamless robotic platform.
+
+Overview:
+This role is responsible for building the low-level electronics and firmware that power the robot, from drivers and sensors to Jetson-based processing pipelines.
+
+Responsibilities:
+• Develop firmware for actuators, sensors, displays, and safety subsystems  
+• Integrate ESP32, Jetson Nano/Orin, IMUs, encoders, and communication buses  
+• Bring up new PCBs, test electronics, debug hardware  
+• Build real-time communication layers (UART, CAN, SPI, I2C)  
+• Camera integration + low-latency data streaming  
+• System-level validation, fault detection, thermal monitoring  
+
+Requirements:
+• Strong experience with embedded C/C++  
+• Comfortable with ESP32, ARM MCUs, NVIDIA Jetson  
+• Experience with real-time systems, multi-threading, interrupts  
+• Familiar with robotics sensors (IMU, encoders, ToF depth, etc.)
+
+Plus:
+• Experience with ROS, micro-ROS  
+• Hardware bring-up and board debugging skills (oscilloscope, logic analyzer)`
+  },
+
+
+
+  // LOW-LEVEL CONTROL ENGINEER
+  control_low: {
+    title: "Control Engineer — Low Level",
+    text: `You will build the precision motion foundation of IRIS — enabling pixel-accurate, torque-controlled movement across all joints.
+
+Overview:
+This role focuses on motor-level control, smooth trajectory tracking, and real-time stability.
+
+Responsibilities:
+• Design position + velocity + torque control loops for BLDC actuators  
+• Develop impedance control, admittance, compliance, torque estimation  
+• Sensor fusion of IMU, encoders, current sensing  
+• Tune controllers for smoothness, repeatability, and stability  
+• Implement safety limits, jerk reduction, model-based control strategies  
+• Validate tracking accuracy down to sub-millimeter precision  
+
+Requirements:
+• Strong background in robotics control, dynamics, and motor control  
+• Experience with BLDC motors, FOC, and real-time systems  
+• Familiar with controller tuning, friction compensation, inertia modeling  
+
+Plus:
+• Experience with QDD actuators and high-precision servos  
+• Familiarity with MuJoCo / IsaacSim for control prototyping`
+  },
+
+
+
+  // HIGH-LEVEL CONTROL ENGINEER
+  control_high: {
+    title: "Control Engineer — High Level (IL + MPC)",
+    text: `You will design the intelligent brain of IRIS — high-level path planning, IL pipelines, and safety-constrained motion generation.
+
+Overview:
+This role builds the algorithms that transform camera input and creator intent into fluid, safe, cinematic robot motion.
+
+Responsibilities:
+• Develop trajectory planners for dynamic + static obstacle avoidance  
+• Implement imitation learning pipelines + data collection strategies  
+• Build MPC safety layer with constraints  
+• Design algorithms for “pixel-to-action” vision-based control  
+• Memory, waypoints, and multi-shot path generation  
+• Real-time replanning from perception inputs  
+• Build tools for capturing training data (camera, depth, pose estimation)
+
+Requirements:
+• Strong in RL/IL, MPC, trajectory optimization, robot planning  
+• Experience with Python/C++, PyTorch, computer vision basics  
+• Familiar with real-world robotics data and noisy sensor inputs  
+
+Plus:
+• Experience with large-scale IL datasets  
+• Experience with continuous control + high-precision planning`
+  },
+
+
+
+  perception: {
+    title: "Perception Engineer",
+    text: `You will build the robotic perception stack — enabling IRIS to understand space, depth, features, and objects.
+
+Overview:
+This role covers full-stack vision: SLAM, calibration, feature extraction, object detection, depth estimation, and more.
+
+Responsibilities:
+• Camera calibration (intrinsic + extrinsic)  
+• Stereo / depth camera integration (RealSense, OAK-D, etc.)  
+• SLAM / visual odometry / pose tracking  
+• Real-time object detection, tracking, and segmentation  
+• Feature extraction for visual servoing  
+• Build depth estimation + collision awareness modules  
+• Integrate perception with high-level planning  
+
+Requirements:
+• Strong foundation in computer vision + robotics  
+• Experience with OpenCV, feature descriptors, tracking  
+• Experience with SLAM frameworks (ORB-SLAM, RTAB-Map, etc.)
+
+Plus:
+• Experience with neural depth estimation  
+• Experience with visual servoing and active perception`
+  },
+
+
+
+  ios: {
+    title: "iOS Developer (Full Stack Mobile)",
+    text: `You will build the mobile interface and cloud pipeline for IRIS — from UI to backend communication.
+
+Overview:
+This role is full-stack iOS + backend integration. You will design the control UI, project system, account system, and robot communication pipeline.
+
+Responsibilities:
+• Build IRIS control UI in SwiftUI  
+• Bluetooth, Wi-Fi, and direct robot communication  
+• Video upload + asset management system  
+• User accounts, project saving, cloud syncing  
+• Build intuitive interfaces for path editing, preview, keyframing  
+• Integrate live camera preview from the robot  
+
+Requirements:
+• Strong Swift/SwiftUI experience  
+• Experience with backend APIs (REST/Firebase/Supabase)  
+• Understanding of BLE/WiFi communication  
+
+Plus:
+• Experience with video processing or AVFoundation  
+• Experience with robotics or hardware-connected apps`
+  },
+
+
+
+  marketing: {
+    title: "Marketing & Creative Content",
+    text: `You will shape the public narrative of IRIS — across social platforms, short films, photography, and community engagement.
+
+Overview:
+This role is perfect for someone who loves cameras, storytelling, and community building.
+
+Responsibilities:
+• Create content for Instagram, TikTok, YouTube  
+• Shoot + edit promotional videos, photography  
+• Manage creator outreach, demos, NYU in-person events  
+• Build the Motion Picture Robotics brand story  
+• Design posts, ads, and modern visual assets  
+• Document engineering progress and product reveals  
+
+Requirements:
+• Experience with photography + filmmaking  
+• Comfortable interacting with people / creators  
+• Experience with Photoshop, Illustrator, Premiere, or Final Cut
+
+Plus:
+• Experience running social accounts for a product or startup  
+• Aesthetic sense aligned with film, robotics, and minimal design`
+  },
+
+
+
+  motor: {
+    title: "Actuator / Motor Design Engineer",
+    text: `You will design the core actuators that power IRIS — high-torque BLDC motors, precision gearboxes, and custom PCBs.
+
+Overview:
+This role focuses on actuator design, FOC control, transmission engineering, and motor dynamics.
+
+Responsibilities:
+• Design BLDC motors + stator/rotor geometry  
+• Build planetary + cycloidal gearbox systems  
+• PCB layout for motor drivers, encoders, current sensing  
+• Design thermal paths, structural supports, bearing stacks  
+• FOC algorithm implementation + tuning with embedded team  
+• Test torque ripple, inertia, friction, efficiency  
+
+Requirements:
+• Deep understanding of BLDC motor design + magnetic systems  
+• Experience with PCB design (KiCad / Altium)  
+• Strong grasp of gear design, tolerances, lubrication, stress  
+
+Plus:
+• Experience with QDD actuators  
+• Experience with high-precision robotics motors`
+  }
+
+};
+
+
+/* ------------------------------
+   Modal Logic
+--------------------------------*/
+const modal       = document.getElementById("modal");
+const modalWindow = document.getElementById("modalWindow");
+const modalTitle  = document.getElementById("modalTitle");
+const modalText   = document.getElementById("modalText");
+const closeBtn    = document.getElementById("closeBtn");
+
+document.querySelectorAll(".role-card").forEach(card => {
+  card.addEventListener("click", () => {
+    const role = card.dataset.role;
+    const info = descriptions[role];
+
+    modalTitle.textContent = info.title;
+    modalText.textContent = info.text;
+
+    modal.classList.add("show");
+    modalWindow.classList.add("show");
+  });
+});
+
+closeBtn.addEventListener("click", () => {
+  modal.classList.remove("show");
+  modalWindow.classList.remove("show");
+});
+
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) {
+    modal.classList.remove("show");
+    modalWindow.classList.remove("show");
+  }
+});
+</script>
+
+</body>
+</html>
