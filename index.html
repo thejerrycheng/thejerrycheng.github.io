@@ -345,6 +345,29 @@
   }
 </style>
 
+<style>
+  /* === Mobile: Increase all section title font sizes and keep alignment === */
+  @media (max-width:700px){
+    h1.section-title,
+    h2.section-title,
+    #about h1,        #about h2,
+    #news h1,         #news h2,
+    #publications h1, #publications h2,
+    #startups h1,     #startups h2,
+    #projects h1,     #projects h2,
+    #education h1,    #education h2,
+    #experience h1,   #experience h2,
+    .section-title
+    {
+      font-size: clamp(22px, 6vw, 20px) !important;
+      line-height: 1.25;
+      font-weight: 700;
+      letter-spacing: -0.3px; /* subtle apple-style weight */
+    }
+  }
+</style>
+
+
 <nav class="top-nav" role="navigation" aria-label="Primary">
   <div class="nav-inner">
     <!-- Left: About / Home (from blog page, go back to index anchors) -->
@@ -505,61 +528,6 @@
       </table>
       </body>
 
-<!---------------- Education Section --------------------------->
-    <!-- <style>
-      /* 1) Shared title sizing for Publications + Education */
-      :root{
-        /* adjust these two numbers if you ever want a different size */
-        --pub-title-size: 18px;       /* desktop/tablet */
-        --pub-title-size-mobile: 16.5px; /* phones */
-      }
-
-      /* 2) Ensure Publications titles use the variable */
-      #publications .pub-meta .papertitle{
-        font-size: var(--pub-title-size);
-        font-weight: 600;
-        letter-spacing: -0.01em;
-      }
-
-      /* 3) Make Education use the same font + size */
-      #education,
-      #education *{
-        font-family: -apple-system, BlinkMacSystemFont,
-                    "SF Pro Text","SF Pro Display",
-                    "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        color: #111;
-      }
-
-      #education h2{
-        font-size: var(--pub-title-size);   /* same as publication title */
-        font-weight: 700;
-        letter-spacing: -0.01em;
-        margin: 8px 0 12px;
-      }
-
-      /* Optional: keep body text tidy */
-      #education p{
-        font-size: 15px;
-        line-height: 1.55;
-        margin: 10px 0;
-      }
-      #education b{ font-weight: 600; }
-      #education i{ color:#555; }
-      #education a{
-        color: inherit; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.08);
-      }
-      #education a:hover{ border-bottom-color: rgba(0,0,0,0.30); }
-
-      /* 4) Mobile: apply the same mobile size to BOTH */
-      @media (max-width: 700px){
-        #publications .pub-meta .papertitle,
-        #education h2{
-          font-size: var(--pub-title-size-mobile);
-        }
-      }
-    </style> -->
     <p id="last-updated" style="text-align:center;font-size:12.5px;color:#666;margin:24px 0 6px;">
       <time aria-label="Last updated"></time>
     </p>
@@ -980,6 +948,23 @@
       padding-right:0 !important;
     }
   }
+</style>
+
+<style>
+  /* === Mobile: ensure Publications title margin matches section gutters === */
+/* === Make Publications title align EXACTLY like publications cards === */
+@media (max-width:700px){
+  #publications h2 {
+    display:block;
+    width:100vw;
+    margin-left:calc(50% - 50vw) !important;
+    margin-right:calc(50% - 50vw) !important;
+    padding-left:15px !important;
+    padding-right:15px !important;
+    box-sizing:border-box;
+  }
+}
+
 </style>
 
 
@@ -1518,119 +1503,64 @@ document.addEventListener('DOMContentLoaded', function () {
     #news .carousel-track > div { height: 160px; }
   }
 </style>
-<!-- <style>
-  :root{
-    --news-card-pad-x: 15px;   /* inner left/right padding */
-    --news-card-pad-y: 12px;   /* inner top/bottom padding */
-    --news-media-radius: 8px;  /* rounded media inside card */
-  }
 
-  /* Section frame */
-  #news{
-    width:100%;
-    max-width:800px;
-    margin:auto;
-    border-spacing:0;
-    padding-left:15px;          /* section gutters to match pubs mobile */
-    padding-right:15px;
-    box-sizing:border-box;
-  }
-
-  /* Stack entries as cards with gap */
-  #news tbody{
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-  }
-
-  /* Each row becomes a card */
-  #news tr{
-    display:grid;
-    grid-template-columns: 1fr 320px;     /* text | media */
-    align-items:center;
-    column-gap:12px;
-
-    background:#fff;
-    border:1px solid rgba(0,0,0,0.12);
-    border-radius:10px;
-    box-shadow:0 1px 0 rgba(0,0,0,0.03);
-    overflow:hidden;
-  }
-
-  /* Inner padding for both text + media cells */
-  #news td{
-    display:block;
-    padding: var(--news-card-pad-y) var(--news-card-pad-x);
-    box-sizing:border-box;
-    background:transparent;
-  }
-
-  /* Media cell: keep inner padding but also rounded media */
-  #news [data-carousel]{
-    position:relative;
-    width:100%;
-    height:200px;
-    overflow:hidden;
-    border-radius: var(--news-media-radius);
-    /* This ensures the media respects cell padding */
-    box-sizing:border-box;
-  }
-
-  /* Track/slides */
-  #news .carousel-track{
-    display:flex;
-    height:100%;
-    transition: transform .5s ease;
-  }
-  #news .carousel-track > div{
-    min-width:100%;
-    display:flex; align-items:center; justify-content:center;
-    padding:0; /* keep media edge-to-edge inside the rounded box */
-    box-sizing:border-box;
-  }
-  #news .carousel-track img{
-    height:100%; width:auto; display:block;
-  }
-
-  /* Arrow buttons */
-  #news [data-carousel] button{
-    position:absolute; top:50%; transform:translateY(-50%);
-    width:34px; height:34px; border-radius:9999px;
-    border:1px solid rgba(0,0,0,.2);
-    background:rgba(255,255,255,.85);
-    backdrop-filter:saturate(1.8) blur(2px);
-    cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-    font-size:18px; line-height:1; padding:0;
-  }
-  #news [data-carousel] button:hover{ background:#fff; }
-  #news [data-carousel] .prev{ left:8px; }
-  #news [data-carousel] .next{ right:8px; }
-
-  /* -------- Mobile tweaks -------- */
+<style>
+  /* === Mobile: match NEWS title margin to Publications title === */
   @media (max-width:700px){
-    #news tr{
-      grid-template-columns: 1fr 280px;
-      column-gap:10px;
+    #news-title,         /* if your title is an ID */
+    #news h1,
+    #news h2,
+    #news .section-title /* fallback selectors */
+    {
+      padding-left:15px;
+      padding-right:15px;
+      box-sizing:border-box;
+      margin-top:0;
+      margin-bottom:12px;
     }
-    #news td:first-child h2{ font-size:18px; margin:0 0 6px; }
-    #news td:first-child p { font-size:13.5px; line-height:1.45; }
 
-    #news [data-carousel],
-    #news .carousel-track,
-    #news .carousel-track > div{ height:180px; }
-    #news .carousel-track img{
-      height:100% !important; width:auto !important; max-width:none !important;
+    /* Also match the table/content margins */
+    #news{
+      padding-left:15px;
+      padding-right:15px;
+      box-sizing:border-box;
     }
   }
+</style>
 
-  @media (max-width:360px){
-    #news tr{ grid-template-columns: 1fr 240px; }
-    #news [data-carousel],
-    #news .carousel-track,
-    #news .carousel-track > div{ height:160px; }
+<style>
+  /* === Mobile: unify News Title style with other section titles === */
+  @media (max-width:700px){
+
+    #news-title,
+    #news h1,
+    #news h2,
+    #news .section-title {
+
+      /* Full-bleed alignment (matching Publications + Startups titles) */
+      display:block;
+      width:100vw;
+      margin-left:calc(50% - 50vw) !important;
+      margin-right:calc(50% - 50vw) !important;
+      padding-left:15px !important;
+      padding-right:15px !important;
+      box-sizing:border-box;
+
+      /* Unified title style (same across your whole site) */
+      font-size:26px !important;          /* same size as Publications */
+      line-height:1.25;
+      font-weight:700 !important;
+      letter-spacing:-0.01em;
+      margin-top:0;
+      margin-bottom:14px;
+      color:#111;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
   }
-</style> -->
+</style>
+
+
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -2376,6 +2306,54 @@ document.addEventListener('DOMContentLoaded', function () {
     #startups .grid{ grid-template-columns: 1fr; }
   }
 </style>
+
+<style>
+  @media (max-width:700px){
+
+    /* 1. Startups title — full-bleed, matching Publications + News titles */
+    #startups h1,
+    #startups h2,
+    #startups .section-title,
+    #startups-title {
+      display:block;
+      width:100vw;
+      margin-left:calc(50% - 50vw) !important;
+      margin-right:calc(50% - 50vw) !important;
+      padding-left:15px !important;
+      padding-right:15px !important;
+      box-sizing:border-box;
+      margin-top:0;
+      margin-bottom:14px;
+    }
+
+    /* 2. Startups CONTENT container — NOT full bleed, use 15px gutters */
+    #startups .grid,
+    #startups .startup-section,   /* in case you wrap subsections */
+    #startups .startup-block      /* fallback */
+    {
+      padding-left:15px;
+      padding-right:15px;
+      box-sizing:border-box;
+      width:100%;
+      margin:0 auto;
+    }
+
+    /* 3. Cards: also keep consistent 15px spacing from edges */
+    #startups .card{
+      margin-bottom:15px;
+      width:100%;
+      box-sizing:border-box;
+    }
+
+    /* Single-column layout on mobile */
+    #startups .grid{ 
+      grid-template-columns: 1fr;
+      gap:15px;
+    }
+  }
+</style>
+
+
 
 <table id="startups" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;margin-top:26px;">
   <tbody>
