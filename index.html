@@ -450,23 +450,7 @@
         <p class="name" style="text-align:center;font-size:30px;font-weight:bold;margin:0;">
           Jerry (Qilong) Cheng 「程启龙」
         </p>
-
-        <!-- <p style="font-size:17px;line-height:1.6;margin-top:10px;">
-          I am a <strong>Research Fellow</strong> at 
-          <a href="https://engineering.nyu.edu" target="_blank" rel="noopener">New York University</a>, 
-          working on reinforcement learning for humanoid locomotion and control.
-          My background spans state estimation and calibration for autonomous systems in the 
-          <a href="https://starslab.ca" target="_blank" rel="noopener">STARS Lab</a> 
-          (<a href="https://starslab.ca/people/prof-jonathan-kelly/" target="_blank" rel="noopener"><strong>Prof. Jonathan Kelly</strong></a>), 
-          haptics and human–robot interaction in the 
-          <a href="https://www.dgp.toronto.edu/" target="_blank" rel="noopener">Dynamic Graphics Project (DGP) Lab</a> 
-          (<a href="https://danielwigdor.com" target="_blank" rel="noopener"><strong>Prof. Daniel Wigdor</strong></a>), 
-          and learning-driven robotic manipulation and control at the 
-          <a href="https://robotics.utoronto.ca" target="_blank" rel="noopener">University of Toronto Robotics Institute</a> 
-          (<a href="https://www.mie.utoronto.ca/faculty_staff/mackay/" target="_blank" rel="noopener"><strong>Prof. Matthew Mackay</strong></a>, 
-          <a href="https://www.bereyhi.com" target="_blank" rel="noopener"><strong>Prof. Ali Bereyhi</strong></a>).
-        </p> -->
-
+ 
         <p style="font-size:17px;line-height:1.6;margin-top:10px;">
           I’m currently a <strong>Robotics Ph.D. Candidate</strong> at <a href="https://engineering.nyu.edu" target="_blank" rel="noopener">NYU</a> working on RL for humanoid locomotion and dexterous manipulation, with prior work in state estimation (<a href="https://starslab.ca" target="_blank" rel="noopener">STARS Lab</a>, <a href="https://starslab.ca/people/prof-jonathan-kelly/" target="_blank" rel="noopener"><strong>Prof. Jonathan Kelly</strong></a>), haptics/HRI (<a href="https://www.dgp.toronto.edu/" target="_blank" rel="noopener">DGP Lab</a>, <a href="https://danielwigdor.com" target="_blank" rel="noopener"><strong>Prof. Daniel Wigdor</strong></a>), and learning-driven manipulation/control (<a href="https://robotics.utoronto.ca" target="_blank" rel="noopener">UofT Robotics Institute</a>, <a href="https://www.mie.utoronto.ca/faculty_staff/mackay/" target="_blank" rel="noopener"><strong>Prof. Matthew Mackay</strong></a>; <a href="https://www.bereyhi.com" target="_blank" rel="noopener"><strong>Prof. Ali Bereyhi</strong></a>).
         </p>
@@ -2305,69 +2289,206 @@ document.addEventListener('DOMContentLoaded', function () {
   </tbody>
 </table>
 
+<!-- ======================================
+              EXPERIENCE SECTION
+    Company First • Position Second • Apple Style
+======================================= -->
+
+<style>
+  #experience-section {
+    width:100%;
+    max-width:800px;
+    margin:0 auto;
+    padding:0 16px;
+    box-sizing:border-box;
+  }
+
+  #experience-section h2 {
+    font-size: var(--section-title-size, 25px);
+    font-weight: 700;
+    letter-spacing:-0.01em;
+    margin:0 0 20px;
+  }
+
+  .exp-group-title {
+    font-size:18px;
+    font-weight:600;
+    margin:28px 0 12px;
+    letter-spacing:-0.01em;
+    color:#111;
+  }
+
+  /* Experience card */
+  .exp-card {
+    padding:18px 0;
+    border-bottom:1px solid rgba(0,0,0,0.08);
+  }
+  .exp-card:last-child { border-bottom:none; }
+
+  /* Top line: Company + Dates */
+  .exp-org-line {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    width:100%;
+  }
+
+  .exp-org {
+    font-weight:600;
+    font-size:16px;
+    color:#111;
+    letter-spacing:-0.01em;
+  }
+
+  .exp-date {
+    font-size:13px;
+    color:#666;
+    margin-left:12px;
+    white-space:nowrap;
+  }
+
+  /* Second line: Position (smaller) */
+  .exp-role {
+    margin-top:2px;
+    font-size:14px;
+    color:#333;
+    font-weight:500;
+    letter-spacing:-0.01em;
+  }
+
+  /* Description */
+  .exp-desc {
+    margin-top:8px;
+    font-size:14px;
+    line-height:1.45;
+    color:#222;
+  }
+
+  /* Mobile: stack date under org */
+  @media(max-width:540px){
+    .exp-org-line {
+      flex-direction:column;
+      align-items:flex-start;
+      gap:2px;
+    }
+    .exp-date {
+      margin:0;
+    }
+  }
+</style>
 
 
-<!-- ======= Experience Section ======= -->
+<section id="experience-section">
 
-<table id="experience" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
-  <tbody>
-    <tr>
-      <td style="padding:16px;">
-        <h2 style="margin:0 0 8px;">Experience</h2>
+  <h2>Experience</h2>
 
-        <!-- Research -->
-        <h3 style="margin:14px 0 6px;font-size:18px;">Research</h3>
-        <ul style="margin:0 0 6px 18px; padding:0;">
-          <li style="margin-bottom:8px;">
-            <b>Research Fellow (Scholarship)</b> – New York University
-            <i>(Sep 2025 – Present)</i><br>
-            Working on reinforcement learning for <b>rocket landing</b> and <b>humanoid locomotion</b>, including benchmarking, controller design, and sim-to-real transfer.
-          </li>
-          <li style="margin-bottom:8px;">
-            <b>Robotics Researcher</b> – STARS Lab, University of Toronto (Prof. Jonathan Kelly)
-            <i>(Sep 2021 – Aug 2025)</i><br>
-            Radar/camera <b>extrinsic & spatiotemporal calibration</b>, continuous-time estimation, and real-world driving evaluations.
-          </li>
-          <li style="margin-bottom:8px;">
-            <b>HCI Researcher</b> – Dynamic Graphics Project Lab, University of Toronto (Prof. Daniel Wigdor)
-            <i>(Sep 2022 – Aug 2025)</i><br>
-            Built <b>VibraForge</b> toolkit and <b>AeroHaptix</b> wearable; multi-actuator vibrotactile systems and UAV teleop collision-avoidance studies.
-          </li>
-          <li>
-            <b>M.Eng Researcher</b> – University of Toronto Robotics Institute
-            <i>(Sep 2024 – Aug 2025)</i><br>
-            Designed and built <b>IRIS</b>, a low-cost 6-DOF cinema robot arm; ROS control stack and vision-based imitation learning for reactive planning.
-          </li>
-        </ul>
+  <!-- ==========================
+             RESEARCH
+  =========================== -->
+  <div class="exp-group-title">Research</div>
 
-        <!-- Industry -->
-        <h3 style="margin:16px 0 6px;font-size:18px;">Industry</h3>
-        <ul style="margin:0 0 4px 18px; padding:0;">
-          <li style="margin-bottom:8px;">
-            <b>Cofounder & CEO</b> – GouPals Inc. (Toronto)
-            <i>(Aug 2024 – Apr 2025)</i><br>
-            Launched a peer-to-peer logistics iOS MVP (SwiftUI/React/Firebase) with real-time tracking and traveler–buyer matching.
-          </li>
-          <li style="margin-bottom:8px;">
-            <b>Software/ML Engineer</b> – ONE800 Inc. (Toronto)
-            <i>(Apr 2023 – Dec 2023)</i><br>
-            Built LLM-powered transcription/translation/OCR pipelines and iMessage integration; memory-augmented chat (LangChain/Redis).
-          </li>
-          <li style="margin-bottom:8px;">
-            <b>Mechanical Engineer Intern</b> – China State Shipbuilding Corporation (Shanghai)
-            <i>(Sep 2020 – Apr 2021)</i><br>
-            HVAC/fire-suppression design for 12-deck cruise ship; contributed to a high-efficiency spray nozzle patent.
-          </li>
-          <li>
-            <b>Student Ambassador</b> – Autodesk (Toronto)
-            <i>(Sep 2019 – Jun 2020)</i><br>
-            Led Fusion Design Association; mentored 30+ students on Generative Design, CAM, and advanced CAD workflows.
-          </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <div class="exp-card">
+    <div class="exp-org-line">
+      <div class="exp-org">Center for Robotics and Embodied Intelligence - New York University</div>
+      <div class="exp-date">(Sep 2025 – Present)</div>
+    </div>
+    <div class="exp-role">Research Fellow (Scholarship)</div>
+    <div class="exp-desc">
+      Reinforcement learning for <b>rocket landing</b> and <b>humanoid locomotion</b>, benchmarking,
+      controller design, and sim-to-real.
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-org-line">
+      <div class="exp-org">STARS Lab — University of Toronto</div>
+      <div class="exp-date">(Sep 2021 – Aug 2025)</div>
+    </div>
+    <div class="exp-role">Robotics Researcher (Prof. Jonathan Kelly)</div>
+    <div class="exp-desc">
+      Radar/camera <b>extrinsic + spatiotemporal calibration</b>, continuous-time estimation,
+      real-world autonomous driving evaluations.
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-org-line">
+      <div class="exp-org">Dynamic Graphics Project Lab (DGP) — University of Toronto</div>
+      <div class="exp-date">(Sep 2022 – Aug 2025)</div>
+    </div>
+    <div class="exp-role">HCI Researcher (Prof. Daniel Wigdor)</div>
+    <div class="exp-desc">
+      Built <b>VibraForge</b> toolkit and <b>AeroHaptix</b> wearable; multi-actuator vibrotactile systems
+      and UAV teleoperation collision-avoidance studies.
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-org-line">
+      <div class="exp-org">Robotics Institute — University of Toronto</div>
+      <div class="exp-date">(Sep 2024 – Aug 2025)</div>
+    </div>
+    <div class="exp-role">M.Eng Researcher (Prof. Matthew Mackay and Prof. Ali Bereyhi)</div>
+    <div class="exp-desc">
+      Designed <b>IRIS</b>, a low-cost cinema robot arm; ROS control stack + vision-based imitation learning
+      for reactive planning.
+    </div>
+  </div>
+
+
+  <!-- ==========================
+              INDUSTRY
+  =========================== -->
+  <div class="exp-group-title">Industry</div>
+
+  <div class="exp-card">
+    <div class="exp-org-line">
+      <div class="exp-org">GouPals Inc. — Toronto</div>
+      <div class="exp-date">(Aug 2024 – Apr 2025)</div>
+    </div>
+    <div class="exp-role">Cofounder & CEO</div>
+    <div class="exp-desc">
+      Built peer-to-peer logistics iOS MVP (SwiftUI/React/Firebase) with real-time
+      traveler–buyer matching.
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-org-line">
+      <div class="exp-org">ONE800 Inc. — Toronto</div>
+      <div class="exp-date">(Apr 2023 – Dec 2023)</div>
+    </div>
+    <div class="exp-role">Software/ML Engineer</div>
+    <div class="exp-desc">
+      Developed LLM-powered transcription, translation, OCR pipelines, and iMessage integration
+      with memory-augmented chat (LangChain + Redis).
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-org-line">
+      <div class="exp-org">China State Shipbuilding Corporation — Shanghai</div>
+      <div class="exp-date">(Sep 2020 – Apr 2021)</div>
+    </div>
+    <div class="exp-role">Mechanical Engineer Intern</div>
+    <div class="exp-desc">
+      HVAC & fire-suppression system design for a 12-deck cruise ship; contributed to a spray-nozzle patent.
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-org-line">
+      <div class="exp-org">Autodesk — Toronto</div>
+      <div class="exp-date">(Sep 2019 – Jun 2020)</div>
+    </div>
+    <div class="exp-role">Student Ambassador</div>
+    <div class="exp-desc">
+      Led Fusion Design Association; mentored 30+ students on Generative Design, CAM, and advanced CAD workflows.
+    </div>
+  </div>
+
+</section>
+
 
 
 <!-- ========== STARTUPS ========== -->
