@@ -385,8 +385,8 @@
       <a class="navlink" href="index.html#news">News</a>
       <a class="navlink" href="index.html#experience">Experience</a>
       <a class="navlink" href="index.html#projects">Projects</a>
-      <a class="navlink" href="index.html#skills">Skills</a>
       <a class="navlink" href="index.html#startups">Startups</a>
+      <a class="navlink" href="index.html#skills">Skills</a>
       <!-- <a class="navlink" href="blog.html" aria-current="page">Blog</a> -->
     </div>
 
@@ -1547,7 +1547,7 @@ document.addEventListener('DOMContentLoaded', function () {
       box-sizing:border-box;
 
       /* Unified title style (same across your whole site) */
-      font-size:26px !important;          /* same size as Publications */
+      font-size:22px !important;          /* same size as Publications */
       line-height:1.25;
       font-weight:700 !important;
       letter-spacing:-0.01em;
@@ -2259,100 +2259,146 @@ document.addEventListener('DOMContentLoaded', function () {
 </table>
 
 
-    <!-- ======= Startups Section ======= -->
+<!-- ========== STARTUPS ========== -->
+
 <style>
-  /* Card grid for startups (re-usable, minimal) */
+  :root{
+    --section-padding-mobile: 15px;
+    --section-title-size: 22px;
+    --body-font: -apple-system, BlinkMacSystemFont, "SF Pro Text","Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
+  /* Typography reset for this section */
+  #startups, #startups * {
+    font-family: var(--body-font);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Desktop wrapper */
+  #startups {
+    width:100%;
+    max-width:800px;
+    margin:40px auto 0 auto;
+  }
+
+  /* Section Title */
+  #startups h2 {
+    font-size: var(--section-title-size);
+    font-weight:700;
+    margin:0 0 20px 0;
+    letter-spacing:-0.01em;
+    color:#111;
+  }
+
+  /* Cards grid */
   #startups .grid{
     display:grid;
     grid-template-columns: 1fr 1fr;
-    gap:12px;
+    gap:16px;
   }
+
+  /* Card */
   #startups .card{
-    border:1px solid rgba(0,0,0,0.12);
-    border-radius:10px;
-    padding:12px;
     background:#fff;
+    border:1px solid rgba(0,0,0,0.12);
+    border-radius:12px;
+    padding:18px 20px;
+    box-sizing:border-box;
   }
+
   #startups .card h3{
     margin:0 0 6px 0;
-    font-size:16px;
+    font-size:17px;
     font-weight:600;
+    color:#111;
   }
+
   #startups .card .meta{
-    font-size:13px;
+    font-size:13.5px;
     color:#666;
-    margin-bottom:6px;
+    margin-bottom:10px;
   }
+
   #startups .card p{
-    margin:6px 0 10px 0;
-    font-size:14px;
-    line-height:1.45;
+    margin:0 0 14px 0;
+    font-size:14.5px;
+    line-height:1.5;
+    color:#222;
   }
+
+  /* Link Pills (Apple-like) */
   #startups .links{
-    display:flex; flex-wrap:wrap; gap:8px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
   }
+
   #startups .links a{
     display:inline-block;
-    font-size:12.5px; line-height:1;
-    padding:6px 10px;
+    font-size:13px;
+    padding:7px 14px;
+    border-radius:9999px;
     border:1px solid rgba(0,0,0,0.15);
-    border-radius:9999px; text-decoration:none; color:#222;
-    transition:background-color .15s ease, border-color .15s ease;
+    background:#fafafa;
+    text-decoration:none;
+    color:#111;
+    transition:.18s ease;
   }
+
   #startups .links a:hover{
-    background:rgba(0,0,0,0.06); border-color:rgba(0,0,0,0.25);
+    background:#fff;
+    border-color:rgba(0,0,0,0.25);
   }
-  @media (max-width:700px){
-    #startups .grid{ grid-template-columns: 1fr; }
-  }
-</style>
 
-<style>
+  /* ============= MOBILE FIXES (matching Publications + News) ============= */
   @media (max-width:700px){
 
-    /* 1. Startups title — full-bleed, matching Publications + News titles */
-    #startups h1,
-    #startups h2,
-    #startups .section-title,
-    #startups-title {
-      display:block;
+    /* Title full-bleed but with 15px gutters */
+    #startups h2{
       width:100vw;
-      margin-left:calc(50% - 50vw) !important;
-      margin-right:calc(50% - 50vw) !important;
-      padding-left:15px !important;
-      padding-right:15px !important;
+      margin-left:calc(50% - 50vw);
+      margin-right:calc(50% - 50vw);
+      padding-left:var(--section-padding-mobile);
+      padding-right:var(--section-padding-mobile);
       box-sizing:border-box;
-      margin-top:0;
-      margin-bottom:14px;
+      margin-bottom:16px;
     }
 
-    /* 2. Startups CONTENT container — NOT full bleed, use 15px gutters */
-    #startups .grid,
-    #startups .startup-section,   /* in case you wrap subsections */
-    #startups .startup-block      /* fallback */
-    {
-      padding-left:15px;
-      padding-right:15px;
-      box-sizing:border-box;
-      width:100%;
-      margin:0 auto;
-    }
+    /* Section container → 15px gutters */
+/* === FIX: Ensure Startups subsections have correct left/right margins on mobile === */
 
-    /* 3. Cards: also keep consistent 15px spacing from edges */
-    #startups .card{
-      margin-bottom:15px;
-      width:100%;
-      box-sizing:border-box;
-    }
 
-    /* Single-column layout on mobile */
-    #startups .grid{ 
+  /* Apply gutters directly to the GRID wrapper, not the table */
+  #startups .grid {
+    padding-left:15px !important;
+    padding-right:15px !important;
+    box-sizing:border-box;
+    width:100%;
+  }
+
+  /* Also ensure the <td> wrapper doesn’t override the gutter */
+  #startups td {
+    padding-left:0 !important;
+    padding-right:0 !important;
+  }
+
+
+
+    /* Mobile layout: 1-column cards */
+    #startups .grid{
       grid-template-columns: 1fr;
-      gap:15px;
+      gap:18px;
+    }
+
+    /* Slightly larger mobile title */
+    #startups h2{
+      font-size:22px;
     }
   }
-</style>
 
+  
+</style>
 
 
 <table id="startups" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;margin-top:26px;">
@@ -2369,9 +2415,9 @@ document.addEventListener('DOMContentLoaded', function () {
               Low-cost, 3D-printed 6-DoF cinema robot arm with FOC actuators and a vision-conditioned imitation-learning stack for dynamic camera moves.
             </p>
             <div class="links">
-              <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener">Tech Brief</a>
+              <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener">Pitch Deck</a>
               <a href="https://www.youtube.com/@thejerrycheng" target="_blank" rel="noopener">Demo Video</a>
-              <!-- <a href="https://your-site.com" target="_blank" rel="noopener">Website</a> -->
+              <a href="cinema_robot.html"> Website</a>
               <!-- <a href="assets/pdf/iris_pitch_deck.pdf" target="_blank" rel="noopener">Pitch Deck</a> -->
             </div>
           </div>
@@ -2385,8 +2431,9 @@ document.addEventListener('DOMContentLoaded', function () {
             </p>
             <div class="links">
               <!-- Replace with real links when ready -->
-              <a href="assets/pdf/startups/goupals_onepager.pdf" target="_blank" rel="noopener">One-Pager</a>
-              <a href="assets/pdf/startups/goupals_pitch.pdf" target="_blank" rel="noopener">Pitch Deck</a>
+              <a href="assets/pdf/startups/goupals_onepager.pdf" target="_blank" rel="noopener">Pitch Deck</a>
+              <a href="assets/pdf/startups/goupals_pitch.pdf" target="_blank" rel="noopener">Demo Video</a>
+              <a href="https://www.linkedin.com/company/104389511/admin/dashboard/"> Website</a>
               <!-- <a href="https://goupals.app" target="_blank" rel="noopener">Website</a> -->
             </div>
           </div>
@@ -2399,43 +2446,73 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <!-- ======= Technical Skills Section ======= -->
 
-    <table id="skills"style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
-      <tbody>
-        <tr><td><h2>Technical Skills</h2>
-          <p><b>Software & Tools:</b> Python, C++, MATLAB, ROS, MuJoCo, Isaac Sim, IsaacLab, PyTorch, Docker, Linux<br>
-          <b>Hardware & Robots:</b> xArm, Unitree, Raspberry Pi, Jetson, Intel RealSense, Arduino, STM32, PND Adam, Booster Robot</p>
-        </td></tr>
-      </tbody>
-    </table>
+
+    <style>
+  /* Mobile gutters for Skills, same as other sections */
+@media (max-width:700px){
+
+  /* SECTION TITLE */
+  #skills h1,
+  #skills h2,
+  #skills .section-title,
+  #skills-title {
+    display:block;
+    /* width:100vw; */
+    margin-left:calc(50% - 50vw) !important;
+    margin-right:calc(50% - 50vw) !important;
+    padding-left:15px !important;
+    padding-right:15px !important;
+    box-sizing:border-box;
+
+    /* Apple-style section title */
+    font-size:22px !important;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    color:#111;
+    margin-top:0;
+    margin-bottom:14px;
+  }
+
+  /* SKILLS CONTENT (the table cell) */
+  #skills td {
+    padding-left:15px !important;
+    padding-right:15px !important;
+    box-sizing:border-box;
+  }
+
+  /* Extra polish: tighten the line height for cleaner look */
+  #skills p {
+    line-height:1.45;
+    font-size:14.5px;
+  }
+}
+
+</style>
+
+<!-- ======= Technical Skills Section ======= -->
+<table id="skills" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
+  <tbody>
+    <tr>
+      <td>
+        <h2 id="skills-title" class="section-title">Technical Skills</h2>
+        <p>
+          <b>Software &amp; Tools:</b> Python, C++, MATLAB, ROS, MuJoCo, Isaac Sim, IsaacLab, PyTorch, Docker, Linux<br>
+          <b>Hardware &amp; Robots:</b> xArm, Unitree, Raspberry Pi, Jetson, Intel RealSense, Arduino, STM32, PND Adam, Booster Robot
+        </p>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 
-<<!-- ================= Visitor Tracker (Apple-Style White) ======================= -->
+
+<!-- ================= Visitor Tracker (Apple-Style White) ======================= -->
 <div style="
   text-align: center;
   margin: 40px auto;
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
 ">
 
-  <!-- Outer Card (Apple-style white) -->
-  <!-- <div style="
-    display: inline-block;
-    padding: 24px 28px;
-    background: #ffffff;
-    border-radius: 24px;
-    border: 1px solid #e5e5e5;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.08);
-  "> -->
-
-    <!-- Title -->
-    <!-- <div style="
-      font-size: 14px;
-      letter-spacing: 0.4px;
-      font-weight: 500;
-      color: #FF9500; /* Apple Orange accent */
-      margin-bottom: 12px;
-    ">
-      Visitor Map
-    </div> -->
 
     <!-- Clickable Map -->
     <a href="https://mapmyvisitors.com/web/1c0c4" title="Visit tracker"
@@ -2571,30 +2648,6 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 </script>
 
-<!-- Somewhere in your footer on index.html -->
-<!-- <p><a href="blog.html">Read the blog →</a></p> -->
-
-
-<!-- <body>
-  <div class="wrap">
-    <h2>Blog Posts</h2> -->
-
-    <!-- Example posts -->
-    <!-- <article class="post">
-      <h3><a href="blog/rl-vs-mpc.html">RL vs MPC for Humanoid Locomotion — Practical Tradeoffs</a></h3>
-      <div class="meta">Nov 2025 • Control, Robotics</div>
-      <p>Short note comparing WBC-QP/CLF-QP trackers vs contact-implicit MPC and how I blend them with residual RL.</p>
-    </article>
-
-    <article class="post">
-      <h3><a href="blog/iris-actuators.html">Design Notes from Building a Low-Cost Cinema Robot Arm</a></h3>
-      <div class="meta">Oct 2025 • Hardware, Mechatronics</div>
-      <p>FOC choices, differential wrist, carbon vs aluminum linkages, and supply chain lessons.</p>
-    </article> -->
-
-    <!-- Add more posts as needed -->
-  <!-- </div>
-</body> -->
 
 
 </html>
