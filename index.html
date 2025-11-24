@@ -1915,37 +1915,54 @@ document.addEventListener('DOMContentLoaded', function () {
 <!-- ======================================================
                         JAVASCRIPT
 ====================================================== -->
-
 <script>
 /* Scroll → Update timeline dot */
 const scroller = document.getElementById("news-horizontal");
 const dots = document.querySelectorAll(".news-dot");
 const cards = document.querySelectorAll(".news-card");
 
+/* ---------- Calculate true scroll position for each card ---------- */
+function cardScrollLeft(card) {
+  return card.offsetLeft - scroller.offsetLeft;
+}
+
+/* ---------- Click dot → scroll to card ---------- */
 dots.forEach(dot=>{
   dot.addEventListener("click",()=>{
     const index = Number(dot.dataset.target) - 1;
-    scroller.scrollTo({ left: cards[index].offsetLeft - 16, behavior:"smooth" });
+    const card = cards[index];
+
+    scroller.scrollTo({
+      left: cardScrollLeft(card),
+      behavior:"smooth"
+    });
 
     dots.forEach(d=>d.classList.remove("active"));
     dot.classList.add("active");
   });
 });
 
-scroller.addEventListener("scroll",()=>{
-  let minDist = Infinity;
-  let active = 0;
+/* ---------- Scroll → detect active card ---------- */
+scroller.addEventListener("scroll", () => {
+  const scrollerCenter = scroller.scrollLeft + scroller.clientWidth / 2;
 
-  cards.forEach((card,i)=>{
-    const d = Math.abs(card.offsetLeft - scroller.scrollLeft);
-    if(d < minDist){ minDist = d; active = i; }
+  let activeIndex = 0;
+  let minDist = Infinity;
+
+  cards.forEach((card, i) => {
+    const cardCenter = cardScrollLeft(card) + card.offsetWidth / 2;
+    const dist = Math.abs(cardCenter - scrollerCenter);
+    if (dist < minDist) {
+      minDist = dist;
+      activeIndex = i;
+    }
   });
 
-  dots.forEach(d=>d.classList.remove("active"));
-  dots[active].classList.add("active");
+  dots.forEach(d => d.classList.remove("active"));
+  dots[activeIndex].classList.add("active");
 });
 
-/* Image carousel */
+/* ---------- Image carousel ---------- */
 function carouselMove(btn, dir){
   const media = btn.closest("[data-carousel]");
   const track = media.querySelector(".carousel-track");
@@ -1969,7 +1986,6 @@ document.querySelectorAll("[data-carousel]").forEach(media => {
     rightBtn.style.display = "none";
   }
 });
-
 </script>
 
 
