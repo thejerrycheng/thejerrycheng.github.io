@@ -990,6 +990,40 @@
   }
 }
 
+/* FINAL FIX: True 15px margins for publication cards on mobile */
+@media (max-width:700px){
+
+  /* 1. STOP forcing the publications table to bleed the whole viewport */
+  #publications.pubs-table{
+    width:100%;
+    max-width:100%;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    padding-left:0 !important;
+    padding-right:0 !important;
+  }
+
+  /* 2. Each publication card gets the real margin */
+  #publications .pub-row{
+    margin-left:15px !important;
+    margin-right:15px !important;
+    margin-bottom:15px !important;
+    border-radius:12px;
+  }
+
+  /* 3. Remove padding leaks from <td> */
+  #publications .pub-row > td{
+    padding-left:0 !important;
+    padding-right:0 !important;
+  }
+
+  /* 4. The inner text block gets its 15px safe padding */
+  #publications .pub-meta{
+    padding:12px 15px !important;
+  }
+}
+
+
 </style>
 
 
