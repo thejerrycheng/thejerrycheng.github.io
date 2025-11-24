@@ -5,6 +5,16 @@
   <meta charset="utf-8" />
   <title>Join Us — Motion Picture Robotics</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <style>
+    body, * {
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+                    "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    </style>
+
 
   <style>
     :root {
@@ -196,8 +206,47 @@
 
 <body>
 
-<section>
+    <!-- NAVIGATION INCLUDE -->
+    <link rel="stylesheet" href="cinema_robot_nav.html" as="document" onload="loadNav()" />
 
+    <iframe id="navFrame"
+            src="cinema_robot_nav.html"
+            style="
+            width:100%;
+            height:60px;
+            border:0;
+            position: fixed;
+            top:0;
+            left:0;
+            z-index:9999;
+            overflow:visible;">
+    </iframe>
+
+    <div style="height:60px;"></div>
+
+    <script>
+    function loadNav() {
+        const frame = document.getElementById("navFrame");
+
+        // Force iframe to use parent fonts
+        frame.contentWindow.document.body.style.fontFamily =
+            getComputedStyle(document.body).fontFamily;
+
+        // Auto-resize height based on nav content
+        function resizeNav() {
+            frame.style.height =
+                frame.contentWindow.document.documentElement.scrollHeight + "px";
+        }
+
+        frame.onload = resizeNav;
+        setTimeout(resizeNav, 150); // extra safety
+    }
+    </script>
+
+
+
+<!-- Section starts (loaded dynamically) -->
+    <section>
     <h1 class="title">Join Motion Picture Robotics</h1>
 
     <p class="subtitle">

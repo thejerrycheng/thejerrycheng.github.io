@@ -1,0 +1,208 @@
+<!-- cinema_robot_nav.html -->
+
+<style>
+  /* --- Desktop link style --- */
+  .desktop-nav a {
+    color: #111;
+    text-decoration: none;
+    position: relative;
+  }
+
+  .desktop-nav a::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0%;
+    height: 1px;
+    background: #111;
+    transition: width 0.25s ease;
+  }
+
+  .desktop-nav a:hover::after {
+    width: 100%;
+  }
+
+  /* Hide desktop nav on mobile */
+  @media (max-width: 768px) {
+    .desktop-nav { display: none !important; }
+    #hamburger { display: flex !important; }
+  }
+
+  .dropdown-item {
+    padding: 12px 4px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #111;
+  }
+  .dropdown-item:hover {
+    background: rgba(0,0,0,0.08);
+  }
+</style>
+
+<header id="topNav" style="
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 60px;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  box-sizing: border-box;
+  z-index: 9999;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+">
+
+  <!-- LOGO -->
+  <div id="brandTitle" style="font-size: 20px; font-weight: 600; color:#111;">
+    Motion Picture Robotics
+  </div>
+
+  <!-- Desktop Navigation -->
+  <nav class="desktop-nav" style="display:flex; gap:28px; font-size:15px; font-weight:500;">
+    <a href="/index.html">Home</a>
+    <a href="/index.html#s2">Features</a>
+    <a href="/index.html#s3">Specs</a>
+    <a href="/index.html#s5">Comparison</a>
+    <a href="/join.html">Join Us</a>
+    <a href="/index.html#contact">Contact</a>
+  </nav>
+
+  <!-- Hamburger Button -->
+  <div id="hamburger" style="
+    display:none;
+    width: 44px;
+    height: 28px;
+    border-radius: 32px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    cursor:pointer;
+  ">
+    <div id="hamLines" style="
+      width: 18px; height: 2px; background:#111;
+      transition: 0.25s ease;
+      position: relative;
+    ">
+      <div style="position:absolute; width:18px; height:2px; background:#111; top:-6px;"></div>
+      <div style="position:absolute; width:18px; height:2px; background:#111; top:6px;"></div>
+    </div>
+  </div>
+
+</header>
+
+<!-- SPACER -->
+<div style="height:60px;"></div>
+
+<!-- Mobile Dropdown -->
+<div id="mobileMenu" style="
+  position: fixed;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  padding: 70px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  transition: transform 0.35s cubic-bezier(.25,1,.30,1);
+  z-index: 9990;
+  font-size: 18px;
+  font-weight: 500;
+">
+
+  <a class="dropdown-item" href="/index.html">Home</a>
+  <a class="dropdown-item" href="/index.html#s2">Features</a>
+  <a class="dropdown-item" href="/index.html#s3">Specs</a>
+  <a class="dropdown-item" href="/index.html#s5">Comparison</a>
+  <a class="dropdown-item" href="/join.html">Join Us</a>
+  <a class="dropdown-item" href="/index.html#contact">Contact</a>
+
+</div>
+
+<script>
+let menuOpen = false;
+const nav = document.getElementById("topNav");
+const hamburger = document.getElementById("hamburger");
+const mobileMenu = document.getElementById("mobileMenu");
+const hamLines = document.getElementById("hamLines");
+let lastScrollY = window.scrollY;
+
+function resetHam() {
+  hamLines.style.transform = "rotate(0)";
+  hamLines.style.background = "#111";
+  hamLines.children[0].style.transform = "translateY(0)";
+  hamLines.children[1].style.transform = "translateY(0)";
+}
+
+/* ----- Toggle Mobile Menu ----- */
+hamburger.addEventListener("click", () => {
+  menuOpen = !menuOpen;
+
+  if (menuOpen) {
+    mobileMenu.style.transform = "translateY(0)";
+    hamLines.style.transform = "rotate(45deg)";
+    hamLines.style.background = "transparent";
+    hamLines.children[0].style.transform = "translateY(6px) rotate(90deg)";
+    hamLines.children[1].style.transform = "translateY(-6px) rotate(90deg)";
+  } else {
+    mobileMenu.style.transform = "translateY(-100%)";
+    resetHam();
+  }
+});
+
+/* ----- Hide when clicking outside ----- */
+document.addEventListener("click", (e) => {
+  if (!menuOpen) return;
+  if (!mobileMenu.contains(e.target) && !hamburger.contains(e.target)) {
+    menuOpen = false;
+    mobileMenu.style.transform = "translateY(-100%)";
+    resetHam();
+  }
+});
+
+/* ----- Scroll hide/show behavior (desktop + mobile) ----- */
+window.addEventListener("scroll", () => {
+  if (menuOpen) return;
+
+  const currentY = window.scrollY;
+
+  if (currentY < 40) {
+    nav.style.transform = "translateY(0)";
+    nav.style.boxShadow = "none";
+    lastScrollY = currentY;
+    return;
+  }
+
+  if (currentY > lastScrollY) {
+    nav.style.transform = "translateY(-100%)";
+    nav.style.boxShadow = "none";
+  } else {
+    nav.style.transform = "translateY(0)";
+    nav.style.boxShadow = "0 6px 20px rgba(0,0,0,0.08)";
+  }
+
+  lastScrollY = currentY;
+});
+
+/* Hide menu on scroll */
+window.addEventListener("scroll", () => {
+  if (menuOpen) {
+    menuOpen = false;
+    mobileMenu.style.transform = "translateY(-100%)";
+    resetHam();
+  }
+});
+</script>
