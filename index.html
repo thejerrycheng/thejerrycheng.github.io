@@ -857,7 +857,11 @@
     /* Prevent horizontal scroll */
     html, body { overflow-x:hidden; }
   }
+
+
 </style>
+
+
 
 <style>
   /* === Publications: card-style like Startups === */
@@ -948,6 +952,27 @@
       padding-right:0 !important;
     }
   }
+
+  /* FIX: Mobile card margins */
+@media (max-width: 768px) {
+  .pub-grid {
+    padding: 0 15x !important;   /* equal left-right margin */
+    gap: 20px !important;          /* consistent spacing */
+  }
+
+  .pub-card {
+    border-radius: 20px;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Prevent cards from touching screen edges */
+  .pub-grid > * {
+    margin: 0 !important;
+  }
+}
+
 </style>
 
 <style>
