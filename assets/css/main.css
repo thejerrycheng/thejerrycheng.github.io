@@ -1,0 +1,371 @@
+/* ==========================================================================
+   GLOBAL RESET
+   ========================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "Segoe UI", Roboto, sans-serif;
+  background: #faf8f2;
+  color: #111;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   TYPOGRAPHY
+   ========================================================================== */
+h1, h2, h3 {
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+h1 {
+  font-size: 42px;
+}
+
+h2 {
+  font-size: 32px;
+}
+
+.section-wrapper p,
+.section-wrapper li {
+  font-size: 17px;
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   LAYOUT WRAPPER
+   ========================================================================== */
+.section-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+/* ==========================================================================
+   NAVIGATION BAR
+   Apple-style minimal top navigation
+   ========================================================================== */
+
+.site-nav {
+  width: 100%;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  background: rgba(250, 248, 242, 0.7);
+  backdrop-filter: blur(12px);
+  z-index: 999;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.site-nav .logo {
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-size: 18px;
+}
+
+/* --- mobile menu button --- */
+#menuButton {
+  font-size: 26px;
+  padding: 6px 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* --- mobile nav panel --- */
+#mobileMenu {
+  position: fixed;
+  top: -260px;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: top 0.18s ease;
+  z-index: 998;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#mobileMenu.open {
+  top: 0;
+}
+
+#mobileMenu a {
+  font-size: 18px;
+  text-decoration: none;
+  color: #111;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+/* backdrop */
+#navBackdrop {
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(4px);
+  background: rgba(0,0,0,0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease;
+  z-index: 997;
+}
+
+#navBackdrop.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ==========================================================================
+   PUBLICATIONS
+   ========================================================================== */
+
+.publications .pub-thumb {
+  margin-top: 30px;
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.publications .pub-thumb img {
+  width: 100%;
+  display: block;
+  border-radius: 14px;
+  transition: opacity 0.25s ease;
+}
+
+.publications .hover-video {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.publications .hover-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.publications .pub-thumb:hover img {
+  opacity: 0;
+}
+
+.publications .pub-thumb:hover .hover-video {
+  opacity: 1;
+}
+
+/* --- Publication Carousel --- */
+
+[data-pub-carousel] {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  overflow: hidden;
+  border-radius: 16px;
+  margin-top: 30px;
+}
+
+[data-pub-carousel] .carousel-track {
+  display: flex;
+  transition: transform .25s ease;
+}
+
+[data-pub-carousel] .slide img,
+[data-pub-carousel] .slide video {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+/* nav buttons */
+[data-pub-carousel] .nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: rgba(255,255,255,0.7);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  backdrop-filter: blur(10px);
+  transition: background .2s ease;
+}
+
+[data-pub-carousel] .nav-btn:hover {
+  background: rgba(255,255,255,0.9);
+}
+
+[data-pub-carousel] .nav-btn.prev { left: 10px; }
+[data-pub-carousel] .nav-btn.next { right: 10px; }
+
+/* ==========================================================================
+   PROJECTS (Hover Video)
+   ========================================================================== */
+
+#projects .proj-thumb {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  margin-top: 30px;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+#projects .proj-thumb img {
+  width: 100%;
+  display: block;
+  transition: opacity .25s ease;
+}
+
+#projects .hover-video {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+
+#projects .hover-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#projects .proj-thumb:hover img {
+  opacity: 0;
+}
+
+#projects .proj-thumb:hover .hover-video {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   NEWS CAROUSEL
+   ========================================================================== */
+
+.news-carousel {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  overflow: hidden;
+  margin-top: 20px;
+  border-radius: 14px;
+}
+
+.news-carousel .carousel-track {
+  display: flex;
+  transition: transform .25s ease;
+}
+
+.news-carousel img {
+  width: 100%;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.news-carousel button.prev,
+.news-carousel button.next {
+  position: absolute;
+  top: 50%;
+  border: none;
+  background: rgba(255,255,255,0.8);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transform: translateY(-50%);
+  font-size: 20px;
+}
+
+.news-carousel button.prev { left: 8px; }
+.news-carousel button.next { right: 8px; }
+
+/* ==========================================================================
+   3D MODEL VIEWER
+   ========================================================================== */
+
+model-viewer {
+  width: 100%;
+  height: 420px;
+  margin-top: 30px;
+  border-radius: 18px;
+  background: #e9e5dd;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+footer {
+  padding: 40px 20px;
+  text-align: center;
+  color: #444;
+  font-size: 15px;
+}
+
+footer time {
+  opacity: 0.7;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 600px) {
+  h1 { font-size: 34px; }
+  h2 { font-size: 26px; }
+
+  .section-wrapper {
+    padding: 50px 16px;
+  }
+
+  model-viewer {
+    height: 300px;
+  }
+
+  #mobileMenu a {
+    font-size: 17px;
+  }
+
+  .news-carousel button.prev,
+  .news-carousel button.next {
+    display: none; /* tap to advance on mobile */
+  }
+}
+
+/* ==========================================================================
+   ANIMATIONS (Optional)
+   ========================================================================== */
+
+.fade-in {
+  opacity: 0;
+  animation: fade-in 0.6s ease forwards;
+}
+
+@keyframes fade-in {
+  to {
+    opacity: 1;
+  }
+}

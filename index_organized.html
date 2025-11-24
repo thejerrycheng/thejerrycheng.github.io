@@ -5,84 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jerry (Qilong) Cheng — Robotics, Humanoids & RL</title>
 
-  <!-- Favicon -->
-  <link rel="icon" href="assets/images/favicon.ico">
+  <link rel="icon" href="/assets/images/favicon.ico">
 
-  <!-- Google Fonts (optional) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script type="module" src="https://unpkg.com/@google/model-viewer@3.3.0/dist/model-viewer.min.js"></script>
 
-  <!-- 3D Model Viewer (for IRIS preview or sections using <model-viewer>) -->
-  <script type="module"
-    src="https://unpkg.com/@google/model-viewer@3.3.0/dist/model-viewer.min.js">
-  </script>
-
-  <!-- Core CSS -->
-  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
 </head>
 
 <body>
 
-  <!-- ===========================
-          Navigation
-  ============================ -->
-  <div id="nav-container">
-    <!-- include partials/nav.html -->
-  </div>
+  <!-- Navigation -->
+  <div id="nav-container" data-include="/partials/nav.html"></div>
 
+  <section id="about" data-include="/partials/about.html"></section>
+  <section id="education" data-include="/partials/education.html"></section>
+  <section id="publications" data-include="/partials/publications.html"></section>
+  <section id="projects" data-include="/partials/projects.html"></section>
+  <section id="news" data-include="/partials/news.html"></section>
+  <section id="experience" data-include="/partials/experience.html"></section>
+  <section id="skills" data-include="/partials/skills.html"></section>
 
-  <!-- ===========================
-          Sections
-  ============================ -->
+  <footer data-include="/partials/footer.html"></footer>
 
-  <section id="about">
-    <!-- include partials/about.html -->
-  </section>
+  <!-- IMPORTANT: include loader FIRST -->
+  <script src="/assets/js/include.js"></script>
 
-  <section id="education">
-    <!-- include partials/education.html -->
-  </section>
-
-  <section id="publications">
-    <!-- include partials/publications.html -->
-  </section>
-
-  <section id="projects">
-    <!-- include partials/projects.html -->
-  </section>
-
-  <section id="news">
-    <!-- include partials/news.html -->
-  </section>
-
-  <section id="experience">
-    <!-- include partials/experience.html -->
-  </section>
-
-  <section id="skills">
-    <!-- include partials/skills.html -->
-  </section>
-
-
-  <!-- ===========================
-              Footer
-  ============================ -->
-  <footer>
-    <!-- include partials/footer.html -->
-  </footer>
-
-
-  <!-- ===========================
-            JavaScript
-     (Load in correct order)
-  ============================ -->
-  <script src="assets/js/nav.js"></script>
-  <script src="assets/js/carousel.js"></script>
-  <script src="assets/js/newsCarousel.js"></script>
-  <script src="assets/js/projects.js"></script>
-  <script src="assets/js/publications.js"></script>
-  <script src="assets/js/lastUpdated.js"></script>
-  <script src="assets/js/main.js"></script>
-
+  <!-- Your scripts -->
+  <script src="/assets/js/nav.js"></script>
+  <script src="/assets/js/carousel.js"></script>
+  <script src="/assets/js/newsCarousel.js"></script>
+  <script src="/assets/js/projects.js"></script>
+  <script src="/assets/js/publications.js"></script>
+  <script src="/assets/js/lastUpdated.js"></script>
+  <script src="/assets/js/main.js"></script>
 </body>
 </html>

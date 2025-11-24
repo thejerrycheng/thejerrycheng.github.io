@@ -367,3 +367,8 @@ window.carouselMove = function carouselMove(btn, dir) {
   track.style.transform = `translateX(-${next * 100}%)`;
   wrap.dataset.index = String(next);
 };
+
+// main.js
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("Website loaded successfully.");
+});
