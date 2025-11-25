@@ -618,6 +618,62 @@ section:not(#s1) .hero-title {
 }
 
 
+/* Apple-style CTA Buttons */
+.hero-cta {
+  display: flex;
+  gap: 18px;
+  margin: 32px auto 44px;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 1.2s ease-out forwards;
+  animation-delay: 0.45s;
+}
+
+.cta-primary,
+.cta-secondary {
+  padding: 12px 26px;
+  font-size: 17px;
+  font-weight: 500;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+/* Primary button (blue Apple-style) */
+.cta-primary {
+  background: #0071e3;
+  color: #fff;
+}
+
+.cta-primary:hover {
+  background: #0b78ec;
+  transform: translateY(-2px);
+}
+
+/* Secondary button (transparent) */
+.cta-secondary {
+  background: rgba(0,0,0,0.06);
+  color: #111;
+  backdrop-filter: blur(12px);
+}
+
+.cta-secondary:hover {
+  background: rgba(0,0,0,0.12);
+  transform: translateY(-2px);
+}
+
+/* Mobile stacking */
+@media (max-width: 600px) {
+  .hero-cta {
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    max-width: 240px;
+  }
+}
+
+
 
     /* ========== DRAG CURSOR STYLE ========== */
     .scroll-thumb {
@@ -719,6 +775,480 @@ section:not(#s1) .hero-title {
     }
 
 
+/* =========================================
+   AXIS / HOME-STUDIO DESIGN SECTIONS
+   ========================================= */
+.axis-section {
+  padding: clamp(60px, 8vw, 120px) 16px;
+  box-sizing: border-box;
+}
+
+.axis-section-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.axis-dark {
+  background: #050509;
+  color: #f9fafb;
+}
+
+.axis-dark-soft {
+  background: #0b0b0f;
+  color: #f9fafb;
+}
+
+.axis-light {
+  background: #ffffff;
+  color: #000000;
+}
+
+/* Hero */
+.axis-hero {
+  text-align: center;
+  padding-top: clamp(80px, 12vw, 140px);
+}
+.axis-kicker {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.04);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #60a5fa;
+  margin-bottom: 18px;
+}
+.axis-hero-title {
+  font-size: clamp(34px, 6vw, 77px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  margin: 0 0 10px;
+  background: linear-gradient(to bottom, #ffffff, #9ca3af);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.axis-hero-subtitle {
+  font-size: clamp(18px, 3vw, 22px);
+  color: #9ca3af;
+  max-width: 640px;
+  margin: 0 auto 28px;
+  font-weight: 500;
+}
+.axis-hero-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+.axis-hero-link {
+  font-size: 16px;
+  color: #60a5fa;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+.axis-hero-link span.arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+.axis-hero-link:hover span.arrow {
+  transform: translateX(3px);
+}
+
+/* Hero image wrapper */
+.axis-hero-media {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.axis-hero-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 75%;
+  height: 75%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at center, rgba(59,130,246,0.55), transparent 60%);
+  filter: blur(60px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.axis-hero-img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  border-radius: 22px;
+  box-shadow: 0 40px 90px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.12);
+  display: block;
+}
+
+/* Floating badge */
+.axis-floating-badge {
+  position: absolute;
+  top: 32px;
+  right: 28px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.65);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(18px);
+  font-size: 11px;
+  text-align: right;
+  color: #e5e7eb;
+}
+.axis-floating-badge-status {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 10px;
+  color: #9ca3af;
+}
+.axis-floating-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 10px rgba(34,197,94,0.9);
+}
+
+/* Materials grid */
+.axis-materials-intro {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.axis-materials-title {
+  font-size: clamp(30px, 5vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin-bottom: 10px;
+}
+.axis-materials-sub {
+  font-size: 17px;
+  color: #9ca3af;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+.axis-material-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  max-width: 1120px;
+  margin: 26px auto 0;
+}
+@media (min-width: 768px) {
+  .axis-material-grid {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+}
+.axis-material-card {
+  position: relative;
+  min-height: 240px;
+  border-radius: 24px;
+  padding: 26px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: radial-gradient(circle at top left, rgba(148,163,184,0.35), transparent 60%);
+}
+.axis-material-card h3 {
+  font-size: 22px;
+  margin: 0 0 6px;
+}
+.axis-material-card p {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+/* Base / Screen section */
+.axis-base-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .axis-base-layout {
+    flex-direction: row;
+  }
+}
+.axis-base-visual,
+.axis-base-copy {
+  flex: 1;
+}
+.axis-base-screen {
+  position: relative;
+  padding: 20px;
+  border-radius: 28px;
+  background: #020617;
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+  overflow: hidden;
+  min-height: 260px;
+}
+.axis-base-hud {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+.axis-base-hud-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.axis-pill {
+  padding: 4px 8px;
+  border-radius: 9px;
+  background: rgba(0,0,0,0.7);
+  border: 1px solid rgba(148,163,184,0.6);
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 11px;
+  color: #4ade80;
+}
+.axis-square-btn {
+  padding: 6px;
+  border-radius: 9px;
+  background: rgba(0,0,0,0.7);
+  border: 1px solid rgba(148,163,184,0.6);
+}
+.axis-crosshair-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 26px 0;
+}
+.axis-crosshair {
+  width: 130px;
+  height: 130px;
+  border-radius: 999px;
+  border: 1px solid rgba(248,250,252,0.35);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.axis-crosshair::before,
+.axis-crosshair::after {
+  content: "";
+  position: absolute;
+  background: rgba(248,250,252,0.25);
+}
+.axis-crosshair::before {
+  width: 110px;
+  height: 1px;
+}
+.axis-crosshair::after {
+  width: 1px;
+  height: 110px;
+}
+.axis-rec-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #ef4444;
+}
+
+/* Thumbnail bar */
+.axis-thumb-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.axis-thumb {
+  min-width: 80px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.65);
+  border: 1px solid rgba(148,163,184,0.6);
+}
+
+/* Base copy */
+.axis-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #60a5fa;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.axis-copy-title {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin-bottom: 12px;
+}
+.axis-copy-body {
+  font-size: 16px;
+  color: #9ca3af;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+.axis-spec-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.axis-spec-list li {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  color: #e5e7eb;
+  margin-bottom: 10px;
+}
+.axis-spec-bullet {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,0.8);
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+
+/* Vision / end effector */
+.axis-vision-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .axis-vision-layout {
+    flex-direction: row-reverse;
+  }
+}
+.axis-vision-visual,
+.axis-vision-copy {
+  flex: 1;
+}
+.axis-vision-block {
+  border-radius: 26px;
+  background: #f5f5f5;
+  border: 1px solid #e5e7eb;
+  padding: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.axis-vision-camera {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  border-radius: 24px;
+  background: #e5e7eb;
+  box-shadow: 0 26px 60px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.axis-vision-sensor {
+  width: 110px;
+  height: 110px;
+  border-radius: 18px;
+  background: radial-gradient(circle at center, #1e293b 0%, #020617 60%, #000000 100%);
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #cbd5f5;
+}
+.axis-vision-sensor-overlay {
+  position: absolute;
+  inset: 0;
+  opacity: 0.2;
+  background-image:
+    repeating-linear-gradient(45deg, #111 0, #111 1px, transparent 1px, transparent 4px),
+    repeating-linear-gradient(-45deg, #111 0, #111 1px, transparent 1px, transparent 4px);
+}
+.axis-vision-sensor-glow {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 999px;
+  background: rgba(129, 140, 248, 0.5);
+  filter: blur(16px);
+}
+.axis-vision-depth-dots {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 18px;
+}
+.axis-vision-depth-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(15,23,42,0.4);
+}
+.axis-vision-label {
+  position: absolute;
+  bottom: -26px;
+  width: 100%;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: #9ca3af;
+}
+
+/* Vision copy */
+.axis-vision-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #6b7280;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.axis-vision-title {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin-bottom: 12px;
+}
+.axis-vision-body {
+  font-size: 16px;
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+.axis-vision-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.axis-vision-metric {
+  border-left: 2px solid #e5e7eb;
+  padding-left: 10px;
+}
+.axis-vision-metric-value {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+}
+.axis-vision-metric-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
 
 /* ===========================
       SECTION 2 — TEXT ON VIDEO
@@ -769,6 +1299,216 @@ section:not(#s1) .hero-title {
     padding: 30px 16px;
   }
 }
+
+
+
+/* ===========================
+   SECTION 2 — SPLIT PREVIEW
+=========================== */
+
+.iris-split {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.iris-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.iris-pane-content {
+  flex: 1;
+  border-radius: 26px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #fff;
+  height: 100%;
+}
+
+.iris-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#viewer3d {
+  width: 100%;
+  height: 100%;
+}
+
+/* Label under each pane */
+.iris-pane-label {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-top: 12px;
+  color: #888;
+}
+
+/* Toggle bar */
+.iris-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 36px;
+}
+
+.iris-toggle-btn {
+  padding: 8px 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(0,0,0,0.04);
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.iris-toggle-btn.active {
+  background: #0071e3;
+  color: #fff;
+  border-color: #0071e3;
+}
+
+/* Mobile stack */
+@media (max-width: 900px) {
+  .iris-split {
+    flex-direction: column;
+  }
+}
+
+
+/* Lifestyle */
+.axis-lifestyle-title {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.axis-lifestyle-sub {
+  max-width: 640px;
+  margin: 0 auto 28px;
+  font-size: 16px;
+  color: #9ca3af;
+  text-align: center;
+}
+.axis-lifestyle-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+@media (min-width: 900px) {
+  .axis-lifestyle-grid {
+    grid-template-columns: repeat(3, minmax(0,1fr));
+  }
+}
+.axis-lifestyle-card {
+  height: 230px;
+  border-radius: 20px;
+  background: #020617;
+  border: 1px solid rgba(148,163,184,0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}
+.axis-lifestyle-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  background: #020617;
+  border: 1px solid rgba(148,163,184,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  font-size: 20px;
+}
+.axis-lifestyle-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.axis-lifestyle-card-body {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+
+/* === UNIFIED SECTION HEIGHT AFTER HERO === */
+section:not(#s1):not(#axis-hero) {
+  min-height: clamp(600px, 90vh, 840px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* AXIS — unify section titles */
+.axis-materials-title,
+.axis-copy-title,
+.axis-vision-title,
+.axis-lifestyle-title {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+/* AXIS — unify subtitles */
+.axis-materials-sub,
+.axis-copy-body,
+.axis-vision-body,
+.axis-lifestyle-sub {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--text-muted);
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/* AXIS — eyebrow standard */
+.axis-eyebrow,
+.axis-vision-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+/* AXIS — card titles */
+.axis-lifestyle-card-title,
+.axis-material-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+/* AXIS — metric consistency */
+.axis-vision-metric-value {
+  font-size: 24px;
+  font-weight: 700;
+}
+.axis-vision-metric-label {
+  font-size: 12px;
+  opacity: 0.7;
+}
+/* AXIS — body small text */
+.axis-lifestyle-card-body,
+.axis-material-card p {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
 
   </style>
 </head>
@@ -914,20 +1654,39 @@ section:not(#s1) .hero-title {
   <!-- ===========================
           SECTION 1 — HERO
   ============================ -->
-<section id="s1">
 
-  <h1 class="hero-title">Meet IRIS,<br>Cinema-Grade Motion Control for Everyone</h1>
+<section id="s1" class="axis-dark axis-section fade-section">
 
-  <p class="hero-subtitle">
-    IRIS brings cinema-grade precision, high-speed movement, and intuitive control  
-    to creators at a fraction of the cost.
+
+  <h2 class="axis-hero-title">
+     Meet IRIS,<br>Cinema-Grade Motion Control for Everyone
+    </h2>
+
+
+    <p class="axis-hero-subtitle">
+    The power of a motion stage, refined for your home studio.  
+    <span style="display:block; margin-top:10px; color:#60a5fa;">
+      Coming Summer 2026 — Pre-order now.
+    </span>
   </p>
 
+
   <!-- Apple-style CTA buttons -->
+   <!-- Apple-style CTA buttons -->
   <div class="hero-cta">
-    <a href="#s2" class="cta-primary">Learn More</a>
+    <a href="#s2" class="cta-primary">Watch the Film</a>
+    <a href="#preorder" class="cta-primary">Pre-order Now</a>
     <!-- <a href="#contact" class="cta-secondary">Buy Now</a> -->
   </div>
+
+  <div class="axis-hero-media">
+      <div class="axis-hero-glow"></div>
+
+      <img
+        src="MPR/version2.png"
+        alt="IRIS / Axis Home Studio Robot Arm"
+        class="axis-hero-img">
+    </div>
 
   <div class="viewer-wrapper">
     <div id="viewer3d">
@@ -981,35 +1740,101 @@ section:not(#s1) .hero-title {
 <!-- ===========================
         SECTION 2 — Intro Video
 ============================ -->
+
 <section id="s2" class="section-light fade-section">
 
-  <div class="iris-video-container">
+  <h2 class="hero-title" style="margin-bottom:12px;">
+    A Cinema Robot, Reimagined.
+  </h2>
 
-    <div class="iris-text-overlay">
-      <h2 class="hero-title iris-title-white">A Cinema Robot, Reimagined.</h2>
+  <p class="hero-subtitle" style="max-width:760px; margin-bottom:40px;">
+    Cinema robots began as industrial machines — massive, rigid, and built for factories.
+    IRIS rewrites that origin: lightweight structure, intelligent motion, and creator-first design.
+  </p>
 
-      <p class="hero-subtitle iris-sub-white">
-        Cinema robots come from industrial automation — massive robotic arms adapted for cameras.
-        They deliver movements impossible for humans: ultra-smooth arcs, sub-millimeter precision,
-        and repeatable paths for VFX and product shoots.<br><br>
-        IRIS brings that capability to every creator.
-      </p>
+  <!-- SIDE-BY-SIDE WRAPPER -->
+  <div class="iris-split">
+
+    <!-- LEFT: 3D VIEWER -->
+    <div class="iris-pane">
+      <div class="iris-pane-content">
+
+        <div class="viewer-wrapper" style="height:100%;">
+          <div id="viewer3d">
+
+            <model-viewer id="robotViewer"
+              src="assets/models/cinema_robot.glb"
+              camera-controls
+              auto-rotate
+              auto-rotate-delay="0"
+              exposure="1"
+              shadow-intensity="1"
+              touch-action="pan-y"
+              ar>
+            </model-viewer>
+
+            <div id="viewer-loading" class="viewer-loading">
+              <div class="spinner"></div>
+            </div>
+
+            <div class="viewer-controls">
+              <button id="btn-reset" class="glass-button">
+              <svg viewBox="0 0 24 24">
+                <path d="M7 8H3.5M3.5 8L6 5.5M3.5 8L6 10.5" />
+                <path d="M7 8a7 7 0 1 1-1.2 7.3" />
+              </svg>
+            </button>
+
+            <button id="btn-rotate" class="glass-button active">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 3.5a8.5 8.5 0 1 1-6 2.5" />
+                <path d="M8 4H4.5M4.5 4L7 1.5M4.5 4L7 6.5" />
+              </svg>
+            </button>
+
+            <button id="btn-fullscreen" class="glass-button">
+              <svg id="icon-fullscreen" viewBox="0 0 24 24">
+                <rect x="6.5" y="5.5" width="11" height="13" rx="2" />
+                <path d="M9 9h6M9 15h6" />
+              </svg>
+            </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+      <div class="iris-pane-label">INTERACTIVE MODEL</div>
     </div>
 
-    <video class="iris-video" autoplay muted loop playsinline>
-      <source src="MPR/cover_video.mp4" type="video/mp4" />
-    </video>
+
+    <!-- RIGHT: VIDEO -->
+    <div class="iris-pane">
+      <div class="iris-pane-content">
+
+        <video class="iris-video" autoplay muted loop playsinline>
+          <source src="MPR/cover_video.mp4" type="video/mp4" />
+        </video>
+
+      </div>
+      <div class="iris-pane-label">REAL FOOTAGE</div>
+    </div>
 
   </div>
 
-</section>
+  <!-- TOGGLE BAR -->
+  <!-- <div class="iris-toggle">
+    <button class="iris-toggle-btn active">3D View</button>
+    <button class="iris-toggle-btn">Video</button>
+  </div> -->
 
+</section>
 
 
 <!-- ===========================
         SECTION 3 — Industry Problem
 ============================ -->
-<section id="s3" class="section-light fade-section">
+<section id="s3" class="section-light fade-section axis-dark">
   <h2 class="hero-title">Cinema Robots Were Never Designed for Creators.</h2>
 
   <p class="hero-subtitle" style="max-width:780px;">
@@ -1044,6 +1869,57 @@ section:not(#s1) .hero-title {
 
 
 <!-- ===========================
+     BASE / SCREEN
+=========================== -->
+<section id="axis-base" class="axis-section axis-dark-soft fade-section">
+  <div class="axis-section-inner axis-base-layout">
+
+    <div class="axis-base-visual fade-child">
+      <div class="axis-base-screen">
+        <div class="axis-base-overlay"></div>
+
+        <div class="axis-base-hud">
+          <div class="axis-base-hud-top">
+            <div class="axis-pill">REC&nbsp;00:04:22</div>
+            <div class="axis-square-btn"></div>
+          </div>
+
+          <div class="axis-crosshair-wrap">
+            <div class="axis-crosshair">
+              <div class="axis-rec-dot"></div>
+            </div>
+          </div>
+
+          <div class="axis-thumb-row">
+            <div class="axis-thumb"></div>
+            <div class="axis-thumb"></div>
+            <div class="axis-thumb"></div>
+            <div class="axis-thumb"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="axis-base-copy fade-child">
+      <h2 class="axis-copy-title">
+        Impossible thin.<br>Incredibly capable.
+      </h2>
+      <p class="axis-copy-body">
+        A 22 mm aluminum slate that disappears into the desk — yet houses the entire motor
+        driver array and a tilting 14-inch command center.
+      </p>
+
+      <ul class="axis-spec-list">
+        <li><span class="axis-spec-dot"></span>22 mm profile height</li>
+        <li><span class="axis-spec-dot"></span>14″ integrated touch display</li>
+        <li><span class="axis-spec-dot"></span>Silent passive cooling</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===========================
         SECTION 5 — Performance
 ============================ -->
 <section id="s5" class="section-light fade-section">
@@ -1065,7 +1941,7 @@ section:not(#s1) .hero-title {
 <!-- ===========================
         SECTION 6 — Control
 ============================ -->
-<section id="s6" class="section-light fade-section">
+<section id="s6" class="section-light fade-section axis-dark">
   <h2 class="hero-title">Control, Reimagined.</h2>
 
   <p class="hero-subtitle" style="max-width:740px;">
@@ -1102,7 +1978,7 @@ section:not(#s1) .hero-title {
 <!-- ===========================
         SECTION 8 — Dimensions
 ============================ -->
-<section id="s8" class="section-light fade-section">
+<section id="s8" class="section-light fade-section axis-dark">
   <h2 class="hero-title">Compact by Design.</h2>
 
   <p class="hero-subtitle" style="max-width:740px;">
@@ -1146,6 +2022,22 @@ section:not(#s1) .hero-title {
   </div>
 </section>
 
+
+<!-- ===========================
+        SECTION Pre-order CTA
+============================ -->
+<section id="preorder" class="section-light fade-section axis-dark">
+  <h2 class="hero-title">Reserve Your IRIS</h2>
+  <p class="hero-subtitle" style="max-width:640px;">
+    Limited first production run. Ships Summer 2026.
+  </p>
+
+  <a href="mailto:orders@motionpicturerobotics.com"
+     class="cta-primary"
+     style="margin-top:20px;">
+     Pre-order now
+  </a>
+</section>
 
 <footer style="
   width: 100%;
