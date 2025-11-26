@@ -255,6 +255,8 @@
 
 <body>
 
+  <div id="closeFloating" class="close-floating">✕</div>
+
     <!-- NAVIGATION INCLUDE -->
     <link rel="stylesheet" href="cinema_robot_nav.html" as="document" onload="loadNav()" />
 
@@ -628,6 +630,40 @@ modal.addEventListener("click", (e) => {
     modalWindow.classList.remove("show");
   }
 });
+
+const floatingClose = document.getElementById("closeFloating");
+
+function openModal() {
+  modal.classList.add("show");
+  modalWindow.classList.add("show");
+  floatingClose.classList.add("show");
+}
+
+function closeModal() {
+  modal.classList.remove("show");
+  modalWindow.classList.remove("show");
+  floatingClose.classList.remove("show");
+}
+
+document.querySelectorAll(".role-card").forEach(card => {
+  card.addEventListener("click", () => {
+    const role = card.dataset.role;
+    const info = descriptions[role];
+
+    modalTitle.textContent = info.title;
+    modalText.textContent = info.text;
+
+    openModal();
+  });
+});
+
+closeBtn.addEventListener("click", closeModal);
+floatingClose.addEventListener("click", closeModal);
+
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) closeModal();
+});
+
 </script>
 
 </body>
