@@ -668,18 +668,115 @@
         <tr><td><h2>Education</h2>
           <p><b><a href="https://www.nyu.edu" target="_blank">New York University</a></b>, Ph.D. Candidate in Mechanical Engineering (Robotics)<br>
           <i>Sep 2025 – Aug 2026</i></p>
-          <p><b><a href="https://www.utoronto.ca" target="_blank">University of Toronto</a></b>, M.Eng. in Computer Engineering (Robotics), GPA: 3.92/4.00<br>
+          <p><b><a href="https://www.utoronto.ca" target="_blank">University of Toronto</a></b>, M.Eng. in Computer Engineering (Robotics), <br>GPA: 3.92/4.00<br>
           <i>Sep 2023 – Aug 2025</i></p>
-          <p><b><a href="https://www.utoronto.ca" target="_blank">University of Toronto</a></b>, B.A.Sc. in Mechanical Engineering, Minor in Robotics & Business, Senior GPA: 3.94/4.00<br>
+          <p><b><a href="https://www.utoronto.ca" target="_blank">University of Toronto</a></b>, B.A.Sc. in Mechanical Engineering, Minor in Robotics & Business, <br>Senior GPA: 3.94/4.00<br>
           <i>Aug 2017 – Jun 2023</i></p>
         </td></tr>
       </tbody>
     </table>
+<!-- ==========================
+        EDUCATION SECTION
+=========================== -->
+
+<style>
+  #education-section {
+    width:100%;
+    max-width:800px;
+    margin:0 auto 32px auto;
+    padding:0 0; /* matches publications left edge */
+    box-sizing:border-box;
+  }
+
+  .edu-item {
+    padding:18px 0;
+    border-bottom:1px solid rgba(0,0,0,0.08);
+  }
+  .edu-item:last-child { border-bottom:none; }
+
+  .edu-line {
+    display:flex;
+    justify-content:space-between;
+    width:100%;
+  }
+
+  #education-section .edu-line a {
+    font-weight:600;
+    letter-spacing:-0.01em;
+    color:#111;
+    text-decoration:none;
+  }
+
+  .edu-date {
+    font-size:13px;
+    color:#666;
+    white-space:nowrap;
+  }
+
+  .edu-details {
+    margin-top:4px;
+    font-size:14px;
+    line-height:1.45;
+    color:#222;
+  }
+
+  @media(max-width:540px){
+    .edu-line {
+      flex-direction:column;
+      gap:2px;
+    }
+  }
+</style>
+
+<table id="education" style="width:100%;max-width:800px;margin:0 auto 32px;border-spacing:0 18px;">
+  <tbody>
+    <tr><td><h2>Education</h2>
+
+    <tr>
+      <td style="padding:0;">
+        <b><a href="https://www.nyu.edu" target="_blank" style="text-decoration:none;color:#111;">New York University</a></b><br>
+        <span style="font-size:14px;line-height:1.45;color:#222;">
+          Ph.D. Candidate in Mechanical Engineering (Robotics)
+        </span>
+      </td>
+      <td style="padding:0;text-align:right;white-space:nowrap;font-size:13px;color:#666;">
+        Sep 2025 – Aug 2026
+      </td>
+    </tr>
+
+    <tr>
+      <td style="padding:0;border-top:1px solid rgba(0,0,0,0.08);padding-top:18px;">
+        <b><a href="https://www.utoronto.ca" target="_blank" style="text-decoration:none;color:#111;">University of Toronto</a></b><br>
+        <span style="font-size:14px;line-height:1.45;color:#222;">
+          M.Eng. in Computer Engineering (Robotics) — GPA: 3.92 / 4.00
+        </span>
+      </td>
+      <td style="padding:0;border-top:1px solid rgba(0,0,0,0.08);padding-top:18px;text-align:right;white-space:nowrap;font-size:13px;color:#666;">
+        Sep 2023 – Aug 2025
+      </td>
+    </tr>
+
+    <tr>
+      <td style="padding:0;border-top:1px solid rgba(0,0,0,0.08);padding-top:18px;">
+        <b><a href="https://www.utoronto.ca" target="_blank" style="text-decoration:none;color:#111;">University of Toronto</a></b><br>
+        <span style="font-size:14px;line-height:1.45;color:#222;">
+          B.A.Sc. in Mechanical Engineering<br>
+          Minor in Robotics & Business — Senior GPA: 3.94 / 4.00
+        </span>
+      </td>
+      <td style="padding:0;border-top:1px solid rgba(0,0,0,0.08);padding-top:18px;text-align:right;white-space:nowrap;font-size:13px;color:#666;">
+        Aug 2017 – Jun 2023
+      </td>
+    </tr>
+
+  </tbody>
+</table>
 
 
 
-
-<!-- ======= Publications - optimized for mobile ======= -->
+<!-- ==========================
+        PUBLICATION SECTION
+=========================== -->
 <style>
   :root{
     --pub-thumb-h: 220px;
@@ -2527,117 +2624,147 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 </style>
 
+<!-- ==========================
+        EXPERIENCE SECTION
+=========================== -->
 
-<section id="experience-section">
+<table id="experience" style="width:100%;max-width:800px;margin:0 auto 40px;border-spacing:0 22px;">
+  <tbody>
+    <!-- Section Title -->
+    <tr>
+      <td colspan="2" style="padding:0;">
+        <h2 class="section-title">Experience</h2>
+      </td>
+    </tr>
 
-  <h2>Experience</h2>
+    <!-- ===== RESEARCH ===== -->
+    <tr>
+      <td colspan="2" style="padding:0;font-size:18px;font-weight:600;color:#111;letter-spacing:-0.01em;margin:0;">
+        Research
+      </td>
+    </tr>
 
-  <!-- ==========================
-             RESEARCH
-  =========================== -->
-  <div class="exp-group-title">Research</div>
+    <!-- Item 1 -->
+    <tr>
+      <td style="padding:0;">
+        <b>Center for Robotics and Embodied Intelligence — NYU</b><br>
+        <span style="font-size:14px;color:#222;line-height:1.45;">
+          Research Fellow (Scholarship)<br>
+          Reinforcement learning for <b>rocket landing</b> and <b>humanoid locomotion</b>, benchmarking, controller design, and sim-to-real.
+        </span>
+      </td>
+      <td style="padding:0;text-align:right;white-space:nowrap;font-size:13px;color:#666;">
+        Sep 2025 – Present
+      </td>
+    </tr>
 
-  <div class="exp-card">
-    <div class="exp-org-line">
-      <div class="exp-org">Center for Robotics and Embodied Intelligence - New York University</div>
-      <div class="exp-date">(Sep 2025 – Present)</div>
-    </div>
-    <div class="exp-role">Research Fellow (Scholarship)</div>
-    <div class="exp-desc">
-      Reinforcement learning for <b>rocket landing</b> and <b>humanoid locomotion</b>, benchmarking,
-      controller design, and sim-to-real.
-    </div>
-  </div>
+    <!-- Item 2 -->
+    <tr>
+      <td style="padding-top:22px;border-top:1px solid rgba(0,0,0,0.08);">
+        <b>STARS Lab — University of Toronto</b><br>
+        <span style="font-size:14px;color:#222;line-height:1.45;">
+          Robotics Researcher (Prof. Jonathan Kelly)<br>
+          Radar/camera <b>extrinsic + spatiotemporal calibration</b>, continuous-time estimation, real-world autonomous driving evaluations.
+        </span>
+      </td>
+      <td style="padding-top:22px;border-top:1px solid rgba(0,0,0,0.08);text-align:right;white-space:nowrap;font-size:13px;color:#666;">
+        Sep 2021 – Aug 2025
+      </td>
+    </tr>
 
-  <div class="exp-card">
-    <div class="exp-org-line">
-      <div class="exp-org">STARS Lab — University of Toronto</div>
-      <div class="exp-date">(Sep 2021 – Aug 2025)</div>
-    </div>
-    <div class="exp-role">Robotics Researcher (Prof. Jonathan Kelly)</div>
-    <div class="exp-desc">
-      Radar/camera <b>extrinsic + spatiotemporal calibration</b>, continuous-time estimation,
-      real-world autonomous driving evaluations.
-    </div>
-  </div>
+    <!-- Item 3 -->
+    <tr>
+      <td style="padding-top:22px;border-top:1px solid rgba(0,0,0,0.08);">
+        <b>Dynamic Graphics Project Lab — University of Toronto</b><br>
+        <span style="font-size:14px;color:#222;line-height:1.45;">
+          HCI Researcher (Prof. Daniel Wigdor)<br>
+          Built <b>VibraForge</b> and <b>AeroHaptix</b>; multi-actuator vibrotactile systems and UAV teleoperation collision-avoidance studies.
+        </span>
+      </td>
+      <td style="padding-top:22px;border-top:1px solid rgba(0,0,0,0.08);text-align:right;white-space:nowrap;font-size:13px;color:#666;">
+        Sep 2022 – Aug 2025
+      </td>
+    </tr>
 
-  <div class="exp-card">
-    <div class="exp-org-line">
-      <div class="exp-org">Dynamic Graphics Project Lab (DGP) — University of Toronto</div>
-      <div class="exp-date">(Sep 2022 – Aug 2025)</div>
-    </div>
-    <div class="exp-role">HCI Researcher (Prof. Daniel Wigdor)</div>
-    <div class="exp-desc">
-      Built <b>VibraForge</b> toolkit and <b>AeroHaptix</b> wearable; multi-actuator vibrotactile systems
-      and UAV teleoperation collision-avoidance studies.
-    </div>
-  </div>
+    <!-- Item 4 -->
+    <tr>
+      <td style="padding-top:22px;border-top:1px solid rgba(0,0,0,0.08);">
+        <b>Robotics Institute — University of Toronto</b><br>
+        <span style="font-size:14px;color:#222;line-height:1.45;">
+          M.Eng Researcher (Prof. Mackay & Prof. Bereyhi)<br>
+          Designed <b>IRIS</b> cinema robot arm; ROS control + vision-based imitation learning for reactive planning.
+        </span>
+      </td>
+      <td style="padding-top:22px;border-top:1px solid rgba(0,0,0,0.08);text-align:right;white-space:nowrap;font-size:13px;color:#666;">
+        Sep 2024 – Aug 2025
+      </td>
+    </tr>
 
-  <div class="exp-card">
-    <div class="exp-org-line">
-      <div class="exp-org">Robotics Institute — University of Toronto</div>
-      <div class="exp-date">(Sep 2024 – Aug 2025)</div>
-    </div>
-    <div class="exp-role">M.Eng Researcher (Prof. Matthew Mackay and Prof. Ali Bereyhi)</div>
-    <div class="exp-desc">
-      Designed <b>IRIS</b>, a low-cost cinema robot arm; ROS control stack + vision-based imitation learning
-      for reactive planning.
-    </div>
-  </div>
+    <!-- ===== INDUSTRY ===== -->
+    <tr>
+      <td colspan="2" style="padding-top:34px;font-size:18px;font-weight:600;color:#111;letter-spacing:-0.01em;">
+        Industry
+      </td>
+    </tr>
 
+    <!-- Item 5 -->
+    <tr>
+      <td style="padding:0;">
+        <b>GouPals Inc. — Toronto</b><br>
+        <span style="font-size:14px;color:#222;line-height:1.45;">
+          Cofounder & CEO<br>
+          Built P2P logistics iOS MVP (SwiftUI/React/Firebase) with real-time traveler–buyer matching.
+        </span>
+      </td>
+      <td style="padding:0;text-align:right;white-space:nowrap;font-size:13px;color:#666;">
+        Aug 2024 – Apr 2025
+      </td>
+    </tr>
 
-  <!-- ==========================
-              INDUSTRY
-  =========================== -->
-  <div class="exp-group-title">Industry</div>
+    <!-- Item 6 -->
+    <tr>
+      <td style="padding-top:22px;border-top:1px solid rgba(0,0,0,0.08);">
+        <b>ONE800 Inc. — Toronto</b><br>
+        <span style="font-size:14px;color:#222;line-height:1.45;">
+          Software/ML Engineer<br>
+          Developed LLM-powered transcription, translation, OCR, and iMessage with memory-augmented chat.
+        </span>
+      </td>
+      <td style="padding-top:22px;border-top:1px solid rgba(0,0,0,0.08);text-align:right;white-space:nowrap;font-size:13px;color:#666;">
+        Apr 2023 – Dec 2023
+      </td>
+    </tr>
 
-  <div class="exp-card">
-    <div class="exp-org-line">
-      <div class="exp-org">GouPals Inc. — Toronto</div>
-      <div class="exp-date">(Aug 2024 – Apr 2025)</div>
-    </div>
-    <div class="exp-role">Cofounder & CEO</div>
-    <div class="exp-desc">
-      Built peer-to-peer logistics iOS MVP (SwiftUI/React/Firebase) with real-time
-      traveler–buyer matching.
-    </div>
-  </div>
+    <!-- Item 7 -->
+    <tr>
+      <td style="padding-top:22px;border-top:1px solid rgba(0,0,0,0.08);">
+        <b>China State Shipbuilding Corporation — Shanghai</b><br>
+        <span style="font-size:14px;color:#222;line-height:1.45;">
+          Mechanical Engineer Intern<br>
+          HVAC & fire-suppression design for a 12-deck cruise ship; contributed to spray-nozzle patent.
+        </span>
+      </td>
+      <td style="padding-top:22px;border-top:1px solid rgba(0,0,0,0.08);text-align:right;white-space:nowrap;font-size:13px;color:#666;">
+        Sep 2020 – Apr 2021
+      </td>
+    </tr>
 
-  <div class="exp-card">
-    <div class="exp-org-line">
-      <div class="exp-org">ONE800 Inc. — Toronto</div>
-      <div class="exp-date">(Apr 2023 – Dec 2023)</div>
-    </div>
-    <div class="exp-role">Software/ML Engineer</div>
-    <div class="exp-desc">
-      Developed LLM-powered transcription, translation, OCR pipelines, and iMessage integration
-      with memory-augmented chat (LangChain + Redis).
-    </div>
-  </div>
+    <!-- Item 8 -->
+    <tr>
+      <td style="padding-top:22px;border-top:1px solid rgba(0,0,0,0.08);">
+        <b>Autodesk — Toronto</b><br>
+        <span style="font-size:14px;color:#222;line-height:1.45;">
+          Student Ambassador<br>
+          Led Fusion Design Association; mentored 30+ students on generative design, CAM, and CAD workflows.
+        </span>
+      </td>
+      <td style="padding-top:22px;border-top:1px solid rgba(0,0,0,0.08);text-align:right;white-space:nowrap;font-size:13px;color:#666;">
+        Sep 2019 – Jun 2020
+      </td>
+    </tr>
 
-  <div class="exp-card">
-    <div class="exp-org-line">
-      <div class="exp-org">China State Shipbuilding Corporation — Shanghai</div>
-      <div class="exp-date">(Sep 2020 – Apr 2021)</div>
-    </div>
-    <div class="exp-role">Mechanical Engineer Intern</div>
-    <div class="exp-desc">
-      HVAC & fire-suppression system design for a 12-deck cruise ship; contributed to a spray-nozzle patent.
-    </div>
-  </div>
-
-  <div class="exp-card">
-    <div class="exp-org-line">
-      <div class="exp-org">Autodesk — Toronto</div>
-      <div class="exp-date">(Sep 2019 – Jun 2020)</div>
-    </div>
-    <div class="exp-role">Student Ambassador</div>
-    <div class="exp-desc">
-      Led Fusion Design Association; mentored 30+ students on Generative Design, CAM, and advanced CAD workflows.
-    </div>
-  </div>
-
-</section>
+  </tbody>
+</table>
 
 
 
