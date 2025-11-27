@@ -275,7 +275,6 @@
     code, pre, kbd, samp { font-family: var(--mono); font-size: .95em; line-height: 1.5; }
     table, .pub-meta, .pub-desc { font-variant-numeric: tabular-nums; }
   </style>
-</head>
 <style>
   body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -554,286 +553,13 @@
 </script>
 <!-- =============== End Apple-style Nav ================= -->
 
-<!-- ===========================
-      SCROLL BAR + POPUP
-=========================== -->
-
-<!-- WRAPPER -->
-<div class="scroll-indicator">
-
-  <!-- TRACK -->
-  <div class="scroll-track">
-
-    <!-- LIQUID THUMB -->
-    <div class="scroll-thumb"></div>
-
-    <!-- DOTS — order MUST match table IDs -->
-    <div class="scroll-dot" data-target="about"></div>
-    <div class="scroll-dot" data-target="education"></div>
-    <div class="scroll-dot" data-target="experience"></div>
-    <div class="scroll-dot" data-target="projects"></div>
-    <div class="scroll-dot" data-target="publications"></div>
-    <div class="scroll-dot" data-target="contact"></div>
-
-  </div>
-</div>
-
-<!-- MERGING POPUP MENU -->
-<div class="scroll-menu" id="scrollMenu">
-  <div class="scroll-menu-inner">
-    <div class="scroll-menu-item" data-target="about">About</div>
-    <div class="scroll-menu-item" data-target="education">Education</div>
-    <div class="scroll-menu-item" data-target="experience">Experience</div>
-    <div class="scroll-menu-item" data-target="projects">Projects</div>
-    <div class="scroll-menu-item" data-target="publications">Publications</div>
-    <div class="scroll-menu-item" data-target="contact">Contact</div>
-  </div>
-</div>
-
-<style>
-/* ======================================================
-   POPUP MERGING OUT OF SCROLL BAR — MATCHED STYLE
-====================================================== */
-.scroll-menu {
-  position: fixed;
-  right: calc(40px + 26px); /* matches your sample */
-  top: 50%;
-  width: 40px;            /* collapsed width */
-  height: 200px;          /* synced from JS */
-  background: #f3f1eb;
-  border-radius: 26px;
-  opacity: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 3000;
-
-  transform: translateY(-50%) scaleX(0.15);
-  transform-origin: right center;
-
-  transition:
-    opacity 0.25s ease,
-    border-radius 0.20s ease,
-    transform 0.55s cubic-bezier(0.25, 1.55, 0.45, 0.95),
-    width 0.55s cubic-bezier(0.25, 1.55, 0.45, 0.95);
-}
-
-.scroll-menu.show {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(-50%) scaleX(1);
-  width: 260px;
-  border-radius: 26px;
-}
-
-.scroll-menu-inner {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: 0.12s;
-}
-
-.scroll-menu.show .scroll-menu-inner {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.scroll-menu-item {
-  padding: 14px 24px;
-  font-size: 15px;
-  cursor: pointer;
-  color: #111;
-  opacity: 0;
-  transform: translateX(12px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  transition-delay: 0.15s;
-}
-
-.scroll-menu.show .scroll-menu-item {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.scroll-menu-item:hover {
-  background: #e7e4dd;
-  border-radius: 10px;
-}
-
-/* ======================================================
-   SCROLL BAR — MATCHED STYLE
-====================================================== */
-.scroll-indicator {
-  position: fixed;
-  right: 40px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 999;
-}
-
-.scroll-track {
-  width: 40px;
-  padding: 30px 0;
-  background: #f3f1eb;
-  border-radius: 26px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 26px;
-  position: relative;
-}
-
-.scroll-dot {
-  width: 8px;
-  height: 14px;
-  background: #cacaca;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.18s ease;
-}
-
-.scroll-dot:hover {
-  background: #999;
-}
-
-/* liquid thumb */
-.scroll-thumb {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  background: #111;
-  border-radius: 999px;
-  left: 50%;
-  transform: translateX(-50%);
-  transition: height .12s cubic-bezier(0.22, 1, 0.36, 1),
-              top .12s cubic-bezier(0.22, 1, 0.36, 1);
-  cursor: grab;
-}
-
-.scroll-thumb.dragging {
-  cursor: grabbing;
-}
-
-/* hide on mobile */
-@media (max-width: 768px) {
-  .scroll-indicator,
-  .scroll-menu {
-    display: none;
-  }
-}
-</style>
-
-<script>
-/* ================================
-   TARGETS = TABLE IDs (not sections)
-================================ */
-const dots = document.querySelectorAll(".scroll-dot");
-const thumb = document.querySelector(".scroll-thumb");
-const menu = document.getElementById("scrollMenu");
-const menuItems = document.querySelectorAll(".scroll-menu-item");
-
-const tables = [...dots].map(d =>
-  document.getElementById(d.dataset.target)
-);
-
-/* compute vertical ranges */
-let ranges = [];
-function computeRanges() {
-  ranges = tables.map((tbl, i) => {
-    const start = tbl.offsetTop;
-    const end = tables[i + 1]
-      ? tables[i + 1].offsetTop
-      : document.body.scrollHeight;
-    return { start, end, range: end - start };
-  });
-}
-computeRanges();
-window.addEventListener("resize", computeRanges);
-
-/* ==== LIQUID THUMB ===== */
-let prevScroll = window.scrollY;
-let tTop = 0, tH = 10;
-let cTop = 0, cH = 10;
-
-function updateTarget() {
-  const y = window.scrollY;
-  let idx = 0;
-  ranges.forEach((r, i) => {
-    if (y >= r.start) idx = i;
-  });
-
-  const r = ranges[idx];
-  const base = 30 + idx * 40;
-  const local = Math.min(1, Math.abs(y - r.start) / r.range);
-  const vel = y - prevScroll;
-  prevScroll = y;
-
-  const velN = Math.max(-1, Math.min(1, vel / 60));
-  const sDir = velN >= 0 ? 1 : -1;
-
-  const nh = 10 + 30 * (local * 0.55 + Math.abs(velN) * 0.65);
-  const nt = sDir === 1 ? base : base - (nh - 10);
-
-  tTop = nt;
-  tH = nh;
-}
-
-/* animate loop */
-function animate() {
-  requestAnimationFrame(animate);
-  updateTarget();
-
-  cTop += (tTop - cTop) * 0.22;
-  cH += (tH - cH) * 0.18;
-
-  thumb.style.top = cTop + "px";
-  thumb.style.height = cH + "px";
-}
-animate();
-
-/* ==== DOT CLICK ==== */
-dots.forEach((dot, idx) => {
-  dot.addEventListener("click", () => {
-    tables[idx].scrollIntoView({ behavior: "smooth" });
-  });
-});
-
-/* ==== POPUP MENU ==== */
-function toggleMenu() {
-  menu.classList.toggle("show");
-  menu.style.height = document.querySelector(".scroll-track").offsetHeight + "px";
-}
-
-document.querySelector(".scroll-track").addEventListener("click", (e) => {
-  if (e.target.classList.contains("scroll-thumb")) return;
-  if (e.target.classList.contains("scroll-dot")) return;
-  toggleMenu();
-  e.stopPropagation();
-});
-
-document.addEventListener("click", (e) => {
-  if (!menu.classList.contains("show")) return;
-  if (!menu.contains(e.target)) menu.classList.remove("show");
-});
-
-menuItems.forEach(item => {
-  item.addEventListener("click", () => {
-    document.getElementById(item.dataset.target)
-      .scrollIntoView({ behavior: "smooth" });
-    menu.classList.remove("show");
-  });
-});
-</script>
-
-
-
-
-
-
-
-
-
+</head>
 
   <!-- <body> -->
     <body>
+
+      
+
       <table id="about" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
       <tbody>
       <tr>
@@ -944,7 +670,6 @@ menuItems.forEach(item => {
       </tr>
       </tbody>
       </table>
-      </body>
 
     <p id="last-updated" style="text-align:center;font-size:12.5px;color:#666;margin:24px 0 6px;">
       <time aria-label="Last updated"></time>
@@ -3380,6 +3105,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   </body>
+
 </html>
 
 
