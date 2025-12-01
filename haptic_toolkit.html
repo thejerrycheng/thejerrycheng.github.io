@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VibraForge — Spatial Vibrotactile Toolkit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --accent: #FF9500; /* Apple Orange */
+    --text: #111;
+    --sub: #555;
+    --light: #f5f5f7;
+    --border: #e5e5e7;
+    --max: 900px;
+  }
+
+  body {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+    color: var(--text);
+    background: white;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+  }
+
+  header nav a {
+    margin-right: 24px;
+    text-decoration: none;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .section {
+    max-width: var(--max);
+    margin: auto;
+    padding: 80px 24px;
+  }
+
+  h1 {
+    font-size: 56px;
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    font-size: 34px;
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: var(--sub);
+    font-size: 17px;
+    line-height: 1.6;
+  }
+
+  .hero-sub {
+    max-width: 640px;
+  }
+
+  .img-box {
+    margin-top: 40px;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .img-box img {
+    display: block;
+    width: 100%;
+  }
+
+  .gray {
+    background: var(--light);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .feature-grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    margin-top: 40px;
+  }
+
+  .feature-box {
+    border: 1px solid var(--border);
+    padding: 24px;
+    border-radius: 16px;
+    background: white;
+  }
+
+  .feature-box p {
+    font-size: 15px;
+  }
+
+  .example-box, .app-box, .assembly-step, .paper-box {
+    border: 1px solid var(--border);
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    margin-bottom: 28px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 32px;
+    color: #777;
+    font-size: 14px;
+  }
+
+  .accent { color: var(--accent); }
+</style>
+</head>
+
+<body>
+
+<header>
+  <nav>
+    <a href="#intro">Introduction</a>
+    <a href="#features">Features</a>
+    <a href="#examples">Examples</a>
+    <a href="#gui">GUI</a>
+    <a href="#assembly">Assembly</a>
+    <a href="#paper">Paper</a>
+  </nav>
+</header>
+
+<!-- INTRODUCTION -->
+<section id="intro" class="section">
+  <h1>VibraForge</h1>
+  <p class="hero-sub">
+    A minimal, modular, and scalable toolkit for building <span class="accent">spatial vibrotactile feedback systems</span>.
+    Supports up to <strong>128 actuators</strong>, powered by per-unit microcontrollers and a clean BLE control workflow.
+    Designed for haptics, VR, robotics, accessibility, and research.
+  </p>
+
+  <div class="img-box">
+    <img src="images/vibraforge.png" alt="VibraForge Toolkit">
+  </div>
+</section>
+
+
+<!-- FEATURES -->
+<section id="features" class="section gray">
+  <h2>Features</h2>
+  <p>Simple, clean components. High scalability. Apple-style simplicity applied to haptics hardware.</p>
+
+  <div class="feature-grid">
+
+    <div class="feature-box">
+      <h3>128-Actuator Architecture</h3>
+      <p>
+        Supports 8 independent chains × 16 vibration units each.  
+        The chain-connection method keeps wiring simple and modular.
+      </p>
+    </div>
+
+    <div class="feature-box">
+      <h3>Per-Unit Microcontrollers</h3>
+      <p>
+        Each vibration unit includes its own MCU for local waveform generation.
+        This ensures consistent timing, low latency, and smooth intensity transitions.
+      </p>
+    </div>
+
+    <div class="feature-box">
+      <h3>Fine-Grained Frequency & Intensity</h3>
+      <p>
+        16 intensity levels and multiple discrete frequencies allow expressive tactile patterns—
+        from soft pulses to sharp alerts.
+      </p>
+    </div>
+
+    <div class="feature-box">
+      <h3>BLE + UART Hybrid Pipeline</h3>
+      <p>
+        BLE streams patterns to the control unit; UART distributes commands to each chain.  
+        Clean separation, easy debugging, fast updates.
+      </p>
+    </div>
+
+    <div class="feature-box">
+      <h3>Modular Wearable Design</h3>
+      <p>
+        Press-fit actuators attach to fabric without sewing.  
+        Reconfigure layouts in minutes — ideal for testing new haptic patterns.
+      </p>
+    </div>
+
+    <div class="feature-box">
+      <h3>Toolkit for Research & Product Exploration</h3>
+      <p>
+        A clean development process for designing tactile illusions, body-wide haptic effects,
+        VR interactions, phoneme mapping, and more.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- EXAMPLES -->
+<section id="examples" class="section">
+  <h2>Examples</h2>
+
+  <div class="example-box">
+    <h3>Phoneme Display</h3>
+    <p>
+      Mapping speech phonemes to distinct vibrotactile patterns.  
+      Used for accessibility research and sensory augmentation.
+    </p>
+  </div>
+
+  <div class="example-box">
+    <h3>VR Fitness Jacket</h3>
+    <p>
+      A torso-mounted array provides impact cues, directional hits, and rhythmic feedback  
+      synchronized to game movement and music.
+    </p>
+  </div>
+
+  <div class="example-box">
+    <h3>Drone Teleoperation (AeroHaptix)</h3>
+    <p>
+      A <span class="accent">32-actuator wearable</span> provides spatial cues for UAV obstacle avoidance.  
+      Vibrations encode obstacle direction, distance, and urgency.
+    </p>
+  </div>
+</section>
+
+
+<!-- GUI -->
+<section id="gui" class="section gray">
+  <h2>GUI Editor</h2>
+
+  <div class="app-box">
+    <h3>Visual Pattern Authoring</h3>
+    <p>
+      Design patterns directly on a spatial grid that mirrors the physical actuator layout.
+      Drag, activate, preview, and stream tactile effects instantly.
+    </p>
+  </div>
+
+  <div class="app-box">
+    <h3>Waveform Controls</h3>
+    <p>
+      Choose intensity curves, pulse shapes, frequencies, or use audio-to-vibration mapping.
+    </p>
+  </div>
+
+  <div class="app-box">
+    <h3>Real-Time BLE Streaming</h3>
+    <p>
+      The GUI streams commands live to the VibraForge control unit.  
+      Instant feedback — ideal for rapid prototyping.
+    </p>
+  </div>
+</section>
+
+
+<!-- ASSEMBLY -->
+<section id="assembly" class="section">
+  <h2>Assembly Instructions</h2>
+
+  <div class="assembly-step">
+    <h3>1. Connect the Chains</h3>
+    <p>Wire vibration units in a simple daisy-chain using 3-pin connectors (GND, V+, UART).</p>
+  </div>
+
+  <div class="assembly-step">
+    <h3>2. Attach Units to Fabric</h3>
+    <p>
+      Press-fit the vibration units into the garment holes.  
+      No sewing, adhesives, or permanent fixing required.
+    </p>
+  </div>
+
+  <div class="assembly-step">
+    <h3>3. Connect to the Control Unit</h3>
+    <p>
+      Plug each chain into the control unit.  
+      Power via USB-C or a 3.7V Li-ion battery pack.
+    </p>
+  </div>
+
+  <div class="assembly-step">
+    <h3>4. Pair via Bluetooth</h3>
+    <p>
+      Open the VibraForge GUI → Connect → Start Streaming.  
+      The control unit handles all UART distribution internally.
+    </p>
+  </div>
+</section>
+
+
+<!-- PAPER -->
+<section id="paper" class="section gray">
+  <h2>Papers</h2>
+
+  <div class="paper-box">
+    <h3>VibraForge: A Scalable Prototyping Toolkit</h3>
+    <p>Huang, Ren, Luo, <strong>Cheng</strong>, Cai, Sang, Sousa, Dietz, Wigdor (2024)</p>
+    <a class="accent" href="https://arxiv.org/abs/2409.17420">Read Paper →</a>
+  </div>
+
+  <div class="paper-box">
+    <h3>AeroHaptix: Vibrotactile Feedback for UAV Collision Avoidance</h3>
+    <p>Huang, Wang, <strong>Cheng</strong>, Ren, Cai, Alvarez Valdivia, Mahadevan, Wigdor (2024)</p>
+    <a class="accent" href="https://arxiv.org/abs/2407.12105">Read Paper →</a>
+  </div>
+</section>
+
+
+<footer>
+  © 2025 VibraForge — Apple-style minimal haptics toolkit website.
+</footer>
+
+</body>
+</html>
