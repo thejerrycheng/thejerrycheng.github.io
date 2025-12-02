@@ -1107,6 +1107,7 @@ header.nav-hidden {
   </nav>
 </header>
 
+
 <!-- INTRODUCTION -->
 <section id="intro" class="intro-hero intro-bg">
 
@@ -1114,27 +1115,123 @@ header.nav-hidden {
     <h1>VibraForge</h1>
 
     <p class="hero-sub">
-      A minimal, modular, and scalable toolkit for building 
+      A minimal, modular, and scalable toolkit for creating 
       <span class="accent">spatial vibrotactile feedback systems</span>.
-      Supports up to <strong>128 actuators</strong>, powered by per-unit microcontrollers 
-      and a clean BLE control workflow. Designed for haptics, VR, robotics, 
-      accessibility, and research.
+      Supports up to <strong>128 synchronized actuators</strong> with per-unit microcontrollers
+      and a clean BLE control pipeline. Built for haptics research, VR, robotics,
+      accessibility, and rapid prototyping.
     </p>
 
     <!-- APPLE STYLE ACTION BUTTONS -->
     <div class="intro-buttons">
-      <a href="https://www.youtube.com/watch?v=Ji4QbBA8m8U" target="_blank" class="btn-primary">
+      <button class="btn-primary" id="openVideo">
         ▶ Watch Video
-      </a>
+      </button>
 
       <a href="https://arxiv.org/abs/2409.17420" target="_blank" class="btn-secondary">
         Read Paper →
       </a>
     </div>
-
   </div>
-
 </section>
+
+<!-- VIDEO MODAL -->
+<div id="videoModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <video controls autoplay>
+      <source src="VibraForge/videos/nebula_suit_tease.m4v" type="video/mp4">
+    </video>
+  </div>
+</div>
+
+<style>
+/* --- Modal Styling --- */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(12px) brightness(0.7);
+  background: rgba(0,0,0,0.45);
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 0;
+  border-radius: 18px;
+  max-width: 900px;
+  width: 90%;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.modal video {
+  width: 100%;
+  display: block;
+}
+
+.close {
+  position: absolute;
+  right: 14px;
+  top: 10px;
+  font-size: 28px;
+  cursor: pointer;
+  color: #333;
+  font-weight: bold;
+  transition: opacity 0.2s;
+}
+.close:hover { opacity: 0.5; }
+
+/* Buttons */
+.btn-primary {
+  background: #ff6f00; /* Apple orange */
+  color: white;
+  padding: 12px 22px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 1.05rem;
+}
+
+.btn-secondary {
+  border: 1px solid #ddd;
+  padding: 12px 22px;
+  border-radius: 12px;
+  text-decoration: none;
+}
+</style>
+
+<script>
+// Modal logic
+const modal = document.getElementById("videoModal");
+const btn = document.getElementById("openVideo");
+const closeBtn = document.querySelector(".modal .close");
+
+btn.onclick = () => {
+  modal.style.display = "block";
+};
+
+closeBtn.onclick = () => {
+  modal.style.display = "none";
+  modal.querySelector("video").pause();
+};
+
+window.onclick = (e) => {
+  if (e.target === modal) {
+    modal.style.display = "none";
+    modal.querySelector("video").pause();
+  }
+};
+</script>
+
 
 
 <!-- FEATURES -->
