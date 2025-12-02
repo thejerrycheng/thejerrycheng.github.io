@@ -21,52 +21,7 @@
 /*          APPLE-STYLE NAV BAR           */
 /* -------------------------------------- */
 
-header {
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  width: 100%;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  transition: transform 0.35s ease;
-}
 
-/* Hide on scroll down */
-header.nav-hidden {
-  transform: translateY(-100%);
-}
-
-/* Centered layout */
-.center-nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 32px;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 14px 0;
-}
-
-.center-nav a {
-  text-decoration: none;
-  font-size: 15px;
-  color: var(--text);
-  transition: color 0.2s ease;
-}
-
-.center-nav a:hover {
-  color: var(--accent);
-}
-
-/* Mobile wrap */
-@media (max-width: 650px) {
-  .center-nav {
-    flex-wrap: wrap;
-    gap: 18px;
-    padding: 10px 0;
-  }
-}
 
 
 
@@ -144,21 +99,96 @@ header.nav-hidden {
     -webkit-font-smoothing: antialiased;
   }
 
-  header {
-    padding: 18px 24px;
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    background: white;
-    z-index: 10;
-  }
+header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  width: 100%;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
 
-  header nav a {
-    margin-right: 24px;
-    text-decoration: none;
-    font-size: 14px;
-    color: var(--text);
+.nav-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: center;     /* center desktop nav */
+  align-items: center;
+  position: relative;           /* allow absolutely placed burger */
+}
+
+
+.desktop-nav {
+  display: flex;
+  gap: 32px;
+}
+
+.desktop-nav a {
+  text-decoration: none;
+  color: var(--text);
+  font-size: 15px;
+}
+
+
+/* Burger button */
+.burger {
+  display: none;
+  position: absolute;
+  right: 24px;        /* stays inside max width */
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 26px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text);
+  padding: 4px 8px;
+  z-index: 1001;
+}
+
+
+/* Mobile dropdown menu */
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  gap: 30px;
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(12px);
+  padding: 30px;
+  width: 100%;
+  border-bottom: 1px solid var(--border);
+  animation: menuDrop 0.25s ease-out;
+}
+
+.mobile-menu a {
+  text-decoration: none;
+  color: var(--text);
+  font-size: 17px;
+}
+
+
+/* MOBILE BEHAVIOR */
+@media (max-width: 750px) {
+   header {
+    padding: 24px 0;     /* ↑ makes the whole top bar taller */
   }
+  .desktop-nav {
+    display: none;
+  }
+  .burger {
+    display: block;   /* Only visible on mobile */
+  }
+}
+
+@media (min-width: 751px) {
+  .mobile-menu {
+    display: none !important;
+  }
+}
+
 
   .section {
     max-width: var(--max);
@@ -975,7 +1005,7 @@ header.nav-hidden {
 }
 
 .btn-primary:hover {
-  background: #e68500;
+  background: #FF9500
 }
 
 /* Outline button (secondary Apple action) */
@@ -1084,28 +1114,66 @@ header.nav-hidden {
   to   { transform: scale(1); opacity: 1; }
 }
 
+/* MOBILE-ONLY NO-HORIZONTAL-SCROLL FIX */
+@media (max-width: 900px) {
+  html, body {
+    overflow-x: hidden !important;
+    width: 100%;
+  }
+
+  /* prevent child overflow on mobile only */
+  * {
+    max-width: 100vw !important;
+  }
+
+  .feature-slider,
+  .assembly-slider {
+    max-width: 100vw !important;
+    overflow-x: auto;
+  }
+}
+
+
 
 
 </style>
-
-
 </head>
-
-
 
 
 <body>
 
 <header>
-  <nav class="center-nav">
+  <div class="nav-inner">
+
+    <!-- LEFT: desktop nav -->
+    <nav class="desktop-nav">
+      <a href="#intro">Introduction</a>
+      <a href="#features">Features</a>
+      <a href="#examples">Examples</a>
+      <a href="#gui">GUI</a>
+      <a href="#assembly">Assembly</a>
+      <a href="#paper">Paper</a>
+      <a href="#community">Community</a>
+    </nav>
+
+    <!-- RIGHT: burger (mobile only) -->
+    <button class="burger" id="burgerBtn">☰</button>
+
+  </div>
+
+  <!-- SLIDE-DOWN MENU -->
+  <div id="mobileMenu" class="mobile-menu">
     <a href="#intro">Introduction</a>
     <a href="#features">Features</a>
     <a href="#examples">Examples</a>
     <a href="#gui">GUI</a>
     <a href="#assembly">Assembly</a>
     <a href="#paper">Paper</a>
-  </nav>
+    <a href="#community">Community</a>
+  </div>
 </header>
+
+
 
 
 <!-- INTRODUCTION -->
@@ -1192,7 +1260,7 @@ header.nav-hidden {
 
 /* Buttons */
 .btn-primary {
-  background: #ff6f00; /* Apple orange */
+  background: #ff5000; /* Apple orange */
   color: white;
   padding: 12px 22px;
   border-radius: 12px;
@@ -1207,6 +1275,139 @@ header.nav-hidden {
   border-radius: 12px;
   text-decoration: none;
 }
+
+
+/* GUI container */
+.gui-hero {
+  position: relative;
+  overflow: hidden;
+  padding-top: 60px;
+}
+
+/* wrapper to hold both image + video */
+.gui-media {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 40px auto 0;
+}
+
+.gui-hero-img,
+.gui-video {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  display: block;
+  transition: opacity 0.35s ease;
+}
+
+/* Video sits above image */
+.gui-video {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: auto;   /* Allows clicking & playing */
+}
+
+/* Hover effect (desktop only) */
+.gui-media:hover .gui-video {
+  opacity: 1;
+}
+
+.gui-media:hover .gui-hero-img {
+  opacity: 0;
+}
+
+/* Mobile — no hover, keep image only */
+@media (max-width: 800px) {
+  .gui-video {
+    display: none !important;
+  }
+  .gui-hero-img {
+    opacity: 1 !important;
+  }
+}
+
+/* Side-by-side wrapper */
+.gui-row {
+  display: flex;
+  gap: 28px;
+  margin-top: 40px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+.gui-col {
+  flex: 1;
+  min-width: 0; /* prevents overflow */
+}
+
+/* Image + Video shared styling */
+.gui-img,
+.gui-video {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  display: block;
+  object-fit: contain;
+}
+
+/* Larger desktop screens */
+@media (min-width: 1100px) {
+  .gui-img,
+  .gui-video {
+    max-height: 420px;
+  }
+}
+
+/* Mobile: stack vertically */
+@media (max-width: 850px) {
+  .gui-row {
+    flex-direction: column;
+  }
+}
+
+/* Side-by-side layout */
+.gui-row {
+  display: flex;
+  gap: 28px;
+  margin-top: 40px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Column config */
+.gui-col {
+  flex: 1;
+  display: flex;
+}
+
+/* Shared styling for BOTH image + video */
+.gui-media-block {
+  width: 100%;
+  height: 100%;
+  max-height: 420px;          /* same max height */
+  object-fit: contain;        /* preserve aspect ratio */
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: #fff;
+  display: block;
+  align-self: stretch;        /* ensure they match height */
+}
+
+/* Mobile stack */
+@media (max-width: 850px) {
+  .gui-row {
+    flex-direction: column;
+  }
+  .gui-media-block {
+    max-height: 360px;
+  }
+}
+
+
+
 </style>
 
 <script>
@@ -1425,15 +1626,31 @@ window.onclick = (e) => {
 
   <div class="gui-content">
     <h2>GUI Editor</h2>
-
     <p>
       A fully featured editor for designing, previewing, and streaming
       spatial vibrotactile patterns — all in real time.
     </p>
   </div>
 
-  <img src="vibraforge/figures/gui.png" class="gui-hero-img" alt="GUI Editor">
+  <div class="gui-row">
+    
+    <!-- Left: Image -->
+    <div class="gui-col">
+      <img src="vibraforge/figures/gui.png" class="gui-media-block" alt="GUI Screenshot">
+    </div>
+
+    <!-- Right: Video -->
+    <div class="gui-col">
+      <video class="gui-media-block" autoplay muted loop playsinline preload="metadata">
+        <source src="VibraForge/videos/gui_demo.m4v" type="video/mp4">
+        <source src="VibraForge/videos/gui_demo.m4v" type="video/x-m4v">
+      </video>
+    </div>
+
+  </div>
 </section>
+
+
 
 
 
@@ -1601,6 +1818,36 @@ window.onclick = (e) => {
 </section>
 
 
+<!-- COMMUNITY SIGNUP -->
+<section id="community" class="section">
+  <h2>Join the Community — Get a Free VibraForge Toolkit</h2>
+
+  <p class="community-sub">
+    We're building a growing community of researchers, creators, engineers, 
+    and designers exploring spatial vibrotactile feedback.  
+    Contribute your ideas, experiments, or feedback — and receive a chance to 
+    get a <strong>FREE VibraForge Dev Kit</strong> as a thank-you for helping us 
+    push the field forward.
+  </p>
+
+  <div class="community-card">
+    <h3>Want to participate?</h3>
+    <p>
+      Fill out this short form to tell us about your interests, research area, 
+      or project ideas. Selected contributors will receive early-access hardware, 
+      software updates, and feature testing opportunities.
+    </p>
+
+    <a class="community-btn" class = "accent"
+       href="https://forms.gle/6vYgRUG9y7kuLXiv5" 
+       target="_blank">
+      Apply to Receive a Free Toolkit →
+    </a>
+  </div>
+</section>
+
+
+
 
 <footer>
   © 2025 VibraForge 
@@ -1608,85 +1855,147 @@ window.onclick = (e) => {
 
 </body>
 
-
-
 <script>
+/* ============================================================
+   NAV BAR SCROLL BEHAVIOR (HIDE DOWN, SHOW UP)
+============================================================ */
 let lastScroll = 0;
 const header = document.querySelector("header");
 
 window.addEventListener("scroll", () => {
   const current = window.pageYOffset;
 
-  if (current > lastScroll && current > 50) {
-    // scrolling down → hide
+  // hide when scrolling down
+  if (current > lastScroll && current > 60) {
     header.classList.add("nav-hidden");
-  } else {
-    // scrolling up → show
+  } 
+  // show when scrolling up
+  else {
     header.classList.remove("nav-hidden");
   }
 
   lastScroll = current;
 });
-</script>
+
+// always show when clicking any nav link
+document.querySelectorAll("header a").forEach(link => {
+  link.addEventListener("click", () => {
+    header.classList.remove("nav-hidden");
+  });
+});
+
+// always show when touch/scroll gesture begins
+window.addEventListener("wheel", () => header.classList.remove("nav-hidden"));
+window.addEventListener("touchstart", () => header.classList.remove("nav-hidden"));
 
 
-<script>
+
+/* ============================================================
+   MOBILE BURGER MENU
+============================================================ */
+const burger = document.getElementById("burgerBtn");
+const menu = document.getElementById("mobileMenu");
+let menuOpen = false;
+
+burger.addEventListener("click", (e) => {
+  e.stopPropagation();
+  menuOpen = !menuOpen;
+  menu.style.display = menuOpen ? "flex" : "none";
+  header.classList.remove("nav-hidden");
+});
+
+// close on click outside
+document.addEventListener("click", (e) => {
+  if (menuOpen && !menu.contains(e.target) && e.target !== burger) {
+    menu.style.display = "none";
+    menuOpen = false;
+  }
+});
+
+// close on scroll
+window.addEventListener("scroll", () => {
+  if (menuOpen) {
+    menu.style.display = "none";
+    menuOpen = false;
+  }
+});
+
+// close on menu link click
+document.querySelectorAll(".mobile-menu a").forEach(link => {
+  link.addEventListener("click", () => {
+    menu.style.display = "none";
+    menuOpen = false;
+  });
+});
+
+
+
+/* ============================================================
+   MODAL SYSTEM (Example images & Video modals)
+============================================================ */
+function openModal(id) {
+  document.getElementById(id).style.display = "flex";
+}
+
+function closeModal(id) {
+  document.getElementById(id).style.display = "none";
+}
+
+// close modal when clicking outside
+window.addEventListener("click", (e) => {
+  document.querySelectorAll(".modal").forEach(modal => {
+    if (e.target === modal) modal.style.display = "none";
+  });
+});
+
+
+
+/* ============================================================
+   GENERIC SLIDER ENGINE (Features + Assembly)
+============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
-
-  /* ---------------------------------------------------- */
-  /*                 GENERIC SLIDER ENGINE                */
-  /* ---------------------------------------------------- */
 
   function initSlider(config) {
     const slider = document.getElementById(config.sliderId);
-    const prev   = document.querySelector(config.prevClass);
-    const next   = document.querySelector(config.nextClass);
-    const dotsC  = document.getElementById(config.dotsId);
-    const bar    = config.scrollBarId ? document.getElementById(config.scrollBarId) : null;
-
     if (!slider) return;
+
+    const prev = document.querySelector(config.prevClass);
+    const next = document.querySelector(config.nextClass);
+    const dotsC = document.getElementById(config.dotsId);
+    const bar = config.scrollBarId ? document.getElementById(config.scrollBarId) : null;
 
     const cards = slider.children;
     const count = cards.length;
 
-    /* Create dots */
+    // create dots
     if (dotsC) {
+      dotsC.innerHTML = "";  // clear old dots
       for (let i = 0; i < count; i++) {
-        const dot = document.createElement("div");
-        dotsC.appendChild(dot);
+        dotsC.appendChild(document.createElement("div"));
       }
     }
 
     const dots = dotsC ? dotsC.children : [];
-
     if (dots.length > 0) dots[0].classList.add("active");
 
-    /* Buttons */
+    // buttons
     if (next) next.onclick = () => {
-      slider.scrollBy({
-        left: slider.clientWidth * 0.8,
-        behavior: "smooth"
-      });
+      slider.scrollBy({ left: slider.clientWidth * 0.8, behavior: "smooth" });
     };
-
     if (prev) prev.onclick = () => {
-      slider.scrollBy({
-        left: -slider.clientWidth * 0.8,
-        behavior: "smooth"
-      });
+      slider.scrollBy({ left: -slider.clientWidth * 0.8, behavior: "smooth" });
     };
 
-    /* Scroll updates */
+    // scroll tracking
     slider.addEventListener("scroll", () => {
       const cardWidth = cards[0].getBoundingClientRect().width + 24;
       const index = Math.round(slider.scrollLeft / cardWidth);
 
-      /* dots */
       [...dots].forEach((d, i) => {
         d.classList.toggle("active", i === index);
       });
 
-      /* scroll bar */
+      // progress bar
       if (bar) {
         const maxScroll = slider.scrollWidth - slider.clientWidth;
         const pct = maxScroll > 0 ? (slider.scrollLeft / maxScroll) * 100 : 0;
@@ -1695,12 +2004,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-
-  /* ---------------------------------------------------- */
-  /*                INITIALIZE BOTH SLIDERS               */
-  /* ---------------------------------------------------- */
-
-  // Features section slider
+  // init sliders
   initSlider({
     sliderId: "featureSlider",
     prevClass: ".prev",
@@ -1709,7 +2013,6 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollBarId: "featureScrollBar"
   });
 
-  // Assembly slider
   initSlider({
     sliderId: "assemblySlider",
     prevClass: ".assembly-prev",
@@ -1721,22 +2024,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-<script>
-function openModal(id) {
-  document.getElementById(id).style.display = "flex";
-}
-
-function closeModal(id) {
-  document.getElementById(id).style.display = "none";
-}
-
-// Close when clicking outside modal
-window.onclick = function(e) {
-  document.querySelectorAll('.modal').forEach(modal => {
-    if (e.target === modal) modal.style.display = "none";
-  });
-}
-</script>
 
 
 
