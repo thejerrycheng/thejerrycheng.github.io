@@ -1008,6 +1008,82 @@ header.nav-hidden {
   }
 }
 
+/* Feature image wrapper: fixed height, prevents cropping */
+.feature-img-wrap {
+  width: 100%;
+  height: 180px;                  /* unified height */
+  padding: 10px;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--border);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;               /* prevents overflow but does not crop visible area */
+}
+
+/* Images: no cropping, fully contained */
+.feature-img-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain !important;   /* NEVER crop */
+  display: block;
+}
+
+/* ============= MODAL CONTAINER ============= */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* ============= MODAL CONTENT BOX ============= */
+.modal-content {
+  background: white;
+  max-width: 600px;
+  width: 100%;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+  animation: popIn 0.28s ease;
+  position: relative;
+}
+
+/* ============= CLOSE BUTTON ============= */
+.close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 28px;
+  cursor: pointer;
+  color: #666;
+  transition: 0.2s ease;
+}
+.close:hover {
+  color: black;
+}
+
+/* ============= MODAL IMAGE ============= */
+.modal-img {
+  width: 100%;
+  max-height: 340px;
+  object-fit: contain;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+/* ============= POP ANIMATION ============= */
+@keyframes popIn {
+  from { transform: scale(0.92); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
 
 
 </style>
@@ -1061,8 +1137,6 @@ header.nav-hidden {
 </section>
 
 
-
-
 <!-- FEATURES -->
 <section id="features" class="section">
   <h2>Features</h2>
@@ -1074,7 +1148,9 @@ header.nav-hidden {
     <div class="feature-slider" id="featureSlider">
 
       <div class="feature-card">
-        <img src="vibraforge/figures/chain_connection.png">
+        <div class="feature-img-wrap">
+          <img src="vibraforge/figures/chain_illustration.png" alt="">
+        </div>
         <div class="card-text">
           <h3>128-Actuator Architecture</h3>
           <p>8 chains × 16 units each — clean, scalable, modular.</p>
@@ -1082,7 +1158,9 @@ header.nav-hidden {
       </div>
 
       <div class="feature-card">
-        <img src="vibraforge/figures/control_unit.png">
+        <div class="feature-img-wrap">
+          <img src="vibraforge/figures/control_unit.png" alt="">
+        </div>
         <div class="card-text">
           <h3>Per-Unit Microcontrollers</h3>
           <p>Local waveform synthesis for crisp timing + low latency.</p>
@@ -1090,7 +1168,9 @@ header.nav-hidden {
       </div>
 
       <div class="feature-card">
-        <img src="vibraforge/figures/vibration_unit.png">
+        <div class="feature-img-wrap">
+          <img src="vibraforge/figures/per_unit.png" alt="">
+        </div>
         <div class="card-text">
           <h3>Fine-Grained Frequency & Intensity</h3>
           <p>16 intensity levels + multi-band frequencies for expressive patterns.</p>
@@ -1098,7 +1178,9 @@ header.nav-hidden {
       </div>
 
       <div class="feature-card">
-        <img src="vibraforge/figures/sec3_data_communication.png">
+        <div class="feature-img-wrap">
+          <img src="vibraforge/figures/chain_connection.png" alt="">
+        </div>
         <div class="card-text">
           <h3>BLE + UART Hybrid Pipeline</h3>
           <p>BLE for high-level patterns; UART for chain-level distribution.</p>
@@ -1106,7 +1188,9 @@ header.nav-hidden {
       </div>
 
       <div class="feature-card">
-        <img src="vibraforge/figures/attach.png">
+        <div class="feature-img-wrap">
+          <img src="vibraforge/figures/attach.png" alt="">
+        </div>
         <div class="card-text">
           <h3>Modular Wearable Design</h3>
           <p>Snap-fit actuators — no sewing needed.</p>
@@ -1114,7 +1198,9 @@ header.nav-hidden {
       </div>
 
       <div class="feature-card">
-        <img src="vibraforge/figures/full_exploded_view.png">
+        <div class="feature-img-wrap">
+          <img src="vibraforge/figures/full_exploded_view.png" alt="">
+        </div>
         <div class="card-text">
           <h3>Toolkit for R&D</h3>
           <p>Ideal for VR, illusions, phoneme mapping, and robotics feedback.</p>
@@ -1125,9 +1211,6 @@ header.nav-hidden {
 
     <button class="slider-btn next">›</button>
   </div>
-
-  <!-- DOT INDICATOR -->
-  <!-- <div class="slider-dots" id="sliderDots"></div> -->
 
   <div class="slider-scroll-track">
     <div class="slider-scroll-bar" id="featureScrollBar"></div>
@@ -1143,24 +1226,99 @@ header.nav-hidden {
 <section id="examples" class="section">
   <h2>Examples & Applications</h2>
 
-  <div class="example-box">
+  <!-- Example 1 -->
+  <div class="example-box" onclick="openModal('modal1')">
     <img src="vibraforge/figures/sec5_phonemic_display_development_v2.png" class="example-img">
     <h3>Phoneme Display</h3>
     <p>Mapping speech phonemes to tactile signatures.</p>
   </div>
 
-  <div class="example-box">
+  <!-- Example 2 -->
+  <div class="example-box" onclick="openModal('modal2')">
     <img src="vibraforge/figures/vr.png" class="example-img">
     <h3>VR Fitness Jacket</h3>
     <p>Impact cues, directional hits, rhythmic vibration patterns.</p>
   </div>
 
-  <div class="example-box">
+  <!-- Example 3 -->
+  <div class="example-box" onclick="openModal('modal3')">
     <img src="vibraforge/figures/sec6_uav_teaser.jpg" class="example-img">
     <h3>Drone Teleoperation (AeroHaptix)</h3>
     <p>Spatial perception via vibration — direction, distance, urgency.</p>
   </div>
 </section>
+
+<!-- =========================== -->
+<!--        MODAL #1             -->
+<!-- =========================== -->
+<div id="modal1" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modal1')">×</span>
+    <img src="vibraforge/figures/sec5_phonemic_display_development_v2.png" class="modal-img">
+    <h3>Phoneme Display</h3>
+    <p>
+      We map a library of English phonemes to tactile patterns across the torso.
+      Each phoneme produces a consistent spatiotemporal signature, enabling rapid
+      perceptual association and potential speech-to-touch interfaces.
+    </p>
+  </div>
+</div>
+
+
+<!-- =========================== -->
+<!--        MODAL #2             -->
+<!-- =========================== -->
+<div id="modal2" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modal2')">×</span>
+    <img src="vibraforge/figures/vr.png" class="modal-img">
+    <h3>VR Fitness Jacket</h3>
+    <p>
+      Lightweight vibrotactile garments for high-movement VR. Simulates impacts,
+      directional hits, rhythm cues, and engagement feedback for immersive XR
+      training and gameplay.
+    </p>
+  </div>
+</div>
+
+
+<!-- =========================== -->
+<!--        MODAL #3 (AEROHAPTIX) -->
+<!-- =========================== -->
+<div id="modal3" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modal3')">×</span>
+    <img src="vibraforge/figures/sec6_uav_teaser.jpg" class="modal-img">
+    <h3>Drone Teleoperation (AeroHaptix)</h3>
+
+    <p>
+      AeroHaptix provides spatially distributed vibration cues to encode
+      distance-to-obstacle, approach direction, and urgency during drone
+      teleoperation. This improves situational awareness and reduces collisions,
+      particularly in visually occluded environments.
+    </p>
+
+    <p><strong>Paper:</strong>  
+      <a class="accent" href="https://ieeexplore.ieee.org/document/10916921" target="_blank">
+        R-AL
+      </a>
+    </p>
+
+    <p><strong>Video:</strong>  
+      <a class="accent" href="https://www.youtube.com/watch?v=ezIZrVmYYpI&list=PL5hrJ0xlpQr9NXqQIKAuI2mUovgFscNgk&index=3" target="_blank">
+        YouTube
+      </a>
+    </p>
+
+    <p><strong>Code:</strong>  
+      <a class="accent" href="https://github.com/huangbj16/DroneSimulation" target="_blank">
+        GitHub Repository
+      </a>
+    </p>
+  </div>
+</div>
+
+
 
 
 
@@ -1465,6 +1623,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
+
+<script>
+function openModal(id) {
+  document.getElementById(id).style.display = "flex";
+}
+
+function closeModal(id) {
+  document.getElementById(id).style.display = "none";
+}
+
+// Close when clicking outside modal
+window.onclick = function(e) {
+  document.querySelectorAll('.modal').forEach(modal => {
+    if (e.target === modal) modal.style.display = "none";
+  });
+}
+</script>
+
 
 
 </html>
