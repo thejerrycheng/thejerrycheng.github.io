@@ -17,6 +17,117 @@
     --max: 900px;
   }
 
+  /* ----- CENTERED APPLE-STYLE NAV BAR ----- */
+
+header {
+  position: sticky;
+  top: 0;
+  background: white;
+  border-bottom: 1px solid var(--border);
+  z-index: 20;
+  padding: 14px 0;
+}
+
+/* Centering wrapper */
+.center-nav {
+  display: flex;
+  justify-content: center;      /* CENTER the items */
+  align-items: center;
+  gap: 32px;                     /* Beautiful spacing */
+  width: 100%;
+  max-width: 960px;             /* Keeps nav line from stretching too wide */
+  margin: 0 auto;
+}
+
+/* Nav links */
+.center-nav a {
+  text-decoration: none;
+  font-size: 15px;
+  color: var(--text);
+  padding: 6px 0;
+  transition: color 0.2s ease;
+}
+
+.center-nav a:hover {
+  color: var(--accent);          /* Apple orange highlight */
+}
+
+/* Smaller screens */
+@media (max-width: 650px) {
+  .center-nav {
+    gap: 18px;
+    font-size: 14px;
+    flex-wrap: wrap;             /* Allows wrapping if needed */
+  }
+}
+
+
+/* ------------------------- */
+/*  APPLE HERO: INTRO        */
+/* ------------------------- */
+
+/* Background with parallax */
+.intro-bg {
+  position: relative;
+  background-image: url('images/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed; /* subtle parallax */
+  overflow: hidden;
+}
+
+/* Vision Pro gradient mask */
+.intro-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.75),
+    rgba(255,255,255,0.65),
+    rgba(255,255,255,0.85)
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Dynamic Apple Orange tint overlay */
+.intro-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255,149,0,0.08),
+    rgba(255,149,0,0.02) 40%,
+    rgba(255,149,0,0.10)
+  );
+  z-index: 0;
+  mix-blend-mode: soft-light;
+}
+
+/* Intro content sits above all overlays */
+#intro > * {
+  position: relative;
+  z-index: 10;
+}
+
+/* Fade-in animation */
+.fade-in {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: fadeInUp 1.2s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
   body {
     font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
     margin: 0;
@@ -122,15 +233,703 @@
     color: #777;
     font-size: 14px;
   }
+  /* Universal image rule for your cards */
+.section img,
+.feat-img,
+.example-img,
+.app-img,
+.assembly-img,
+.paper-img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  display: block;
+  object-fit: cover;
+}
+
+/* Example images slightly taller */
+.example-img {
+  max-height: 280px;
+  object-fit: cover;
+}
+
+/* GUI & paper thumbnails */
+.app-img, .paper-img {
+  max-height: 260px;
+  object-fit: cover;
+}
+
+/* Assembly illustrations */
+.assembly-img {
+  max-height: 220px;
+  object-fit: contain;
+  background: white;
+}
+
+/* Feature grid responsiveness */
+.feature-grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+/* Card padding + consistent layout */
+.feature-box,
+.example-box,
+.app-box,
+.assembly-step,
+.paper-box {
+  border: 1px solid var(--border);
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 28px;
+  box-sizing: border-box;
+}
+
+/* Ensure text does not stretch too wide */
+.section {
+  max-width: var(--max);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 600px) {
+  h1 { font-size: 36px; }
+  h2 { font-size: 26px; }
+  .section { padding: 50px 18px; }
+
+  /* Slightly reduce image radius for small screens */
+  .section img {
+    border-radius: 12px;
+  }
+}
+
+/* --- FEATURE SLIDER --- */
+
+.feature-slider-container {
+  position: relative;
+  margin-top: 40px;
+}
+
+.feature-slider {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 20px;
+  scrollbar-width: none;            /* Firefox */
+}
+
+.feature-slider::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+/* Each card */
+.feature-card {
+  flex: 0 0 calc(33.3% - 20px);     /* ~3 cards per screen */
+  scroll-snap-align: start;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 360px;
+}
+
+/* --- SLIDER LAYOUT --- */
+
+.feature-slider-container {
+  position: relative;
+  margin-top: 40px;
+  overflow: visible;
+}
+
+/* slider track */
+.feature-slider {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 10px 0 30px;
+  scrollbar-width: none;
+}
+
+/* HERO WITH TEXT OVER IMAGE */
+.intro-hero {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-height: 100vh;               /* Image never taller than window */
+  min-height: 60vh;                /* Good balance for desktop */
+  padding: 80px 0 120px;           /* Padding for text spacing */
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* MAKE THE IMAGE THE BACKGROUND */
+.intro-hero {
+  background-image: url("vibraforge/figures/cover.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;     /* subtle parallax */
+}
+
+/* KEEP YOUR EXISTING TINT + GRADIENT MASK */
+.intro-bg::before,
+.intro-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.intro-bg::before {
+  background: linear-gradient(
+    135deg,
+    rgba(255,149,0,0.08),
+    rgba(255,149,0,0.02) 40%,
+    rgba(255,149,0,0.10)
+  );
+  mix-blend-mode: soft-light;
+}
+
+.intro-bg::after {
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.75),
+    rgba(255,255,255,0.65),
+    rgba(255,255,255,0.85)
+  );
+}
+
+/* TEXT ALWAYS ABOVE IMAGE + MASK */
+.intro-content {
+  position: relative;
+  z-index: 5;
+  max-width: 900px;
+  padding: 0 24px;
+  text-align: left;
+}
+
+/* Responsive text */
+@media (max-width: 600px) {
+  .intro-hero {
+    padding: 60px 0 80px;
+    min-height: 55vh;
+  }
+  .intro-content h1 {
+    font-size: 38px;
+  }
+}
+
+
+.feature-slider::-webkit-scrollbar { display: none; }
+
+/* each card */
+.feature-card {
+  flex: 0 0 calc(33.3% - 20px); /* ~3.2 cards visible */
+  scroll-snap-align: start;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 360px;
+}
+
+/* TOP IMAGE */
+.feature-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--border);
+}
+
+/* TEXT AT BOTTOM */
+.card-text {
+  padding: 16px;
+  margin-top: auto;
+}
+
+.card-text h3 {
+  margin: 0 0 6px;
+}
+
+/* BUTTONS */
+.slider-btn {
+  position: absolute;
+  top: 45%;
+  transform: translateY(-50%);
+  background: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 26px;
+  line-height: 36px;
+  text-align: center;
+  z-index: 20;
+  transition: 0.2s;
+}
+
+.slider-btn:hover {
+  background: var(--light);
+}
+
+.prev { left: -14px; }
+.next { right: -14px; }
+
+/* DOT INDICATOR */
+.slider-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  gap: 8px;
+}
+
+.slider-dots div {
+  width: 10px;
+  height: 10px;
+  background: #ccc;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.slider-dots .active {
+  background: var(--accent); /* Apple orange */
+  transform: scale(1.25);
+}
+
+/* RESPONSIVE BREAKPOINTS */
+@media (max-width: 1200px) {
+  .feature-card { flex: 0 0 calc(40% - 20px); } /* 2.5 cards */
+}
+
+@media (max-width: 900px) {
+  .feature-card { flex: 0 0 calc(50% - 20px); } /* 2.2 cards */
+}
+
+@media (max-width: 600px) {
+  .feature-card { flex: 0 0 calc(75% - 20px); } /* 1.2 cards */
+  .feature-card img { height: 150px; }
+  .slider-btn { display: none; } /* hide buttons on small mobile */
+}
+
+
+/* Image top */
+.feature-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Text bottom */
+.card-text {
+  padding: 18px;
+  margin-top: auto;    /* push text to bottom */
+}
+
+.card-text h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.card-text p {
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+/* HERO OVERLAY LAYOUT */
+.intro-hero {
+  position: relative;
+  padding-top: 120px;
+  padding-bottom: 200px;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Text container */
+.intro-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 10;
+}
+
+/* Hero image behind text */
+.intro-hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;     /* full-bleed Apple hero */
+  z-index: 1;
+  opacity: 0.1;         /* subtle fade under gradient */
+}
+
+/* Ensure gradients + tints remain above image but behind text */
+.intro-bg::before,
+.intro-bg::after {
+  z-index: 5;
+}
+
+/* Text on top of everything */
+.intro-content * {
+  position: relative;
+  z-index: 20;
+}
+
+/* Mobile spacing */
+@media (max-width: 600px) {
+  .intro-hero {
+    padding-top: 90px;
+    padding-bottom: 150px;
+  }
+  .intro-content h1 {
+    font-size: 42px;
+  }
+}
+
+
+
+/* NAV BUTTONS */
+.slider-btn {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  z-index: 5;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid var(--border);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 24px;
+  line-height: 34px;
+  text-align: center;
+  color: var(--text);
+  backdrop-filter: blur(6px);
+}
+
+.slider-btn:hover {
+  background: white;
+}
+
+.prev { left: -10px; }
+.next { right: -10px; }
+
+
+
+/* RESPONSIVE BREAKPOINTS */
+@media (max-width: 1200px) {
+  .feature-card { flex: 0 0 calc(40% - 20px); } /* ~2.5 cards */
+}
+
+@media (max-width: 900px) {
+  .feature-card { flex: 0 0 calc(50% - 20px); } /* 2.2 cards */
+}
+
+@media (max-width: 600px) {
+  .feature-card { flex: 0 0 calc(75% - 20px); } /* 1.2 cards mobile */
+  .feature-card img { height: 150px; }
+}
 
   .accent { color: var(--accent); }
+
+
+
+/* --- ASSEMBLY SLIDER --- */
+
+.assembly-slider-container {
+  position: relative;
+  margin-top: 32px;
+  overflow: visible;
+}
+
+.assembly-slider {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 10px 0 30px;
+  scrollbar-width: none;
+}
+
+.assembly-slider::-webkit-scrollbar { display: none; }
+
+.assembly-card {
+  flex: 0 0 80%;                 /* ~1.2 cards visible */
+  scroll-snap-align: start;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+}
+
+/* --- Assembly Card Image (Preserve Aspect Ratio) --- */
+.assembly-img {
+  width: 100%;
+  height: auto;                 /* preserve natural dimensions */
+  max-height: 220px;            /* keeps image inside the card */
+  object-fit: contain;          /* NEVER crop or distort */
+  background: white;            /* clean borderless look */
+  padding: 10px;                /* avoid touching edges */
+  box-sizing: border-box;
+}
+
+/* --- Scroll Indicator Bar --- */
+.assembly-scroll-track {
+  width: 100%;
+  height: 4px;
+  background: #e5e5e7;
+  border-radius: 4px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.assembly-scroll-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width 0.20s ease-out;
+}
+
+
+.assembly-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--border);
+}
+
+.assembly-text {
+  padding: 16px 18px 18px;
+}
+
+.assembly-text ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.assembly-text li {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--sub);
+}
+
+/* Assembly nav buttons */
+.assembly-btn {
+  position: absolute;
+  top: 45%;
+  transform: translateY(-50%);
+  background: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 26px;
+  line-height: 36px;
+  text-align: center;
+  z-index: 20;
+  transition: 0.2s;
+}
+
+.assembly-btn:hover {
+  background: var(--light);
+}
+
+.assembly-prev { left: -14px; }
+.assembly-next { right: -14px; }
+
+/* Dots shared style (you already have .slider-dots from features) */
+#assemblyDots {
+  margin-top: 10px;
+}
+
+/* Responsive: single card on small screens */
+@media (max-width: 800px) {
+  .assembly-card { flex: 0 0 88%; }
+}
+
+@media (max-width: 600px) {
+  .assembly-card { flex: 0 0 95%; }
+  .assembly-img { height: 160px; }
+  .assembly-btn { display: none; } /* swipe only on small screens */
+}
+
+/* ------------------------ */
+/*   UNIVERSAL SLIDER CSS   */
+/* ------------------------ */
+
+.slider-btn,
+.assembly-btn {
+  position: absolute;
+  top: 45%;
+  transform: translateY(-50%);
+  background: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 26px;
+  line-height: 36px;
+  text-align: center;
+  z-index: 20;
+  transition: 0.2s;
+  backdrop-filter: blur(6px);
+}
+.slider-btn:hover,
+.assembly-btn:hover {
+  background: var(--light);
+}
+
+.prev { left: -14px; }
+.next { right: -14px; }
+.assembly-prev { left: -14px; }
+.assembly-next { right: -14px; }
+
+
+/* --- SLIDER TRACK --- */
+.feature-slider,
+.assembly-slider {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 10px 0 30px;
+  scrollbar-width: none;
+}
+.feature-slider::-webkit-scrollbar,
+.assembly-slider::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* --- SLIDER CARDS (FEATURE) --- */
+.feature-card {
+  flex: 0 0 calc(33.3% - 20px);
+  scroll-snap-align: start;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+}
+.feature-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--border);
+}
+
+
+/* --- SLIDER CARDS (ASSEMBLY) --- */
+.assembly-card {
+  flex: 0 0 80%;
+  scroll-snap-align: start;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+}
+.assembly-img {
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+  object-fit: contain;
+  background: white;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+
+/* --- DOTS --- */
+.slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+.slider-dots div {
+  width: 10px;
+  height: 10px;
+  background: #ccc;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+.slider-dots .active {
+  background: var(--accent);
+  transform: scale(1.25);
+}
+
+
+/* --- SCROLL BAR --- */
+.slider-scroll-track,
+.assembly-scroll-track {
+  width: 100%;
+  height: 4px;
+  background: #e5e5e7;
+  border-radius: 4px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+.slider-scroll-bar,
+.assembly-scroll-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width 0.2s ease-out;
+}
+
+
+/* --- RESPONSIVE BREAKPOINTS --- */
+@media (max-width: 1200px) {
+  .feature-card { flex: 0 0 40%; }
+}
+@media (max-width: 900px) {
+  .feature-card { flex: 0 0 50%; }
+}
+@media (max-width: 600px) {
+  .feature-card { flex: 0 0 75%; }
+  .feature-card img { height: 150px; }
+  .slider-btn,
+  .assembly-btn { display: none; }
+}
+
+
+
 </style>
 </head>
+
+
+
 
 <body>
 
 <header>
-  <nav>
+  <nav class="center-nav">
     <a href="#intro">Introduction</a>
     <a href="#features">Features</a>
     <a href="#examples">Examples</a>
@@ -141,170 +940,292 @@
 </header>
 
 <!-- INTRODUCTION -->
-<section id="intro" class="section">
-  <h1>VibraForge</h1>
-  <p class="hero-sub">
-    A minimal, modular, and scalable toolkit for building <span class="accent">spatial vibrotactile feedback systems</span>.
-    Supports up to <strong>128 actuators</strong>, powered by per-unit microcontrollers and a clean BLE control workflow.
-    Designed for haptics, VR, robotics, accessibility, and research.
-  </p>
+<section id="intro" class="intro-hero intro-bg">
 
-  <div class="img-box">
-    <img src="images/vibraforge.png" alt="VibraForge Toolkit">
+  <div class="intro-content fade-in">
+    <h1>VibraForge</h1>
+
+    <p class="hero-sub">
+      A minimal, modular, and scalable toolkit for building 
+      <span class="accent">spatial vibrotactile feedback systems</span>.
+      Supports up to <strong>128 actuators</strong>, powered by per-unit microcontrollers 
+      and a clean BLE control workflow. Designed for haptics, VR, robotics, 
+      accessibility, and research.
+    </p>
   </div>
+
 </section>
+
+
 
 
 <!-- FEATURES -->
-<section id="features" class="section gray">
+<section id="features" class="section">
   <h2>Features</h2>
-  <p>Simple, clean components. High scalability. Apple-style simplicity applied to haptics hardware.</p>
+  <p>Minimal hardware, modular architecture, and expressive tactile capabilities — designed for rapid R&D and premium user experience.</p>
 
-  <div class="feature-grid">
+  <div class="feature-slider-container">
+    <button class="slider-btn prev">‹</button>
 
-    <div class="feature-box">
-      <h3>128-Actuator Architecture</h3>
-      <p>
-        Supports 8 independent chains × 16 vibration units each.  
-        The chain-connection method keeps wiring simple and modular.
-      </p>
+    <div class="feature-slider" id="featureSlider">
+
+      <div class="feature-card">
+        <img src="vibraforge/figures/chain_connection.png">
+        <div class="card-text">
+          <h3>128-Actuator Architecture</h3>
+          <p>8 chains × 16 units each — clean, scalable, modular.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <img src="vibraforge/figures/control_unit.png">
+        <div class="card-text">
+          <h3>Per-Unit Microcontrollers</h3>
+          <p>Local waveform synthesis for crisp timing + low latency.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <img src="vibraforge/figures/vibration_unit.png">
+        <div class="card-text">
+          <h3>Fine-Grained Frequency & Intensity</h3>
+          <p>16 intensity levels + multi-band frequencies for expressive patterns.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <img src="vibraforge/figures/sec3_data_communication.png">
+        <div class="card-text">
+          <h3>BLE + UART Hybrid Pipeline</h3>
+          <p>BLE for high-level patterns; UART for chain-level distribution.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <img src="vibraforge/figures/attach.png">
+        <div class="card-text">
+          <h3>Modular Wearable Design</h3>
+          <p>Snap-fit actuators — no sewing needed.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <img src="vibraforge/figures/full_exploded_view.png">
+        <div class="card-text">
+          <h3>Toolkit for R&D</h3>
+          <p>Ideal for VR, illusions, phoneme mapping, and robotics feedback.</p>
+        </div>
+      </div>
+
     </div>
 
-    <div class="feature-box">
-      <h3>Per-Unit Microcontrollers</h3>
-      <p>
-        Each vibration unit includes its own MCU for local waveform generation.
-        This ensures consistent timing, low latency, and smooth intensity transitions.
-      </p>
-    </div>
-
-    <div class="feature-box">
-      <h3>Fine-Grained Frequency & Intensity</h3>
-      <p>
-        16 intensity levels and multiple discrete frequencies allow expressive tactile patterns—
-        from soft pulses to sharp alerts.
-      </p>
-    </div>
-
-    <div class="feature-box">
-      <h3>BLE + UART Hybrid Pipeline</h3>
-      <p>
-        BLE streams patterns to the control unit; UART distributes commands to each chain.  
-        Clean separation, easy debugging, fast updates.
-      </p>
-    </div>
-
-    <div class="feature-box">
-      <h3>Modular Wearable Design</h3>
-      <p>
-        Press-fit actuators attach to fabric without sewing.  
-        Reconfigure layouts in minutes — ideal for testing new haptic patterns.
-      </p>
-    </div>
-
-    <div class="feature-box">
-      <h3>Toolkit for Research & Product Exploration</h3>
-      <p>
-        A clean development process for designing tactile illusions, body-wide haptic effects,
-        VR interactions, phoneme mapping, and more.
-      </p>
-    </div>
+    <button class="slider-btn next">›</button>
   </div>
+
+  <!-- DOT INDICATOR -->
+  <!-- <div class="slider-dots" id="sliderDots"></div> -->
+
+  <div class="slider-scroll-track">
+    <div class="slider-scroll-bar" id="featureScrollBar"></div>
+  </div>
+
 </section>
+
+
+
 
 
 <!-- EXAMPLES -->
 <section id="examples" class="section">
-  <h2>Examples</h2>
+  <h2>Examples & Applications</h2>
 
   <div class="example-box">
+    <img src="vibraforge/figures/sec5_phonemic_display_development_v2.png" class="example-img">
     <h3>Phoneme Display</h3>
-    <p>
-      Mapping speech phonemes to distinct vibrotactile patterns.  
-      Used for accessibility research and sensory augmentation.
-    </p>
+    <p>Mapping speech phonemes to tactile signatures.</p>
   </div>
 
   <div class="example-box">
+    <img src="vibraforge/figures/vr.png" class="example-img">
     <h3>VR Fitness Jacket</h3>
-    <p>
-      A torso-mounted array provides impact cues, directional hits, and rhythmic feedback  
-      synchronized to game movement and music.
-    </p>
+    <p>Impact cues, directional hits, rhythmic vibration patterns.</p>
   </div>
 
   <div class="example-box">
+    <img src="vibraforge/figures/sec6_uav_teaser.jpg" class="example-img">
     <h3>Drone Teleoperation (AeroHaptix)</h3>
-    <p>
-      A <span class="accent">32-actuator wearable</span> provides spatial cues for UAV obstacle avoidance.  
-      Vibrations encode obstacle direction, distance, and urgency.
-    </p>
+    <p>Spatial perception via vibration — direction, distance, urgency.</p>
   </div>
 </section>
+
 
 
 <!-- GUI -->
-<section id="gui" class="section gray">
+<section id="gui" class="section">
   <h2>GUI Editor</h2>
 
   <div class="app-box">
+    <img src="vibraforge/figures/sec3_gui_layout.png" class="app-img">
     <h3>Visual Pattern Authoring</h3>
-    <p>
-      Design patterns directly on a spatial grid that mirrors the physical actuator layout.
-      Drag, activate, preview, and stream tactile effects instantly.
-    </p>
+    <p>Drag, activate, preview, and stream tactile effects.</p>
   </div>
 
   <div class="app-box">
+    <img src="vibraforge/figures/sec4_waveform_approximation_v3.png" class="app-img">
     <h3>Waveform Controls</h3>
-    <p>
-      Choose intensity curves, pulse shapes, frequencies, or use audio-to-vibration mapping.
-    </p>
+    <p>Pulse shapes, intensity curves, and frequency bands.</p>
   </div>
 
   <div class="app-box">
+    <img src="vibraforge/figures/sec4_latency_and_bandwidth_v2.png" class="app-img">
     <h3>Real-Time BLE Streaming</h3>
-    <p>
-      The GUI streams commands live to the VibraForge control unit.  
-      Instant feedback — ideal for rapid prototyping.
-    </p>
+    <p>Instant updates — perfect for prototyping tactile effects.</p>
   </div>
 </section>
+
 
 
 <!-- ASSEMBLY -->
 <section id="assembly" class="section">
-  <h2>Assembly Instructions</h2>
+  <h2>Assembly & Quick Start</h2>
+  <p>
+    Follow these steps to assemble your VibraForge Dev Kit v1 and start playing spatialized
+    vibrotactile patterns. For full details, see the
+    <a class="accent" href="VibraForge/pdf/vibragorce_user_manual.pdf" target="_blank">
+      VibraForge User Manual (PDF). 
+    </a>
+    Assembly walkthrough video:  
+      <a class="accent"  href="https://www.youtube.com/watch?v=Ji4QbBA8m8U" target="_blank">
+        Watch on YouTube →
+      </a>
+      Open-source software & examples:  
+      <a class="accent" href="https://github.com/huangbj16/VibraForge" target="_blank">
+        VibraForge GitHub Repository →
+      </a>
+  </p>
+  <p>
+      
 
-  <div class="assembly-step">
-    <h3>1. Connect the Chains</h3>
-    <p>Wire vibration units in a simple daisy-chain using 3-pin connectors (GND, V+, UART).</p>
+  <div class="assembly-slider-container">
+    <button class="assembly-btn assembly-prev">‹</button>
+
+    <div class="assembly-slider" id="assemblySlider">
+
+      <!-- STEP 1 -->
+      <div class="assembly-card">
+        <img src="vibraforge/figures/control_unit.png" class="assembly-img" alt="Control Unit">
+        <div class="assembly-text">
+          <h3>Step 1 — Power the Control Unit</h3>
+          <p>
+            Connect the <strong>Li-Po battery</strong> to the
+            <strong>Li-Po Battery Connector</strong> at the top of the control unit.
+            A green LED will turn on to confirm power. We recommend starting with
+            <strong>Connector&nbsp;1</strong> for the first vibration chain.
+          </p>
+          <!-- <p>
+            See “Step&nbsp;1: Control Unit” in the
+            <a href="VibraForge/pdf/vibragorce_user_manual.pdf" target="_blank">user manual →</a>
+          </p> -->
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="assembly-card">
+        <img src="vibraforge/figures/vibration_unit.png" class="assembly-img" alt="Vibration Unit">
+        <div class="assembly-text">
+          <h3>Step 2 — Understand the Vibration Units</h3>
+          <p>
+            Each vibration unit has an <strong>input</strong> and <strong>output</strong> connector.
+            The arrow on the cap indicates the connection direction <strong>from input to output</strong>.
+            <span class="accent">Do not reverse this direction</span>, or the driver board may be
+            damaged due to a short circuit.
+          </p>
+          <!-- <p>
+            See “Step&nbsp;2: Vibration Units” in the
+            <a href="VibraForge/pdf/vibragorce_user_manual.pdf" target="_blank">user manual →</a>
+          </p> -->
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="assembly-card">
+        <img src="vibraforge/figures/chain_connection.png" class="assembly-img" alt="Chain Connection">
+        <div class="assembly-text">
+          <h3>Step 3 — Connect Units into Chains</h3>
+          <p>
+            Daisy-chain vibration units together using the included cables. Each chain supports
+            up to <strong>16 units</strong>, addressed from <strong>0…15</strong>
+            (e.g., the first chain has units 0,1,2,…,15). Connect the chain to
+            <strong>Connector&nbsp;1</strong> on the control unit for the default setup.
+          </p>
+          <!-- <p>
+            See “Step&nbsp;3: Connect Them Together” in the
+            <a href="VibraForge/pdf/vibragorce_user_manual.pdf" target="_blank">user manual →</a>
+          </p> -->
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="assembly-card">
+        <img src="vibraforge/figures/attach.png" class="assembly-img" alt="Attach Units to Sleeve">
+        <div class="assembly-text">
+          <h3>Step 4 — Attach Units to the Sleeve</h3>
+          <p>
+            Slide each vibration unit onto the <strong>compression sleeve</strong>, place the
+            <strong>press-fit ring</strong> underneath, and press the parts together until they lock
+            securely. Repeat for all units in your pattern.
+          </p>
+          <!-- <p>
+            See “Step&nbsp;4: Attach Vibration Units to the Sleeve” in the
+            <a href="VibraForge/pdf/vibragorce_user_manual.pdf" target="_blank">user manual →</a>
+          </p> -->
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="assembly-card">
+        <img src="vibraforge/figures/gui_small_layout.png" class="assembly-img" alt="GUI Layout">
+        <div class="assembly-text">
+          <h3>Step 5 — Run the Software & Have Fun</h3>
+          <p>
+            Once the hardware is connected, use the open-source software from the
+            <a href="https://github.com/huangbj16/VibraForge" target="_blank">VibraForge GitHub repo</a>
+            to play patterns:
+          </p>
+          <ul>
+            <li>
+              Quick test: <code>Software_Design/Python_Server/Python_Test.py</code>  
+              <code>pip install bleak</code> → <code>python Python_Test.py</code>
+            </li>
+            <li>
+              GUI editor:
+              <code>GUI_Editor/main_app/app.py</code>  
+              <code>pip install PyQt6 numpy matplotlib scipy bleak</code> → <code>python app.py</code>
+            </li>
+          </ul>
+          <!-- <p>
+            Watch the full assembly walkthrough:
+            <a href="https://www.youtube.com/watch?v=Ji4QbBA8m8U" target="_blank">YouTube video →</a>
+          </p> -->
+        </div>
+      </div>
+
+    </div>
+
+    <button class="assembly-btn assembly-next">›</button>
   </div>
 
-  <div class="assembly-step">
-    <h3>2. Attach Units to Fabric</h3>
-    <p>
-      Press-fit the vibration units into the garment holes.  
-      No sewing, adhesives, or permanent fixing required.
-    </p>
-  </div>
+  <!-- Optional dots for assembly (can be styled similarly to features) -->
+  <!-- <div class="slider-dots" id="assemblyDots"></div> -->
 
-  <div class="assembly-step">
-    <h3>3. Connect to the Control Unit</h3>
-    <p>
-      Plug each chain into the control unit.  
-      Power via USB-C or a 3.7V Li-ion battery pack.
-    </p>
-  </div>
+  <!-- ASSEMBLY SCROLL INDICATOR -->
+<div class="assembly-scroll-track">
+  <div class="assembly-scroll-bar" id="assemblyScrollBar"></div>
+</div>
 
-  <div class="assembly-step">
-    <h3>4. Pair via Bluetooth</h3>
-    <p>
-      Open the VibraForge GUI → Connect → Start Streaming.  
-      The control unit handles all UART distribution internally.
-    </p>
-  </div>
 </section>
+
+
 
 
 <!-- PAPER -->
@@ -312,12 +1233,14 @@
   <h2>Papers</h2>
 
   <div class="paper-box">
+    <img src="vibraforge/figures/teaser_forreal_v3.png" class="paper-img">
     <h3>VibraForge: A Scalable Prototyping Toolkit</h3>
     <p>Huang, Ren, Luo, <strong>Cheng</strong>, Cai, Sang, Sousa, Dietz, Wigdor (2024)</p>
     <a class="accent" href="https://arxiv.org/abs/2409.17420">Read Paper →</a>
   </div>
 
   <div class="paper-box">
+    <img src="vibraforge/figures/sec6_uav_teaser.jpg" class="paper-img">
     <h3>AeroHaptix: Vibrotactile Feedback for UAV Collision Avoidance</h3>
     <p>Huang, Wang, <strong>Cheng</strong>, Ren, Cai, Alvarez Valdivia, Mahadevan, Wigdor (2024)</p>
     <a class="accent" href="https://arxiv.org/abs/2407.12105">Read Paper →</a>
@@ -325,9 +1248,105 @@
 </section>
 
 
+
 <footer>
-  © 2025 VibraForge — Apple-style minimal haptics toolkit website.
+  © 2025 VibraForge 
 </footer>
 
 </body>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* ---------------------------------------------------- */
+  /*                 GENERIC SLIDER ENGINE                */
+  /* ---------------------------------------------------- */
+
+  function initSlider(config) {
+    const slider = document.getElementById(config.sliderId);
+    const prev   = document.querySelector(config.prevClass);
+    const next   = document.querySelector(config.nextClass);
+    const dotsC  = document.getElementById(config.dotsId);
+    const bar    = config.scrollBarId ? document.getElementById(config.scrollBarId) : null;
+
+    if (!slider) return;
+
+    const cards = slider.children;
+    const count = cards.length;
+
+    /* Create dots */
+    if (dotsC) {
+      for (let i = 0; i < count; i++) {
+        const dot = document.createElement("div");
+        dotsC.appendChild(dot);
+      }
+    }
+
+    const dots = dotsC ? dotsC.children : [];
+
+    if (dots.length > 0) dots[0].classList.add("active");
+
+    /* Buttons */
+    if (next) next.onclick = () => {
+      slider.scrollBy({
+        left: slider.clientWidth * 0.8,
+        behavior: "smooth"
+      });
+    };
+
+    if (prev) prev.onclick = () => {
+      slider.scrollBy({
+        left: -slider.clientWidth * 0.8,
+        behavior: "smooth"
+      });
+    };
+
+    /* Scroll updates */
+    slider.addEventListener("scroll", () => {
+      const cardWidth = cards[0].getBoundingClientRect().width + 24;
+      const index = Math.round(slider.scrollLeft / cardWidth);
+
+      /* dots */
+      [...dots].forEach((d, i) => {
+        d.classList.toggle("active", i === index);
+      });
+
+      /* scroll bar */
+      if (bar) {
+        const maxScroll = slider.scrollWidth - slider.clientWidth;
+        const pct = maxScroll > 0 ? (slider.scrollLeft / maxScroll) * 100 : 0;
+        bar.style.width = pct + "%";
+      }
+    });
+  }
+
+
+  /* ---------------------------------------------------- */
+  /*                INITIALIZE BOTH SLIDERS               */
+  /* ---------------------------------------------------- */
+
+  // Features section slider
+  initSlider({
+    sliderId: "featureSlider",
+    prevClass: ".prev",
+    nextClass: ".next",
+    dotsId: "sliderDots",
+    scrollBarId: "featureScrollBar"
+  });
+
+  // Assembly slider
+  initSlider({
+    sliderId: "assemblySlider",
+    prevClass: ".assembly-prev",
+    nextClass: ".assembly-next",
+    dotsId: "assemblyDots",
+    scrollBarId: "assemblyScrollBar"
+  });
+
+});
+</script>
+
+
 </html>
