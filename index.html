@@ -493,6 +493,7 @@
 
     <!-- Center: Desktop links (point to index anchors; Blog is current page) -->
     <div class="links" aria-hidden="true">
+      <a class="navlink" href="index.html#coffee-chat">Connect</a>
       <a class="navlink" href="index.html#education">Education</a>
       <a class="navlink" href="index.html#publications">Publications</a>
       <a class="navlink" href="index.html#news">News</a>
@@ -726,23 +727,71 @@
 <!-- ==========================
         COFFEE CHAT SECTION
 =========================== -->
+<style>
+  /* Force the Title to match specific Apple-style font manually */
+  #coffee-chat h2.section-title {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    font-size: 25px; 
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #111;
+    margin: 8px 0 12px;
+  }
 
-<table id="coffee-chat" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;margin-top:32px;margin-bottom:32px;">
+  /* Mobile adjustments */
+  @media (max-width: 700px) {
+    #coffee-chat h2.section-title {
+      font-size: 22px !important;
+      width: 100vw;
+      margin-left: calc(50% - 50vw) !important;
+      margin-right: calc(50% - 50vw) !important;
+      padding-left: 15px !important;
+      padding-right: 15px !important;
+      box-sizing: border-box;
+    }
+    #coffee-chat td {
+      padding-left: 15px !important;
+      padding-right: 15px !important;
+      box-sizing: border-box;
+    }
+  }
+</style>
+
+<table id="coffee-chat" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;margin-top:40px;margin-bottom:40px;">
   <tbody>
     <tr>
       <td style="padding:0;"> 
         <h2 class="section-title">Coffee Chat</h2>
         
         <div style="
-          background: #F5F5F7; 
+          background: #FAF9F7; 
           border-radius: 16px; 
-          padding: 24px 20px; 
+          padding: 28px 20px; 
           text-align: center; 
           border: 1px solid rgba(0,0,0,0.04);
+          font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         ">
-          <p style="margin: 0 auto 20px auto; max-width: 600px; font-size: 15px; line-height: 1.6; color: #333;">
+          
+          <p style="
+            margin: 0 auto 10px auto; 
+            max-width: 600px; 
+            font-size: 15px; 
+            line-height: 1.6; 
+            color: #111;
+          ">
             I'm always open to chatting about <b>Robotics, Research, Startups</b>, or just connecting! 
             Feel free to grab a time on my calendar below.
+          </p>
+
+          <p style="
+            margin: 0 auto 24px auto; 
+            max-width: 600px; 
+            font-size: 13px; 
+            line-height: 1.5; 
+            color: #6E6E73; 
+            font-weight: 400;
+          ">
+            Location: Any Cafe with Enough Clearance for a 6-DOF Arm
           </p>
 
           <a class="cta-btn" href="https://calendly.com/jerrychengh990427/coffee-chat-with-jerry-cheng" target="_blank" rel="noopener" style="background:#fff;">
@@ -752,7 +801,7 @@
                <line x1="8" y1="2" x2="8" y2="6"></line>
                <line x1="3" y1="10" x2="21" y2="10"></line>
             </svg>
-            Schedule a Meeting
+            <span style="color:#111;">Schedule a Coffee</span> 
           </a>
         </div>
       </td>
