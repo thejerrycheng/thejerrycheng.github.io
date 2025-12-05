@@ -358,7 +358,7 @@
     align-items: center;
     gap: 12px;
     padding: 0 16px;
-    max-width: 980px; margin: 0 auto;
+    max-width: 1200px; margin: 0 auto;
   }
 
   /* Left: About/Home */
@@ -561,7 +561,7 @@
 
       
 
-      <table id="about" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
+      <table id="about" style="width:100%;max-width:1000px;margin:auto;border-spacing:0px;">
       <tbody>
       <tr>
       <td style="padding:2.5%;width:63%;vertical-align:middle">
@@ -727,28 +727,32 @@
 <!-- ==========================
         COFFEE CHAT SECTION
 =========================== -->
+<!-- ======= Coffee Chat Section ======= -->
 <style>
-  /* Force the Title to match specific Apple-style font manually */
+  /* 1. Force the Title to match specific Apple-style font manually */
   #coffee-chat h2.section-title {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
     font-size: 25px; 
     font-weight: 700;
     letter-spacing: -0.01em;
     color: #111;
-    margin: 10 0 12px;
+    margin: 20px 0 12px; /* Adjusted vertical margin for balance */
   }
 
-  /* Mobile adjustments */
+  /* 2. Mobile adjustments to match Startups/Publications exactly */
   @media (max-width: 700px) {
     #coffee-chat h2.section-title {
       font-size: 22px !important;
-      width: 100vw;
-      margin-left: calc(50% - 50vw) !important;
-      margin-right: calc(50% - 50vw) !important;
-      padding-left: 0px !important;
-      padding-right: 15px !important;
+      display: block;
+      width: 100% !important; /* Changed from 100vw to fit container */
+      margin-left: 0 !important; /* Removed calc breakout */
+      margin-right: 0 !important; /* Removed calc breakout */
+      padding-left: 0 !important; /* Padding handled by td */
+      padding-right: 0 !important;
       box-sizing: border-box;
     }
+
+    /* CONSISTENCY FIX: 15px padding for the card container AND title */
     #coffee-chat td {
       padding-left: 15px !important;
       padding-right: 15px !important;
@@ -757,14 +761,14 @@
   }
 </style>
 
-<table id="coffee-chat" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;margin-top:40px;margin-bottom:40px;">
+<table id="coffee-chat" style="width:100%;max-width:1000px;margin:auto;border-spacing:0px;margin-top:30px;margin-bottom:40px;">
   <tbody>
     <tr>
       <td style="padding:0;"> 
         <h2 class="section-title">Coffee Chat</h2>
         
         <div style="
-          background: #FAF9F7; 
+          background: #faf8f2;
           border-radius: 16px; 
           padding: 28px 20px; 
           text-align: center; 
@@ -772,9 +776,10 @@
           font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         ">
           
+          <!-- Main Text -->
           <p style="
             margin: 0 auto 10px auto; 
-            max-width: 600px; 
+            max-width: 600px; x
             font-size: 15px; 
             line-height: 1.6; 
             color: #111;
@@ -783,6 +788,7 @@
             Feel free to grab a time on my calendar below.
           </p>
 
+          <!-- Location Text: Smaller, Gray -->
           <p style="
             margin: 0 auto 24px auto; 
             max-width: 600px; 
@@ -791,9 +797,10 @@
             color: #6E6E73; 
             font-weight: 400;
           ">
-            Location: Any Cafe with Enough Clearance for a 6-DOF Arm 
+            Location: Any Cafe with Enough Clearance for a 6-DOF Robot Arm
           </p>
 
+          <!-- Button -->
           <a class="cta-btn" href="https://calendly.com/jerrychengh990427/coffee-chat-with-jerry-cheng" target="_blank" rel="noopener" style="background:#fff;">
             <svg class="cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;opacity:0.85;">
                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -816,7 +823,7 @@
 <style>
   #education-section {
     width:100%;
-    max-width:800px;
+    max-width:1000px;
     margin:0 auto 32px auto;
     padding:0 0; /* matches publications left edge */
     box-sizing:border-box;
@@ -862,7 +869,7 @@
   }
 </style>
 
-<table id="education" style="width:100%;max-width:800px;margin:0 auto 32px;border-spacing:0 18px;">
+<table id="education" style="width:100%;max-width:1000px;margin:0 auto 32px;border-spacing:0 18px;">
   <tbody>
     <tr><td><h2>Education</h2>
 
@@ -920,7 +927,7 @@
   /* Container */
   #publications.pubs-table{
     width:100%;
-    max-width:800px;
+    max-width:1000px;
     margin:auto;
     border-spacing:0 10px;
     border-collapse:separate;
@@ -1876,7 +1883,7 @@ items.forEach(i => obs.observe(i));
 /* Wrapper */
 #news-wrapper {
   width: 100%;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 40px auto;
   padding: 0 0;
   box-sizing: border-box;
@@ -2057,7 +2064,7 @@ items.forEach(i => obs.observe(i));
 
 <div id="news-wrapper">
   <!-- Consistent section container (same as Education / Publications) -->
-  <div id="news" style="width:100%; max-width:800px; margin: 0 auto; padding: 0 16px;">
+  <div id="news" style="width:100%; max-width:1000px; margin: 0 auto; padding: 0 16px;">
     <h2 class="section-title">News</h2>
   </div>
 
@@ -2325,7 +2332,7 @@ document.querySelectorAll("[data-carousel]").forEach(media => {
   /* Container */
   #projects.projects-table{
     width:100%;
-    max-width:800px;
+    max-width:1000px;
     margin:auto;
     border-spacing:0 10px;
     border-collapse:separate;
@@ -2690,7 +2697,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <style>
   #experience-section {
     width:100%;
-    max-width:800px;
+    max-width:1000px;
     margin:0 auto;
     padding:0 16px;
     box-sizing:border-box;
@@ -2774,7 +2781,7 @@ document.addEventListener('DOMContentLoaded', function () {
         EXPERIENCE SECTION
 =========================== -->
 
-<table id="experience" style="width:100%;max-width:800px;margin:0 auto 40px;border-spacing:0 22px;">
+<table id="experience" style="width:100%;max-width:1000px;margin:0 auto 40px;border-spacing:0 22px;">
   <tbody>
     <!-- Section Title -->
     <tr>
@@ -2948,7 +2955,7 @@ document.addEventListener('DOMContentLoaded', function () {
   /* Desktop wrapper */
   #startups {
     width:100%;
-    max-width:800px;
+    max-width:1000px;
     margin:40px auto 0 auto;
   }
 
@@ -3071,7 +3078,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </style>
 
 
-<table id="startups" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;margin-top:26px;">
+<table id="startups" style="width:100%;max-width:1000px;margin:auto;border-spacing:0px;margin-top:26px;">
   <tbody>
     <tr><td><h2>Startups</h2></td></tr>
     <tr>
@@ -3160,7 +3167,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </style>
 
 <!-- ======= Technical Skills Section ======= -->
-<table id="skills" style="width:100%;max-width:800px;margin:auto;border-spacing:0px;">
+<table id="skills" style="width:100%;max-width:1000px;margin:auto;border-spacing:0px;">
   <tbody>
     <tr>
       <td>
@@ -3223,12 +3230,53 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 <!-- ================= Footer Citation ================= -->
-<hr style="border: 0; border-top: 1px solid #eee; margin: 40px auto; width: 90%;">
+
+<footer style="
+  width: 100%;
+  padding: 60px 0;
+  margin-top: 80px;
+  background: #faf8f2;
+  color: #111;
+  border-top: 1px solid #e5e5e5;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+">
+
+  <div style="
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  ">
+
+    <!-- Company Name -->
+    <div style="font-size: 22px; font-weight: 600;">
+      Personal Website of Jerry (Qilong) Cheng
+    </div>
+
+
+<div style="
+  margin-top: 20px;
+  font-size: 12px;
+  color: #555;
+  font-family: 'SF Mono', 'Courier New', monospace;
+  opacity: 0.85;
+  text-align: right; 
+">
+  Designed in New York City with love — in a tiny studio apartment.
+</div>
+
+<div style="
+  height:1px;
+  background:#e5e5e5;
+  width:100%;
+  margin-top:10px; 
+"></div>
 
 <div style="
   width: 100%;
   text-align: center;
-  padding-bottom: 20px;
   font-size: 11px;
   color: #888;
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
@@ -3240,6 +3288,14 @@ document.addEventListener('DOMContentLoaded', function () {
   </a>
 </div>
 
+
+    <!-- Copyright -->
+    <div style="font-size: 10px; color:#888; margin-top:10px;">
+      © 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.
+    </div>
+
+  </div>
+</footer>
 
 
 
@@ -3268,7 +3324,7 @@ document.addEventListener('DOMContentLoaded', function () {
   a{ color:inherit; text-decoration:none; border-bottom:1px solid rgba(0,0,0,0.12); }
   a:hover{ border-bottom-color: rgba(0,0,0,0.3); }
 
-  .wrap{ width:100%; max-width:800px; margin:auto; padding:16px; }
+  .wrap{ width:100%; max-width:1000px; margin:auto; padding:16px; }
   h2{
     font-size:var(--section-title-size);
     font-weight:700; letter-spacing:-0.01em; margin:8px 0 12px; color:#111;
