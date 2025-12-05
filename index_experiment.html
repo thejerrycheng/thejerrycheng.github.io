@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jerry (Qilong) Cheng — Robotics & RL</title>
+  <meta name="description" content="Robotics researcher focused on humanoid locomotion, reinforcement learning, and vision-driven control.">
+  <meta name="author" content="Jerry Cheng">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================
+       1. CSS VARIABLES (THEMING)
+       ========================================= */
+    :root {
+      /* Light Mode Defaults (Apple Style) */
+      --bg-color: #ffffff;
+      --text-primary: #1d1d1f;
+      --text-secondary: #86868b;
+      --accent-color: #0071e3; /* Apple Blue */
+      --accent-orange: #FF9500;
+      
+      --card-bg: #ffffff;
+      --card-border: rgba(0, 0, 0, 0.08);
+      --card-hover-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+      
+      --nav-bg: rgba(255, 255, 255, 0.8);
+      --nav-border: rgba(0, 0, 0, 0.08);
+
+      --section-gap: 60px;
+      --max-width: 860px;
+      --radius: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* Dark Mode Overrides */
+        --bg-color: #000000;
+        --text-primary: #f5f5f7;
+        --text-secondary: #86868b;
+        --accent-color: #2997ff;
+        
+        --card-bg: #1c1c1e;
+        --card-border: rgba(255, 255, 255, 0.1);
+        --card-hover-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
+        
+        --nav-bg: rgba(0, 0, 0, 0.8);
+        --nav-border: rgba(255, 255, 255, 0.1);
+      }
+    }
+
+    /* =========================================
+       2. GLOBAL RESET & TYPOGRAPHY
+       ========================================= */
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Text", sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      margin: 0;
+      padding-top: 80px; /* Space for fixed nav */
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    a { color: inherit; text-decoration: none; transition: color 0.2s ease; }
+    a:hover { color: var(--accent-color); }
+    
+    h1, h2, h3 {
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-top: 0;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+
+    /* Section Headers */
+    .section-title {
+      font-size: 24px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 10px;
+      margin-top: var(--section-gap);
+    }
+
+    /* =========================================
+       3. NAVIGATION (Blurred Glass)
+       ========================================= */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 52px;
+      background: var(--nav-bg);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--nav-border);
+      z-index: 999;
+      display: flex; align-items: center; justify-content: center;
+    }
+    
+    .nav-inner {
+      display: flex; gap: 24px; font-size: 13px; font-weight: 500;
+    }
+    
+    .nav-link {
+      color: var(--text-primary);
+      opacity: 0.8;
+      transition: opacity 0.2s ease;
+    }
+    .nav-link:hover { opacity: 1; color: var(--accent-color); }
+
+    /* =========================================
+       4. ANIMATIONS (The Premium Feel)
+       ========================================= */
+    /* Scroll Reveal Effect */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Hover Lift (Spring Physics) */
+    .hover-card {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, background-color 0.4s ease;
+    }
+    .hover-card:hover {
+      transform: scale(1.02) translateY(-2px);
+      box-shadow: var(--card-hover-shadow);
+      z-index: 10;
+      background-color: var(--card-bg); /* Pop out in dark mode */
+      border-radius: var(--radius);
+    }
+
+    /* =========================================
+       5. COMPONENT: PROFILE / ABOUT
+       ========================================= */
+    .profile-section {
+      display: grid;
+      grid-template-columns: 1fr 280px; /* Text left, Image right */
+      gap: 40px;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .profile-name { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
+    .profile-bio { font-size: 16px; color: var(--text-secondary); }
+    .profile-img img {
+      width: 100%;
+      border-radius: 50%;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .profile-img:hover img { transform: scale(1.05) rotate(2deg); }
+
+    .social-links { margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap;}
+    .social-pill {
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+    }
+    .social-pill:hover { background: var(--text-primary); color: var(--bg-color); border-color: transparent; }
+
+    /* =========================================
+       6. COMPONENT: PUBLICATIONS & PROJECTS (GRID)
+       ========================================= */
+    .pub-card {
+      display: grid;
+      grid-template-columns: 32% 1fr; /* Image takes 32% */
+      gap: 24px;
+      margin-bottom: 32px;
+      padding: 16px;
+      border: 1px solid transparent; /* Placeholder for hover border */
+      border-radius: var(--radius);
+    }
+    
+    .pub-media {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      aspect-ratio: 16/10;
+      background: #f0f0f0;
+    }
+
+    .pub-media img, .pub-media video {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: opacity 0.3s ease;
+    }
+    
+    /* Video Hover Logic */
+    .pub-media video { position: absolute; inset: 0; opacity: 0; }
+    .pub-card:hover .pub-media video { opacity: 1; }
+    .pub-card:hover .pub-media img { opacity: 0; }
+
+    .pub-content h3 { font-size: 17px; margin-bottom: 6px; }
+    .pub-meta { font-size: 14px; color: var(--text-secondary); margin-bottom: 8px; }
+    .pub-desc { font-size: 14px; margin-bottom: 12px; }
+    
+    .link-group a {
+      font-size: 12px; font-weight: 600; text-transform: uppercase;
+      margin-right: 12px; color: var(--accent-color);
+    }
+
+    /* =========================================
+       7. COMPONENT: NEWS (Horizontal Scroll)
+       ========================================= */
+    .news-scroller {
+      display: flex; gap: 16px; overflow-x: auto;
+      padding: 10px 4px 20px 4px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+    .news-scroller::-webkit-scrollbar { display: none; } /* Hide scrollbar */
+    
+    .news-card {
+      min-width: 280px; max-width: 280px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .news-date { font-size: 11px; font-weight: 700; color: var(--accent-color); text-transform: uppercase;}
+    .news-text { font-size: 14px; }
+
+    /* =========================================
+       8. COMPONENT: EXPERIENCE (Flex List)
+       ========================================= */
+    .exp-item {
+      display: flex; justify-content: space-between;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .exp-left { font-weight: 600; }
+    .exp-right { text-align: right; color: var(--text-secondary); font-size: 14px; }
+    .exp-role { display: block; font-weight: 400; color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
+
+    /* =========================================
+       9. RESPONSIVE MOBILE
+       ========================================= */
+    @media (max-width: 700px) {
+      .profile-section { grid-template-columns: 1fr; text-align: center; }
+      .profile-img { order: -1; width: 160px; margin: 0 auto; }
+      .pub-card { grid-template-columns: 1fr; padding: 0; border: none; }
+      .pub-card:hover { transform: none; box-shadow: none; background: transparent; }
+      .pub-media { aspect-ratio: 16/9; margin-bottom: 12px; }
+      .exp-item { flex-direction: column; gap: 4px; }
+      .exp-right { text-align: left; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#about" class="nav-link">About</a>
+      <a href="#news" class="nav-link">News</a>
+      <a href="#publications" class="nav-link">Publications</a>
+      <a href="#projects" class="nav-link">Projects</a>
+      <a href="#experience" class="nav-link">Experience</a>
+      <a href="assets/pdf/Academic_Resume-5.pdf" target="_blank" class="nav-link">CV</a>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <header id="about" class="profile-section reveal">
+      <div class="profile-content">
+        <div class="profile-name">
+          Jerry (Qilong) Cheng
+          <span style="font-weight:400; color:var(--text-secondary); font-size:0.8em;">「程启龙」</span>
+        </div>
+        <div class="profile-bio">
+          <p>
+            I’m a <strong>Robotics Ph.D. Student</strong> at <a href="https://engineering.nyu.edu">NYU</a> working on 
+            <span style="color:var(--accent-orange)">RL for humanoid locomotion</span> and dexterous manipulation.
+          </p>
+          <p>
+            Previously at <a href="https://starslab.ca">STARS Lab</a> (State Estimation) and <a href="https://www.dgp.toronto.edu/">DGP Lab</a> (Haptics). 
+            I believe that "those who are truly serious about software should design their own hardware."
+          </p>
+          
+          <div class="social-links">
+            <a href="mailto:qilong.cheng@mail.utoronto.ca" class="social-pill">Email</a>
+            <a href="https://github.com/thejerrycheng" class="social-pill">GitHub</a>
+            <a href="https://scholar.google.com/citations?user=iQuHS3MAAAAJ" class="social-pill">Google Scholar</a>
+            <a href="https://x.com/thejerrycheng" class="social-pill">X / Twitter</a>
+            <a href="https://www.linkedin.com/in/jerry-qilong-cheng-540039163/" class="social-pill">LinkedIn</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="profile-img">
+        <img src="assets/images/profile_pic.png" alt="Jerry Cheng">
+      </div>
+    </header>
+
+    <section id="news" class="reveal">
+      <h2 class="section-title">News</h2>
+      <div class="news-scroller">
+        <div class="news-card hover-card">
+          <div class="news-date">Nov 2025</div>
+          <div class="news-text">Graduated with a Master's of Engineering degree from UofT.</div>
+        </div>
+        <div class="news-card hover-card">
+          <div class="news-date">Oct 2025</div>
+          <div class="news-text">Attended <strong>IROS 2025</strong> in Hangzhou and presented "AeroHaptix".</div>
+        </div>
+        <div class="news-card hover-card">
+          <div class="news-date">Apr 2025</div>
+          <div class="news-text">Attended <strong>CHI 2025</strong> in Yokohama presenting "VibraForge".</div>
+        </div>
+        <div class="news-card hover-card">
+          <div class="news-date">July 2024</div>
+          <div class="news-text">Presented monocular depth work at Toronto Robotics Conference.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="publications">
+      <h2 class="section-title">Selected Publications</h2>
+      
+      <article class="pub-card reveal hover-card">
+        <div class="pub-media">
+          <img src="assets/images/publications/sr_modeling.jpg" alt="Locomotion Survey">
+          </div>
+        <div class="pub-content">
+          <h3>Evolution of Humanoid Locomotion Control</h3>
+          <div class="pub-meta">
+            Y. Gu, G. Shi, <strong>Q. Cheng</strong>, et al. <br>
+            <em>Under Review (Science Robotics), 2025</em>
+          </div>
+          <p class="pub-desc">
+            A comprehensive review and perspective of humanoid locomotion control methods, spanning classical to learning-based approaches.
+          </p>
+          <div class="link-group">
+            <a href="#">PDF</a>
+            <a href="#">ArXiv</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="pub-card reveal hover-card">
+        <div class="pub-media">
+          <img src="assets/images/projects/iris/iris_design.jpg" alt="IRIS Robot">
+          <video loop muted playsinline src="assets/videos/iris_teaser.mp4"></video>
+        </div>
+        <div class="pub-content">
+          <h3>IRIS: An Intelligent Robotic Imaging System</h3>
+          <div class="pub-meta">
+            <strong>Q. Cheng</strong>, M. Mackay, A. Bereyhi <br>
+            <em>Master's Thesis, University of Toronto, 2025</em>
+          </div>
+          <p class="pub-desc">
+            Design of a low-cost, 3D-printed 6-DoF cinema robot arm with FOC actuators and vision-conditioned imitation learning.
+          </p>
+          <div class="link-group">
+            <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf">PDF</a>
+            <a href="https://github.com/thejerrycheng/MEng_project">Code</a>
+            <a href="https://www.youtube.com/watch?v=tUJCzzHMhkU">Video</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="pub-card reveal hover-card">
+        <div class="pub-media">
+          <img src="assets/images/publications/vibraforge_toolkit.JPG" alt="VibraForge">
+          <video loop muted playsinline src="assets/videos/toolkit_unboxing.mp4"></video>
+        </div>
+        <div class="pub-content">
+          <h3>VibraForge: Scalable Prototyping for Spatialized Vibrotactile Feedback</h3>
+          <div class="pub-meta">
+            B. Huang, S. Ren, <strong>Q. Cheng</strong>, et al. <br>
+            <em>CHI 2025</em>
+          </div>
+          <p class="pub-desc">
+            Open-source toolkit for rapid design of large-scale haptic arrays and feedback systems.
+          </p>
+          <div class="link-group">
+            <a href="https://arxiv.org/abs/2409.17420">Paper</a>
+            <a href="haptic_toolkit.html">Website</a>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <section id="projects">
+      <h2 class="section-title">Selected Projects</h2>
+
+      <article class="pub-card reveal hover-card">
+        <div class="pub-media">
+          <img src="assets/images/projects/rocket/overview.jpg" alt="Rocket Landing">
+          <video loop muted playsinline src="assets/videos/projects/tintin.mp4"></video>
+        </div>
+        <div class="pub-content">
+          <h3>TINTIN: RL-Based Lunar Rocket Landing</h3>
+          <div class="pub-meta">2025 • MuJoCo, PPO, PID</div>
+          <p class="pub-desc">
+            6-DoF variable-mass lander simulation in MuJoCo. Compared PID baselines vs PPO policies for pose-targeted touchdown and fuel efficiency.
+          </p>
+          <div class="link-group">
+            <a href="assets/pdf/projects/Space_Robot_Course_Project_1-6.pdf">Report</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="pub-card reveal hover-card">
+        <div class="pub-media">
+          <img src="assets/images/projects/rl/sac.png" alt="Cart Pole RL">
+          <video loop muted playsinline src="assets/videos/RL_demo.mp4"></video>
+        </div>
+        <div class="pub-content">
+          <h3>CLEAR-Net: Robust Cart-Pole RL</h3>
+          <div class="pub-meta">2024 • PyTorch, RL</div>
+          <p class="pub-desc">
+             Benchmarking Q-learning, DQN, PPO, and SAC on noisy environments. Designed noise-robust wrappers for enhanced stability.
+          </p>
+          <div class="link-group">
+            <a href="assets/pdf/projects/ECE1508_Project_Poster.pdf">Poster</a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section id="experience" class="reveal">
+      <h2 class="section-title">Experience</h2>
+      
+      <div class="exp-item">
+        <div class="exp-left">
+          Center for Robotics and Embodied Intelligence (NYU)
+          <span class="exp-role">Ph.D. Candidate (Fellowship)</span>
+        </div>
+        <div class="exp-right">Sep 2025 – Present</div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-left">
+          STARS Lab (University of Toronto)
+          <span class="exp-role">Robotics Researcher</span>
+        </div>
+        <div class="exp-right">Sep 2021 – Aug 2025</div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-left">
+          Dynamic Graphics Project Lab
+          <span class="exp-role">HCI Researcher</span>
+        </div>
+        <div class="exp-right">Sep 2022 – Aug 2025</div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-left">
+          GouPals Inc.
+          <span class="exp-role">Cofounder & CEO</span>
+        </div>
+        <div class="exp-right">Aug 2024 – Apr 2025</div>
+      </div>
+    </section>
+
+    <footer style="text-align:center; padding: 60px 0; color:var(--text-secondary); font-size:12px;">
+      <p>Last updated: <span id="date-display"></span></p>
+    </footer>
+
+  </main>
+
+  <script>
+    // 1. Reveal on Scroll (Intersection Observer)
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // 2. Video Hover Logic (Play on hover, Pause on leave)
+    const videos = document.querySelectorAll('video');
+    videos.forEach(video => {
+      video.closest('.pub-card').addEventListener('mouseenter', () => {
+        video.currentTime = 0;
+        video.play();
+      });
+      video.closest('.pub-card').addEventListener('mouseleave', () => {
+        video.pause();
+      });
+    });
+
+    // 3. Date
+    document.getElementById('date-display').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+  </script>
+
+</body>
+</html>
