@@ -38,7 +38,7 @@
     width: 100%;
     background: rgba(7, 22, 38, 0.95); /* Deep space transparent background */
     backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--light);
   }
 
   .desktop-nav a {
@@ -98,12 +98,12 @@
 
   .gray {
     background: var(--light);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    border-top: 1px solid var(--light);
+    border-bottom: 1px solid var(--light);
   }
 
   .feature-box, .example-box, .app-box, .assembly-step, .paper-box, .feature-card {
-    border: 1px solid var(--border);
+    border: 1px solid var(--light);
     background: var(--light); /* Slightly lighter background for cards */
     padding: 24px;
     border-radius: 16px;
@@ -112,7 +112,7 @@
 
   /* Universal image rule for regular images */
   .section img {
-    border: 1px solid var(--border);
+    border: 1px solid var(--light);
     background: #111; /* Dark background for images */
   }
 
@@ -271,7 +271,7 @@ header {
 }
 
 .desktop-nav a {
-  color: var(--sub);
+  color: var(--light);
   text-decoration: none;
   font-size: 15px;
   transition: 0.25s;
@@ -296,6 +296,14 @@ header {
   background: var(--light);          /* your gray */
   text-align: center;
   overflow: hidden;
+}
+
+.hero-subtitle {
+  color: #ffffff !important;        /* pure white */
+  font-weight: 700 !important;      /* bold */
+  font-size: 28px !important;       /* slightly larger */
+  line-height: 1.35;
+  margin-top: 12px;
 }
 
 .hero-inner {
@@ -427,74 +435,147 @@ footer {
   .hero-inner { padding: 0 20px; }
 }
 
-/* ------------------------------ */
-/* HERO BASE */
-/* ------------------------------ */
-
+/* --- HERO: Ensure consistent width with other sections --- */
 .intro-hero {
   position: relative;
   width: 100%;
-  height: 92vh;
-  background: #B3B3B3;        /* exact gray from your slide */
+  min-height: 90vh;
+  background: var(--light);       /* your gray */
   display: flex;
   align-items: center;
-  padding-left: 8vw;
   overflow: hidden;
 }
 
-/* LEFT BLOCK (TEXT) */
+/* Same max width as other sections */
 .hero-inner {
-  z-index: 10;
-  max-width: 650px;
+  position: relative;
+  z-index: 20;                     /* ensures text is on top */
+  padding-left: 8vw;
+  max-width: var(--max);           
 }
 
-/* TITLE — matches your bold black title */
+/* --- TITLE ALWAYS ON TOP OF IMAGE --- */
 .hero-title {
-  font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 72px;
-  font-weight: 800;
-  letter-spacing: -1px;
-  margin: 0 0 20px 0;
-  color: #000;               /* pure black, same as slide */
+  color: #000000 !important;        /* pure white */
+  font-weight: 700 !important;      /* bold */
+  font-size: 70px !important;       /* slightly larger */
+  line-height: 1.35;
+  margin-top: 12px;
+},
+#intro .hero-subtitle {
+  color: #ffffff !important;        /* pure white */
+  font-weight: 700 !important;      /* bold */
+  font-size: 28px !important;       /* slightly larger */
+  line-height: 1.35;
+  margin-top: 12px;
 }
-
-/* SUBTITLE — bold white, same kerning & spacing */
-.hero-subtitle {
-  font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 30px;
-  font-weight: 600;
-  line-height: 1.25;
-  margin: 0 0 50px 0;
-  color: #ffffff;
-}
-
-/* AUTHORS — light black text, Apple style */
 .hero-authors {
-  font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 20px;
-  font-weight: 400;
-  margin-top: 20px;
-  color: #111;
+  position: relative;
+  z-index: 30;                     /* forces text above the image */
 }
 
-/* RIGHT IMAGE — positioned just like your slide */
-.hero-rocket {
+/* --- IMAGE CONTAINER FOR SAFE SIZING --- */
+.hero-image-wrap {
   position: absolute;
   right: 0;
   bottom: 0;
+  top: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  max-width: 50vw;                 /* NEVER exceed half screen */
   width: 50%;
-  max-width: 720px;
-  object-fit: contain;
   pointer-events: none;
-  user-select: none;
-  opacity: 0.95;
+  z-index: 10;                     /* behind text */
 }
 
-/* RESPONSIVE FIXES */
+/* --- IMAGE ITSELF: maintain aspect ratio, never overflow --- */
+.hero-rocket {
+  width: 100%;
+  height: auto;                    /* keep aspect ratio */
+  max-height: 90vh;                /* never too tall */
+  object-fit: contain;             /* no cropping or stretching */
+  opacity: 0.92;
+  user-select: none;
+}
+
+/* --- MOBILE RESPONSIVE --- */
 @media (max-width: 900px) {
-  .hero-rocket { opacity: 0.25; width: 80%; }
+
+  .hero-inner {
+    padding-left: 6vw;
+    max-width: 90vw;
+  }
+
+  .hero-image-wrap {
+    max-width: 80vw;
+    width: 80%;
+    opacity: 0.25;                 /* fade image behind text */
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hero-rocket {
+    max-height: 55vh;
+  }
+
   .hero-title { font-size: 54px; }
-  .hero-subtitle { font-size: 24px; }
+  .hero-subtitle {
+  color: #ffffff !important;        /* pure white */
+  font-weight: 700 !important;      /* bold */
+  font-size: 28px !important;       /* slightly larger */
+  line-height: 1.35;
+  margin-top: 12px;
+}
+}
+
+
+/* Container that holds the image BELOW the text */
+.hero-image-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+/* The image itself — perfectly scaled */
+.hero-rocket {
+  width: auto;
+  max-width: 100%;          /* never overflow screen */
+  height: auto;            /* maintain aspect ratio */
+  max-height: 55vh;        /* keeps it visually balanced */
+  object-fit: contain;
+  display: block;
+}
+
+/* Force intro hero to be vertical, not side-by-side */
+#intro.intro-hero {
+  display: block !important;     /* overrides the global 'display:flex' */
+  text-align: center;
+  padding: 120px 0 40px 0;
+}
+
+/* Center the text block */
+#intro .hero-inner {
+  margin: 0 auto;
+  max-width: 700px;
+}
+
+/* Image must appear BELOW the text */
+#intro .hero-image-container {
+  margin-top: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Proper scaling */
+#intro .hero-rocket {
+  width: auto;
+  max-width: 90%;
+  height: auto;
+  max-height: 60vh;
+  object-fit: contain;
 }
 
 
@@ -531,21 +612,24 @@ footer {
 
 <section id="intro" class="intro-hero">
   <div class="hero-inner">
-    
     <h1 class="hero-title">TINTIN:</h1>
 
-    <p class="hero-subtitle">
+    <p class="hero-subtitle" >
       Thrust-Integrated Neural Touchdown with<br>
       Reinforcement Learning and INertial Navigation
     </p>
 
     <p class="hero-authors">Jerry Cheng, Juncheng Zhou</p>
-
   </div>
 
-  <!-- Right-side rocket trajectory image -->
-  <img src="images/tintin_trajectory.png" class="hero-rocket" alt="Rocket Landing Path">
+  <div class="hero-image-container">
+    <img src="assets/images/projects/rocket/overview.jpg"
+         class="hero-rocket"
+         alt="Rocket Landing Path">
+  </div>
 </section>
+
+
 
 
 
