@@ -6,6 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Staatliches&display=swap" rel="stylesheet">
+
 
 <style>
 :root {
@@ -290,10 +292,10 @@ p {
 
 
 /* ----------------------------- */
-/* HORIZONTAL SLIDER */
+/* HORIZONTAL SLIDER (FEATURES) */
 /* ----------------------------- */
 
-/* Container for Title Alignment */
+/* Container for Title Alignment and button positioning */
 .carousel-section {
   padding: 80px 0;
   background: var(--page-bg);
@@ -307,37 +309,40 @@ p {
     max-width: var(--max);
     margin: 0 auto;
     padding: 0 20px 40px 20px;
+    position: relative; /* Set context for absolute buttons */
 }
 
 /* --- UNIVERSAL SLIDER BUTTONS (REFINED POSITIONING) --- */
 
-/* Slider controls container: This MUST contain the slider buttons */
+/* Slider controls container for scroll bar and buttons */
 .slider-controls-wrapper {
     position: relative;
     max-width: var(--max); 
     margin: 0 auto;
-    padding: 0 20px 0 20px; 
+    padding: 30px 20px 60px 20px; /* Added vertical padding to make space for buttons/track */
 }
 
-/* Slider buttons position relative to the scroll track */
+/* Slider buttons position */
 .slider-btn,
 .assembly-btn {
-  position: absolute;
-  top: 50%; /* Adjusted for visual center */
-  transform: translateY(-50%);
-  background: white;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  font-size: 26px;
-  line-height: 36px;
-  text-align: center;
-  z-index: 20;
-  transition: 0.2s;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Added box shadow */
+    position: absolute;
+    /* Aligned to the bottom right of .slider-controls-wrapper */
+    top: auto; 
+    transform: none;
+    
+    background: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    font-size: 26px;
+    line-height: 36px;
+    text-align: center;
+    z-index: 20;
+    transition: 0.2s;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
 }
 .slider-btn:hover,
 .assembly-btn:hover {
@@ -349,9 +354,15 @@ p {
   pointer-events: none;
 }
 
-/* Button positioning RELATIVE to the constrained .slider-controls-wrapper (max 1100px wide) */
-.prev { left: -36px; } 
-.next { right: -36px; }
+/* Button positioning RELATIVE to the .slider-controls-wrapper (Bottom right) */
+.prev { 
+    right: 86px; 
+    bottom: 0px; /* Position at the bottom of the wrapper */
+} 
+.next { 
+    right: 36px; 
+    bottom: 0px; /* Position at the bottom of the wrapper */
+}
 
 
 /* --- SLIDER TRACK (FULL-BLEED) --- */
@@ -426,7 +437,8 @@ p {
   height: 4px;
   background: #e5e5e7;
   border-radius: 4px;
-  margin-top: 30px; 
+  margin-top: 0; /* Aligned to top of wrapper */
+  margin-bottom: 25px; /* Added margin to push buttons down/make space */
   overflow: hidden;
 }
 .slider-scroll-bar {
@@ -454,6 +466,9 @@ p {
   .feature-card img { height: 150px; }
   .slider-btn,
   .assembly-btn { display: none; }
+  .slider-controls-wrapper {
+      padding-bottom: 20px; /* Reset padding for mobile where buttons are hidden */
+  }
 }
 
 /* ----------------------------- */
@@ -952,20 +967,69 @@ p {
   to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 
+/* ----------------------------- */
+/* CONCLUSION SECTION STYLING (REVISED) */
+/* ----------------------------- */
+.conclusion-revised {
+    padding: 100px 20px; /* More vertical padding for center focus */
+    text-align: center; /* Center all text elements */
+}
+
+.conclusion-content-inner {
+    max-width: 700px; /* Confine text width */
+    margin: 0 auto;
+}
+
+/* Ensure headings/paragraphs in the revised conclusion remain readable */
+.conclusion-revised h2 {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.conclusion-revised p {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+/* Resetting margin for the last paragraph if it has a blank line after it */
+.conclusion-revised p:last-of-type {
+    margin-bottom: 0;
+}
+
+
 /* FOOTER    */
 footer {
-  text-align: center;
+  /* Aligned center via `text-align: center;` is removed here to allow individual div alignment */
   font-size: 14px;
   color: #86868b;
-  padding: 40px 0 50px 0;
+  /* Increased top padding for better separation from content */
+  padding: 80px 0 50px 0; /* Removed horizontal padding from FOOTER itself */
 }
-/* MODIFIED FOOTER STYLE */
+
+/* Style for individual footer lines */
+footer > div {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 20px; /* ADDED HORIZONTAL PADDING HERE */
+    line-height: 1.8;
+}
+
+/* MODIFIED FOOTER STYLES */
 footer a {
     color: var(--accent);
     text-decoration: none;
 }
 footer a:hover {
     text-decoration: underline;
+}
+
+.art-deco-text {
+    font-family: 'Staatliches', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.15em;
+    font-weight: 400; /* Staatliches is display font, usually 400 */
+    color: var(--text); /* Make it stand out slightly */
 }
 </style>
 </head>
@@ -980,8 +1044,8 @@ footer a:hover {
       <a href="#intro" data-section="intro">Intro</a>
       <a href="#methods" data-section="methods">Methods</a>
       <a href="#features" data-section="features">Features</a>
-      <a href="#results" data-section="results">Results</a>
-      <a href="#conclusion" data-section="conclusion">Conclusion</a>
+      <a href="#results">Results</a>
+      <a href="#conclusion">Conclusion</a>
     </nav>
 
     <button id="burgerBtn" class="burger">
@@ -1140,11 +1204,6 @@ footer a:hover {
         </p>
     </div>
     
-    <div class="slider-controls-wrapper" style="margin-bottom: 0;"> 
-        <div id="featurePrevBtn" class="slider-btn prev">❮</div>
-        <div id="featureNextBtn" class="slider-btn next">❯</div>
-    </div>
-    
     <div id="featureSliderTrack" class="feature-slider animate-on-scroll">
             
         <div class="feature-card">
@@ -1190,6 +1249,9 @@ footer a:hover {
     </div>
     
     <div class="slider-controls-wrapper">
+        <div id="featurePrevBtn" class="slider-btn prev">❮</div>
+        <div id="featureNextBtn" class="slider-btn next">❯</div>
+
         <div class="slider-scroll-track">
             <div id="featureScrollBar" class="slider-scroll-bar"></div>
         </div>
@@ -1242,9 +1304,6 @@ footer a:hover {
                     <div class="section-tag">Scalability Metric C</div>
                     <h2>$10,000$ Instances Deployed</h2>
                     <p>
-                        The system scaled reliably across thousands of parallel cloud instances during stress testing, maintaining high availability and low operational cost per unit.
-                    </p>
-                    <p>
                         This validates the robustness of our stateless microservice architecture for enterprise-level adoption.
                     </p>
                 </div>
@@ -1266,32 +1325,28 @@ footer a:hover {
     </div>
 </div>
 
-<section id="conclusion" class="section animate-on-scroll">
-    <div class="section-box">
-        <div class="section-row">
-            <div>
-              <div class="section-tag">Conclusion</div>
-              <h2>What this enables next</h2>
-              <p>
-                One short paragraph on impact and limitations.
-              </p>
-              <p>
-                Another on concrete next steps: scaling, hardware,
-                real-world deployment, or future research.
-              </p>
-            </div>
-            <div class="section-media">
-              <img src="assets/future_visual.jpg" alt="Future work visual">
-            </div>
-        </div>
+<section id="conclusion" class="section conclusion-revised animate-on-scroll">
+    <div class="conclusion-content-inner">
+        <div class="section-tag">Conclusion</div>
+        <h2>What this enables next</h2>
+        <p>
+            One short paragraph on impact and limitations.
+        </p>
+        <p>
+            Another on concrete next steps: scaling, hardware,
+            real-world deployment, or future research.
+        </p>
     </div>
 </section>
 
 
 <footer>
-  <div>© 2025 Your Name — Project Template</div>
-  <div>Designed in New York City with love — in a tiny studio apartment.</div>
-  <div>If you want to use my template here, please <a href="[LINK_TO_TEMPLATE_REPO/SITE]" target="_blank">cite me</a>.</div>
+  <div style="text-align: left;">© 2025 Your Name — Project Template</div>
+    <br>
+  <div class="art-deco-text" style="text-align: right;">Designed in New York City with love <br> — in a tiny studio apartment.</div>
+  <br>
+  <div style="text-align: center;">If you want to use my template here, please <a href="[LINK_TO_TEMPLATE_REPO/SITE]" target="_blank">cite me</a>.</div>
+  <br><br><br>
 </footer>
 
 
@@ -1386,10 +1441,9 @@ const resultsObserver = new IntersectionObserver((entries) => {
     });
 }, {
     root: null,
-    // MODIFIED: Increased negative bottom margin to make the nav bar disappear much earlier, 
-    // ensuring the user sees the footer clearly.
-    threshold: 0.1, 
-    rootMargin: '0% 0% -15% 0%' // Changed from -50% to -75%
+    // MODIFIED: This ensures the floating bar disappears early as the user scrolls past the Results section.
+    threshold: 0.0, 
+    rootMargin: '0% 0% -15% 0%' 
 });
 
 if (resultsSection) {
