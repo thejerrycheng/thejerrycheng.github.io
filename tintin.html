@@ -1,941 +1,1784 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior: smooth;">
 <head>
 <meta charset="UTF-8">
-<title>TINTIN — Thrust-Integrated Neural Touchdown</title>
+<title>Project Title — Apple Style Template</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Staatliches&display=swap" rel="stylesheet">
+
 
 <style>
 :root {
-  --accent: #FF9500;        /* Apple Orange */
-  --text: #000000;          /* Black text (Apple style on light gray) */
-  --sub: #333333;           /* Medium gray for subtitles */
-  --light: #B3B3B3;         /* YOUR screenshot gray */
-  --dark: #A6A6A6;          /* Slightly darker gray for subtle depth */
-  --border: #8F8F8F;        /* Soft border gray */
-  --max: 940px;
+  --accent: #FF9500;      /* Apple Blue (a more common primary color) */
+  --text: #1D1D1F;        /* Near-Black for main text */
+  --sub: #6E6E73;         /* Dark Gray for secondary text (sub) */
+  --page-bg: #faf8f2;     /* Light Gray background color */
+  --light: #FFFFFF;       /* Inner section background remains white */
+  --mid: #D2D2D7;
+  --border: #E8E8ED;      /* Very light border/separator */
+  --max: 1100px;          /* WIDER CONTENT AREA */
+  --white-text: #FFFFFF;  /* For text over images/dark backgrounds */
+  
+  /* ADDED: Consolidated large radius variable for main section boxes */
+  --large-radius: 32px; 
 }
 
-
-
-  /* -------------------------------------- */
-  /* TINTIN STYLE OVERHAUL         */
-  /* -------------------------------------- */
-  body {
-    font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
-    margin: 0;
-    color: var(--text);
-    background: var(--dark); /* Dark background for space theme */
-    -webkit-font-smoothing: antialiased;
-  }
-
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 999;
-    width: 100%;
-    background: rgba(7, 22, 38, 0.95); /* Deep space transparent background */
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--light);
-  }
-
-  .desktop-nav a {
-    color: var(--sub);
-    transition: color 0.2s;
-  }
-  .desktop-nav a:hover {
-    color: var(--text);
-  }
-  .accent { color: var(--accent); }
-
-
-  /* --- HERO SECTION MODIFICATIONS --- */
-  .intro-hero {
-    /* Using the space background from the slide 1 */
-    background-image: url('images/space_bg.jpg'); /* Placeholder: Dark background with stars */
-    background-size: cover;
-    background-position: center top;
-    background-attachment: fixed;
-    min-height: 80vh;
-    padding-top: 120px;
-    padding-bottom: 200px;
-  }
-
-  .intro-bg::after {
-    /* Darker, cinematic gradient mask */
-    background: linear-gradient(
-      to bottom,
-      rgba(7, 22, 38, 0.85),
-      rgba(7, 22, 38, 0.75),
-      rgba(7, 22, 38, 0.95)
-    );
-  }
-
-  .intro-bg::before {
-    /* Subtle blue/purple tint overlay */
-    background: linear-gradient(
-      135deg,
-      rgba(0,122,255,0.1),
-      rgba(0,122,255,0.05) 40%,
-      rgba(0,122,255,0.15)
-    );
-    mix-blend-mode: soft-light;
-  }
-
-  h1 { font-size: 56px; }
-  h2 { font-size: 34px; color: var(--text); }
-  h3 { font-size: 22px; color: var(--text); }
-  p { color: var(--sub); font-size: 17px; line-height: 1.6; }
-
-  .section {
-    max-width: var(--max);
-    margin: auto;
-    padding: 80px 24px;
-    background: var(--dark);
-  }
-
-  .gray {
-    background: var(--light);
-    border-top: 1px solid var(--light);
-    border-bottom: 1px solid var(--light);
-  }
-
-  .feature-box, .example-box, .app-box, .assembly-step, .paper-box, .feature-card {
-    border: 1px solid var(--light);
-    background: var(--light); /* Slightly lighter background for cards */
-    padding: 24px;
-    border-radius: 16px;
-    margin-bottom: 28px;
-  }
-
-  /* Universal image rule for regular images */
-  .section img {
-    border: 1px solid var(--light);
-    background: #111; /* Dark background for images */
-  }
-
-  /* BUTTONS */
-  .btn-primary {
-    background: var(--accent);
-    color: white;
-  }
-  .btn-primary:hover {
-    background: #0060d0; /* Darker blue on hover */
-  }
-
-  .btn-secondary {
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    backdrop-filter: blur(4px);
-  }
-  .btn-secondary:hover {
-    background: rgba(0, 122, 255, 0.1);
-  }
-
-  /* Placeholder for other styles from VibraForge, adjusted for dark theme */
-  /* (e.g., feature-slider, modal, burger menu media queries, etc. - keeping them here as a reference) */
-  /* ... (Include all the necessary CSS from the VibraForge example here) ... */
-  .nav-inner {max-width: var(--max);margin: 0 auto;padding: 16px 24px;display: flex;justify-content: center;align-items: center;position: relative;}
-  .desktop-nav {display: flex;gap: 32px;}
-  .desktop-nav a {text-decoration: none;font-size: 15px;}
-  .burger {display: none;position: absolute;right: 24px;top: 50%;transform: translateY(-50%);background: none;border: none;font-size: 26px;font-weight: 600;cursor: pointer;color: var(--text);padding: 4px 8px;z-index: 1001;}
-  .mobile-menu {display: none;flex-direction: column;gap: 30px;background: rgba(7, 22, 38, 0.96);backdrop-filter: blur(12px);padding: 30px;width: 100%;border-bottom: 1px solid var(--border);animation: menuDrop 0.25s ease-out;}
-  .mobile-menu a {text-decoration: none;color: var(--text);font-size: 17px;}
-  @media (max-width: 750px) {header {padding: 24px 0;} .desktop-nav {display: none;} .burger {display: block;}}
-  @media (min-width: 751px) {.mobile-menu {display: none !important;}}
-  .hero-sub {max-width: 640px;}
-  .img-box {margin-top: 40px;border-radius: 18px;overflow: hidden;border: 1px solid var(--border);}
-  .img-box img {display: block;width: 100%;}
-  .feature-grid {display: grid;gap: 24px;grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));margin-top: 40px;}
-  .feature-box p {font-size: 15px;}
-  footer {text-align: center;padding: 32px;color: #777;font-size: 14px;}
-  .section img, .feat-img, .example-img, .app-img, .paper-img {width: 100%;max-width: 100%;height: auto;border-radius: 14px;border: 1px solid var(--border);display: block;object-fit: contain;background: var(--dark);padding: 6px;box-sizing: border-box;}
-  .assembly-img {width: 100%;height: auto;max-height: 260px;object-fit: contain !important;background: var(--dark);padding: 10px;box-sizing: border-box;border-radius: 14px;border: 1px solid var(--border);}
-  .example-img {max-height: 280px;object-fit: cover;}
-  .app-img, .paper-img {max-height: 260px;object-fit: cover;}
-  .feature-grid {display: grid;gap: 24px;grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));}
-  .feature-box, .example-box, .app-box, .assembly-step, .paper-box {border: 1px solid var(--border);background: var(--light);padding: 20px;border-radius: 16px;margin-bottom: 28px;box-sizing: border-box;}
-  @media (max-width: 600px) {h1 { font-size: 36px; } h2 { font-size: 26px; } .section { padding: 50px 18px; } .section img { border-radius: 12px; }}
-  .feature-slider-container {position: relative;margin-top: 40px;}
-  .feature-slider {display: flex;gap: 24px;overflow-x: auto;scroll-snap-type: x mandatory;padding-bottom: 20px;scrollbar-width: none;}
-  .feature-slider::-webkit-scrollbar { display: none; }
-  .feature-card {flex: 0 0 calc(33.3% - 20px);scroll-snap-align: start;background: var(--light);border: 1px solid var(--border);border-radius: 16px;overflow: hidden;display: flex;flex-direction: column;height: 100%;min-height: 360px;}
-  .feature-card img {width: 100%;height: 180px;object-fit: cover;border-bottom: 1px solid var(--border);}
-  .card-text {padding: 16px;margin-top: auto;}
-  .card-text h3 {margin: 0 0 6px;}
-  .slider-btn {position: absolute;top: 45%;transform: translateY(-50%);background: rgba(255,255,255,0.9);width: 40px;height: 40px;border-radius: 50%;border: 1px solid var(--border);cursor: pointer;font-size: 26px;line-height: 36px;text-align: center;z-index: 20;transition: 0.2s;}
-  .slider-btn:hover {background: var(--light);}
-  .prev { left: -14px; } .next { right: -14px; }
-  .slider-dots {display: flex;justify-content: center;margin-top: 16px;gap: 8px;}
-  .slider-dots div {width: 10px;height: 10px;background: #ccc;border-radius: 50%;transition: 0.2s;}
-  .slider-dots .active {background: var(--accent);transform: scale(1.25);}
-  @media (max-width: 1200px) {.feature-card { flex: 0 0 calc(40% - 20px); }}
-  @media (max-width: 900px) {.feature-card { flex: 0 0 calc(50% - 20px); }}
-  @media (max-width: 600px) {.feature-card { flex: 0 0 calc(75% - 20px); } .feature-card img { height: 150px; } .slider-btn { display: none; }}
-  .intro-buttons {margin-top: 28px;display: flex;gap: 16px;flex-wrap: wrap;}
-  @media (max-width: 600px) {.intro-buttons {flex-direction: column;align-items: flex-start;} .btn-primary, .btn-secondary {width: auto;}}
-  .feature-img-wrap {width: 100%;height: 180px;padding: 10px;box-sizing: border-box;border-bottom: 1px solid var(--border);background: var(--dark);display: flex;align-items: center;justify-content: center;overflow: hidden;}
-  .feature-img-wrap img {max-width: 100%;max-height: 100%;object-fit: contain !important;display: block;}
-  .modal {display: none;position: fixed;inset: 0;background: rgba(0,0,0,0.55);backdrop-filter: blur(6px);z-index: 999;justify-content: center;align-items: center;padding: 20px;}
-  .modal-content {background: var(--light);max-width: 600px;width: 100%;border-radius: 18px;padding: 24px;box-shadow: 0 16px 40px rgba(0,0,0,0.15);position: relative;}
-  .close {position: absolute;top: 12px;right: 16px;font-size: 28px;cursor: pointer;color: #999;transition: 0.2s ease;}
-  .close:hover {color: white;}
-  .modal-img {width: 100%;max-height: 340px;object-fit: contain;border-radius: 12px;margin-bottom: 16px;}
-  @keyframes popIn {from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; }}
-  @media (max-width: 900px) {html, body {overflow-x: hidden !important;width: 100%;} * {max-width: 100vw !important;} .feature-slider, .assembly-slider {max-width: 100vw !important;overflow-x: auto;}}
-  .gui-row {display: flex;gap: 28px;margin-top: 40px;align-items: center;justify-content: center;flex-wrap: nowrap;}
-  .gui-col {flex: 1;min-width: 0;}
-  .gui-media-block {width: 100%;height: 100%;max-height: 420px;object-fit: contain;border-radius: 16px;border: 1px solid var(--border);background: var(--dark);display: block;align-self: stretch;}
-  @media (max-width: 850px) {.gui-row {flex-direction: column;} .gui-media-block {max-height: 360px;}}
-  .assembly-slider-container {position: relative;margin-top: 32px;overflow: visible;}
-  .assembly-slider {display: flex;gap: 24px;overflow-x: auto;scroll-snap-type: x mandatory;padding: 10px 0 30px;scrollbar-width: none;}
-  .assembly-slider::-webkit-scrollbar { display: none; }
-  .assembly-card {flex: 0 0 80%;scroll-snap-align: start;background: var(--light);border-radius: 16px;border: 1px solid var(--border);overflow: hidden;display: flex;flex-direction: column;min-height: 320px;}
-  .assembly-text {padding: 16px 18px 18px;}
-  .assembly-text ul {margin: 8px 0 0;padding-left: 20px;}
-  .assembly-text li {font-size: 14px;line-height: 1.4;color: var(--sub);}
-  .assembly-btn {position: absolute;top: 45%;transform: translateY(-50%);background: rgba(7, 22, 38, 0.9);width: 40px;height: 40px;border-radius: 50%;border: 1px solid var(--border);cursor: pointer;font-size: 26px;line-height: 36px;text-align: center;z-index: 20;transition: 0.2s;color: white;}
-  .assembly-btn:hover {background: var(--light);}
-  .assembly-prev { left: -14px; } .assembly-next { right: -14px; }
-  .assembly-scroll-track {width: 100%;height: 4px;background: #111;border-radius: 4px;margin-top: 10px;overflow: hidden;}
-  .assembly-scroll-bar {height: 100%;width: 0%;background: var(--accent);transition: width 0.20s ease-out;}
-  @media (max-width: 800px) {.assembly-card { flex: 0 0 88%; }}
-  @media (max-width: 600px) {.assembly-card { flex: 0 0 95%; } .assembly-img { height: 160px; } .assembly-btn { display: none; }}
-
-
-</style>
-<style>
 /* ----------------------------- */
-/* Apple-Inspired Design System  */
+/* Global           */
 /* ----------------------------- */
-
-/* GLOBAL */
-
 body {
-  font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
-  background: var(--dark);
+  background: var(--page-bg); /* Use new background variable */
   color: var(--text);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
+  
+  /* --- MODIFIED: LOCK HORIZONTAL SCROLLING --- */
+  overflow-x: hidden;
 }
-
-/* HEADINGS */
 
 h1 {
-  font-size: 64px;
-  font-weight: 600;
-  margin: 0 0 20px 0;
-  letter-spacing: -0.5px;
+  font-size: 80px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  margin: 0 0 12px 0;
 }
 
 h2 {
-  font-size: 38px;
+  font-size: 34px;
   font-weight: 600;
-  letter-spacing: -0.4px;
-  margin-bottom: 32px;
-}
-
-h3 {
-  font-size: 22px;
-  font-weight: 500;
-  margin-bottom: 12px;
+  letter-spacing: -0.3px;
+  margin: 0 0 20px 0;
+  color: var(--text);
 }
 
 p {
   font-size: 18px;
-  color: var(--sub);
   line-height: 1.6;
+  color: var(--sub);
 }
 
-/* NAV BAR */
+/* Helper Class for light text over dark image */
+.text-on-dark h1, .text-on-dark h2, .text-on-dark p, .text-on-dark .hero-subtitle, .text-on-dark .hero-meta {
+  color: var(--white-text);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+.text-on-dark .btn-ghost {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--white-text);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+.text-on-dark .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
 
-header {
-  position: sticky;
+
+/* ---------------------------------- */
+/* APPLE NAV BAR             */
+/* ---------------------------------- */
+
+#navbar {
+  position: fixed;
   top: 0;
   width: 100%;
-  z-index: 999;
-  background: rgba(7, 22, 38, 0.82);
+  background: rgba(255,255,255,0.82);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  z-index: 9999;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+}
+
+#navbar.hide {
+  transform: translateY(-100%);
+  opacity: 0;
 }
 
 .nav-inner {
-  max-width: var(--max);
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 18px 24px;
+  padding: 14px 20px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.nav-title {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--text);
+}
+
+.desktop-nav {
   display: flex;
-  justify-content: center;
   gap: 40px;
+  justify-self: center;
 }
 
 .desktop-nav a {
-  color: var(--light);
+  position: relative;
   text-decoration: none;
   font-size: 15px;
-  transition: 0.25s;
+  font-weight: 500;
+  color: var(--sub);
+  letter-spacing: 0.02em;
+  padding-bottom: 4px;
+  transition: color 0.2s ease;
+}
+
+.desktop-nav a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  height: 2px;
+  width: 0%;
+  background: var(--text);
+  transition: width 0.25s ease, left 0.25s ease;
 }
 
 .desktop-nav a:hover {
   color: var(--text);
 }
 
-/* ----------------------------- */
-/* APPLE-STYLE HERO SECTION      */
-/* ----------------------------- */
-
-/* ----------------------------- */
-/* HERO with your screenshot gray*/
-/* ----------------------------- */
-
-.intro-hero {
-  position: relative;
+.desktop-nav a:hover::after {
   width: 100%;
-  padding: 140px 0 160px 0;
-  background: var(--light);          /* your gray */
-  text-align: center;
-  overflow: hidden;
+  left: 0;
 }
 
-.hero-subtitle {
-  color: #ffffff !important;        /* pure white */
-  font-weight: 700 !important;      /* bold */
-  font-size: 28px !important;       /* slightly larger */
-  line-height: 1.35;
-  margin-top: 12px;
-}
-
-.hero-inner {
-  max-width: var(--max);
-  margin: 0 auto;
-  padding: 0 28px;
-  position: relative;
-  z-index: 10;
-}
-
-h1 {
-  font-size: 64px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-  margin-bottom: 12px;
+.desktop-nav a.active {
   color: var(--text);
 }
 
-.hero-sub {
-  max-width: 620px;
-  margin: 18px auto 0 auto;
-  font-size: 18px;
-  color: var(--sub);
-  line-height: 1.55;
+.desktop-nav a.active::after {
+  width: 100%;
+  left: 0;
 }
 
-.intro-hero img.hero-image {
-  margin: 60px auto 0 auto;
-  width: 70%;
-  max-width: 540px;
-  border-radius: 20px;
-  display: block;
-  object-fit: cover;
-  box-shadow: 0 22px 44px rgba(0,0,0,0.22);
-}
-
-/* --- Apple-style equation block --- */
-.eq {
-  font-size: 18px;
-  color: #111; 
-  background: #F3F3F4;           /* Apple light gray */
-  padding: 14px 18px;
-  border-radius: 14px;
-  margin: 30px 0;
-  text-align: center;
-  font-weight: 500;
-  line-height: 1.45;
-  letter-spacing: -0.2px;
-  border: 1px solid rgba(0,0,0,0.06); /* very subtle Apple border */
-}
-
-.eq b {
-  display: block;
-  margin-bottom: 6px;
-  color: #000;
+.burger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
   font-weight: 600;
+  cursor: pointer;
+  color: var(--text);
+  padding: 8px;
+  line-height: 1;
+  margin-left: auto;
+  justify-self: end;
 }
 
+@media (max-width: 750px) {
+  .desktop-nav {
+    display: none;
+  }
+  .nav-inner {
+    grid-template-columns: 1fr auto;
+  }
+  .burger {
+    display: block;
+  }
+}
 
-/* Buttons */
-.btn-primary, .btn-secondary {
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  gap: 22px;
+  padding: 24px;
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.mobile-menu a {
   text-decoration: none;
-  transition: 0.25s;
+  font-size: 18px;
+  color: var(--text);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+.mobile-menu a:last-child {
+  border-bottom: none;
+}
+
+/* ----------------------------- */
+/* HERO (Full Height) */
+/* ----------------------------- */
+.hero {
+  height: 100vh; /* Keep 100vh for Hero */
+  padding: 0; 
+  text-align: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Hero Media as Background Container */
+.hero-media {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.hero-image-container {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  opacity: 0.85;
+}
+
+/* Text overlay container */
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px; 
+}
+
+/* Make sure parallax still works on the image */
+.hero-image-container img {
+  will-change: transform;
+  transition: transform 0.2s ease-out;
+}
+
+/* Button styles remain the same */
+.btn {
+  padding: 11px 22px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
 .btn-primary {
   background: var(--accent);
-  color: white;
+  color: #fff;
 }
 
 .btn-primary:hover {
-  background: #e67d00;
+  background: #de8100;
 }
 
-.btn-secondary {
-  border: 1px solid var(--accent);
-  color: var(--accent);
+.btn-ghost {
   background: rgba(0,0,0,0.04);
+  color: var(--text);
+  border: 1px solid rgba(0,0,0,0.08);
 }
 
-.btn-secondary:hover {
-  background: rgba(255,149,0,0.15);
+.btn-ghost:hover {
+  background: rgba(0,0,0,0.08);
 }
 
-.intro-buttons {
-  margin-top: 28px;
+
+/* ----------------------------- */
+/* HORIZONTAL SLIDER (FEATURES) */
+/* ----------------------------- */
+
+/* Container for Title Alignment and button positioning */
+.carousel-section {
+  padding: 80px 0;
+  background: var(--page-bg);
+  position: relative;
+  min-height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.carousel-title-inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 20px 40px 20px;
+    position: relative; /* Set context for absolute buttons */
+}
+
+/* --- UNIVERSAL SLIDER BUTTONS (REFINED POSITIONING) --- */
+
+/* Slider controls container for scroll bar and buttons */
+.slider-controls-wrapper {
+    position: relative;
+    max-width: var(--max); 
+    margin: 0 auto;
+    padding: 30px 20px 60px 20px; /* Added vertical padding to make space for buttons/track */
+}
+
+/* Slider buttons position */
+.slider-btn,
+.assembly-btn {
+    position: absolute;
+    /* Aligned to the bottom right of .slider-controls-wrapper */
+    top: auto; 
+    transform: none;
+    
+    background: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    font-size: 26px;
+    line-height: 36px;
+    text-align: center;
+    z-index: 20;
+    transition: 0.2s;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+}
+.slider-btn:hover,
+.assembly-btn:hover {
+  background: var(--light);
+}
+
+.slider-btn.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Button positioning RELATIVE to the .slider-controls-wrapper (Bottom right) */
+.prev { 
+    right: 86px; 
+    bottom: 0px; /* Position at the bottom of the wrapper */
+} 
+.next { 
+    right: 36px; 
+    bottom: 0px; /* Position at the bottom of the wrapper */
+}
+
+
+/* --- SLIDER TRACK (FULL-BLEED) --- */
+.feature-slider {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 10px 20px 30px;
+  scrollbar-width: none;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+.feature-slider::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* --- SLIDER CARDS (FEATURE) --- */
+.feature-card {
+  flex: 0 0 calc( (100% - 2 * 24px) / 2.2); 
+  scroll-snap-align: start;
+  background: var(--light);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+.feature-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--border);
+}
+.feature-card-text {
+    padding: 24px;
+}
+.feature-card-text h3 {
+    margin: 0 0 8px 0;
+    font-size: 22px;
+}
+.feature-card-text p {
+    font-size: 16px;
+    margin: 0;
+}
+
+
+/* --- Dots & Scroll Bar (Used for Feature Slider) --- */
+.slider-dots {
   display: flex;
   justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.slider-dots div {
+  width: 10px;
+  height: 10px;
+  background: #ccc;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+.slider-dots .active {
+  background: var(--accent);
+  transform: scale(1.25);
+}
+
+.slider-scroll-track {
+  width: 100%;
+  height: 4px;
+  background: #e5e5e7;
+  border-radius: 4px;
+  margin-top: 0; /* Aligned to top of wrapper */
+  margin-bottom: 25px; /* Added margin to push buttons down/make space */
+  overflow: hidden;
+}
+.slider-scroll-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width 0.2s ease-out;
 }
 
 
-/* SECTIONS */
+/* --- RESPONSIVE BREAKPOINTS --- */
+@media (max-width: 1200px) {
+  .feature-card { flex: 0 0 calc( (100% - 1 * 24px) / 2); } 
+}
+@media (max-width: 900px) {
+  .feature-card { flex: 0 0 calc( (100% - 1 * 24px) / 1.5); }
+}
+@media (max-width: 600px) {
+  .feature-slider {
+    padding: 10px 20px 30px;
+    margin-left: 0;
+    width: 100%;
+  }
+  .feature-card { flex: 0 0 calc(100% - 40px); }
+  .feature-card img { height: 150px; }
+  .slider-btn,
+  .assembly-btn { display: none; }
+  .slider-controls-wrapper {
+      padding-bottom: 20px; /* Reset padding for mobile where buttons are hidden */
+  }
+}
 
+/* ----------------------------- */
+/* SECTION (Content-Sized) */
+/* ----------------------------- */
 .section {
   max-width: var(--max);
   margin: 0 auto;
-  padding: 100px 28px;
-}
-
-.gray {
-  background: var(--light);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-
-/* FEATURES */
-
-.feature-grid {
-  display: grid;
-  gap: 24px;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  margin-top: 40px;
-}
-
-.feature-box {
-  background: var(--light);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 22px;
-}
-
-/* IMAGES */
-
-.section img {
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: #000;
-}
-
-/* FOOTER */
-
-footer {
-  text-align: center;
-  color: #76808A;
-  font-size: 14px;
-  padding: 60px 0;
-}
-
-/* MOBILE */
-
-@media (max-width: 700px) {
-  h1 { font-size: 44px; }
-  h2 { font-size: 28px; }
-  .intro-hero { padding: 140px 0 150px 0; }
-  .hero-inner { padding: 0 20px; }
-}
-
-/* --- HERO: Ensure consistent width with other sections --- */
-.intro-hero {
-  position: relative;
-  width: 100%;
-  min-height: 90vh;
-  background: var(--light);       /* your gray */
+  padding: 80px 20px; /* INCREASED VERTICAL PADDING */
+  background: var(--page-bg);
+  border-radius: 0;
+  margin-bottom: 0;
+  box-shadow: none;
+  min-height: auto;
   display: flex;
-  align-items: center;
-  overflow: hidden;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
-/* Same max width as other sections */
-.hero-inner {
+.section-box {
+  background: var(--light);
+  /* MODIFIED: Use the variable for a smooth, large radius */
+  border-radius: var(--large-radius);
+  padding: 70px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03), 0 0 0 1px var(--border);
   position: relative;
-  z-index: 20;                     /* ensures text is on top */
-  padding-left: 8vw;
-  max-width: var(--max);           
 }
 
-/* --- TITLE ALWAYS ON TOP OF IMAGE --- */
-.hero-title {
-  color: #000000 !important;        /* pure white */
-  font-weight: 700 !important;      /* bold */
-  font-size: 70px !important;       /* slightly larger */
-  line-height: 1.35;
-  margin-top: 12px;
-},
-#intro .hero-subtitle {
-  color: #ffffff !important;        /* pure white */
-  font-weight: 700 !important;      /* bold */
-  font-size: 28px !important;       /* slightly larger */
-  line-height: 1.35;
-  margin-top: 12px;
-}
-.hero-authors {
-  position: relative;
-  z-index: 30;                     /* forces text above the image */
+.section:first-of-type {
+  margin-top: 0;
 }
 
-/* --- IMAGE CONTAINER FOR SAFE SIZING --- */
-.hero-image-wrap {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  max-width: 50vw;                 /* NEVER exceed half screen */
-  width: 50%;
-  pointer-events: none;
-  z-index: 10;                     /* behind text */
+
+/* ----------------------------- */
+/* RESULTS SECTION NAV BAR (FINAL FLOATING STYLES) */
+/* ----------------------------- */
+
+/* Container for all dynamic results content */
+.results-content-area {
+    /* Push content down to avoid overlap with fixed nav bar */
+    padding-bottom: 100px; 
+    position: relative;
+    z-index: 1; /* Above the content, but below the fixed bar */
 }
 
-/* --- IMAGE ITSELF: maintain aspect ratio, never overflow --- */
-.hero-rocket {
-  width: 100%;
-  height: auto;                    /* keep aspect ratio */
-  max-height: 90vh;                /* never too tall */
-  object-fit: contain;             /* no cropping or stretching */
-  opacity: 0.92;
-  user-select: none;
+/* Fixed nav bar visible only when results section is in view (controlled by JS) */
+#resultsFloatingNav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9000;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s;
+    visibility: hidden;
 }
 
-/* --- MOBILE RESPONSIVE --- */
-@media (max-width: 900px) {
+#resultsFloatingNav.show {
+    opacity: 1;
+    visibility: visible;
+}
 
-  .hero-inner {
-    padding-left: 6vw;
-    max-width: 90vw;
-  }
+.results-nav {
+    /* Aesthetics: Light, rounded, translucent pill */
+    max-width: fit-content;
+    margin: 0 auto;
+    width: auto;
+    
+    background: rgba(255, 255, 255, 0.85); /* Translucent White/Light */
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 0, 0, 0.08); /* Subtle dark border */
+    border-radius: 999px;
+    
+    padding: 6px 8px; 
+    display: flex;
+    justify-content: space-around;
+    gap: 6px;
+    
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
 
-  .hero-image-wrap {
-    max-width: 80vw;
-    width: 80%;
-    opacity: 0.25;                 /* fade image behind text */
+.results-nav button {
+    background: none;
+    border: none;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text); /* Dark text on light bar */
+    padding: 8px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.results-nav button:hover {
+    background: rgba(0, 0, 0, 0.04); /* Subtle gray hover */
+}
+
+.results-nav button.active {
+    background: var(--accent); /* Accent color for active item */
+    color: var(--white-text); 
+    font-weight: 600;
+}
+
+/* Content container for dynamic results */
+.results-content-area {
+    min-height: auto;
+}
+.result-item {
+    opacity: 0;
+    position: absolute;
+    width: auto;
+    height: auto;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.result-item.active {
+    opacity: 1;
+    pointer-events: auto;
+    position: static;
+}
+.result-item .section-row {
+    align-items: center;
+}
+.result-item .section-media {
+    display: flex;
     justify-content: center;
     align-items: center;
-  }
-
-  .hero-rocket {
-    max-height: 55vh;
-  }
-
-  .hero-title { font-size: 54px; }
-  .hero-subtitle {
-  color: #ffffff !important;        /* pure white */
-  font-weight: 700 !important;      /* bold */
-  font-size: 28px !important;       /* slightly larger */
-  line-height: 1.35;
-  margin-top: 12px;
 }
+.result-item .section-media img,
+.result-item .section-media video {
+    max-height: 80%;
+    width: auto;
+    object-fit: contain;
+    border: none;
+    box-shadow: none;
 }
 
+@media (max-width: 800px) {
+    #resultsFloatingNav {
+        bottom: 10px;
+        width: 90%;
+    }
+    .results-nav {
+        width: 100%;
+        max-width: none;
+    }
+    .results-nav button {
+        padding: 8px 10px;
+        flex-grow: 1;
+        font-size: 14px;
+    }
+}
+/* END OF RESULTS NAV BAR STYLES */
 
-/* Container that holds the image BELOW the text */
-.hero-image-container {
+
+/* ----------------------------- */
+/* METHODS SECTION (Content-Sized) */
+/* ----------------------------- */
+
+.methods-full-bleed {
+    background: var(--page-bg);
+    padding: 80px 0;
+    margin-bottom: 0;
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.methods-inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.methods-header {
+    margin-bottom: 50px;
+}
+.methods-header h2, .methods-header p {
+    color: var(--text);
+}
+.methods-header h2 {
+    font-size: 40px;
+}
+
+.assembly-viewer {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 40px;
+    position: relative;
+    padding: 40px;
+    background: var(--light);
+    /* MODIFIED: Use the variable for a smooth, large radius */
+    border-radius: var(--large-radius);
+    min-height: 700px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+}
+
+/* Sidebar for controls */
+.assembly-controls {
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px; 
+    border-right: 1px solid var(--border);
+}
+
+.assembly-title {
+    color: var(--text);
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* Button Container (Replaces single button for the accordion structure) */
+.assembly-accordion-item {
+    border-bottom: 1px solid var(--border);
+}
+
+.assembly-button {
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 15px 0;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.assembly-button:hover {
+    color: var(--accent);
+}
+
+.assembly-button.active .assembly-button-label {
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.assembly-button-icon {
+    margin-right: 15px;
+    color: var(--sub);
+    font-size: 20px;
+    transition: transform 0.3s ease, color 0.2s;
+    transform: rotate(0deg); 
+}
+
+.assembly-button.active .assembly-button-icon {
+    transform: rotate(45deg);
+    color: var(--accent);
+}
+
+/* Detail Description (Accordion Content) */
+.assembly-description {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
+}
+
+.assembly-description.active {
+    max-height: 200px; 
+    padding-bottom: 20px;
+}
+
+.assembly-description p {
+    font-size: 16px;
+    color: var(--sub);
+    line-height: 1.4;
+    margin: 0;
+    padding-left: 35px;
+}
+
+
+/* Detail View (Image) */
+.assembly-detail-view {
+    position: relative;
+    padding: 0 20px;
+    overflow: hidden;
+}
+
+/* Image/Visual Container */
+.assembly-visual {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.assembly-visual img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    transition: opacity 0.4s ease;
+    opacity: 0;
+    position: absolute;
+    border-radius: 12px;
+}
+.assembly-visual img.active {
+    opacity: 1;
+}
+
+/* Mobile responsive for methods section */
+@media (max-width: 900px) {
+    .assembly-viewer {
+        grid-template-columns: 1fr;
+        min-height: 800px;
+        padding: 20px;
+        flex-direction: column-reverse; 
+    }
+    .assembly-controls {
+        order: 2;
+        border-right: none;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+    }
+    .assembly-visual {
+        order: 1;
+        position: relative;
+        height: 400px;
+        transform: none;
+        left: 0;
+        top: 0;
+        margin-bottom: 20px;
+    }
+    .assembly-visual img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+}
+
+
+/* Existing Styles ... */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+}
+/* Card for introduction contributions */
+.intro-card {
+    background: var(--light);
+    border-radius: 18px;
+    padding: 24px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: background 0.2s, transform 0.2s;
+    text-align: left;
+}
+.intro-card:hover {
+    background: #E0E0E0;
+}
+.intro-card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 0;
+}
+.intro-card p {
+    font-size: 16px;
+    color: var(--sub);
+    margin-bottom: 0;
+}
+@media (max-width: 600px) {
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.section-row {
+  display: grid;
+  grid-template-columns: minmax(0,1.1fr) minmax(0,1fr);
+  gap: 40px;
+  align-items: center;
+}
+
+.section-media img,
+.section-media video {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 30px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-/* The image itself — perfectly scaled */
-.hero-rocket {
-  width: auto;
-  max-width: 100%;          /* never overflow screen */
-  height: auto;            /* maintain aspect ratio */
-  max-height: 55vh;        /* keeps it visually balanced */
-  object-fit: contain;
-  display: block;
+.section-tag {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  font-weight: 600;
 }
 
-/* Force intro hero to be vertical, not side-by-side */
-#intro.intro-hero {
-  display: block !important;     /* overrides the global 'display:flex' */
-  text-align: center;
-  padding: 120px 0 40px 0;
+/* MOBILE STACK */
+@media (max-width: 800px) {
+  .section {
+    padding: 50px 20px;
+    min-height: auto;
+  }
+  .section-box {
+    padding: 50px 20px; /* ADDED HORIZONTAL PADDING for content */
+    /* Kept border-radius: 0; for mobile full-width feel */
+    border-radius: 0;
+    box-shadow: none;
+  }
+  
+  .section-row {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
 }
 
-/* Center the text block */
-#intro .hero-inner {
-  margin: 0 auto;
-  max-width: 700px;
+/* SCROLL ANIMATION STYLES */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1), 
+                transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+    will-change: opacity, transform;
+}
+.animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-/* Image must appear BELOW the text */
-#intro .hero-image-container {
-  margin-top: 40px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
+/* MODAL / POPUP STYLES */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 10000;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+/* Ensure the modal is visible when 'show' class is present */
+.modal-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+    display: block; 
 }
 
-/* Proper scaling */
-#intro .hero-rocket {
-  width: auto;
-  max-width: 90%;
-  height: auto;
-  max-height: 60vh;
-  object-fit: contain;
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 500px;
+    width: 90%;
+    background: var(--light);
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: bounceIn 0.3s cubic-bezier(0.2, 0.5, 0.1, 1.2);
+}
+
+.modal-content h3 {
+    font-size: 28px;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.modal-content p {
+    font-size: 16px;
+    color: var(--sub);
+    line-height: 1.5;
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--sub);
+}
+
+@keyframes bounceIn {
+  from { opacity: 0; transform: translate(-50%, -45%) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* ----------------------------- */
+/* CONCLUSION SECTION STYLING (REVISED) */
+/* ----------------------------- */
+.conclusion-revised {
+    padding: 100px 20px; /* More vertical padding for center focus */
+    text-align: center; /* Center all text elements */
+}
+
+.conclusion-content-inner {
+    max-width: 700px; /* Confine text width */
+    margin: 0 auto;
+}
+
+/* Ensure headings/paragraphs in the revised conclusion remain readable */
+.conclusion-revised h2 {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.conclusion-revised p {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+/* Resetting margin for the last paragraph if it has a blank line after it */
+.conclusion-revised p:last-of-type {
+    margin-bottom: 0;
 }
 
 
+/* FOOTER    */
+footer {
+  /* Aligned center via `text-align: center;` is removed here to allow individual div alignment */
+  font-size: 14px;
+  color: #86868b;
+  /* Increased top padding for better separation from content */
+  padding: 80px 0 50px 0; /* Removed horizontal padding from FOOTER itself */
+}
+
+/* Style for individual footer lines */
+footer > div {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 20px; /* ADDED HORIZONTAL PADDING HERE */
+    line-height: 1.8;
+}
+
+/* MODIFIED FOOTER STYLES */
+footer a {
+    color: var(--accent);
+    text-decoration: none;
+}
+footer a:hover {
+    text-decoration: underline;
+}
+
+.art-deco-text {
+    font-family: 'Staatliches', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.15em;
+    font-weight: 400; /* Staatliches is display font, usually 400 */
+    color: var(--text); /* Make it stand out slightly */
+}
 </style>
-
-
-
 </head>
-
-
-<!-- MathJax v3 (renders LaTeX equations) -->
-<script>
-window.MathJax = {
-  tex: {
-    inlineMath: [['$', '$'], ['\\(', '\\)']],
-    displayMath: [['$$', '$$'], ['\\[', '\\]']]
-  },
-  svg: { fontCache: 'global' }
-};
-</script>
-<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-
-
 <body>
 
-<header>
+<header id="navbar">
   <div class="nav-inner">
+
+    <div class="nav-title">TINTIN Rocket Landing</div>
+
     <nav class="desktop-nav">
-      <a href="#intro">TINTIN</a>
-      <a href="#problem">Problem</a>
-      <a href="#model">Model</a>
-      <a href="#methods">Methods</a>
+      <a href="#intro" data-section="intro">Intro</a>
+      <a href="#methods" data-section="methods">Methods</a>
+      <a href="#features" data-section="features">Experiments</a>
       <a href="#results">Results</a>
       <a href="#conclusion">Conclusion</a>
     </nav>
-    <button class="burger" id="burgerBtn">☰</button>
+
+    <button id="burgerBtn" class="burger">
+        <svg fill="currentColor" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 3h18M1 10h18M1 17h18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+    </button>
   </div>
+
   <div id="mobileMenu" class="mobile-menu">
-    <a href="#intro">TINTIN</a>
-    <a href="#problem">Problem</a>
-    <a href="#model">Model</a>
+    <a href="#intro">Intro</a>
     <a href="#methods">Methods</a>
+    <a href="#features">Experiments</a>
     <a href="#results">Results</a>
     <a href="#conclusion">Conclusion</a>
   </div>
 </header>
 
 
-<section id="intro" class="intro-hero">
-  <div class="hero-inner">
-    <h1 class="hero-title">TINTIN:</h1>
-
-    <p class="hero-subtitle" >
-      Thrust-Integrated Neural Touchdown with<br>
-      Reinforcement Learning and INertial Navigation
-    </p>
-
-    <p class="hero-authors">Jerry Cheng, Juncheng Zhou</p>
-  </div>
-
-  <div class="hero-image-container">
-    <img src="assets/images/projects/rocket/overview.jpg"
-         class="hero-rocket"
-         alt="Rocket Landing Path">
-  </div>
-</section>
-
-
-
-
-
-<div id="videoModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <img src="assets/images/projects/rocket/overview.jpg" class="modal-img" alt="Lunar Landing Trajectory Phases"> <h3>Lunar Landing Pipeline Phases</h3>
-    <p>
-        The rocket trajectory is comprised of three key phases: 
-        (1) [cite_start]**Entry**, (2) **Flip and Altitude Capture**, and (3) **Terminal Landing Burn** to the target[cite: 131].
-    </p>
-  </div>
-</div>
-
-
-<section id="problem" class="section gray">
-  <h2>The Challenge</h2>
-
-<p>
-  Powered descent is one of the hardest problems in spaceflight.  
-  A lander must remain stable, fuel-efficient, and robust while operating under nonlinear 6-DoF dynamics, mass depletion, actuator limits, and harsh environmental conditions.
-</p>
-
-<p>
-  TINTIN tackles the full difficulty of this regime:  
-  <b>Integrated Guidance and Control (IGC)</b> for a single-gimbaled, variable-mass lunar lander — learned end-to-end.
-</p>
-
-<div class="feature-grid">
-  <div class="feature-box">
-    <h3>Fully Observable MDP</h3>
-    <p>The complete rigid-body state, including pose, velocity, attitude, and mass flow.</p>
-    <div class="eq">
-    <b>State:</b>  
-    \( s = [\,\mathbf{p}, \mathbf{v}, \mathbf{q}, \boldsymbol{\omega}, m\,] \in \mathbb{R}^{14} \)
+<section class="hero text-on-dark"> 
+    <div class="hero-media">
+        <div class="hero-image-container"> 
+            <img src="assets/images/projects/rocket/overview.jpg" alt="Project overview" class="hero-image">
+        </div>
     </div>
+    
+    <div class="hero-inner">
+        <h1>TINTIN</h1>
+        <p class="hero-subtitle">
+            Thrust-Integrated Neural Touchdown with Reinforcement Learning and INertial Navigation
+        </p>
+        <p class="hero-meta">
+            Jerry Cheng · ROB-GY 7863 PROJECT · 2025
+        </p>
 
-  </div>
-  <div class="feature-box">
-    <h3>6-DoF Variable-Mass Dynamics</h3>
-    <p>Realistic thrust–attitude coupling and inertia scaling as propellant is consumed.</p>
-  </div>
-  <div class="feature-box">
-    <h3>Fuel-Optimal Landing</h3>
-    <p>Minimizing propellant while stabilizing attitude and controlling descent.</p>
-  </div>
-</div>
+        <div class="hero-buttons">
+            <a class="btn btn-primary" href="https://youtube.com/shorts/YfmAeDVPjt4?si=pZd7dcdc81X9Rznq" target="_blank">Watch Video</a>
+            <a class="btn btn-ghost" href="assets/pdf/projects/Space_Robot_Course_Project_2_Report-3.pdf" target="_blank">Read Paper</a>
+        </div>
+    </div>
+</section>
 
+<section id="intro" class="section animate-on-scroll">
+  <div class="section-box">
+    <div class="section-row">
+        <div>
+          <div class="section-tag">Introduction</div>
+          <h2>Core Contributions</h2>
+          <p>
+            We present a Deep Reinforcement Learning (DRL) approach for Integrated Guidance and Control (IGC) of a variable-mass 6-DoF lunar lander. The method replaces traditional trajectory-planning and control loops.
+          </p>
+
+          <div class="card-grid">
+            <div class="intro-card" data-modal-target="modal-c1">
+                <h3>RocketGym Simulator</h3>
+                <p>A high-fidelity 6-DoF MuJoCo environment modeling variable-mass rigid-body dynamics and thrust-attitude coupling.</p>
+            </div>
+            <div class="intro-card" data-modal-target="modal-c2">
+                <h3>DRL-Based IGC Policy</h3>
+                <p>A policy trained with curriculum learning and domain randomization for robustness across a deployment ellipse.</p>
+            </div>
+            <div class="intro-card" data-modal-target="modal-c3">
+                <h3>Robust Soft Landings</h3>
+                <p>Achieves high Monte Carlo success rates and quasi-fuel-optimal performance.</p>
+            </div>
+            <!-- <div><p>The policy uses Soft Actor-Critic (SAC) to map full-state observations directly to thrust and gimbal commands.</p></div> -->
+          </div>
+        </div>
+        <div class="section-media">
+          <img src="assets/intro_visual.jpg" alt="Intro visual">
+        </div>
+    </div>
+  </div>
+</section>
+
+<section id="methods" class="methods-full-bleed animate-on-scroll">
+    <div class="methods-inner">
+        <div class="methods-header">
+            <div class="section-tag">Methodology Breakdown</div>
+            <h2>System Overview and Architecture.</h2>
+            <p>
+                The lunar rocket-landing pipeline comprises three main phases: Entry, Flip and Altitude Capture, and Terminal Landing Burn             </p>
+            
+        </div>
+
+        <div class="assembly-viewer">
+            
+            <div class="assembly-controls">
+                
+                <div class="assembly-accordion-item">
+                    <button class="assembly-button active" data-assembly-id="component-a">
+                        <span class="assembly-button-icon">+</span>
+                        <span class="assembly-button-label">Task Formulation</span>
+                    </button>
+                    <div id="desc-component-a" class="assembly-description active">
+                        <p>The problem is modeled as a continuous-control Markov Decision Process (MDP) with a control objective of minimum-fuel landing while stabilizing position, attitude, and vertical descent toward the designated target.</p>
+                    </div>
+                </div>
+
+                <div class="assembly-accordion-item">
+                    <button class="assembly-button" data-assembly-id="component-b">
+                      <span class="assembly-button-icon">+</span>
+                      <span class="assembly-button-label">SAC Policy and State/Action</span>
+                    </button>
+                    <div id="desc-component-b" class="assembly-description">
+                      <p>The Deep Reinforcement Learning algorithm used is Soft Actor-Critic (SAC). The raw observation includes the full translational and rotational state $o_{t}=[p,v,q,\omega,m]\in\mathbb{R}^{14}$. The action vector is the commanded thrust and gimbal angles: $a_{t}=[T,\theta_{p},\theta_{y}]$.</p>
+                    </div>
+                </div>
+
+                <div class="assembly-accordion-item">
+                    <button class="assembly-button" data-assembly-id="component-c">
+                        <span class="assembly-button-icon">+</span>
+                        <span class="assembly-button-label">Reward Shaping</span>
+                    </button>
+                    <div id="desc-component-c" class="assembly-description">
+                        <p>Reward shaping balances dense and sparse rewards to optimize training speed. Shaping terms encourage minimizing attitude tilt ($15 \cos(\theta)$), reducing vertical descent, decreasing lateral distance, and shortening flight duration. Successful soft landings receive a terminal bonus of $1000+5(\frac{m_{fuel}}{m_{0}})$.</p>
+                    </div>
+                </div>
+                
+                <div class="assembly-accordion-item">
+                    <button class="assembly-button" data-assembly-id="component-d">
+                        <span class="assembly-button-icon">+</span>
+                        <span class="assembly-button-label">Curriculum and Randomization</span>
+                    </button>
+                    <div id="desc-component-d" class="assembly-description">
+                        <p>Curriculum learning progressively tightens success criteria once the policy achieves an 80% success rate at each level. Domain randomization improves robustness by varying initial conditions like pose, velocity, and mass.</p>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="assembly-detail-view">
+                
+                <div class="assembly-visual">
+                    <img id="visual-component-a" src="assets/methods_visual_1.jpg" alt="Phase 1: Data Acquisition Visual" class="active">
+                    <img id="visual-component-b" src="assets/methods_visual_2.jpg" alt="Component B: Core Model Visual" class="">
+                    <img id="visual-component-c" src="assets/methods_visual_3.jpg" alt="Phase 3: Post-processing Visual" class="">
+                    <img id="visual-component-d" src="assets/methods_visual_4.jpg" alt="Component D: Feedback Loop Visual" class="">
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 
-<section id="model" class="section">
- <h2>Model & Environment</h2>
+<section id="features" class="carousel-section animate-on-scroll">
+    <div class="carousel-title-inner">
+        <div class="section-tag">Key Features</div>
+        <h2>DRL Algorithm Performance Comparison.</h2>
+        <p>
+            We compared SAC against DQN and PPO to identify the best algorithm for the complex 6-DoF lander dynamics. SAC demonstrated the fastest convergence and most consistent results.
+        </p>
+    </div>
+    
+    <div id="featureSliderTrack" class="feature-slider animate-on-scroll">
+            
+        <div class="feature-card">
+            <img src="assets/feature_placeholder_1.jpg" alt="SAC Episode Reward Training Graph" class="card-image">
+            <div class="feature-card-text">
+                <h3>SAC Performance</h3>
+                <p>SAC achieved the highest success rate and converged fastest to the optimal solution. Episode Reward and Fuel Remaining stabilized quickly.</p>
+            </div>
+        </div>
+        
+        <div class="feature-card">
+            <img src="assets/feature_placeholder_2.jpg" alt="PPO Episode Reward Training Graph" class="card-image">
+            <div class="feature-card-text">
+                <h3>PPO Performance</h3>
+                <p>PPO converged to stable behavior after over 10 million total timesteps but resulted in suboptimal thrusting.</p>
+            </div>
+        </div>
+        
+        <div class="feature-card">
+            <img src="assets/feature_placeholder_3.jpg" alt="DQN Episode Reward Training Graph" class="card-image">
+            <div class="feature-card-text">
+                <h3>DQN Reliability</h3>
+                <p>DQN failed to produce a reliable 6-DoF controller, likely due to coarse action discretization (27 discrete actions).</p>
+            </div>
+        </div>
+        
+        <!-- <div class="feature-card">
+            <img src="assets/feature_placeholder_4.jpg" alt="DRL vs PID comparison" class="card-image">
+            <div class="feature-card-text">
+                <h3>RL vs. Classical PID</h3>
+                <p>SAC produces smooth, coordinated 6-DoF trajectories, while the fixed-gain PID controller exhibits overshoot and instability due to mass depletion.</p>
+            </div>
+        </div>
 
-<p>
-  TINTIN is trained in <b>RocketGym</b> — a custom MuJoCo simulator that models mass flow, gimbaled thrust, terrain geometry, and full 6-DoF physics.  
-  The system evaluates thousands of randomized trajectories to learn a globally robust descent strategy.
-</p>
+        <div class="feature-card">
+            <img src="assets/feature_placeholder_5.jpg" alt="Monte Carlo Trajectory Analysis" class="card-image">
+            <div class="feature-card-text">
+                <h3>Monte Carlo Robustness</h3>
+                <p>Policy robustness was evaluated over 100 randomized initial conditions, demonstrating consistent approach geometry and near-vertical glideslope convergence.</p>
+            </div>
+        </div> -->
+        
+    </div>
+    
+    <div class="slider-controls-wrapper">
+        <div id="featurePrevBtn" class="slider-btn prev">❮</div>
+        <div id="featureNextBtn" class="slider-btn next">❯</div>
 
-<div class="feature-grid" style="margin-top:40px;">
-  <div class="feature-box">
-    <h3>Lunar Dynamics</h3>
-    <p>Simulated under lunar gravity (1.62 m/s²) with a maximum TWR of 3 for flip, capture, and landing burns.</p>
-  </div>
-  <div class="feature-box">
-    <h3>State Vector</h3>
-    <p>
-      Full rigid-body state:  
-      <code>s = [p, v, q, ω, m, I] ∈ ℝ¹⁷</code>
-    </p>
-  </div>
-  <div class="feature-box">
-    <h3>Actions</h3>
-    <p>
-      Continuous control: throttle + 2-DoF gimbal  
-      <code>u = [T, θ<sub>p</sub>, θ<sub>y</sub>]</code>
-    </p>
-  </div>
-</div>
-
-<hr>
-
-<h3>Termination & Success</h3>
-
-<div class="feature-grid">
-  <div class="feature-box">
-    <h4>Termination Conditions</h4>
-    <ul>
-      <li>Distance > 700 m</li>
-      <li>Speed > 200 m/s</li>
-      <li>Tilt > 100°</li>
-      <li>Timeout (2,000 steps)</li>
-    </ul>
-  </div>
-  <div class="feature-box">
-    <h4>Soft Landing Criteria</h4>
-    <ul>
-      <li>Final radius ≤ 80 m</li>
-      <li>Tilt ≤ 15°</li>
-      <li>Touchdown velocity ≤ 20 m/s</li>
-    </ul>
-  </div>
-</div>
-
+        <div class="slider-scroll-track">
+            <div id="featureScrollBar" class="slider-scroll-bar"></div>
+        </div>
+    </div>
 </section>
 
+<section id="results" class="section animate-on-scroll">
+  <div class="section-box">
+    
+    <div class="results-content-area">
+        <div id="result-item-1" class="result-item active">
+            <div class="section-row">
+                <div>
+                    <div class="section-tag">Performance Metric A</div>
+                    <h2>Achieved Robust Soft Landings</h2>
+                    <p>
+                        The resulting SAC policy achieved robust soft landings across wide variations in initial pose, velocity, and mass. The Monte Carlo failure analysis identified the primary sources of failure.
+                    </p>
+                    <p>
+                        * 43% of episodes terminate due to excessive tilt.
+                        * 27% terminate due to lateral drift.
+                        * 19% terminate due to high terminal velocity.
+                    </p>
+                </div>
+                <div class="section-media">
+                    <img src="assets/results_visual_1.jpg" alt="Monte Carlo landing trajectories analysis plot">
+                </div>
+            </div>
+        </div>
 
-<section id="methods" class="section gray">
-  <h2>Training Methods</h2>
+        <div id="result-item-2" class="result-item">
+            <div class="section-row">
+                <div>
+                    <div class="section-tag">Key Insight</div>
+                    <h2>Global Guidance is Strong, Terminal Stability is Weak</h2>
+                    <p>
+                        The SAC policy reliably handles the global descent and flip maneuvers. However, failures are dominated by limited terminal stability, suggesting difficulties with late-phase attitude stabilization.
+                    </p>
+                    <p>
+                        Success is defined as touchdown within 80 m of target, tilt $\le 15^{\circ}$, and vertical speed between 0 and 20 m/s.
+                    </p>
+                </div>
+                <div class="section-media">
+                    <img src="assets/results_visual_2.jpg" alt="SAC single episode rollout analysis plot">
+                </div>
+            </div>
+        </div>
 
-<p>
-  TINTIN uses a <b>Soft Actor-Critic (SAC)</b> policy that maps full-state observations directly to engine commands.  
-  The policy is trained for stability, smoothness, and fuel efficiency.
-</p>
-
-<div class="feature-slider">
-  
-  <div class="feature-card">
-    <h3>Soft Actor-Critic</h3>
-    <p>
-      Chosen for high sample efficiency and stability.  
-      SAC consistently outperformed PPO and DQN in 6-DoF landing tasks.
-    </p>
+        <div id="result-item-3" class="result-item">
+            <div class="section-row">
+                <div>
+                    <div class="section-tag">Efficiency & Fidelity</div>
+                    <h2>Variable-Mass, 6-DoF IGC Solution</h2>
+                    <p>
+                        TINTIN presents a deep reinforcement learning approach for Integrated Guidance and Control (IGC) of a variable-mass 6-DoF lunar lander. The system is trained on a high-fidelity MuJoCo simulator modeling mass depletion and thrust-attitude coupling.
+                    </p>
+                    <p>
+                        The rocket is modeled as a 100 m vehicle with a dry mass of $5.00\times10^{5}$ kg, and the engine offset is 30 m below the CoM.
+                    </p>
+                </div>
+                <div class="section-media">
+                    <img src="assets/results_visual_3.jpg" alt="Rocket coordinate frames and CoM illustration">
+                </div>
+            </div>
+        </div>
+    </div>
   </div>
-
-  <div class="feature-card">
-    <h3>Physics-Informed Rewards</h3>
-    <p>
-      Dense shaping for tilt, lateral distance, vertical velocity, and flight duration.  
-      Sparse rewards for soft landings and fuel preservation.
-    </p>
-  </div>
-
-  <div class="feature-card">
-    <h3>Curriculum Learning</h3>
-    <p>
-      Landing tolerances tighten as performance improves — enabling smooth progression from coarse to precise control.
-    </p>
-  </div>
-
-  <div class="feature-card">
-    <h3>Domain Randomization</h3>
-    <p>
-      Randomized initial pose, velocity, attitude, and mass improve global robustness across the deployment ellipse.
-    </p>
-  </div>
-
-</div>
-
 </section>
 
-
-<section id="results" class="section">
-  <h2>Key Results</h2>
-
-<h3>RL vs Classical PID</h3>
-<p>
-  SAC produces coordinated 6-DoF trajectories that naturally adapt to mass depletion and nonlinear coupling.  
-  The PID controller, limited by fixed gains, exhibits cross-axis instability and late-phase oscillations.
-</p>
-
-<div class="gui-row">
-  <div class="gui-col">
-    <img src="images/sac_analysis_example.png" class="gui-media-block">
-    <p style="text-align:center;">SAC Policy</p>
-  </div>
-
-  <div class="gui-col">
-    <img src="images/pid_analysis_example.png" class="gui-media-block">
-    <p style="text-align:center;">PID Baseline</p>
-  </div>
+<div id="resultsFloatingNav">
+    <div class="results-nav">
+        <button class="results-nav-button active" data-target="result-item-1">Robustness</button>
+        <button class="results-nav-button" data-target="result-item-2">Stability</button>
+        <button class="results-nav-button" data-target="result-item-3">Modeling</button>
+    </div>
 </div>
 
-<hr>
-
-<h3>Monte Carlo Evaluation</h3>
-<p>
-  Over 100 randomized trials, the policy demonstrates consistent global guidance and a stable near-vertical glideslope.
-</p>
-
-<div class="feature-box">
-  <h4>Failure Breakdown</h4>
-  <ul>
-    <li>Excessive tilt — 43%</li>
-    <li>Lateral drift — 27%</li>
-    <li>High terminal velocity — 19%</li>
-    <li>Timeout — remaining</li>
-  </ul>
-  <p>
-    These failures occur primarily in the final seconds of descent — suggesting opportunity for improved terminal shaping or model-based fusion.
-  </p>
-</div>
-
-
-</section>
-
-
-<section id="conclusion" class="section gray">
- <h2>Conclusion & Future Work</h2>
-
-<p>
-  TINTIN demonstrates that deep reinforcement learning can unify guidance and control for 6-DoF lunar landing.  
-  A single SAC policy learns to coordinate thrust, attitude, and descent across thousands of randomized scenarios.
-</p>
-
-<div class="feature-grid">
-  <div class="feature-box">
-    <h3>Proof of Concept</h3>
-    <p>Robust global guidance and stable flip maneuvers using a single learned controller.</p>
-  </div>
-
-  <div class="feature-box">
-    <h3>Terminal-Phase Challenge</h3>
-    <p>Most failures occur in the final stabilization window — especially tilt regulation.</p>
-  </div>
-
-  <div class="feature-box">
-    <h3>Next Steps</h3>
-    <p>
-      Integrating physics-model priors and <b>Residual RL</b> to enhance terminal precision and improve overall reliability.
-    </p>
-  </div>
-</div>
-
+<section id="conclusion" class="section conclusion-revised animate-on-scroll">
+    <div class="conclusion-content-inner">
+        <div class="section-tag">Conclusion</div>
+        <h2>What this enables next</h2>
+        <p>
+            We demonstrated a DRL-based Integrated Guidance and Control (IGC) system for 6-DoF planetary powered descent, validating the concept for aerospace guidance and control. The SAC policy successfully learned to regulate the coupled translational and rotational dynamics of the single-gimbaled lander.
+        </p>
+        <p>
+            Despite strong global guidance behavior, the dominant failures arise in the terminal phase. Future work will focus on integrating physics-model priors and residual RL to improve terminal stability, training robustness, and increase touchdown reliability.
+        </p>
+    </div>
 </section>
 
 
 <footer>
-  **TINTIN Project** | ROB-GY 7863 Course Project | Jerry Cheng, Juncheng Zhou
+  <div style="text-align: left;">© 2025 Your Name — Project Template</div>
+    <br>
+  <div class="art-deco-text" style="text-align: right;">Designed in New York City with love <br> — in a tiny studio apartment.</div>
+  <br>
+  <div style="text-align: center;">If you want to use my template here, please <a href="[LINK_TO_TEMPLATE_REPO/SITE]" target="_blank">cite me</a>.</div>
+  <br><br><br>
 </footer>
 
+
+<div id="modalBackdrop" class="modal-backdrop">
+    <div id="modalContent" class="modal-content">
+        <button id="modalCloseBtn" class="modal-close">&times;</button>
+        <h3 id="modalTitle">Modal Title Placeholder</h3>
+        <p id="modalBody">This is the detailed information for the contribution card you clicked. This content is dynamic and should be loaded based on the card's data.</p>
+    </div>
+</div>
+
+
 <script>
-// Placeholder JS for Modal and Slider functionalities
-const modal = document.getElementById("videoModal");
-const btn = document.getElementById("openVideo");
-const closeBtn = document.querySelector(".modal .close");
+// Find global elements
+const heroImage = document.querySelector(".hero-image-container img");
+const navbar = document.getElementById("navbar");
+const burger = document.getElementById("burgerBtn");
+const mobileMenu = document.getElementById("mobileMenu");
+const sections = document.querySelectorAll("section");
+const menuLinks = document.querySelectorAll(".desktop-nav a");
 
-if (btn) btn.onclick = () => { modal.style.display = "flex"; };
-if (closeBtn) closeBtn.onclick = () => { modal.style.display = "none"; };
-window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+// Modal elements
+const modalBackdrop = document.getElementById('modalBackdrop');
+const modalContent = document.getElementById('modalContent');
+const modalCloseBtn = document.getElementById('modalCloseBtn');
+const introCards = document.querySelectorAll('.intro-card');
+const modalTitle = document.getElementById('modalTitle');
+const modalBody = document.getElementById('modalBody');
+
+// Slider elements
+const sliderTrack = document.getElementById('featureSliderTrack');
+const prevBtn = document.getElementById('featurePrevBtn');
+const nextBtn = document.getElementById('featureNextBtn');
+const scrollBar = document.getElementById('featureScrollBar');
+
+// Methods Section Elements
+const assemblyButtons = document.querySelectorAll('.assembly-button');
+const assemblyVisuals = document.querySelectorAll('.assembly-visual img');
+const assemblyAccordionItems = document.querySelectorAll('.assembly-accordion-item');
+
+// Results Section Elements
+const resultsNavButtons = document.querySelectorAll('.results-nav-button');
+const resultItems = document.querySelectorAll('.result-item');
+const resultsSection = document.getElementById('results');
+const resultsFloatingNav = document.getElementById('resultsFloatingNav');
 
 
-// Placeholder for initSlider function
-document.addEventListener("DOMContentLoaded", () => {
-    function initSlider(config) {
-        // Mock function to prevent JS errors, actual logic is in the original template
-        const slider = document.getElementById(config.sliderId);
-        const bar = config.scrollBarId ? document.getElementById(config.scrollBarId) : null;
-        if (slider) {
-            slider.addEventListener("scroll", () => {
-                if (bar) bar.style.width = ((slider.scrollLeft / (slider.scrollWidth - slider.clientWidth)) * 100) + "%";
+/* -------------------------------------------------------
+   E) RESULTS INTERACTION (FINAL)
+--------------------------------------------------------- */
+function updateResultsViewer(targetId) {
+    // 1. Update Buttons State
+    resultsNavButtons.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-target') === targetId) {
+            btn.classList.add('active');
+        }
+    });
+
+    // 2. Update Content Visibility and Layout
+    resultItems.forEach(item => {
+        // Set up for fade transition
+        item.style.position = 'absolute';
+        item.style.opacity = 0;
+        item.style.pointerEvents = 'none';
+
+        if (item.id === targetId) {
+            item.style.position = 'static'; // Take up space
+            item.style.opacity = 1;
+            item.style.pointerEvents = 'auto';
+        }
+    });
+}
+
+// Attach event listeners for the results nav bar
+resultsNavButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const targetId = button.getAttribute('data-target');
+        updateResultsViewer(targetId);
+    });
+});
+
+// --- Results Floating Bar Visibility Observer ---
+const resultsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        // We only show the floating bar if the RESULTS section is highly visible
+        if (entry.isIntersecting) {
+            resultsFloatingNav.classList.add('show');
+        } else {
+            resultsFloatingNav.classList.remove('show');
+        }
+    });
+}, {
+    root: null,
+    // MODIFIED: This ensures the floating bar disappears early as the user scrolls past the Results section.
+    threshold: 0.0, 
+    rootMargin: '0% 0% -15% 0%' 
+});
+
+if (resultsSection) {
+    resultsObserver.observe(resultsSection);
+}
+
+// Initialize viewer
+document.addEventListener('DOMContentLoaded', () => {
+    const activeResultId = document.querySelector('.results-nav-button.active')?.getAttribute('data-target');
+    if (activeResultId) {
+        updateResultsViewer(activeResultId);
+    }
+});
+
+
+/* -------------------------------------------------------
+   A) METHODS ACCORDION INTERACTION
+--------------------------------------------------------- */
+/* (Keeping the existing Method Accordion JS logic) */
+const assemblyDetails = {
+    'component-a': {
+        description: "This phase is responsible for collecting inputs from the environment (sensor data, user input, etc.) and normalizing it. Key processes include noise reduction, feature scaling, and conversion to a common input format for the core model.",
+        image_id: 'visual-component-a'
+    },
+    'component-b': {
+        description: "This is the primary computational unit, utilizing a [mention algorithm type, e.g., deep neural network, state machine] to process the pre-processed data and make decisions or predictions. Its architecture is optimized for [mention a metric, e.g., low latency or high accuracy].",
+        image_id: 'visual-component-b'
+    },
+    'component-c': {
+        description: "The system converts the model's raw output into a usable format, such as a control signal, a visual render, or a prediction score. This includes error checking and interface formatting for the end-user.",
+        image_id: 'visual-component-c'
+    },
+    'component-d': {
+        description: "An optional, asynchronous module that gathers real-world results or user feedback to continuously improve the Core Model via online learning or scheduled retraining cycles, ensuring long-term robustness.",
+        image_id: 'visual-component-d'
+    }
+};
+
+function updateAssemblyViewer(assemblyId) {
+    const details = assemblyDetails[assemblyId];
+    if (!details) return;
+
+    assemblyAccordionItems.forEach(item => {
+        const button = item.querySelector('.assembly-button');
+        const description = item.querySelector('.assembly-description');
+        const isActive = button.getAttribute('data-assembly-id') === assemblyId;
+
+        if (isActive) {
+            button.classList.add('active');
+            description.classList.add('active');
+            description.style.maxHeight = description.scrollHeight + 20 + "px"; 
+        } else {
+            button.classList.remove('active');
+            description.classList.remove('active');
+            description.style.maxHeight = null;
+        }
+    });
+
+    assemblyVisuals.forEach(img => {
+        img.classList.remove('active');
+        if (img.id === details.image_id) {
+            img.classList.add('active');
+        }
+    });
+}
+
+// Attach event listeners for the assembly accordion buttons
+assemblyAccordionItems.forEach(item => {
+    const button = item.querySelector('.assembly-button');
+    button.addEventListener('click', (e) => {
+        e.preventDefault();
+        const assemblyId = button.getAttribute('data-assembly-id');
+        
+        if (button.classList.contains('active')) {
+            assemblyAccordionItems.forEach(i => {
+                i.querySelector('.assembly-button').classList.remove('active');
+                i.querySelector('.assembly-description').classList.remove('active');
+                i.querySelector('.assembly-description').style.maxHeight = null;
             });
+            updateAssemblyViewer(assemblyAccordionItems[0].querySelector('.assembly-button').getAttribute('data-assembly-id'));
+            
+        } else {
+            updateAssemblyViewer(assemblyId);
+        }
+    });
+});
+
+// Initialize viewer with the first item on load
+if (assemblyAccordionItems.length > 0) {
+    const initialId = assemblyAccordionItems[0].querySelector('.assembly-button').getAttribute('data-assembly-id');
+    updateAssemblyViewer(initialId);
+}
+
+
+/* -------------------------------------------------------
+   B) SLIDER FUNCTIONALITY
+--------------------------------------------------------- */
+/* (Keeping the existing Slider JS logic) */
+function updateSliderControls() {
+    if (!sliderTrack || !scrollBar) return;
+    
+    const scrollLeft = sliderTrack.scrollLeft;
+    const scrollWidth = sliderTrack.scrollWidth;
+    const clientWidth = sliderTrack.clientWidth;
+
+    prevBtn.classList.toggle('disabled', scrollLeft < 1);
+    nextBtn.classList.toggle('disabled', scrollLeft + clientWidth >= scrollWidth - 1);
+
+    const scrollPercentage = (scrollLeft / (scrollWidth - clientWidth)) * 100;
+    scrollBar.style.width = scrollPercentage + '%';
+}
+
+function scrollToNextCard(direction) {
+    if (!sliderTrack) return;
+
+    const cards = sliderTrack.querySelectorAll('.feature-card');
+    if (cards.length === 0) return;
+
+    const currentScroll = sliderTrack.scrollLeft;
+    let targetScroll = 0;
+    const trackPadding = 20;
+
+    let currentCardIndex = 0;
+    for (let i = 0; i < cards.length; i++) {
+        const cardPos = cards[i].offsetLeft - trackPadding;
+        if (cardPos <= currentScroll + 1) {
+            currentCardIndex = i;
+        } else {
+            break;
         }
     }
 
-    initSlider({ sliderId: "featureSlider", scrollBarId: "featureScrollBar" });
+    if (direction === 'next') {
+        if (currentCardIndex + 1 < cards.length) {
+            targetScroll = cards[currentCardIndex + 1].offsetLeft - trackPadding;
+        } else {
+            // Scroll to end if near the last card
+            targetScroll = sliderTrack.scrollWidth - sliderTrack.clientWidth;
+        }
+
+    } else if (direction === 'prev') {
+        if (currentCardIndex > 0) {
+            targetScroll = cards[currentCardIndex - 1].offsetLeft - trackPadding;
+        } else {
+            targetScroll = 0;
+        }
+    }
+
+    sliderTrack.scrollTo({
+        left: targetScroll,
+        behavior: 'smooth'
+    });
+}
+
+// Attach event listeners
+if (sliderTrack && prevBtn && nextBtn) {
+    sliderTrack.addEventListener('scroll', updateSliderControls);
+    prevBtn.addEventListener('click', () => scrollToNextCard('prev'));
+    nextBtn.addEventListener('click', () => scrollToNextCard('next'));
+    // Initial call might need a slight delay to ensure content dimensions are calculated
+    setTimeout(updateSliderControls, 100); 
+}
+
+
+/* -------------------------------------------------------
+   C) MODAL FUNCTIONALITY
+--------------------------------------------------------- */
+
+const contributionDetails = {
+    'modal-c1': {
+        title: 'Novel Architecture Details',
+        body: 'We introduced a hybrid convolution-attention architecture that reduces redundant computations by $75\\%$ compared to pure transformer models, resulting in the $10\\times$ speed increase. This is crucial for deployment on edge devices.'
+    },
+    'modal-c2': {
+        title: 'Adaptive Loss Function Details',
+        body: 'The new loss function employs a dynamic weighting mechanism that shifts focus from easy samples to hard, noisy samples, particularly effective in real-world sensor data. This yielded the $15\\%$ accuracy improvement.'
+    },
+    'modal-c3': {
+        title: 'Hardware Acceleration Details',
+        body: 'We developed custom CUDA/Metal kernels for the inference stage, bypassing standard framework overheads. This allows the system to run on modern mobile GPUs with minimal battery impact, a major step toward practical product integration.'
+    }
+};
+
+function openModal(cardDataTarget) {
+    const details = contributionDetails[cardDataTarget];
+    if (!details) return;
+
+    modalTitle.textContent = details.title;
+    modalBody.innerHTML = details.body;
+
+    modalBackdrop.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    modalBackdrop.classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+introCards.forEach(card => {
+    card.addEventListener('click', () => {
+        const targetId = card.getAttribute('data-modal-target');
+        openModal(targetId);
+    });
 });
-</script>
 
-<script>
-const burger = document.getElementById("burgerBtn");
-const mobileMenu = document.getElementById("mobileMenu");
+modalCloseBtn.addEventListener('click', closeModal);
 
-burger.addEventListener("click", () => {
+modalBackdrop.addEventListener('click', (e) => {
+    if (e.target === modalBackdrop) {
+        closeModal();
+    }
+});
+
+
+/* -------------------------------------------------------
+   D) GENERAL UTILITIES
+--------------------------------------------------------- */
+
+/* 1) SMOOTH SCROLL-TO-SECTION (Apple easing) */
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener("click", function (e) {
+    e.preventDefault();
+    const targetID = this.getAttribute("href").substring(1);
+    const target = document.getElementById(targetID);
+    
+    if (target) {
+      window.scroll({
+        top: target.offsetTop,
+        behavior: "smooth"
+      });
+      mobileMenu.style.display = "none";
+    }
+  });
+});
+
+
+/* 2) APPLE PARALLAX HERO (Vision Pro style) */
+if (heroImage) {
+    window.addEventListener("scroll", () => {
+        const scroll = window.scrollY;
+        const translateY = scroll * 0.12; 
+
+        heroImage.style.transform = `translateY(${translateY}px) scale(1.1)`;
+        heroImage.style.transition = "transform 0.05s linear";
+    });
+}
+
+
+/* 3) NAV BAR HIDE/SHOW ON SCROLL */
+let lastY = window.scrollY;
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY < 50) {
+    navbar.classList.remove("hide");
+    return;
+  }
+
+  if (window.scrollY > lastY) {
+    navbar.classList.add("hide");
+  } else {
+    navbar.classList.remove("hide");
+  }
+
+  lastY = window.scrollY;
+  mobileMenu.style.display = "none";
+});
+
+
+/* 4) BURGER MENU LOGIC */
+burger.addEventListener("click", (e) => {
+  e.stopPropagation();
   mobileMenu.style.display =
     mobileMenu.style.display === "flex" ? "none" : "flex";
 });
-</script>
 
+document.addEventListener("click", (e) => {
+    if (!burger.contains(e.target) && !mobileMenu.contains(e.target)) {
+        mobileMenu.style.display = "none";
+    }
+});
+
+
+/* 5) SECTION HIGHLIGHT ON SCROLL (Apple macOS style) */
+function highlightNav() {
+  let current = "";
+  const highlightOffset = 180;
+
+  sections.forEach((section) => {
+    const rect = section.getBoundingClientRect();
+
+    if (rect.top <= highlightOffset) {
+        current = section.getAttribute("id");
+    }
+  });
+
+  menuLinks.forEach((link) => {
+    link.classList.remove("active");
+    if (link.dataset.section === current) link.classList.add("active");
+  });
+}
+
+window.addEventListener("scroll", highlightNav);
+highlightNav();
+
+
+/* 6) SCROLL-TRIGGERED FADE-IN ANIMATION */
+function setupScrollAnimations() {
+    const animatedElements = document.querySelectorAll('.animate-on-scroll');
+
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px 0px -10% 0px', 
+        threshold: 0.0 
+    };
+
+    const observerCallback = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    animatedElements.forEach(element => {
+        observer.observe(element);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', setupScrollAnimations);
+
+
+</script>
 
 </body>
 </html>
