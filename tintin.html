@@ -340,6 +340,29 @@ h1 {
   box-shadow: 0 22px 44px rgba(0,0,0,0.22);
 }
 
+/* --- Apple-style equation block --- */
+.eq {
+  font-size: 18px;
+  color: #111; 
+  background: #F3F3F4;           /* Apple light gray */
+  padding: 14px 18px;
+  border-radius: 14px;
+  margin: 30px 0;
+  text-align: center;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.2px;
+  border: 1px solid rgba(0,0,0,0.06); /* very subtle Apple border */
+}
+
+.eq b {
+  display: block;
+  margin-bottom: 6px;
+  color: #000;
+  font-weight: 600;
+}
+
+
 /* Buttons */
 .btn-primary, .btn-secondary {
   padding: 12px 24px;
@@ -585,6 +608,20 @@ footer {
 
 </head>
 
+
+<!-- MathJax v3 (renders LaTeX equations) -->
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+
 <body>
 
 <header>
@@ -662,6 +699,11 @@ footer {
   <div class="feature-box">
     <h3>Fully Observable MDP</h3>
     <p>The complete rigid-body state, including pose, velocity, attitude, and mass flow.</p>
+    <div class="eq">
+    <b>State:</b>  
+    \( s = [\,\mathbf{p}, \mathbf{v}, \mathbf{q}, \boldsymbol{\omega}, m\,] \in \mathbb{R}^{14} \)
+    </div>
+
   </div>
   <div class="feature-box">
     <h3>6-DoF Variable-Mass Dynamics</h3>
@@ -883,6 +925,17 @@ document.addEventListener("DOMContentLoaded", () => {
     initSlider({ sliderId: "featureSlider", scrollBarId: "featureScrollBar" });
 });
 </script>
+
+<script>
+const burger = document.getElementById("burgerBtn");
+const mobileMenu = document.getElementById("mobileMenu");
+
+burger.addEventListener("click", () => {
+  mobileMenu.style.display =
+    mobileMenu.style.display === "flex" ? "none" : "flex";
+});
+</script>
+
 
 </body>
 </html>
