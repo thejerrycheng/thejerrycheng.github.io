@@ -7,27 +7,6 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<script>
-  // MathJax configuration to process content loaded dynamically by the modal
-  MathJax = {
-    tex: {
-      inlineMath: [['$', '$'], ['\\(', '\\)']]
-    },
-    svg: {
-      fontCache: 'global'
-    },
-    startup: {
-      ready: () => {
-        console.log('MathJax is ready.');
-        MathJax.startup.defaultReady();
-      }
-    }
-  };
-</script>
-
-
 <style>
 :root {
   --accent: #007AFF;      /* Apple Blue (a more common primary color) */
@@ -39,6 +18,9 @@
   --border: #E8E8ED;      /* Very light border/separator */
   --max: 1100px;          /* WIDER CONTENT AREA */
   --white-text: #FFFFFF;  /* For text over images/dark backgrounds */
+  
+  /* ADDED: Consolidated large radius variable for main section boxes */
+  --large-radius: 32px; 
 }
 
 /* ----------------------------- */
@@ -46,10 +28,13 @@
 /* ----------------------------- */
 body {
   margin: 0;
-  background: var(--page-bg);
+  background: var(--page-bg); /* Use new background variable */
   color: var(--text);
   font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
+  
+  /* --- MODIFIED: LOCK HORIZONTAL SCROLLING --- */
+  overflow-x: hidden;
 }
 
 h1 {
@@ -84,7 +69,7 @@ p {
     border: 1px solid rgba(255, 255, 255, 0.5);
 }
 .text-on-dark .btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.3);
 }
 
 
@@ -222,7 +207,7 @@ p {
 /* HERO (Full Height) */
 /* ----------------------------- */
 .hero {
-  height: 100vh; 
+  height: 100vh; /* Keep 100vh for Hero */
   padding: 0; 
   text-align: center;
   position: relative;
@@ -310,36 +295,35 @@ p {
 
 /* Container for Title Alignment */
 .carousel-section {
-  padding: 0; 
+  padding: 80px 0;
   background: var(--page-bg);
   position: relative;
-  min-height: 100vh;
+  min-height: auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 .carousel-title-inner {
     max-width: var(--max);
     margin: 0 auto;
-    padding: 60px 20px 40px 20px;
+    padding: 0 20px 40px 20px;
 }
 
-/* --- UNIVERSAL SLIDER CSS --- */
+/* --- UNIVERSAL SLIDER BUTTONS (REFINED POSITIONING) --- */
 
-/* Slider controls container: Used to house the buttons/scroll bar and align them with the main content */
+/* Slider controls container: This MUST contain the slider buttons */
 .slider-controls-wrapper {
     position: relative;
     max-width: var(--max); 
     margin: 0 auto;
-    padding: 0 20px 60px 20px;
+    padding: 0 20px 0 20px; 
 }
 
 /* Slider buttons position relative to the scroll track */
 .slider-btn,
 .assembly-btn {
   position: absolute;
-  top: 50%;
+  top: 50%; /* Adjusted for visual center */
   transform: translateY(-50%);
   background: white;
   width: 40px;
@@ -353,7 +337,7 @@ p {
   z-index: 20;
   transition: 0.2s;
   backdrop-filter: blur(6px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Added box shadow */
 }
 .slider-btn:hover,
 .assembly-btn:hover {
@@ -365,11 +349,10 @@ p {
   pointer-events: none;
 }
 
-/* Button positioning relative to the constrained .slider-controls-wrapper */
+/* Button positioning RELATIVE to the constrained .slider-controls-wrapper (max 1100px wide) */
 .prev { left: -36px; } 
 .next { right: -36px; }
-.assembly-prev { left: -36px; }
-.assembly-next { right: -36px; }
+
 
 /* --- SLIDER TRACK (FULL-BLEED) --- */
 .feature-slider {
@@ -419,7 +402,7 @@ p {
 }
 
 
-/* --- Dots & Scroll Bar --- */
+/* --- Dots & Scroll Bar (Used for Feature Slider) --- */
 .slider-dots {
   display: flex;
   justify-content: center;
@@ -443,7 +426,7 @@ p {
   height: 4px;
   background: #e5e5e7;
   border-radius: 4px;
-  margin-top: 10px;
+  margin-top: 30px; 
   overflow: hidden;
 }
 .slider-scroll-bar {
@@ -474,32 +457,29 @@ p {
 }
 
 /* ----------------------------- */
-/* SECTION (Full Height) */
+/* SECTION (Content-Sized) */
 /* ----------------------------- */
 .section {
   max-width: var(--max);
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 80px 20px; /* INCREASED VERTICAL PADDING */
   background: var(--page-bg);
   border-radius: 0;
   margin-bottom: 0;
   box-shadow: none;
-  min-height: 100vh;
+  min-height: auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .section-box {
   background: var(--light);
-  border-radius: 32px;
+  /* MODIFIED: Use the variable for a smooth, large radius */
+  border-radius: var(--large-radius);
   padding: 70px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.03), 0 0 0 1px var(--border);
   position: relative;
-  /* Crucial change for sticky: define the context for the sticky element */
-  height: auto; 
-  min-height: 80vh; 
-  overflow: visible;
 }
 
 .section:first-of-type {
@@ -508,36 +488,32 @@ p {
 
 
 /* ----------------------------- */
-/* RESULTS SECTION NAV BAR (STICKY/TRANSITIONING) */
+/* RESULTS SECTION NAV BAR (FINAL FLOATING STYLES) */
 /* ----------------------------- */
 
 /* Container for all dynamic results content */
 .results-content-area {
-    /* Padding to push content away from the sticky bar */
+    /* Push content down to avoid overlap with fixed nav bar */
     padding-bottom: 100px; 
     position: relative;
-    z-index: 1; 
+    z-index: 1; /* Above the content, but below the fixed bar */
 }
 
-.results-nav-wrapper {
-    /* Container for the sticky bar */
-    width: 100%;
-    position: sticky; 
-    
-    /* Stick to the bottom of the viewport */
-    bottom: 0; 
-    z-index: 10;
-    
-    /* Counteract padding (70px) on .section-box for edge-to-edge sticky alignment
-       and adjust bottom margin to ensure it follows the section upward */
-    margin: 0 -70px; 
-    padding: 20px 70px 20px 70px;
-    
-    /* Pull the bottom of the section box up by the padding size to create the smooth exit */
-    margin-bottom: -70px;
+/* Fixed nav bar visible only when results section is in view (controlled by JS) */
+#resultsFloatingNav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9000;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s;
+    visibility: hidden;
+}
 
-    /* Gradient background for the transition effect */
-    background: linear-gradient(to top, var(--light) 60%, transparent 100%);
+#resultsFloatingNav.show {
+    opacity: 1;
+    visibility: visible;
 }
 
 .results-nav {
@@ -546,9 +522,9 @@ p {
     margin: 0 auto;
     width: auto;
     
-    background: rgba(255, 255, 255, 0.85); 
+    background: rgba(255, 255, 255, 0.85); /* Translucent White/Light */
     backdrop-filter: blur(16px);
-    border: 1px solid rgba(0, 0, 0, 0.08); 
+    border: 1px solid rgba(0, 0, 0, 0.08); /* Subtle dark border */
     border-radius: 999px;
     
     padding: 6px 8px; 
@@ -564,7 +540,7 @@ p {
     border: none;
     font-size: 15px;
     font-weight: 500;
-    color: var(--text);
+    color: var(--text); /* Dark text on light bar */
     padding: 8px 16px;
     border-radius: 999px;
     cursor: pointer;
@@ -572,18 +548,18 @@ p {
 }
 
 .results-nav button:hover {
-    background: rgba(0, 0, 0, 0.04); 
+    background: rgba(0, 0, 0, 0.04); /* Subtle gray hover */
 }
 
 .results-nav button.active {
-    background: var(--accent);
+    background: var(--accent); /* Accent color for active item */
     color: var(--white-text); 
     font-weight: 600;
 }
 
 /* Content container for dynamic results */
 .results-content-area {
-    min-height: 400px;
+    min-height: auto;
 }
 .result-item {
     opacity: 0;
@@ -617,9 +593,9 @@ p {
 }
 
 @media (max-width: 800px) {
-    .results-nav-wrapper {
-        margin: 0 -20px -50px -20px; /* Adjust L/R/B margin for mobile padding (20px/50px) */
-        padding: 10px 20px 0 20px;
+    #resultsFloatingNav {
+        bottom: 10px;
+        width: 90%;
     }
     .results-nav {
         width: 100%;
@@ -635,23 +611,22 @@ p {
 
 
 /* ----------------------------- */
-/* METHODS SECTION (Full Height) */
+/* METHODS SECTION (Content-Sized) */
 /* ----------------------------- */
 
 .methods-full-bleed {
     background: var(--page-bg);
-    padding: 0;
+    padding: 80px 0;
     margin-bottom: 0;
-    min-height: 100vh;
+    min-height: auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
 }
 
 .methods-inner {
     max-width: var(--max);
     margin: 0 auto;
-    padding: 60px 20px;
+    padding: 0 20px;
 }
 
 .methods-header {
@@ -671,7 +646,8 @@ p {
     position: relative;
     padding: 40px;
     background: var(--light);
-    border-radius: 24px;
+    /* MODIFIED: Use the variable for a smooth, large radius */
+    border-radius: var(--large-radius);
     min-height: 700px;
     border: 1px solid var(--border);
     box-shadow: 0 10px 30px rgba(0,0,0,0.03);
@@ -827,7 +803,7 @@ p {
 }
 /* Card for introduction contributions */
 .intro-card {
-    background: var(--page-bg);
+    background: var(--light);
     border-radius: 18px;
     padding: 24px;
     cursor: pointer;
@@ -887,7 +863,8 @@ p {
     min-height: auto;
   }
   .section-box {
-    padding: 50px 0;
+    padding: 50px 20px; /* ADDED HORIZONTAL PADDING for content */
+    /* Kept border-radius: 0; for mobile full-width feel */
     border-radius: 0;
     box-shadow: none;
   }
@@ -926,9 +903,11 @@ p {
     transition: opacity 0.3s ease;
     pointer-events: none;
 }
+/* Ensure the modal is visible when 'show' class is present */
 .modal-backdrop.show {
     opacity: 1;
     pointer-events: auto;
+    display: block; 
 }
 
 .modal-content {
@@ -1081,6 +1060,7 @@ footer {
             <p>
                 A conceptual diagram showing the data flow and core steps. Click any component for a detailed description of its function.
             </p>
+            
         </div>
 
         <div class="assembly-viewer">
@@ -1152,60 +1132,59 @@ footer {
         </p>
     </div>
     
-    <div id="featureSliderTrackWrapper" style="position: relative;">
+    <div class="slider-controls-wrapper" style="margin-bottom: 0;"> 
         <div id="featurePrevBtn" class="slider-btn prev">❮</div>
         <div id="featureNextBtn" class="slider-btn next">❯</div>
-
-        <div id="featureSliderTrack" class="feature-slider animate-on-scroll">
-                
-            <div class="feature-card">
-                <img src="assets/feature_placeholder_1.jpg" alt="A detailed diagram of a processing engine core." class="card-image">
-                <div class="feature-card-text">
-                    <h3>Feature 1: Precision Engine</h3>
-                    <p>Our custom-built processing engine delivers real-time performance, allowing for sub-millisecond latency crucial for deployment.</p>
-                </div>
-            </div>
+    </div>
+    
+    <div id="featureSliderTrack" class="feature-slider animate-on-scroll">
             
-            <div class="feature-card">
-                <img src="assets/feature_placeholder_2.jpg" alt="Icons representing different operating systems and hardware." class="card-image">
-                <div class="feature-card-text">
-                    <h3>Feature 2: Universal Compatibility</h3>
-                    <p>Designed to integrate seamlessly across major platforms and hardware architectures, ensuring maximum adoption potential.</p>
-                </div>
+        <div class="feature-card">
+            <img src="assets/feature_placeholder_1.jpg" alt="A detailed diagram of a processing engine core." class="card-image">
+            <div class="feature-card-text">
+                <h3>Feature 1: Precision Engine</h3>
+                <p>Our custom-built processing engine delivers real-time performance, allowing for sub-millisecond latency crucial for deployment.</p>
             </div>
-            
-            <div class="feature-card">
-                <img src="assets/feature_placeholder_3.jpg" alt="A graph showing a learning curve adapting to noisy data." class="card-image">
-                <div class="feature-card-text">
-                    <h3>Feature 3: Adaptive Learning</h3>
-                    <p>The system constantly refines its models in the background, offering improved accuracy and efficiency over time without user intervention.</p>
-                </div>
-            </div>
-            
-            <div class="feature-card">
-                <img src="assets/feature_placeholder_4.jpg" alt="A clean, minimalist UI dashboard example." class="card-image">
-                <div class="feature-card-text">
-                    <h3>Feature 4: Intuitive Interface</h3>
-                    <p>A simple, elegant user experience that requires virtually no onboarding, making advanced technology accessible to everyone.</p>
-                </div>
-            </div>
-
-            <div class="feature-card">
-                <img src="assets/feature_placeholder_5.jpg" alt="A diagram showing cloud and edge computing nodes scaling." class="card-image">
-                <div class="feature-card-text">
-                    <h3>Feature 5: Scalable Architecture</h3>
-                    <p>Built from the ground up to handle massive data loads, scaling effortlessly from a single device to enterprise-level cloud deployment.</p>
-                </div>
-            </div>
-            
         </div>
+        
+        <div class="feature-card">
+            <img src="assets/feature_placeholder_2.jpg" alt="Icons representing different operating systems and hardware." class="card-image">
+            <div class="feature-card-text">
+                <h3>Feature 2: Universal Compatibility</h3>
+                <p>Designed to integrate seamlessly across major platforms and hardware architectures, ensuring maximum adoption potential.</p>
+            </div>
+        </div>
+        
+        <div class="feature-card">
+            <img src="assets/feature_placeholder_3.jpg" alt="A graph showing a learning curve adapting to noisy data." class="card-image">
+            <div class="feature-card-text">
+                <h3>Feature 3: Adaptive Learning</h3>
+                <p>The system constantly refines its models in the background, offering improved accuracy and efficiency over time without user intervention.</p>
+            </div>
+        </div>
+        
+        <div class="feature-card">
+            <img src="assets/feature_placeholder_4.jpg" alt="A clean, minimalist UI dashboard example." class="card-image">
+            <div class="feature-card-text">
+                <h3>Feature 4: Intuitive Interface</h3>
+                <p>A simple, elegant user experience that requires virtually no onboarding, making advanced technology accessible to everyone.</p>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <img src="assets/feature_placeholder_5.jpg" alt="A diagram showing cloud and edge computing nodes scaling." class="card-image">
+            <div class="feature-card-text">
+                <h3>Feature 5: Scalable Architecture</h3>
+                <p>Built from the ground up to handle massive data loads, scaling effortlessly from a single device to enterprise-level cloud deployment.</p>
+            </div>
+        </div>
+        
     </div>
     
     <div class="slider-controls-wrapper">
         <div class="slider-scroll-track">
             <div id="featureScrollBar" class="slider-scroll-bar"></div>
         </div>
-
     </div>
 </section>
 
@@ -1268,15 +1247,16 @@ footer {
         </div>
     </div>
     
-    <div class="results-nav-wrapper">
-        <div id="resultsFloatingNav" class="results-nav">
-            <button class="results-nav-button active" data-target="result-item-1">Metric A: Accuracy</button>
-            <button class="results-nav-button" data-target="result-item-2">Metric B: Latency</button>
-            <button class="results-nav-button" data-target="result-item-3">Metric C: Scalability</button>
-        </div>
-    </div>
   </div>
 </section>
+
+<div id="resultsFloatingNav">
+    <div class="results-nav">
+        <button class="results-nav-button active" data-target="result-item-1">Metric A: Accuracy</button>
+        <button class="results-nav-button" data-target="result-item-2">Metric B: Latency</button>
+        <button class="results-nav-button" data-target="result-item-3">Metric C: Scalability</button>
+    </div>
+</div>
 
 <section id="conclusion" class="section animate-on-scroll">
     <div class="section-box">
@@ -1308,11 +1288,8 @@ footer {
 <div id="modalBackdrop" class="modal-backdrop">
     <div id="modalContent" class="modal-content">
         <button id="modalCloseBtn" class="modal-close">&times;</button>
-        <h3>Modal Title Placeholder</h3>
-        <p>This is the detailed information for the contribution card you clicked. This content is dynamic and should be loaded based on the card's data.</p>
-        <p>
-          You could include deep technical descriptions, links to GitHub repositories, or extended explanations that wouldn't fit in the main section.
-        </p>
+        <h3 id="modalTitle">Modal Title Placeholder</h3>
+        <p id="modalBody">This is the detailed information for the contribution card you clicked. This content is dynamic and should be loaded based on the card's data.</p>
     </div>
 </div>
 
@@ -1331,6 +1308,8 @@ const modalBackdrop = document.getElementById('modalBackdrop');
 const modalContent = document.getElementById('modalContent');
 const modalCloseBtn = document.getElementById('modalCloseBtn');
 const introCards = document.querySelectorAll('.intro-card');
+const modalTitle = document.getElementById('modalTitle');
+const modalBody = document.getElementById('modalBody');
 
 // Slider elements
 const sliderTrack = document.getElementById('featureSliderTrack');
@@ -1346,6 +1325,7 @@ const assemblyAccordionItems = document.querySelectorAll('.assembly-accordion-it
 // Results Section Elements
 const resultsNavButtons = document.querySelectorAll('.results-nav-button');
 const resultItems = document.querySelectorAll('.result-item');
+const resultsSection = document.getElementById('results');
 const resultsFloatingNav = document.getElementById('resultsFloatingNav');
 
 
@@ -1384,6 +1364,26 @@ resultsNavButtons.forEach(button => {
     });
 });
 
+// --- Results Floating Bar Visibility Observer ---
+const resultsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        // We only show the floating bar if the RESULTS section is highly visible
+        if (entry.isIntersecting) {
+            resultsFloatingNav.classList.add('show');
+        } else {
+            resultsFloatingNav.classList.remove('show');
+        }
+    });
+}, {
+    root: null,
+    // Make the nav bar disappear sooner by setting a larger negative bottom margin.
+    threshold: 0.1, 
+    rootMargin: '0% 0% -50% 0%'
+});
+
+if (resultsSection) {
+    resultsObserver.observe(resultsSection);
+}
 
 // Initialize viewer
 document.addEventListener('DOMContentLoaded', () => {
@@ -1515,6 +1515,7 @@ function scrollToNextCard(direction) {
         if (currentCardIndex + 1 < cards.length) {
             targetScroll = cards[currentCardIndex + 1].offsetLeft - trackPadding;
         } else {
+            // Scroll to end if near the last card
             targetScroll = sliderTrack.scrollWidth - sliderTrack.clientWidth;
         }
 
@@ -1537,6 +1538,7 @@ if (sliderTrack && prevBtn && nextBtn) {
     sliderTrack.addEventListener('scroll', updateSliderControls);
     prevBtn.addEventListener('click', () => scrollToNextCard('prev'));
     nextBtn.addEventListener('click', () => scrollToNextCard('next'));
+    // Initial call might need a slight delay to ensure content dimensions are calculated
     setTimeout(updateSliderControls, 100); 
 }
 
@@ -1544,7 +1546,7 @@ if (sliderTrack && prevBtn && nextBtn) {
 /* -------------------------------------------------------
    C) MODAL FUNCTIONALITY
 --------------------------------------------------------- */
-/* (Keeping the existing Modal JS logic) */
+
 const contributionDetails = {
     'modal-c1': {
         title: 'Novel Architecture Details',
@@ -1564,16 +1566,11 @@ function openModal(cardDataTarget) {
     const details = contributionDetails[cardDataTarget];
     if (!details) return;
 
-    modalContent.querySelector('h3').textContent = details.title;
-    modalContent.querySelector('p').innerHTML = details.body;
+    modalTitle.textContent = details.title;
+    modalBody.innerHTML = details.body;
 
     modalBackdrop.classList.add('show');
     document.body.style.overflow = 'hidden';
-    
-    // RENDER LATEX: Process the newly added content in the modal
-    if (window.MathJax) {
-        MathJax.typeset([modalContent]);
-    }
 }
 
 function closeModal() {
