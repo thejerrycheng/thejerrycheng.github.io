@@ -858,101 +858,136 @@
 <!-- ==========================
         EDUCATION SECTION
 =========================== -->
-
 <style>
-  #education-section {
-    width:100%;
-    max-width:1000px;
-    margin:0 auto 32px auto;
-    padding:0 0; /* matches publications left edge */
-    box-sizing:border-box;
+  .edu-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
   }
-
-  .edu-item {
-    padding:18px 0;
-    border-bottom:1px solid rgba(0,0,0,0.08);
+  .edu-row:first-of-type {
+    padding-top: 0;
   }
-  .edu-item:last-child { border-bottom:none; }
-
-  .edu-line {
-    display:flex;
-    justify-content:space-between;
-    width:100%;
+  .edu-row:last-of-type {
+    border-bottom: none;
   }
-
-  #education-section .edu-line a {
-    font-weight:600;
-    letter-spacing:-0.01em;
-    color:#111;
-    text-decoration:none;
+  .edu-logo {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    overflow: hidden;
+    /* background: #f5f5f7; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* box-shadow: 0 2px 8px rgba(0,0,0,0.08); */
   }
-
+  .edu-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .edu-content {
+    flex: 1;
+    min-width: 0;
+  }
+  .edu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
   .edu-date {
-    font-size:13px;
-    color:#666;
-    white-space:nowrap;
+    font-size: 13px;
+    color: #666;
+    white-space: nowrap;
+    margin-top: 2px;
   }
-
-  .edu-details {
-    margin-top:4px;
-    font-size:14px;
-    line-height:1.45;
-    color:#222;
-  }
-
-  @media(max-width:540px){
-    .edu-line {
-      flex-direction:column;
-      gap:2px;
+  @media (max-width: 540px) {
+    .edu-header {
+      flex-direction: column;
+      gap: 4px;
+    }
+    .edu-date {
+      margin-top: 0;
+    }
+    .edu-logo {
+      width: 48px;
+      height: 48px;
     }
   }
 </style>
 
-<table id="education" style="width:100%;max-width:1000px;margin:0 auto 32px;border-spacing:0 18px;">
+<table id="education" style="width:100%;max-width:1000px;margin:0 auto 32px;border-spacing:0;">
   <tbody>
-    <tr><td><h2>Education</h2>
-
+    <tr><td style="padding:0;"><h2>Education</h2></td></tr>
     <tr>
       <td style="padding:0;">
-        <b><a href="https://www.nyu.edu" target="_blank" style="text-decoration:none;color:#111;">New York University</a></b><br>
-        <span style="font-size:14px;line-height:1.45;color:#222;">
-          Ph.D. Candidate in Mechanical Engineering (Robotics)
-        </span>
-      </td>
-      <td style="padding:0;text-align:right;white-space:nowrap;font-size:13px;color:#666;">
-        Sep 2025 – Aug 2026
+        
+        <!-- NYU -->
+        <div class="edu-row">
+          <div class="edu-logo">
+            <img src="assets/icons/nyu.png" 
+                 alt="NYU Logo">
+          </div>
+          <div class="edu-content">
+            <div class="edu-header">
+              <div>
+                <b><a href="https://www.nyu.edu" target="_blank" style="text-decoration:none;color:#111;">New York University</a></b><br>
+                <span style="font-size:14px;line-height:1.45;color:#222;">
+                  Ph.D. Candidate in Mechanical Engineering (Robotics)
+                </span>
+              </div>
+              <div class="edu-date">Sep 2025 – Aug 2026</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- UofT M.Eng -->
+        <div class="edu-row">
+          <div class="edu-logo">
+            <img src="assets/icons/uoft.png" 
+                 alt="UofT Logo">
+          </div>
+          <div class="edu-content">
+            <div class="edu-header">
+              <div>
+                <b><a href="https://www.utoronto.ca" target="_blank" style="text-decoration:none;color:#111;">University of Toronto</a></b><br>
+                <span style="font-size:14px;line-height:1.45;color:#222;">
+                  M.Eng. in Computer Engineering (Robotics) — GPA: 3.92 / 4.00
+                </span>
+              </div>
+              <div class="edu-date">Sep 2023 – Aug 2025</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- UofT B.A.Sc -->
+        <div class="edu-row">
+          <div class="edu-logo">
+            <img src="assets/icons/uoft.png" 
+                 alt="UofT Logo">
+          </div>
+          <div class="edu-content">
+            <div class="edu-header">
+              <div>
+                <b><a href="https://www.utoronto.ca" target="_blank" style="text-decoration:none;color:#111;">University of Toronto</a></b><br>
+                <span style="font-size:14px;line-height:1.45;color:#222;">
+                  B.A.Sc. in Mechanical Engineering<br>
+                  Minor in Robotics & Business — Senior GPA: 3.94 / 4.00
+                </span>
+              </div>
+              <div class="edu-date">Aug 2017 – Jun 2023</div>
+            </div>
+          </div>
+        </div>
+
       </td>
     </tr>
-
-    <tr>
-      <td style="padding:0;border-top:1px solid rgba(0,0,0,0.08);padding-top:18px;">
-        <b><a href="https://www.utoronto.ca" target="_blank" style="text-decoration:none;color:#111;">University of Toronto</a></b><br>
-        <span style="font-size:14px;line-height:1.45;color:#222;">
-          M.Eng. in Computer Engineering (Robotics) — GPA: 3.92 / 4.00
-        </span>
-      </td>
-      <td style="padding:0;border-top:1px solid rgba(0,0,0,0.08);padding-top:18px;text-align:right;white-space:nowrap;font-size:13px;color:#666;">
-        Sep 2023 – Aug 2025
-      </td>
-    </tr>
-
-    <tr>
-      <td style="padding:0;border-top:1px solid rgba(0,0,0,0.08);padding-top:18px;">
-        <b><a href="https://www.utoronto.ca" target="_blank" style="text-decoration:none;color:#111;">University of Toronto</a></b><br>
-        <span style="font-size:14px;line-height:1.45;color:#222;">
-          B.A.Sc. in Mechanical Engineering<br>
-          Minor in Robotics & Business — Senior GPA: 3.94 / 4.00
-        </span>
-      </td>
-      <td style="padding:0;border-top:1px solid rgba(0,0,0,0.08);padding-top:18px;text-align:right;white-space:nowrap;font-size:13px;color:#666;">
-        Aug 2017 – Jun 2023
-      </td>
-    </tr>
-
   </tbody>
 </table>
-
-
 
 <!-- ==========================
         PUBLICATION SECTION
