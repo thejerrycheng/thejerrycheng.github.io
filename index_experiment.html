@@ -3,512 +3,1681 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Jerry (Qilong) Cheng — Robotics & RL</title>
-  <meta name="description" content="Robotics researcher focused on humanoid locomotion, reinforcement learning, and vision-driven control.">
+  <title>Jerry (Qilong) Cheng — Robot Learning, Humanoid &amp; RL</title>
+  <meta name="description" content="Robotics researcher focused on humanoid locomotion, dexterous manipulation, reinforcement learning, and vision-driven control.">
   <meta name="author" content="Jerry Cheng">
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://thejerrycheng.github.io/">
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+  <meta name="google-site-verification" content="xWitMv-RzQhJiE2ygirlA9rtCab3i_DS2Zltn2MO9Xw">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500&display=swap" rel="stylesheet">
 
-  <style>
-    /* =========================================
-       1. CSS VARIABLES (THEMING)
-       ========================================= */
-    :root {
-      /* Light Mode Defaults (Apple Style) */
-      --bg-color: #ffffff;
-      --text-primary: #1d1d1f;
-      --text-secondary: #86868b;
-      --accent-color: #0071e3; /* Apple Blue */
-      --accent-orange: #FF9500;
-      
-      --card-bg: #ffffff;
-      --card-border: rgba(0, 0, 0, 0.08);
-      --card-hover-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
-      
-      --nav-bg: rgba(255, 255, 255, 0.8);
-      --nav-border: rgba(0, 0, 0, 0.08);
+  <!-- Social -->
+  <meta property="og:site_name" content="Jerry (Qilong) Cheng">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Jerry (Qilong) Cheng — Robotics, Humanoid Locomotion &amp; RL">
+  <meta property="og:description" content="Robotics researcher focused on humanoid locomotion, reinforcement learning, and vision-driven control.">
+  <meta property="og:url" content="https://thejerrycheng.github.io/">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/og/site-hero.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Jerry (Qilong) Cheng — Robotics, Humanoid Locomotion &amp; RL">
+  <meta name="twitter:description" content="Humanoid locomotion, RL, and vision-driven control.">
+  <meta name="twitter:image" content="https://thejerrycheng.github.io/assets/images/og/site-hero.jpg">
 
-      --section-gap: 60px;
-      --max-width: 860px;
-      --radius: 12px;
-    }
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Person",
+    "name":"Jerry (Qilong) Cheng",
+    "alternateName":"Qilong Cheng",
+    "url":"https://thejerrycheng.github.io/",
+    "image":"https://thejerrycheng.github.io/assets/images/profile_pic.png",
+    "jobTitle":"PhD Student",
+    "affiliation":[{"@type":"Organization","name":"New York University"}],
+    "sameAs":[
+      "https://scholar.google.com/citations?user=iQuHS3MAAAAJ",
+      "https://github.com/thejerrycheng",
+      "https://x.com/thejerrycheng",
+      "https://www.linkedin.com/in/jerry-qilong-cheng-540039163/",
+      "https://www.youtube.com/@thejerrycheng",
+      "https://www.instagram.com/thejerrycheng"
+    ]
+  }
+  </script>
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        /* Dark Mode Overrides */
-        --bg-color: #000000;
-        --text-primary: #f5f5f7;
-        --text-secondary: #86868b;
-        --accent-color: #2997ff;
-        
-        --card-bg: #1c1c1e;
-        --card-border: rgba(255, 255, 255, 0.1);
-        --card-hover-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
-        
-        --nav-bg: rgba(0, 0, 0, 0.8);
-        --nav-border: rgba(255, 255, 255, 0.1);
-      }
-    }
+<style>
+/* ============================================================
+   LIQUID GLASS — Design System
+   ============================================================ */
 
-    /* =========================================
-       2. GLOBAL RESET & TYPOGRAPHY
-       ========================================= */
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Text", sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-primary);
-      margin: 0;
-      padding-top: 80px; /* Space for fixed nav */
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      transition: background-color 0.4s ease, color 0.4s ease;
-    }
+:root {
+  /* Glass tokens */
+  --glass-bg:           rgba(255,255,255,0.62);
+  --glass-bg-strong:    rgba(255,255,255,0.82);
+  --glass-bg-light:     rgba(255,255,255,0.38);
+  --glass-border:       rgba(255,255,255,0.58);
+  --glass-blur:         22px;
+  --glass-blur-heavy:   36px;
+  --glass-shadow:       0 8px 32px rgba(60,80,180,0.10), 0 2px 8px rgba(0,0,0,0.05);
+  --glass-shadow-hover: 0 16px 48px rgba(60,80,180,0.16), 0 4px 16px rgba(0,0,0,0.08);
 
-    a { color: inherit; text-decoration: none; transition: color 0.2s ease; }
-    a:hover { color: var(--accent-color); }
-    
-    h1, h2, h3 {
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      margin-top: 0;
-    }
+  /* Typography */
+  --sans:     Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --headings: "Space Grotesk", Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono:     "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-    /* Container */
-    .container {
-      width: 100%;
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
+  /* Layout */
+  --nav-height: 52px;
+  --max-width:  1000px;
+  --radius:     16px;
+  --radius-sm:  10px;
 
-    /* Section Headers */
-    .section-title {
-      font-size: 24px;
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--card-border);
-      padding-bottom: 10px;
-      margin-top: var(--section-gap);
-    }
+  /* Colors */
+  --ink:       #1d1d1f;
+  --ink-muted: #6e6e73;
+  --accent:    #0071e3;
+  --orange:    #FF9500;
+}
 
-    /* =========================================
-       3. NAVIGATION (Blurred Glass)
-       ========================================= */
-    .nav {
-      position: fixed; top: 0; left: 0; right: 0;
-      height: 52px;
-      background: var(--nav-bg);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid var(--nav-border);
-      z-index: 999;
-      display: flex; align-items: center; justify-content: center;
-    }
-    
-    .nav-inner {
-      display: flex; gap: 24px; font-size: 13px; font-weight: 500;
-    }
-    
-    .nav-link {
-      color: var(--text-primary);
-      opacity: 0.8;
-      transition: opacity 0.2s ease;
-    }
-    .nav-link:hover { opacity: 1; color: var(--accent-color); }
+/* Reset + base */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+[id] { scroll-margin-top: calc(var(--nav-height) + 20px); }
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-top: calc(var(--nav-height) + 16px);
+  background: transparent;
+}
+h1,h2,h3,h4 { font-family: var(--headings); letter-spacing: -.01em; }
+a { color: var(--accent); }
+a:hover { text-decoration: underline; }
+img, video { max-width: 100%; display: block; }
 
-    /* =========================================
-       4. ANIMATIONS (The Premium Feel)
-       ========================================= */
-    /* Scroll Reveal Effect */
-    .reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+/* ============================================================
+   ANIMATED LIQUID GRADIENT BACKGROUND
+   ============================================================ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(-45deg, #dbeafe, #e0e7ff, #ede9fe, #fce7f3, #ccfbf1, #e0f2fe);
+  background-size: 400% 400%;
+  animation: liquidFlow 22s ease infinite;
+}
+@keyframes liquidFlow {
+  0%   { background-position:   0%  50%; }
+  25%  { background-position: 100%   0%; }
+  50%  { background-position: 100% 100%; }
+  75%  { background-position:   0% 100%; }
+  100% { background-position:   0%  50%; }
+}
 
-    /* Hover Lift (Spring Physics) */
-    .hover-card {
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, background-color 0.4s ease;
-    }
-    .hover-card:hover {
-      transform: scale(1.02) translateY(-2px);
-      box-shadow: var(--card-hover-shadow);
-      z-index: 10;
-      background-color: var(--card-bg); /* Pop out in dark mode */
-      border-radius: var(--radius);
-    }
+/* ============================================================
+   NAVIGATION — Pill Glass Chips
+   ============================================================ */
+.top-nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: var(--nav-height);
+  z-index: 999;
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border-bottom: 1px solid rgba(255,255,255,0.55);
+  box-shadow: 0 8px 32px rgba(60,80,200,0.08);
+  font-family: var(--sans);
+}
+.nav-inner {
+  height: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.nav-brand a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.9);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.10);
+  transition: background .15s ease, box-shadow .15s ease;
+  font-weight: 500;
+}
+.nav-brand a:hover { background: rgba(0,0,0,0.04); text-decoration: none; }
+.nav-brand .dot { width: 8px; height: 8px; border-radius: 50%; background: #000; opacity: .85; }
+.nav-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-links { scrollbar-width: none; }
+.navlink {
+  display: inline-block;
+  font-size: 13.5px;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 8px 13px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.85);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+  transition: background .15s ease, box-shadow .15s ease, transform .08s ease;
+  font-weight: 450;
+}
+.navlink:hover { background: rgba(0,0,0,0.04); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.14); text-decoration: none; }
+.navlink:active { transform: translateY(1px); }
+.menu-btn {
+  justify-self: end;
+  display: none;
+  font-size: 14px;
+  color: var(--ink);
+  font-family: var(--sans);
+  padding: 8px 14px;
+  border-radius: 50px;
+  border: none;
+  background: rgba(255,255,255,0.9);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.10);
+  cursor: pointer;
+  transition: background .15s ease;
+}
+.menu-btn:hover { background: rgba(0,0,0,0.04); }
+.nav-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.05); z-index: 998; }
+.mobile-menu {
+  position: fixed;
+  top: calc(var(--nav-height) + 8px);
+  right: 12px;
+  width: min(88vw, 320px);
+  background: rgba(255,255,255,0.90);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(60,80,180,0.15);
+  padding: 8px;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  pointer-events: none;
+  transition: transform .18s ease, opacity .18s ease;
+}
+.mobile-menu.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+.mobile-menu a {
+  display: block;
+  padding: 11px 12px;
+  border-radius: 10px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 15px;
+  transition: background .15s ease;
+}
+.mobile-menu a:hover { background: rgba(0,0,0,0.05); }
+.mobile-menu hr { border: 0; height: 1px; background: rgba(0,0,0,0.08); margin: 5px 0; }
 
-    /* =========================================
-       5. COMPONENT: PROFILE / ABOUT
-       ========================================= */
-    .profile-section {
-      display: grid;
-      grid-template-columns: 1fr 280px; /* Text left, Image right */
-      gap: 40px;
-      align-items: center;
-      margin-bottom: 40px;
-    }
+/* ============================================================
+   GLASS CARD UTILITIES
+   ============================================================ */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--glass-shadow);
+}
 
-    .profile-name { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
-    .profile-bio { font-size: 16px; color: var(--text-secondary); }
-    .profile-img img {
-      width: 100%;
-      border-radius: 50%;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .profile-img:hover img { transform: scale(1.05) rotate(2deg); }
+/* ============================================================
+   PILL / CTA BUTTONS
+   ============================================================ */
+.pill-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  line-height: 1;
+  padding: 6px 12px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(0,0,0,0.12);
+  color: var(--ink);
+  text-decoration: none;
+  transition: background .15s ease, border-color .15s ease, transform .1s ease;
+  font-family: var(--sans);
+}
+.pill-link:hover { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.22); text-decoration: none; }
+.pill-link:active { transform: translateY(1px); }
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  background: rgba(255,255,255,0.85);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12), 0 4px 14px rgba(0,0,0,0.05);
+  backdrop-filter: blur(5px);
+  transition: all .15s ease;
+  font-family: var(--sans);
+}
+.cta-btn:hover {
+  background: rgba(0,0,0,0.04);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.18), 0 6px 18px rgba(0,0,0,0.10);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.cta-btn:active { transform: translateY(0); }
+.cta-icon { width: 18px; height: 18px; opacity: 0.85; }
 
-    .social-links { margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap;}
-    .social-pill {
-      font-size: 13px;
-      padding: 6px 12px;
-      border-radius: 20px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text-primary);
-    }
-    .social-pill:hover { background: var(--text-primary); color: var(--bg-color); border-color: transparent; }
+/* ============================================================
+   PAGE WRAPPER
+   ============================================================ */
+.page-wrap {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 20px;
+}
 
-    /* =========================================
-       6. COMPONENT: PUBLICATIONS & PROJECTS (GRID)
-       ========================================= */
-    .pub-card {
-      display: grid;
-      grid-template-columns: 32% 1fr; /* Image takes 32% */
-      gap: 24px;
-      margin-bottom: 32px;
-      padding: 16px;
-      border: 1px solid transparent; /* Placeholder for hover border */
-      border-radius: var(--radius);
-    }
-    
-    .pub-media {
-      position: relative;
-      border-radius: 8px;
-      overflow: hidden;
-      aspect-ratio: 16/10;
-      background: #f0f0f0;
-    }
+/* ============================================================
+   SECTION HEADINGS
+   ============================================================ */
+.section-heading {
+  font-family: var(--headings);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--ink);
+  margin: 0 0 20px;
+}
 
-    .pub-media img, .pub-media video {
-      width: 100%; height: 100%; object-fit: cover; display: block;
-      transition: opacity 0.3s ease;
-    }
-    
-    /* Video Hover Logic */
-    .pub-media video { position: absolute; inset: 0; opacity: 0; }
-    .pub-card:hover .pub-media video { opacity: 1; }
-    .pub-card:hover .pub-media img { opacity: 0; }
+/* ============================================================
+   ABOUT SECTION
+   ============================================================ */
+#about { padding: 24px 0 32px; }
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 32px;
+  align-items: start;
+}
+.about-text .name {
+  font-family: var(--headings);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  margin: 0 0 4px;
+  text-align: center;
+}
+.about-text .name-zh {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  display: block;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.about-text p { margin: 0 0 12px; }
+.research-qs { margin: 8px 0 16px; padding-left: 4px; }
+.research-qs p { font-size: 14px; color: var(--ink-muted); margin: 3px 0; }
+.social-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 20px 0 16px; font-size: 14px; }
+.social-links a { color: var(--ink); text-decoration: none; }
+.social-links a:hover { text-decoration: underline; }
+.social-links span { color: #bbb; }
+.cta-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+.apple-orange { color: var(--orange); font-weight: 600; }
+.about-photo img {
+  width: 100%;
+  border-radius: 50%;
+  box-shadow: 0 0 32px rgba(60,80,180,0.18), 0 2px 12px rgba(0,0,0,0.10);
+}
 
-    .pub-content h3 { font-size: 17px; margin-bottom: 6px; }
-    .pub-meta { font-size: 14px; color: var(--text-secondary); margin-bottom: 8px; }
-    .pub-desc { font-size: 14px; margin-bottom: 12px; }
-    
-    .link-group a {
-      font-size: 12px; font-weight: 600; text-transform: uppercase;
-      margin-right: 12px; color: var(--accent-color);
-    }
+/* ============================================================
+   LAST UPDATED
+   ============================================================ */
+#last-updated { text-align: center; font-size: 12.5px; color: #888; margin: 8px 0 32px; }
 
-    /* =========================================
-       7. COMPONENT: NEWS (Horizontal Scroll)
-       ========================================= */
-    .news-scroller {
-      display: flex; gap: 16px; overflow-x: auto;
-      padding: 10px 4px 20px 4px;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-    }
-    .news-scroller::-webkit-scrollbar { display: none; } /* Hide scrollbar */
-    
-    .news-card {
-      min-width: 280px; max-width: 280px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      padding: 16px;
-      display: flex; flex-direction: column; gap: 12px;
-    }
-    .news-date { font-size: 11px; font-weight: 700; color: var(--accent-color); text-transform: uppercase;}
-    .news-text { font-size: 14px; }
+/* ============================================================
+   COFFEE CHAT SECTION
+   ============================================================ */
+#coffee-chat { padding: 0 0 40px; }
+.coffee-card { padding: 32px 24px; text-align: center; }
+.coffee-card p { margin: 0 auto 10px; max-width: 600px; }
+.coffee-card .coffee-sub { font-size: 13px; color: var(--ink-muted); margin-bottom: 24px; }
 
-    /* =========================================
-       8. COMPONENT: EXPERIENCE (Flex List)
-       ========================================= */
-    .exp-item {
-      display: flex; justify-content: space-between;
-      padding: 18px 0;
-      border-bottom: 1px solid var(--card-border);
-    }
-    .exp-left { font-weight: 600; }
-    .exp-right { text-align: right; color: var(--text-secondary); font-size: 14px; }
-    .exp-role { display: block; font-weight: 400; color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
+/* ============================================================
+   EDUCATION SECTION
+   ============================================================ */
+#education { padding: 0 0 40px; }
+.edu-list { display: flex; flex-direction: column; }
+.edu-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+.edu-row:first-child { padding-top: 0; }
+.edu-row:last-child { border-bottom: none; }
+.edu-logo { flex-shrink: 0; width: 52px; height: 52px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.edu-logo img { width: 100%; height: 100%; object-fit: cover; }
+.edu-content { flex: 1; min-width: 0; }
+.edu-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.edu-inst { font-weight: 600; color: var(--ink); text-decoration: none; }
+.edu-inst:hover { text-decoration: underline; }
+.edu-degree { font-size: 14px; color: #222; margin: 2px 0 0; }
+.edu-date { font-size: 13px; color: #777; white-space: nowrap; margin-top: 2px; }
 
-    /* =========================================
-       9. RESPONSIVE MOBILE
-       ========================================= */
-    @media (max-width: 700px) {
-      .profile-section { grid-template-columns: 1fr; text-align: center; }
-      .profile-img { order: -1; width: 160px; margin: 0 auto; }
-      .pub-card { grid-template-columns: 1fr; padding: 0; border: none; }
-      .pub-card:hover { transform: none; box-shadow: none; background: transparent; }
-      .pub-media { aspect-ratio: 16/9; margin-bottom: 12px; }
-      .exp-item { flex-direction: column; gap: 4px; }
-      .exp-right { text-align: left; }
-    }
-  </style>
+/* ============================================================
+   PUBLICATIONS TABLE
+   ============================================================ */
+#publications { padding: 0 0 40px; }
+.pubs-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 14px;
+}
+.pub-row > td { vertical-align: middle; }
+.pub-row > td.thumb-td {
+  width: 45%;
+  padding: 0;
+  text-align: center;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  border: 1px solid var(--glass-border);
+  border-right: none;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--glass-shadow);
+  transition: box-shadow .3s ease;
+}
+.pub-row > td.info-td {
+  width: 55%;
+  padding: 14px 16px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  border: 1px solid var(--glass-border);
+  border-left: none;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  box-shadow: var(--glass-shadow);
+  transition: box-shadow .3s ease;
+}
+.pub-row:hover > td.thumb-td,
+.pub-row:hover > td.info-td { box-shadow: var(--glass-shadow-hover); }
+.pub-thumb {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+.pub-thumb img, .pub-thumb video { width: 100%; height: 100%; object-fit: contain; display: block; }
+.pub-thumb img { transition: opacity .2s ease; }
+.hover-video {
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity .2s ease;
+  pointer-events: none; z-index: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.hover-video video { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+.pub-thumb.has-video:hover .hover-video,
+.pub-thumb.has-video:focus-within .hover-video { opacity: 1; }
+.pub-thumb.has-video:hover img,
+.pub-thumb.has-video:focus-within img { opacity: 0; }
+.pub-thumb:not(.has-video) .hover-video { display: none !important; }
+.pub-title { font-weight: 600; font-size: 15px; line-height: 1.35; margin: 0 0 4px; color: var(--ink); }
+.pub-authors { font-size: 13px; color: var(--ink-muted); margin: 0 0 3px; }
+.pub-venue { font-size: 13px; color: var(--ink-muted); margin: 0 0 8px; font-style: italic; }
+.pub-desc { font-size: 13.5px; line-height: 1.45; color: #333; margin: 6px 0 10px; }
+.pub-links { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* carousel inside pub-thumb */
+.pub-carousel { position: relative; width: 100%; height: 100%; overflow: hidden; }
+.pub-carousel .carousel-track { display: flex; height: 100%; transition: transform .45s ease; will-change: transform; }
+.pub-carousel .slide { flex: 0 0 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
+.pub-carousel .slide img, .pub-carousel .slide video { width: 100%; height: 100%; object-fit: contain; display: block; }
+.pub-carousel .slide.has-video:hover .hover-video { opacity: 1; }
+.pub-carousel .slide.has-video:hover img { opacity: 0; }
+.pub-carousel .nav-btn {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 30px; height: 30px; border-radius: 50px;
+  border: 1px solid rgba(0,0,0,.18);
+  background: rgba(255,255,255,.85);
+  backdrop-filter: saturate(1.8) blur(2px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; line-height: 1; padding: 0; user-select: none; z-index: 2;
+}
+.pub-carousel .nav-btn:hover { background: #fff; }
+.pub-carousel .nav-btn:disabled { opacity: .4; cursor: default; }
+.pub-carousel .nav-btn.prev { left: 6px; }
+.pub-carousel .nav-btn.next { right: 6px; }
+.pub-carousel.single .nav-btn { display: none !important; }
+
+/* ============================================================
+   NEWS SECTION
+   ============================================================ */
+#news { padding: 0 0 40px; }
+.news-track {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+}
+.news-track::-webkit-scrollbar { height: 4px; }
+.news-track::-webkit-scrollbar-track { background: transparent; }
+.news-track::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 2px; }
+.news-card {
+  flex: 0 0 260px;
+  scroll-snap-align: start;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  transition: box-shadow .3s ease, transform .3s ease;
+}
+.news-card:hover { box-shadow: var(--glass-shadow-hover); transform: translateY(-2px); }
+.news-thumb { position: relative; width: 100%; height: 170px; overflow: hidden; }
+.news-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+.news-card:hover .news-thumb img { transform: scale(1.04); }
+.news-body { padding: 14px 14px 16px; }
+.news-date { font-size: 12px; color: var(--ink-muted); margin-bottom: 4px; font-weight: 500; }
+.news-text { font-size: 13.5px; line-height: 1.45; color: var(--ink); margin: 0; }
+.news-thumb .carousel-inner { display: flex; height: 100%; transition: transform .4s ease; }
+.news-thumb .carousel-inner img { flex: 0 0 100%; height: 100%; object-fit: cover; }
+.carousel-arrows { display: flex; gap: 6px; margin-top: 8px; }
+.carousel-btn {
+  width: 28px; height: 28px; border-radius: 50px;
+  border: 1px solid rgba(0,0,0,0.14);
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; padding: 0; line-height: 1;
+}
+.carousel-btn:hover { background: #fff; }
+
+/* ============================================================
+   PROJECTS GRID
+   ============================================================ */
+#projects { padding: 0 0 40px; }
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+.project-card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  transition: transform .35s cubic-bezier(0.34,1.56,0.64,1), box-shadow .35s ease, background .2s ease;
+  display: flex;
+  flex-direction: column;
+}
+.project-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: var(--glass-shadow-hover);
+  background: var(--glass-bg-strong);
+}
+.proj-thumb { position: relative; width: 100%; height: 180px; overflow: hidden; }
+.proj-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+.project-card:hover .proj-thumb img { transform: scale(1.04); }
+.proj-thumb .hover-video {
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity .2s ease;
+  pointer-events: none; z-index: 1;
+}
+.proj-thumb .hover-video video { width: 100%; height: 100%; object-fit: cover; }
+.proj-thumb.has-video:hover .hover-video { opacity: 1; }
+.proj-thumb.has-video:hover img { opacity: 0; }
+.proj-thumb:not(.has-video) .hover-video { display: none !important; }
+.proj-body { padding: 16px; flex: 1; display: flex; flex-direction: column; }
+.proj-title { font-weight: 600; font-size: 15px; line-height: 1.3; margin: 0 0 4px; color: var(--ink); }
+.proj-year { font-size: 12px; color: var(--ink-muted); margin: 0 0 8px; }
+.proj-desc { font-size: 13.5px; line-height: 1.45; color: #333; margin: 0 0 12px; flex: 1; }
+.proj-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+
+/* ============================================================
+   BEYOND THE LAB
+   ============================================================ */
+#beyond { padding: 0 0 40px; }
+.beyond-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.beyond-card { border-radius: var(--radius); padding: 28px 24px; min-height: 220px; display: flex; flex-direction: column; }
+.beyond-card h3 { font-size: 18px; font-weight: 700; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+.beyond-card > p { font-size: 14px; line-height: 1.55; color: #333; margin: 0 0 10px; }
+.startup-mini { display: flex; flex-direction: column; gap: 14px; }
+.startup-item { border-radius: var(--radius-sm); padding: 14px; background: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.5); }
+.startup-item h4 { font-size: 14px; font-weight: 600; margin: 0 0 3px; color: var(--ink); }
+.startup-item .startup-meta { font-size: 12px; color: var(--ink-muted); margin: 0 0 6px; }
+.startup-item p { font-size: 13px; line-height: 1.45; color: #444; margin: 0 0 8px; }
+.startup-item .pill-links { display: flex; flex-wrap: wrap; gap: 5px; }
+
+/* ============================================================
+   SKILLS SECTION
+   ============================================================ */
+#skills { padding: 0 0 40px; }
+.skills-card { padding: 24px; }
+.skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.skill-group h4 { font-size: 14px; font-weight: 600; color: var(--ink-muted); text-transform: uppercase; letter-spacing: .04em; margin: 0 0 8px; }
+.skill-group p { font-size: 14px; line-height: 1.6; margin: 0; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur-heavy)) saturate(1.8);
+  -webkit-backdrop-filter: blur(var(--glass-blur-heavy)) saturate(1.8);
+  border-top: 1px solid var(--glass-border);
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+footer .footer-brand { font-weight: 600; font-size: 15px; color: var(--ink); margin-bottom: 6px; }
+footer .footer-note { margin-bottom: 12px; }
+footer .footer-divider { width: 40px; height: 1px; background: rgba(0,0,0,0.12); margin: 12px auto; }
+footer a { color: var(--accent); }
+.footer-nav {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 20px 0 0;
+}
+.footer-nav a {
+  display: inline-block; font-size: 13px; color: var(--ink); text-decoration: none;
+  padding: 7px 14px; border-radius: 50px;
+  background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.08);
+  transition: background .15s ease;
+}
+.footer-nav a:hover { background: rgba(0,0,0,0.05); text-decoration: none; }
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 700px) {
+  .about-grid { grid-template-columns: 1fr; }
+  .about-photo { order: -1; max-width: 180px; margin: 0 auto; }
+  .about-text .name { font-size: 26px; }
+  .pubs-table { border-spacing: 0 0; }
+  .pub-row { display: block; margin-bottom: 16px; }
+  .pub-row > td.thumb-td {
+    display: block; width: 100%;
+    border-right: 1px solid var(--glass-border);
+    border-bottom: none;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  }
+  .pub-row > td.info-td {
+    display: block; width: 100%;
+    border-left: 1px solid var(--glass-border);
+    border-top: none;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  }
+  .pub-thumb { height: clamp(160px, 55vw, 260px); border-radius: var(--radius-sm) var(--radius-sm) 0 0; }
+  .beyond-grid { grid-template-columns: 1fr; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .skills-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .menu-btn { display: inline-flex; align-items: center; gap: 6px; }
+  .nav-inner { grid-template-columns: auto 1fr auto; }
+  .edu-header { flex-direction: column; gap: 4px; }
+  html, body { overflow-x: hidden; }
+}
+@media (max-width: 440px) {
+  .news-card { flex: 0 0 220px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before { animation: none; }
+  .project-card, .news-card { transition: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+</style>
 </head>
-
 <body>
 
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="#about" class="nav-link">About</a>
-      <a href="#news" class="nav-link">News</a>
-      <a href="#publications" class="nav-link">Publications</a>
-      <a href="#projects" class="nav-link">Projects</a>
-      <a href="#experience" class="nav-link">Experience</a>
-      <a href="assets/pdf/Academic_Resume-5.pdf" target="_blank" class="nav-link">CV</a>
+<!-- ========================================================
+     NAVIGATION
+     ======================================================== -->
+<nav class="top-nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <a href="#about" aria-label="Home — About">
+        <span class="dot" aria-hidden="true"></span>
+        About
+      </a>
     </div>
+    <div class="nav-links" aria-hidden="true">
+      <a class="navlink" href="#coffee-chat">Connect</a>
+      <a class="navlink" href="#education">Education</a>
+      <a class="navlink" href="#publications">Publications</a>
+      <a class="navlink" href="#news">News</a>
+      <a class="navlink" href="#projects">Projects</a>
+      <a class="navlink" href="#beyond">Beyond</a>
+      <a class="navlink" href="#skills">Skills</a>
+    </div>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">
+      Menu <span aria-hidden="true">&#9662;</span>
+    </button>
+  </div>
+</nav>
+
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" aria-labelledby="menuButton" hidden>
+  <a role="menuitem" href="#coffee-chat">Connect</a>
+  <a role="menuitem" href="#education">Education</a>
+  <a role="menuitem" href="#publications">Publications</a>
+  <a role="menuitem" href="#news">News</a>
+  <a role="menuitem" href="#projects">Projects</a>
+  <a role="menuitem" href="#beyond">Beyond the Lab</a>
+  <a role="menuitem" href="#skills">Skills</a>
+  <hr>
+  <a role="menuitem" href="blog.html">Blog</a>
+</div>
+
+<script>
+(function(){
+  var btn=document.getElementById('menuButton');
+  var panel=document.getElementById('mobileMenu');
+  var backdrop=document.getElementById('navBackdrop');
+  function openMenu(){ panel.hidden=false; backdrop.hidden=false; requestAnimationFrame(function(){ panel.classList.add('open'); }); btn.setAttribute('aria-expanded','true'); }
+  function closeMenu(){ panel.classList.remove('open'); btn.setAttribute('aria-expanded','false'); setTimeout(function(){ panel.hidden=true; backdrop.hidden=true; },160); }
+  btn.addEventListener('click',function(){ btn.getAttribute('aria-expanded')==='true'?closeMenu():openMenu(); });
+  backdrop.addEventListener('click',closeMenu);
+  window.addEventListener('keydown',function(e){ if(e.key==='Escape'&&btn.getAttribute('aria-expanded')==='true') closeMenu(); });
+  panel.querySelectorAll('a').forEach(function(a){ a.addEventListener('click',closeMenu); });
+  panel.addEventListener('click',function(e){ e.stopPropagation(); });
+})();
+</script>
+
+
+<!-- ========================================================
+     ABOUT
+     ======================================================== -->
+<section id="about" class="page-wrap">
+  <div class="about-grid">
+    <div class="about-text">
+      <p class="name">
+        Jerry (Qilong) Cheng
+        <span class="name-zh">&#12300;&#31243;&#21551;&#40857;&#12301;</span>
+      </p>
+
+      <p style="font-size:15px;line-height:1.6;margin-top:4px;">
+        I'm currently a <strong>Robotics Ph.D. Student</strong> at
+        <a href="https://engineering.nyu.edu" target="_blank" rel="noopener">NYU</a> working on
+        <strong>Embodied Generative Control: Unified RL and Diffusion Policies for Locomotion and Dexterous Manipulation</strong>,
+        with prior work in<br>
+        <strong>state estimation</strong>
+        (<a href="https://starslab.ca" target="_blank" rel="noopener">STARS Lab</a>,
+        <a href="https://starslab.ca/people/prof-jonathan-kelly/" target="_blank" rel="noopener">Prof. Jonathan Kelly</a>),<br>
+        <strong>haptics/HRI</strong>
+        (<a href="https://www.dgp.toronto.edu/" target="_blank" rel="noopener">DGP Lab</a>,
+        <a href="https://danielwigdor.com" target="_blank" rel="noopener">Prof. Daniel Wigdor</a>),<br>
+        <strong>learning-based manipulation/control</strong>
+        (<a href="https://robotics.utoronto.ca" target="_blank" rel="noopener">UofT Robotics Institute</a>,
+        <a href="https://www.mie.utoronto.ca/faculty_staff/mackay/" target="_blank" rel="noopener">Prof. Matthew Mackay</a>;
+        <a href="https://www.bereyhi.com" target="_blank" rel="noopener">Prof. Ali Bereyhi</a>).
+      </p>
+
+      <p style="font-size:20px;font-weight:700;margin:14px 0 4px;font-family:var(--headings);">Research Interests</p>
+
+      <p style="font-size:15px;line-height:1.5;margin:0 0 4px;">
+        I aim to integrate Universal Manipulation Interface-scale perception with torque-level reinforcement learning
+        to handle contact, embodiment, and whole-body loco-manipulation in real-world settings.
+      </p>
+      <div class="research-qs">
+        <p>&#8226; How do we fuse foundation models with dynamics-aware control?</p>
+        <p>&#8226; How can vision, tactile, and proprioception be integrated into a single unified policy?</p>
+        <p>&#8226; How do IL and RL merge to generalize beyond demonstrations?</p>
+        <p>&#8226; How do we co-design hardware, sensing, and control to make learning scalable?</p>
+      </div>
+
+      <p style="font-size:15px;line-height:1.5;margin:0 0 16px;">
+        I am also a strong believer in Steve Jobs' idea that
+        <em>"those who are truly serious about software should design their own hardware."</em>
+      </p>
+
+      <div class="social-links">
+        <a href="mailto:qilong.cheng@mail.utoronto.ca">Email</a>
+        <span>|</span>
+        <a href="https://www.linkedin.com/in/jerry-qilong-cheng-540039163/" target="_blank" rel="noopener">LinkedIn</a>
+        <span>|</span>
+        <a href="https://github.com/thejerrycheng" target="_blank" rel="noopener">GitHub</a>
+        <span>|</span>
+        <a href="https://www.youtube.com/@thejerrycheng" target="_blank" rel="noopener">YouTube</a>
+        <span>|</span>
+        <a href="https://www.tiktok.com/thejerrycheng" target="_blank" rel="noopener">TikTok</a>
+        <span>|</span>
+        <a href="https://www.instagram.com/thejerrycheng" target="_blank" rel="noopener">Instagram</a>
+      </div>
+
+      <div class="cta-row">
+        <a class="cta-btn" href="https://x.com/thejerrycheng" target="_blank" rel="noopener">
+          <img class="cta-icon" src="assets/icons/x-icons.svg" alt="">
+          Follow on X
+        </a>
+        <a class="cta-btn" href="assets/pdf/Academic_Resume-9.pdf" target="_blank" rel="noopener">
+          <img class="cta-icon" src="assets/icons/file.svg" alt="">
+          CV
+        </a>
+        <a class="cta-btn" href="https://scholar.google.com/citations?user=iQuHS3MAAAAJ" target="_blank" rel="noopener">
+          <img class="cta-icon" src="assets/icons/scholar.svg" alt="">
+          Scholar
+        </a>
+      </div>
+
+      <p class="apple-orange" style="font-size:15px;text-align:center;margin-top:10px;">
+        I'm currently looking for PhD opportunities or industry positions in Robotics starting Fall 2026!
+      </p>
+    </div>
+
+    <div class="about-photo">
+      <a href="assets/images/profile_pic.png">
+        <img src="assets/images/profile_pic.png" alt="Jerry Cheng profile photo">
+      </a>
+    </div>
+  </div>
+</section>
+
+<p id="last-updated" style="text-align:center;font-size:12.5px;color:#888;margin:4px 0 32px;">
+  <time aria-label="Last updated"></time>
+</p>
+<script>
+(function(){
+  var el=document.querySelector('#last-updated time');
+  var d=new Date(document.lastModified);
+  el.textContent='Last updated: '+d.toLocaleString(undefined,{year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+  el.setAttribute('datetime',d.toISOString());
+})();
+</script>
+
+
+<!-- ========================================================
+     COFFEE CHAT / CONNECT
+     ======================================================== -->
+<section id="coffee-chat" class="page-wrap">
+  <h2 class="section-heading">Coffee Chat</h2>
+  <div class="glass-card coffee-card reveal">
+    <p>I'm always open to chatting about <strong>Robotics, Research, Startups</strong>, or just connecting!
+       Feel free to grab a time on my calendar below.</p>
+    <p class="coffee-sub">Location: Any Cafe with Enough Clearance for a 6-DOF Robot Arm</p>
+    <a class="cta-btn" href="https://calendly.com/jerrychengh990427/coffee-chat-with-jerry-cheng" target="_blank" rel="noopener" style="margin:0 auto;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.85">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+      </svg>
+      Schedule a Coffee
+    </a>
+  </div>
+</section>
+
+
+<!-- ========================================================
+     EDUCATION
+     ======================================================== -->
+<section id="education" class="page-wrap">
+  <h2 class="section-heading">Education</h2>
+  <div class="glass-card" style="padding:20px 24px;">
+    <div class="edu-list">
+
+      <div class="edu-row">
+        <div class="edu-logo"><img src="assets/icons/nyu.png" alt="NYU"></div>
+        <div class="edu-content">
+          <div class="edu-header">
+            <div>
+              <a class="edu-inst" href="https://www.nyu.edu" target="_blank" rel="noopener">New York University</a><br>
+              <span class="edu-degree">Ph.D. Candidate in Mechanical Engineering (Robotics) &#8212; GPA: 4.00 / 4.00</span>
+            </div>
+            <div class="edu-date">Sep 2025 &#8211; Aug 2029</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="edu-row">
+        <div class="edu-logo"><img src="assets/icons/uoft.png" alt="UofT"></div>
+        <div class="edu-content">
+          <div class="edu-header">
+            <div>
+              <a class="edu-inst" href="https://www.utoronto.ca" target="_blank" rel="noopener">University of Toronto</a><br>
+              <span class="edu-degree">M.Eng. in Computer Engineering (Robotics) &#8212; GPA: 3.92 / 4.00</span>
+            </div>
+            <div class="edu-date">Sep 2023 &#8211; Aug 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="edu-row">
+        <div class="edu-logo"><img src="assets/icons/uoft.png" alt="UofT"></div>
+        <div class="edu-content">
+          <div class="edu-header">
+            <div>
+              <a class="edu-inst" href="https://www.utoronto.ca" target="_blank" rel="noopener">University of Toronto</a><br>
+              <span class="edu-degree">B.A.Sc. in Mechanical Engineering<br>Minor in Robotics &amp; Business &#8212; Senior GPA: 3.94 / 4.00</span>
+            </div>
+            <div class="edu-date">Aug 2017 &#8211; Jun 2023</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ========================================================
+     PUBLICATIONS
+     ======================================================== -->
+<section id="publications" class="page-wrap">
+  <h2 class="section-heading">Publications</h2>
+  <table class="pubs-table" aria-label="Publications">
+    <tbody>
+
+      <!-- 1. IRIS CRV -->
+      <tr class="pub-row">
+        <td class="thumb-td">
+          <div class="pub-thumb has-video">
+            <img src="assets/images/publications/iris_cover.jpg" alt="IRIS cover" loading="lazy">
+            <div class="hover-video">
+              <video src="assets/videos/iris_deployment.m4v" autoplay muted loop playsinline></video>
+            </div>
+          </div>
+        </td>
+        <td class="info-td">
+          <p class="pub-title">IRIS: Learning-Driven Task-Specific Cinema Robot Arm for Visuomotor Motion Control</p>
+          <p class="pub-authors">Q. Cheng, M. Mackay, A. Bereyhi</p>
+          <p class="pub-venue">CRV (Under Review), 2026</p>
+          <p class="pub-desc">IRIS is a low-cost 3D-printed 6-DOF cinema robot that uses goal-conditioned transformer-based imitation learning to autonomously generate smooth, object-aware camera motion.</p>
+          <div class="pub-links">
+            <a class="pill-link" href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener">PDF</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 2. Humanoid Locomotion Survey (carousel) -->
+      <tr class="pub-row">
+        <td class="thumb-td">
+          <div class="pub-thumb">
+            <div class="pub-carousel" data-pub-carousel>
+              <div class="carousel-track">
+                <div class="slide"><img src="assets/images/publications/sr_modeling.jpg" alt="" loading="lazy"></div>
+                <div class="slide"><img src="assets/images/publications/sr_control_flow.jpg" alt="" loading="lazy"></div>
+                <div class="slide"><img src="assets/images/publications/sr_categories.jpg" alt="" loading="lazy"></div>
+                <div class="slide"><img src="assets/images/publications/sr_first_figure.jpg" alt="" loading="lazy"></div>
+                <div class="slide"><img src="assets/images/publications/sr_shift.jpg" alt="" loading="lazy"></div>
+              </div>
+              <button class="nav-btn prev" aria-label="Previous">&#8249;</button>
+              <button class="nav-btn next" aria-label="Next">&#8250;</button>
+            </div>
+          </div>
+        </td>
+        <td class="info-td">
+          <p class="pub-title">Evolution of Humanoid Locomotion Control</p>
+          <p class="pub-authors">Y. Gu, G. Shi, F. Shi, I. Chang, Y. Wang, Q. Cheng, Z. Olkin, I. Lopez-Sanchez, Y. Feng, J. Zhang, A. D. Ames, H. Su, and K. Sreenath</p>
+          <p class="pub-venue">2025</p>
+          <p class="pub-desc">A comprehensive review and perspective of humanoid locomotion control methods, spanning classical to learning-based approaches to emerging trends.</p>
+          <div class="pub-links">
+            <a class="pill-link" href="https://github.com/purdue-tracelab/Humanoid-Locomotion-Survey" target="_blank" rel="noopener">Website</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 3. Certifiably Correct Calibration -->
+      <tr class="pub-row">
+        <td class="thumb-td">
+          <div class="pub-thumb">
+            <img src="assets/images/publications/robot_world.jpg" alt="Robot-World Calibration" loading="lazy">
+          </div>
+        </td>
+        <td class="info-td">
+          <p class="pub-title">A Certifiably Correct Algorithm for Generalized Robot-World and Hand-Eye Calibration</p>
+          <p class="pub-authors">E. Wise, P. Kaveti, Q. Cheng, W. Wang, H. Singh, J. Kelly, D. M. Rosen, and M. Giamou</p>
+          <p class="pub-venue">IJRR, 2025</p>
+          <p class="pub-desc">Certifiably correct calibration achieving globally optimal robot-world and hand-eye alignment under general conditions.</p>
+          <div class="pub-links">
+            <a class="pill-link" href="https://arxiv.org/abs/2507.23045" target="_blank" rel="noopener">ArXiv</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 4. MEng Thesis -->
+      <tr class="pub-row">
+        <td class="thumb-td">
+          <div class="pub-thumb has-video">
+            <img src="assets/images/projects/iris/iris_design.jpg" alt="IRIS design" loading="lazy">
+            <div class="hover-video">
+              <video src="assets/videos/iris_teaser.mp4" autoplay muted loop playsinline></video>
+            </div>
+          </div>
+        </td>
+        <td class="info-td">
+          <p class="pub-title">Master's Thesis: Design and Development of IRIS &#8212; A Low-Cost, 3D-Printed Cinema Robot Arm for Dynamic Shot Automation</p>
+          <p class="pub-authors">Q. Cheng, M. Mackay, A. Bereyhi</p>
+          <p class="pub-venue">Master of Engineering Thesis, University of Toronto, 2025</p>
+          <p class="pub-desc">Low-cost, fully 3D-printed 6-DoF cinema robot arm with FOC actuators, differential wrist, and a vision-conditioned imitation-learning stack in ROS.</p>
+          <div class="pub-links">
+            <a class="pill-link" href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener">PDF</a>
+            <a class="pill-link" href="https://github.com/thejerrycheng/MEng_project" target="_blank" rel="noopener">Code</a>
+            <a class="pill-link" href="https://www.youtube.com/watch?v=tUJCzzHMhkU&list=PL5hrJ0xlpQr8OD-3luKAu9CUlmj_8L284&index=6" target="_blank" rel="noopener">Video</a>
+            <a class="pill-link" href="cinema_robot.html">Website</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 5. VibraForge CHI -->
+      <tr class="pub-row">
+        <td class="thumb-td">
+          <div class="pub-thumb has-video">
+            <img src="assets/images/publications/vibraforge_toolkit.JPG" alt="VibraForge" loading="lazy">
+            <div class="hover-video">
+              <video src="assets/videos/toolkit_unboxing.mp4" autoplay muted loop playsinline></video>
+            </div>
+          </div>
+        </td>
+        <td class="info-td">
+          <p class="pub-title">VibraForge: A Scalable Prototyping Toolkit For Creating Spatialized Vibrotactile Feedback Systems</p>
+          <p class="pub-authors">B. Huang, S. Ren, Y. Luo, Q. Cheng, H. Cai, Y. Sang, M. Sousa, P. H. Dietz, and D. Wigdor</p>
+          <p class="pub-venue">CHI, 2025</p>
+          <p class="pub-desc">An open-source toolkit enabling rapid design and deployment of large-scale vibrotactile feedback systems for spatialized haptic interactions.</p>
+          <div class="pub-links">
+            <a class="pill-link" href="https://dl.acm.org/doi/abs/10.1145/3706598.3714273" target="_blank" rel="noopener">Paper</a>
+            <a class="pill-link" href="https://arxiv.org/abs/2409.17420" target="_blank" rel="noopener">ArXiv</a>
+            <a class="pill-link" href="https://github.com/huangbj16/VibraForge" target="_blank" rel="noopener">Code</a>
+            <a class="pill-link" href="https://www.youtube.com/watch?v=uVssIDGKS-U&list=PL5hrJ0xlpQr9NXqQIKAuI2mUovgFscNgk" target="_blank" rel="noopener">Video</a>
+            <a class="pill-link" href="haptic_toolkit.html">Website</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 6. AeroHaptix RA-L -->
+      <tr class="pub-row">
+        <td class="thumb-td">
+          <div class="pub-thumb has-video">
+            <img src="assets/images/publications/drone_teleop.jpg" alt="AeroHaptix" loading="lazy">
+            <div class="hover-video">
+              <video src="assets/videos/aerohaptix_tease.mp4" autoplay muted loop playsinline></video>
+            </div>
+          </div>
+        </td>
+        <td class="info-td">
+          <p class="pub-title">AeroHaptix: A Wearable Vibrotactile Feedback System for Enhancing Collision Avoidance in UAV Teleoperation</p>
+          <p class="pub-authors">B. Huang, Z. Wang, Q. Cheng, S. Ren, H. Cai, A. Alvarez Valdivia, K. Mahadevan, and D. Wigdor</p>
+          <p class="pub-venue">IEEE RA-L, 2024</p>
+          <p class="pub-desc">Wearable vibrotactile system integrated with UAV teleoperation, leveraging control barrier functions for safe human-drone interaction.</p>
+          <div class="pub-links">
+            <a class="pill-link" href="https://ieeexplore.ieee.org/document/10916921" target="_blank" rel="noopener">Paper</a>
+            <a class="pill-link" href="https://arxiv.org/abs/2407.12105" target="_blank" rel="noopener">ArXiv</a>
+            <a class="pill-link" href="https://github.com/huangbj16/DroneSimulation" target="_blank" rel="noopener">Code</a>
+            <a class="pill-link" href="https://www.youtube.com/watch?v=ezIZrVmYYpI&list=PL5hrJ0xlpQr9NXqQIKAuI2mUovgFscNgk&index=2" target="_blank" rel="noopener">Video</a>
+            <a class="pill-link" href="haptic_toolkit.html">Website</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 7. 2D Radar-Radar AIM -->
+      <tr class="pub-row">
+        <td class="thumb-td">
+          <div class="pub-thumb">
+            <img src="assets/images/publications/2d_radar_radar.jpg" alt="2D Radar-Radar Calibration" loading="lazy">
+          </div>
+        </td>
+        <td class="info-td">
+          <p class="pub-title">Extrinsic Calibration of 2D Millimetre-Wavelength Radar Pairs Using Ego-Velocity Estimates</p>
+          <p class="pub-authors">Q. Cheng, E. Wise, and J. Kelly</p>
+          <p class="pub-venue">IEEE AIM, 2023</p>
+          <p class="pub-desc">Calibration framework for radar-radar pairs leveraging ego-motion cues without overlapping views for improved pose estimation accuracy.</p>
+          <div class="pub-links">
+            <a class="pill-link" href="https://ieeexplore.ieee.org/document/10196187" target="_blank" rel="noopener">Paper</a>
+            <a class="pill-link" href="https://arxiv.org/abs/2302.00660" target="_blank" rel="noopener">ArXiv</a>
+            <a class="pill-link" href="https://www.youtube.com/watch?v=hfXdG6j3sjE" target="_blank" rel="noopener">Video</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 8. 3D Radar-Camera TRO -->
+      <tr class="pub-row">
+        <td class="thumb-td">
+          <div class="pub-thumb">
+            <img src="assets/images/publications/3d_radar_camera.jpg" alt="3D Radar-Camera Calibration" loading="lazy">
+          </div>
+        </td>
+        <td class="info-td">
+          <p class="pub-title">Spatiotemporal Calibration of 3D Millimetre-Wavelength Radar-Camera Pairs</p>
+          <p class="pub-authors">E. Wise, Q. Cheng, and J. Kelly</p>
+          <p class="pub-venue">IEEE TRO, 2022</p>
+          <p class="pub-desc">Continuous-time B-spline calibration for radar-camera systems, outperforming state-of-the-art methods in robustness and precision.</p>
+          <div class="pub-links">
+            <a class="pill-link" href="https://ieeexplore.ieee.org/abstract/document/10256219" target="_blank" rel="noopener">Paper</a>
+            <a class="pill-link" href="https://arxiv.org/abs/2211.01871" target="_blank" rel="noopener">ArXiv</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 9. Fine-Grained Visual Categorization -->
+      <tr class="pub-row">
+        <td class="thumb-td">
+          <div class="pub-thumb">
+            <img src="assets/images/publications/perception_overview.png" alt="Fine-Grained Visual Categorization" loading="lazy">
+          </div>
+        </td>
+        <td class="info-td">
+          <p class="pub-title">Weakly Supervised Semantic and Attentive Data Mixing Augmentation for Fine-Grained Visual Categorization</p>
+          <p class="pub-authors">M. He, Q. Cheng, and G. Qi</p>
+          <p class="pub-venue">IEEE Access, 2022</p>
+          <p class="pub-desc">Weakly supervised attention-guided data augmentation strategy for fine-grained image classification tasks.</p>
+          <div class="pub-links">
+            <a class="pill-link" href="https://ieeexplore.ieee.org/document/9745100" target="_blank" rel="noopener">Paper</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 10. Unicycle Robot SPIE -->
+      <tr class="pub-row">
+        <td class="thumb-td">
+          <div class="pub-thumb">
+            <img src="assets/images/publications/unicycle.jpg" alt="Unicycle Robot" loading="lazy">
+          </div>
+        </td>
+        <td class="info-td">
+          <p class="pub-title">Generative Design for Self-Balancing Unicycle Robot in Additive Manufacturing</p>
+          <p class="pub-authors">J. Chen, Q. Cheng, and M. Han</p>
+          <p class="pub-venue">SPIE ACAIB, 2022</p>
+          <p class="pub-desc">Generative design and additive manufacturing techniques applied to develop a self-balancing unicycle robot prototype.</p>
+          <div class="pub-links">
+            <a class="pill-link" href="https://nanolithography.spiedigitallibrary.org/conference-proceedings-of-spie/12253/122530A/Generative-design-for-self-balancing-unicycle-robot-in-additive-manufacturing/10.1117/12.2639454.short" target="_blank" rel="noopener">Paper</a>
+          </div>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ========================================================
+     NEWS
+     ======================================================== -->
+<section id="news" class="page-wrap">
+  <h2 class="section-heading">News</h2>
+  <div class="news-track">
+
+    <!-- 1. Master's Graduation -->
+    <div class="news-card">
+      <div class="news-thumb">
+        <img src="assets/images/news/master_convocation/grad.jpg" alt="Master's Graduation" loading="lazy">
+      </div>
+      <div class="news-body">
+        <p class="news-date">[11/2025]</p>
+        <p class="news-text">Graduated with a Master's of Engineering degree at the University of Toronto.</p>
+      </div>
+    </div>
+
+    <!-- 2. IROS 2025 carousel -->
+    <div class="news-card">
+      <div class="news-thumb">
+        <div class="carousel-inner" id="nc-iros">
+          <img src="assets/images/news/iros_2025/iros_sign.jpg" alt="IROS 2025" loading="lazy">
+          <img src="assets/images/news/iros_2025/group_pic.jpg" alt="IROS 2025 group" loading="lazy">
+          <img src="assets/images/news/iros_2025/unitree.jpg" alt="IROS 2025 Unitree" loading="lazy">
+        </div>
+      </div>
+      <div class="news-body">
+        <p class="news-date">[10/2025]</p>
+        <p class="news-text">Attended IROS 2025 in Hangzhou, China and presented "AeroHaptix".</p>
+        <div class="carousel-arrows">
+          <button class="carousel-btn" onclick="carouselMove(this,-1)" aria-label="Previous">&#8249;</button>
+          <button class="carousel-btn" onclick="carouselMove(this,1)" aria-label="Next">&#8250;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. CHI 2025 carousel -->
+    <div class="news-card">
+      <div class="news-thumb">
+        <div class="carousel-inner" id="nc-chi">
+          <img src="assets/images/news/chi_2025/1.jpg" alt="CHI 2025" loading="lazy">
+          <img src="assets/images/news/chi_2025/2.jpg" alt="CHI 2025" loading="lazy">
+        </div>
+      </div>
+      <div class="news-body">
+        <p class="news-date">[04/2025]</p>
+        <p class="news-text">Attended CHI 2025 in Yokohama, Japan and presented "VibraForge".</p>
+        <div class="carousel-arrows">
+          <button class="carousel-btn" onclick="carouselMove(this,-1)" aria-label="Previous">&#8249;</button>
+          <button class="carousel-btn" onclick="carouselMove(this,1)" aria-label="Next">&#8250;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. ARIA 2024 carousel -->
+    <div class="news-card">
+      <div class="news-thumb">
+        <div class="carousel-inner" id="nc-aria24">
+          <img src="assets/images/news/aria_2024/1.png" alt="ARIA 2024" loading="lazy">
+          <img src="assets/images/news/aria_2024/2.png" alt="ARIA 2024" loading="lazy">
+          <img src="assets/images/news/aria_2024/3.png" alt="ARIA 2024" loading="lazy">
+          <img src="assets/images/news/aria_2024/4.png" alt="ARIA 2024" loading="lazy">
+        </div>
+      </div>
+      <div class="news-body">
+        <p class="news-date">[11/2024]</p>
+        <p class="news-text">Presented at ARIA 2024 in Toronto with our VibraForge toolkits.</p>
+        <div class="carousel-arrows">
+          <button class="carousel-btn" onclick="carouselMove(this,-1)" aria-label="Previous">&#8249;</button>
+          <button class="carousel-btn" onclick="carouselMove(this,1)" aria-label="Next">&#8250;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. TRC 2024 carousel -->
+    <div class="news-card">
+      <div class="news-thumb">
+        <div class="carousel-inner" id="nc-trc24">
+          <img src="assets/images/news/trc_2024/1.jpg" alt="TRC 2024" loading="lazy">
+          <img src="assets/images/news/trc_2024/2.jpg" alt="TRC 2024" loading="lazy">
+          <img src="assets/images/news/trc_2024/3.jpg" alt="TRC 2024" loading="lazy">
+          <img src="assets/images/news/trc_2024/4.jpg" alt="TRC 2024" loading="lazy">
+        </div>
+      </div>
+      <div class="news-body">
+        <p class="news-date">[07/2024]</p>
+        <p class="news-text">Presented monocular depth estimation work at the Toronto Robotics Conference 2024.</p>
+        <div class="carousel-arrows">
+          <button class="carousel-btn" onclick="carouselMove(this,-1)" aria-label="Previous">&#8249;</button>
+          <button class="carousel-btn" onclick="carouselMove(this,1)" aria-label="Next">&#8250;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. ARIA 2023 carousel -->
+    <div class="news-card">
+      <div class="news-thumb">
+        <div class="carousel-inner" id="nc-aria23">
+          <img src="assets/images/news/aria_2023/1.png" alt="ARIA 2023" loading="lazy">
+          <img src="assets/images/news/aria_2023/2.png" alt="ARIA 2023" loading="lazy">
+          <img src="assets/images/news/aria_2023/3.png" alt="ARIA 2023" loading="lazy">
+          <img src="assets/images/news/aria_2023/4.png" alt="ARIA 2023" loading="lazy">
+          <img src="assets/images/news/aria_2023/5.png" alt="ARIA 2023" loading="lazy">
+        </div>
+      </div>
+      <div class="news-body">
+        <p class="news-date">[11/2023]</p>
+        <p class="news-text">Demonstrated "VibraForge" at ARIA 2023 in Toronto.</p>
+        <div class="carousel-arrows">
+          <button class="carousel-btn" onclick="carouselMove(this,-1)" aria-label="Previous">&#8249;</button>
+          <button class="carousel-btn" onclick="carouselMove(this,1)" aria-label="Next">&#8250;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Undergrad Graduation -->
+    <div class="news-card">
+      <div class="news-thumb">
+        <img src="assets/images/news/undergrad_convocation/convocation.jpg" alt="Undergrad Graduation" loading="lazy">
+      </div>
+      <div class="news-body">
+        <p class="news-date">[06/2023]</p>
+        <p class="news-text">Graduated from the University of Toronto with a Bachelor's of Applied Science.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ========================================================
+     PROJECTS GRID
+     ======================================================== -->
+<section id="projects" class="page-wrap">
+  <h2 class="section-heading">Projects</h2>
+  <div class="projects-grid">
+
+    <!-- NEW: Dexterous Hand -->
+    <div class="project-card">
+      <div class="proj-thumb">
+        <img src="assets/images/projects/iris/iris_design.jpg" alt="Dexterous Hand" loading="lazy">
+      </div>
+      <div class="proj-body">
+        <p class="proj-title">Dexterous Robotic Hand &#8212; FEETECH &amp; DYNAMIXEL + Custom PCB</p>
+        <p class="proj-year">2025</p>
+        <p class="proj-desc">Custom 5-finger dexterous hand actuated by FEETECH and DYNAMIXEL servo arrays with a custom PCB for distributed low-latency control via RS-485; capable of in-hand manipulation and precision grasping.</p>
+        <div class="proj-links"></div>
+      </div>
+    </div>
+
+    <!-- NEW: Apple Vision Pro Teleoperation -->
+    <div class="project-card">
+      <div class="proj-thumb">
+        <img src="assets/images/projects/iris/iris_design.jpg" alt="AVP Teleoperation" loading="lazy">
+      </div>
+      <div class="proj-body">
+        <p class="proj-title">Apple Vision Pro + MediaPipe Whole-Body Teleoperation</p>
+        <p class="proj-year">2025</p>
+        <p class="proj-desc">Real-time 6-DOF robot arm teleoperation using Apple Vision Pro spatial tracking and MediaPipe hand/pose estimation. Gestures and head orientation mapped to end-effector commands with sub-100ms latency.</p>
+        <div class="proj-links"></div>
+      </div>
+    </div>
+
+    <!-- NEW: Ackermann Mobile Robot -->
+    <div class="project-card">
+      <div class="proj-thumb">
+        <img src="assets/images/projects/turtlebot_mapping.jpeg" alt="Ackermann Mobile Robot" loading="lazy">
+      </div>
+      <div class="proj-body">
+        <p class="proj-title">Ackermann Mobile Robot &#8212; EKF Localization + LiDAR SLAM</p>
+        <p class="proj-year">2025</p>
+        <p class="proj-desc">Full-stack autonomous mobile robot on an Ackermann chassis with LiDAR-based SLAM (Cartographer), Extended Kalman Filter state estimation fusing IMU + wheel odometry, and ROS Nav-stack path planning.</p>
+        <div class="proj-links"></div>
+      </div>
+    </div>
+
+    <!-- NEW: MuJoCo / Isaac Lab -->
+    <div class="project-card">
+      <div class="proj-thumb">
+        <img src="assets/images/projects/rl/sac.png" alt="MuJoCo Isaac Lab" loading="lazy">
+      </div>
+      <div class="proj-body">
+        <p class="proj-title">MuJoCo &amp; Isaac Lab RL Simulation Suite</p>
+        <p class="proj-year">2024&#8211;2025</p>
+        <p class="proj-desc">Simulation environments in MuJoCo and NVIDIA Isaac Lab for training locomotion and manipulation policies. Includes custom robot XML/URDF models, domain randomization, and sim-to-real transfer utilities.</p>
+        <div class="proj-links">
+          <a class="pill-link" href="https://github.com/thejerrycheng/MEng_project" target="_blank" rel="noopener">Code</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW: AprilTags + 3D Gaussian Splatting -->
+    <div class="project-card">
+      <div class="proj-thumb">
+        <img src="assets/images/publications/robot_world.jpg" alt="AprilTags Gaussian Splatting" loading="lazy">
+      </div>
+      <div class="proj-body">
+        <p class="proj-title">AprilTags + 3D Gaussian Splatting Scene Representation</p>
+        <p class="proj-year">2025</p>
+        <p class="proj-desc">Scene capture pipeline combining AprilTag-based camera pose initialization with 3D Gaussian Splatting for high-fidelity real-to-sim reconstruction for robot learning data collection.</p>
+        <div class="proj-links"></div>
+      </div>
+    </div>
+
+    <!-- TINTIN Rocket Landing -->
+    <div class="project-card">
+      <div class="proj-thumb has-video">
+        <img src="assets/images/projects/rocket/overview.jpg" alt="TINTIN Rocket" loading="lazy">
+        <div class="hover-video">
+          <video src="assets/videos/1mill_step.mp4" autoplay muted loop playsinline></video>
+        </div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-title">TINTIN: RL-Based Lunar Rocket Landing</p>
+        <p class="proj-year">2025</p>
+        <p class="proj-desc">6-DoF variable-mass lander in MuJoCo with 2-DoF gimbaled thrust; PID baseline vs PPO policy; pose-targeted touchdown and fuel-efficiency metrics.</p>
+        <div class="proj-links">
+          <a class="pill-link" href="assets/pdf/projects/Space_Robot_Course_Project_2_Report-3.pdf" target="_blank" rel="noopener">PDF</a>
+          <a class="pill-link" href="https://youtube.com/shorts/YfmAeDVPjt4?feature=share" target="_blank" rel="noopener">Video</a>
+          <a class="pill-link" href="tintin.html">Website</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monocular Depth -->
+    <div class="project-card">
+      <div class="proj-thumb">
+        <img src="assets/images/publications/mono_dep_pipeline.png" alt="Monocular Depth" loading="lazy">
+      </div>
+      <div class="proj-body">
+        <p class="proj-title">Monocular Depth Estimation for Human-Robot Locomotion</p>
+        <p class="proj-year">2024</p>
+        <p class="proj-desc">Monocular depth pipeline for human-robot walking: ZoeDepth baseline, metric reprojection to 3D point clouds, and iterative RANSAC to extract stair planes and dimensions.</p>
+        <div class="proj-links">
+          <a class="pill-link" href="https://www.researchgate.net/publication/382269581_Monocular_depth_estimation_of_human-robot_walking_environments_using_deep_learning" target="_blank" rel="noopener">PDF</a>
+          <a class="pill-link" href="assets/pdf/projects/mono_est_poster.pdf" target="_blank" rel="noopener">Poster</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLEAR-Net -->
+    <div class="project-card">
+      <div class="proj-thumb has-video">
+        <img src="assets/images/projects/rl/sac.png" alt="CLEAR-Net RL" loading="lazy">
+        <div class="hover-video">
+          <video src="assets/videos/RL_demo.mp4" autoplay muted loop playsinline></video>
+        </div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-title">CLEAR-Net: Cart-Pole Learning with Enhanced Adaptive RL</p>
+        <p class="proj-year">2024</p>
+        <p class="proj-desc">Compared tabular Q-learning, DQN, PPO, and SAC on noisy Cart-Pole; noise-robust wrappers and hyperparameter analysis under disturbances.</p>
+        <div class="proj-links">
+          <a class="pill-link" href="assets/pdf/projects/ECE1508__Project_Progress_Report.pdf" target="_blank" rel="noopener">PDF</a>
+          <a class="pill-link" href="assets/pdf/projects/ECE1508_Project_Poster.pdf" target="_blank" rel="noopener">Poster</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Biped VHC -->
+    <div class="project-card">
+      <div class="proj-thumb has-video">
+        <img src="assets/images/projects/biped_vhc/stair_walking.jpg" alt="Biped VHC" loading="lazy">
+        <div class="hover-video">
+          <video src="assets/videos/walking_stairs.mp4" autoplay muted loop playsinline></video>
+        </div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-title">Geometric Nonlinear Control for Biped Walking</p>
+        <p class="proj-year">2024</p>
+        <p class="proj-desc">Virtual Holonomic Constraints with polynomial gait design, feedback linearization, and terrain generalization to slopes and stairs.</p>
+        <div class="proj-links">
+          <a class="pill-link" href="assets/pdf/projects/ECE1658_final_report-3.pdf" target="_blank" rel="noopener">PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aerospace Localization -->
+    <div class="project-card">
+      <div class="proj-thumb has-video">
+        <img src="assets/images/projects/localization_barfoot/localization.jpg" alt="Localization" loading="lazy">
+        <div class="hover-video">
+          <video src="assets/videos/state_estimation_teaser.mp4" autoplay muted loop playsinline></video>
+        </div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-title">Localization for Aerospace Vehicles (IMU + Stereo)</p>
+        <p class="proj-year">2023</p>
+        <p class="proj-desc">Batch Gauss-Newton fusion with EKF; compared batch vs sliding-window estimators for trajectory accuracy.</p>
+        <div class="proj-links">
+          <a class="pill-link" href="assets/pdf/projects/AER1513_assignment_3-3.pdf" target="_blank" rel="noopener">PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Arduino Mobile Robot -->
+    <div class="project-card">
+      <div class="proj-thumb has-video">
+        <img src="assets/images/projects/arduino/robot.jpg" alt="Arduino Mobile Robot" loading="lazy">
+        <div class="hover-video">
+          <video src="assets/videos/arduino_mobile_robot.mp4" autoplay muted loop playsinline></video>
+        </div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-title">Mobile Robot Mechatronics Design Project</p>
+        <p class="proj-year">2023</p>
+        <p class="proj-desc">3D-printed Arduino-based mobile robot in Fusion 360; localization and obstacle-avoidance for maze navigation in MATLAB; Bluetooth command interface.</p>
+        <div class="proj-links">
+          <a class="pill-link" href="assets/pdf/projects/MIE444 - Group 1 - Final Report.pdf" target="_blank" rel="noopener">PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- LED Cube -->
+    <div class="project-card">
+      <div class="proj-thumb has-video">
+        <img src="assets/images/projects/led_cube/cover.jpg" alt="LED Cube" loading="lazy">
+        <div class="hover-video">
+          <video src="assets/videos/led_cube.mp4" autoplay muted loop playsinline></video>
+        </div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-title">8x8x8 LED Cube Embedded System</p>
+        <p class="proj-year">2022</p>
+        <p class="proj-desc">ESP32-based driver with SPI multiplexing; API control; interactive 3D Snake and Pong demos.</p>
+        <div class="proj-links">
+          <a class="pill-link" href="assets/pdf/projects/MIE438_Final_Report.pdf" target="_blank" rel="noopener">PDF</a>
+          <a class="pill-link" href="https://www.youtube.com/watch?v=cC_NXlKTEwk&list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV" target="_blank" rel="noopener">Video</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Turtlebot2 SLAM -->
+    <div class="project-card">
+      <div class="proj-thumb has-video">
+        <img src="assets/images/projects/turtlebot_mapping.jpeg" alt="Turtlebot SLAM" loading="lazy">
+        <div class="hover-video">
+          <video src="assets/videos/turtlebot_localization.mp4" autoplay muted loop playsinline></video>
+        </div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-title">Turtlebot2 SLAM, Navigation &amp; Perception</p>
+        <p class="proj-year">2022</p>
+        <p class="proj-desc">Gmapping, frontier exploration, PID control; OpenCV perception and a CNN for 7-class emotion recognition.</p>
+        <div class="proj-links">
+          <a class="pill-link" href="assets/pdf/projects/mie443_merged_contest_1_2.pdf" target="_blank" rel="noopener">PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formula Racing Drivetrain -->
+    <div class="project-card">
+      <div class="proj-thumb has-video">
+        <img src="assets/images/projects/formula_car.JPG" alt="Formula Car Drivetrain" loading="lazy">
+        <div class="hover-video">
+          <video src="assets/videos/gearbox.mp4" autoplay muted loop playsinline></video>
+        </div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-title">Electric Formula Racing Car Drive-train</p>
+        <p class="proj-year">2022</p>
+        <p class="proj-desc">Planetary gearbox quadrupling torque at &gt;90% efficiency; kinematics, stress, thermal, and vibration analyses.</p>
+        <div class="proj-links">
+          <a class="pill-link" href="assets/pdf/projects/Capstone_Project-2.pdf" target="_blank" rel="noopener">PDF</a>
+          <a class="pill-link" href="https://www.youtube.com/watch?v=lSZsrUMRv3I&list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV&index=2" target="_blank" rel="noopener">Video</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ========================================================
+     BEYOND THE LAB
+     ======================================================== -->
+<section id="beyond" class="page-wrap">
+  <h2 class="section-heading">Beyond the Lab</h2>
+  <div class="beyond-grid">
+
+    <!-- Startups -->
+    <div class="glass-card beyond-card">
+      <h3>&#128640; Startups</h3>
+      <div class="startup-mini">
+        <div class="startup-item">
+          <h4>Motion Picture Robotics (Cinema Robot Arm)</h4>
+          <p class="startup-meta">Robotics &#183; 2025&#8211;present</p>
+          <p>Low-cost, 3D-printed 6-DoF cinema robot arm with FOC actuators and a vision-conditioned imitation-learning stack for dynamic camera moves. Targeting independent filmmakers and production houses.</p>
+          <div class="pill-links">
+            <a class="pill-link" href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener">Pitch Deck</a>
+            <a class="pill-link" href="https://www.youtube.com/@thejerrycheng" target="_blank" rel="noopener">Demo</a>
+            <a class="pill-link" href="cinema_robot.html">Website</a>
+          </div>
+        </div>
+        <div class="startup-item">
+          <h4>GouPals Inc. &#8212; Cross-border Shopper Network</h4>
+          <p class="startup-meta">Marketplace &#183; 2024&#8211;2025</p>
+          <p>Connects buyers with travelers to source hard-to-find goods across countries, with integrated guidance for purchase, delivery, and verification. Community-driven trust and logistics layer.</p>
+          <div class="pill-links">
+            <a class="pill-link" href="assets/pdf/startups/goupals_onepager.pdf" target="_blank" rel="noopener">One-Pager</a>
+            <a class="pill-link" href="assets/pdf/startups/goupals_pitch.pdf" target="_blank" rel="noopener">Pitch</a>
+            <a class="pill-link" href="https://www.linkedin.com/company/104389511/admin/dashboard/" target="_blank" rel="noopener">LinkedIn</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Movies -->
+    <div class="glass-card beyond-card">
+      <h3>&#127916; Movies &amp; Film</h3>
+      <p>
+        Cinema is a huge inspiration for my work in robot cinematography. I'm drawn to the visual storytelling of directors like
+        <strong>Wong Kar-wai</strong>, <strong>Christopher Nolan</strong>, and <strong>Hayao Miyazaki</strong> &#8212; whose framing, color, and motion
+        directly influence how I think about autonomous camera control. Building IRIS was in many ways a love letter to cinematography.
+      </p>
+      <p>
+        Current favorites: <em>In the Mood for Love</em>, <em>Interstellar</em>, <em>Spirited Away</em>, <em>2001: A Space Odyssey</em>.
+        Always looking for recommendations &#8212; especially films with exceptional cinematography or robot/AI themes.
+      </p>
+    </div>
+
+    <!-- Travels -->
+    <div class="glass-card beyond-card">
+      <h3>&#9992;&#65039; Travels</h3>
+      <p>
+        Robotics has taken me to conferences across the world. Highlights include attending <strong>IROS 2025 in Hangzhou</strong>,
+        <strong>CHI 2025 in Yokohama</strong>, and various workshops across North America. Each trip shapes how I see
+        robotics applied differently across cultures and industries.
+      </p>
+      <p>
+        Outside research travel, I love exploring cities with great architecture and food &#8212; Tokyo, Hong Kong, New York.
+        I try to document every place through photography whenever I can.
+      </p>
+    </div>
+
+    <!-- Photography -->
+    <div class="glass-card beyond-card">
+      <h3>&#128247; Photography</h3>
+      <p>
+        I shoot primarily urban landscapes and robotics documentation &#8212; capturing the intersection of technology and human space.
+        Photography informs my work: framing, depth of field, and motion blur are concepts I think about both behind a lens
+        and when designing camera trajectories for IRIS.
+      </p>
+      <p>
+        Find some of my shots on
+        <a href="https://www.instagram.com/thejerrycheng" target="_blank" rel="noopener">Instagram</a>.
+        Gear: Sony mirrorless + a love for golden-hour light.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ========================================================
+     SKILLS
+     ======================================================== -->
+<section id="skills" class="page-wrap">
+  <h2 class="section-heading">Technical Skills</h2>
+  <div class="glass-card skills-card reveal">
+    <div class="skills-grid">
+      <div class="skill-group">
+        <h4>Software &amp; Tools</h4>
+        <p>Python, C++, MATLAB, ROS, MuJoCo, Isaac Sim, IsaacLab, PyTorch, Docker, Linux</p>
+      </div>
+      <div class="skill-group">
+        <h4>Hardware &amp; Robots</h4>
+        <p>xArm, Unitree, Raspberry Pi, Jetson, Intel RealSense, Arduino, STM32, PND Adam, Booster Robot</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ========================================================
+     FOOTER
+     ======================================================== -->
+<footer>
+  <div class="footer-brand">Personal Website of Jerry (Qilong) Cheng</div>
+  <div class="footer-note">Designed in New York City with love &#8212; in a tiny studio apartment.</div>
+  <div class="footer-divider"></div>
+  <div style="margin-bottom:8px;">
+    Template inspiration from
+    <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank" rel="noopener">here</a>
+  </div>
+  <div>&#169; 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  <nav class="footer-nav" aria-label="Footer navigation">
+    <a href="#about">About</a>
+    <a href="#coffee-chat">Connect</a>
+    <a href="#education">Education</a>
+    <a href="#publications">Publications</a>
+    <a href="#news">News</a>
+    <a href="#projects">Projects</a>
+    <a href="#beyond">Beyond the Lab</a>
+    <a href="#skills">Skills</a>
+    <a href="blog.html">Blog</a>
   </nav>
+</footer>
 
-  <main class="container">
 
-    <header id="about" class="profile-section reveal">
-      <div class="profile-content">
-        <div class="profile-name">
-          Jerry (Qilong) Cheng
-          <span style="font-weight:400; color:var(--text-secondary); font-size:0.8em;">「程启龙」</span>
-        </div>
-        <div class="profile-bio">
-          <p>
-            I’m a <strong>Robotics Ph.D. Student</strong> at <a href="https://engineering.nyu.edu">NYU</a> working on 
-            <span style="color:var(--accent-orange)">RL for humanoid locomotion</span> and dexterous manipulation.
-          </p>
-          <p>
-            Previously at <a href="https://starslab.ca">STARS Lab</a> (State Estimation) and <a href="https://www.dgp.toronto.edu/">DGP Lab</a> (Haptics). 
-            I believe that "those who are truly serious about software should design their own hardware."
-          </p>
-          
-          <div class="social-links">
-            <a href="mailto:qilong.cheng@mail.utoronto.ca" class="social-pill">Email</a>
-            <a href="https://github.com/thejerrycheng" class="social-pill">GitHub</a>
-            <a href="https://scholar.google.com/citations?user=iQuHS3MAAAAJ" class="social-pill">Google Scholar</a>
-            <a href="https://x.com/thejerrycheng" class="social-pill">X / Twitter</a>
-            <a href="https://www.linkedin.com/in/jerry-qilong-cheng-540039163/" class="social-pill">LinkedIn</a>
-          </div>
-        </div>
-      </div>
-      
-      <div class="profile-img">
-        <img src="assets/images/profile_pic.png" alt="Jerry Cheng">
-      </div>
-    </header>
+<!-- ========================================================
+     SCRIPTS
+     ======================================================== -->
+<script src="assets/js/main.js" defer></script>
+<script>
+/* ── News card carousel ───────────────────────────────── */
+window.carouselMove = function(btn, dir) {
+  var body = btn.closest('.news-body');
+  if (!body) return;
+  var thumb = body.previousElementSibling;
+  if (!thumb) return;
+  var inner = thumb.querySelector('.carousel-inner');
+  if (!inner) return;
+  var imgs = inner.querySelectorAll('img');
+  if (imgs.length <= 1) return;
+  var current = inner._idx || 0;
+  var next = (current + dir + imgs.length) % imgs.length;
+  inner.style.transform = 'translateX(-' + (next * 100) + '%)';
+  inner._idx = next;
+};
 
-    <section id="news" class="reveal">
-      <h2 class="section-title">News</h2>
-      <div class="news-scroller">
-        <div class="news-card hover-card">
-          <div class="news-date">Nov 2025</div>
-          <div class="news-text">Graduated with a Master's of Engineering degree from UofT.</div>
-        </div>
-        <div class="news-card hover-card">
-          <div class="news-date">Oct 2025</div>
-          <div class="news-text">Attended <strong>IROS 2025</strong> in Hangzhou and presented "AeroHaptix".</div>
-        </div>
-        <div class="news-card hover-card">
-          <div class="news-date">Apr 2025</div>
-          <div class="news-text">Attended <strong>CHI 2025</strong> in Yokohama presenting "VibraForge".</div>
-        </div>
-        <div class="news-card hover-card">
-          <div class="news-date">July 2024</div>
-          <div class="news-text">Presented monocular depth work at Toronto Robotics Conference.</div>
-        </div>
-      </div>
-    </section>
+/* ── Hover-video play/pause ───────────────────────────── */
+(function(){
+  document.querySelectorAll('.pub-thumb.has-video, .proj-thumb.has-video').forEach(function(thumb){
+    var vid = thumb.querySelector('.hover-video video');
+    if (!vid) return;
+    thumb.addEventListener('mouseenter', function(){ vid.currentTime = 0; vid.play().catch(function(){}); });
+    thumb.addEventListener('mouseleave', function(){ vid.pause(); });
+  });
+})();
 
-    <section id="publications">
-      <h2 class="section-title">Selected Publications</h2>
-      
-      <article class="pub-card reveal hover-card">
-        <div class="pub-media">
-          <img src="assets/images/publications/sr_modeling.jpg" alt="Locomotion Survey">
-          </div>
-        <div class="pub-content">
-          <h3>Evolution of Humanoid Locomotion Control</h3>
-          <div class="pub-meta">
-            Y. Gu, G. Shi, <strong>Q. Cheng</strong>, et al. <br>
-            <em>Under Review (Science Robotics), 2025</em>
-          </div>
-          <p class="pub-desc">
-            A comprehensive review and perspective of humanoid locomotion control methods, spanning classical to learning-based approaches.
-          </p>
-          <div class="link-group">
-            <a href="#">PDF</a>
-            <a href="#">ArXiv</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="pub-card reveal hover-card">
-        <div class="pub-media">
-          <img src="assets/images/projects/iris/iris_design.jpg" alt="IRIS Robot">
-          <video loop muted playsinline src="assets/videos/iris_teaser.mp4"></video>
-        </div>
-        <div class="pub-content">
-          <h3>IRIS: An Intelligent Robotic Imaging System</h3>
-          <div class="pub-meta">
-            <strong>Q. Cheng</strong>, M. Mackay, A. Bereyhi <br>
-            <em>Master's Thesis, University of Toronto, 2025</em>
-          </div>
-          <p class="pub-desc">
-            Design of a low-cost, 3D-printed 6-DoF cinema robot arm with FOC actuators and vision-conditioned imitation learning.
-          </p>
-          <div class="link-group">
-            <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf">PDF</a>
-            <a href="https://github.com/thejerrycheng/MEng_project">Code</a>
-            <a href="https://www.youtube.com/watch?v=tUJCzzHMhkU">Video</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="pub-card reveal hover-card">
-        <div class="pub-media">
-          <img src="assets/images/publications/vibraforge_toolkit.JPG" alt="VibraForge">
-          <video loop muted playsinline src="assets/videos/toolkit_unboxing.mp4"></video>
-        </div>
-        <div class="pub-content">
-          <h3>VibraForge: Scalable Prototyping for Spatialized Vibrotactile Feedback</h3>
-          <div class="pub-meta">
-            B. Huang, S. Ren, <strong>Q. Cheng</strong>, et al. <br>
-            <em>CHI 2025</em>
-          </div>
-          <p class="pub-desc">
-            Open-source toolkit for rapid design of large-scale haptic arrays and feedback systems.
-          </p>
-          <div class="link-group">
-            <a href="https://arxiv.org/abs/2409.17420">Paper</a>
-            <a href="haptic_toolkit.html">Website</a>
-          </div>
-        </div>
-      </article>
-
-    </section>
-
-    <section id="projects">
-      <h2 class="section-title">Selected Projects</h2>
-
-      <article class="pub-card reveal hover-card">
-        <div class="pub-media">
-          <img src="assets/images/projects/rocket/overview.jpg" alt="Rocket Landing">
-          <video loop muted playsinline src="assets/videos/projects/tintin.mp4"></video>
-        </div>
-        <div class="pub-content">
-          <h3>TINTIN: RL-Based Lunar Rocket Landing</h3>
-          <div class="pub-meta">2025 • MuJoCo, PPO, PID</div>
-          <p class="pub-desc">
-            6-DoF variable-mass lander simulation in MuJoCo. Compared PID baselines vs PPO policies for pose-targeted touchdown and fuel efficiency.
-          </p>
-          <div class="link-group">
-            <a href="assets/pdf/projects/Space_Robot_Course_Project_1-6.pdf">Report</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="pub-card reveal hover-card">
-        <div class="pub-media">
-          <img src="assets/images/projects/rl/sac.png" alt="Cart Pole RL">
-          <video loop muted playsinline src="assets/videos/RL_demo.mp4"></video>
-        </div>
-        <div class="pub-content">
-          <h3>CLEAR-Net: Robust Cart-Pole RL</h3>
-          <div class="pub-meta">2024 • PyTorch, RL</div>
-          <p class="pub-desc">
-             Benchmarking Q-learning, DQN, PPO, and SAC on noisy environments. Designed noise-robust wrappers for enhanced stability.
-          </p>
-          <div class="link-group">
-            <a href="assets/pdf/projects/ECE1508_Project_Poster.pdf">Poster</a>
-          </div>
-        </div>
-      </article>
-    </section>
-
-    <section id="experience" class="reveal">
-      <h2 class="section-title">Experience</h2>
-      
-      <div class="exp-item">
-        <div class="exp-left">
-          Center for Robotics and Embodied Intelligence (NYU)
-          <span class="exp-role">Ph.D. Candidate (Fellowship)</span>
-        </div>
-        <div class="exp-right">Sep 2025 – Present</div>
-      </div>
-
-      <div class="exp-item">
-        <div class="exp-left">
-          STARS Lab (University of Toronto)
-          <span class="exp-role">Robotics Researcher</span>
-        </div>
-        <div class="exp-right">Sep 2021 – Aug 2025</div>
-      </div>
-
-      <div class="exp-item">
-        <div class="exp-left">
-          Dynamic Graphics Project Lab
-          <span class="exp-role">HCI Researcher</span>
-        </div>
-        <div class="exp-right">Sep 2022 – Aug 2025</div>
-      </div>
-
-      <div class="exp-item">
-        <div class="exp-left">
-          GouPals Inc.
-          <span class="exp-role">Cofounder & CEO</span>
-        </div>
-        <div class="exp-right">Aug 2024 – Apr 2025</div>
-      </div>
-    </section>
-
-    <footer style="text-align:center; padding: 60px 0; color:var(--text-secondary); font-size:12px;">
-      <p>Last updated: <span id="date-display"></span></p>
-    </footer>
-
-  </main>
-
-  <script>
-    // 1. Reveal on Scroll (Intersection Observer)
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    // 2. Video Hover Logic (Play on hover, Pause on leave)
-    const videos = document.querySelectorAll('video');
-    videos.forEach(video => {
-      video.closest('.pub-card').addEventListener('mouseenter', () => {
-        video.currentTime = 0;
-        video.play();
-      });
-      video.closest('.pub-card').addEventListener('mouseleave', () => {
-        video.pause();
-      });
-    });
-
-    // 3. Date
-    document.getElementById('date-display').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
-  </script>
+/* ── Scroll reveal ────────────────────────────────────── */
+(function(){
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('visible'); });
+    return;
+  }
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(function(el){ obs.observe(el); });
+})();
+</script>
 
 </body>
 </html>

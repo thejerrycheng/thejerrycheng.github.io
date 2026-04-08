@@ -1,0 +1,116 @@
+/* ==========================================================================
+   BASE — Design Tokens, Reset, Typography
+   ========================================================================== */
+
+:root {
+  /* Liquid Glass Tokens */
+  --glass-bg:            rgba(255, 255, 255, 0.62);
+  --glass-bg-strong:     rgba(255, 255, 255, 0.82);
+  --glass-bg-light:      rgba(255, 255, 255, 0.38);
+  --glass-border:        rgba(255, 255, 255, 0.58);
+  --glass-border-subtle: rgba(255, 255, 255, 0.35);
+  --glass-blur:          22px;
+  --glass-blur-heavy:    36px;
+  --glass-blur-light:    12px;
+  --glass-shadow:        0 8px 32px rgba(60, 80, 180, 0.10), 0 2px 8px rgba(0,0,0,0.05);
+  --glass-shadow-hover:  0 16px 48px rgba(60, 80, 180, 0.16), 0 4px 16px rgba(0,0,0,0.08);
+
+  /* Typography */
+  --font-sans:     Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                   "Helvetica Neue", Arial, sans-serif;
+  --font-headings: "Space Grotesk", Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:     "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Colors */
+  --text-primary:   #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-muted:     #86868b;
+  --accent:         #0071e3;
+  --accent-orange:  #FF9500;
+  --hairline:       rgba(0, 0, 0, 0.08);
+
+  /* Layout */
+  --nav-height:  52px;
+  --max-width:   1000px;
+  --section-gap: 56px;
+  --radius-sm:   10px;
+  --radius:      16px;
+  --radius-lg:   22px;
+
+  /* Section titles */
+  --section-title-size:        25px;
+  --section-title-size-mobile: 22px;
+}
+
+/* Global reset */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: transparent;
+  padding-top: calc(var(--nav-height) + 8px);
+}
+
+/* Fixed-nav anchor offset */
+[id] { scroll-margin-top: calc(var(--nav-height) + 16px); }
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-family: var(--font-headings);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+h1 { font-size: 36px; }
+h2 { font-size: var(--section-title-size); margin-bottom: 16px; color: var(--text-primary); }
+h3 { font-size: 17px; font-weight: 600; }
+p  { font-size: 15px; line-height: 1.65; }
+li { font-size: 15px; }
+a  { color: inherit; }
+code, pre { font-family: var(--font-mono); font-size: 0.9em; }
+
+/* Layout wrappers */
+.section-wrapper {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--section-gap) 20px;
+}
+.section-container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Utility */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+.apple-orange  { color: var(--accent-orange); font-weight: 600; }
+.fade-in       { opacity: 0; animation: fadeIn .6s ease forwards; }
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* Social links with pipe separators */
+.social-links {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.social-links a { text-decoration: none; }
+.social-links a + a::before {
+  content: " | ";
+  color: rgba(0, 0, 0, 0.25);
+  margin: 0 8px;
+}

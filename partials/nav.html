@@ -1,0 +1,36 @@
+<!-- partials/nav.html — Navigation bar partial -->
+<nav class="top-nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <div class="brand">
+      <a href="index.html#about" aria-label="Go to About">
+        <span class="dot" aria-hidden="true"></span>
+        About
+      </a>
+    </div>
+    <div class="links" aria-hidden="true">
+      <a class="navlink" href="index.html#coffee-chat">Connect</a>
+      <a class="navlink" href="index.html#education">Education</a>
+      <a class="navlink" href="index.html#publications">Publications</a>
+      <a class="navlink" href="index.html#news">News</a>
+      <a class="navlink" href="index.html#projects">Projects</a>
+      <a class="navlink" href="index.html#startups">Startups</a>
+      <a class="navlink" href="index.html#skills">Skills</a>
+    </div>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">
+      Menu <span aria-hidden="true">▾</span>
+    </button>
+  </div>
+</nav>
+
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+
+<div id="mobileMenu" class="mobile-menu" role="menu" aria-labelledby="menuButton" hidden>
+  <a role="menuitem" href="index.html#education">Education</a>
+  <a role="menuitem" href="index.html#publications">Publications</a>
+  <a role="menuitem" href="index.html#news">News</a>
+  <a role="menuitem" href="index.html#projects">Projects</a>
+  <a role="menuitem" href="index.html#skills">Skills</a>
+  <a role="menuitem" href="index.html#startups">Startups</a>
+  <hr>
+  <a role="menuitem" href="blog.html">Blog</a>
+</div>

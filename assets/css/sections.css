@@ -1,0 +1,254 @@
+/* ==========================================================================
+   SECTIONS — About, Education, Coffee Chat, Startups, Skills
+   ========================================================================== */
+
+/* ---- Generic section table (used across all table-based sections) ---- */
+.pubs-table,
+#about,
+#education,
+#coffee-chat,
+#projects,
+#startups,
+#skills {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  border-spacing: 0;
+}
+
+/* ========================================
+   ABOUT
+   ======================================== */
+#about {
+  margin-bottom: 8px;
+}
+
+#about .name {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 700;
+  font-family: var(--font-headings);
+  margin-bottom: 6px;
+}
+
+#about .chinese-name {
+  font-family: 'Noto Sans SC', 'PingFang SC', sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.2px;
+  display: block;
+  text-align: center;
+  margin-top: 4px;
+}
+
+#about .bio { font-size: 15px; line-height: 1.65; margin-top: 10px; }
+#about .research-title {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--font-headings);
+  margin: 14px 0 4px;
+}
+#about .research-q {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin: 4px 0;
+}
+
+#about .status {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-top: 10px;
+}
+
+/* Profile photo */
+#about .profile-photo {
+  width: 100%;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.7), 0 8px 32px rgba(60,80,180,0.14);
+  display: block;
+}
+
+/* Last updated */
+#last-updated {
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin: 24px 0 6px;
+}
+#last-updated time { opacity: .8; }
+
+/* ========================================
+   COFFEE CHAT
+   ======================================== */
+#coffee-chat {
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+#coffee-chat .card-inner {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  padding: 28px 20px;
+  text-align: center;
+}
+
+#coffee-chat h2 { margin: 0 0 12px; }
+#coffee-chat .sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 22px; }
+
+/* ========================================
+   EDUCATION
+   ======================================== */
+#education {
+  margin-bottom: 32px;
+}
+
+#education h2 { padding: 0; }
+
+.edu-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 10px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur-light)) saturate(1.4);
+  -webkit-backdrop-filter: blur(var(--glass-blur-light)) saturate(1.4);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 2px 12px rgba(60, 80, 180, 0.07);
+  transition: box-shadow .2s ease, background .2s ease;
+}
+.edu-row:hover {
+  background: var(--glass-bg-strong);
+  box-shadow: 0 6px 20px rgba(60, 80, 180, 0.12);
+}
+.edu-row:last-of-type { margin-bottom: 0; }
+
+.edu-logo {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.edu-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+.edu-content { flex: 1; min-width: 0; }
+
+.edu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.edu-degree { font-size: 14px; line-height: 1.45; color: #222; }
+
+.edu-date {
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* ========================================
+   STARTUPS
+   ======================================== */
+#startups {
+  margin-top: 26px;
+}
+#startups h2 { margin-bottom: 18px; }
+
+#startups .grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+#startups .card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--glass-shadow);
+  padding: 20px 22px;
+  box-sizing: border-box;
+  transition: box-shadow .25s ease, background .2s ease, transform .25s ease;
+}
+#startups .card:hover {
+  background: var(--glass-bg-strong);
+  box-shadow: var(--glass-shadow-hover);
+  transform: translateY(-2px);
+}
+
+#startups .card h3 { font-size: 17px; margin-bottom: 5px; }
+#startups .card .meta { font-size: 13.5px; color: var(--text-secondary); margin-bottom: 10px; }
+#startups .card p { font-size: 14.5px; line-height: 1.5; color: #222; margin-bottom: 14px; }
+
+#startups .links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ========================================
+   SKILLS
+   ======================================== */
+#skills {
+  margin-top: 0;
+}
+
+#skills .skills-inner {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--glass-shadow);
+  padding: 22px 24px;
+}
+#skills h2 { margin-bottom: 12px; }
+#skills p { font-size: 14.5px; line-height: 1.6; }
+
+/* ========================================
+   VISITOR TRACKER
+   ======================================== */
+.visitor-widget {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 40px auto;
+  padding: 20px;
+  width: fit-content;
+  min-width: 380px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+}
+.visitor-widget .widget-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+  margin-bottom: 15px;
+}
+.visitor-widget .widget-map {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}

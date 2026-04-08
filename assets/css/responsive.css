@@ -1,0 +1,162 @@
+/* ==========================================================================
+   RESPONSIVE — Mobile & Tablet overrides
+   ========================================================================== */
+
+/* ---- Tablet (≤ 700px) ---- */
+@media (max-width: 700px) {
+
+  /* Typography scale */
+  h1 { font-size: 28px !important; }
+  h2, .section-title { font-size: var(--section-title-size-mobile) !important; }
+
+  /* About: stack profile above text */
+  #about tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  #about tbody tr > td {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px 16px !important;
+    box-sizing: border-box;
+  }
+  #about tbody tr > td:last-child {
+    order: -1;
+    text-align: center;
+  }
+  #about tbody tr > td:last-child img {
+    width: 160px;
+    max-width: 60vw;
+    height: auto;
+    border-radius: 50%;
+    display: block;
+    margin: 0 auto 12px;
+  }
+  #about .name { font-size: 26px !important; }
+
+  /* Education: smaller logo */
+  .edu-logo { width: 44px; height: 44px; }
+  .edu-header { flex-direction: column; gap: 4px; }
+  .edu-date { margin-top: 0; }
+
+  /* Publications: stack cards vertically */
+  #publications.pubs-table .pub-row {
+    display: flex;
+    flex-wrap: wrap;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  #publications.pubs-table .pub-row > td {
+    display: block;
+    width: 100% !important;
+    border: none !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 12px 14px !important;
+  }
+  #publications.pubs-table .pub-row > td:first-child {
+    order: -1;
+    padding: 0 !important;
+    border-radius: 0 !important;
+  }
+  #publications .pub-thumb {
+    width: 100%;
+    height: var(--pub-thumb-h-mobile);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  }
+  #publications .pub-thumb img,
+  #publications .pub-thumb video { border-radius: inherit; }
+  #publications .pub-meta { padding: 12px 14px !important; }
+  #publications .pub-meta .papertitle { font-size: 16px; }
+  #publications .pub-desc { font-size: 13.5px; }
+
+  /* Projects: stack */
+  #projects.pubs-table .proj-row {
+    display: flex;
+    flex-wrap: wrap;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  #projects.pubs-table .proj-row > td {
+    display: block;
+    width: 100% !important;
+    border: none !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+  #projects.pubs-table .proj-row > td.thumb-td { order: -1; padding: 0 !important; }
+  #projects.pubs-table .proj-row > td.info-td  { padding: 12px 14px !important; }
+  .proj-thumb { height: clamp(160px, 52vw, 240px); border-radius: 0; }
+
+  /* Startups: 1 col */
+  #startups .grid { grid-template-columns: 1fr; gap: 14px; }
+
+  /* News card: vertical on very small */
+  .news-card { flex: 0 0 92%; max-width: 92%; }
+
+  /* Carousel arrow btns: hide on mobile (tap-to-advance) */
+  .news-carousel button.prev,
+  .news-carousel button.next { display: none; }
+
+  /* Coffee Chat */
+  #coffee-chat td {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    box-sizing: border-box;
+  }
+
+  /* Skills */
+  #skills td {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    box-sizing: border-box;
+  }
+  #skills p { font-size: 14px; line-height: 1.5; }
+
+  /* Visitor map */
+  .visitor-widget {
+    min-width: 0;
+    width: calc(100% - 32px);
+    margin: 30px auto;
+  }
+
+  /* Footer alignment */
+  .footer-note { text-align: left; }
+}
+
+/* ---- Small phones (≤ 540px) ---- */
+@media (max-width: 540px) {
+  html, body { overflow-x: hidden; }
+
+  /* News card: stack media below text */
+  .news-card { flex-direction: column; flex: 0 0 90%; max-width: 90%; }
+  .news-media { width: 100%; height: 160px; }
+
+  /* model-viewer */
+  model-viewer { height: 280px; }
+}
+
+/* ---- Accessibility: reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  body::before       { animation: none; }
+  .mobile-menu       { transition: none; }
+  .glass-card-hover  { transition: none; }
+  #publications .pub-row,
+  #projects .proj-row { transition: none; }
+}
