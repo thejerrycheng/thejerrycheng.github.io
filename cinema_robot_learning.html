@@ -128,7 +128,7 @@
     <li><a href="cinema_robot_software.html">Software</a></li>
     <li><a href="cinema_robot_sim.html">Simulation</a></li>
     <li><a href="cinema_robot_learning.html" class="on">Learning</a></li>
-    <li><a href="https://arxiv.org/abs/2602.17537" target="_blank" class="ext">Paper ↗</a></li>
+    <li><a href="https://drive.google.com/file/d/1pYMvq1sm4sVB-xYCZR5TFiZI4yi5fUME/view" target="_blank" class="ext">Paper ↗</a></li>
   </ul>
   <button id="hbg" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
@@ -139,7 +139,7 @@
   <a href="cinema_robot_software.html">Software</a>
   <a href="cinema_robot_sim.html">Simulation</a>
   <a href="cinema_robot_learning.html">Learning</a>
-  <a href="https://arxiv.org/abs/2602.17537" target="_blank">Paper ↗</a>
+  <a href="https://drive.google.com/file/d/1pYMvq1sm4sVB-xYCZR5TFiZI4yi5fUME/view" target="_blank">Paper ↗</a>
 </div>
 <div id="nav-spacer"></div>
 
@@ -154,7 +154,7 @@
       </p>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
         <a href="https://github.com/thejerrycheng/IRIS" target="_blank" class="btn btn-solid">Training Code</a>
-        <a href="https://arxiv.org/abs/2602.17537" target="_blank" class="btn btn-outline-d">Read the Paper</a>
+        <a href="https://drive.google.com/file/d/1pYMvq1sm4sVB-xYCZR5TFiZI4yi5fUME/view" target="_blank" class="btn btn-outline-d">Read the Paper</a>
       </div>
     </div>
   </div>
@@ -488,34 +488,40 @@ python policy.py \
   </div>
 </section>
 
-<!-- ROBUSTNESS -->
+<!-- SOTA COMPARISON -->
 <section class="soft">
   <div class="w-lg">
     <div class="fi" style="margin-bottom:36px;">
-      <span class="label">Robustness</span>
-      <h2 class="title">Zero-shot generalization.</h2>
+      <span class="label">System Comparison</span>
+      <h2 class="title">State-of-the-art context.</h2>
       <p class="body" style="margin-top:10px;max-width:520px;">
-        Arm placed outside the training distribution. CVAE Full shows visual recovery toward end of trajectory — generalizing beyond seen initial states.
+        IRIS benchmarked against comparable cinema and research robot arms across cost, DOF, payload, and imitation learning capability.
       </p>
     </div>
 
-    <div class="fi" style="margin-bottom:28px;">
-      <img src="MPR/table.png" alt="Robustness test results" class="img-block">
+    <div class="fi">
+      <img src="MPR/table.png" alt="SOTA robot arm comparison" class="img-block">
+      <p class="caption" style="margin-top:10px;">Comparison against state-of-the-art cinema and research robot arms</p>
+    </div>
+  </div>
+</section>
+
+<!-- ZERO-SHOT GENERALIZATION -->
+<section style="background:var(--bg);">
+  <div class="w-lg">
+    <div class="fi" style="margin-bottom:36px;">
+      <span class="label">Generalization</span>
+      <h2 class="title">Zero-shot initial conditions.</h2>
+      <p class="body" style="margin-top:10px;max-width:520px;">
+        Arm placed outside the training distribution. CVAE Full demonstrates visual recovery toward end of trajectory — generalizing beyond seen starting states.
+      </p>
     </div>
 
-    <div class="g2 fi">
-      <div>
-        <div class="media-wrap">
-          <img src="MPR/no_obstacle-ezgif.com-video-to-gif-converter.gif" alt="No obstacle — successful recovery" loading="lazy">
-        </div>
-        <p class="caption">No obstacle — successful recovery</p>
+    <div class="fi" style="max-width:720px;margin:0 auto;">
+      <div class="media-wrap">
+        <img src="MPR/ScreenRecording2026-05-25at12.30.22AM-ezgif.com-video-to-gif-converter.gif" alt="Zero-shot generalization test" loading="lazy">
       </div>
-      <div>
-        <div class="media-wrap">
-          <img src="MPR/with_obstacle-ezgif.com-video-to-gif-converter.gif" alt="With obstacle" loading="lazy">
-        </div>
-        <p class="caption">With obstacle — visual recovery attempted</p>
-      </div>
+      <p class="caption" style="margin-top:10px;">Policy evaluated on out-of-distribution starting positions</p>
     </div>
   </div>
 </section>
@@ -533,7 +539,7 @@ python policy.py \
       <a href="cinema_robot_software.html">Software</a>
       <a href="cinema_robot_sim.html">Simulation</a>
       <a href="cinema_robot_learning.html">Learning</a>
-      <a href="https://arxiv.org/abs/2602.17537" target="_blank">Paper ↗</a>
+      <a href="https://drive.google.com/file/d/1pYMvq1sm4sVB-xYCZR5TFiZI4yi5fUME/view" target="_blank">Paper ↗</a>
     </div>
     <div class="foot-copy">© 2026 Qilong Cheng, Matthew Mackay, Ali Bereyhi. Released under CC BY-NC 4.0. · CRV 2026</div>
   </div>
