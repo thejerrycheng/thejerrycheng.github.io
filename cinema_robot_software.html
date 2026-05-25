@@ -2,434 +2,492 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>IRIS — Software & Firmware</title>
+  <title>IRIS — Software</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="IRIS software stack: ROS Noetic hardware driver, RS-485 firmware, calibration tools, and teleoperation interfaces.">
+  <meta name="description" content="IRIS software stack: ROS Noetic hardware driver, RS-485 firmware, kinematic calibration, sim-to-real sync, and data collection.">
   <style>
-    :root{--bg:#fafafa;--bg-dark:#07070d;--bg-soft:#f5f5f7;--text:#1d1d1f;--text-muted:#6e6e73;--blue:#0071e3;--blue-h:#0077ed;--border:rgba(0,0,0,0.08);--border-light:rgba(255,255,255,0.11);--radius:18px;--radius-lg:26px;}
-    *,*::before,*::after{box-sizing:border-box;}html{scroll-behavior:smooth;}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
-    #topNav{position:fixed;top:0;left:0;width:100%;height:56px;background:rgba(255,255,255,0.82);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;z-index:9999;transition:transform .35s ease;}
-    #brandTitle{font-size:17px;font-weight:700;color:var(--text);text-decoration:none;letter-spacing:-.02em;}
-    .nav-links{display:flex;gap:22px;list-style:none;margin:0;padding:0;}
-    .nav-links a{font-size:14px;font-weight:500;color:var(--text-muted);text-decoration:none;transition:color .2s;}
-    .nav-links a:hover,.nav-links a.active{color:var(--text);}
-    .nav-links a.nav-ext{color:var(--blue);}
-    #hamburger{display:none;width:36px;height:36px;border-radius:50%;background:var(--bg-soft);border:none;cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:5px;}
-    #hamburger span{display:block;width:18px;height:1.5px;background:var(--text);border-radius:2px;}
-    #mobileMenu{position:fixed;top:0;left:0;width:100%;background:rgba(255,255,255,0.96);backdrop-filter:blur(20px);padding:72px 24px 28px;transform:translateY(-100%);transition:transform .35s cubic-bezier(.25,1,.3,1);z-index:9990;border-bottom:1px solid var(--border);}
-    #mobileMenu a{display:block;padding:14px 0;font-size:17px;font-weight:500;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);}
-    #mobileMenu a:last-child{border-bottom:none;}
-    .nav-spacer{height:56px;}
-    @media(max-width:768px){.nav-links{display:none;}#hamburger{display:flex;}}
-    .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:999px;font-size:15px;font-weight:500;text-decoration:none;border:none;cursor:pointer;transition:all .2s ease;white-space:nowrap;}
-    .btn-primary{background:var(--blue);color:#fff;}
-    .btn-primary:hover{background:var(--blue-h);transform:translateY(-1px);}
-    .btn-ghost{background:rgba(255,255,255,0.11);color:#fff;border:1px solid rgba(255,255,255,0.18);}
-    .btn-ghost:hover{background:rgba(255,255,255,0.2);transform:translateY(-1px);}
-    .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border);}
-    .btn-outline:hover{background:var(--bg-soft);transform:translateY(-1px);}
-    .badge{display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
-    .badge-blue{background:rgba(0,113,227,.12);color:var(--blue);border:1px solid rgba(0,113,227,.2);}
-    .badge-light{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.14);}
-    .badge-green{background:rgba(52,199,89,.12);color:#1a8f35;border:1px solid rgba(52,199,89,.2);}
-    .badge-gray{background:var(--bg-soft);color:var(--text-muted);border:1px solid var(--border);}
-    section{width:100%;padding:clamp(60px,8vw,100px) clamp(20px,4vw,44px);box-sizing:border-box;}
-    .inner{max-width:900px;margin:0 auto;}
-    .inner-wide{max-width:1100px;margin:0 auto;}
-    .s-dark{background:var(--bg-dark);color:#f5f5f7;}
-    .s-light{background:var(--bg);}
-    .s-soft{background:var(--bg-soft);}
-    .kicker{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:14px;display:block;}
-    .kicker-light{color:rgba(255,255,255,.45);}
-    .t-hero{font-size:clamp(38px,6vw,72px);font-weight:700;letter-spacing:-.04em;line-height:1.02;margin:0 0 14px;}
-    .t-h2{font-size:clamp(26px,4vw,44px);font-weight:700;letter-spacing:-.025em;line-height:1.08;margin:0 0 14px;}
-    .t-h3{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:0 0 8px;}
-    .t-body{font-size:17px;line-height:1.65;color:var(--text-muted);margin:0 0 16px;}
-    .t-body-light{color:rgba(255,255,255,.65);}
-    .t-sm{font-size:14px;color:var(--text-muted);line-height:1.5;}
-    .fi{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease;}
-    .fi.v{opacity:1;transform:translateY(0);}
-    .fi[data-d="1"]{transition-delay:.1s;}
-    .fi[data-d="2"]{transition-delay:.2s;}
-    .fi[data-d="3"]{transition-delay:.3s;}
+    :root{--ink:#111118;--ink-2:#6b6b75;--ink-3:#aeaeb8;--bg:#ffffff;--bg-soft:#f5f5f7;--bg-dark:#050509;--blue:#0066cc;--border:rgba(0,0,0,0.08);--border-d:rgba(255,255,255,0.09);--r:14px;--r-lg:20px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--ink);font-family:-apple-system,"SF Pro Text","Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+    #progress{position:fixed;top:0;left:0;width:0%;height:2px;background:var(--blue);z-index:9999;transition:width .1s linear;}
+    #nav{position:fixed;top:0;left:0;width:100%;z-index:900;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(255,255,255,0.75);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border-bottom:1px solid rgba(0,0,0,0.06);transition:transform .32s ease;}
+    #nav a.brand{font-size:15px;font-weight:700;color:var(--ink);text-decoration:none;letter-spacing:-.03em;}
+    #nav ul{display:flex;gap:28px;list-style:none;}
+    #nav ul a{font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;transition:color .2s;}
+    #nav ul a:hover,#nav ul a.on{color:var(--ink);}
+    #nav ul a.ext{color:var(--blue);}
+    #hbg{display:none;width:32px;height:32px;border:none;background:none;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+    #hbg span{display:block;width:18px;height:1.5px;background:var(--ink);border-radius:2px;}
+    #mob{display:none;position:fixed;top:0;left:0;width:100%;z-index:890;background:rgba(255,255,255,.97);backdrop-filter:blur(20px);padding:68px 28px 28px;border-bottom:1px solid var(--border);transform:translateY(-100%);transition:transform .3s cubic-bezier(.25,1,.3,1);}
+    #mob a{display:block;padding:13px 0;font-size:16px;font-weight:500;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--border);}
+    #mob a:last-child{border-bottom:none;}
+    #nav-spacer{height:52px;}
+    @media(max-width:720px){#nav ul{display:none;}#hbg{display:flex;}#mob{display:block;}}
+    section{width:100%;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px);}
+    .w{max-width:880px;margin:0 auto;}
+    .w-lg{max-width:1080px;margin:0 auto;}
+    .dark{background:var(--bg-dark);color:#f0f0f5;}
+    .soft{background:var(--bg-soft);}
+    .label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);display:block;margin-bottom:16px;}
+    .label-d{color:rgba(255,255,255,.4);}
+    h1.page-title{font-size:clamp(40px,7vw,80px);font-weight:700;letter-spacing:-.04em;line-height:1;background:linear-gradient(160deg,#fff 50%,#6b7280);-webkit-background-clip:text;color:transparent;}
+    h2.title{font-size:clamp(24px,3.5vw,40px);font-weight:600;letter-spacing:-.025em;line-height:1.1;}
+    h3.sub{font-size:17px;font-weight:600;letter-spacing:-.01em;}
+    p.body{font-size:16px;line-height:1.72;color:var(--ink-2);}
+    p.body-d{color:rgba(255,255,255,.55);}
+    .rule{height:1px;background:var(--border);margin:44px 0;}
+    .fi{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease;}
+    .fi.v{opacity:1;transform:none;}
+    .fi[data-d="1"]{transition-delay:.08s;}
+    .fi[data-d="2"]{transition-delay:.16s;}
+    .fi[data-d="3"]{transition-delay:.24s;}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:999px;font-size:14px;font-weight:500;text-decoration:none;border:none;cursor:pointer;transition:transform .18s,opacity .18s,background .18s;white-space:nowrap;}
+    .btn:hover{transform:translateY(-1px);}
+    .btn-solid{background:var(--blue);color:#fff;}
+    .btn-solid:hover{opacity:.88;}
+    .btn-outline-d{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.22);}
+    .btn-outline-d:hover{background:rgba(255,255,255,.08);}
+    .btn-outline{background:transparent;color:var(--ink);border:1px solid var(--border);}
+    .btn-outline:hover{background:var(--bg-soft);}
+    .code{background:#0d1117;border-radius:var(--r-lg);padding:20px 24px;font-family:"SF Mono","Fira Code",Menlo,monospace;font-size:13px;line-height:1.75;color:#e6edf3;overflow-x:auto;border:1px solid rgba(255,255,255,.06);}
+    .code .cm{color:#8b949e;}
+    .code .kw{color:#ff7b72;}
+    pre{margin:0;}
+    .split{display:flex;gap:40px;align-items:flex-start;}
+    .split>*{flex:1;}
+    @media(max-width:800px){.split{flex-direction:column;gap:28px;}}
     .g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
     @media(max-width:800px){.g3{grid-template-columns:1fr 1fr;}}
     @media(max-width:560px){.g2,.g3{grid-template-columns:1fr;}}
-    .split{display:flex;gap:50px;align-items:flex-start;}
-    .split>*{flex:1;}
-    @media(max-width:800px){.split{flex-direction:column;gap:32px;}}
-    .divider{height:1px;background:var(--border);margin:44px 0;}
-    .code-block{background:#0d1117;border-radius:14px;padding:20px 24px;font-family:"SF Mono","Fira Code",Menlo,monospace;font-size:13px;line-height:1.7;color:#e6edf3;overflow-x:auto;border:1px solid rgba(255,255,255,.08);text-align:left;margin:0;}
-    .code-block .cm{color:#8b949e;}
-    .code-block .kw{color:#ff7b72;}
-    .code-block .st{color:#a5d6ff;}
-    .code-block .g{color:#3fb950;}
-    pre{margin:0;}
+    .img-block{width:100%;border-radius:var(--r-lg);display:block;border:1px solid var(--border);}
 
-    /* NODE CARD */
-    .node-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;}
-    .node-card h4{font-size:15px;font-weight:600;font-family:"SF Mono",Menlo,monospace;color:var(--blue);margin:0 0 6px;}
-    .node-card p{font-size:13px;color:var(--text-muted);margin:0 0 10px;line-height:1.5;}
+    /* Quick-start steps */
+    .step{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);}
+    .step:last-child{border-bottom:none;}
+    .step-n{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--blue);flex-shrink:0;width:20px;padding-top:3px;}
+    .step-body{flex:1;}
+    .step-body h3{font-size:15px;font-weight:600;margin-bottom:12px;letter-spacing:-.01em;}
+    .step-body p{font-size:13px;color:var(--ink-2);line-height:1.6;margin-top:10px;}
+
+    /* Node tabs */
+    .tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:28px;overflow-x:auto;scrollbar-width:none;}
+    .tab-bar::-webkit-scrollbar{display:none;}
+    .tab-btn{flex-shrink:0;padding:10px 18px;font-size:13px;font-weight:500;color:var(--ink-2);background:none;border:none;border-bottom:1.5px solid transparent;margin-bottom:-1px;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap;}
+    .tab-btn.on{color:var(--ink);border-bottom-color:var(--ink);}
+    .tab-panel{display:none;}
+    .tab-panel.on{display:block;}
+
+    /* Node card */
+    .node-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 22px;}
+    .node-card h4{font-size:13px;font-weight:600;font-family:"SF Mono",Menlo,monospace;color:var(--blue);margin-bottom:6px;}
+    .node-card p{font-size:13px;color:var(--ink-2);line-height:1.55;margin-bottom:12px;}
     .node-tags{display:flex;gap:5px;flex-wrap:wrap;}
+    .tag{display:inline-flex;padding:3px 9px;border-radius:999px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;}
+    .tag-blue{background:rgba(0,102,204,.1);color:var(--blue);border:1px solid rgba(0,102,204,.18);}
+    .tag-gray{background:var(--bg-soft);color:var(--ink-2);border:1px solid var(--border);}
+    .tag-green{background:rgba(52,199,89,.1);color:#1a8f35;border:1px solid rgba(52,199,89,.18);}
 
-    /* STEP */
-    .step{display:flex;gap:16px;margin-bottom:28px;}
-    .step-num{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-    .step-body h4{font-size:16px;font-weight:600;margin:0 0 6px;}
-    .step-body p{font-size:14px;color:var(--text-muted);margin:0 0 10px;}
+    /* Topics table */
+    .topics-table{width:100%;border-collapse:collapse;font-size:13px;}
+    .topics-table th{text-align:left;padding:9px 14px;font-size:10px;font-weight:700;color:var(--ink-2);border-bottom:1px solid var(--border);letter-spacing:.05em;text-transform:uppercase;}
+    .topics-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--ink);}
+    .topics-table tr:last-child td{border-bottom:none;}
+    .topics-table td.topic{font-family:"SF Mono",Menlo,monospace;color:var(--blue);font-size:12px;}
 
-    footer{background:var(--bg-soft);border-top:1px solid var(--border);padding:44px clamp(20px,4vw,44px);}
-    .foot{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;gap:36px;flex-wrap:wrap;}
-    .foot-brand{font-size:17px;font-weight:700;letter-spacing:-.02em;}
+    /* Media */
+    .media-wrap{border-radius:var(--r-lg);overflow:hidden;background:#000;border:1px solid var(--border);}
+    .media-wrap img{width:100%;display:block;}
+    .caption{font-size:11px;color:var(--ink-2);margin-top:8px;letter-spacing:.06em;text-transform:uppercase;text-align:center;}
+
+    footer{background:var(--bg-soft);border-top:1px solid var(--border);padding:40px clamp(20px,5vw,48px);}
+    .foot{max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap;}
+    .foot-brand{font-size:15px;font-weight:700;letter-spacing:-.02em;}
     .foot-links{display:flex;gap:20px;flex-wrap:wrap;}
-    .foot-links a{font-size:14px;color:var(--text-muted);text-decoration:none;}
-    .foot-links a:hover{color:var(--text);}
-    .foot-copy{width:100%;font-size:12px;color:var(--text-muted);margin-top:28px;padding-top:22px;border-top:1px solid var(--border);}
+    .foot-links a{font-size:13px;color:var(--ink-2);text-decoration:none;}
+    .foot-links a:hover{color:var(--ink);}
+    .foot-copy{width:100%;font-size:11px;color:var(--ink-3);margin-top:24px;padding-top:20px;border-top:1px solid var(--border);}
   </style>
 </head>
 <body>
+<div id="progress"></div>
 
-  <header id="topNav">
-    <a href="cinema_robot.html" id="brandTitle">IRIS</a>
-    <ul class="nav-links">
-      <li><a href="cinema_robot.html">Overview</a></li>
-      <li><a href="cinema_robot_hardware.html">Hardware</a></li>
-      <li><a href="cinema_robot_software.html" class="active">Software</a></li>
-      <li><a href="cinema_robot_sim.html">Simulation</a></li>
-      <li><a href="cinema_robot_learning.html">Learning</a></li>
-      <li><a href="https://arxiv.org/abs/2602.17537" target="_blank" class="nav-ext">Paper ↗</a></li>
-    </ul>
-    <button id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
-  </header>
+<nav id="nav">
+  <a href="cinema_robot.html" class="brand">IRIS</a>
+  <ul>
+    <li><a href="cinema_robot.html">Overview</a></li>
+    <li><a href="cinema_robot_hardware.html">Hardware</a></li>
+    <li><a href="cinema_robot_software.html" class="on">Software</a></li>
+    <li><a href="cinema_robot_sim.html">Simulation</a></li>
+    <li><a href="cinema_robot_learning.html">Learning</a></li>
+    <li><a href="https://arxiv.org/abs/2602.17537" target="_blank" class="ext">Paper ↗</a></li>
+  </ul>
+  <button id="hbg" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
 
-  <div id="mobileMenu">
-    <a href="cinema_robot.html">Overview</a>
-    <a href="cinema_robot_hardware.html">Hardware</a>
-    <a href="cinema_robot_software.html">Software</a>
-    <a href="cinema_robot_sim.html">Simulation</a>
-    <a href="cinema_robot_learning.html">Learning</a>
-    <a href="https://arxiv.org/abs/2602.17537" target="_blank">Paper ↗</a>
-  </div>
-  <div class="nav-spacer"></div>
+<div id="mob">
+  <a href="cinema_robot.html">Overview</a>
+  <a href="cinema_robot_hardware.html">Hardware</a>
+  <a href="cinema_robot_software.html">Software</a>
+  <a href="cinema_robot_sim.html">Simulation</a>
+  <a href="cinema_robot_learning.html">Learning</a>
+  <a href="https://arxiv.org/abs/2602.17537" target="_blank">Paper ↗</a>
+</div>
+<div id="nav-spacer"></div>
 
-  <!-- HERO -->
-  <section class="s-dark" style="padding-top:clamp(80px,12vw,120px); text-align:center;">
-    <div class="inner">
-      <div class="fi">
-        <span class="badge badge-light" style="margin-bottom:20px;display:inline-flex;">ROS Noetic · Python · RS-485</span>
-        <h1 class="t-hero" style="background:linear-gradient(160deg,#fff 50%,#6b7280);-webkit-background-clip:text;color:transparent;margin-top:12px;">Software &amp; Firmware</h1>
-        <p class="t-body t-body-light" style="max-width:540px; margin:0 auto 32px;">
-          A full ROS Noetic stack with 200 Hz RS-485 hardware driver, kinematic calibration, sim-to-real sync, and teleoperation interfaces — all open-source.
-        </p>
-        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-          <a href="https://github.com/thejerrycheng/IRIS" target="_blank" class="btn btn-primary">⚙ View on GitHub</a>
-          <a href="cinema_robot_hardware.html" class="btn btn-ghost">🔩 Hardware Docs</a>
-        </div>
+<!-- HERO -->
+<section class="dark" style="padding-top:clamp(80px,12vw,120px);text-align:center;">
+  <div class="w">
+    <div class="fi">
+      <span class="label label-d" style="margin-bottom:20px;">ROS Noetic · RS-485 · Python</span>
+      <h1 class="page-title" style="margin-top:8px;margin-bottom:18px;">Software</h1>
+      <p class="body body-d" style="max-width:480px;margin:0 auto 32px;">
+        A full ROS Noetic stack with 200 Hz RS-485 hardware driver, kinematic calibration, sim-to-real mirror, and teleoperation — open source.
+      </p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <a href="https://github.com/thejerrycheng/IRIS" target="_blank" class="btn btn-solid">View on GitHub</a>
+        <a href="cinema_robot_hardware.html" class="btn btn-outline-d">Hardware Docs</a>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- QUICK START -->
-  <section class="s-light">
-    <div class="inner">
-      <div class="fi" style="margin-bottom:32px;">
-        <span class="kicker">Quick Start</span>
-        <h2 class="t-h2">Up and running in minutes.</h2>
-        <p class="t-body" style="max-width:580px;">Prerequisites: Ubuntu 20.04, ROS Noetic, Python ≥ 3.9. Then follow these steps.</p>
+<!-- QUICK START -->
+<section class="soft">
+  <div class="w">
+    <div class="fi" style="margin-bottom:36px;">
+      <span class="label">Quick Start</span>
+      <h2 class="title">Up in four steps.</h2>
+      <p class="body" style="margin-top:10px;max-width:520px;">Ubuntu 20.04, ROS Noetic, Python ≥ 3.9.</p>
+    </div>
+
+    <div class="fi">
+      <div class="step">
+        <div class="step-n">01</div>
+        <div class="step-body">
+          <h3>Clone &amp; build</h3>
+          <div class="code"><pre>git clone https://github.com/thejerrycheng/IRIS.git
+cd IRIS/meng_ws
+rosdep install --from-paths src --ignore-src -r -y
+catkin_make && source devel/setup.bash</pre></div>
+        </div>
       </div>
 
-      <div class="fi">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-body">
-            <h4>Clone &amp; build the workspace</h4>
-            <div class="code-block"><pre><span class="cm"># Clone the repository</span>
-git clone https://github.com/thejerrycheng/IRIS.git
-cd IRIS/meng_ws
-
-<span class="cm"># Install ROS dependencies</span>
-rosdep install --from-paths src --ignore-src -r -y
-
-<span class="cm"># Build</span>
-catkin_make
-source devel/setup.bash</pre></div>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-body">
-            <h4>Configure RS-485 serial port</h4>
-            <div class="code-block"><pre><span class="cm"># Find your RS-485 hub device</span>
-ls /dev/ttyUSB*
-
-<span class="cm"># Set permissions</span>
+      <div class="step">
+        <div class="step-n">02</div>
+        <div class="step-body">
+          <h3>Configure RS-485</h3>
+          <div class="code"><pre>ls /dev/ttyUSB*
 sudo usermod -aG dialout $USER
 sudo chmod 666 /dev/ttyUSB0</pre></div>
-          </div>
         </div>
+      </div>
 
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-body">
-            <h4>Launch the hardware driver</h4>
-            <div class="code-block"><pre><span class="cm"># Start the full hardware stack</span>
-roslaunch unitree_arm_ros iris_bringup.launch
-
-<span class="cm"># Verify joint states are publishing</span>
+      <div class="step">
+        <div class="step-n">03</div>
+        <div class="step-body">
+          <h3>Launch hardware driver</h3>
+          <div class="code"><pre>roslaunch unitree_arm_ros iris_bringup.launch
+<span class="cm"># verify</span>
 rostopic echo /joint_states</pre></div>
-          </div>
         </div>
+      </div>
 
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-body">
-            <h4>Run calibration (first time only)</h4>
-            <div class="code-block"><pre><span class="cm"># Home position calibration</span>
-rosrun unitree_arm_ros calibrate_home_state.py
-
-<span class="cm"># Joint-space kinematic calibration</span>
+      <div class="step">
+        <div class="step-n">04</div>
+        <div class="step-body">
+          <h3>Calibrate (first time)</h3>
+          <div class="code"><pre>rosrun unitree_arm_ros calibrate_home_state.py
 rosrun unitree_arm_ros calibrate_joint_states.py</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROS STACK -->
+<section style="background:var(--bg);">
+  <div class="w-lg">
+    <div class="fi" style="margin-bottom:36px;">
+      <span class="label">ROS Stack</span>
+      <h2 class="title">Node architecture.</h2>
+      <p class="body" style="margin-top:10px;max-width:520px;">
+        All components live in <code style="font-family:'SF Mono',Menlo,monospace;font-size:0.9em;">unitree_arm_ros</code>. The hardware driver is the core — everything else communicates over standard ROS topics.
+      </p>
+    </div>
+
+    <div class="fi" style="margin-bottom:36px;">
+      <img src="MPR/ros_nodes.png" alt="IRIS ROS node graph" class="img-block">
+      <p class="caption" style="margin-top:10px;">IRIS ROS node communication graph</p>
+    </div>
+
+    <!-- Node tabs -->
+    <div class="fi">
+      <div class="tab-bar">
+        <button class="tab-btn on" data-tab="tab-core">Core</button>
+        <button class="tab-btn" data-tab="tab-teleop">Teleop</button>
+        <button class="tab-btn" data-tab="tab-tools">Tools</button>
+      </div>
+
+      <div id="tab-core" class="tab-panel on">
+        <div class="g2">
+          <div class="node-card">
+            <h4>iris_hw_node.py</h4>
+            <p>Hardware driver. 200 Hz RS-485 loop, publishes <code>/joint_states</code>, subscribes <code>/arm/command</code>.</p>
+            <div class="node-tags">
+              <span class="tag tag-blue">200 Hz</span>
+              <span class="tag tag-gray">RS-485</span>
+            </div>
+          </div>
+          <div class="node-card">
+            <h4>calibrate_joint_states.py</h4>
+            <p>Applies encoder offsets from <code>calibration.yaml</code> and handles differential wrist coupling for joints 5 &amp; 6.</p>
+            <div class="node-tags">
+              <span class="tag tag-gray">Calibration</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-teleop" class="tab-panel">
+        <div class="g2">
+          <div class="node-card">
+            <h4>keyboard_ik_teleop.py</h4>
+            <p>IK-based keyboard control. Move end-effector in Cartesian space with WASD + arrow keys.</p>
+            <div class="node-tags">
+              <span class="tag tag-blue">IK</span>
+              <span class="tag tag-gray">Cartesian</span>
+            </div>
+          </div>
+          <div class="node-card">
+            <h4>keyboard_teleop.py</h4>
+            <p>Joint-space keyboard teleoperation. Direct joint angle control for calibration and collision testing.</p>
+            <div class="node-tags">
+              <span class="tag tag-gray">FK</span>
+              <span class="tag tag-gray">Joint Space</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-tools" class="tab-panel">
+        <div class="g2">
+          <div class="node-card">
+            <h4>mujoco_visualizer.py</h4>
+            <p>Streams real joint states into MuJoCo in real time. Enables live sim–real visual comparison during operation.</p>
+            <div class="node-tags">
+              <span class="tag tag-green">Sim Mirror</span>
+            </div>
+          </div>
+          <div class="node-card">
+            <h4>teach_and_repeat.py</h4>
+            <p>Kinesthetic teaching. Guide the arm by hand to record a trajectory, then replay at any speed.</p>
+            <div class="node-tags">
+              <span class="tag tag-blue">Kinesthetic</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- ROS STACK -->
-  <section class="s-soft">
-    <div class="inner-wide">
-      <div class="fi" style="margin-bottom:36px;">
-        <span class="kicker">ROS Stack</span>
-        <h2 class="t-h2">Node Architecture</h2>
-        <p class="t-body" style="max-width:580px;">
-          All components live in the <code>unitree_arm_ros</code> package. The hardware driver is the core node — everything else communicates over standard ROS topics.
-        </p>
-      </div>
-
-      <div class="fi" style="margin-bottom:28px;">
-        <img src="MPR/ros_nodes.png" alt="IRIS ROS Node Architecture" style="width:100%;border-radius:var(--radius-lg);display:block;border:1px solid var(--border);">
-        <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px;">IRIS ROS node communication graph</p>
-      </div>
-
-      <div class="g3 fi">
-        <div class="node-card">
-          <h4>iris_hw_node.py</h4>
-          <p>Core hardware driver. Runs at 200 Hz via RS-485, publishes joint states, subscribes to joint commands.</p>
-          <div class="node-tags">
-            <span class="badge badge-blue">200 Hz</span>
-            <span class="badge badge-gray">RS-485</span>
-          </div>
-        </div>
-        <div class="node-card">
-          <h4>calibrate_joint_states.py</h4>
-          <p>Applies encoder offsets from <code>calibration.yaml</code>. Handles differential wrist mapping for joints 5 &amp; 6.</p>
-          <div class="node-tags">
-            <span class="badge badge-gray">Calibration</span>
-          </div>
-        </div>
-        <div class="node-card">
-          <h4>mujoco_visualizer.py</h4>
-          <p>Streams real hardware joint states into MuJoCo in real-time for visual verification. Enables live sim–real comparison during operation.</p>
-          <div class="node-tags">
-            <span class="badge badge-green">Sim-to-Real</span>
-          </div>
-        </div>
-        <div class="node-card">
-          <h4>teach_and_repeat.py</h4>
-          <p>Kinesthetic teaching interface. Record a trajectory by physically guiding the arm, then replay at any speed.</p>
-          <div class="node-tags">
-            <span class="badge badge-blue">Kinesthetic</span>
-          </div>
-        </div>
-        <div class="node-card">
-          <h4>keyboard_ik_teleop.py</h4>
-          <p>IK-based keyboard teleoperation. Control end-effector position in Cartesian space with WASD + arrow keys.</p>
-          <div class="node-tags">
-            <span class="badge badge-gray">Teleop</span>
-            <span class="badge badge-gray">IK</span>
-          </div>
-        </div>
-        <div class="node-card">
-          <h4>keyboard_teleop.py</h4>
-          <p>Joint-space keyboard teleop for direct joint angle control. Useful for calibration and collision testing.</p>
-          <div class="node-tags">
-            <span class="badge badge-gray">Teleop</span>
-            <span class="badge badge-gray">FK</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="fi">
-        <h3 class="t-h3">Key ROS Topics &amp; Services</h3>
-        <div style="margin-top:16px; overflow-x:auto;">
-          <table style="width:100%;border-collapse:collapse;font-size:14px;font-family:'SF Mono',Menlo,monospace;">
-            <thead>
-              <tr style="border-bottom:1px solid var(--border);">
-                <th style="text-align:left;padding:10px 12px;color:var(--text-muted);font-size:12px;">Topic / Service</th>
-                <th style="text-align:left;padding:10px 12px;color:var(--text-muted);font-size:12px;">Type</th>
-                <th style="text-align:left;padding:10px 12px;color:var(--text-muted);font-size:12px;">Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 12px;color:var(--blue);">/joint_states</td><td style="padding:11px 12px;">sensor_msgs/JointState</td><td style="padding:11px 12px;color:var(--text-muted);">Raw encoder positions, velocities, torques @ 200 Hz</td></tr>
-              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 12px;color:var(--blue);">/joint_states_calibrated</td><td style="padding:11px 12px;">sensor_msgs/JointState</td><td style="padding:11px 12px;color:var(--text-muted);">Calibrated joint states with encoder offsets applied</td></tr>
-              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 12px;color:var(--blue);">/arm/command</td><td style="padding:11px 12px;">sensor_msgs/JointState</td><td style="padding:11px 12px;color:var(--text-muted);">Target joint positions, velocities, feed-forward torques</td></tr>
-              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 12px;color:var(--blue);">/camera/color/image_raw</td><td style="padding:11px 12px;">sensor_msgs/Image</td><td style="padding:11px 12px;color:var(--text-muted);">RGB frames from RealSense D435</td></tr>
-              <tr><td style="padding:11px 12px;color:var(--blue);">/camera/depth/image_rect_raw</td><td style="padding:11px 12px;">sensor_msgs/Image</td><td style="padding:11px 12px;color:var(--text-muted);">Depth frames from RealSense D435</td></tr>
-            </tbody>
-          </table>
-        </div>
+    <!-- Topics table -->
+    <div class="fi" style="margin-top:48px;">
+      <h3 class="sub" style="margin-bottom:18px;">Key Topics</h3>
+      <div style="overflow-x:auto;">
+        <table class="topics-table">
+          <thead>
+            <tr>
+              <th>Topic</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="topic">/joint_states</td><td>sensor_msgs/JointState</td><td style="color:var(--ink-2);">Raw encoder positions, velocities, torques @ 200 Hz</td></tr>
+            <tr><td class="topic">/joint_states_calibrated</td><td>sensor_msgs/JointState</td><td style="color:var(--ink-2);">Calibrated joint states with offsets applied</td></tr>
+            <tr><td class="topic">/arm/command</td><td>sensor_msgs/JointState</td><td style="color:var(--ink-2);">Target joint positions, velocities, feed-forward torques</td></tr>
+            <tr><td class="topic">/camera/color/image_raw</td><td>sensor_msgs/Image</td><td style="color:var(--ink-2);">RGB frames from RealSense D435</td></tr>
+            <tr><td class="topic">/camera/depth/image_rect_raw</td><td>sensor_msgs/Image</td><td style="color:var(--ink-2);">Depth frames from RealSense D435</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- SIM-REAL MIRROR -->
-  <section class="s-light">
-    <div class="inner">
-      <div class="fi" style="margin-bottom:28px;">
-        <span class="kicker">Sim–Real Sync</span>
-        <h2 class="t-h2">Real → MuJoCo Live Mirror</h2>
-        <p class="t-body" style="max-width:560px;">
-          Stream real robot joint states directly into the MuJoCo model for real-time visual verification. Any motion on the physical arm is mirrored instantly in simulation.
-        </p>
-      </div>
-      <div class="g2 fi">
-        <div>
-          <div class="code-block"><pre><span class="cm"># Launch hardware driver first</span>
+<!-- SIM–REAL SYNC -->
+<section class="dark">
+  <div class="w">
+    <div class="fi" style="margin-bottom:36px;">
+      <span class="label label-d">Sim–Real Sync</span>
+      <h2 class="title" style="color:#f0f0f5;">Real → MuJoCo mirror.</h2>
+      <p class="body body-d" style="margin-top:10px;max-width:500px;">
+        Any motion on the physical arm is reflected instantly in the MuJoCo viewer. Use it to validate calibration before running autonomy.
+      </p>
+    </div>
+    <div class="split fi">
+      <div>
+        <div class="code"><pre><span class="cm"># 1. Start hardware driver</span>
 roslaunch unitree_arm_ros iris_bringup.launch
 
-<span class="cm"># Then start the MuJoCo mirror</span>
+<span class="cm"># 2. Open MuJoCo mirror</span>
 rosrun unitree_arm_ros mujoco_visualizer_calibrated.py</pre></div>
-          <p class="t-sm" style="margin-top:12px;">Requires calibrated joint states on <code>/joint_states_calibrated</code>. The MuJoCo viewer opens automatically and mirrors the real robot in real-time.</p>
-        </div>
-        <div>
-          <img src="MPR/sim2real.png" alt="IRIS Sim-to-Real mirror" style="width:100%;border-radius:var(--radius-lg);border:1px solid var(--border);display:block;">
-        </div>
+        <p style="font-size:13px;color:rgba(255,255,255,.4);margin-top:12px;">Requires calibrated states on <code>/joint_states_calibrated</code>.</p>
+      </div>
+      <div>
+        <img src="MPR/sim2real.png" alt="IRIS sim-to-real mirror" style="width:100%;border-radius:var(--r-lg);border:1px solid rgba(255,255,255,.08);display:block;">
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- CALIBRATION -->
-  <section class="s-light">
-    <div class="inner">
-      <div class="fi" style="margin-bottom:32px;">
-        <span class="kicker">Calibration</span>
-        <h2 class="t-h2">Kinematic Calibration Pipeline</h2>
-        <p class="t-body" style="max-width:580px;">
-          Calibration establishes the mapping from encoder counts to joint angles and corrects for the differential wrist coupling. Results are stored in <code>calibration.yaml</code>.
-        </p>
+<!-- CALIBRATION -->
+<section class="soft">
+  <div class="w">
+    <div class="fi" style="margin-bottom:36px;">
+      <span class="label">Calibration</span>
+      <h2 class="title">Kinematic calibration pipeline.</h2>
+      <p class="body" style="margin-top:10px;max-width:520px;">
+        Maps encoder counts to joint angles and corrects differential wrist coupling. Results stored in <code style="font-family:'SF Mono',Menlo,monospace;font-size:0.9em;">calibration.yaml</code>.
+      </p>
+    </div>
+
+    <div class="g2 fi">
+      <div>
+        <h3 class="sub" style="margin-bottom:12px;">Step 1 — Home position</h3>
+        <div class="code"><pre>rosrun unitree_arm_ros calibrate_home_state.py
+<span class="cm"># Move to zero pose → press Enter to record</span></pre></div>
+        <p style="font-size:13px;color:var(--ink-2);margin-top:10px;line-height:1.6;">Records absolute encoder values at mechanical home. Run once after assembly.</p>
       </div>
-
-      <div class="g2 fi">
-        <div>
-          <h3 class="t-h3" style="font-size:17px; margin-bottom:10px;">Step 1 — Home Position</h3>
-          <div class="code-block"><pre>rosrun unitree_arm_ros calibrate_home_state.py
-<span class="cm"># Move arm to known zero pose
-# Press Enter to record encoder zero</span></pre></div>
-          <p class="t-sm" style="margin-top:12px;">Records absolute encoder values at the mechanical home position. Run once after physical assembly.</p>
-        </div>
-        <div>
-          <h3 class="t-h3" style="font-size:17px; margin-bottom:10px;">Step 2 — Joint Calibration</h3>
-          <div class="code-block"><pre>rosrun unitree_arm_ros calibrate_joint_states.py
-<span class="cm"># Applies offsets from calibration.yaml
-# Handles differential wrist (joints 5+6)</span></pre></div>
-          <p class="t-sm" style="margin-top:12px;">The differential wrist (joints 5 &amp; 6) requires special coupling correction. The calibration script handles this automatically.</p>
-        </div>
+      <div>
+        <h3 class="sub" style="margin-bottom:12px;">Step 2 — Joint calibration</h3>
+        <div class="code"><pre>rosrun unitree_arm_ros calibrate_joint_states.py
+<span class="cm"># Applies offsets, corrects differential wrist</span></pre></div>
+        <p style="font-size:13px;color:var(--ink-2);margin-top:10px;line-height:1.6;">The differential wrist (joints 5 &amp; 6) requires coupling correction — handled automatically.</p>
       </div>
+    </div>
 
-      <div class="fi" style="margin-top:28px;">
-        <h3 class="t-h3" style="font-size:17px; margin-bottom:10px;">Calibration Config</h3>
-        <div class="code-block"><pre><span class="cm"># meng_ws/src/unitree_arm_ros/config/calibration.yaml</span>
+    <div class="fi" style="margin-top:32px;">
+      <div class="code"><pre><span class="cm"># config/calibration.yaml</span>
 joint_offsets: [0.0, -1.5708, 1.5708, 0.0, 0.0, 0.0]  <span class="cm"># radians</span>
 differential_wrist:
   joint5_gain: 0.5
   joint6_gain: 0.5
 home_encoder_counts: [2048, 2048, 2048, 2048, 2048, 2048]</pre></div>
-      </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- DATA RECORDING -->
-  <section class="s-soft">
-    <div class="inner">
-      <div class="fi" style="margin-bottom:32px;">
-        <span class="kicker">Data Collection</span>
-        <h2 class="t-h2">Recording Demonstrations</h2>
-        <p class="t-body" style="max-width:580px;">
-          Record kinesthetic demonstrations as ROS bags. The bag recorder captures synchronized joint states, RGB, and depth at each timestep.
-        </p>
-      </div>
+<!-- DATA COLLECTION -->
+<section style="background:var(--bg);">
+  <div class="w">
+    <div class="fi" style="margin-bottom:36px;">
+      <span class="label">Data Collection</span>
+      <h2 class="title">Recording demonstrations.</h2>
+      <p class="body" style="margin-top:10px;max-width:520px;">
+        Synchronized joint states, RGB, and depth captured as ROS bags. Episodes are extracted and structured for training.
+      </p>
+    </div>
 
-      <div class="fi">
-        <div class="code-block"><pre><span class="cm"># Record a demonstration episode</span>
+    <div class="fi" style="margin-bottom:32px;">
+      <div class="code"><pre><span class="cm"># Record a demonstration</span>
 bash ~/IRIS/meng_ws/record_data.sh -O EPISODE_NAME
-
-<span class="cm"># Output saved to:
-# /media/jerry/SSD/rosbag_data/demo_YYYYMMDD_HHMMSS.bag</span>
 
 <span class="cm"># Process bag → episode format</span>
 cd ~/IRIS/bag_reader/scripts
 python process_rosbag.py \
   --bag /path/to/demo.bag \
   --out /path/to/processed_data</pre></div>
-
-        <p class="t-sm" style="margin-top:16px;">
-          Processed episodes are stored in a standard format:
-          <code>episode_XXXX/rgb/</code>, <code>episode_XXXX/depth/</code>, <code>episode_XXXX/robot/joint_states.csv</code>.
-          See the <a href="cinema_robot_learning.html" style="color:var(--blue);">Learning page</a> for dataset details.
-        </p>
-      </div>
-
-      <div class="g2 fi" style="margin-top:32px;">
-        <div>
-          <div style="border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:#000;">
-            <img src="MPR/data_collection.gif" alt="Kinesthetic data collection" style="width:100%;display:block;" loading="lazy">
-          </div>
-          <p class="t-sm" style="text-align:center;margin-top:8px;">✋ Kinesthetic demonstration recording</p>
-        </div>
-        <div>
-          <div style="border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:#000;">
-            <img src="MPR/semi_auto_data.gif" alt="Semi-autonomous data collection" style="width:100%;display:block;" loading="lazy">
-          </div>
-          <p class="t-sm" style="text-align:center;margin-top:8px;">🤖 Semi-autonomous collection mode</p>
-        </div>
-      </div>
     </div>
-  </section>
 
-  <footer>
-    <div class="foot">
+    <div class="g2 fi">
       <div>
-        <div class="foot-brand">IRIS</div>
-        <div class="t-sm" style="margin-top:5px;">Open-Source Cinema Robot</div>
-        <div class="t-sm" style="margin-top:6px;"><a href="mailto:qc1007@nyu.edu" style="color:var(--blue);text-decoration:none;">qc1007@nyu.edu</a></div>
+        <div class="media-wrap">
+          <img src="MPR/data_collection.gif" alt="Kinesthetic data collection" loading="lazy">
+        </div>
+        <p class="caption">Kinesthetic recording</p>
       </div>
-      <div class="foot-links">
-        <a href="cinema_robot.html">Overview</a>
-        <a href="cinema_robot_hardware.html">Hardware</a>
-        <a href="cinema_robot_software.html">Software</a>
-        <a href="cinema_robot_sim.html">Simulation</a>
-        <a href="cinema_robot_learning.html">Learning</a>
-        <a href="https://arxiv.org/abs/2602.17537" target="_blank">Paper ↗</a>
+      <div>
+        <div class="media-wrap">
+          <img src="MPR/semi_auto_data.gif" alt="Semi-autonomous collection" loading="lazy">
+        </div>
+        <p class="caption">Semi-autonomous mode</p>
       </div>
-      <div class="foot-copy">© 2026 Qilong Cheng, Matthew Mackay, Ali Bereyhi. Released under CC BY-NC 4.0. · CRV 2026</div>
     </div>
-  </footer>
 
-  <script>
-    const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v');obs.unobserve(e.target);}}),{threshold:.1});
-    document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
-    document.querySelectorAll('section:first-of-type .fi').forEach((el,i)=>setTimeout(()=>el.classList.add('v'),i*130));
-    let ly=0;const nav=document.getElementById('topNav');
-    window.addEventListener('scroll',()=>{const y=window.scrollY;nav.style.transform=(y>100&&y>ly)?'translateY(-100%)':'translateY(0)';ly=y;},{passive:true});
-    const hbg=document.getElementById('hamburger'),mob=document.getElementById('mobileMenu');let mo=false;
-    hbg.addEventListener('click',()=>{mo=!mo;mob.style.transform=mo?'translateY(0)':'translateY(-100%)';});
-    document.addEventListener('click',e=>{if(mo&&!mob.contains(e.target)&&!hbg.contains(e.target)){mo=false;mob.style.transform='translateY(-100%)';}});
-  </script>
+    <div class="fi" style="margin-top:32px;background:var(--bg-soft);border-radius:var(--r-lg);padding:22px 26px;">
+      <p style="font-size:13px;color:var(--ink-2);line-height:1.6;">
+        Processed episodes: <code style="font-family:'SF Mono',Menlo,monospace;">episode_XXXX/rgb/</code>, <code style="font-family:'SF Mono',Menlo,monospace;">episode_XXXX/depth/</code>, <code style="font-family:'SF Mono',Menlo,monospace;">episode_XXXX/robot/joint_states.csv</code>.
+        See the <a href="cinema_robot_learning.html" style="color:var(--blue);text-decoration:none;">Learning page</a> for dataset details.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot">
+    <div>
+      <div class="foot-brand">IRIS</div>
+      <div style="font-size:13px;color:var(--ink-2);margin-top:4px;">Open-Source Cinema Robot</div>
+      <div style="margin-top:6px;"><a href="mailto:qc1007@nyu.edu" style="font-size:13px;color:var(--blue);text-decoration:none;">qc1007@nyu.edu</a></div>
+    </div>
+    <div class="foot-links">
+      <a href="cinema_robot.html">Overview</a>
+      <a href="cinema_robot_hardware.html">Hardware</a>
+      <a href="cinema_robot_software.html">Software</a>
+      <a href="cinema_robot_sim.html">Simulation</a>
+      <a href="cinema_robot_learning.html">Learning</a>
+      <a href="https://arxiv.org/abs/2602.17537" target="_blank">Paper ↗</a>
+    </div>
+    <div class="foot-copy">© 2026 Qilong Cheng, Matthew Mackay, Ali Bereyhi. Released under CC BY-NC 4.0. · CRV 2026</div>
+  </div>
+</footer>
+
+<script>
+  // Progress bar
+  const prog = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    prog.style.width = (window.scrollY / max * 100) + '%';
+  }, {passive: true});
+
+  // Nav hide/show
+  let lastY = 0;
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    nav.style.transform = (y > 80 && y > lastY) ? 'translateY(-100%)' : 'translateY(0)';
+    lastY = y;
+  }, {passive: true});
+
+  // Hamburger
+  const hbg = document.getElementById('hbg'), mob = document.getElementById('mob');
+  let open = false;
+  hbg.addEventListener('click', () => { open = !open; mob.style.transform = open ? 'translateY(0)' : 'translateY(-100%)'; });
+  document.addEventListener('click', e => { if (open && !mob.contains(e.target) && !hbg.contains(e.target)) { open = false; mob.style.transform = 'translateY(-100%)'; } });
+
+  // Fade-in
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('v'); observer.unobserve(e.target); } });
+  }, {threshold: 0.08});
+  document.querySelectorAll('.fi').forEach(el => observer.observe(el));
+  // Trigger hero immediately
+  document.querySelectorAll('section:first-of-type .fi').forEach((el, i) => setTimeout(() => el.classList.add('v'), i * 100));
+
+  // Node tabs
+  document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const bar = btn.closest('.tab-bar');
+      bar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      const section = btn.closest('section,div');
+      // find panel container (same parent)
+      const container = bar.parentElement;
+      container.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('on'));
+      document.getElementById(btn.dataset.tab).classList.add('on');
+    });
+  });
+</script>
 </body>
 </html>
