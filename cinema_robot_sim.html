@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>IRIS — MuJoCo Simulation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="IRIS MuJoCo simulation: FK/IK solvers, RRT* planning, cinema motion modes, and teleoperation — all open-source Python.">
+  <style>
+    :root{--bg:#fafafa;--bg-dark:#07070d;--bg-soft:#f5f5f7;--text:#1d1d1f;--text-muted:#6e6e73;--blue:#0071e3;--blue-h:#0077ed;--border:rgba(0,0,0,0.08);--border-light:rgba(255,255,255,0.11);--radius:18px;--radius-lg:26px;}
+    *,*::before,*::after{box-sizing:border-box;}html{scroll-behavior:smooth;}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+    #topNav{position:fixed;top:0;left:0;width:100%;height:56px;background:rgba(255,255,255,0.82);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;z-index:9999;transition:transform .35s ease;}
+    #brandTitle{font-size:17px;font-weight:700;color:var(--text);text-decoration:none;letter-spacing:-.02em;}
+    .nav-links{display:flex;gap:22px;list-style:none;margin:0;padding:0;}
+    .nav-links a{font-size:14px;font-weight:500;color:var(--text-muted);text-decoration:none;transition:color .2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--text);}
+    .nav-links a.nav-ext{color:var(--blue);}
+    #hamburger{display:none;width:36px;height:36px;border-radius:50%;background:var(--bg-soft);border:none;cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:5px;}
+    #hamburger span{display:block;width:18px;height:1.5px;background:var(--text);border-radius:2px;}
+    #mobileMenu{position:fixed;top:0;left:0;width:100%;background:rgba(255,255,255,0.96);backdrop-filter:blur(20px);padding:72px 24px 28px;transform:translateY(-100%);transition:transform .35s cubic-bezier(.25,1,.3,1);z-index:9990;border-bottom:1px solid var(--border);}
+    #mobileMenu a{display:block;padding:14px 0;font-size:17px;font-weight:500;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);}
+    #mobileMenu a:last-child{border-bottom:none;}
+    .nav-spacer{height:56px;}
+    @media(max-width:768px){.nav-links{display:none;}#hamburger{display:flex;}}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:999px;font-size:15px;font-weight:500;text-decoration:none;border:none;cursor:pointer;transition:all .2s ease;white-space:nowrap;}
+    .btn-primary{background:var(--blue);color:#fff;}
+    .btn-primary:hover{background:var(--blue-h);transform:translateY(-1px);}
+    .btn-ghost{background:rgba(255,255,255,0.11);color:#fff;border:1px solid rgba(255,255,255,0.18);}
+    .btn-ghost:hover{background:rgba(255,255,255,0.2);transform:translateY(-1px);}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border);}
+    .btn-outline:hover{background:var(--bg-soft);transform:translateY(-1px);}
+    .badge{display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+    .badge-blue{background:rgba(0,113,227,.12);color:var(--blue);border:1px solid rgba(0,113,227,.2);}
+    .badge-light{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.14);}
+    .badge-green{background:rgba(52,199,89,.12);color:#1a8f35;border:1px solid rgba(52,199,89,.2);}
+    .badge-gray{background:var(--bg-soft);color:var(--text-muted);border:1px solid var(--border);}
+    section{width:100%;padding:clamp(60px,8vw,100px) clamp(20px,4vw,44px);box-sizing:border-box;}
+    .inner{max-width:900px;margin:0 auto;}
+    .inner-wide{max-width:1100px;margin:0 auto;}
+    .s-dark{background:var(--bg-dark);color:#f5f5f7;}
+    .s-light{background:var(--bg);}
+    .s-soft{background:var(--bg-soft);}
+    .kicker{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:14px;display:block;}
+    .kicker-light{color:rgba(255,255,255,.45);}
+    .t-hero{font-size:clamp(38px,6vw,72px);font-weight:700;letter-spacing:-.04em;line-height:1.02;margin:0 0 14px;}
+    .t-h2{font-size:clamp(26px,4vw,44px);font-weight:700;letter-spacing:-.025em;line-height:1.08;margin:0 0 14px;}
+    .t-h3{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:0 0 8px;}
+    .t-body{font-size:17px;line-height:1.65;color:var(--text-muted);margin:0 0 16px;}
+    .t-body-light{color:rgba(255,255,255,.65);}
+    .t-sm{font-size:14px;color:var(--text-muted);line-height:1.5;}
+    .fi{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease;}
+    .fi.v{opacity:1;transform:translateY(0);}
+    .fi[data-d="1"]{transition-delay:.1s;}
+    .fi[data-d="2"]{transition-delay:.2s;}
+    .fi[data-d="3"]{transition-delay:.3s;}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+    @media(max-width:800px){.g3{grid-template-columns:1fr 1fr;}}
+    @media(max-width:560px){.g2,.g3{grid-template-columns:1fr;}}
+    .split{display:flex;gap:50px;align-items:flex-start;}
+    .split>*{flex:1;}
+    @media(max-width:800px){.split{flex-direction:column;gap:32px;}}
+    .divider{height:1px;background:var(--border);margin:44px 0;}
+    .sec-img{width:100%;border-radius:var(--radius-lg);display:block;border:1px solid var(--border);}
+    .code-block{background:#0d1117;border-radius:14px;padding:20px 24px;font-family:"SF Mono","Fira Code",Menlo,monospace;font-size:13px;line-height:1.7;color:#e6edf3;overflow-x:auto;border:1px solid rgba(255,255,255,.08);text-align:left;}
+    .code-block .cm{color:#8b949e;}
+    pre{margin:0;}
+
+    /* MODE CARD */
+    .mode-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;gap:8px;}
+    .mode-card-icon{font-size:28px;margin-bottom:4px;}
+    .mode-card h3{font-size:17px;font-weight:600;margin:0;}
+    .mode-card p{font-size:14px;color:var(--text-muted);margin:0;line-height:1.5;}
+    .mode-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;}
+
+    /* FEATURE ROW */
+    .feat{display:flex;gap:14px;padding:18px 0;border-bottom:1px solid var(--border);}
+    .feat:last-child{border-bottom:none;}
+    .feat-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+    .feat h4{font-size:16px;font-weight:600;margin:0 0 4px;}
+    .feat p{font-size:14px;color:var(--text-muted);margin:0;line-height:1.5;}
+
+    footer{background:var(--bg-soft);border-top:1px solid var(--border);padding:44px clamp(20px,4vw,44px);}
+    .foot{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;gap:36px;flex-wrap:wrap;}
+    .foot-brand{font-size:17px;font-weight:700;letter-spacing:-.02em;}
+    .foot-links{display:flex;gap:20px;flex-wrap:wrap;}
+    .foot-links a{font-size:14px;color:var(--text-muted);text-decoration:none;}
+    .foot-links a:hover{color:var(--text);}
+    .foot-copy{width:100%;font-size:12px;color:var(--text-muted);margin-top:28px;padding-top:22px;border-top:1px solid var(--border);}
+  </style>
+</head>
+<body>
+
+  <header id="topNav">
+    <a href="cinema_robot.html" id="brandTitle">IRIS</a>
+    <ul class="nav-links">
+      <li><a href="cinema_robot.html">Overview</a></li>
+      <li><a href="cinema_robot_hardware.html">Hardware</a></li>
+      <li><a href="cinema_robot_software.html">Software</a></li>
+      <li><a href="cinema_robot_sim.html" class="active">Simulation</a></li>
+      <li><a href="cinema_robot_learning.html">Learning</a></li>
+      <li><a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank" class="nav-ext">Paper ↗</a></li>
+    </ul>
+    <button id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </header>
+
+  <div id="mobileMenu">
+    <a href="cinema_robot.html">Overview</a>
+    <a href="cinema_robot_hardware.html">Hardware</a>
+    <a href="cinema_robot_software.html">Software</a>
+    <a href="cinema_robot_sim.html">Simulation</a>
+    <a href="cinema_robot_learning.html">Learning</a>
+    <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+  </div>
+  <div class="nav-spacer"></div>
+
+  <!-- HERO -->
+  <section class="s-dark" style="padding-top:clamp(80px,12vw,120px); text-align:center;">
+    <div class="inner">
+      <div class="fi">
+        <span class="badge badge-light" style="margin-bottom:20px;display:inline-flex;">MuJoCo · Python · ROS</span>
+        <h1 class="t-hero" style="background:linear-gradient(160deg,#fff 50%,#6b7280);-webkit-background-clip:text;color:transparent;margin-top:12px;">Simulation</h1>
+        <p class="t-body t-body-light" style="max-width:540px; margin:0 auto 32px;">
+          A high-fidelity MuJoCo environment with analytical FK/IK, trajectory planning, and cinema motion modes. Designed for sim-to-real transfer.
+        </p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <a href="https://github.com/thejerrycheng/IRIS" target="_blank" class="btn btn-primary">⚙ View on GitHub</a>
+          <a href="cinema_robot_software.html" class="btn btn-ghost">💻 Software Docs</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK START -->
+  <section class="s-light">
+    <div class="inner">
+      <div class="fi" style="margin-bottom:32px;">
+        <span class="kicker">Quick Start</span>
+        <h2 class="t-h2">Run the simulation.</h2>
+        <p class="t-body" style="max-width:560px;">Requirements: Python ≥ 3.9, MuJoCo ≥ 2.3. Install dependencies then launch any of the demo scripts.</p>
+      </div>
+
+      <div class="fi">
+        <div class="code-block" style="margin-bottom:20px;"><pre><span class="cm"># Install dependencies</span>
+cd ~/IRIS/mujoco_sim
+pip install -r requirements.txt
+
+<span class="cm"># Run circle path tracking demo</span>
+python circle_path_tracking.py
+
+<span class="cm"># Cinema motion modes</span>
+python cinema_line_tracking.py --mode crane
+python cinema_line_tracking.py --mode dolly
+python cinema_line_tracking.py --mode pan
+
+<span class="cm"># Interactive teleoperation</span>
+python teleop_ik.py    <span class="cm"># Cartesian IK teleoperation</span>
+python teleop_fk.py    <span class="cm"># Joint-space teleoperation</span></pre></div>
+
+        <p class="t-sm">
+          The MuJoCo XML model uses the same DH parameters as the ROS hardware stack, ensuring FK/IK consistency between simulation and real deployment.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- KINEMATICS -->
+  <section class="s-soft">
+    <div class="inner-wide">
+      <div class="fi" style="margin-bottom:36px;">
+        <span class="kicker">Kinematics</span>
+        <h2 class="t-h2">Analytical FK &amp; IK</h2>
+        <p class="t-body" style="max-width:580px;">
+          IRIS uses Denavit-Hartenberg (DH) parameters shared across the MuJoCo model, ROS TF tree, and both forward/inverse kinematic solvers. This guarantees consistency between simulation and hardware.
+        </p>
+      </div>
+
+      <div class="split fi">
+        <div>
+          <h3 class="t-h3" style="font-size:17px; margin-bottom:10px;">Forward Kinematics</h3>
+          <div class="code-block" style="margin-bottom:16px;"><pre><span class="cm"># Compute end-effector pose from joint angles</span>
+python kinematics/forward_kinematics.py \
+  --q 0 0 0 0 0 0
+
+<span class="cm"># Returns 4×4 transformation matrix T_base_ee</span></pre></div>
+          <p class="t-sm">Implemented as closed-form matrix chain multiplication using the 6-DOF DH parameter table. No numerical approximation.</p>
+        </div>
+        <div>
+          <h3 class="t-h3" style="font-size:17px; margin-bottom:10px;">Inverse Kinematics</h3>
+          <div class="code-block" style="margin-bottom:16px;"><pre><span class="cm"># Solve IK for target end-effector position</span>
+python kinematics/inverse_kinematics.py \
+  --target_xyz 0.6 0.0 0.5
+
+<span class="cm"># Uses damped least-squares Jacobian</span></pre></div>
+          <p class="t-sm">Damped least-squares (Levenberg-Marquardt) Jacobian IK with configurable damping factor λ. Handles singularities gracefully.</p>
+        </div>
+      </div>
+
+      <div class="fi" style="margin-top:28px;">
+        <h3 class="t-h3" style="font-size:17px; margin-bottom:10px;">DH Parameter Table</h3>
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-size:14px;font-family:'SF Mono',Menlo,monospace;">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border);">
+                <th style="text-align:left;padding:10px 14px;font-size:12px;color:var(--text-muted);">Joint</th>
+                <th style="text-align:left;padding:10px 14px;font-size:12px;color:var(--text-muted);">a (mm)</th>
+                <th style="text-align:left;padding:10px 14px;font-size:12px;color:var(--text-muted);">d (mm)</th>
+                <th style="text-align:left;padding:10px 14px;font-size:12px;color:var(--text-muted);">α (rad)</th>
+                <th style="text-align:left;padding:10px 14px;font-size:12px;color:var(--text-muted);">θ offset</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 14px;">1</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">175</td><td style="padding:11px 14px;">π/2</td><td style="padding:11px 14px;">0</td></tr>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 14px;">2</td><td style="padding:11px 14px;">280</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">-π/2</td></tr>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 14px;">3</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">π/2</td><td style="padding:11px 14px;">π/2</td></tr>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 14px;">4</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">240</td><td style="padding:11px 14px;">-π/2</td><td style="padding:11px 14px;">0</td></tr>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 14px;">5</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">π/2</td><td style="padding:11px 14px;">0</td></tr>
+              <tr><td style="padding:11px 14px;">6</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">80</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CINEMA MODES -->
+  <section class="s-light">
+    <div class="inner-wide">
+      <div class="fi" style="margin-bottom:36px;">
+        <span class="kicker">Cinema Motion Modes</span>
+        <h2 class="t-h2">Built for filmmakers.</h2>
+        <p class="t-body" style="max-width:580px;">
+          IRIS includes three cinematography-specific motion modes. Each generates smooth, realistic camera paths commonly used in professional production.
+        </p>
+      </div>
+
+      <div class="g3 fi">
+        <div class="mode-card">
+          <div class="mode-card-icon">🏗️</div>
+          <h3>Crane</h3>
+          <p>Vertical arc sweeping the camera up while the end-effector tracks a fixed point in space. Used for reveals and establishing shots.</p>
+          <div class="mode-tags">
+            <span class="badge badge-blue">--mode crane</span>
+          </div>
+        </div>
+        <div class="mode-card">
+          <div class="mode-card-icon">🎢</div>
+          <h3>Dolly</h3>
+          <p>Linear lateral translation maintaining camera orientation. Simulates a physical dolly track. Classic for parallax storytelling.</p>
+          <div class="mode-tags">
+            <span class="badge badge-blue">--mode dolly</span>
+          </div>
+        </div>
+        <div class="mode-card">
+          <div class="mode-card-icon">🎥</div>
+          <h3>Pan</h3>
+          <p>Base rotation while the end-effector translates to hold a subject in frame. Smooth arc for product shots and subject tracking.</p>
+          <div class="mode-tags">
+            <span class="badge badge-blue">--mode pan</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANNERS -->
+  <section class="s-soft">
+    <div class="inner">
+      <div class="fi" style="margin-bottom:32px;">
+        <span class="kicker">Path Planning</span>
+        <h2 class="t-h2">Motion Planners</h2>
+        <p class="t-body" style="max-width:560px;">
+          Two classical planners are implemented in <code>classical_planner/</code>, enabling collision-free trajectory generation in configuration space.
+        </p>
+      </div>
+
+      <div class="fi">
+        <div class="feat">
+          <div class="feat-icon">🌲</div>
+          <div>
+            <h4>RRT* (Optimal Rapidly-Exploring Random Tree)</h4>
+            <p>Asymptotically optimal sampling-based planner. Finds collision-free paths in joint space. Includes rewiring step to continually improve path cost as the tree grows.</p>
+          </div>
+        </div>
+        <div class="feat">
+          <div class="feat-icon">⚡</div>
+          <div>
+            <h4>Potential Field Planner</h4>
+            <p>Gradient descent on an artificial potential field with attractive goal forces and repulsive obstacle forces. Fast, reactive replanning for quasi-static environments.</p>
+          </div>
+        </div>
+        <div class="feat">
+          <div class="feat-icon">📈</div>
+          <div>
+            <h4>Trajectory Parameterization</h4>
+            <p>Cubic spline and trapezoidal velocity profiles for time-optimal, smooth interpolation between waypoints. Respects joint velocity and acceleration limits.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="fi" style="margin-top:28px;">
+        <div class="code-block"><pre><span class="cm"># Run path planning in simulation</span>
+cd ~/IRIS/classical_planner
+python rrt_star.py --start "0,0,0,0,0,0" --goal "1.57,-0.5,0.8,0,0,0"
+
+python potential_field.py --goal_xyz 0.5 0.3 0.6</pre></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot">
+      <div>
+        <div class="foot-brand">IRIS</div>
+        <div class="t-sm" style="margin-top:5px;">Open-Source Cinema Robot · Columbia University</div>
+      </div>
+      <div class="foot-links">
+        <a href="cinema_robot.html">Overview</a>
+        <a href="cinema_robot_hardware.html">Hardware</a>
+        <a href="cinema_robot_software.html">Software</a>
+        <a href="cinema_robot_sim.html">Simulation</a>
+        <a href="cinema_robot_learning.html">Learning</a>
+        <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+      </div>
+      <div class="foot-copy">© 2025 Jerry Cheng · Columbia University. Released under CC BY-NC 4.0.</div>
+    </div>
+  </footer>
+
+  <script>
+    const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v');obs.unobserve(e.target);}}),{threshold:.1});
+    document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+    document.querySelectorAll('section:first-of-type .fi').forEach((el,i)=>setTimeout(()=>el.classList.add('v'),i*130));
+    let ly=0;const nav=document.getElementById('topNav');
+    window.addEventListener('scroll',()=>{const y=window.scrollY;nav.style.transform=(y>100&&y>ly)?'translateY(-100%)':'translateY(0)';ly=y;},{passive:true});
+    const hbg=document.getElementById('hamburger'),mob=document.getElementById('mobileMenu');let mo=false;
+    hbg.addEventListener('click',()=>{mo=!mo;mob.style.transform=mo?'translateY(0)':'translateY(-100%)';});
+    document.addEventListener('click',e=>{if(mo&&!mob.contains(e.target)&&!hbg.contains(e.target)){mo=false;mob.style.transform='translateY(-100%)';}});
+  </script>
+</body>
+</html>

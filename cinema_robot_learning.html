@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>IRIS — Visuomotor Imitation Learning</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="IRIS visuomotor imitation learning: CVAE action chunking, deterministic transformer, CNN-BC baseline — training, evaluation, and real-robot deployment.">
+  <style>
+    :root{--bg:#fafafa;--bg-dark:#07070d;--bg-soft:#f5f5f7;--text:#1d1d1f;--text-muted:#6e6e73;--blue:#0071e3;--blue-h:#0077ed;--border:rgba(0,0,0,0.08);--border-light:rgba(255,255,255,0.11);--radius:18px;--radius-lg:26px;}
+    *,*::before,*::after{box-sizing:border-box;}html{scroll-behavior:smooth;}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+    #topNav{position:fixed;top:0;left:0;width:100%;height:56px;background:rgba(255,255,255,0.82);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;z-index:9999;transition:transform .35s ease;}
+    #brandTitle{font-size:17px;font-weight:700;color:var(--text);text-decoration:none;letter-spacing:-.02em;}
+    .nav-links{display:flex;gap:22px;list-style:none;margin:0;padding:0;}
+    .nav-links a{font-size:14px;font-weight:500;color:var(--text-muted);text-decoration:none;transition:color .2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--text);}
+    .nav-links a.nav-ext{color:var(--blue);}
+    #hamburger{display:none;width:36px;height:36px;border-radius:50%;background:var(--bg-soft);border:none;cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:5px;}
+    #hamburger span{display:block;width:18px;height:1.5px;background:var(--text);border-radius:2px;}
+    #mobileMenu{position:fixed;top:0;left:0;width:100%;background:rgba(255,255,255,0.96);backdrop-filter:blur(20px);padding:72px 24px 28px;transform:translateY(-100%);transition:transform .35s cubic-bezier(.25,1,.3,1);z-index:9990;border-bottom:1px solid var(--border);}
+    #mobileMenu a{display:block;padding:14px 0;font-size:17px;font-weight:500;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);}
+    #mobileMenu a:last-child{border-bottom:none;}
+    .nav-spacer{height:56px;}
+    @media(max-width:768px){.nav-links{display:none;}#hamburger{display:flex;}}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:999px;font-size:15px;font-weight:500;text-decoration:none;border:none;cursor:pointer;transition:all .2s ease;white-space:nowrap;}
+    .btn-primary{background:var(--blue);color:#fff;}
+    .btn-primary:hover{background:var(--blue-h);transform:translateY(-1px);}
+    .btn-ghost{background:rgba(255,255,255,0.11);color:#fff;border:1px solid rgba(255,255,255,0.18);}
+    .btn-ghost:hover{background:rgba(255,255,255,0.2);transform:translateY(-1px);}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border);}
+    .btn-outline:hover{background:var(--bg-soft);transform:translateY(-1px);}
+    .badge{display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+    .badge-blue{background:rgba(0,113,227,.12);color:var(--blue);border:1px solid rgba(0,113,227,.2);}
+    .badge-light{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.14);}
+    .badge-green{background:rgba(52,199,89,.12);color:#1a8f35;border:1px solid rgba(52,199,89,.2);}
+    .badge-gray{background:var(--bg-soft);color:var(--text-muted);border:1px solid var(--border);}
+    .badge-purple{background:rgba(147,51,234,.12);color:#6d28d9;border:1px solid rgba(147,51,234,.2);}
+    section{width:100%;padding:clamp(60px,8vw,100px) clamp(20px,4vw,44px);box-sizing:border-box;}
+    .inner{max-width:900px;margin:0 auto;}
+    .inner-wide{max-width:1100px;margin:0 auto;}
+    .s-dark{background:var(--bg-dark);color:#f5f5f7;}
+    .s-light{background:var(--bg);}
+    .s-soft{background:var(--bg-soft);}
+    .kicker{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:14px;display:block;}
+    .kicker-light{color:rgba(255,255,255,.45);}
+    .t-hero{font-size:clamp(38px,6vw,72px);font-weight:700;letter-spacing:-.04em;line-height:1.02;margin:0 0 14px;}
+    .t-h2{font-size:clamp(26px,4vw,44px);font-weight:700;letter-spacing:-.025em;line-height:1.08;margin:0 0 14px;}
+    .t-h3{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:0 0 8px;}
+    .t-body{font-size:17px;line-height:1.65;color:var(--text-muted);margin:0 0 16px;}
+    .t-body-light{color:rgba(255,255,255,.65);}
+    .t-sm{font-size:14px;color:var(--text-muted);line-height:1.5;}
+    .fi{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease;}
+    .fi.v{opacity:1;transform:translateY(0);}
+    .fi[data-d="1"]{transition-delay:.1s;}
+    .fi[data-d="2"]{transition-delay:.2s;}
+    .fi[data-d="3"]{transition-delay:.3s;}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+    @media(max-width:800px){.g3{grid-template-columns:1fr 1fr;}}
+    @media(max-width:560px){.g2,.g3{grid-template-columns:1fr;}}
+    .split{display:flex;gap:50px;align-items:flex-start;}
+    .split>*{flex:1;}
+    @media(max-width:800px){.split{flex-direction:column;gap:32px;}}
+    .divider{height:1px;background:var(--border);margin:44px 0;}
+    .sec-img{width:100%;border-radius:var(--radius-lg);display:block;border:1px solid var(--border);}
+    .code-block{background:#0d1117;border-radius:14px;padding:20px 24px;font-family:"SF Mono","Fira Code",Menlo,monospace;font-size:13px;line-height:1.7;color:#e6edf3;overflow-x:auto;border:1px solid rgba(255,255,255,.08);text-align:left;}
+    .code-block .cm{color:#8b949e;}
+    pre{margin:0;}
+
+    /* MODEL CARD */
+    .model-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;}
+    .model-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;}
+    .model-card h3{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em;}
+    .model-card-sub{font-size:12px;color:var(--text-muted);margin-top:3px;}
+    .model-card p{font-size:14px;color:var(--text-muted);line-height:1.6;margin:0 0 16px;}
+    .model-card-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;}
+    .model-card-specs{list-style:none;padding:0;margin:0;border-top:1px solid var(--border);padding-top:14px;}
+    .model-card-specs li{font-size:13px;color:var(--text-muted);padding:5px 0;display:flex;gap:8px;}
+    .model-card-specs li::before{content:"—";color:var(--blue);}
+
+    /* DATASET FIELD */
+    .ds-field{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;display:flex;flex-direction:column;gap:4px;}
+    .ds-field-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
+    .ds-field-val{font-size:17px;font-weight:600;color:var(--text);}
+    .ds-field-desc{font-size:13px;color:var(--text-muted);}
+
+    /* VIDEO */
+    .vid-wrap{border-radius:var(--radius-lg);overflow:hidden;border:1px solid rgba(255,255,255,.08);background:#000;}
+    .vid-wrap video{width:100%;display:block;}
+
+    footer{background:var(--bg-soft);border-top:1px solid var(--border);padding:44px clamp(20px,4vw,44px);}
+    .foot{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;gap:36px;flex-wrap:wrap;}
+    .foot-brand{font-size:17px;font-weight:700;letter-spacing:-.02em;}
+    .foot-links{display:flex;gap:20px;flex-wrap:wrap;}
+    .foot-links a{font-size:14px;color:var(--text-muted);text-decoration:none;}
+    .foot-links a:hover{color:var(--text);}
+    .foot-copy{width:100%;font-size:12px;color:var(--text-muted);margin-top:28px;padding-top:22px;border-top:1px solid var(--border);}
+  </style>
+</head>
+<body>
+
+  <header id="topNav">
+    <a href="cinema_robot.html" id="brandTitle">IRIS</a>
+    <ul class="nav-links">
+      <li><a href="cinema_robot.html">Overview</a></li>
+      <li><a href="cinema_robot_hardware.html">Hardware</a></li>
+      <li><a href="cinema_robot_software.html">Software</a></li>
+      <li><a href="cinema_robot_sim.html">Simulation</a></li>
+      <li><a href="cinema_robot_learning.html" class="active">Learning</a></li>
+      <li><a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank" class="nav-ext">Paper ↗</a></li>
+    </ul>
+    <button id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </header>
+
+  <div id="mobileMenu">
+    <a href="cinema_robot.html">Overview</a>
+    <a href="cinema_robot_hardware.html">Hardware</a>
+    <a href="cinema_robot_software.html">Software</a>
+    <a href="cinema_robot_sim.html">Simulation</a>
+    <a href="cinema_robot_learning.html">Learning</a>
+    <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+  </div>
+  <div class="nav-spacer"></div>
+
+  <!-- HERO -->
+  <section class="s-dark" style="padding-top:clamp(80px,12vw,120px); text-align:center;">
+    <div class="inner">
+      <div class="fi">
+        <span class="badge badge-light" style="margin-bottom:20px;display:inline-flex;">PyTorch · CVAE · ACT</span>
+        <h1 class="t-hero" style="background:linear-gradient(160deg,#fff 50%,#6b7280);-webkit-background-clip:text;color:transparent;margin-top:12px;">Robot Learning</h1>
+        <p class="t-body t-body-light" style="max-width:540px; margin:0 auto 32px;">
+          Visuomotor imitation learning from kinesthetic demonstrations. Three model architectures evaluated end-to-end on real IRIS hardware.
+        </p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <a href="https://github.com/thejerrycheng/IRIS" target="_blank" class="btn btn-primary">⚙ Training Code</a>
+          <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank" class="btn btn-ghost">📄 Read the Paper</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section class="s-light">
+    <div class="inner-wide">
+      <div class="fi" style="margin-bottom:36px;">
+        <span class="kicker">Architecture</span>
+        <h2 class="t-h2">Three model variants.</h2>
+        <p class="t-body" style="max-width:580px;">
+          We evaluate three imitation learning architectures on the same kinesthetic demonstration dataset. Models share the same ResNet-34 visual encoder backbone; the action head differs across variants.
+        </p>
+      </div>
+
+      <div class="g3 fi">
+        <!-- CVAE -->
+        <div class="model-card">
+          <div class="model-card-header">
+            <div>
+              <h3>CVAE / ACT</h3>
+              <div class="model-card-sub">Primary model · Action Chunking</div>
+            </div>
+            <span class="badge badge-blue">Primary</span>
+          </div>
+          <p>Conditional Variational Autoencoder with a Transformer decoder that predicts a chunk of F=15 future actions at once. Latent variable z encodes multi-modal action distribution from demonstrations.</p>
+          <div class="model-card-tags">
+            <span class="badge badge-blue">CVAE</span>
+            <span class="badge badge-gray">Transformer</span>
+            <span class="badge badge-gray">Latent z</span>
+          </div>
+          <ul class="model-card-specs">
+            <li>Input: S=8 frame window + current joint state + goal image</li>
+            <li>Output: F=15 future joint angle targets</li>
+            <li>Loss: MSE + KL divergence + smoothness term</li>
+            <li>Latent dim: 32 | β: 0.01</li>
+          </ul>
+        </div>
+
+        <!-- DET -->
+        <div class="model-card">
+          <div class="model-card-header">
+            <div>
+              <h3>Deterministic Transformer</h3>
+              <div class="model-card-sub">No latent variable</div>
+            </div>
+            <span class="badge badge-gray">Baseline</span>
+          </div>
+          <p>Transformer-based sequence-to-sequence model without a latent variable. Ablates the stochastic component of the CVAE to measure the contribution of latent variable modeling.</p>
+          <div class="model-card-tags">
+            <span class="badge badge-gray">Transformer</span>
+            <span class="badge badge-gray">Deterministic</span>
+          </div>
+          <ul class="model-card-specs">
+            <li>Input: S=8 frame window + current joint state + goal image</li>
+            <li>Output: F=15 future joint angle targets</li>
+            <li>Loss: MSE + smoothness term</li>
+            <li>No latent variable (z removed)</li>
+          </ul>
+        </div>
+
+        <!-- CNN-BC -->
+        <div class="model-card">
+          <div class="model-card-header">
+            <div>
+              <h3>CNN-BC</h3>
+              <div class="model-card-sub">Behavior Cloning baseline</div>
+            </div>
+            <span class="badge badge-gray">Baseline</span>
+          </div>
+          <p>ResNet-34 + MLP behavior cloning baseline. Single-step prediction without action chunking. Provides a lower-bound on sequence modeling capability.</p>
+          <div class="model-card-tags">
+            <span class="badge badge-gray">ResNet-34</span>
+            <span class="badge badge-gray">MLP</span>
+          </div>
+          <ul class="model-card-specs">
+            <li>Input: single RGB frame + current joint state</li>
+            <li>Output: next-step joint angle targets</li>
+            <li>Loss: MSE</li>
+            <li>No temporal modeling</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="fi" style="margin-top:28px; background:var(--bg-soft); border-radius:var(--radius-lg); padding:24px 28px;">
+        <h3 class="t-h3" style="font-size:16px; margin-bottom:10px;">Model Naming Convention</h3>
+        <p class="t-sm">
+          Model variants are named as <code>{arch}_{obs}</code> where <code>arch</code> ∈ {<code>cvae</code>, <code>det</code>, <code>vanilla_bc</code>}
+          and <code>obs</code> ∈ {<code>rgb</code> (image only), <code>visual</code> (+goal image), <code>full</code> (+joint history+goal)}.
+          The primary model is <code>cvae_full</code>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATASET -->
+  <section class="s-soft">
+    <div class="inner-wide">
+      <div class="fi" style="margin-bottom:36px;">
+        <span class="kicker">Dataset</span>
+        <h2 class="t-h2">Episode Format &amp; Structure</h2>
+        <p class="t-body" style="max-width:580px;">
+          Demonstrations are collected via kinesthetic teaching on real IRIS hardware and stored as ROS bags, then processed into episodes. Each episode captures synchronized RGB, depth, and joint states.
+        </p>
+      </div>
+
+      <div class="g2 fi" style="margin-bottom:32px;">
+        <div class="g2">
+          <div class="ds-field">
+            <div class="ds-field-label">Window Size (S)</div>
+            <div class="ds-field-val">8 frames</div>
+            <div class="ds-field-desc">Input observation history</div>
+          </div>
+          <div class="ds-field">
+            <div class="ds-field-label">Horizon (F)</div>
+            <div class="ds-field-val">15 steps</div>
+            <div class="ds-field-desc">Predicted future actions</div>
+          </div>
+          <div class="ds-field">
+            <div class="ds-field-label">RGB Resolution</div>
+            <div class="ds-field-val">640×480</div>
+            <div class="ds-field-desc">Center-cropped, normalized</div>
+          </div>
+          <div class="ds-field">
+            <div class="ds-field-label">Control Dim</div>
+            <div class="ds-field-val">6</div>
+            <div class="ds-field-desc">Joint angles (radians)</div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="t-h3" style="font-size:17px; margin-bottom:12px;">Episode Directory Layout</h3>
+          <div class="code-block"><pre>processed_data/
+└── demo_YYYYMMDD_HHMMSS_episode_XXXX/
+    ├── rgb/
+    │   └── frame_0000.png  <span class="cm"># 640×480 RGB</span>
+    ├── depth/
+    │   └── frame_0000.png  <span class="cm"># 16-bit depth</span>
+    ├── robot/
+    │   └── joint_states.csv  <span class="cm"># timestamp, pos×6, vel×6, eff×6</span>
+    └── meta.json             <span class="cm"># num_frames, t_start, t_end</span></pre></div>
+          <p class="t-sm" style="margin-top:12px;">
+            The <code>EpisodeWindowDataset</code> class (<code>datasets/iris_dataset.py</code>) handles windowed sampling, normalization, and train/val/test splits.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRAINING -->
+  <section class="s-light">
+    <div class="inner">
+      <div class="fi" style="margin-bottom:32px;">
+        <span class="kicker">Training</span>
+        <h2 class="t-h2">Training Commands</h2>
+        <p class="t-body" style="max-width:560px;">
+          All training scripts support <strong>auto-resume</strong> — rerun the same command to continue from the last checkpoint. GPU recommended (~8 hours on RTX 4090 for 100 epochs).
+        </p>
+      </div>
+
+      <div class="fi">
+        <h3 class="t-h3" style="font-size:17px; margin-bottom:10px;">CVAE (Primary Model)</h3>
+        <div class="code-block" style="margin-bottom:28px;"><pre>python train_cvae.py \
+  --name MY_RUN \
+  --model cvae_full \
+  --loss loss_kl \
+  --data_roots ~/Desktop/final_RGB_joint_goal \
+  --checkpoint_dir ~/Desktop/checkpoints \
+  --batch_size 64 \
+  --num_workers 8 \
+  --epochs 100 \
+  --latent_dim 32 \
+  --beta 0.01</pre></div>
+
+        <h3 class="t-h3" style="font-size:17px; margin-bottom:10px;">Deterministic Transformer</h3>
+        <div class="code-block" style="margin-bottom:28px;"><pre>python train_determinstic.py \
+  --name MY_RUN \
+  --model det_rgb \
+  --loss mse_smooth \
+  --data_roots ~/Desktop/final_RGB_only \
+  --checkpoint_dir ~/Desktop/checkpoints</pre></div>
+
+        <h3 class="t-h3" style="font-size:17px; margin-bottom:10px;">CNN-BC Baseline</h3>
+        <div class="code-block" style="margin-bottom:28px;"><pre>python train_cnn_bc.py \
+  --name MY_RUN \
+  --data_roots ~/Desktop/final_RGB_joint_goal \
+  --checkpoint_dir ~/Desktop/checkpoints</pre></div>
+
+        <h3 class="t-h3" style="font-size:17px; margin-bottom:10px;">Offline Evaluation</h3>
+        <div class="code-block"><pre>python metrics_test.py \
+  --test_data ~/Desktop/final_RGB_joint_goal/test \
+  --checkpoint ~/Desktop/checkpoints/best_cvae_full_v1.pth \
+  --model_type cvae_full</pre></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEPLOYMENT -->
+  <section class="s-soft">
+    <div class="inner-wide">
+      <div class="fi" style="margin-bottom:36px;">
+        <span class="kicker">Deployment</span>
+        <h2 class="t-h2">Policy Deployment</h2>
+        <p class="t-body" style="max-width:560px;">
+          Deploy a trained policy to the real robot. The policy node reads from the RealSense camera and publishes joint commands via the ROS hardware driver.
+        </p>
+      </div>
+
+      <div class="split fi">
+        <div>
+          <h3 class="t-h3" style="font-size:17px; margin-bottom:12px;">Real Robot Deployment</h3>
+          <div class="code-block"><pre><span class="cm"># Deploy CVAE policy to real hardware</span>
+cd ~/IRIS/il_training
+python policy.py \
+  --model_type cvae_full \
+  --checkpoint ~/Desktop/checkpoints/best_cvae_full_v1.pth \
+  --stats_path ~/Desktop/final_RGB_joint_goal/dataset_stats.pkl \
+  --device cuda \
+  --real_robot \
+  --vis    <span class="cm"># optional: live camera overlay</span></pre></div>
+          <p class="t-sm" style="margin-top:12px;">
+            The <code>--stats_path</code> flag is required at inference to un-normalize robot actions back to joint angles. Generated automatically during dataset processing.
+          </p>
+        </div>
+        <div>
+          <h3 class="t-h3" style="font-size:17px; margin-bottom:12px;">Simulation Deployment</h3>
+          <div class="code-block"><pre><span class="cm"># Deploy in MuJoCo simulation (no --real_robot)</span>
+python policy.py \
+  --model_type cvae_full \
+  --checkpoint ~/Desktop/checkpoints/best_cvae_full_v1.pth \
+  --stats_path ~/Desktop/final_RGB_joint_goal/dataset_stats.pkl \
+  --device cpu</pre></div>
+          <p class="t-sm" style="margin-top:12px;">
+            Simulation deployment uses the MuJoCo physics model with the same policy interface as real hardware. Ideal for validating policies before deploying to the robot.
+          </p>
+        </div>
+      </div>
+
+      <div class="fi" style="margin-top:40px;">
+        <h3 class="t-h3" style="font-size:17px; margin-bottom:18px;">Deployment Demo</h3>
+        <div style="border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:#000;max-width:700px; margin:0 auto;">
+          <video autoplay muted loop playsinline style="width:100%;display:block;">
+            <source src="assets/videos/iris_deployment.m4v" type="video/mp4">
+          </video>
+        </div>
+        <p class="t-sm" style="text-align:center;margin-top:10px;">CVAE policy deployed on real IRIS hardware</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot">
+      <div>
+        <div class="foot-brand">IRIS</div>
+        <div class="t-sm" style="margin-top:5px;">Open-Source Cinema Robot · Columbia University</div>
+      </div>
+      <div class="foot-links">
+        <a href="cinema_robot.html">Overview</a>
+        <a href="cinema_robot_hardware.html">Hardware</a>
+        <a href="cinema_robot_software.html">Software</a>
+        <a href="cinema_robot_sim.html">Simulation</a>
+        <a href="cinema_robot_learning.html">Learning</a>
+        <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+      </div>
+      <div class="foot-copy">© 2025 Jerry Cheng · Columbia University. Released under CC BY-NC 4.0.</div>
+    </div>
+  </footer>
+
+  <script>
+    const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v');obs.unobserve(e.target);}}),{threshold:.1});
+    document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+    document.querySelectorAll('section:first-of-type .fi').forEach((el,i)=>setTimeout(()=>el.classList.add('v'),i*130));
+    let ly=0;const nav=document.getElementById('topNav');
+    window.addEventListener('scroll',()=>{const y=window.scrollY;nav.style.transform=(y>100&&y>ly)?'translateY(-100%)':'translateY(0)';ly=y;},{passive:true});
+    const hbg=document.getElementById('hamburger'),mob=document.getElementById('mobileMenu');let mo=false;
+    hbg.addEventListener('click',()=>{mo=!mo;mob.style.transform=mo?'translateY(0)':'translateY(-100%)';});
+    document.addEventListener('click',e=>{if(mo&&!mob.contains(e.target)&&!hbg.contains(e.target)){mo=false;mob.style.transform='translateY(-100%)';}});
+  </script>
+</body>
+</html>

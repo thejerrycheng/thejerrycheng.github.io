@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>IRIS — Hardware & CAD</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="IRIS open-source hardware: STEP files, bill of materials, actuator specs, and assembly documentation for the 6-DOF cinema robot arm.">
+  <style>
+    :root { --bg:#fafafa; --bg-dark:#07070d; --bg-soft:#f5f5f7; --text:#1d1d1f; --text-muted:#6e6e73; --blue:#0071e3; --blue-h:#0077ed; --border:rgba(0,0,0,0.08); --border-light:rgba(255,255,255,0.11); --radius:18px; --radius-lg:26px; }
+    *,*::before,*::after{box-sizing:border-box;} html{scroll-behavior:smooth;}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+    #topNav{position:fixed;top:0;left:0;width:100%;height:56px;background:rgba(255,255,255,0.82);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;z-index:9999;transition:transform .35s ease;}
+    #brandTitle{font-size:17px;font-weight:700;color:var(--text);text-decoration:none;letter-spacing:-.02em;}
+    .nav-links{display:flex;gap:22px;list-style:none;margin:0;padding:0;}
+    .nav-links a{font-size:14px;font-weight:500;color:var(--text-muted);text-decoration:none;transition:color .2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--text);}
+    .nav-links a.nav-ext{color:var(--blue);}
+    #hamburger{display:none;width:36px;height:36px;border-radius:50%;background:var(--bg-soft);border:none;cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:5px;}
+    #hamburger span{display:block;width:18px;height:1.5px;background:var(--text);border-radius:2px;}
+    #mobileMenu{position:fixed;top:0;left:0;width:100%;background:rgba(255,255,255,0.96);backdrop-filter:blur(20px);padding:72px 24px 28px;transform:translateY(-100%);transition:transform .35s cubic-bezier(.25,1,.3,1);z-index:9990;border-bottom:1px solid var(--border);}
+    #mobileMenu a{display:block;padding:14px 0;font-size:17px;font-weight:500;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);}
+    #mobileMenu a:last-child{border-bottom:none;}
+    .nav-spacer{height:56px;}
+    @media(max-width:768px){.nav-links{display:none;}#hamburger{display:flex;}}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:999px;font-size:15px;font-weight:500;text-decoration:none;border:none;cursor:pointer;transition:all .2s ease;white-space:nowrap;}
+    .btn-primary{background:var(--blue);color:#fff;}
+    .btn-primary:hover{background:var(--blue-h);transform:translateY(-1px);}
+    .btn-ghost{background:rgba(255,255,255,0.11);color:#fff;border:1px solid rgba(255,255,255,0.18);}
+    .btn-ghost:hover{background:rgba(255,255,255,0.2);transform:translateY(-1px);}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border);}
+    .btn-outline:hover{background:var(--bg-soft);transform:translateY(-1px);}
+    .btn-sm{padding:7px 14px;font-size:13px;}
+    .badge{display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+    .badge-blue{background:rgba(0,113,227,.12);color:var(--blue);border:1px solid rgba(0,113,227,.2);}
+    .badge-light{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.14);}
+    .badge-green{background:rgba(52,199,89,.12);color:#1a8f35;border:1px solid rgba(52,199,89,.2);}
+    .badge-gray{background:var(--bg-soft);color:var(--text-muted);border:1px solid var(--border);}
+    .badge-orange{background:rgba(255,149,0,.12);color:#b07500;border:1px solid rgba(255,149,0,.2);}
+    section{width:100%;padding:clamp(60px,8vw,100px) clamp(20px,4vw,44px);box-sizing:border-box;}
+    .inner{max-width:900px;margin:0 auto;}
+    .inner-wide{max-width:1100px;margin:0 auto;}
+    .s-dark{background:var(--bg-dark);color:#f5f5f7;}
+    .s-light{background:var(--bg);}
+    .s-soft{background:var(--bg-soft);}
+    .kicker{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:14px;display:block;}
+    .kicker-light{color:rgba(255,255,255,.45);}
+    .t-hero{font-size:clamp(38px,6vw,72px);font-weight:700;letter-spacing:-.04em;line-height:1.02;margin:0 0 14px;}
+    .t-h2{font-size:clamp(26px,4vw,44px);font-weight:700;letter-spacing:-.025em;line-height:1.08;margin:0 0 14px;}
+    .t-h3{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:0 0 8px;}
+    .t-body{font-size:17px;line-height:1.65;color:var(--text-muted);margin:0 0 16px;}
+    .t-body-light{color:rgba(255,255,255,.65);}
+    .t-sm{font-size:14px;color:var(--text-muted);line-height:1.5;}
+    .fi{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease;}
+    .fi.v{opacity:1;transform:translateY(0);}
+    .fi[data-d="1"]{transition-delay:.1s;}
+    .fi[data-d="2"]{transition-delay:.2s;}
+    .fi[data-d="3"]{transition-delay:.3s;}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+    @media(max-width:800px){.g3{grid-template-columns:1fr 1fr;}}
+    @media(max-width:560px){.g2,.g3{grid-template-columns:1fr;}}
+    .split{display:flex;gap:50px;align-items:flex-start;}
+    .split>*{flex:1;}
+    @media(max-width:800px){.split{flex-direction:column;gap:32px;}}
+    .divider{height:1px;background:var(--border);margin:44px 0;}
+    .sec-img{width:100%;border-radius:var(--radius-lg);display:block;border:1px solid var(--border);}
+    .iris-table{width:100%;border-collapse:collapse;font-size:15px;}
+    .iris-table th{text-align:left;padding:11px 14px;font-size:13px;font-weight:600;color:var(--text-muted);border-bottom:1px solid var(--border);}
+    .iris-table td{padding:13px 14px;border-bottom:1px solid var(--border);color:var(--text);}
+    .iris-table tr:last-child td{border-bottom:none;}
+    .iris-table td.hi{color:var(--blue);font-weight:600;}
+    .code-block{background:#0d1117;border-radius:14px;padding:18px 22px;font-family:"SF Mono","Fira Code",Menlo,monospace;font-size:13px;line-height:1.7;color:#e6edf3;overflow-x:auto;border:1px solid rgba(255,255,255,.08);text-align:left;}
+
+    /* DOWNLOAD CARD */
+    .dl-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px;display:flex;flex-direction:column;gap:12px;}
+    .dl-icon{font-size:28px;}
+    .dl-card h3{font-size:18px;font-weight:600;margin:0;}
+    .dl-card p{font-size:14px;color:var(--text-muted);margin:0;line-height:1.5;}
+    .dl-tags{display:flex;gap:6px;flex-wrap:wrap;}
+    .dl-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+
+    /* SPEC CARD */
+    .spec-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px;}
+    .spec-card-label{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
+    .spec-card-val{font-size:22px;font-weight:700;letter-spacing:-.03em;color:var(--text);margin-bottom:4px;}
+    .spec-card-desc{font-size:13px;color:var(--text-muted);}
+
+    /* COMING SOON */
+    .coming-soon{background:var(--bg-soft);border:1px dashed rgba(0,0,0,0.15);border-radius:var(--radius-lg);padding:48px 32px;text-align:center;}
+    .cs-icon{font-size:40px;margin-bottom:16px;}
+    .cs-title{font-size:20px;font-weight:600;margin-bottom:8px;}
+    .cs-body{font-size:15px;color:var(--text-muted);max-width:400px;margin:0 auto 20px;}
+
+    footer{background:var(--bg-soft);border-top:1px solid var(--border);padding:44px clamp(20px,4vw,44px);}
+    .foot{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;gap:36px;flex-wrap:wrap;}
+    .foot-brand{font-size:17px;font-weight:700;letter-spacing:-.02em;}
+    .foot-links{display:flex;gap:20px;flex-wrap:wrap;}
+    .foot-links a{font-size:14px;color:var(--text-muted);text-decoration:none;}
+    .foot-links a:hover{color:var(--text);}
+    .foot-copy{width:100%;font-size:12px;color:var(--text-muted);margin-top:28px;padding-top:22px;border-top:1px solid var(--border);}
+  </style>
+</head>
+<body>
+
+  <header id="topNav">
+    <a href="cinema_robot.html" id="brandTitle">IRIS</a>
+    <ul class="nav-links">
+      <li><a href="cinema_robot.html">Overview</a></li>
+      <li><a href="cinema_robot_hardware.html" class="active">Hardware</a></li>
+      <li><a href="cinema_robot_software.html">Software</a></li>
+      <li><a href="cinema_robot_sim.html">Simulation</a></li>
+      <li><a href="cinema_robot_learning.html">Learning</a></li>
+      <li><a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank" class="nav-ext">Paper ↗</a></li>
+    </ul>
+    <button id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </header>
+
+  <div id="mobileMenu">
+    <a href="cinema_robot.html">Overview</a>
+    <a href="cinema_robot_hardware.html">Hardware</a>
+    <a href="cinema_robot_software.html">Software</a>
+    <a href="cinema_robot_sim.html">Simulation</a>
+    <a href="cinema_robot_learning.html">Learning</a>
+    <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+  </div>
+  <div class="nav-spacer"></div>
+
+  <!-- HERO -->
+  <section class="s-dark" style="padding-top:clamp(80px,12vw,120px); text-align:center;">
+    <div class="inner">
+      <div class="fi">
+        <span class="badge badge-light" style="margin-bottom:20px; display:inline-flex;">Open Source Hardware</span>
+        <h1 class="t-hero" style="background:linear-gradient(160deg,#fff 50%,#6b7280);-webkit-background-clip:text;color:transparent; margin-top:12px;">Hardware &amp; CAD</h1>
+        <p class="t-body t-body-light" style="max-width:540px; margin:0 auto 32px;">
+          Everything you need to build IRIS: STEP files, bill of materials, wiring diagrams, and actuator documentation.
+        </p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <a href="https://github.com/thejerrycheng/IRIS/releases" target="_blank" class="btn btn-primary">⬇ Download STEP Files</a>
+          <a href="https://github.com/thejerrycheng/IRIS" target="_blank" class="btn btn-ghost">⚙ GitHub Repository</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOADS -->
+  <section class="s-light">
+    <div class="inner-wide">
+      <div class="fi" style="margin-bottom:36px;">
+        <span class="kicker">Downloads</span>
+        <h2 class="t-h2">Get the Files</h2>
+        <p class="t-body" style="max-width:560px;">All hardware files are hosted on GitHub. Download individual packages or clone the full repository.</p>
+      </div>
+
+      <div class="g3 fi">
+        <div class="dl-card">
+          <div class="dl-icon">📐</div>
+          <h3>Full Assembly STEP</h3>
+          <p>Complete 6-DOF arm assembly in STEP 214 format. Compatible with Fusion 360, SolidWorks, FreeCAD, and OnShape.</p>
+          <div class="dl-tags">
+            <span class="badge badge-green">STEP 214</span>
+            <span class="badge badge-gray">~85 MB</span>
+          </div>
+          <div class="dl-actions">
+            <a href="https://github.com/thejerrycheng/IRIS/releases" target="_blank" class="btn btn-primary btn-sm">Download</a>
+          </div>
+        </div>
+
+        <div class="dl-card">
+          <div class="dl-icon">📋</div>
+          <h3>Bill of Materials</h3>
+          <p>Complete BOM with part numbers, suppliers, quantities, and estimated costs. Includes all actuators, fasteners, and electronics.</p>
+          <div class="dl-tags">
+            <span class="badge badge-blue">CSV / XLSX</span>
+            <span class="badge badge-gray">~80 parts</span>
+          </div>
+          <div class="dl-actions">
+            <a href="https://github.com/thejerrycheng/IRIS" target="_blank" class="btn btn-primary btn-sm">Download BOM</a>
+          </div>
+        </div>
+
+        <div class="dl-card">
+          <div class="dl-icon">🔌</div>
+          <h3>Wiring &amp; Electronics</h3>
+          <p>RS-485 bus diagram, motor driver wiring, power distribution schematic, and connector pinouts.</p>
+          <div class="dl-tags">
+            <span class="badge badge-blue">PDF</span>
+            <span class="badge badge-gray">Schematics</span>
+          </div>
+          <div class="dl-actions">
+            <a href="https://github.com/thejerrycheng/IRIS" target="_blank" class="btn btn-primary btn-sm">Download</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTUATOR SYSTEM -->
+  <section class="s-soft">
+    <div class="inner-wide">
+      <div class="fi" style="margin-bottom:36px;">
+        <span class="kicker">Actuator System</span>
+        <h2 class="t-h2">Unitree GO-M8010-6</h2>
+        <p class="t-body" style="max-width:600px;">
+          IRIS uses six Unitree GO-M8010-6 quasi-direct-drive motors across all joints. The low gear ratio enables
+          compliant, backdrivable motion — critical for kinesthetic teaching and safe interaction.
+        </p>
+      </div>
+
+      <div class="split fi">
+        <div>
+          <table class="iris-table">
+            <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Motor Type</td><td class="hi">Quasi-Direct Drive</td></tr>
+              <tr><td>Peak Torque</td><td>23.7 N·m</td></tr>
+              <tr><td>Rated Torque</td><td>6 N·m</td></tr>
+              <tr><td>Max Speed</td><td>45 rpm (no load)</td></tr>
+              <tr><td>Gear Ratio</td><td>9:1</td></tr>
+              <tr><td>Encoder Resolution</td><td>14-bit absolute</td></tr>
+              <tr><td>Communication</td><td>RS-485</td></tr>
+              <tr><td>Control Rate</td><td class="hi">200 Hz</td></tr>
+              <tr><td>Modes</td><td>MIT / Position / Velocity / Torque</td></tr>
+              <tr><td>Weight (each)</td><td>485 g</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="g2">
+            <div class="spec-card fi" data-d="1">
+              <div class="spec-card-label">Joints</div>
+              <div class="spec-card-val">6 DOF</div>
+              <div class="spec-card-desc">Shoulder ×2, Elbow, Wrist ×3</div>
+            </div>
+            <div class="spec-card fi" data-d="2">
+              <div class="spec-card-label">Payload</div>
+              <div class="spec-card-val">~2 kg</div>
+              <div class="spec-card-desc">Camera + lens at full extension</div>
+            </div>
+            <div class="spec-card fi" data-d="3">
+              <div class="spec-card-label">Reach</div>
+              <div class="spec-card-val">~850 mm</div>
+              <div class="spec-card-desc">Maximum workspace radius</div>
+            </div>
+            <div class="spec-card fi" data-d="4">
+              <div class="spec-card-label">Bus Topology</div>
+              <div class="spec-card-val">RS-485</div>
+              <div class="spec-card-desc">Daisy-chained, single cable</div>
+            </div>
+          </div>
+          <p class="t-sm" style="margin-top:16px;">
+            The MIT control mode allows simultaneous position, velocity, and feed-forward torque commands at each control cycle — enabling smooth impedance control critical for cinematic motion.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SENSORS -->
+  <section class="s-light">
+    <div class="inner-wide">
+      <div class="fi" style="margin-bottom:36px;">
+        <span class="kicker">Vision &amp; Sensing</span>
+        <h2 class="t-h2">Intel RealSense D435i</h2>
+        <p class="t-body" style="max-width:600px;">
+          The end-effector mounts an Intel RealSense D435i RGB-D camera, providing synchronized color and depth frames used for visuomotor policy training and deployment.
+        </p>
+      </div>
+
+      <div class="g3 fi">
+        <div class="spec-card">
+          <div class="spec-card-label">RGB Resolution</div>
+          <div class="spec-card-val">1920×1080</div>
+          <div class="spec-card-desc">30 fps, used for IL policy input</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-card-label">Depth Resolution</div>
+          <div class="spec-card-val">848×480</div>
+          <div class="spec-card-desc">90 fps, stereo IR depth</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-card-label">Depth Range</div>
+          <div class="spec-card-val">0.1–10 m</div>
+          <div class="spec-card-desc">Active stereo + IR projector</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="fi">
+        <span class="kicker">Mechanical Structure</span>
+        <h2 class="t-h2" style="font-size:clamp(22px,3vw,36px);">Lightweight by Design</h2>
+        <div class="g2" style="margin-top:20px;">
+          <div>
+            <div class="t-h3" style="font-size:17px; margin-bottom:6px;">🔗 Structural Members</div>
+            <p class="t-sm" style="margin-bottom:18px;">Carbon fiber composite tubes and CNC-machined aluminum brackets balance stiffness with weight. The arm is designed to be modular — joints and links can be replaced independently.</p>
+            <div class="t-h3" style="font-size:17px; margin-bottom:6px;">⚖ Weight Budget</div>
+            <p class="t-sm">Total arm weight: ~4.2 kg (without camera). Designed for desk-mount operation on a standard tripod plate or 15 mm rail system.</p>
+          </div>
+          <div>
+            <img src="MPR/dimension.png" alt="IRIS Dimensions" class="sec-img">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASSEMBLY GUIDE -->
+  <section class="s-soft">
+    <div class="inner">
+      <div class="fi" style="margin-bottom:32px;">
+        <span class="kicker">Assembly</span>
+        <h2 class="t-h2">Assembly Guide</h2>
+      </div>
+      <div class="coming-soon fi">
+        <div class="cs-icon">🛠</div>
+        <div class="cs-title">Step-by-Step Assembly Guide</div>
+        <p class="cs-body">
+          A detailed illustrated assembly guide with photos, torque specs, and wiring instructions is currently being prepared.
+          Follow the GitHub repository to be notified when it's released.
+        </p>
+        <span class="badge badge-orange" style="margin-bottom:20px;">Coming Soon</span>
+        <br>
+        <a href="https://github.com/thejerrycheng/IRIS" target="_blank" class="btn btn-outline">⭐ Star on GitHub to Follow</a>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="fi">
+        <h3 class="t-h3">Quick Assembly Notes</h3>
+        <p class="t-sm" style="margin-bottom:16px;">While the full guide is being written, here are key points for experienced builders:</p>
+        <ul style="font-size:14px; color:var(--text-muted); line-height:2; padding-left:20px;">
+          <li>Zero all motors before mechanical assembly using the calibration script.</li>
+          <li>Tighten all M3 joint screws to 1.2 N·m (no Loctite — motors need occasional repositioning).</li>
+          <li>The differential wrist (joints 5 &amp; 6) requires special attention — see <code>calibrate_joint_states.py</code>.</li>
+          <li>RS-485 termination resistor (120 Ω) goes on the last motor in the chain.</li>
+          <li>Ground all motor housings to chassis — important for RS-485 signal integrity.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot">
+      <div>
+        <div class="foot-brand">IRIS</div>
+        <div class="t-sm" style="margin-top:5px;">Open-Source Cinema Robot · Columbia University</div>
+      </div>
+      <div class="foot-links">
+        <a href="cinema_robot.html">Overview</a>
+        <a href="cinema_robot_hardware.html">Hardware</a>
+        <a href="cinema_robot_software.html">Software</a>
+        <a href="cinema_robot_sim.html">Simulation</a>
+        <a href="cinema_robot_learning.html">Learning</a>
+        <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+      </div>
+      <div class="foot-copy">© 2025 Jerry Cheng · Columbia University. Released under CC BY-NC 4.0.</div>
+    </div>
+  </footer>
+
+  <script>
+    const obs = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){e.target.classList.add('v');obs.unobserve(e.target);} }), {threshold:.1});
+    document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+    document.querySelectorAll('section:first-of-type .fi').forEach((el,i) => setTimeout(()=>el.classList.add('v'),i*130));
+    let ly=0; const nav=document.getElementById('topNav');
+    window.addEventListener('scroll',()=>{const y=window.scrollY;nav.style.transform=(y>100&&y>ly)?'translateY(-100%)':'translateY(0)';ly=y;},{passive:true});
+    const hbg=document.getElementById('hamburger'),mob=document.getElementById('mobileMenu');let mo=false;
+    hbg.addEventListener('click',()=>{mo=!mo;mob.style.transform=mo?'translateY(0)':'translateY(-100%)';});
+    document.addEventListener('click',e=>{if(mo&&!mob.contains(e.target)&&!hbg.contains(e.target)){mo=false;mob.style.transform='translateY(-100%)';}});
+  </script>
+</body>
+</html>

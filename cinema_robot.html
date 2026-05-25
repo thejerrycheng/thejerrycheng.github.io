@@ -1,2557 +1,620 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <title>IRIS — Cinema Robot Arm</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-
-<script type="module"
-  src="https://unpkg.com/@google/model-viewer@3.3.0/dist/model-viewer.min.js">
-</script>
-
+  <meta charset="utf-8">
+  <title>IRIS — Open-Source Cinema Robot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="IRIS is an open-source 6-DOF cinema robot arm with visuomotor imitation learning. Sub-$1K hardware, full ROS stack, MuJoCo simulation, and IL training pipelines.">
+  <script type="module" src="https://unpkg.com/@google/model-viewer@3.3.0/dist/model-viewer.min.js"></script>
   <style>
+    /* =============================================
+       IRIS DESIGN SYSTEM
+    ============================================= */
     :root {
-      /* --bg: #faf8f2; */
-      --text-main: #111;
-      --text-muted: #666;
-      --radius-xl: 26px;
+      --bg: #fafafa;
+      --bg-dark: #07070d;
+      --bg-soft: #f5f5f7;
+      --text: #1d1d1f;
+      --text-muted: #6e6e73;
+      --blue: #0071e3;
+      --blue-h: #0077ed;
+      --border: rgba(0,0,0,0.08);
+      --border-light: rgba(255,255,255,0.11);
+      --radius: 18px;
+      --radius-lg: 26px;
     }
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text-main);
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-
-
-    /* Desktop link style */
-    .desktop-nav a {
-    color:#111;
-    text-decoration:none;
-    position:relative;
-    }
-
-    .desktop-nav a::after {
-    content:"";
-    position:absolute;
-    left:0;
-    bottom:-2px;
-    width:0%;
-    height:1px;
-    background:#111;
-    transition:width 0.25s ease;
-    }
-
-    .desktop-nav a:hover::after {
-    width:100%;
-    }
-
-    /* Mobile view */
-    @media (max-width: 768px) {
-    .desktop-nav {
-        display:none;
-    }
-    #hamburger {
-        display:flex !important;
-    }
-    #mobileMenu a {
-        color:#111;
-        text-decoration:none;
-    }
-    }
-
-
-    .dropdown-item {
-    color: #111;
-    text-decoration: none;
-    padding: 12px 4px;
-    border-radius: 12px;
-    transition: background 0.2s ease;
-    }
-
-    .dropdown-item:hover {
-    background: rgba(0,0,0,0.06);
-    }
-
-/* SECTION SPACING */
-.section-light {
-  padding: clamp(40px, 6vw, 80px) 16px;
-  text-align: center;
-}
-
-/* TITLES */
-#s1 .hero-title {
-  font-size: clamp(34px, 7vw, 77px);   /* largest on the page */
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 18px;
-}
-
-/* HERO fade-in (Apple style) */
-#s1 .hero-title,
-#s1 .hero-subtitle,
-#s1 .viewer-wrapper {
-  opacity: 0;
-  transform: translateY(24px);
-  animation: fadeUp 1.2s ease-out forwards;
-}
-
-#s1 .hero-title {
-  animation-delay: 0.15s;
-}
-
-#s1 .hero-subtitle {
-  animation-delay: 0.35s;
-}
-
-#s1 .viewer-wrapper {
-  animation-delay: 0.55s;
-}
-
-/* Keyframes */
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.fade-section .hero-title,
-.fade-section .hero-subtitle,
-.fade-section img,
-.fade-section table {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.9s ease-out, transform 0.9s ease-out;
-}
-
-.fade-section.visible .hero-title {
-  transition-delay: 0.1s;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.fade-section.visible .hero-subtitle {
-  transition-delay: 0.25s;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.fade-section.visible img,
-.fade-section.visible table {
-  transition-delay: 0.45s;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-
-/* ===========================
-   Sunday Robotics Word Collapse
-=========================== */
-
-.sunday-section {
-  position: relative;
-  padding-top: 200px;
-  padding-bottom: 200px;
-}
-
-.sunday-words {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 120px;  /* large initial spacing like Sunday Robotics */
-  margin-bottom: 120px;
-  transition: gap 0.6s ease;
-}
-
-.sunday-word {
-  font-size: clamp(40px, 7vw, 77px);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.9s ease, transform 0.9s ease;
-}
-
-.sunday-section.visible .sunday-word {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* collapsed state (activated by JS when scrolled) */
-.sunday-words.collapsed {
-  gap: 12px !important;
-}
-
-/* Subtitle hidden until collapse completes */
-.sunday-subtitle {
-  max-width: 760px;
-  font-size: 18px;
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-  margin: 0 auto 60px;
-}
-
-.sunday-subtitle.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-
-/* --------------------------------------------------------
-   Scroll Animation Base Styles
----------------------------------------------------------*/
-.fade-section {
-  opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.9s ease-out, transform 0.9s ease-out;
-  will-change: opacity, transform;
-}
-
-.fade-section.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-
-section:not(#s1) .hero-title {
-  font-size: clamp(22px, 4vw, 55px);   /* smaller + consistent */
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  margin-bottom: 16px;
-}
-
-
-/* SUBTITLES */
-.hero-subtitle {
-  font-size: clamp(16px, 2vw, 20px);
-  color: #444;
-  line-height: 1.55;
-  margin: 0 auto;
-}
-
-/* WHITE TEXT FOR VIDEO */
-.iris-title-white { color: #fff; }
-.iris-sub-white   { color: #fff; }
-
-/* IMAGES */
-.section-image {
-  width: 100%;
-  max-width: 900px;
-  max-height: 520px;       /* <-- limit height here */
-  object-fit: contain;     /* preserve full image */
-  margin: 40px auto 0 auto;
-  border-radius: 22px;
-  display: block;
-}
-
-/* TABLE */
-.table-container {
-  max-width: 900px;
-  width: 100%;
-  margin: 40px auto 0 auto;
-  padding: 0 16px;
-}
-
-.comparison-table {
-  width: 100%;
-  font-size: 17px;
-  border-collapse: separate;
-  border-spacing: 0 14px;
-}
-
-.comparison-table th {
-  padding: 10px 0;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.comparison-table td {
-  padding: 8px 0;
-  color: #333;
-}
-
-/* VIDEO */
-.iris-video-container {
-  position: relative;
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  border-radius: 26px;
-  overflow: hidden;
-}
-
-.iris-video {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-}
-
-.iris-text-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 40px 16px;
-  text-align: center;
-  z-index: 2;
-}
-
-
-
-
-
-    /* ===========================
-          GLOBAL LAYOUT
-    ============================ */
-    section {
-    width: 100%;
-    padding: clamp(28px, 6vw, 20px) 16px; /* ↓ smaller padding */
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    }
-
-
-    .hero-title {
-    font-size: clamp(22px, 4vw, 60px);   /* smaller, tighter, cleaner */
-    font-weight: 700;
-    margin: 0 0 18px;
-    opacity: 0;
-    animation: fadeIn 1.2s ease forwards 0.2s;
-    }
-
-
-    .hero-subtitle {
-      font-size: clamp(16px, 4vw, 20px);
-      max-width: 760px;
-      color: var(--text-muted);
-      margin: 0 auto 40px;
-      line-height: 1.45;
-      opacity: 0;
-      animation: fadeIn 1.2s ease forwards 0.45s;
-    }
-
-    /* ===========================
-          VIEWER CONTAINER
-    ============================ */
-    .viewer-wrapper {
-      position: relative;
-      width: 100%;
-      max-width: 900px;
-    }
-
-    #viewer3d {
-      width: 100%;
-      height: min(70vh, 600px);
-      border-radius: var(--radius-xl);
-      background: #fff;
-      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: floatIn 1.2s ease forwards 0.6s;
-      position: relative;
-    }
-
-    model-viewer {
-      width: 100%;
-      height: 100%;
-      --poster-color: transparent;
-    }
-
-    /* Mobile viewer optimization */
-    @media (max-width: 768px) {
-      #viewer3d {
-        height: 55vh;
-      }
-    }
-
-    @media (max-width: 480px) {
-      #viewer3d {
-        height: 45vh;
-      }
-    }
-
-    /* ===========================
-          LOADING
-    ============================ */
-    .viewer-loading {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(248, 246, 240, 0.7);
-      backdrop-filter: blur(18px);
-      z-index: 9;
-      transition: opacity 0.35s ease;
-    }
-
-    .viewer-loading.hide {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 3px solid rgba(0, 0, 0, 0.12);
-      border-top-color: rgba(0, 0, 0, 0.8);
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* ===========================
-          VIEWER BUTTONS
-    ============================ */
-    .viewer-controls {
-      position: absolute;
-      right: 16px;
-      bottom: 16px;
-      display: flex;
-      gap: 10px;
-      z-index: 20;
-    }
-
-    .glass-button {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid rgba(255, 255, 255, 0.85);
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(18px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: 0.25s ease;
-    }
-
-    .glass-button.active {
-      background: rgba(17, 17, 17, 0.92);
-      color: #fff;
-    }
-
-    .glass-button:hover {
-      transform: translateY(-1px);
-    }
-
-    .glass-button svg {
-      width: 20px;
-      height: 20px;
-      stroke-width: 1.8;
-      stroke: currentColor;
-      fill: none;
-    }
-
-    /* Mobile buttons */
-    @media (max-width: 480px) {
-      .glass-button {
-        width: 34px;
-        height: 34px;
-      }
-    }
-
-/* ======================================================
-   POPUP MENU MERGING OUT OF SCROLL BAR
-   (PERFECT ALIGNMENT + SPRING + MATCHED HEIGHT)
-====================================================== */
-.scroll-menu {
-  position: fixed;
-
-  /* Align horizontally with scroll bar (NOT offset) */
-  right: calc(20px + 40px);  /* 20px (bar offset) + 40px (bar width) */
-  /* This ensures the popup STARTS exactly where the scroll bar ends */
-
-  top: 50%;
-
-  /* START collapsed width = scroll bar width */
-  width: 40px;
-
-  /* START collapsed height = MATCH scroll bar */
-  height: 200px;   /* THIS gets dynamically updated from JS */
-
-  background: #f3f1eb;
-  border-radius: 26px;
-  opacity: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 3000;
-
-  /* Merge-from-bar: horizontal scale spring only */
-  transform: translateY(-50%) scaleX(0.15);
-  transform-origin: right center;
-
-  transition:
-    opacity 0.25s ease,
-    border-radius 0.20s ease,
-    /* BOUNCY HORIZONTAL SPRING */
-    transform 0.55s cubic-bezier(0.25, 1.55, 0.45, 0.95),
-    width 0.55s cubic-bezier(0.25, 1.55, 0.45, 0.95);
-}
-
-/* FINAL FORM */
-.scroll-menu.show {
-  opacity: 1;
-  pointer-events: auto;
-
-  /* expand horizontally ONLY */
-  transform: translateY(-50%) scaleX(1);
-  width: 260px;
-
-  /* height stays fixed from JS sync */
-  border-radius: 26px;
-}
-
-
-/* INNER CONTENT — fades in after the spring */
-.scroll-menu-inner {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: 0.12s; /* starts after the main spring motion */
-}
-
-.scroll-menu.show .scroll-menu-inner {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* MENU ITEMS */
-.scroll-menu-item {
-  padding: 14px 24px;
-  font-size: 15px;
-  color: #111;
-  cursor: pointer;
-  opacity: 0;
-  transform: translateX(12px);
-  transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
-  transition-delay: 0.15s;
-}
-
-.scroll-menu.show .scroll-menu-item {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.scroll-menu-item:hover {
-  background: #e7e4dd;
-  border-radius: 10px;
-}
-
-/* Apple-style CTA Buttons */
-.hero-cta {
-  display: flex;
-  gap: 18px;
-  margin: 32px auto 44px;
-  justify-content: center;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 1.2s ease-out forwards;
-  animation-delay: 0.45s;
-}
-
-.cta-primary,
-.cta-secondary {
-  padding: 12px 26px;
-  font-size: 17px;
-  font-weight: 500;
-  border-radius: 999px;
-  text-decoration: none;
-  transition: all 0.25s ease;
-}
-
-/* Primary button (blue Apple-style) */
-.cta-primary {
-  background: #0071e3;
-  color: #fff;
-}
-
-.cta-primary:hover {
-  background: #0b78ec;
-  transform: translateY(-2px);
-}
-
-/* Secondary button (transparent) */
-.cta-secondary {
-  background: rgba(0,0,0,0.06);
-  color: #111;
-  backdrop-filter: blur(12px);
-}
-
-.cta-secondary:hover {
-  background: rgba(0,0,0,0.12);
-  transform: translateY(-2px);
-}
-
-/* Mobile stacking */
-@media (max-width: 600px) {
-  .hero-cta {
-    flex-direction: column;
-    gap: 14px;
-    width: 100%;
-    max-width: 240px;
-  }
-}
-
-
-/* Apple-style CTA Buttons */
-.hero-cta {
-  display: flex;
-  gap: 18px;
-  margin: 32px auto 44px;
-  justify-content: center;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 1.2s ease-out forwards;
-  animation-delay: 0.45s;
-}
-
-.cta-primary,
-.cta-secondary {
-  padding: 12px 26px;
-  font-size: 17px;
-  font-weight: 500;
-  border-radius: 999px;
-  text-decoration: none;
-  transition: all 0.25s ease;
-}
-
-/* Primary button (blue Apple-style) */
-.cta-primary {
-  background: #0071e3;
-  color: #fff;
-}
-
-.cta-primary:hover {
-  background: #0b78ec;
-  transform: translateY(-2px);
-}
-
-/* Secondary button (transparent) */
-.cta-secondary {
-  background: rgba(0,0,0,0.06);
-  color: #111;
-  backdrop-filter: blur(12px);
-}
-
-.cta-secondary:hover {
-  background: rgba(0,0,0,0.12);
-  transform: translateY(-2px);
-}
-
-/* Mobile stacking */
-@media (max-width: 600px) {
-  .hero-cta {
-    flex-direction: column;
-    gap: 14px;
-    width: 100%;
-    max-width: 240px;
-  }
-}
-
-
-
-    /* ========== DRAG CURSOR STYLE ========== */
-    .scroll-thumb {
-    cursor: grab;
-    }
-
-    .scroll-thumb.dragging {
-    cursor: grabbing;
-    }
-
-
-    /* ===========================
-          SCROLL INDICATOR
-    ============================ */
-    .scroll-indicator {
-      position: fixed;
-      right: 40px;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 999;
-    }
-    
-
-    .scroll-track {
-      width: 40px;
-      padding: 30px 0;
-      background: #f3f1eb;
-      border-radius: 26px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 26px;
-      position: relative;
-    }
-
-    .scroll-dot {
-      width: 8px;
-      height: 14px;
-      background: #cacaca;
-      border-radius: 6px;
-    }
-
-    .scroll-thumb {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: #111;
-    border-radius: 999px;
-    left: 50%;
-    transform: translateX(-50%);
-    transition: height 0.12s cubic-bezier(0.22, 1, 0.36, 1),
-                top 0.12s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-
-
-    /* Hide on small screens */
-    @media (max-width: 768px) {
-      .scroll-indicator {
-        display: none;
-      }
-    }
-    /* --- MOBILE NAVIGATION REWRITE --- */
-    @media (max-width: 768px) {
-
-    /* Hide desktop nav entirely */
-    header nav {
-        display: none !important;
-    }
-
-    /* Show hamburger button in top-right */
-    #hamburger {
-        position: absolute;
-        right: 18px;
-        top: 14px;
-        display: flex !important;
-        z-index: 99999;
-    }
-
-    /* Shrink Motion Picture Robotics logo */
-    #brandTitle {
-        font-size: 16px !important;
-        white-space: nowrap;
-    }
-    }
-
-
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
-    }
-
-    @keyframes floatIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-
-/* =========================================
-   AXIS / HOME-STUDIO DESIGN SECTIONS
-   ========================================= */
-.axis-section {
-  padding: clamp(60px, 8vw, 120px) 16px;
-  box-sizing: border-box;
-}
-
-.axis-section-inner {
-  max-width: 1120px;
-  margin: 0 auto;
-}
-
-.axis-dark {
-  background: #050509;
-  color: #f9fafb;
-}
-
-.axis-dark-soft {
-  background: #0b0b0f;
-  color: #f9fafb;
-}
-
-.axis-light {
-  background: #ffffff;
-  color: #000000;
-}
-
-/* Hero */
-.axis-hero {
-  text-align: center;
-  padding-top: clamp(80px, 12vw, 140px);
-}
-.axis-kicker {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.16);
-  background: rgba(255,255,255,0.04);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: #60a5fa;
-  margin-bottom: 18px;
-}
-.axis-hero-title {
-  font-size: clamp(34px, 6vw, 77px);
-  font-weight: 600;
-  letter-spacing: -0.04em;
-  line-height: 1.02;
-  margin: 0 0 10px;
-  background: linear-gradient(to bottom, #ffffff, #9ca3af);
-  -webkit-background-clip: text;
-  color: transparent;
-}
-.axis-hero-subtitle {
-  font-size: clamp(18px, 3vw, 22px);
-  color: #9ca3af;
-  max-width: 640px;
-  margin: 0 auto 28px;
-  font-weight: 500;
-}
-.axis-hero-ctas {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 40px;
-}
-.axis-hero-link {
-  font-size: 16px;
-  color: #60a5fa;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: 500;
-}
-.axis-hero-link span.arrow {
-  display: inline-block;
-  transition: transform 0.2s ease;
-}
-.axis-hero-link:hover span.arrow {
-  transform: translateX(3px);
-}
-
-/* Hero image wrapper */
-.axis-hero-media {
-  position: relative;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-.axis-hero-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 75%;
-  height: 75%;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle at center, rgba(59,130,246,0.55), transparent 60%);
-  filter: blur(60px);
-  opacity: 0.5;
-  pointer-events: none;
-}
-.axis-hero-img {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  border-radius: 22px;
-  box-shadow: 0 40px 90px rgba(0,0,0,0.6);
-  border: 1px solid rgba(255,255,255,0.12);
-  display: block;
-}
-
-/* Floating badge */
-.axis-floating-badge {
-  position: absolute;
-  top: 32px;
-  right: 28px;
-  padding: 10px 14px;
-  border-radius: 14px;
-  background: rgba(0,0,0,0.65);
-  border: 1px solid rgba(255,255,255,0.12);
-  backdrop-filter: blur(18px);
-  font-size: 11px;
-  text-align: right;
-  color: #e5e7eb;
-}
-.axis-floating-badge-status {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  margin-bottom: 3px;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 10px;
-  color: #9ca3af;
-}
-.axis-floating-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: #22c55e;
-  box-shadow: 0 0 10px rgba(34,197,94,0.9);
-}
-
-/* Materials grid */
-.axis-materials-intro {
-  text-align: center;
-  margin-bottom: 30px;
-}
-.axis-materials-title {
-  font-size: clamp(30px, 5vw, 40px);
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  margin-bottom: 10px;
-}
-.axis-materials-sub {
-  font-size: 17px;
-  color: #9ca3af;
-  max-width: 640px;
-  margin: 0 auto;
-  line-height: 1.6;
-}
-.axis-material-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 18px;
-  max-width: 1120px;
-  margin: 26px auto 0;
-}
-@media (min-width: 768px) {
-  .axis-material-grid {
-    grid-template-columns: repeat(2, minmax(0,1fr));
-  }
-}
-.axis-material-card {
-  position: relative;
-  min-height: 240px;
-  border-radius: 24px;
-  padding: 26px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: radial-gradient(circle at top left, rgba(148,163,184,0.35), transparent 60%);
-}
-.axis-material-card h3 {
-  font-size: 22px;
-  margin: 0 0 6px;
-}
-.axis-material-card p {
-  font-size: 14px;
-  color: #9ca3af;
-}
-
-/* Base / Screen section */
-.axis-base-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  align-items: center;
-}
-@media (min-width: 900px) {
-  .axis-base-layout {
-    flex-direction: row;
-  }
-}
-.axis-base-visual,
-.axis-base-copy {
-  flex: 1;
-}
-.axis-base-screen {
-  position: relative;
-  padding: 20px;
-  border-radius: 28px;
-  background: #020617;
-  border: 1px solid rgba(255,255,255,0.12);
-  box-shadow: 0 32px 80px rgba(0,0,0,0.7);
-  overflow: hidden;
-  min-height: 260px;
-}
-.axis-base-hud {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-}
-.axis-base-hud-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-.axis-pill {
-  padding: 4px 8px;
-  border-radius: 9px;
-  background: rgba(0,0,0,0.7);
-  border: 1px solid rgba(148,163,184,0.6);
-  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 11px;
-  color: #4ade80;
-}
-.axis-square-btn {
-  padding: 6px;
-  border-radius: 9px;
-  background: rgba(0,0,0,0.7);
-  border: 1px solid rgba(148,163,184,0.6);
-}
-.axis-crosshair-wrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 26px 0;
-}
-.axis-crosshair {
-  width: 130px;
-  height: 130px;
-  border-radius: 999px;
-  border: 1px solid rgba(248,250,252,0.35);
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.axis-crosshair::before,
-.axis-crosshair::after {
-  content: "";
-  position: absolute;
-  background: rgba(248,250,252,0.25);
-}
-.axis-crosshair::before {
-  width: 110px;
-  height: 1px;
-}
-.axis-crosshair::after {
-  width: 1px;
-  height: 110px;
-}
-.axis-rec-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: #ef4444;
-}
-
-/* Thumbnail bar */
-.axis-thumb-row {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-}
-.axis-thumb {
-  min-width: 80px;
-  height: 42px;
-  border-radius: 10px;
-  background: rgba(0,0,0,0.65);
-  border: 1px solid rgba(148,163,184,0.6);
-}
-
-/* Base copy */
-.axis-eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #60a5fa;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-.axis-copy-title {
-  font-size: clamp(28px, 4vw, 40px);
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  margin-bottom: 12px;
-}
-.axis-copy-body {
-  font-size: 16px;
-  color: #9ca3af;
-  line-height: 1.6;
-  margin-bottom: 18px;
-}
-.axis-spec-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.axis-spec-list li {
-  display: flex;
-  align-items: center;
-  font-size: 15px;
-  color: #e5e7eb;
-  margin-bottom: 10px;
-}
-.axis-spec-bullet {
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  border: 1px solid rgba(148,163,184,0.8);
-  margin-right: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-}
-
-/* Vision / end effector */
-.axis-vision-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  align-items: center;
-}
-@media (min-width: 900px) {
-  .axis-vision-layout {
-    flex-direction: row-reverse;
-  }
-}
-.axis-vision-visual,
-.axis-vision-copy {
-  flex: 1;
-}
-.axis-vision-block {
-  border-radius: 26px;
-  background: #f5f5f5;
-  border: 1px solid #e5e7eb;
-  padding: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.axis-vision-camera {
-  position: relative;
-  width: 190px;
-  height: 190px;
-  border-radius: 24px;
-  background: #e5e7eb;
-  box-shadow: 0 26px 60px rgba(0,0,0,0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.axis-vision-sensor {
-  width: 110px;
-  height: 110px;
-  border-radius: 18px;
-  background: radial-gradient(circle at center, #1e293b 0%, #020617 60%, #000000 100%);
-  position: relative;
-  overflow: hidden;
-  border: 2px solid #cbd5f5;
-}
-.axis-vision-sensor-overlay {
-  position: absolute;
-  inset: 0;
-  opacity: 0.2;
-  background-image:
-    repeating-linear-gradient(45deg, #111 0, #111 1px, transparent 1px, transparent 4px),
-    repeating-linear-gradient(-45deg, #111 0, #111 1px, transparent 1px, transparent 4px);
-}
-.axis-vision-sensor-glow {
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  border-radius: 999px;
-  background: rgba(129, 140, 248, 0.5);
-  filter: blur(16px);
-}
-.axis-vision-depth-dots {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 18px;
-}
-.axis-vision-depth-dots span {
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  background: rgba(15,23,42,0.4);
-}
-.axis-vision-label {
-  position: absolute;
-  bottom: -26px;
-  width: 100%;
-  text-align: center;
-  font-size: 10px;
-  letter-spacing: 0.3em;
-  color: #9ca3af;
-}
-
-/* Vision copy */
-.axis-vision-eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #6b7280;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-.axis-vision-title {
-  font-size: clamp(28px, 4vw, 40px);
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  margin-bottom: 12px;
-}
-.axis-vision-body {
-  font-size: 16px;
-  color: #4b5563;
-  line-height: 1.6;
-  margin-bottom: 18px;
-}
-.axis-vision-metrics {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-}
-.axis-vision-metric {
-  border-left: 2px solid #e5e7eb;
-  padding-left: 10px;
-}
-.axis-vision-metric-value {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.05em;
-}
-.axis-vision-metric-label {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-
-/* ===========================
-      SECTION 2 — TEXT ON VIDEO
-=========================== */
-
-.iris-video-container {
-  position: relative;
-  width: 100%;
-  max-width: 900px;               /* SAME AS OTHER SECTIONS */
-  margin: 0 auto;
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-}
-
-.iris-video {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-}
-
-/* TEXT LAYER (NO background overlay) */
-.iris-text-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 40px 16px;
-  text-align: center;
-  pointer-events: none;      /* text doesn't block clicks on scrolling */
-}
-
-/* White text */
-.iris-title-white {
-  color: #ffffff;
-}
-
-.iris-sub-white {
-  color: #f1f1f1;            /* slightly softer white for readability */
-  max-width: 760px;
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .iris-text-overlay {
-    padding: 30px 16px;
-  }
-}
-
-
-
-/* ===========================
-   SECTION 2 — SPLIT PREVIEW
-=========================== */
-
-.iris-split {
-  display: flex;
-  gap: 24px;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.iris-pane {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.iris-pane-content {
-  flex: 1;
-  border-radius: 26px;
-  overflow: hidden;
-  border: 1px solid rgba(0,0,0,0.08);
-  background: #fff;
-  height: 100%;
-}
-
-.iris-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-#viewer3d {
-  width: 100%;
-  height: 100%;
-}
-
-/* Label under each pane */
-.iris-pane-label {
-  text-align: center;
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  margin-top: 12px;
-  color: #888;
-}
-
-/* Toggle bar */
-.iris-toggle {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 36px;
-}
-
-.iris-toggle-btn {
-  padding: 8px 22px;
-  border-radius: 999px;
-  border: 1px solid rgba(0,0,0,0.12);
-  background: rgba(0,0,0,0.04);
-  font-size: 14px;
-  cursor: pointer;
-  transition: 0.25s ease;
-}
-
-.iris-toggle-btn.active {
-  background: #0071e3;
-  color: #fff;
-  border-color: #0071e3;
-}
-
-/* Mobile stack */
-@media (max-width: 900px) {
-  .iris-split {
-    flex-direction: column;
-  }
-}
-
-
-/* Lifestyle */
-.axis-lifestyle-title {
-  font-size: clamp(28px, 4vw, 40px);
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  margin-bottom: 10px;
-  text-align: center;
-}
-.axis-lifestyle-sub {
-  max-width: 640px;
-  margin: 0 auto 28px;
-  font-size: 16px;
-  color: #9ca3af;
-  text-align: center;
-}
-.axis-lifestyle-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-  max-width: 1120px;
-  margin: 0 auto;
-}
-@media (min-width: 900px) {
-  .axis-lifestyle-grid {
-    grid-template-columns: repeat(3, minmax(0,1fr));
-  }
-}
-.axis-lifestyle-card {
-  height: 230px;
-  border-radius: 20px;
-  background: #020617;
-  border: 1px solid rgba(148,163,184,0.35);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  text-align: center;
-}
-.axis-lifestyle-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 999px;
-  background: #020617;
-  border: 1px solid rgba(148,163,184,0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 12px;
-  font-size: 20px;
-}
-.axis-lifestyle-card-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-.axis-lifestyle-card-body {
-  font-size: 13px;
-  color: #9ca3af;
-}
-
-
-/* === UNIFIED SECTION HEIGHT AFTER HERO === */
-section:not(#s1):not(#axis-hero) {
-  min-height: clamp(600px, 90vh, 840px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-/* AXIS — unify section titles */
-.axis-materials-title,
-.axis-copy-title,
-.axis-vision-title,
-.axis-lifestyle-title {
-  font-size: clamp(32px, 5vw, 48px);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.05;
-}
-
-/* AXIS — unify subtitles */
-.axis-materials-sub,
-.axis-copy-body,
-.axis-vision-body,
-.axis-lifestyle-sub {
-  font-size: 18px;
-  line-height: 1.55;
-  color: var(--text-muted);
-  max-width: 640px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-
-/* AXIS — eyebrow standard */
-.axis-eyebrow,
-.axis-vision-eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  font-weight: 600;
-  opacity: 0.9;
-}
-
-/* AXIS — card titles */
-.axis-lifestyle-card-title,
-.axis-material-card h3 {
-  font-size: 18px;
-  font-weight: 600;
-}
-/* AXIS — metric consistency */
-.axis-vision-metric-value {
-  font-size: 24px;
-  font-weight: 700;
-}
-.axis-vision-metric-label {
-  font-size: 12px;
-  opacity: 0.7;
-}
-/* AXIS — body small text */
-.axis-lifestyle-card-body,
-.axis-material-card p {
-  font-size: 14px;
-  line-height: 1.45;
-}
-
-
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+
+    /* NAV */
+    #topNav { position:fixed; top:0; left:0; width:100%; height:56px; background:rgba(255,255,255,0.82); backdrop-filter:saturate(180%) blur(20px); -webkit-backdrop-filter:saturate(180%) blur(20px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 28px; z-index:9999; transition:transform .35s ease; }
+    #brandTitle { font-size:17px; font-weight:700; color:var(--text); text-decoration:none; letter-spacing:-0.02em; }
+    .nav-links { display:flex; gap:22px; list-style:none; margin:0; padding:0; }
+    .nav-links a { font-size:14px; font-weight:500; color:var(--text-muted); text-decoration:none; transition:color .2s; }
+    .nav-links a:hover,.nav-links a.active { color:var(--text); }
+    .nav-links a.nav-ext { color:var(--blue); }
+    #hamburger { display:none; width:36px; height:36px; border-radius:50%; background:var(--bg-soft); border:none; cursor:pointer; align-items:center; justify-content:center; flex-direction:column; gap:5px; }
+    #hamburger span { display:block; width:18px; height:1.5px; background:var(--text); border-radius:2px; }
+    #mobileMenu { position:fixed; top:0; left:0; width:100%; background:rgba(255,255,255,0.96); backdrop-filter:blur(20px); padding:72px 24px 28px; transform:translateY(-100%); transition:transform .35s cubic-bezier(.25,1,.3,1); z-index:9990; border-bottom:1px solid var(--border); }
+    #mobileMenu a { display:block; padding:14px 0; font-size:17px; font-weight:500; color:var(--text); text-decoration:none; border-bottom:1px solid var(--border); }
+    #mobileMenu a:last-child { border-bottom:none; }
+    .nav-spacer { height:56px; }
+    @media(max-width:768px){ .nav-links{display:none;} #hamburger{display:flex;} }
+
+    /* SCROLL INDICATOR */
+    .scroll-bar { position:fixed; right:20px; top:50%; transform:translateY(-50%); z-index:500; }
+    .scroll-track { width:34px; padding:22px 0; background:rgba(245,245,247,0.92); backdrop-filter:blur(12px); border-radius:24px; display:flex; flex-direction:column; align-items:center; gap:18px; position:relative; cursor:pointer; }
+    .scroll-dot { width:5px; height:10px; background:#c7c7cc; border-radius:4px; transition:background .3s; cursor:pointer; }
+    .scroll-dot.active { background:var(--text); }
+    .scroll-thumb { position:absolute; width:7px; background:var(--text); border-radius:999px; left:50%; transform:translateX(-50%); transition:height .1s ease, top .1s ease; }
+    @media(max-width:900px){ .scroll-bar{display:none;} }
+
+    /* BUTTONS */
+    .btn { display:inline-flex; align-items:center; gap:7px; padding:10px 20px; border-radius:999px; font-size:15px; font-weight:500; text-decoration:none; border:none; cursor:pointer; transition:all .2s ease; white-space:nowrap; }
+    .btn-primary { background:var(--blue); color:#fff; }
+    .btn-primary:hover { background:var(--blue-h); transform:translateY(-1px); }
+    .btn-ghost { background:rgba(255,255,255,0.11); color:#fff; border:1px solid rgba(255,255,255,0.18); }
+    .btn-ghost:hover { background:rgba(255,255,255,0.2); transform:translateY(-1px); }
+    .btn-outline { background:transparent; color:var(--text); border:1px solid var(--border); }
+    .btn-outline:hover { background:var(--bg-soft); transform:translateY(-1px); }
+
+    /* BADGES */
+    .badge { display:inline-flex; align-items:center; padding:4px 11px; border-radius:999px; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; }
+    .badge-blue  { background:rgba(0,113,227,.12); color:var(--blue); border:1px solid rgba(0,113,227,.2); }
+    .badge-light { background:rgba(255,255,255,.1); color:rgba(255,255,255,.8); border:1px solid rgba(255,255,255,.14); }
+    .badge-green { background:rgba(52,199,89,.12); color:#1a8f35; border:1px solid rgba(52,199,89,.2); }
+    .badge-gray  { background:var(--bg-soft); color:var(--text-muted); border:1px solid var(--border); }
+    .badge-orange{ background:rgba(255,149,0,.12); color:#c07000; border:1px solid rgba(255,149,0,.2); }
+
+    /* SECTIONS */
+    section { width:100%; padding:clamp(60px,8vw,100px) clamp(20px,4vw,44px); box-sizing:border-box; }
+    .inner     { max-width:900px; margin:0 auto; }
+    .inner-wide{ max-width:1100px; margin:0 auto; }
+    .s-dark { background:var(--bg-dark); color:#f5f5f7; }
+    .s-light{ background:var(--bg); }
+    .s-soft { background:var(--bg-soft); }
+
+    /* TYPOGRAPHY */
+    .kicker { font-size:11px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--blue); margin-bottom:14px; display:block; }
+    .kicker-light { color:rgba(255,255,255,.45); }
+    .t-hero { font-size:clamp(52px,8vw,96px); font-weight:700; letter-spacing:-.05em; line-height:1; margin:0 0 14px; }
+    .t-h2   { font-size:clamp(28px,4vw,48px);  font-weight:700; letter-spacing:-.025em; line-height:1.08; margin:0 0 14px; }
+    .t-h3   { font-size:20px; font-weight:600; letter-spacing:-.01em; margin:0 0 8px; }
+    .t-body { font-size:17px; line-height:1.65; color:var(--text-muted); margin:0 0 16px; }
+    .t-body-light { color:rgba(255,255,255,.65); }
+    .t-sm   { font-size:14px; color:var(--text-muted); line-height:1.5; }
+
+    /* FADE */
+    .fi { opacity:0; transform:translateY(28px); transition:opacity .8s ease, transform .8s ease; }
+    .fi.v { opacity:1; transform:translateY(0); }
+    .fi[data-d="1"]{ transition-delay:.1s; }
+    .fi[data-d="2"]{ transition-delay:.2s; }
+    .fi[data-d="3"]{ transition-delay:.3s; }
+    .fi[data-d="4"]{ transition-delay:.4s; }
+
+    /* CARDS */
+    .card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:28px; transition:box-shadow .22s,transform .22s; }
+    .card:hover { box-shadow:0 12px 40px rgba(0,0,0,.08); transform:translateY(-2px); }
+
+    /* GRIDS */
+    .g2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+    .g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+    @media(max-width:900px){ .g4{grid-template-columns:repeat(2,1fr);} .g3{grid-template-columns:1fr 1fr;} }
+    @media(max-width:560px){ .g4,.g3,.g2{grid-template-columns:1fr;} }
+
+    /* SPLIT */
+    .split { display:flex; gap:56px; align-items:center; }
+    .split > * { flex:1; }
+    @media(max-width:800px){ .split{flex-direction:column;gap:36px;} }
+
+    /* CODE */
+    .code-block { background:#0d1117; border-radius:14px; padding:18px 22px; font-family:"SF Mono","Fira Code",Menlo,monospace; font-size:13px; line-height:1.7; color:#e6edf3; overflow-x:auto; border:1px solid rgba(255,255,255,.08); text-align:left; }
+
+    /* DIVIDER */
+    .divider { height:1px; background:var(--border); margin:40px 0; }
+
+    /* IMAGE */
+    .sec-img { width:100%; border-radius:var(--radius-lg); display:block; border:1px solid var(--border); }
+
+    /* STATS */
+    .stat-val { font-size:clamp(32px,5vw,52px); font-weight:700; letter-spacing:-.04em; line-height:1; margin-bottom:5px; }
+    .stat-lbl { font-size:13px; color:var(--text-muted); font-weight:500; }
+
+    /* VIDEO */
+    .vid-wrap { border-radius:var(--radius-lg); overflow:hidden; border:1px solid rgba(255,255,255,.08); background:#000; }
+    .vid-wrap video { width:100%; display:block; }
+
+    /* TABLE */
+    .iris-table { width:100%; border-collapse:collapse; font-size:15px; }
+    .iris-table th { text-align:left; padding:11px 14px; font-size:13px; font-weight:600; color:var(--text-muted); border-bottom:1px solid var(--border); }
+    .iris-table td { padding:13px 14px; border-bottom:1px solid var(--border); color:var(--text); }
+    .iris-table tr:last-child td { border-bottom:none; }
+    .iris-table td.hi { color:var(--blue); font-weight:600; }
+    .chk { color:#34c759; font-weight:700; }
+    .crs { color:#ff3b30; }
+
+    /* BIBTEX */
+    .bibtex { background:var(--bg-soft); border-radius:14px; padding:24px; font-family:"SF Mono",Menlo,monospace; font-size:13px; line-height:1.7; color:#333; text-align:left; position:relative; border:1px solid var(--border); }
+    .bibtex pre { margin:0; white-space:pre-wrap; }
+    .copy-btn { position:absolute; top:14px; right:14px; padding:5px 12px; border-radius:8px; background:var(--text); color:#fff; font-size:12px; font-weight:500; border:none; cursor:pointer; }
+    .copy-btn:hover { opacity:.8; }
+
+    /* RESOURCE CARD */
+    .res-card { display:flex; flex-direction:column; background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:26px; text-decoration:none; color:inherit; transition:box-shadow .22s,transform .22s; }
+    .res-card:hover { box-shadow:0 16px 48px rgba(0,0,0,.09); transform:translateY(-3px); }
+    .res-icon { width:46px; height:46px; border-radius:13px; display:flex; align-items:center; justify-content:center; margin-bottom:16px; font-size:22px; }
+    .res-card h3 { font-size:18px; font-weight:600; margin:0 0 8px; letter-spacing:-.01em; }
+    .res-card p { font-size:14px; color:var(--text-muted); line-height:1.55; margin:0 0 16px; flex:1; }
+    .res-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:16px; }
+    .res-link { font-size:14px; font-weight:600; color:var(--blue); margin-top:auto; }
+
+    /* MODEL */
+    .model-wrap { width:100%; height:460px; border-radius:var(--radius-lg); overflow:hidden; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); position:relative; }
+    model-viewer { width:100%; height:100%; --poster-color:transparent; }
+    @media(max-width:600px){ .model-wrap{height:280px;} }
+
+    /* CONTRIB ITEM */
+    .contrib { display:flex; gap:14px; }
+    .contrib-icon { font-size:22px; flex-shrink:0; margin-top:2px; }
+
+    /* FOOTER */
+    footer { background:var(--bg-soft); border-top:1px solid var(--border); padding:44px clamp(20px,4vw,44px); }
+    .foot { max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:flex-start; gap:36px; flex-wrap:wrap; }
+    .foot-brand { font-size:17px; font-weight:700; letter-spacing:-.02em; }
+    .foot-links { display:flex; gap:20px; flex-wrap:wrap; }
+    .foot-links a { font-size:14px; color:var(--text-muted); text-decoration:none; }
+    .foot-links a:hover { color:var(--text); }
+    .foot-copy { width:100%; font-size:12px; color:var(--text-muted); margin-top:28px; padding-top:22px; border-top:1px solid var(--border); }
   </style>
 </head>
-
 <body>
 
+  <!-- NAV -->
+  <header id="topNav">
+    <a href="cinema_robot.html" id="brandTitle">IRIS</a>
+    <ul class="nav-links">
+      <li><a href="cinema_robot.html" class="active">Overview</a></li>
+      <li><a href="cinema_robot_hardware.html">Hardware</a></li>
+      <li><a href="cinema_robot_software.html">Software</a></li>
+      <li><a href="cinema_robot_sim.html">Simulation</a></li>
+      <li><a href="cinema_robot_learning.html">Learning</a></li>
+      <li><a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank" class="nav-ext">Paper ↗</a></li>
+    </ul>
+    <button id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </header>
 
-  <!-- ===========================
-        SCROLL INDICATOR (RIGHT)
-  ============================ -->
-  <div class="scroll-indicator">
+  <div id="mobileMenu">
+    <a href="cinema_robot.html">Overview</a>
+    <a href="cinema_robot_hardware.html">Hardware</a>
+    <a href="cinema_robot_software.html">Software</a>
+    <a href="cinema_robot_sim.html">Simulation</a>
+    <a href="cinema_robot_learning.html">Learning</a>
+    <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+  </div>
+  <div class="nav-spacer"></div>
+
+  <!-- SCROLL INDICATOR -->
+  <div class="scroll-bar">
     <div class="scroll-track">
       <div class="scroll-thumb"></div>
-      <div class="scroll-dot" data-target="s1"></div>
-      <div class="scroll-dot" data-target="s2"></div>
-      <div class="scroll-dot" data-target="s3"></div>
-      <div class="scroll-dot" data-target="s4"></div>
-      <div class="scroll-dot" data-target="s5"></div>
+      <div class="scroll-dot" data-target="hero"></div>
+      <div class="scroll-dot" data-target="abstract"></div>
+      <div class="scroll-dot" data-target="system"></div>
+      <div class="scroll-dot" data-target="resources"></div>
+      <div class="scroll-dot" data-target="demo"></div>
+      <div class="scroll-dot" data-target="results"></div>
+      <div class="scroll-dot" data-target="cite"></div>
     </div>
   </div>
-
-  <!-- POPUP MENU FOR SECTIONS -->
-<div id="scroll-menu" class="scroll-menu">
-  <div class="scroll-menu-inner">
-    <div class="scroll-menu-item" data-target="s1">Overview</div>
-    <div class="scroll-menu-item" data-target="s2">What is IRIS?</div>
-    <div class="scroll-menu-item" data-target="s3">Why Robots Are Expensive</div>
-    <div class="scroll-menu-item" data-target="s4">Three Objectives</div>
-    <div class="scroll-menu-item" data-target="s5">Comparison Grid</div>
-  </div>
-</div>
-
- <!-- MOBILE: Apple pill-shaped menu button -->
-  <div id="hamburger" style="
-    display:none;
-    width: 44px;
-    height: 28px;
-    border-radius: 32px;
-    background: rgba(255,255,255,0.85);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-    cursor:pointer;
-    transition: background 0.25s ease;
-  ">
-    <div id="hamLines" style="
-      width: 18px;
-      height: 2px;
-      background:#111;
-      position:relative;
-      transition:0.25s ease;
-    ">
-      <div style="position:absolute; width:18px; height:2px; background:#111; top:-6px;"></div>
-      <div style="position:absolute; width:18px; height:2px; background:#111; top:6px;"></div>
-    </div>
-  </div>
-
-</header>
-
-<!-- MOBILE SLIDE MENU -->
-<!-- Apple-glass Top Dropdown Menu -->
-<div id="mobileMenu" style="
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(22px) saturate(180%);
-  -webkit-backdrop-filter: blur(22px) saturate(180%);
-  padding: 70px 24px 28px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
-  font-size: 18px;
-  font-weight: 500;
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-
-  /* 🔥 KEY FIX */
-  transform: translateY(-100%);
-  transition: transform 0.35s cubic-bezier(.25,1,.30,1);
-
-  z-index: 9990;
-">
-  <a class="dropdown-item" href="#s1">Home</a>
-  <a class="dropdown-item" href="#s2">Features</a>
-  <a class="dropdown-item" href="#s3">Specs</a>
-  <a class="dropdown-item" href="#s5">Comparison</a>
-  <a class="dropdown-item" href="join.html">Join Us</a>
-  <a class="dropdown-item" href="#contact">Contact</a>
-</div>
-
-
-
-<!-- Top Navigation Bar -->
-<header id="topNav" style="
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  box-sizing: border-box;
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
-  z-index: 9999;
-">
-
-  <!-- Logo -->
-<div id="brandTitle" style="font-size: 20px; font-weight: 600; color: #111;">
-  Motion Picture Robotics
-</div>
-
-
-  <!-- Menu -->
-  <nav style="display: flex; gap: 28px; font-size: 15px; font-weight: 500;">
-    <a href="#s1" style="color:#111; text-decoration:none;">Home</a>
-    <a href="#s2" style="color:#111; text-decoration:none;">Features</a>
-    <a href="#s3" style="color:#111; text-decoration:none;">Specs</a>
-    <a href="#s5" style="color:#111; text-decoration:none;">Comparison</a>
-    <a href="join.html" style="color:#111; text-decoration:none;">Join Us</a>
-    <a href="#contact" style="color:#111; text-decoration:none;">Contact</a>
-
-  </nav>
-
-</header>
-
-<!-- Spacer -->
-<div style="height:60px;"></div>
-
-
-
 
   <!-- ===========================
-          SECTION 1 — HERO
+       HERO
   ============================ -->
+  <section id="hero" class="s-dark" style="text-align:center; padding-top:clamp(90px,14vw,140px); padding-bottom:clamp(60px,9vw,100px);">
+    <div class="inner">
+      <span class="badge badge-light fi" style="margin-bottom:22px; display:inline-flex;">
+        MEng Thesis · Columbia University · 2025
+      </span>
 
-<section id="s1" class="axis-dark axis-section fade-section">
+      <h1 class="t-hero fi" data-d="1" style="
+        background:linear-gradient(160deg,#fff 40%,#6b7280);
+        -webkit-background-clip:text; color:transparent;
+        margin-top:12px;
+      ">IRIS</h1>
 
-
-  <h2 class="axis-hero-title">
-     Meet IRIS,<br>Cinema-Grade Motion Control for Everyone
-    </h2>
-
-
-    <p class="axis-hero-subtitle">
-    The power of a motion stage, refined for your home studio.  
-    <span style="display:block; margin-top:10px; color:#60a5fa;">
-      Coming Summer 2026 — Pre-order now.
-    </span>
-  </p>
-
-
-  <!-- Apple-style CTA buttons -->
-   <!-- Apple-style CTA buttons -->
-  <div class="hero-cta">
-    <a href="#s2" class="cta-primary">Watch the Film</a>
-    <a href="#preorder" class="cta-primary">Pre-order Now</a>
-    <!-- <a href="#contact" class="cta-secondary">Buy Now</a> -->
-  </div>
-
-  <div class="axis-hero-media">
-      <div class="axis-hero-glow"></div>
-
-      <img
-        src="MPR/version2.png"
-        alt="IRIS / Axis Home Studio Robot Arm"
-        class="axis-hero-img">
-    </div>
-
-  <div class="viewer-wrapper">
-    <div id="viewer3d">
-
-      <model-viewer id="robotViewer"
-        src="assets/models/cinema_robot.glb"
-        camera-controls
-        auto-rotate
-        auto-rotate-delay="0"
-        exposure="1"
-        shadow-intensity="1"
-        touch-action="pan-y"
-        ar>
-      </model-viewer>
-
-      <div id="viewer-loading" class="viewer-loading">
-        <div class="spinner"></div>
-      </div>
-
-      <div class="viewer-controls">
-
-        <button id="btn-reset" class="glass-button">
-          <svg viewBox="0 0 24 24">
-            <path d="M7 8H3.5M3.5 8L6 5.5M3.5 8L6 10.5" />
-            <path d="M7 8a7 7 0 1 1-1.2 7.3" />
-          </svg>
-        </button>
-
-        <button id="btn-rotate" class="glass-button active">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 3.5a8.5 8.5 0 1 1-6 2.5" />
-            <path d="M8 4H4.5M4.5 4L7 1.5M4.5 4L7 6.5" />
-          </svg>
-        </button>
-
-        <button id="btn-fullscreen" class="glass-button">
-          <svg id="icon-fullscreen" viewBox="0 0 24 24">
-            <rect x="6.5" y="5.5" width="11" height="13" rx="2" />
-            <path d="M9 9h6M9 15h6" />
-          </svg>
-        </button>
-
-      </div>
-
-    </div>
-  </div>
-
-</section>
-
-
-<!-- ===========================
-        SECTION 2 — Intro Video
-============================ -->
-
-<section id="s2" class="section-light fade-section">
-
-  <h2 class="hero-title" style="margin-bottom:12px;">
-    A Cinema Robot, Reimagined.
-  </h2>
-
-  <p class="hero-subtitle" style="max-width:760px; margin-bottom:40px;">
-    Cinema robots began as industrial machines — massive, rigid, and built for factories.
-    IRIS rewrites that origin: lightweight structure, intelligent motion, and creator-first design.
-  </p>
-
-  <!-- SIDE-BY-SIDE WRAPPER -->
-  <div class="iris-split">
-
-    <!-- LEFT: 3D VIEWER -->
-    <div class="iris-pane">
-      <div class="iris-pane-content">
-
-        <div class="viewer-wrapper" style="height:100%;">
-          <div id="viewer3d">
-
-            <model-viewer id="robotViewer"
-              src="assets/models/cinema_robot.glb"
-              camera-controls
-              auto-rotate
-              auto-rotate-delay="0"
-              exposure="1"
-              shadow-intensity="1"
-              touch-action="pan-y"
-              ar>
-            </model-viewer>
-
-            <div id="viewer-loading" class="viewer-loading">
-              <div class="spinner"></div>
-            </div>
-
-            <div class="viewer-controls">
-              <button id="btn-reset" class="glass-button">
-              <svg viewBox="0 0 24 24">
-                <path d="M7 8H3.5M3.5 8L6 5.5M3.5 8L6 10.5" />
-                <path d="M7 8a7 7 0 1 1-1.2 7.3" />
-              </svg>
-            </button>
-
-            <button id="btn-rotate" class="glass-button active">
-              <svg viewBox="0 0 24 24">
-                <path d="M12 3.5a8.5 8.5 0 1 1-6 2.5" />
-                <path d="M8 4H4.5M4.5 4L7 1.5M4.5 4L7 6.5" />
-              </svg>
-            </button>
-
-            <button id="btn-fullscreen" class="glass-button">
-              <svg id="icon-fullscreen" viewBox="0 0 24 24">
-                <rect x="6.5" y="5.5" width="11" height="13" rx="2" />
-                <path d="M9 9h6M9 15h6" />
-              </svg>
-            </button>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-      <div class="iris-pane-label">INTERACTIVE MODEL</div>
-    </div>
-
-
-    <!-- RIGHT: VIDEO -->
-    <div class="iris-pane">
-      <div class="iris-pane-content">
-
-        <video class="iris-video" autoplay muted loop playsinline>
-          <source src="MPR/cover_video.mp4" type="video/mp4" />
-        </video>
-
-      </div>
-      <div class="iris-pane-label">REAL FOOTAGE</div>
-    </div>
-
-  </div>
-
-  <!-- TOGGLE BAR -->
-  <!-- <div class="iris-toggle">
-    <button class="iris-toggle-btn active">3D View</button>
-    <button class="iris-toggle-btn">Video</button>
-  </div> -->
-
-</section>
-
-
-<!-- ===========================
-        SECTION 3 — Industry Problem
-============================ -->
-<section id="s3" class="section-light fade-section ">
-  <h2 class="hero-title">Cinema Robots Were Never Designed for Creators.</h2>
-
-  <p class="hero-subtitle" style="max-width:780px;">
-    Traditional motion-control robots were built for factories, not film sets. They’re massive,
-    expensive, and require trained operators. Great for big studios — inaccessible for everyone else.
-  </p>
-
-  <img src="MPR/sota.png"
-       class="section-image"
-       alt="Cinema Robot Landscape">
-</section>
-
-
-
-<!-- ===========================
-        SECTION 4 — Reinvention
-============================ -->
-<section id="s4" class="section-light fade-section">
-  <h2 class="hero-title">We Rebuilt the Cinema Robot from Scratch.</h2>
-
-  <p class="hero-subtitle" style="max-width:780px;">
-    Instead of shrinking industrial hardware, IRIS is a clean-sheet redesign — custom mechanics,
-    lightweight structure, and intelligent motion software. Everything optimized for shooting,
-    not manufacturing.
-  </p>
-
-  <img src="MPR/part_list.png"
-       class="section-image"
-       alt="IRIS Architecture">
-</section>
-
-
-
-<!-- ===========================
-     BASE / SCREEN
-=========================== -->
-<!-- <section id="axis-base" class="axis-section  fade-section">
-  <div class="axis-section-inner axis-base-layout">
-
-    <div class="axis-base-visual fade-child">
-      <div class="axis-base-screen">
-        <div class="axis-base-overlay"></div>
-
-        <div class="axis-base-hud">
-          <div class="axis-base-hud-top">
-            <div class="axis-pill">REC&nbsp;00:04:22</div>
-            <div class="axis-square-btn"></div>
-          </div>
-
-          <div class="axis-crosshair-wrap">
-            <div class="axis-crosshair">
-              <div class="axis-rec-dot"></div>
-            </div>
-          </div>
-
-          <div class="axis-thumb-row">
-            <div class="axis-thumb"></div>
-            <div class="axis-thumb"></div>
-            <div class="axis-thumb"></div>
-            <div class="axis-thumb"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="axis-base-copy fade-child">
-      <h2 class="axis-copy-title">
-        Impossible thin.<br>Incredibly capable.
-      </h2>
-      <p class="axis-copy-body">
-        A 22 mm aluminum slate that disappears into the desk — yet houses the entire motor
-        driver array and a tilting 14-inch command center.
+      <p class="fi" data-d="2" style="font-size:clamp(17px,2.8vw,24px); color:rgba(255,255,255,.62); max-width:580px; margin:0 auto 10px; line-height:1.4; font-weight:400; letter-spacing:-.01em;">
+        Open-Source 6-DOF Cinema Robot<br>with Visuomotor Imitation Learning
       </p>
 
-      <ul class="axis-spec-list">
-        <li><span class="axis-spec-dot"></span>22 mm profile height</li>
-        <li><span class="axis-spec-dot"></span>14″ integrated touch display</li>
-        <li><span class="axis-spec-dot"></span>Silent passive cooling</li>
-      </ul>
+      <p class="fi" data-d="2" style="font-size:15px; color:rgba(255,255,255,.38); margin:0 0 34px;">
+        Jerry Cheng &nbsp;·&nbsp; Columbia University
+      </p>
+
+      <div class="fi" data-d="3" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:60px;">
+        <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank" class="btn btn-primary">📄 Paper PDF</a>
+        <a href="https://github.com/thejerrycheng/IRIS" target="_blank" class="btn btn-ghost">⚙ GitHub</a>
+        <a href="#demo" class="btn btn-ghost">▶ Demo</a>
+        <a href="cinema_robot_hardware.html" class="btn btn-ghost">🔩 Hardware Files</a>
+      </div>
+
+      <div class="fi" data-d="4" style="max-width:820px; margin:0 auto;">
+        <div class="model-wrap">
+          <model-viewer id="robotViewer"
+            src="assets/models/cinema_robot.glb"
+            camera-controls auto-rotate auto-rotate-delay="0"
+            exposure="1.1" shadow-intensity="0.7"
+            touch-action="pan-y"
+            style="background:transparent;">
+          </model-viewer>
+        </div>
+        <p style="font-size:11px; color:rgba(255,255,255,.3); margin-top:10px; letter-spacing:.12em; text-transform:uppercase;">
+          Interactive 3D model · Drag to rotate
+        </p>
+      </div>
     </div>
+  </section>
 
-  </div>
-</section> -->
+  <!-- ===========================
+       ABSTRACT
+  ============================ -->
+  <section id="abstract" class="s-light">
+    <div class="inner">
+      <div class="fi">
+        <span class="kicker">Abstract</span>
+        <h2 class="t-h2">What is IRIS?</h2>
+        <p class="t-body" style="font-size:18px; line-height:1.72; max-width:800px;">
+          We present <strong>IRIS</strong> (Intelligent Robotic Imaging System), an open-source 6-degree-of-freedom
+          cinema robot arm that makes professional motion-control cinematography accessible to researchers,
+          indie filmmakers, and hardware builders. Traditional cinema robots cost $100K–$250K and require
+          trained operators. IRIS achieves comparable motion quality at <strong>under $1,000</strong> in materials
+          through quasi-direct-drive Unitree GO-M8010-6 actuators, a custom RS-485 control stack running at 200 Hz,
+          and a full ROS Noetic framework. A high-fidelity MuJoCo simulation environment with analytical FK/IK and
+          RRT* motion planners enables safe trajectory design before real deployment. To close the loop toward
+          autonomous shot composition, we train visuomotor imitation learning policies from kinesthetic demonstrations,
+          evaluating three architectures: a CVAE-based action chunking model, a deterministic transformer, and a
+          CNN-BC baseline. All hardware designs, firmware, simulation, and training pipelines are open-sourced.
+        </p>
+      </div>
 
-<!-- ===========================
-        SECTION 5 — Performance
-============================ -->
-<section id="s5" class="section-light fade-section">
-  <h2 class="hero-title">Smooth. Fast. Repeatable.</h2>
+      <div class="divider"></div>
 
-  <p class="hero-subtitle" style="max-width:760px;">
-    IRIS delivers motion that feels alive — ultra-smooth paths, rapid acceleration,
-    and repeatability for precision takes. Perfect for product shots, slow-motion arcs,
-    and high-speed creative work.
-  </p>
-
-  <img src="MPR/line_graph.png"
-       class="section-image"
-       alt="Motion Performance Graph">
-</section>
-
-
-
-<!-- ===========================
-        SECTION 6 — Control
-============================ -->
-<section id="s6" class="section-light fade-section ">
-  <h2 class="hero-title">Control, Reimagined.</h2>
-
-  <p class="hero-subtitle" style="max-width:740px;">
-    No industrial UI. No training. Just a modern app made for creators — adjust keyframes,
-    preview paths, and run shots with a tap.
-  </p>
-
-  <img src="MPR/app.png"
-       class="section-image"
-       style="max-width:800px;"
-       alt="IRIS Mobile App">
-</section>
-
-
-
-<!-- ===========================
-        SECTION 7 — Versatility
-============================ -->
-<section id="s7" class="section-light fade-section">
-  <h2 class="hero-title">Built for Everything You Shoot.</h2>
-
-  <p class="hero-subtitle" style="max-width:760px;">
-    IRIS is fast enough for action, precise enough for VFX, and compact enough for apartments,
-    studios, and small sets. It goes wherever your creativity goes.
-  </p>
-
-  <img src="MPR/bimanual.png"
-       class="section-image"
-       alt="IRIS Workspace">
-</section>
-
-
-
-<!-- ===========================
-        SECTION 8 — Dimensions
-============================ -->
-<section id="s8" class="section-light fade-section">
-  <h2 class="hero-title">Compact by Design.</h2>
-
-  <p class="hero-subtitle" style="max-width:740px;">
-    IRIS fits into your workflow — lightweight, portable, and designed for creators with limited space.
-    No rigging. No setup crew.
-  </p>
-
-  <img src="MPR/dimension.png"
-       class="section-image"
-       alt="IRIS Dimensions">
-</section>
-
-
-
-<!-- ===========================
-        SECTION 9 — Comparison Table
-============================ -->
-<section id="s9" class="section-light fade-section">
-
-  <h2 class="hero-title">IRIS vs Traditional Robots</h2>
-
-  <div class="table-container">
-
-    <table class="comparison-table">
-
-      <tr>
-        <th>Feature</th>
-        <th>IRIS</th>
-        <th>Traditional</th>
-      </tr>
-
-      <tr><td>Price</td><td>Under $1k</td><td>$100k–$250k</td></tr>
-      <tr><td>Setup</td><td>Minutes</td><td>Hours</td></tr>
-      <tr><td>Control</td><td>Mobile App</td><td>Industrial UI</td></tr>
-      <tr><td>Learning Curve</td><td>No Training</td><td>Professional Operator</td></tr>
-      <tr><td>Portability</td><td>Desk-Sized</td><td>Heavy, Fixed</td></tr>
-      <tr><td>Use Case</td><td>Creators & Studios</td><td>Large Productions</td></tr>
-
-    </table>
-
-  </div>
-</section>
-
-
-<!-- ===========================
-        SECTION Pre-order CTA
-============================ -->
-<section id="preorder" class="section-light fade-section">
-  <h2 class="hero-title">Reserve Your IRIS</h2>
-  <p class="hero-subtitle" style="max-width:640px;">
-    Limited first production run. Ships Summer 2026.
-  </p>
-
-  <a href="mailto:orders@motionpicturerobotics.com"
-     class="cta-primary"
-     style="margin-top:20px;">
-     Pre-order now
-  </a>
-</section>
-
-<footer style="
-  width: 100%;
-  padding: 60px 0;
-  margin-top: 80px;
-  background: #faf8f2;
-  color: #111;
-  border-top: 1px solid #e5e5e5;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
-">
-
-  <div style="
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-  ">
-
-    <!-- Company Name -->
-    <div style="font-size: 22px; font-weight: 600;">
-      Motion Picture Robotics
+      <div class="fi">
+        <span class="kicker">Key Contributions</span>
+        <div class="g2" style="margin-top:18px;">
+          <div class="contrib">
+            <div class="contrib-icon">🔩</div>
+            <div>
+              <div class="t-h3">Open-Source Cinema Robot Hardware</div>
+              <div class="t-sm">Sub-$1K 6-DOF arm with Unitree GO-M8010-6 actuators. Full STEP files, BOM, and mechanical docs released.</div>
+            </div>
+          </div>
+          <div class="contrib">
+            <div class="contrib-icon">🧪</div>
+            <div>
+              <div class="t-h3">High-Fidelity MuJoCo Simulation</div>
+              <div class="t-sm">Physics simulation with analytical FK/IK, RRT* planning, and DH-parameter consistency with real hardware.</div>
+            </div>
+          </div>
+          <div class="contrib">
+            <div class="contrib-icon">🧠</div>
+            <div>
+              <div class="t-h3">Visuomotor Imitation Learning</div>
+              <div class="t-sm">CVAE action chunking, deterministic transformer, and CNN-BC baseline trained from RGB-D kinesthetic demonstrations.</div>
+            </div>
+          </div>
+          <div class="contrib">
+            <div class="contrib-icon">💻</div>
+            <div>
+              <div class="t-h3">Full ROS Noetic Integration</div>
+              <div class="t-sm">200 Hz RS-485 hardware driver, joint calibration, sim-to-real sync, and kinesthetic teach-and-repeat workflow.</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </section>
 
+  <!-- ===========================
+       SYSTEM OVERVIEW
+  ============================ -->
+  <section id="system" class="s-soft">
+    <div class="inner-wide">
+      <div class="fi" style="text-align:center; margin-bottom:48px;">
+        <span class="kicker">System Overview</span>
+        <h2 class="t-h2">Built from the ground up.</h2>
+        <p class="t-body" style="max-width:560px; margin:0 auto;">
+          Custom hardware, real-time control, physics simulation, and learned policies — one unified open-source platform.
+        </p>
+      </div>
 
-<div style="
-  margin-top: 20px;
-  font-size: 12px;
-  color: #555;
-  font-family: 'SF Mono', 'Courier New', monospace;
-  opacity: 0.85;
-  text-align: right; 
-">
-  Designed in New York City with love — in a tiny studio apartment.
-</div>
+      <div class="g4 fi" style="margin-bottom:52px; text-align:center;">
+        <div>
+          <div class="stat-val">6</div>
+          <div class="stat-lbl">Degrees of Freedom</div>
+        </div>
+        <div>
+          <div class="stat-val">200 Hz</div>
+          <div class="stat-lbl">RS-485 Control Rate</div>
+        </div>
+        <div>
+          <div class="stat-val">&lt;$1K</div>
+          <div class="stat-lbl">Bill of Materials</div>
+        </div>
+        <div>
+          <div class="stat-val">3</div>
+          <div class="stat-lbl">IL Model Variants</div>
+        </div>
+      </div>
 
-<div style="
-  height:1px;
-  background:#e5e5e5;
-  width:100%;
-  margin-top:10px; 
-"></div>
-
-
-    <!-- Copyright -->
-    <div style="font-size: 10px; color:#888; margin-top:10px;">
-      © 2025 Motion Picture Robotics. All rights reserved.
+      <div class="fi">
+        <img src="MPR/part_list.png" alt="IRIS System Architecture" class="sec-img" style="max-height:520px; object-fit:contain; border:none; background:#fff;">
+      </div>
     </div>
-
-  </div>
-</footer>
-
-
-
-
-<!-- ===========================
-      SCRIPT — Viewer Controls + Scroll Bar + Popup
-=========================== -->
-
-<script>
-/* ============================================================
-     ELEMENTS
-============================================================ */
-const dots = document.querySelectorAll(".scroll-dot");
-const thumb = document.querySelector(".scroll-thumb");
-const menu = document.getElementById("scroll-menu");
-const menuInner = document.querySelector(".scroll-menu-inner");
-const menuItems = document.querySelectorAll(".scroll-menu-item");
-const scrollTrack = document.querySelector(".scroll-track");
-
-const DOT_H = 14;
-const GAP = 26;
-const BASE = 30;
-const SPACING = DOT_H + GAP;
-
-const MIN_H = 10;
-const MAX_H = SPACING - 6;
-
-const sections = [...dots].map(d => document.getElementById(d.dataset.target));
-
-/* ============================================================
-      PRECOMPUTE SECTION OFFSETS
-============================================================ */
-const sectionRanges = sections.map((sec, i) => {
-  const start = sec.offsetTop;
-  const end = sections[i + 1] ? sections[i + 1].offsetTop : document.body.scrollHeight;
-  return { start, end, range: end - start };
-});
-
-/* ============================================================
-      LIQUID ANIMATION STATE
-============================================================ */
-let prevScroll = window.scrollY;
-let targetTop = 0;
-let targetHeight = MIN_H;
-
-let currentTop = 0;
-let currentHeight = MIN_H;
-
-/* ============================================================
-      LIQUID THUMB SCROLL LOGIC (ALWAYS ELONGATING)
-============================================================ */
-function computeTargetFromScroll() {
-  const scroll = window.scrollY;
-
-  // which section are we in?
-  let idx = 0;
-  sectionRanges.forEach((r, i) => {
-    if (scroll >= r.start) idx = i;
-  });
-
-  const r = sectionRanges[idx];
-  const dotCenter = BASE + idx * SPACING + DOT_H / 2;
-
-  // distance from section top (0 → 1)
-  const dist = Math.abs(scroll - r.start);
-  const localProgress = Math.min(1, dist / r.range);
-
-  // velocity gives stretch direction
-  const velocity = scroll - prevScroll;
-  prevScroll = scroll;
-
-  const velNorm = Math.max(-1, Math.min(1, velocity / 60));
-  const stretchDir = velNorm >= 0 ? 1 : -1;
-
-  // liquid elongation
-  const elongation =
-    localProgress * 0.55 +
-    Math.abs(velNorm) * 0.65;
-
-  let newH = MIN_H + (MAX_H - MIN_H) * elongation;
-  newH = Math.max(MIN_H, Math.min(MAX_H, newH));
-
-  const baseTop = dotCenter - MIN_H / 2;
-
-  const newTop =
-    stretchDir === 1
-      ? baseTop
-      : baseTop - (newH - MIN_H);
-
-  targetTop = newTop;
-  targetHeight = newH;
-}
-
-/* ============================================================
-      THUMB DRAGGING → PAGE SCROLL
-============================================================ */
-let dragging = false;
-let dragOffset = 0;
-
-thumb.addEventListener("mousedown", (e) => {
-  dragging = true;
-  dragOffset = e.clientY - thumb.getBoundingClientRect().top;
-  thumb.classList.add("dragging");
-  menu.classList.remove("show");
-});
-
-document.addEventListener("mouseup", () => {
-  dragging = false;
-  thumb.classList.remove("dragging");
-});
-
-document.addEventListener("mousemove", (e) => {
-  if (!dragging) return;
-
-  const trackRect = scrollTrack.getBoundingClientRect();
-  const posY = e.clientY - trackRect.top - dragOffset;
-
-  const percent = Math.max(0, Math.min(1, posY / trackRect.height));
-
-  const scrollTarget =
-    percent * (document.body.scrollHeight - window.innerHeight);
-
-  window.scrollTo({ top: scrollTarget, behavior: "auto" });
-
-  computeTargetFromScroll();
-});
-
-// /* ============================================================
-//       POPUP — MERGES OUT OF BAR (SPRING)
-// ============================================================ */
-// function alignMenuToBar() {
-//   const trackRect = scrollTrack.getBoundingClientRect();
-//   const centerY = trackRect.top + trackRect.height / 2;
-//   menu.style.top = `${centerY}px`;
-// }
-
-// scrollTrack.addEventListener("click", (e) => {
-//   // ignore dots / thumb
-//   if (e.target.classList.contains("scroll-thumb")) return;
-//   if (e.target.classList.contains("scroll-dot")) return;
-
-//   const opening = !menu.classList.contains("show");
-
-//   if (opening) {
-//     alignMenuToBar();
-
-//     // reset spring animation so it bounces every time:
-//     menu.classList.remove("show");
-//     void menu.offsetWidth;
-
-//     menu.classList.add("show");
-//   } else {
-//     menu.classList.remove("show");
-//   }
-// });
-
-// window.addEventListener("scroll", () => {
-//   if (menu.classList.contains("show")) alignMenuToBar();
-// });
-
-// document.addEventListener("mousemove", () => {
-//   if (menu.classList.contains("show")) alignMenuToBar();
-// });
-
-// /* section click */
-// menuItems.forEach((item) => {
-//   item.addEventListener("click", () => {
-//     const sec = document.getElementById(item.dataset.target);
-//     menu.classList.remove("show");
-//     sec.scrollIntoView({ behavior: "smooth" });
-//   });
-// });
-
-/* ============================================================
-      POPUP MENU — MERGES FROM SCROLL BAR + AUTO-HIDE
-============================================================ */
-function alignMenuToBar() {
-  const trackRect = scrollTrack.getBoundingClientRect();
-  const centerY = trackRect.top + trackRect.height / 2;
-  menu.style.top = `${centerY}px`;
-}
-
-
-
-// open/close on track click
-scrollTrack.addEventListener("click", (e) => {
-  // ignore dots and thumb
-  if (e.target.classList.contains("scroll-thumb")) return;
-  if (e.target.classList.contains("scroll-dot")) return;
-
-  const opening = !menu.classList.contains("show");
-
-  if (opening) {
-    alignMenuToBar();
-
-    // restart animation
-    menu.classList.remove("show");
-    void menu.offsetWidth;
-
-    menu.classList.add("show");
-  } else {
-    hideMenu();
-  }
-
-  // prevent event from closing immediately
-  e.stopPropagation();
-});
-
-// auto-hide function
-function hideMenu() {
-  menu.classList.remove("show");
-}
-
-// hide when clicking outside menu
-document.addEventListener("click", (e) => {
-  if (menu.classList.contains("show")) {
-    const inside =
-      menu.contains(e.target) ||
-      scrollTrack.contains(e.target);
-    if (!inside) hideMenu();
-  }
-});
-
-// hide when scrolling
-let scrollTimeout;
-window.addEventListener("scroll", () => {
-  if (menu.classList.contains("show")) hideMenu();
-});
-
-// hide when dragging scroll thumb
-thumb.addEventListener("mousedown", () => {
-  if (menu.classList.contains("show")) hideMenu();
-});
-
-// hide when selecting menu items
-menuItems.forEach((item) => {
-  item.addEventListener("click", () => {
-    const sec = document.getElementById(item.dataset.target);
-    hideMenu();
-    sec.scrollIntoView({ behavior: "smooth" });
-  });
-});
-
-// realignment if needed
-window.addEventListener("scroll", () => {
-  if (menu.classList.contains("show")) alignMenuToBar();
-});
-document.addEventListener("mousemove", () => {
-  if (menu.classList.contains("show")) alignMenuToBar();
-});
-
-
-/* ============================================================
-      DOT CLICK
-============================================================ */
-dots.forEach((dot, idx) => {
-  dot.addEventListener("click", () => {
-    sections[idx].scrollIntoView({ behavior: "smooth" });
-  });
-});
-
-/* ============================================================
-      ANIMATION LOOP
-============================================================ */
-function animate() {
-  requestAnimationFrame(animate);
-
-  if (!dragging) computeTargetFromScroll();
-
-  const follow = 0.22;
-  const settle = 0.18;
-
-  currentTop += (targetTop - currentTop) * follow;
-  currentHeight += (targetHeight - currentHeight) * settle;
-
-  thumb.style.top = currentTop + "px";
-  thumb.style.height = currentHeight + "px";
-}
-
-window.addEventListener("scroll", computeTargetFromScroll);
-computeTargetFromScroll();
-animate();
-</script>
-
-
-<script>
-// ==============================
-// MODEL VIEWER BUTTON CONTROLS
-// ==============================
-const viewer = document.getElementById("robotViewer");
-const loadingOverlay = document.getElementById("viewer-loading");
-
-const btnReset = document.getElementById("btn-reset");
-const btnRotate = document.getElementById("btn-rotate");
-const btnFullscreen = document.getElementById("btn-fullscreen");
-
-function resetHamburgerIcon() {
-  const ham = document.getElementById("hamLines");
-  ham.style.transform = "rotate(0)";
-  ham.style.background = "#111";
-
-  // Restore the top & bottom bars
-  ham.children[0].style.transform = "translateY(0)";
-  ham.children[1].style.transform = "translateY(0)";
-}
-
-
-// Hide loading spinner when model finishes loading
-viewer.addEventListener("load", () => {
-  loadingOverlay.classList.add("hide");
-});
-
-// ========== RESET CAMERA ==========
-btnReset.addEventListener("click", () => {
-  viewer.cameraOrbit = "0deg 75deg 1.5m";  // default camera
-  viewer.fieldOfView = "45deg";
-});
-
-// ========== AUTO ROTATE ON/OFF ==========
-btnRotate.addEventListener("click", () => {
-  if (viewer.autoRotate) {
-    viewer.autoRotate = false;
-    btnRotate.classList.remove("active");
-  } else {
-    viewer.autoRotate = true;
-    btnRotate.classList.add("active");
-  }
-});
-
-// ========== FULLSCREEN ==========
-btnFullscreen.addEventListener("click", () => {
-  if (!document.fullscreenElement) {
-    viewer.requestFullscreen();
-    btnFullscreen.classList.add("active");
-  } else {
-    document.exitFullscreen();
-    btnFullscreen.classList.remove("active");
-  }
-});
-
-// Remove active when exiting fullscreen manually
-document.addEventListener("fullscreenchange", () => {
-  if (!document.fullscreenElement) {
-    btnFullscreen.classList.remove("active");
-  }
-});
-</script>
-
-
-<script>
-let lastScrollY = window.scrollY;
-const nav = document.getElementById("topNav");
-const hamburger = document.getElementById("hamburger");
-const mobileMenu = document.getElementById("mobileMenu");
-let menuOpen = false;
-let isClickingNav = false;
-
-// Prevent hiding when interacting with navigation
-nav.addEventListener("mousedown", () => isClickingNav = true);
-nav.addEventListener("mouseup",   () => setTimeout(() => isClickingNav=false,150));
-
-window.addEventListener("scroll", () => {
-  if (isClickingNav || menuOpen) return;
-
-  const currentY = window.scrollY;
-
-  // Always show when near top
-  if (currentY < 30) {
-    nav.style.transform = "translateY(0)";
-    nav.style.height = "60px";
-    nav.style.boxShadow = "none";
-    lastScrollY = currentY;
-    return;
-  }
-
-  // Shrink on slight scroll
-  if (currentY > 30) {
-    nav.style.height = "48px";
-  }
-
-  // Scroll down → hide
-  if (currentY > lastScrollY) {
-    nav.style.transform = "translateY(-100%)";
-    nav.style.boxShadow = "none";
-  }
-  // Scroll up → show
-  else {
-    nav.style.transform = "translateY(0)";
-    nav.style.boxShadow = "0 6px 20px rgba(0,0,0,0.08)";
-  }
-
-  lastScrollY = currentY;
-});
-
-// Mobile hamburger toggle
-hamburger.addEventListener("click", () => {
-  menuOpen = !menuOpen;
-
-  if (menuOpen) {
-    mobileMenu.style.transform = "translateY(0)";
-    
-    nav.style.transform = "translateY(0)";
-    document.getElementById("hamLines").style.transform = "rotate(45deg)";
-    document.getElementById("hamLines").style.background = "transparent";
-  } else {
-    mobileMenu.style.transform = "translateY(-100%)";
-    document.getElementById("hamLines").style.transform = "rotate(0)";
-    document.getElementById("hamLines").style.background = "#111";
-  }
-});
-
-// Hide menu when clicking outside
-document.addEventListener("click", (e) => {
-  if (!menuOpen) return;
-
-  const insideMenu = mobileMenu.contains(e.target);
-  const insideHamburger = hamburger.contains(e.target);
-
-  if (!insideMenu && !insideHamburger) {
-    menuOpen = false;
-    mobileMenu.style.transform = "translateY(-100%)";
-    resetHamburgerIcon();
-  }
-});
-
-// Hide menu while scrolling
-window.addEventListener("scroll", () => {
-  if (!menuOpen) return;
-  menuOpen = false;
-  mobileMenu.style.transform = "translateY(-100%)";
-  resetHamburgerIcon();
-});
-
-// Hide when clicking a menu link
-document.querySelectorAll(".dropdown-item").forEach((link) => {
-  link.addEventListener("click", () => {
-    menuOpen = false;
-    mobileMenu.style.transform = "translateY(-100%)";
-  });
-});
-
-</script>
-
-<script>
-  const observer = new IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-        }
+  </section>
+
+  <!-- ===========================
+       OPEN-SOURCE RESOURCES
+  ============================ -->
+  <section id="resources" class="s-light">
+    <div class="inner-wide">
+      <div class="fi" style="text-align:center; margin-bottom:48px;">
+        <span class="kicker">Open Source</span>
+        <h2 class="t-h2">Everything is available.</h2>
+        <p class="t-body" style="max-width:540px; margin:0 auto;">
+          Hardware files, firmware, simulation environments, and training code — all released for researchers, makers, and filmmakers.
+        </p>
+      </div>
+
+      <div class="g4">
+        <a href="cinema_robot_hardware.html" class="res-card fi" data-d="1">
+          <div class="res-icon" style="background:#fff3f3;">🔩</div>
+          <h3>Hardware & CAD</h3>
+          <p>STEP files, bill of materials, actuator specs, camera setup, and mechanical design documentation.</p>
+          <div class="res-tags">
+            <span class="badge badge-green">STEP Files</span>
+            <span class="badge badge-gray">BOM</span>
+          </div>
+          <span class="res-link">Explore Hardware →</span>
+        </a>
+
+        <a href="cinema_robot_software.html" class="res-card fi" data-d="2">
+          <div class="res-icon" style="background:#f0f8ff;">💻</div>
+          <h3>Software & Firmware</h3>
+          <p>ROS Noetic driver stack, RS-485 firmware, calibration pipeline, and teleoperation interfaces.</p>
+          <div class="res-tags">
+            <span class="badge badge-blue">ROS Noetic</span>
+            <span class="badge badge-gray">Python</span>
+          </div>
+          <span class="res-link">Explore Software →</span>
+        </a>
+
+        <a href="cinema_robot_sim.html" class="res-card fi" data-d="3">
+          <div class="res-icon" style="background:#f0fff4;">🧪</div>
+          <h3>Simulation</h3>
+          <p>MuJoCo physics environment with FK/IK solvers, RRT* path planning, and cinema motion modes.</p>
+          <div class="res-tags">
+            <span class="badge badge-green">MuJoCo</span>
+            <span class="badge badge-gray">Python</span>
+          </div>
+          <span class="res-link">Explore Simulation →</span>
+        </a>
+
+        <a href="cinema_robot_learning.html" class="res-card fi" data-d="4">
+          <div class="res-icon" style="background:#fdf4ff;">🧠</div>
+          <h3>Robot Learning</h3>
+          <p>CVAE action chunking, deterministic transformer, CNN-BC baseline — full training and policy deployment.</p>
+          <div class="res-tags">
+            <span class="badge badge-blue">PyTorch</span>
+            <span class="badge badge-gray">CVAE · ACT</span>
+          </div>
+          <span class="res-link">Explore Learning →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===========================
+       DEMO
+  ============================ -->
+  <section id="demo" class="s-dark">
+    <div class="inner-wide">
+      <div class="fi" style="text-align:center; margin-bottom:44px;">
+        <span class="kicker kicker-light">Demo</span>
+        <h2 class="t-h2" style="color:#fff;">See IRIS in action.</h2>
+        <p class="t-body t-body-light" style="max-width:520px; margin:0 auto;">
+          Real footage of cinema shot execution and autonomous imitation learning policy deployment.
+        </p>
+      </div>
+
+      <div class="g2 fi">
+        <div>
+          <div class="vid-wrap">
+            <video autoplay muted loop playsinline>
+              <source src="MPR/cover_video.mp4" type="video/mp4">
+            </video>
+          </div>
+          <p style="font-size:11px; color:rgba(255,255,255,.35); text-align:center; margin-top:10px; letter-spacing:.12em; text-transform:uppercase;">Cinema Shot Execution</p>
+        </div>
+        <div>
+          <div class="vid-wrap">
+            <video autoplay muted loop playsinline>
+              <source src="assets/videos/iris_teaser.mp4" type="video/mp4">
+            </video>
+          </div>
+          <p style="font-size:11px; color:rgba(255,255,255,.35); text-align:center; margin-top:10px; letter-spacing:.12em; text-transform:uppercase;">System Overview Teaser</p>
+        </div>
+      </div>
+
+      <div class="fi" style="margin-top:24px;">
+        <div class="vid-wrap" style="max-width:720px; margin:0 auto;">
+          <video autoplay muted loop playsinline>
+            <source src="assets/videos/iris_deployment.m4v" type="video/mp4">
+          </video>
+        </div>
+        <p style="font-size:11px; color:rgba(255,255,255,.35); text-align:center; margin-top:10px; letter-spacing:.12em; text-transform:uppercase;">Imitation Learning Policy Deployment</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===========================
+       RESULTS
+  ============================ -->
+  <section id="results" class="s-light">
+    <div class="inner-wide">
+      <div class="fi" style="text-align:center; margin-bottom:50px;">
+        <span class="kicker">Results</span>
+        <h2 class="t-h2">Performance at a fraction of the cost.</h2>
+        <p class="t-body" style="max-width:540px; margin:0 auto;">
+          IRIS delivers smooth, repeatable motion with sub-millimeter accuracy — comparable to industrial systems at 1/100th the price.
+        </p>
+      </div>
+
+      <div class="split fi">
+        <div>
+          <img src="MPR/line_graph.png" alt="IRIS Trajectory Performance" class="sec-img">
+          <p class="t-sm" style="text-align:center; margin-top:10px;">End-effector trajectory tracking performance</p>
+        </div>
+        <div>
+          <table class="iris-table">
+            <thead>
+              <tr><th>Feature</th><th>IRIS</th><th>Traditional</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Cost</td><td class="hi">&lt;$1,000</td><td>$100K–$250K</td></tr>
+              <tr><td>Control Rate</td><td class="hi">200 Hz</td><td>Varies</td></tr>
+              <tr><td>Setup Time</td><td class="hi">Minutes</td><td>Hours</td></tr>
+              <tr><td>Open Source</td><td class="chk">✓ Full</td><td class="crs">✗ Proprietary</td></tr>
+              <tr><td>Simulation</td><td class="chk">✓ MuJoCo</td><td class="crs">✗</td></tr>
+              <tr><td>ML / IL</td><td class="chk">✓ CVAE / ACT</td><td class="crs">✗</td></tr>
+              <tr><td>Portability</td><td class="hi">Desk-Sized</td><td>Fixed, Heavy</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===========================
+       CITATION
+  ============================ -->
+  <section id="cite" class="s-soft">
+    <div class="inner" style="text-align:center;">
+      <div class="fi">
+        <span class="kicker">Citation</span>
+        <h2 class="t-h2">Cite this work.</h2>
+        <p class="t-body" style="max-width:480px; margin:0 auto 36px;">
+          If you use IRIS in your research, please cite the thesis.
+        </p>
+      </div>
+      <div class="fi" style="position:relative; text-align:left;">
+        <div class="bibtex">
+          <button class="copy-btn" onclick="copyBib()">Copy</button>
+          <pre>@mastersthesis{cheng2025iris,
+  title     = {IRIS: An Open-Source 6-DOF Cinema Robot Arm
+               with Visuomotor Imitation Learning},
+  author    = {Cheng, Jerry},
+  year      = {2025},
+  school    = {Columbia University},
+  address   = {New York, NY},
+  type      = {Master of Engineering Thesis}
+}</pre>
+        </div>
+      </div>
+      <div class="fi" style="margin-top:32px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank" class="btn btn-outline">📄 Read the Paper</a>
+        <a href="https://github.com/thejerrycheng/IRIS" target="_blank" class="btn btn-outline">⚙ View on GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="foot">
+      <div>
+        <div class="foot-brand">IRIS</div>
+        <div class="t-sm" style="margin-top:5px;">Open-Source Cinema Robot · Columbia University</div>
+      </div>
+      <div class="foot-links">
+        <a href="cinema_robot.html">Overview</a>
+        <a href="cinema_robot_hardware.html">Hardware</a>
+        <a href="cinema_robot_software.html">Software</a>
+        <a href="cinema_robot_sim.html">Simulation</a>
+        <a href="cinema_robot_learning.html">Learning</a>
+        <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+        <a href="https://github.com/thejerrycheng/IRIS" target="_blank">GitHub ↗</a>
+      </div>
+      <div class="foot-copy">
+        © 2025 Jerry Cheng · Columbia University. Released under CC BY-NC 4.0.
+        <span style="float:right;">Built in New York City</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // FADE OBSERVER
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting){ e.target.classList.add('v'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+
+    // HERO: trigger immediately
+    document.querySelectorAll('#hero .fi').forEach((el, i) =>
+      setTimeout(() => el.classList.add('v'), i * 130));
+
+    // NAV HIDE/SHOW
+    let lastY = 0;
+    const nav = document.getElementById('topNav');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      nav.style.transform = (y > 100 && y > lastY) ? 'translateY(-100%)' : 'translateY(0)';
+      lastY = y;
+    }, { passive: true });
+
+    // MOBILE MENU
+    const hbg = document.getElementById('hamburger');
+    const mob = document.getElementById('mobileMenu');
+    let mOpen = false;
+    hbg.addEventListener('click', () => {
+      mOpen = !mOpen;
+      mob.style.transform = mOpen ? 'translateY(0)' : 'translateY(-100%)';
+    });
+    document.addEventListener('click', e => {
+      if (mOpen && !mob.contains(e.target) && !hbg.contains(e.target)) {
+        mOpen = false; mob.style.transform = 'translateY(-100%)';
+      }
+    });
+
+    // SCROLL INDICATOR
+    const sdots  = document.querySelectorAll('.scroll-dot');
+    const sthumb = document.querySelector('.scroll-thumb');
+    const sects  = [...sdots].map(d => document.getElementById(d.dataset.target)).filter(Boolean);
+
+    function updateBar() {
+      const sc = window.scrollY;
+      const mx = document.body.scrollHeight - window.innerHeight;
+      const p  = mx > 0 ? sc / mx : 0;
+      const track = document.querySelector('.scroll-track');
+      const th  = track.offsetHeight - 44;
+      sthumb.style.top    = (22 + p * th) + 'px';
+      sthumb.style.height = '18px';
+      let ai = 0;
+      sects.forEach((s, i) => { if (s && sc >= s.offsetTop - 80) ai = i; });
+      sdots.forEach((d, i) => d.classList.toggle('active', i === ai));
+    }
+    window.addEventListener('scroll', updateBar, { passive: true });
+    updateBar();
+    sdots.forEach((d, i) => d.addEventListener('click', () => sects[i]?.scrollIntoView({ behavior: 'smooth' })));
+
+    // BIBTEX COPY
+    function copyBib() {
+      navigator.clipboard.writeText(document.querySelector('.bibtex pre').textContent).then(() => {
+        const b = document.querySelector('.copy-btn');
+        b.textContent = 'Copied!';
+        setTimeout(() => b.textContent = 'Copy', 2000);
       });
-    },
-    { threshold: 0.18 }
-  );
-
-  document.querySelectorAll(".fade-section").forEach(sec => {
-    observer.observe(sec);
-  });
-</script>
-
-
-
-
+    }
+  </script>
 </body>
 </html>
