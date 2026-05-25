@@ -110,7 +110,7 @@
       <li><a href="cinema_robot_software.html">Software</a></li>
       <li><a href="cinema_robot_sim.html">Simulation</a></li>
       <li><a href="cinema_robot_learning.html">Learning</a></li>
-      <li><a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank" class="nav-ext">Paper ↗</a></li>
+      <li><a href="https://arxiv.org/abs/2602.17537" target="_blank" class="nav-ext">Paper ↗</a></li>
     </ul>
     <button id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
   </header>
@@ -121,7 +121,7 @@
     <a href="cinema_robot_software.html">Software</a>
     <a href="cinema_robot_sim.html">Simulation</a>
     <a href="cinema_robot_learning.html">Learning</a>
-    <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+    <a href="https://arxiv.org/abs/2602.17537" target="_blank">Paper ↗</a>
   </div>
   <div class="nav-spacer"></div>
 
@@ -168,10 +168,10 @@
         <div class="dl-card">
           <div class="dl-icon">📋</div>
           <h3>Bill of Materials</h3>
-          <p>Complete BOM with part numbers, suppliers, quantities, and estimated costs. Includes all actuators, fasteners, and electronics.</p>
+          <p>Complete BOM with part numbers, suppliers, quantities, and costs. Total ~$992 USD including all actuators, sensors, compute, and electronics.</p>
           <div class="dl-tags">
             <span class="badge badge-blue">CSV / XLSX</span>
-            <span class="badge badge-gray">~80 parts</span>
+            <span class="badge badge-green">~$992 total</span>
           </div>
           <div class="dl-actions">
             <a href="https://github.com/thejerrycheng/IRIS" target="_blank" class="btn btn-primary btn-sm">Download BOM</a>
@@ -194,8 +194,51 @@
     </div>
   </section>
 
-  <!-- ACTUATOR SYSTEM -->
+  <!-- BOM TABLE -->
   <section class="s-soft">
+    <div class="inner-wide">
+      <div class="fi" style="margin-bottom:36px;">
+        <span class="kicker">Bill of Materials</span>
+        <h2 class="t-h2">~$992 to build IRIS</h2>
+        <p class="t-body" style="max-width:580px;">
+          All major components are commercially available. 3D-printed structural parts use PLA at 30% infill on a BambuLab printer.
+        </p>
+      </div>
+
+      <div class="split fi" style="align-items:flex-start; gap:40px;">
+        <div style="flex:1.3;">
+          <table class="iris-table">
+            <thead>
+              <tr><th>Category</th><th>Item</th><th>Qty</th><th style="text-align:right;">Unit (USD)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Actuators</strong></td><td>Unitree GO-M8010-6</td><td>6</td><td style="text-align:right;" class="hi">$69.65</td></tr>
+              <tr><td><strong>Linkages</strong></td><td>Carbon fiber tube 25×2 mm, 500 mm</td><td>1</td><td style="text-align:right;">$27.40</td></tr>
+              <tr><td rowspan="3"><strong>Bearings</strong></td><td>26×17×5 mm</td><td>2</td><td style="text-align:right;">$1.59</td></tr>
+              <tr><td>50×40×6 mm</td><td>6</td><td style="text-align:right;">$2.61</td></tr>
+              <tr><td>42×30×7 mm</td><td>5</td><td style="text-align:right;">$2.43</td></tr>
+              <tr><td rowspan="2"><strong>Transmission</strong></td><td>HTD-5M belt 150T (750 mm)</td><td>1</td><td style="text-align:right;">$15.19</td></tr>
+              <tr><td>HTD-5M belt 160T (800 mm)</td><td>2</td><td style="text-align:right;">$15.56</td></tr>
+              <tr><td><strong>Fasteners</strong></td><td>M4 + M3.5 screw sets</td><td>2</td><td style="text-align:right;">$27.04</td></tr>
+              <tr><td><strong>Sensors</strong></td><td>Intel RealSense D435</td><td>1</td><td style="text-align:right;" class="hi">$163.63</td></tr>
+              <tr><td><strong>Compute</strong></td><td>NVIDIA Jetson Nano</td><td>1</td><td style="text-align:right;" class="hi">$216.15</td></tr>
+              <tr><td><strong>Electronics</strong></td><td>RS-485 Hub, Power Supply (≥300 W)</td><td>—</td><td style="text-align:right;">$35.96</td></tr>
+              <tr><td><strong>3D Printing</strong></td><td>PLA @ 30% infill (BambuLab)</td><td>1</td><td style="text-align:right;">$16.99</td></tr>
+              <tr><td><strong>Misc</strong></td><td>Wire sleeving, connectors</td><td>1</td><td style="text-align:right;">$9.26</td></tr>
+              <tr style="background:rgba(0,113,227,.04);"><td colspan="3"><strong>Total</strong></td><td style="text-align:right;" class="hi"><strong>~$992</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="flex:1;">
+          <img src="MPR/parts.png" alt="IRIS Components" class="sec-img" style="margin-bottom:16px;">
+          <img src="MPR/render.png" alt="IRIS CAD Render" class="sec-img">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTUATOR SYSTEM -->
+  <section class="s-light">
     <div class="inner-wide">
       <div class="fi" style="margin-bottom:36px;">
         <span class="kicker">Actuator System</span>
@@ -233,12 +276,12 @@
             </div>
             <div class="spec-card fi" data-d="2">
               <div class="spec-card-label">Payload</div>
-              <div class="spec-card-val">~2 kg</div>
+              <div class="spec-card-val">1.5 kg</div>
               <div class="spec-card-desc">Camera + lens at full extension</div>
             </div>
             <div class="spec-card fi" data-d="3">
               <div class="spec-card-label">Reach</div>
-              <div class="spec-card-val">~850 mm</div>
+              <div class="spec-card-val">~1.0 m</div>
               <div class="spec-card-desc">Maximum workspace radius</div>
             </div>
             <div class="spec-card fi" data-d="4">
@@ -256,13 +299,13 @@
   </section>
 
   <!-- SENSORS -->
-  <section class="s-light">
+  <section class="s-soft">
     <div class="inner-wide">
       <div class="fi" style="margin-bottom:36px;">
         <span class="kicker">Vision &amp; Sensing</span>
-        <h2 class="t-h2">Intel RealSense D435i</h2>
+        <h2 class="t-h2">Intel RealSense D435</h2>
         <p class="t-body" style="max-width:600px;">
-          The end-effector mounts an Intel RealSense D435i RGB-D camera, providing synchronized color and depth frames used for visuomotor policy training and deployment.
+          The end-effector mounts an Intel RealSense D435 RGB-D camera, providing synchronized color and depth frames used for visuomotor policy training and deployment.
         </p>
       </div>
 
@@ -305,7 +348,7 @@
   </section>
 
   <!-- ASSEMBLY GUIDE -->
-  <section class="s-soft">
+  <section class="s-light">
     <div class="inner">
       <div class="fi" style="margin-bottom:32px;">
         <span class="kicker">Assembly</span>
@@ -343,7 +386,8 @@
     <div class="foot">
       <div>
         <div class="foot-brand">IRIS</div>
-        <div class="t-sm" style="margin-top:5px;">Open-Source Cinema Robot · Columbia University</div>
+        <div class="t-sm" style="margin-top:5px;">Open-Source Cinema Robot</div>
+        <div class="t-sm" style="margin-top:6px;"><a href="mailto:qc1007@nyu.edu" style="color:var(--blue);text-decoration:none;">qc1007@nyu.edu</a></div>
       </div>
       <div class="foot-links">
         <a href="cinema_robot.html">Overview</a>
@@ -351,9 +395,9 @@
         <a href="cinema_robot_software.html">Software</a>
         <a href="cinema_robot_sim.html">Simulation</a>
         <a href="cinema_robot_learning.html">Learning</a>
-        <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+        <a href="https://arxiv.org/abs/2602.17537" target="_blank">Paper ↗</a>
       </div>
-      <div class="foot-copy">© 2025 Jerry Cheng · Columbia University. Released under CC BY-NC 4.0.</div>
+      <div class="foot-copy">© 2026 Qilong Cheng, Matthew Mackay, Ali Bereyhi. Released under CC BY-NC 4.0. · CRV 2026</div>
     </div>
   </footer>
 

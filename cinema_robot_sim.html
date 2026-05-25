@@ -99,7 +99,7 @@
       <li><a href="cinema_robot_software.html">Software</a></li>
       <li><a href="cinema_robot_sim.html" class="active">Simulation</a></li>
       <li><a href="cinema_robot_learning.html">Learning</a></li>
-      <li><a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank" class="nav-ext">Paper ↗</a></li>
+      <li><a href="https://arxiv.org/abs/2602.17537" target="_blank" class="nav-ext">Paper ↗</a></li>
     </ul>
     <button id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
   </header>
@@ -110,7 +110,7 @@
     <a href="cinema_robot_software.html">Software</a>
     <a href="cinema_robot_sim.html">Simulation</a>
     <a href="cinema_robot_learning.html">Learning</a>
-    <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+    <a href="https://arxiv.org/abs/2602.17537" target="_blank">Paper ↗</a>
   </div>
   <div class="nav-spacer"></div>
 
@@ -201,24 +201,26 @@ python kinematics/inverse_kinematics.py \
         <div style="overflow-x:auto;">
           <table style="width:100%;border-collapse:collapse;font-size:14px;font-family:'SF Mono',Menlo,monospace;">
             <thead>
-              <tr style="border-bottom:1px solid var(--border);">
+              <tr style="border-bottom:2px solid var(--border);">
                 <th style="text-align:left;padding:10px 14px;font-size:12px;color:var(--text-muted);">Joint</th>
-                <th style="text-align:left;padding:10px 14px;font-size:12px;color:var(--text-muted);">a (mm)</th>
-                <th style="text-align:left;padding:10px 14px;font-size:12px;color:var(--text-muted);">d (mm)</th>
-                <th style="text-align:left;padding:10px 14px;font-size:12px;color:var(--text-muted);">α (rad)</th>
-                <th style="text-align:left;padding:10px 14px;font-size:12px;color:var(--text-muted);">θ offset</th>
+                <th style="text-align:left;padding:10px 14px;font-size:12px;color:var(--text-muted);">Description</th>
+                <th style="text-align:left;padding:10px 14px;font-size:12px;color:var(--text-muted);">aᵢ (m)</th>
+                <th style="text-align:left;padding:10px 14px;font-size:12px;color:var(--text-muted);">αᵢ (°)</th>
+                <th style="text-align:left;padding:10px 14px;font-size:12px;color:var(--text-muted);">dᵢ (m)</th>
+                <th style="text-align:left;padding:10px 14px;font-size:12px;color:var(--text-muted);">θ_off (°)</th>
               </tr>
             </thead>
             <tbody>
-              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 14px;">1</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">175</td><td style="padding:11px 14px;">π/2</td><td style="padding:11px 14px;">0</td></tr>
-              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 14px;">2</td><td style="padding:11px 14px;">280</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">-π/2</td></tr>
-              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 14px;">3</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">π/2</td><td style="padding:11px 14px;">π/2</td></tr>
-              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 14px;">4</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">240</td><td style="padding:11px 14px;">-π/2</td><td style="padding:11px 14px;">0</td></tr>
-              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 14px;">5</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">π/2</td><td style="padding:11px 14px;">0</td></tr>
-              <tr><td style="padding:11px 14px;">6</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">80</td><td style="padding:11px 14px;">0</td><td style="padding:11px 14px;">0</td></tr>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 14px;color:var(--blue);">J1</td><td style="padding:11px 14px;">Base yaw</td><td style="padding:11px 14px;">0.0000</td><td style="padding:11px 14px;">0.0</td><td style="padding:11px 14px;">0.2487</td><td style="padding:11px 14px;">0.0</td></tr>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 14px;color:var(--blue);">J2</td><td style="padding:11px 14px;">Shoulder pitch</td><td style="padding:11px 14px;">0.0218</td><td style="padding:11px 14px;">90.0</td><td style="padding:11px 14px;">0.0590</td><td style="padding:11px 14px;">180.0</td></tr>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 14px;color:var(--blue);">J3</td><td style="padding:11px 14px;">Arm pitch</td><td style="padding:11px 14px;">0.2998</td><td style="padding:11px 14px;">0.0</td><td style="padding:11px 14px;">0.0000</td><td style="padding:11px 14px;">0.0</td></tr>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 14px;color:var(--blue);">J4</td><td style="padding:11px 14px;">Elbow pitch</td><td style="padding:11px 14px;">0.0200</td><td style="padding:11px 14px;">90.0</td><td style="padding:11px 14px;">0.0000</td><td style="padding:11px 14px;">0.0</td></tr>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 14px;color:var(--blue);">J5</td><td style="padding:11px 14px;">Wrist pitch</td><td style="padding:11px 14px;">0.3251</td><td style="padding:11px 14px;">−90.0</td><td style="padding:11px 14px;">0.0000</td><td style="padding:11px 14px;">0.0</td></tr>
+              <tr><td style="padding:11px 14px;color:var(--blue);">J6</td><td style="padding:11px 14px;">Wrist roll</td><td style="padding:11px 14px;">0.0428</td><td style="padding:11px 14px;">90.0</td><td style="padding:11px 14px;">0.0000</td><td style="padding:11px 14px;">0.0</td></tr>
             </tbody>
           </table>
         </div>
+        <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">Max reach: ~1.0 m · Full 6-DOF pose control · DH parameters shared across MuJoCo, ROS TF, and analytical solvers</p>
       </div>
     </div>
   </section>
@@ -234,29 +236,62 @@ python kinematics/inverse_kinematics.py \
         </p>
       </div>
 
-      <div class="g3 fi">
+      <div class="g3 fi" style="margin-bottom:28px;">
         <div class="mode-card">
+          <div style="border-radius:12px;overflow:hidden;margin-bottom:12px;background:#000;">
+            <img src="MPR/crane.gif" alt="Crane shot" style="width:100%;display:block;" loading="lazy">
+          </div>
           <div class="mode-card-icon">🏗️</div>
           <h3>Crane</h3>
-          <p>Vertical arc sweeping the camera up while the end-effector tracks a fixed point in space. Used for reveals and establishing shots.</p>
+          <p>Vertical arc sweeping the camera upward while tracking a fixed point. Used for reveals and establishing shots.</p>
           <div class="mode-tags">
             <span class="badge badge-blue">--mode crane</span>
           </div>
         </div>
         <div class="mode-card">
-          <div class="mode-card-icon">🎢</div>
+          <div style="border-radius:12px;overflow:hidden;margin-bottom:12px;background:#000;">
+            <img src="MPR/dolly.gif" alt="Dolly shot" style="width:100%;display:block;" loading="lazy">
+          </div>
+          <div class="mode-card-icon">🚂</div>
           <h3>Dolly</h3>
-          <p>Linear lateral translation maintaining camera orientation. Simulates a physical dolly track. Classic for parallax storytelling.</p>
+          <p>Linear push-in/pull-out maintaining camera orientation. Simulates a physical dolly track for parallax storytelling.</p>
           <div class="mode-tags">
             <span class="badge badge-blue">--mode dolly</span>
           </div>
         </div>
         <div class="mode-card">
+          <div style="border-radius:12px;overflow:hidden;margin-bottom:12px;background:#000;">
+            <img src="MPR/pan.gif" alt="Pan shot" style="width:100%;display:block;" loading="lazy">
+          </div>
           <div class="mode-card-icon">🎥</div>
           <h3>Pan</h3>
-          <p>Base rotation while the end-effector translates to hold a subject in frame. Smooth arc for product shots and subject tracking.</p>
+          <p>Lateral arc sweep holding a subject in frame. Smooth rotation for product shots and subject tracking.</p>
           <div class="mode-tags">
             <span class="badge badge-blue">--mode pan</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="fi">
+        <p style="font-size:11px;color:var(--text-muted);text-align:center;letter-spacing:.14em;text-transform:uppercase;margin-bottom:16px;">Circular Path &amp; IK/FK Teleoperation</p>
+        <div class="g3">
+          <div>
+            <div style="border-radius:12px;overflow:hidden;background:#000;border:1px solid var(--border);">
+              <img src="MPR/circle_follow.gif" alt="Circle path tracking" style="width:100%;display:block;" loading="lazy">
+            </div>
+            <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:6px;">⭕ Circle Path Tracking</p>
+          </div>
+          <div>
+            <div style="border-radius:12px;overflow:hidden;background:#000;border:1px solid var(--border);">
+              <img src="MPR/fk.gif" alt="FK teleoperation" style="width:100%;display:block;" loading="lazy">
+            </div>
+            <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:6px;">🕹 FK Teleoperation</p>
+          </div>
+          <div>
+            <div style="border-radius:12px;overflow:hidden;background:#000;border:1px solid var(--border);">
+              <img src="MPR/ik.gif" alt="IK teleoperation" style="width:100%;display:block;" loading="lazy">
+            </div>
+            <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:6px;">🎯 IK Teleoperation</p>
           </div>
         </div>
       </div>
@@ -299,11 +334,29 @@ python kinematics/inverse_kinematics.py \
       </div>
 
       <div class="fi" style="margin-top:28px;">
-        <div class="code-block"><pre><span class="cm"># Run path planning in simulation</span>
+        <div class="code-block" style="margin-bottom:24px;"><pre><span class="cm"># Run path planning in simulation</span>
 cd ~/IRIS/classical_planner
-python rrt_star.py --start "0,0,0,0,0,0" --goal "1.57,-0.5,0.8,0,0,0"
 
-python potential_field.py --goal_xyz 0.5 0.3 0.6</pre></div>
+<span class="cm"># RRT* — sampling-based, obstacle-aware</span>
+python rrt.py
+
+<span class="cm"># Artificial Potential Field — reactive replanning</span>
+python path_tracking.py</pre></div>
+
+        <div class="g2" style="margin-top:8px;">
+          <div>
+            <div style="border-radius:12px;overflow:hidden;background:#000;border:1px solid var(--border);">
+              <img src="MPR/rrt.gif" alt="RRT* path planning" style="width:100%;display:block;" loading="lazy">
+            </div>
+            <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:6px;">🌲 RRT* — Obstacle-Aware Sampling</p>
+          </div>
+          <div>
+            <div style="border-radius:12px;overflow:hidden;background:#000;border:1px solid var(--border);">
+              <img src="MPR/apf.gif" alt="Artificial Potential Field" style="width:100%;display:block;" loading="lazy">
+            </div>
+            <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:6px;">⚡ Artificial Potential Field</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -312,7 +365,8 @@ python potential_field.py --goal_xyz 0.5 0.3 0.6</pre></div>
     <div class="foot">
       <div>
         <div class="foot-brand">IRIS</div>
-        <div class="t-sm" style="margin-top:5px;">Open-Source Cinema Robot · Columbia University</div>
+        <div class="t-sm" style="margin-top:5px;">Open-Source Cinema Robot</div>
+        <div class="t-sm" style="margin-top:6px;"><a href="mailto:qc1007@nyu.edu" style="color:var(--blue);text-decoration:none;">qc1007@nyu.edu</a></div>
       </div>
       <div class="foot-links">
         <a href="cinema_robot.html">Overview</a>
@@ -320,9 +374,9 @@ python potential_field.py --goal_xyz 0.5 0.3 0.6</pre></div>
         <a href="cinema_robot_software.html">Software</a>
         <a href="cinema_robot_sim.html">Simulation</a>
         <a href="cinema_robot_learning.html">Learning</a>
-        <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+        <a href="https://arxiv.org/abs/2602.17537" target="_blank">Paper ↗</a>
       </div>
-      <div class="foot-copy">© 2025 Jerry Cheng · Columbia University. Released under CC BY-NC 4.0.</div>
+      <div class="foot-copy">© 2026 Qilong Cheng, Matthew Mackay, Ali Bereyhi. Released under CC BY-NC 4.0. · CRV 2026</div>
     </div>
   </footer>
 

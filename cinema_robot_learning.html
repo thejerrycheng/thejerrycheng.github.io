@@ -107,7 +107,7 @@
       <li><a href="cinema_robot_software.html">Software</a></li>
       <li><a href="cinema_robot_sim.html">Simulation</a></li>
       <li><a href="cinema_robot_learning.html" class="active">Learning</a></li>
-      <li><a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank" class="nav-ext">Paper ↗</a></li>
+      <li><a href="https://arxiv.org/abs/2602.17537" target="_blank" class="nav-ext">Paper ↗</a></li>
     </ul>
     <button id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
   </header>
@@ -118,7 +118,7 @@
     <a href="cinema_robot_software.html">Software</a>
     <a href="cinema_robot_sim.html">Simulation</a>
     <a href="cinema_robot_learning.html">Learning</a>
-    <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+    <a href="https://arxiv.org/abs/2602.17537" target="_blank">Paper ↗</a>
   </div>
   <div class="nav-spacer"></div>
 
@@ -133,7 +133,7 @@
         </p>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
           <a href="https://github.com/thejerrycheng/IRIS" target="_blank" class="btn btn-primary">⚙ Training Code</a>
-          <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank" class="btn btn-ghost">📄 Read the Paper</a>
+          <a href="https://arxiv.org/abs/2602.17537" target="_blank" class="btn btn-ghost">📄 Read the Paper</a>
         </div>
       </div>
     </div>
@@ -146,7 +146,7 @@
         <span class="kicker">Architecture</span>
         <h2 class="t-h2">Three model variants.</h2>
         <p class="t-body" style="max-width:580px;">
-          We evaluate three imitation learning architectures on the same kinesthetic demonstration dataset. Models share the same ResNet-34 visual encoder backbone; the action head differs across variants.
+          We evaluate three imitation learning architectures across 9 ablation variants (3 architectures × 3 input modalities). The primary CVAE and Transformer models use a shared ResNet18 visual encoder; the CNN-BC baseline uses ResNet34.
         </p>
       </div>
 
@@ -160,17 +160,18 @@
             </div>
             <span class="badge badge-blue">Primary</span>
           </div>
-          <p>Conditional Variational Autoencoder with a Transformer decoder that predicts a chunk of F=15 future actions at once. Latent variable z encodes multi-modal action distribution from demonstrations.</p>
+          <p>Conditional Variational Autoencoder with a Transformer decoder that predicts a chunk of F=15 future actions at once. Latent variable z encodes multi-modal action distribution from demonstrations. Inspired by ACT.</p>
           <div class="model-card-tags">
             <span class="badge badge-blue">CVAE</span>
             <span class="badge badge-gray">Transformer</span>
-            <span class="badge badge-gray">Latent z</span>
+            <span class="badge badge-gray">ResNet18</span>
           </div>
           <ul class="model-card-specs">
-            <li>Input: S=8 frame window + current joint state + goal image</li>
+            <li>Backbone: ResNet18 + Spatial Softmax visual encoder</li>
+            <li>d_model=256 · 4 enc + 4 dec layers · 8 attention heads</li>
+            <li>Input: S=8 frame window + joint history + goal image</li>
             <li>Output: F=15 future joint angle targets</li>
-            <li>Loss: MSE + KL divergence + smoothness term</li>
-            <li>Latent dim: 32 | β: 0.01</li>
+            <li>Loss: MSE + β·KL + λ·Smoothness | latent_dim=32, β=0.01</li>
           </ul>
         </div>
 
@@ -205,9 +206,9 @@
             </div>
             <span class="badge badge-gray">Baseline</span>
           </div>
-          <p>ResNet-34 + MLP behavior cloning baseline. Single-step prediction without action chunking. Provides a lower-bound on sequence modeling capability.</p>
+          <p>ResNet34 + MLP behavior cloning baseline. Single-step prediction without action chunking. Provides a lower-bound on sequence modeling capability.</p>
           <div class="model-card-tags">
-            <span class="badge badge-gray">ResNet-34</span>
+            <span class="badge badge-gray">ResNet34</span>
             <span class="badge badge-gray">MLP</span>
           </div>
           <ul class="model-card-specs">
@@ -217,6 +218,11 @@
             <li>No temporal modeling</li>
           </ul>
         </div>
+      </div>
+
+      <div class="fi" style="margin-top:32px;">
+        <img src="MPR/architecture.png" alt="IRIS Model Architecture" style="width:100%; border-radius:var(--radius-lg); display:block; border:1px solid var(--border);">
+        <p style="font-size:12px; color:var(--text-muted); text-align:center; margin-top:8px;">Full system architecture: ResNet18 visual encoder → Spatial Softmax → CVAE Transformer</p>
       </div>
 
       <div class="fi" style="margin-top:28px; background:var(--bg-soft); border-radius:var(--radius-lg); padding:24px 28px;">
@@ -376,11 +382,132 @@ python policy.py \
       <div class="fi" style="margin-top:40px;">
         <h3 class="t-h3" style="font-size:17px; margin-bottom:18px;">Deployment Demo</h3>
         <div style="border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:#000;max-width:700px; margin:0 auto;">
-          <video autoplay muted loop playsinline style="width:100%;display:block;">
-            <source src="assets/videos/iris_deployment.m4v" type="video/mp4">
-          </video>
+          <img src="MPR/iris_deployment.gif" alt="CVAE policy deployed on real IRIS hardware" style="width:100%;display:block;">
         </div>
-        <p class="t-sm" style="text-align:center;margin-top:10px;">CVAE policy deployed on real IRIS hardware</p>
+        <p class="t-sm" style="text-align:center;margin-top:10px;">CVAE Full policy deployed on real IRIS hardware — 46.2% task success, 97% of expert visual alignment</p>
+      </div>
+
+      <div class="fi" style="margin-top:40px;">
+        <h3 class="t-h3" style="font-size:17px; margin-bottom:12px;">Training Loss Curves</h3>
+        <img src="MPR/loss.png" alt="Training loss curves" style="width:100%;max-width:700px;display:block;margin:0 auto;border-radius:var(--radius-lg);border:1px solid var(--border);">
+        <p class="t-sm" style="text-align:center;margin-top:8px;">CVAE training and validation loss over 100 epochs</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="s-light">
+    <div class="inner-wide">
+      <div class="fi" style="margin-bottom:36px;">
+        <span class="kicker">Results</span>
+        <h2 class="t-h2">Aggregate Performance</h2>
+        <p class="t-body" style="max-width:580px;">
+          CVAE Full is the best-performing model — achieving 46.2% task success and 97% of expert visual alignment,
+          while being 6× smoother than human demonstrations.
+        </p>
+      </div>
+
+      <div class="fi" style="margin-bottom:32px;">
+        <img src="MPR/metrics.png" alt="IRIS results metrics" style="width:100%;border-radius:var(--radius-lg);border:1px solid var(--border);display:block;max-height:400px;object-fit:contain;background:#fff;">
+      </div>
+
+      <div class="fi" style="overflow-x:auto; margin-bottom:32px;">
+        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+          <thead>
+            <tr style="border-bottom:2px solid var(--border);">
+              <th style="text-align:left;padding:10px 12px;font-size:12px;color:var(--text-muted);">Method</th>
+              <th style="text-align:center;padding:10px 12px;font-size:12px;color:var(--text-muted);">N</th>
+              <th style="text-align:center;padding:10px 12px;font-size:12px;color:var(--text-muted);">Success Rate ↑</th>
+              <th style="text-align:center;padding:10px 12px;font-size:12px;color:var(--text-muted);">Visual Align. ↑</th>
+              <th style="text-align:center;padding:10px 12px;font-size:12px;color:var(--text-muted);">Jerk (m/s³) ↓</th>
+              <th style="text-align:center;padding:10px 12px;font-size:12px;color:var(--text-muted);">SRR ↑</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:11px 12px;font-weight:500;">Expert (Human)</td>
+              <td style="padding:11px 12px;text-align:center;">10</td>
+              <td style="padding:11px 12px;text-align:center;font-weight:700;">90.0%</td>
+              <td style="padding:11px 12px;text-align:center;font-weight:700;">0.874</td>
+              <td style="padding:11px 12px;text-align:center;">3.64</td>
+              <td style="padding:11px 12px;text-align:center;">67.1%</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);background:rgba(0,113,227,.04);">
+              <td style="padding:11px 12px;font-weight:700;color:var(--blue);">CVAE Full ⭐</td>
+              <td style="padding:11px 12px;text-align:center;">13</td>
+              <td style="padding:11px 12px;text-align:center;font-weight:700;color:var(--blue);">46.2%</td>
+              <td style="padding:11px 12px;text-align:center;font-weight:700;color:var(--blue);">0.847</td>
+              <td style="padding:11px 12px;text-align:center;font-weight:700;color:var(--blue);">0.61</td>
+              <td style="padding:11px 12px;text-align:center;">32.7%</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:11px 12px;">Incremental</td>
+              <td style="padding:11px 12px;text-align:center;">6</td>
+              <td style="padding:11px 12px;text-align:center;">0.0%</td>
+              <td style="padding:11px 12px;text-align:center;">0.636</td>
+              <td style="padding:11px 12px;text-align:center;">0.83</td>
+              <td style="padding:11px 12px;text-align:center;">35.2%</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:11px 12px;">RGB Only</td>
+              <td style="padding:11px 12px;text-align:center;">3</td>
+              <td style="padding:11px 12px;text-align:center;">0.0%</td>
+              <td style="padding:11px 12px;text-align:center;">0.584</td>
+              <td style="padding:11px 12px;text-align:center;">1.65</td>
+              <td style="padding:11px 12px;text-align:center;">7.2%</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:11px 12px;">Visual (no joints)</td>
+              <td style="padding:11px 12px;text-align:center;">4</td>
+              <td style="padding:11px 12px;text-align:center;">0.0%</td>
+              <td style="padding:11px 12px;text-align:center;">0.536</td>
+              <td style="padding:11px 12px;text-align:center;">1.59</td>
+              <td style="padding:11px 12px;text-align:center;">7.3%</td>
+            </tr>
+            <tr>
+              <td style="padding:11px 12px;">RRT* (classical)</td>
+              <td style="padding:11px 12px;text-align:center;">4</td>
+              <td style="padding:11px 12px;text-align:center;">0.0%</td>
+              <td style="padding:11px 12px;text-align:center;">0.636</td>
+              <td style="padding:11px 12px;text-align:center;">0.22</td>
+              <td style="padding:11px 12px;text-align:center;">10.5%</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Success = visual alignment &gt; 0.85 at trajectory end. Visual Alignment = ResNet18 cosine similarity to goal image.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROBUSTNESS -->
+  <section class="s-soft">
+    <div class="inner-wide">
+      <div class="fi" style="margin-bottom:36px;">
+        <span class="kicker">Robustness</span>
+        <h2 class="t-h2">Zero-Shot Initial Condition Tests</h2>
+        <p class="t-body" style="max-width:580px;">
+          Arm placed outside the training distribution. The CVAE Full policy demonstrates visual recovery,
+          especially toward end of trajectory — showing generalization beyond seen initial states.
+        </p>
+      </div>
+
+      <div class="fi" style="margin-bottom:28px;">
+        <img src="MPR/table.png" alt="Robustness test results table" style="width:100%;border-radius:var(--radius-lg);border:1px solid var(--border);display:block;">
+      </div>
+
+      <div class="g2 fi">
+        <div>
+          <div style="border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:#000;">
+            <img src="MPR/no_obstacle-ezgif.com-video-to-gif-converter.gif" alt="Policy without obstacles" style="width:100%;display:block;" loading="lazy">
+          </div>
+          <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px;">✅ No obstacle — successful recovery</p>
+        </div>
+        <div>
+          <div style="border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:#000;">
+            <img src="MPR/with_obstacle-ezgif.com-video-to-gif-converter.gif" alt="Policy with obstacles" style="width:100%;display:block;" loading="lazy">
+          </div>
+          <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px;">⚠️ With obstacle — visual recovery attempted</p>
+        </div>
       </div>
     </div>
   </section>
@@ -389,7 +516,8 @@ python policy.py \
     <div class="foot">
       <div>
         <div class="foot-brand">IRIS</div>
-        <div class="t-sm" style="margin-top:5px;">Open-Source Cinema Robot · Columbia University</div>
+        <div class="t-sm" style="margin-top:5px;">Open-Source Cinema Robot</div>
+        <div class="t-sm" style="margin-top:6px;"><a href="mailto:qc1007@nyu.edu" style="color:var(--blue);text-decoration:none;">qc1007@nyu.edu</a></div>
       </div>
       <div class="foot-links">
         <a href="cinema_robot.html">Overview</a>
@@ -397,9 +525,9 @@ python policy.py \
         <a href="cinema_robot_software.html">Software</a>
         <a href="cinema_robot_sim.html">Simulation</a>
         <a href="cinema_robot_learning.html">Learning</a>
-        <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+        <a href="https://arxiv.org/abs/2602.17537" target="_blank">Paper ↗</a>
       </div>
-      <div class="foot-copy">© 2025 Jerry Cheng · Columbia University. Released under CC BY-NC 4.0.</div>
+      <div class="foot-copy">© 2026 Qilong Cheng, Matthew Mackay, Ali Bereyhi. Released under CC BY-NC 4.0. · CRV 2026</div>
     </div>
   </footer>
 

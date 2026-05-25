@@ -1,8 +1,12 @@
-*.MOV
-*.mov
-# Media
-assets/videos/*              # ignore everything in videos/
-!assets/videos/*.mp4         # …except mp4s in the folder
-!assets/videos/**/*.mp4      # …and mp4s in subfolders
-*.MOV
-*.mov
+# macOS
+.DS_Store
+
+# Large raw video files — serve locally or via cloud storage
+MPR/*.MP4
+MPR/*.MOV
+MPR/*.mov
+MPR/*.m4v
+MPR/*.pdf
+
+# Large unreferenced screen recordings
+MPR/ScreenRecording*

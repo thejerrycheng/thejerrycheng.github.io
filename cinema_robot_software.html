@@ -99,7 +99,7 @@
       <li><a href="cinema_robot_software.html" class="active">Software</a></li>
       <li><a href="cinema_robot_sim.html">Simulation</a></li>
       <li><a href="cinema_robot_learning.html">Learning</a></li>
-      <li><a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank" class="nav-ext">Paper ↗</a></li>
+      <li><a href="https://arxiv.org/abs/2602.17537" target="_blank" class="nav-ext">Paper ↗</a></li>
     </ul>
     <button id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
   </header>
@@ -110,7 +110,7 @@
     <a href="cinema_robot_software.html">Software</a>
     <a href="cinema_robot_sim.html">Simulation</a>
     <a href="cinema_robot_learning.html">Learning</a>
-    <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+    <a href="https://arxiv.org/abs/2602.17537" target="_blank">Paper ↗</a>
   </div>
   <div class="nav-spacer"></div>
 
@@ -209,6 +209,11 @@ rosrun unitree_arm_ros calibrate_joint_states.py</pre></div>
         </p>
       </div>
 
+      <div class="fi" style="margin-bottom:28px;">
+        <img src="MPR/ros_nodes.png" alt="IRIS ROS Node Architecture" style="width:100%;border-radius:var(--radius-lg);display:block;border:1px solid var(--border);">
+        <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px;">IRIS ROS node communication graph</p>
+      </div>
+
       <div class="g3 fi">
         <div class="node-card">
           <h4>iris_hw_node.py</h4>
@@ -227,7 +232,7 @@ rosrun unitree_arm_ros calibrate_joint_states.py</pre></div>
         </div>
         <div class="node-card">
           <h4>mujoco_visualizer.py</h4>
-          <p>Streams real hardware joint states into MuJoCo in real-time. Useful for visual verification of motion.</p>
+          <p>Streams real hardware joint states into MuJoCo in real-time for visual verification. Enables live sim–real comparison during operation.</p>
           <div class="node-tags">
             <span class="badge badge-green">Sim-to-Real</span>
           </div>
@@ -274,10 +279,36 @@ rosrun unitree_arm_ros calibrate_joint_states.py</pre></div>
               <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 12px;color:var(--blue);">/joint_states</td><td style="padding:11px 12px;">sensor_msgs/JointState</td><td style="padding:11px 12px;color:var(--text-muted);">Raw encoder positions, velocities, torques @ 200 Hz</td></tr>
               <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 12px;color:var(--blue);">/joint_states_calibrated</td><td style="padding:11px 12px;">sensor_msgs/JointState</td><td style="padding:11px 12px;color:var(--text-muted);">Calibrated joint states with encoder offsets applied</td></tr>
               <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 12px;color:var(--blue);">/arm/command</td><td style="padding:11px 12px;">sensor_msgs/JointState</td><td style="padding:11px 12px;color:var(--text-muted);">Target joint positions, velocities, feed-forward torques</td></tr>
-              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 12px;color:var(--blue);">/camera/color/image_raw</td><td style="padding:11px 12px;">sensor_msgs/Image</td><td style="padding:11px 12px;color:var(--text-muted);">RGB frames from RealSense D435i</td></tr>
-              <tr><td style="padding:11px 12px;color:var(--blue);">/camera/depth/image_rect_raw</td><td style="padding:11px 12px;">sensor_msgs/Image</td><td style="padding:11px 12px;color:var(--text-muted);">Depth frames from RealSense D435i</td></tr>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:11px 12px;color:var(--blue);">/camera/color/image_raw</td><td style="padding:11px 12px;">sensor_msgs/Image</td><td style="padding:11px 12px;color:var(--text-muted);">RGB frames from RealSense D435</td></tr>
+              <tr><td style="padding:11px 12px;color:var(--blue);">/camera/depth/image_rect_raw</td><td style="padding:11px 12px;">sensor_msgs/Image</td><td style="padding:11px 12px;color:var(--text-muted);">Depth frames from RealSense D435</td></tr>
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIM-REAL MIRROR -->
+  <section class="s-light">
+    <div class="inner">
+      <div class="fi" style="margin-bottom:28px;">
+        <span class="kicker">Sim–Real Sync</span>
+        <h2 class="t-h2">Real → MuJoCo Live Mirror</h2>
+        <p class="t-body" style="max-width:560px;">
+          Stream real robot joint states directly into the MuJoCo model for real-time visual verification. Any motion on the physical arm is mirrored instantly in simulation.
+        </p>
+      </div>
+      <div class="g2 fi">
+        <div>
+          <div class="code-block"><pre><span class="cm"># Launch hardware driver first</span>
+roslaunch unitree_arm_ros iris_bringup.launch
+
+<span class="cm"># Then start the MuJoCo mirror</span>
+rosrun unitree_arm_ros mujoco_visualizer_calibrated.py</pre></div>
+          <p class="t-sm" style="margin-top:12px;">Requires calibrated joint states on <code>/joint_states_calibrated</code>. The MuJoCo viewer opens automatically and mirrors the real robot in real-time.</p>
+        </div>
+        <div>
+          <img src="MPR/sim2real.png" alt="IRIS Sim-to-Real mirror" style="width:100%;border-radius:var(--radius-lg);border:1px solid var(--border);display:block;">
         </div>
       </div>
     </div>
@@ -353,6 +384,21 @@ python process_rosbag.py \
           See the <a href="cinema_robot_learning.html" style="color:var(--blue);">Learning page</a> for dataset details.
         </p>
       </div>
+
+      <div class="g2 fi" style="margin-top:32px;">
+        <div>
+          <div style="border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:#000;">
+            <img src="MPR/data_collection.gif" alt="Kinesthetic data collection" style="width:100%;display:block;" loading="lazy">
+          </div>
+          <p class="t-sm" style="text-align:center;margin-top:8px;">✋ Kinesthetic demonstration recording</p>
+        </div>
+        <div>
+          <div style="border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:#000;">
+            <img src="MPR/semi_auto_data.gif" alt="Semi-autonomous data collection" style="width:100%;display:block;" loading="lazy">
+          </div>
+          <p class="t-sm" style="text-align:center;margin-top:8px;">🤖 Semi-autonomous collection mode</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -360,7 +406,8 @@ python process_rosbag.py \
     <div class="foot">
       <div>
         <div class="foot-brand">IRIS</div>
-        <div class="t-sm" style="margin-top:5px;">Open-Source Cinema Robot · Columbia University</div>
+        <div class="t-sm" style="margin-top:5px;">Open-Source Cinema Robot</div>
+        <div class="t-sm" style="margin-top:6px;"><a href="mailto:qc1007@nyu.edu" style="color:var(--blue);text-decoration:none;">qc1007@nyu.edu</a></div>
       </div>
       <div class="foot-links">
         <a href="cinema_robot.html">Overview</a>
@@ -368,9 +415,9 @@ python process_rosbag.py \
         <a href="cinema_robot_software.html">Software</a>
         <a href="cinema_robot_sim.html">Simulation</a>
         <a href="cinema_robot_learning.html">Learning</a>
-        <a href="MPR/MEng_Project_Thesis_Final-13.pdf" target="_blank">Paper ↗</a>
+        <a href="https://arxiv.org/abs/2602.17537" target="_blank">Paper ↗</a>
       </div>
-      <div class="foot-copy">© 2025 Jerry Cheng · Columbia University. Released under CC BY-NC 4.0.</div>
+      <div class="foot-copy">© 2026 Qilong Cheng, Matthew Mackay, Ali Bereyhi. Released under CC BY-NC 4.0. · CRV 2026</div>
     </div>
   </footer>
 
