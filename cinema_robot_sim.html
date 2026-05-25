@@ -363,14 +363,13 @@ python rrt.py</pre></div>
   const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v');obs.unobserve(e.target);}}),{threshold:.08});
   document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
   setTimeout(()=>document.querySelectorAll('section:first-of-type .fi,section.dark:first-of-type .fi').forEach(el=>el.classList.add('v')),60);
-  // Cinema mode tabs
-  document.querySelectorAll('.tab-btn[data-tab]').forEach(btn=>{
+  // All tabs (cinema + planner)
+  document.querySelectorAll('.tab-btn[data-tab],.tab-btn-d[data-tab]').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const bar=btn.closest('.tab-bar,.tab-bar-d');
       bar.querySelectorAll('.tab-btn,.tab-btn-d').forEach(b=>b.classList.remove('on'));
       btn.classList.add('on');
       const target=btn.dataset.tab;
-      // find sibling panels
       const section=btn.closest('section');
       section.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
       document.getElementById(target).classList.add('on');
