@@ -55,7 +55,23 @@
     @media(max-width:800px){.split{flex-direction:column;gap:28px;}}
     .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
     @media(max-width:600px){.g2{grid-template-columns:1fr;}}
+    /* Image sizing — all images constrained so they never overflow or become tiny */
     .img-block{width:100%;border-radius:var(--r-lg);display:block;border:1px solid var(--border);}
+
+    /* Full-width tall images: cap height so they don't overwhelm the page */
+    .img-full{width:100%;max-height:clamp(260px,38vw,520px);object-fit:contain;display:block;border-radius:var(--r-lg);border:1px solid var(--border);background:var(--bg-soft);}
+
+    /* Paired images in a grid: lock to a shared aspect ratio so both columns are identical height */
+    .img-frame{width:100%;overflow:hidden;border-radius:var(--r-lg);border:1px solid var(--border);background:var(--bg-soft);}
+    .img-frame img{width:100%;height:100%;object-fit:contain;display:block;}
+    .r-4-3{aspect-ratio:4/3;}
+    .r-3-2{aspect-ratio:3/2;}
+    .r-16-9{aspect-ratio:16/9;}
+
+    /* Dark variant (performance GIFs) */
+    .img-frame-d{width:100%;overflow:hidden;border-radius:var(--r-lg);border:1px solid var(--border-d);background:#111;}
+    .img-frame-d img{width:100%;height:100%;object-fit:contain;display:block;}
+
     .media-wrap{border-radius:var(--r-lg);overflow:hidden;background:#000;border:1px solid var(--border);}
     .media-wrap img{width:100%;display:block;}
     .caption{font-size:11px;color:var(--ink-2);margin-top:8px;letter-spacing:.06em;text-transform:uppercase;text-align:center;}
@@ -152,16 +168,20 @@
       </p>
     </div>
     <div class="fi" style="margin-bottom:20px;">
-      <img src="MPR/mechanical.png" alt="IRIS mechanical assembly" class="img-block">
+      <img src="MPR/mechanical.png" alt="IRIS mechanical assembly" class="img-full">
       <p class="caption" style="margin-top:10px;">Mechanical assembly — joint layout and link geometry</p>
     </div>
     <div class="g2 fi">
       <div>
-        <img src="MPR/render.png" alt="IRIS CAD render" class="img-block">
+        <div class="img-frame r-4-3">
+          <img src="MPR/render.png" alt="IRIS CAD render" loading="lazy">
+        </div>
         <p class="caption" style="margin-top:8px;">CAD render</p>
       </div>
       <div>
-        <img src="MPR/dimension.png" alt="IRIS dimensions" class="img-block">
+        <div class="img-frame r-4-3">
+          <img src="MPR/dimension.png" alt="IRIS dimensions" loading="lazy">
+        </div>
         <p class="caption" style="margin-top:8px;">Workspace dimensions</p>
       </div>
     </div>
@@ -180,7 +200,9 @@
     </div>
     <div class="split fi">
       <div style="flex:1.4;">
-        <img src="MPR/parts.png" alt="IRIS 3D printed parts" class="img-block">
+        <div class="img-frame r-4-3">
+          <img src="MPR/parts.png" alt="IRIS 3D printed parts" loading="lazy">
+        </div>
         <p class="caption" style="margin-top:10px;">All 3D-printed components laid out</p>
       </div>
       <div>
@@ -317,7 +339,7 @@
       </p>
     </div>
     <div class="fi">
-      <img src="MPR/low_level.png" alt="Low-level control results" class="img-block">
+      <img src="MPR/low_level.png" alt="Low-level control results" class="img-full" style="background:var(--bg);">
       <p class="caption" style="margin-top:10px;">Low-level actuator control — position tracking results across all joints</p>
     </div>
   </div>
@@ -336,8 +358,8 @@
 
     <div class="g2 fi">
       <div>
-        <div style="border-radius:var(--r-lg);overflow:hidden;background:#111;border:1px solid var(--border-d);">
-          <img src="MPR/repeatability.gif" alt="Repeatability test" style="width:100%;display:block;" loading="lazy">
+        <div class="img-frame-d r-4-3">
+          <img src="MPR/repeatability.gif" alt="Repeatability test" loading="lazy">
         </div>
         <div style="margin-top:14px;">
           <h3 class="sub" style="color:#f0f0f5;margin-bottom:6px;">Repeatability</h3>
@@ -345,8 +367,8 @@
         </div>
       </div>
       <div>
-        <div style="border-radius:var(--r-lg);overflow:hidden;background:#111;border:1px solid var(--border-d);">
-          <img src="MPR/path-following-ezgif.com-video-to-gif-converter.gif" alt="Path following test" style="width:100%;display:block;" loading="lazy">
+        <div class="img-frame-d r-4-3">
+          <img src="MPR/path-following-ezgif.com-video-to-gif-converter.gif" alt="Path following test" loading="lazy">
         </div>
         <div style="margin-top:14px;">
           <h3 class="sub" style="color:#f0f0f5;margin-bottom:6px;">Path Following</h3>
