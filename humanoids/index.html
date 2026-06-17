@@ -52,16 +52,16 @@ body{margin:0;color:var(--ink);min-height:100vh;overflow-x:hidden;background:var
   opacity:.9;mix-blend-mode:screen}
 
 .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
-.nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;width:max-content;max-width:calc(100% - 28px);border-radius:980px;padding:8px 10px 8px 17px;display:flex;align-items:center;gap:16px}
-.nav .brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);font-weight:600;font-size:17px;letter-spacing:-.02em;flex:none}
+.nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;width:min(760px,calc(100% - 28px));border-radius:980px;padding:8px 12px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+.nav .brand{justify-self:start;display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);font-weight:600;font-size:17px;letter-spacing:-.02em}
 .nav .brand img{width:26px;height:26px;border-radius:7px}
-.nav .links{display:flex;gap:2px;overflow:auto;scrollbar-width:none}
+.nav .links{justify-self:center;display:flex;gap:2px;overflow:auto;scrollbar-width:none}
 .nav .links::-webkit-scrollbar{display:none}
 .nav .links button{border:none;background:transparent;color:var(--ink2);font-size:14px;font-weight:500;letter-spacing:-.01em;padding:8px 13px;border-radius:980px;cursor:pointer;white-space:nowrap;transition:color .2s,background .2s;font-family:inherit}
 .nav .links button:hover{color:var(--ink)}
 .nav .links button.active{color:var(--ink);background:rgba(120,130,150,.18)}
 [data-theme="dark"] .nav .links button.active{background:rgba(255,255,255,.12)}
-.iconbtn{flex:none;width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;display:grid;place-items:center;background:rgba(120,130,150,.14);color:var(--ink);transition:.2s}
+.iconbtn{flex:none;justify-self:end;width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;display:grid;place-items:center;background:rgba(120,130,150,.14);color:var(--ink);transition:.2s}
 .iconbtn:hover{background:rgba(120,130,150,.24)}
 .iconbtn svg{width:17px;height:17px}
 
@@ -168,6 +168,24 @@ body{margin:0;color:var(--ink);min-height:100vh;overflow-x:hidden;background:var
 .snote{margin-top:22px;font-size:12.5px;color:var(--ink3)}
 .invs{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:4px}
 @media(max-width:560px){.specrow{grid-template-columns:1fr;gap:4px}}
+/* image gallery */
+.sgallery{position:relative;border-radius:30px 30px 0 0;overflow:hidden}
+.gallery{position:relative;overflow:hidden;background:radial-gradient(120% 120% at 50% 0,#eef1f6,#e2e6ee);aspect-ratio:16/10}
+[data-theme="dark"] .gallery{background:radial-gradient(120% 120% at 50% 0,#1b1c20,#121316)}
+.gtrack{display:flex;height:100%;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.gslide{min-width:100%;height:100%;display:grid;place-items:center}
+.gslide img{width:100%;height:100%;object-fit:contain;padding:16px}
+.gph{font-family:"SF Pro Display";font-size:56px;font-weight:600;color:var(--ink3);opacity:.4}
+.gnav{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;font-size:21px;line-height:1;color:var(--ink);display:grid;place-items:center;z-index:2;padding-bottom:2px}
+.gnav.prev{left:12px}.gnav.next{right:12px}
+.gcount{position:absolute;top:12px;left:12px;z-index:2;font-size:12px;font-weight:600;color:var(--ink);padding:4px 10px;border-radius:980px}
+.gdots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:2;padding:6px 9px;border-radius:980px}
+.gdots b{width:7px;height:7px;border-radius:50%;background:rgba(120,130,150,.55);cursor:pointer;transition:.2s;display:inline-block}
+.gdots b.on{background:var(--ink);transform:scale(1.25)}
+.sbody .stitle{font-family:"SF Pro Display";font-size:clamp(26px,4vw,34px);font-weight:600;letter-spacing:-.025em;margin:4px 0 2px;line-height:1.05}
+.sbody .comp{font-size:15px;color:var(--ink2);margin:5px 0 0}
+.sbody .comp b{color:var(--ink);font-weight:600}
+.sbody .score{margin-top:12px}
 
 .lead{font-family:"SF Pro Display";font-size:clamp(26px,4vw,34px);font-weight:600;letter-spacing:-.025em;margin:8px 0 4px}
 .subhead{font-size:16px;color:var(--ink3);margin:0 0 26px}
@@ -299,10 +317,17 @@ const FACETS=[
   {key:"country",label:"Country"},
   {key:"_type",label:"Type"},
   {key:"_legs",label:"Form"},
+  {key:"_release_year",label:"Release year"},
   {key:"_funding_year",label:"Funding year"},
   {key:"funding_status",label:"Funding stage"},
   {key:"_score",label:"Skill score"}
 ];
+function parseReleaseYear(t){
+  if(!t)return null;
+  const m=t.match(/(?:launch|unveil|reveal|introduc|debut|announc|releas|present|showcase|first shown)[a-z]*(?:\s+\w+){0,3}?\s(20[12]\d)/i);
+  if(m)return m[1];
+  const y=t.match(/\b(20[12]\d)\b/);return y?y[1]:null;
+}
 // Derived classifiers (heuristic, from the robot's text)
 function classifyLegs(t){
   t=" "+t.toLowerCase()+" ";
@@ -331,6 +356,7 @@ function fundingYear(r){
       _legs:classifyLegs(text),
       _type:classifyType(text),
       _funding_year:fundingYear(r),
+      _release_year:(r.specs&&r.specs.release_year)?String(r.specs.release_year):parseReleaseYear(r.description),
       _score:r.skill_score!=null?(r.skill_score>=3?"3+ ★":r.skill_score>=2?"2–3 ★":"Under 2 ★"):null
     };
   });
@@ -346,7 +372,7 @@ function facetValues(key){
   const ct={};ROBOTS.forEach(r=>{let v=r[key];if(v==null||v==="")return;
     if(Array.isArray(v))v.forEach(x=>{if(x!=null&&x!=="")ct[x]=(ct[x]||0)+1;});else ct[v]=(ct[v]||0)+1;});
   let ks=Object.keys(ct);
-  if(key==="_funding_year")ks.sort((a,b)=>b-a);
+  if(key==="_funding_year"||key==="_release_year")ks.sort((a,b)=>b-a);
   else if(key==="_score")ks=["3+ ★","2–3 ★","Under 2 ★"].filter(k=>ct[k]);
   else if(key==="_type")ks=["Industry","Home","General purpose"].filter(k=>ct[k]);
   else if(key==="_legs")ks=["With legs","Wheeled / no legs"].filter(k=>ct[k]);
@@ -438,10 +464,30 @@ function renderActive(){
 }
 function syncChips(){document.querySelectorAll("#facets .chip").forEach(ch=>{const s=STATE.sel[ch.dataset.k];ch.classList.toggle("on",!!(s&&s.has(ch.dataset.v)));});}
 
+function makeGallery(imgs,initials){
+  imgs=(imgs||[]).filter(Boolean);
+  if(!imgs.length)return `<div class="gallery"><div class="gtrack"><div class="gslide"><div class="gph">${esc(initials)}</div></div></div></div>`;
+  const slides=imgs.map(u=>`<div class="gslide"><img loading="lazy" src="${esc(u)}" alt="" onerror="this.remove()"></div>`).join("");
+  const multi=imgs.length>1;
+  const nav=multi?`<button class="gnav prev glass-soft" data-gd="-1" aria-label="Previous">‹</button><button class="gnav next glass-soft" data-gd="1" aria-label="Next">›</button><div class="gcount glass-soft"><span class="gci">1</span>/${imgs.length}</div><div class="gdots glass-soft">${imgs.map((_,i)=>`<b data-g="${i}" class="${i?'':'on'}"></b>`).join("")}</div>`:"";
+  return `<div class="gallery" data-n="${imgs.length}"><div class="gtrack">${slides}</div>${nav}</div>`;
+}
+function wireGallery(root){
+  const gal=root.querySelector(".gallery");if(!gal)return;
+  const track=gal.querySelector(".gtrack"),n=+gal.dataset.n||1;let i=0;
+  function go(to){i=(to+n)%n;track.style.transform=`translateX(${-i*100}%)`;
+    gal.querySelectorAll(".gdots b").forEach((b,bi)=>b.classList.toggle("on",bi===i));
+    const ci=gal.querySelector(".gci");if(ci)ci.textContent=i+1;}
+  gal.querySelectorAll("[data-gd]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();go(i+ +b.dataset.gd);}));
+  gal.querySelectorAll(".gdots b").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();go(+b.dataset.g);}));
+  let sx=null;gal.addEventListener("touchstart",e=>sx=e.touches[0].clientX,{passive:true});
+  gal.addEventListener("touchend",e=>{if(sx==null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40)go(i+(dx<0?1:-1));sx=null;});
+  gal._go=go;gal._i=()=>i;
+}
 function openSheet(r){
   const sheet=document.getElementById("sheet");
   const init=(r.robot||"?").replace(/[^A-Za-z0-9]/g,"").slice(0,2).toUpperCase();
-  const pic=r.image?`<img src="${esc(r.image)}" alt="${esc(r.robot)}" onerror="this.remove()"><div class="ph">${init}</div>`:`<div class="ph">${init}</div>`;
+  const imgs=(r.images&&r.images.length)?r.images:(r.image?[r.image]:[]);
   const meta=[r.country&&(flag(r.country)+" "+r.country),r.founded_year&&("Founded "+r.founded_year),r.hq,r.status,(r.main_market?"Market: "+r.main_market:null)].filter(Boolean).map(t=>`<span>${esc(t)}</span>`).join("");
   // full humanoid.guide spec table
   const specHTML=(r.hg_attributes||[]).filter(a=>a.value&&a.value!=="-").map(a=>`<div class="specrow"><div class="sk">${esc(a.label)}</div><div class="sv">${esc(a.value)}</div></div>`).join("");
@@ -452,16 +498,12 @@ function openSheet(r){
     r.detail_url&&`<a class="alt" href="${esc(r.detail_url)}" target="_blank" rel="noopener">humanoid.guide ↗</a>`].filter(Boolean).join("");
   sheet.innerHTML=`
     <button class="closeb glass-soft" onclick="closeSheet()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    <div class="shero">
-      <div class="pic">${pic}</div>
-      <div class="htext">
-        <h2>${esc(r.robot)}</h2>
-        <p class="comp">by <b>${esc(r.company||"Unknown")}</b></p>
-        ${scoreDots(r.skill_score)}
-        <div class="metarow">${meta}</div>
-      </div>
-    </div>
+    <div class="sgallery">${makeGallery(imgs,init)}</div>
     <div class="sbody">
+      <h2 class="stitle">${esc(r.robot)}</h2>
+      <p class="comp">by <b>${esc(r.company||"Unknown")}</b></p>
+      ${scoreDots(r.skill_score)}
+      <div class="metarow">${meta}</div>
       ${r.description?`<p class="desc">${esc(r.description)}</p>`:""}
       ${specHTML?`<div class="sectitle">Specifications · via humanoid.guide</div>${specHTML}`:""}
       ${(fundRows||r.company_summary||inv)?`<div class="sectitle">Company &amp; funding</div>${r.company_summary?`<p class="desc" style="margin-top:14px">${esc(r.company_summary)}</p>`:""}${fundRows}${inv}`:""}
@@ -470,6 +512,7 @@ function openSheet(r){
       ${r.confidence?`<p class="snote">Funding/founder data confidence: ${esc(r.confidence)}${(r.sources||[]).length?` · ${r.sources.length} source(s)`:""} · researched, may contain errors.</p>`:""}
     </div>`;
   document.getElementById("scrim").classList.add("show");sheet.classList.add("show");sheet.scrollTop=0;document.body.style.overflow="hidden";
+  wireGallery(sheet);
 }
 function closeSheet(){document.getElementById("scrim").classList.remove("show");document.getElementById("sheet").classList.remove("show");document.body.style.overflow="";}
 
@@ -506,7 +549,8 @@ function wireUI(){
   document.getElementById("sort").addEventListener("change",e=>{STATE.sort=e.target.value;render();});
   document.getElementById("filterToggle").addEventListener("click",e=>{document.getElementById("facets").classList.toggle("open");e.currentTarget.classList.toggle("on");});
   document.getElementById("scrim").addEventListener("click",closeSheet);
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet();});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet();
+    if(e.key==="ArrowLeft"||e.key==="ArrowRight"){const g=document.querySelector(".sheet.show .gallery");if(g&&g._go)g._go(g._i()+(e.key==="ArrowRight"?1:-1));}});
   document.querySelectorAll("#navlinks button").forEach(b=>b.addEventListener("click",()=>{
     document.querySelectorAll("#navlinks button").forEach(x=>x.classList.remove("active"));b.classList.add("active");
     ["robots","companies","about"].forEach(v=>document.getElementById("view-"+v).classList.toggle("hidden",v!==b.dataset.tab));
