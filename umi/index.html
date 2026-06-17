@@ -84,20 +84,22 @@ body{
 .wrap{max-width:1120px; margin:0 auto; padding:0 22px}
 
 /* floating glass nav */
-.nav{position:sticky; top:14px; z-index:60; margin:14px auto 0; width:min(820px, calc(100% - 28px));
-  border-radius:980px; padding:8px 16px; display:flex; align-items:center; gap:12px;}
-.nav .brand{flex:none; display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--ink); font-weight:600; font-size:17px; letter-spacing:-.02em}
-.nav .brand img{width:26px; height:26px; border-radius:7px}
-.nav .links{flex:1; display:flex; justify-content:space-evenly; gap:2px; overflow:auto; scrollbar-width:none}
+.nav{position:sticky; top:14px; z-index:60; margin:14px auto 0; width:max-content; max-width:calc(100% - 28px);
+  border-radius:980px; padding:7px 10px 7px 16px; display:flex; align-items:center; gap:14px;}
+.nav .brand{flex:none; display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--ink); font-weight:600; font-size:16px; letter-spacing:-.02em}
+.nav .brand img{width:25px; height:25px; border-radius:7px}
+.nav .links{flex:none; display:flex; gap:3px; padding:3px; border-radius:980px; background:rgba(120,130,150,.13); box-shadow:inset 0 1px 2px rgba(10,20,40,.06); overflow:auto; scrollbar-width:none}
+[data-theme="dark"] .nav .links{background:rgba(255,255,255,.06)}
 .nav .links::-webkit-scrollbar{display:none}
-.nav .links button{border:none; background:transparent; color:var(--ink2); font-size:14px; font-weight:500;
-  letter-spacing:-.01em; padding:8px 13px; border-radius:980px; cursor:pointer; white-space:nowrap; transition:color .2s, background .2s; font-family:inherit}
+.nav .links button{border:none; background:transparent; color:var(--ink2); font-size:13.5px; font-weight:550;
+  letter-spacing:-.01em; padding:7px 14px; border-radius:980px; cursor:pointer; white-space:nowrap; transition:.22s cubic-bezier(.3,.7,.3,1); font-family:inherit}
 .nav .links button:hover{color:var(--ink)}
-.nav .links button.active{color:var(--ink); background:rgba(120,130,150,.18)}
-[data-theme="dark"] .nav .links button.active{background:rgba(255,255,255,.12)}
-.iconbtn{flex:none; justify-self:end; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; display:grid; place-items:center;
-  background:rgba(120,130,150,.14); color:var(--ink); transition:.2s}
-.iconbtn:hover{background:rgba(120,130,150,.24)}
+.nav .links button.active{color:var(--ink); background:var(--bg2); box-shadow:0 1px 3px rgba(10,20,40,.16), inset 0 1px 0 rgba(255,255,255,.6)}
+[data-theme="dark"] .nav .links button.active{background:rgba(255,255,255,.22); box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.navutil{flex:none; display:flex; align-items:center; gap:6px}
+.iconbtn{flex:none; width:35px; height:35px; border-radius:50%; border:none; cursor:pointer; display:grid; place-items:center;
+  background:rgba(120,130,150,.14); color:var(--ink); transition:.2s; text-decoration:none}
+.iconbtn:hover{background:rgba(120,130,150,.26)}
 .iconbtn svg{width:17px;height:17px}
 
 /* hero */
@@ -287,8 +289,10 @@ footer a:hover{text-decoration:underline}
     <button data-tab="library">Library</button>
     <button data-tab="about">About</button>
   </div>
-  <a class="iconbtn" href="https://thejerrycheng.github.io" title="Home — Jerry Cheng" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h3v-6h6v6h3a1 1 0 0 0 1-1v-9"/></svg></a>
-  <button class="iconbtn" id="themeToggle" title="Toggle appearance" aria-label="Toggle appearance"></button>
+  <div class="navutil">
+    <a class="iconbtn" href="https://thejerrycheng.github.io" title="Home — Jerry Cheng" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h3v-6h6v6h3a1 1 0 0 0 1-1v-9"/></svg></a>
+    <button class="iconbtn" id="themeToggle" title="Toggle appearance" aria-label="Toggle appearance"></button>
+  </div>
 </nav>
 
 <a id="top"></a>
@@ -475,7 +479,6 @@ function cardHTML(p){
   return `<article class="card" data-i="${p._i}">
     <div class="media">
       ${p.image_url?`<img loading="lazy" src="${esc(p.image_url)}" alt="${esc(p.name)}" onerror="this.remove()">`:""}
-      <div class="ph">${init}</div>
       <div class="form glass-soft">${esc(lbl(p.form_category))}</div>
       ${p.key_innovation?`<div class="innov">${esc(p.key_innovation)}</div>`:""}
     </div>
