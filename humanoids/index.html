@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Humanoids — The Robot Field Guide</title>
+<meta name="description" content="A liquid-glass field guide to the world's humanoid robots: makers, funding, founders and their universities, and full specs. A personal viewer built on humanoid.guide.">
+<link rel="icon" type="image/svg+xml" href="./robot-logo.svg">
+<link rel="apple-touch-icon" href="./robot-logo.svg">
+<style>
+:root{
+  --bg:#f4f5f8; --bg2:#ffffff;
+  --ink:#1d1d1f; --ink2:#52525a; --ink3:#86868b;
+  --line:rgba(0,0,0,.10); --line2:rgba(0,0,0,.06);
+  --blue:#0071e3; --blue2:#0066cc; --green:#1a8a4a;
+  --card:#ffffff;
+  --glass-tint:rgba(255,255,255,.5); --rim:rgba(255,255,255,.97); --rim2:rgba(255,255,255,.18); --spec:rgba(255,255,255,.6);
+  --float:0 10px 34px rgba(20,28,48,.16); --r:28px; --r-sm:18px;
+}
+[data-theme="dark"]{
+  --bg:#070809; --bg2:#101114; --ink:#f5f5f7; --ink2:#a8a8ad; --ink3:#86868b;
+  --line:rgba(255,255,255,.14); --line2:rgba(255,255,255,.08);
+  --blue:#2997ff; --blue2:#2997ff; --green:#41d98b; --card:#161719;
+  --glass-tint:rgba(40,42,50,.55); --rim:rgba(255,255,255,.5); --rim2:rgba(255,255,255,.1); --spec:rgba(255,255,255,.28);
+  --float:0 12px 40px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;color:var(--ink);min-height:100vh;overflow-x:hidden;background:var(--bg);
+  font-family:"SF Pro Text",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:17px;line-height:1.47;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.scene{position:fixed;inset:0;z-index:-1;background:
+  radial-gradient(60vw 50vh at 78% -8%,rgba(120,150,210,.16),transparent 70%),
+  radial-gradient(55vw 45vh at 8% 108%,rgba(150,170,210,.14),transparent 70%),linear-gradient(180deg,var(--bg),var(--bg))}
+[data-theme="dark"] .scene{background:
+  radial-gradient(60vw 50vh at 78% -8%,rgba(60,90,160,.22),transparent 70%),
+  radial-gradient(55vw 45vh at 8% 108%,rgba(40,70,140,.18),transparent 70%),linear-gradient(180deg,var(--bg),#050608)}
+.svgdefs{position:absolute;width:0;height:0;overflow:hidden}
+
+.glass{position:relative;background:var(--glass-tint);
+  -webkit-backdrop-filter:blur(22px) saturate(200%) brightness(1.08);
+  backdrop-filter:url(#lg-distort) blur(22px) saturate(200%) brightness(1.08);
+  box-shadow:var(--float),inset 0 1.4px 1px var(--rim),inset 0 -1px 1px var(--rim2),inset 1px 0 1px var(--rim2),inset -1px 0 1px var(--rim2);isolation:isolate}
+.glass-soft{position:relative;background:var(--glass-tint);
+  -webkit-backdrop-filter:blur(14px) saturate(180%);backdrop-filter:blur(14px) saturate(180%);
+  box-shadow:inset 0 1.2px 1px var(--rim),inset 0 -1px 1px var(--rim2)}
+.glass::before,.glass-soft::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.2px;pointer-events:none;
+  background:linear-gradient(140deg,var(--rim) 0%,transparent 30%,transparent 58%,var(--spec) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.glass::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(140deg,var(--spec),transparent 42%),radial-gradient(140% 90% at 18% -20%,rgba(255,255,255,.42),transparent 55%);
+  opacity:.9;mix-blend-mode:screen}
+
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+.nav{position:sticky;top:14px;z-index:60;margin:14px auto 0;width:max-content;max-width:calc(100% - 28px);border-radius:980px;padding:8px 10px 8px 17px;display:flex;align-items:center;gap:16px}
+.nav .brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);font-weight:600;font-size:17px;letter-spacing:-.02em;flex:none}
+.nav .brand img{width:26px;height:26px;border-radius:7px}
+.nav .links{display:flex;gap:2px;overflow:auto;scrollbar-width:none}
+.nav .links::-webkit-scrollbar{display:none}
+.nav .links button{border:none;background:transparent;color:var(--ink2);font-size:14px;font-weight:500;letter-spacing:-.01em;padding:8px 13px;border-radius:980px;cursor:pointer;white-space:nowrap;transition:color .2s,background .2s;font-family:inherit}
+.nav .links button:hover{color:var(--ink)}
+.nav .links button.active{color:var(--ink);background:rgba(120,130,150,.18)}
+[data-theme="dark"] .nav .links button.active{background:rgba(255,255,255,.12)}
+.iconbtn{flex:none;width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;display:grid;place-items:center;background:rgba(120,130,150,.14);color:var(--ink);transition:.2s}
+.iconbtn:hover{background:rgba(120,130,150,.24)}
+.iconbtn svg{width:17px;height:17px}
+
+.hero{text-align:center;padding:84px 22px 38px}
+.hero .eyebrow{font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--blue2);text-transform:uppercase;margin:0 0 14px}
+.hero h1{font-family:"SF Pro Display",-apple-system,sans-serif;font-size:clamp(46px,8vw,90px);line-height:1;font-weight:600;letter-spacing:-.03em;margin:0;color:var(--ink)}
+.hero .lede{max-width:620px;margin:20px auto 0;font-size:clamp(19px,2.4vw,24px);line-height:1.4;font-weight:400;color:var(--ink2);letter-spacing:-.01em}
+.hero .meta{margin:22px 0 0;font-size:14px;color:var(--ink3)}
+
+.controls{position:sticky;top:70px;z-index:50;border-radius:24px;padding:12px;margin:8px 0 22px}
+.crow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.searchbox{flex:1 1 240px;display:flex;align-items:center;gap:9px;padding:10px 14px;border-radius:980px;background:rgba(120,130,150,.12);border:1px solid transparent;transition:.2s}
+.searchbox:focus-within{border-color:var(--blue);background:rgba(120,130,150,.06)}
+.searchbox svg{flex:none;width:16px;height:16px;color:var(--ink3)}
+.searchbox input{flex:1;border:none;background:transparent;outline:none;font:inherit;font-size:15px;color:var(--ink)}
+.searchbox input::placeholder{color:var(--ink3)}
+.pillbtn,.sel{border:1px solid var(--line);background:rgba(120,130,150,.08);color:var(--ink);font:inherit;font-size:14px;font-weight:500;padding:9px 15px;border-radius:980px;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:7px}
+.pillbtn:hover,.sel:hover{background:rgba(120,130,150,.16)}
+.pillbtn .num{background:var(--blue);color:#fff;font-size:11px;font-weight:700;min-width:17px;height:17px;border-radius:9px;display:grid;place-items:center;padding:0 5px}
+.sel{appearance:none;-webkit-appearance:none;padding-right:30px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='3'><path d='m6 9 6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 12px center}
+.facets{display:grid;gap:11px;overflow:hidden;max-height:0;opacity:0;transition:max-height .4s ease,opacity .3s,margin .3s}
+.facets.open{max-height:1400px;opacity:1;margin-top:13px;padding-top:13px;border-top:1px solid var(--line2)}
+.fgroup{display:flex;flex-wrap:wrap;gap:7px;align-items:baseline}
+.fgroup .glab{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);width:104px;flex:none}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink2);font:inherit;font-size:13px;font-weight:500;padding:6px 12px;border-radius:980px;cursor:pointer;transition:.18s;display:inline-flex;gap:6px;align-items:center}
+.chip:hover{color:var(--ink);border-color:var(--ink3)}
+.chip .c{color:var(--ink3);font-size:11px}
+.chip.on{background:var(--ink);color:var(--bg2);border-color:var(--ink)}
+.chip.on .c{color:var(--bg2);opacity:.7}
+[data-theme="dark"] .chip.on{background:#f5f5f7;color:#111;border-color:#f5f5f7}
+[data-theme="dark"] .chip.on .c{color:#111}
+.active{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.active .lab{font-size:13px;color:var(--ink3)}
+.tagx{border:none;background:rgba(0,113,227,.12);color:var(--blue2);font:inherit;font-size:12.5px;font-weight:600;padding:5px 10px;border-radius:980px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+[data-theme="dark"] .tagx{background:rgba(41,151,255,.16);color:var(--blue)}
+.clearall{margin-left:auto;border:none;background:none;color:var(--blue2);font:inherit;font-size:13px;font-weight:500;cursor:pointer}
+.count{font-size:14px;color:var(--ink3);margin:0 4px 16px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:20px;padding-bottom:30px}
+.card{background:var(--card);border:1px solid var(--line2);border-radius:var(--r-sm);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s;opacity:0;transform:translateY(14px)}
+.card.in{opacity:1;transform:none}
+.card:hover{transform:translateY(-5px);box-shadow:var(--float)}
+.media{position:relative;aspect-ratio:1/1;overflow:hidden;background:radial-gradient(120% 120% at 50% 0,#eef1f6,#e2e6ee);display:grid;place-items:center}
+[data-theme="dark"] .media{background:radial-gradient(120% 120% at 50% 0,#1b1c20,#121316)}
+.media img{width:100%;height:100%;object-fit:contain;padding:10px;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.card:hover .media img{transform:scale(1.05)}
+.media .ph{position:absolute;inset:0;display:grid;place-items:center;font-family:"SF Pro Display";font-size:30px;font-weight:600;color:var(--ink3);opacity:.5;letter-spacing:-.02em}
+.media .flag{position:absolute;left:11px;top:11px;font-size:15px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;box-shadow:var(--float)}
+.media .fund{position:absolute;right:11px;top:11px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:980px;color:var(--ink)}
+.media .summary{position:absolute;inset:auto 0 0 0;padding:28px 13px 12px;color:#fff;font-size:12px;line-height:1.4;background:linear-gradient(transparent,rgba(8,12,24,.84));opacity:0;transform:translateY(6px);transition:.3s}
+.card:hover .summary{opacity:1;transform:none}
+.cbody{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;flex:1}
+.cname{font-family:"SF Pro Display";font-size:17px;font-weight:600;letter-spacing:-.02em;margin:0;line-height:1.2}
+.ccomp{font-size:13px;color:var(--ink3);margin:0;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.score{display:flex;gap:3px;margin-top:8px;align-items:center}
+.score .d{width:9px;height:9px;border-radius:50%;background:var(--line);position:relative;overflow:hidden}
+.score .d.f{background:var(--blue)}
+.score .d.h::after{content:"";position:absolute;inset:0;width:50%;background:var(--blue)}
+.score .n{font-size:11px;color:var(--ink3);margin-left:4px}
+.cmeta{font-size:12px;color:var(--ink3);margin:8px 0 0;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.cmeta .dot{opacity:.4}
+
+.empty{grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--ink2)}
+.empty .ttl{font-family:"SF Pro Display";font-size:24px;font-weight:600;color:var(--ink);margin-bottom:6px;letter-spacing:-.02em}
+.loading{grid-column:1/-1;text-align:center;padding:90px 20px;color:var(--ink3)}
+.spin{width:30px;height:30px;border:2.5px solid var(--line);border-top-color:var(--blue);border-radius:50%;animation:sp 1s linear infinite;margin:0 auto 16px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+.scrim{position:fixed;inset:0;background:rgba(15,18,28,.4);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:90;opacity:0;pointer-events:none;transition:.35s}
+.scrim.show{opacity:1;pointer-events:auto}
+.sheet{position:fixed;z-index:100;left:50%;top:50%;transform:translate(-50%,-46%) scale(.97);width:min(860px,94vw);max-height:90vh;overflow:auto;border-radius:30px;background:var(--bg2);box-shadow:0 30px 90px rgba(10,15,30,.4);opacity:0;pointer-events:none;transition:opacity .35s,transform .35s cubic-bezier(.2,.8,.2,1)}
+.sheet.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.sheet::-webkit-scrollbar{width:0}
+.shero{display:flex;gap:24px;padding:28px clamp(22px,4vw,38px) 6px;flex-wrap:wrap}
+.shero .pic{flex:none;width:160px;height:200px;border-radius:18px;background:radial-gradient(120% 120% at 50% 0,#eef1f6,#e2e6ee);display:grid;place-items:center;overflow:hidden}
+[data-theme="dark"] .shero .pic{background:radial-gradient(120% 120% at 50% 0,#1b1c20,#121316)}
+.shero .pic img{width:100%;height:100%;object-fit:contain;padding:10px}
+.shero .pic .ph{font-family:"SF Pro Display";font-size:42px;font-weight:600;color:var(--ink3);opacity:.4}
+.shero .htext{flex:1;min-width:220px}
+.shero h2{font-family:"SF Pro Display";font-size:clamp(26px,4vw,34px);font-weight:600;letter-spacing:-.025em;margin:0;line-height:1.05}
+.shero .comp{font-size:15px;color:var(--ink2);margin:6px 0 0}
+.shero .comp b{color:var(--ink);font-weight:600}
+.metarow{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0 0}
+.metarow span{font-size:12.5px;font-weight:500;color:var(--ink2);padding:6px 12px;border-radius:980px;background:rgba(120,130,150,.12)}
+.closeb{position:absolute;top:16px;right:16px;z-index:2;width:34px;height:34px;border-radius:50%;border:none;cursor:pointer;color:var(--ink)}
+.closeb svg{width:15px;height:15px}
+.sbody{padding:8px clamp(22px,4vw,38px) 38px}
+.desc{font-size:15px;color:var(--ink2);line-height:1.55;margin:22px 0 0}
+.sectitle{font-family:"SF Pro Display";font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);margin:30px 0 4px;padding-bottom:13px;border-bottom:1px solid var(--line)}
+.specrow{display:grid;grid-template-columns:minmax(150px,230px) 1fr;gap:20px;padding:13px 0;border-bottom:1px solid var(--line2)}
+.specrow .sk{font-size:14px;font-weight:600;color:var(--ink)}
+.specrow .sv{font-size:15px;color:var(--ink2);line-height:1.5;word-break:break-word}
+.founder{padding:14px 0;border-bottom:1px solid var(--line2)}
+.founder .fn{font-size:15px;font-weight:600;color:var(--ink)}
+.founder .fr{font-size:13px;color:var(--ink3);margin-top:1px}
+.founder .uni{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.founder .uni span{font-size:12px;font-weight:500;color:var(--blue2);background:rgba(0,113,227,.1);padding:4px 10px;border-radius:980px}
+[data-theme="dark"] .founder .uni span{background:rgba(41,151,255,.14);color:var(--blue)}
+.founder .bg{font-size:12.5px;color:var(--ink3);margin-top:6px}
+.links{display:flex;gap:9px;flex-wrap:wrap;margin:24px 0 0}
+.links a{text-decoration:none;font-size:14px;font-weight:500;color:#fff;background:var(--blue);padding:9px 18px;border-radius:980px;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.links a:hover{filter:brightness(1.07);transform:translateY(-1px)}
+.links a.alt{background:rgba(120,130,150,.16);color:var(--ink)}
+.snote{margin-top:22px;font-size:12.5px;color:var(--ink3)}
+.invs{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:4px}
+@media(max-width:560px){.specrow{grid-template-columns:1fr;gap:4px}}
+
+.lead{font-family:"SF Pro Display";font-size:clamp(26px,4vw,34px);font-weight:600;letter-spacing:-.025em;margin:8px 0 4px}
+.subhead{font-size:16px;color:var(--ink3);margin:0 0 26px}
+.listgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;padding-bottom:30px}
+.lcard{background:var(--card);border:1px solid var(--line2);border-radius:var(--r-sm);padding:22px 24px;transition:transform .25s,box-shadow .25s;cursor:pointer}
+.lcard:hover{transform:translateY(-3px);box-shadow:var(--float)}
+.lcard h3{font-family:"SF Pro Display";font-size:19px;font-weight:600;letter-spacing:-.02em;margin:0 0 4px;line-height:1.25}
+.lcard .lm{font-size:13px;color:var(--ink3);margin:0 0 12px}
+.lcard .nums{display:flex;gap:22px;margin:0 0 12px;flex-wrap:wrap}
+.lcard .nums div{font-size:12px;color:var(--ink3)}
+.lcard .nums b{display:block;font-family:"SF Pro Display";font-size:18px;font-weight:600;color:var(--ink);letter-spacing:-.02em}
+.lcard .fl{font-size:13px;color:var(--ink2);line-height:1.5}
+.lcard .fl b{color:var(--ink);font-weight:600}
+
+.about{max-width:680px;margin:0 auto;padding-bottom:40px}
+.about p{font-size:17px;line-height:1.6;color:var(--ink2);margin:0 0 18px}
+.about a{color:var(--blue2);text-decoration:none}
+.about a:hover{text-decoration:underline}
+.about .creditbox{border-radius:var(--r-sm);padding:24px 26px;margin:26px 0}
+.about .ch{font-family:"SF Pro Display";font-size:18px;font-weight:600;color:var(--ink);margin:0 0 10px;letter-spacing:-.02em}
+.about h3{font-family:"SF Pro Display";font-size:21px;font-weight:600;letter-spacing:-.02em;color:var(--ink);margin:32px 0 10px}
+
+footer{border-top:1px solid var(--line2);margin-top:30px;padding:30px 22px 40px;text-align:center}
+footer p{font-size:12.5px;color:var(--ink3);line-height:1.7;margin:4px 0;max-width:760px;margin-inline:auto}
+footer a{color:var(--ink2);text-decoration:none}
+footer a:hover{text-decoration:underline}
+.view{padding-top:14px}
+.hidden{display:none!important}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body data-theme="light">
+<div class="scene"></div>
+<svg class="svgdefs" aria-hidden="true">
+  <filter id="lg-distort" x="-20%" y="-20%" width="140%" height="140%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.008 0.014" numOctaves="2" seed="11" result="noise"/>
+    <feGaussianBlur in="noise" stdDeviation="1.6" result="blur"/>
+    <feDisplacementMap in="SourceGraphic" in2="blur" scale="34" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<nav class="nav glass">
+  <a class="brand" href="#top"><img src="./robot-logo.svg" alt="">Humanoids</a>
+  <div class="links" id="navlinks">
+    <button class="active" data-tab="robots">Robots</button>
+    <button data-tab="companies">Companies</button>
+    <button data-tab="about">About</button>
+  </div>
+  <button class="iconbtn" id="themeToggle" title="Toggle appearance" aria-label="Toggle appearance"></button>
+</nav>
+<a id="top"></a>
+
+<section id="view-robots" class="view">
+  <header class="hero">
+    <p class="eyebrow">The Humanoid Field Guide</p>
+    <h1>Humanoids</h1>
+    <p class="lede">Every humanoid robot worth knowing — the makers, their funding and founders, and the specs that set them apart.</p>
+    <p class="meta" id="heroMeta"></p>
+  </header>
+  <div class="wrap">
+    <div class="controls glass">
+      <div class="crow">
+        <label class="searchbox">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          <input id="search" type="search" placeholder="Search robots, companies, founders, universities" autocomplete="off">
+        </label>
+        <button class="pillbtn" id="filterToggle">Filters<span class="num hidden" id="filterNum">0</span></button>
+        <select class="sel" id="sort">
+          <option value="featured">Featured</option>
+          <option value="skill">Skill score</option>
+          <option value="funding">Most funded</option>
+          <option value="new">Newest</option>
+          <option value="az">Name A–Z</option>
+        </select>
+      </div>
+      <div class="facets" id="facets"></div>
+      <div class="active hidden" id="activebar"></div>
+    </div>
+    <p class="count" id="count"></p>
+    <div class="grid" id="grid"><div class="loading"><div class="spin"></div>Loading the field guide…</div></div>
+  </div>
+</section>
+
+<section id="view-companies" class="view hidden"><div class="wrap" style="padding-top:48px"></div></section>
+
+<section id="view-about" class="view hidden">
+  <div class="wrap" style="padding-top:54px">
+    <p class="eyebrow" style="text-align:center;color:var(--blue2);font-size:13px;font-weight:600;letter-spacing:.02em;text-transform:uppercase">About</p>
+    <h2 class="lead" style="text-align:center">A personal guide to the humanoid era</h2>
+    <div class="about">
+      <p>This is a personal, liquid-glass field guide to the world's humanoid robots — the machines, the companies building them,
+      how much they've raised, who founded them and where they studied, and the specs that matter.</p>
+      <div class="creditbox glass-soft">
+        <p class="ch">Credit where it's due</p>
+        <p style="margin:0">The robot roster, photos, and skill scores are drawn from
+        <a href="https://humanoid.guide" target="_blank" rel="noopener">humanoid.guide</a>, an excellent and continuously-updated
+        catalog of the humanoid landscape. Thank you for assembling it. This site is a fan-made viewer — please visit and support
+        the original.</p>
+      </div>
+      <h3>The funding & founder data is researched</h3>
+      <p>humanoid.guide lists the robots and specs; it does <i>not</i> publish company funding, founders, or their universities.
+      Those fields here were researched and cross-checked from public sources (company sites, Crunchbase, press, news) by an
+      automated research pass built with <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude</a>.
+      It's a fast-moving, often-opaque industry: some figures are undisclosed, and anything that couldn't be verified is left
+      blank rather than guessed. Treat funding numbers as best-effort estimates, not gospel.</p>
+      <h3>Built by Claude, for easy updates &amp; open to all</h3>
+      <p>Built by Claude for <a href="https://thejerrycheng.github.io" target="_blank" rel="noopener">Jerry&nbsp;Cheng</a>. It reads a
+      single <code>humanoids_data.json</code>, so the catalog can be refreshed any time. This is for personal use, but corrections
+      and additions are welcome — and for the robot roster itself, support <a href="https://humanoid.guide" target="_blank" rel="noopener">humanoid.guide</a>.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Robot roster, images &amp; skill scores from <a href="https://humanoid.guide" target="_blank" rel="noopener">humanoid.guide</a>. Funding, founders &amp; university data independently researched — best-effort, may contain errors.</p>
+  <p>Viewer designed &amp; built by <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude</a> for <a href="https://thejerrycheng.github.io" target="_blank" rel="noopener">Jerry Cheng</a>. <span id="footMeta"></span></p>
+</footer>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+
+<script>
+const DATA="./humanoids_data.json";
+const FLAG={"United States":"🇺🇸","USA":"🇺🇸","US":"🇺🇸","China":"🇨🇳","Japan":"🇯🇵","Germany":"🇩🇪","South Korea":"🇰🇷","Korea":"🇰🇷","France":"🇫🇷","India":"🇮🇳","United Kingdom":"🇬🇧","UK":"🇬🇧","Canada":"🇨🇦","Israel":"🇮🇱","Poland":"🇵🇱","Taiwan":"🇹🇼","Singapore":"🇸🇬","Russia":"🇷🇺","Spain":"🇪🇸","Vietnam":"🇻🇳","Switzerland":"🇨🇭","Norway":"🇳🇴","Netherlands":"🇳🇱","Italy":"🇮🇹","Sweden":"🇸🇪","Australia":"🇦🇺","UAE":"🇦🇪","United Arab Emirates":"🇦🇪","Estonia":"🇪🇪","Turkey":"🇹🇷","Brazil":"🇧🇷","Belgium":"🇧🇪"};
+const flag=c=>c?(FLAG[c]||"🏳️"):"";
+
+let DB=null,ROBOTS=[],STATE={q:"",sort:"featured",sel:{}};
+const FACETS=[
+  {key:"country",label:"Country"},
+  {key:"_type",label:"Type"},
+  {key:"_legs",label:"Form"},
+  {key:"_funding_year",label:"Funding year"},
+  {key:"funding_status",label:"Funding stage"},
+  {key:"_score",label:"Skill score"}
+];
+// Derived classifiers (heuristic, from the robot's text)
+function classifyLegs(t){
+  t=" "+t.toLowerCase()+" ";
+  if(/(wheel|wheeled|mobile base|wheeled base|omni[\- ]?(?:directional )?base|tracked base|rolling chassis|on wheels|four[\- ]?wheel)/.test(t)
+     && !/(bipedal|two legs|legged locomotion|walks on legs)/.test(t)) return "Wheeled / no legs";
+  return "With legs";
+}
+function classifyType(t){
+  t=" "+t.toLowerCase()+" ";const out=[];
+  if(/(industr|factory|factories|manufactur|logistic|warehouse|assembly|commercial|enterprise|automotive|inspection|workplace|\blabor|\blabour|workforce|production line|material handling|\bb2b\b)/.test(t)) out.push("Industry");
+  if(/(\bhome\b|household|domestic|consumer|\bfamily\b|families|elderly|companion|caregiv|housework|\bchores\b|daily life|in[\- ]home|housekeep)/.test(t)) out.push("Home");
+  if(!out.length) out.push("General purpose");
+  return out;
+}
+function fundingYear(r){
+  const d=r.last_round_date;if(d){const m=String(d).match(/(20\d{2})/);if(m)return m[1];}
+  return null;
+}
+
+(async function(){
+  try{const r=await fetch(DATA,{cache:"no-store"});DB=await r.json();}
+  catch(e){document.getElementById("grid").innerHTML=`<div class="empty"><div class="ttl">Couldn't load data</div><p>${esc(String(e))}</p></div>`;return;}
+  ROBOTS=(DB.robots||[]).map((r,i)=>{
+    const text=[r.robot,r.description,r.company_summary,r.main_market].filter(Boolean).join(" ");
+    return {...r,_i:i,
+      _legs:classifyLegs(text),
+      _type:classifyType(text),
+      _funding_year:fundingYear(r),
+      _score:r.skill_score!=null?(r.skill_score>=3?"3+ ★":r.skill_score>=2?"2–3 ★":"Under 2 ★"):null
+    };
+  });
+  buildHero();buildFacets();buildCompanies();render();wireUI();
+})();
+
+function buildHero(){
+  const m=DB.metadata||{};
+  document.getElementById("heroMeta").textContent=`${ROBOTS.length} robots · ${m.companies||new Set(ROBOTS.map(r=>r.company).filter(Boolean)).size} companies · source: humanoid.guide`;
+  document.getElementById("footMeta").textContent=`${ROBOTS.length} robots · updated ${m.last_updated||""}.`;
+}
+function facetValues(key){
+  const ct={};ROBOTS.forEach(r=>{let v=r[key];if(v==null||v==="")return;
+    if(Array.isArray(v))v.forEach(x=>{if(x!=null&&x!=="")ct[x]=(ct[x]||0)+1;});else ct[v]=(ct[v]||0)+1;});
+  let ks=Object.keys(ct);
+  if(key==="_funding_year")ks.sort((a,b)=>b-a);
+  else if(key==="_score")ks=["3+ ★","2–3 ★","Under 2 ★"].filter(k=>ct[k]);
+  else if(key==="_type")ks=["Industry","Home","General purpose"].filter(k=>ct[k]);
+  else if(key==="_legs")ks=["With legs","Wheeled / no legs"].filter(k=>ct[k]);
+  else ks.sort((a,b)=>ct[b]-ct[a]);
+  return ks.map(k=>({v:k,c:ct[k]}));
+}
+function buildFacets(){
+  const w=document.getElementById("facets");
+  w.innerHTML=FACETS.map(d=>{const vs=facetValues(d.key);if(!vs.length)return"";
+    return `<div class="fgroup"><span class="glab">${d.label}</span>`+
+      vs.map(({v,c})=>`<button class="chip" data-k="${d.key}" data-v="${esc(v)}">${d.key==="country"?flag(v)+" ":""}${esc(v)}<span class="c">${c}</span></button>`).join("")+`</div>`;
+  }).join("");
+  w.querySelectorAll(".chip").forEach(ch=>ch.addEventListener("click",()=>{
+    const k=ch.dataset.k,v=ch.dataset.v;STATE.sel[k]=STATE.sel[k]||new Set();
+    STATE.sel[k].has(v)?STATE.sel[k].delete(v):STATE.sel[k].add(v);if(!STATE.sel[k].size)delete STATE.sel[k];render();
+  }));
+}
+function activeCount(){return Object.values(STATE.sel).reduce((n,s)=>n+s.size,0);}
+function matches(r){
+  for(const[k,set]of Object.entries(STATE.sel)){
+    const rv=r[k];
+    const ok=Array.isArray(rv)?rv.some(x=>set.has(String(x))):set.has(String(rv));
+    if(!ok)return false;
+  }
+  if(STATE.q){const h=[r.robot,r.company,r.country,r.description,r.company_summary,
+    (r.founders||[]).map(f=>f.name+" "+(f.universities||[]).join(" ")).join(" ")].join(" ").toLowerCase();
+    if(!h.includes(STATE.q.toLowerCase()))return false;}
+  return true;
+}
+function sortList(list){
+  const s=STATE.sort,a=[...list],
+    fund=r=>typeof r.funding_total_usd_millions==="number"?r.funding_total_usd_millions:-1,
+    sc=r=>r.skill_score!=null?r.skill_score:-1,
+    yr=r=>(r.specs&&r.specs.release_year)||r.founded_year||0;
+  if(s==="skill")a.sort((x,y)=>sc(y)-sc(x)||x._i-y._i);
+  else if(s==="funding")a.sort((x,y)=>fund(y)-fund(x)||x._i-y._i);
+  else if(s==="new")a.sort((x,y)=>yr(y)-yr(x)||x._i-y._i);
+  else if(s==="az")a.sort((x,y)=>x.robot.localeCompare(y.robot));
+  return a;
+}
+function render(){
+  const list=sortList(ROBOTS.filter(matches)),g=document.getElementById("grid"),n=activeCount();
+  document.getElementById("count").textContent=`${list.length} ${list.length===1?"robot":"robots"}${n||STATE.q?" matching":""}`;
+  const fn=document.getElementById("filterNum");fn.textContent=n;fn.classList.toggle("hidden",!n);
+  syncChips();renderActive();
+  if(!list.length){g.innerHTML=`<div class="empty"><div class="ttl">No matches</div><p>Try removing a filter or search term.</p></div>`;return;}
+  g.innerHTML=list.map(cardHTML).join("");
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}}),{threshold:.08});
+  g.querySelectorAll(".card").forEach((c,i)=>{c.style.transitionDelay=Math.min(i,8)*20+"ms";c.addEventListener("click",()=>openSheet(ROBOTS[+c.dataset.i]));io.observe(c);});
+}
+function scoreDots(s){
+  if(s==null)return"";let h="";for(let i=1;i<=5;i++){const f=s>=i?"f":(s>=i-0.5?"h":"");h+=`<span class="d ${f}"></span>`;}
+  return `<div class="score">${h}<span class="n">${s}</span></div>`;
+}
+function fundTag(r){
+  if(r.funding_total)return r.funding_total;
+  if(r.funding_status)return r.funding_status;
+  return null;
+}
+function cardHTML(r){
+  const init=(r.robot||"?").replace(/[^A-Za-z0-9]/g,"").slice(0,2).toUpperCase();
+  const ft=fundTag(r);
+  const sp=r.specs||{};
+  const meta=[r.country,sp.height_cm&&(sp.height_cm+" cm"),sp.weight_kg&&(sp.weight_kg+" kg")].filter(Boolean);
+  return `<article class="card" data-i="${r._i}">
+    <div class="media">
+      ${r.image?`<img loading="lazy" src="${esc(r.image)}" alt="${esc(r.robot)}" onerror="this.remove()">`:""}
+      <div class="ph">${init}</div>
+      ${r.country?`<div class="flag glass-soft" title="${esc(r.country)}">${flag(r.country)}</div>`:""}
+      ${ft?`<div class="fund glass-soft">${esc(ft)}</div>`:""}
+      ${r.company_summary||r.description?`<div class="summary">${esc((r.company_summary||r.description||"").slice(0,150))}</div>`:""}
+    </div>
+    <div class="cbody">
+      <h3 class="cname">${esc(r.robot)}</h3>
+      <p class="ccomp">${esc(r.company||"")}</p>
+      ${scoreDots(r.skill_score)}
+      ${meta.length?`<p class="cmeta">${meta.map(m=>esc(String(m))).join('<span class="dot">·</span>')}</p>`:""}
+    </div>
+  </article>`;
+}
+function renderActive(){
+  const bar=document.getElementById("activebar"),n=activeCount();
+  if(!n){bar.classList.add("hidden");return;}
+  bar.classList.remove("hidden");let h=`<span class="lab">Filters</span>`;
+  for(const[k,set]of Object.entries(STATE.sel))for(const v of set)h+=`<button class="tagx" data-k="${k}" data-v="${esc(v)}">${esc(v)} ✕</button>`;
+  h+=`<button class="clearall" id="clearAll">Clear all</button>`;bar.innerHTML=h;
+  bar.querySelectorAll(".tagx").forEach(b=>b.addEventListener("click",()=>{STATE.sel[b.dataset.k].delete(b.dataset.v);if(!STATE.sel[b.dataset.k].size)delete STATE.sel[b.dataset.k];render();}));
+  document.getElementById("clearAll").addEventListener("click",()=>{STATE.sel={};render();});
+}
+function syncChips(){document.querySelectorAll("#facets .chip").forEach(ch=>{const s=STATE.sel[ch.dataset.k];ch.classList.toggle("on",!!(s&&s.has(ch.dataset.v)));});}
+
+function openSheet(r){
+  const sheet=document.getElementById("sheet");
+  const init=(r.robot||"?").replace(/[^A-Za-z0-9]/g,"").slice(0,2).toUpperCase();
+  const pic=r.image?`<img src="${esc(r.image)}" alt="${esc(r.robot)}" onerror="this.remove()"><div class="ph">${init}</div>`:`<div class="ph">${init}</div>`;
+  const meta=[r.country&&(flag(r.country)+" "+r.country),r.founded_year&&("Founded "+r.founded_year),r.hq,r.status,(r.main_market?"Market: "+r.main_market:null)].filter(Boolean).map(t=>`<span>${esc(t)}</span>`).join("");
+  // full humanoid.guide spec table
+  const specHTML=(r.hg_attributes||[]).filter(a=>a.value&&a.value!=="-").map(a=>`<div class="specrow"><div class="sk">${esc(a.label)}</div><div class="sv">${esc(a.value)}</div></div>`).join("");
+  const fundRows=[["Total raised",r.funding_total],["Latest round",[r.last_round,r.last_round_date].filter(Boolean).join(" · ")],["Status",r.funding_status],["Valuation",r.valuation]].filter(([,v])=>v).map(([k,v])=>`<div class="specrow"><div class="sk">${k}</div><div class="sv">${esc(String(v))}</div></div>`).join("");
+  const inv=(r.investors||[]).length?`<div style="margin-top:14px"><div class="sk" style="font-size:13px;color:var(--ink3);margin-bottom:4px">Notable investors</div><div class="invs">${r.investors.map(esc).join(" · ")}</div></div>`:"";
+  const founders=(r.founders||[]).map(f=>`<div class="founder"><div class="fn">${esc(f.name)}</div>${f.role?`<div class="fr">${esc(f.role)}</div>`:""}${(f.universities||[]).length?`<div class="uni">${f.universities.map(u=>`<span>🎓 ${esc(u)}</span>`).join("")}</div>`:""}${f.background?`<div class="bg">${esc(f.background)}</div>`:""}</div>`).join("");
+  const links=[r.website&&`<a href="${esc(r.website)}" target="_blank" rel="noopener">Official site ↗</a>`,
+    r.detail_url&&`<a class="alt" href="${esc(r.detail_url)}" target="_blank" rel="noopener">humanoid.guide ↗</a>`].filter(Boolean).join("");
+  sheet.innerHTML=`
+    <button class="closeb glass-soft" onclick="closeSheet()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="shero">
+      <div class="pic">${pic}</div>
+      <div class="htext">
+        <h2>${esc(r.robot)}</h2>
+        <p class="comp">by <b>${esc(r.company||"Unknown")}</b></p>
+        ${scoreDots(r.skill_score)}
+        <div class="metarow">${meta}</div>
+      </div>
+    </div>
+    <div class="sbody">
+      ${r.description?`<p class="desc">${esc(r.description)}</p>`:""}
+      ${specHTML?`<div class="sectitle">Specifications · via humanoid.guide</div>${specHTML}`:""}
+      ${(fundRows||r.company_summary||inv)?`<div class="sectitle">Company &amp; funding</div>${r.company_summary?`<p class="desc" style="margin-top:14px">${esc(r.company_summary)}</p>`:""}${fundRows}${inv}`:""}
+      ${founders?`<div class="sectitle">Founders</div>${founders}`:""}
+      ${links?`<div class="links">${links}</div>`:""}
+      ${r.confidence?`<p class="snote">Funding/founder data confidence: ${esc(r.confidence)}${(r.sources||[]).length?` · ${r.sources.length} source(s)`:""} · researched, may contain errors.</p>`:""}
+    </div>`;
+  document.getElementById("scrim").classList.add("show");sheet.classList.add("show");sheet.scrollTop=0;document.body.style.overflow="hidden";
+}
+function closeSheet(){document.getElementById("scrim").classList.remove("show");document.getElementById("sheet").classList.remove("show");document.body.style.overflow="";}
+
+function buildCompanies(){
+  const g={};
+  ROBOTS.forEach(r=>{const c=r.company||"Unknown";(g[c]=g[c]||[]).push(r);});
+  const comps=Object.entries(g).map(([c,rs])=>{
+    const lead=rs.find(r=>r.founders&&r.founders.length)||rs[0];
+    return {company:c,robots:rs,lead,
+      fund:lead.funding_total_usd_millions||-1};
+  }).sort((a,b)=>b.fund-a.fund||b.robots.length-a.robots.length);
+  const html=comps.map(co=>{
+    const l=co.lead;
+    const founders=(l.founders||[]).map(f=>f.name).join(", ");
+    return `<div class="lcard" data-i="${l._i}">
+      <h3>${flag(l.country)} ${esc(co.company)}</h3>
+      <p class="lm">${esc([l.hq||l.country,l.founded_year&&("est. "+l.founded_year)].filter(Boolean).join(" · "))}</p>
+      <div class="nums">
+        <div><b>${co.robots.length}</b>robot${co.robots.length>1?"s":""}</div>
+        ${l.funding_total?`<div><b>${esc(l.funding_total)}</b>raised</div>`:""}
+        ${l.funding_status?`<div><b>${esc(l.funding_status)}</b>stage</div>`:""}
+      </div>
+      ${founders?`<p class="fl"><b>Founders:</b> ${esc(founders)}</p>`:""}
+      <p class="fl" style="margin-top:8px;color:var(--ink3)">${esc(co.robots.map(r=>r.robot).join(" · "))}</p>
+    </div>`;
+  }).join("");
+  document.querySelector("#view-companies .wrap").innerHTML=`<h2 class="lead">Companies</h2><p class="subhead">${comps.length} makers, sorted by funding raised.</p><div class="listgrid">${html}</div>`;
+  document.querySelectorAll("#view-companies .lcard").forEach(c=>c.addEventListener("click",()=>openSheet(ROBOTS[+c.dataset.i])));
+}
+
+function wireUI(){
+  const si=document.getElementById("search");let t;
+  si.addEventListener("input",()=>{clearTimeout(t);t=setTimeout(()=>{STATE.q=si.value.trim();render();},110);});
+  document.getElementById("sort").addEventListener("change",e=>{STATE.sort=e.target.value;render();});
+  document.getElementById("filterToggle").addEventListener("click",e=>{document.getElementById("facets").classList.toggle("open");e.currentTarget.classList.toggle("on");});
+  document.getElementById("scrim").addEventListener("click",closeSheet);
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet();});
+  document.querySelectorAll("#navlinks button").forEach(b=>b.addEventListener("click",()=>{
+    document.querySelectorAll("#navlinks button").forEach(x=>x.classList.remove("active"));b.classList.add("active");
+    ["robots","companies","about"].forEach(v=>document.getElementById("view-"+v).classList.toggle("hidden",v!==b.dataset.tab));
+    window.scrollTo({top:0});
+  }));
+  const tg=document.getElementById("themeToggle");
+  let theme=localStorage.getItem("hg-theme")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");
+  applyTheme(theme);
+  tg.addEventListener("click",()=>{theme=theme==="dark"?"light":"dark";localStorage.setItem("hg-theme",theme);applyTheme(theme);});
+}
+const SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>';
+const MOON='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+function applyTheme(m){document.body.setAttribute("data-theme",m);document.documentElement.style.colorScheme=m;document.getElementById("themeToggle").innerHTML=m==="dark"?SUN:MOON;}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+window.closeSheet=closeSheet;
+</script>
+</body>
+</html>

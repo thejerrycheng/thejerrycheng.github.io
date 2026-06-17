@@ -15,12 +15,12 @@
   --blue:#0071e3; --blue2:#0066cc;
   --card:#ffffff;
   /* liquid glass */
-  --glass-tint:rgba(255,255,255,.42);
+  --glass-tint:rgba(255,255,255,.5);
   --glass-tint2:rgba(255,255,255,.62);
-  --rim:rgba(255,255,255,.9);
-  --rim2:rgba(255,255,255,.15);
-  --spec:rgba(255,255,255,.55);
-  --float:0 10px 34px rgba(20,28,48,.14);
+  --rim:rgba(255,255,255,.97);
+  --rim2:rgba(255,255,255,.18);
+  --spec:rgba(255,255,255,.6);
+  --float:0 10px 34px rgba(20,28,48,.16);
   --r:28px; --r-sm:18px;
 }
 [data-theme="dark"]{
@@ -29,11 +29,11 @@
   --line:rgba(255,255,255,.14); --line2:rgba(255,255,255,.08);
   --blue:#2997ff; --blue2:#2997ff;
   --card:#161719;
-  --glass-tint:rgba(34,36,42,.46);
+  --glass-tint:rgba(40,42,50,.55);
   --glass-tint2:rgba(40,42,48,.62);
-  --rim:rgba(255,255,255,.42);
-  --rim2:rgba(255,255,255,.08);
-  --spec:rgba(255,255,255,.22);
+  --rim:rgba(255,255,255,.5);
+  --rim2:rgba(255,255,255,.1);
+  --spec:rgba(255,255,255,.28);
   --float:0 12px 40px rgba(0,0,0,.55);
 }
 *{box-sizing:border-box}
@@ -62,33 +62,33 @@ body{
 
 /* ===================== LIQUID GLASS ===================== */
 .glass{position:relative; background:var(--glass-tint);
-  -webkit-backdrop-filter:blur(16px) saturate(180%) brightness(1.06);
-  backdrop-filter:url(#lg-distort) blur(16px) saturate(180%) brightness(1.06);
-  box-shadow:var(--float), inset 0 1px 1px var(--rim), inset 0 -1px 1px var(--rim2);
+  -webkit-backdrop-filter:blur(22px) saturate(200%) brightness(1.08);
+  backdrop-filter:url(#lg-distort) blur(22px) saturate(200%) brightness(1.08);
+  box-shadow:var(--float), inset 0 1.4px 1px var(--rim), inset 0 -1px 1px var(--rim2), inset 1px 0 1px var(--rim2), inset -1px 0 1px var(--rim2);
   isolation:isolate;}
 .glass-soft{position:relative; background:var(--glass-tint);
-  -webkit-backdrop-filter:blur(12px) saturate(170%);
-  backdrop-filter:blur(12px) saturate(170%);
-  box-shadow:inset 0 1px 1px var(--rim), inset 0 -1px 1px var(--rim2);}
+  -webkit-backdrop-filter:blur(14px) saturate(180%);
+  backdrop-filter:blur(14px) saturate(180%);
+  box-shadow:inset 0 1.2px 1px var(--rim), inset 0 -1px 1px var(--rim2);}
 /* bright lensed rim */
-.glass::before,.glass-soft::before{content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
-  background:linear-gradient(135deg,var(--rim),transparent 35%,transparent 60%,var(--spec));
+.glass::before,.glass-soft::before{content:""; position:absolute; inset:0; border-radius:inherit; padding:1.2px; pointer-events:none;
+  background:linear-gradient(140deg,var(--rim) 0%,transparent 30%,transparent 58%,var(--spec) 100%);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   -webkit-mask-composite:xor; mask-composite:exclude;}
 /* specular sheen */
 .glass::after{content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
-  background:linear-gradient(135deg,var(--spec),transparent 38%);
-  opacity:.7; mix-blend-mode:screen;}
+  background:linear-gradient(140deg,var(--spec),transparent 42%),radial-gradient(140% 90% at 18% -20%,rgba(255,255,255,.42),transparent 55%);
+  opacity:.9; mix-blend-mode:screen;}
 
 /* ===================== LAYOUT ===================== */
 .wrap{max-width:1120px; margin:0 auto; padding:0 22px}
 
 /* floating glass nav */
-.nav{position:sticky; top:14px; z-index:60; margin:14px auto 0; max-width:1120px;
-  border-radius:980px; padding:9px 9px 9px 18px; display:flex; align-items:center; gap:14px;}
+.nav{position:sticky; top:14px; z-index:60; margin:14px auto 0; width:max-content; max-width:calc(100% - 28px);
+  border-radius:980px; padding:8px 10px 8px 17px; display:flex; align-items:center; gap:16px;}
 .nav .brand{display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--ink); font-weight:600; font-size:17px; letter-spacing:-.02em; flex:none}
 .nav .brand img{width:26px; height:26px; border-radius:7px}
-.nav .links{display:flex; gap:2px; margin-left:auto; overflow:auto; scrollbar-width:none}
+.nav .links{display:flex; gap:2px; overflow:auto; scrollbar-width:none}
 .nav .links::-webkit-scrollbar{display:none}
 .nav .links button{border:none; background:transparent; color:var(--ink2); font-size:14px; font-weight:500;
   letter-spacing:-.01em; padding:8px 13px; border-radius:980px; cursor:pointer; white-space:nowrap; transition:color .2s, background .2s; font-family:inherit}
