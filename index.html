@@ -437,6 +437,40 @@
   .top-nav a.navlink:focus-visible{ outline:2px solid rgba(0,0,0,0.3); outline-offset:2px; }
   .top-nav a.navlink[aria-current="page"]{ background: rgba(0,0,0,0.06); }
 
+  /* Robolog dropdown (desktop) */
+  .nav-dropdown{ position: relative; display:inline-flex; }
+  .robolog-toggle{ cursor: pointer; display:inline-flex; align-items:center; gap:6px; }
+  .robolog-toggle .caret{ font-size:10px; opacity:.6; transition: transform .15s ease; }
+  .nav-dropdown:hover .robolog-toggle .caret,
+  .nav-dropdown:focus-within .robolog-toggle .caret{ transform: rotate(180deg); }
+  .robolog-menu{
+    position:absolute; top: calc(100% + 8px); left:50%; transform: translateX(-50%) translateY(-6px);
+    min-width: 220px; background:#fff;
+    border: 0.5px solid var(--hairline); border-radius:14px;
+    box-shadow: 0 24px 50px rgba(0,0,0,0.16), 0 2px 8px rgba(0,0,0,0.06);
+    padding:6px; z-index:1001;
+    opacity:0; pointer-events:none;
+    transition: opacity .16s ease, transform .16s ease;
+  }
+  .nav-dropdown:hover .robolog-menu,
+  .nav-dropdown:focus-within .robolog-menu{
+    opacity:1; pointer-events:auto; transform: translateX(-50%) translateY(0);
+  }
+  .robolog-menu a{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 12px; border-radius:10px;
+    color:var(--ink); text-decoration:none; font-size:14px; white-space:nowrap;
+    transition: background-color .15s ease;
+  }
+  .robolog-menu a:hover{ background: rgba(0,0,0,0.06); }
+  .robolog-menu a .ico{ font-size:16px; line-height:1; }
+  .robolog-menu a small{ display:block; font-size:12px; opacity:.55; margin-top:2px; }
+  .robolog-menu a .label{ display:flex; flex-direction:column; }
+
+  @media (prefers-color-scheme: dark){
+    .robolog-menu{ background:#1c1c1e; }
+  }
+
   /* Right: Menu button (mobile) — same chip w/ ring */
   .menu-btn{
     justify-self: end;
@@ -540,6 +574,23 @@
       <a class="navlink" href="index.html#projects">Projects</a>
       <a class="navlink" href="index.html#startups">Startups</a>
       <a class="navlink" href="index.html#skills">Skills</a>
+
+      <!-- Robolog: personal robotics logbook (UMI + Humanoids) -->
+      <div class="nav-dropdown">
+        <a class="navlink robolog-toggle" href="umi/index.html" aria-haspopup="true" aria-expanded="false">
+          Robolog <span class="caret" aria-hidden="true">▾</span>
+        </a>
+        <div class="robolog-menu" role="menu" aria-label="Robolog">
+          <a role="menuitem" href="umi/index.html">
+            <span class="ico" aria-hidden="true">🤖</span>
+            <span class="label">UMI Device Catalog<small>Awesome-UMI gripper builds</small></span>
+          </a>
+          <a role="menuitem" href="humanoids/index.html">
+            <span class="ico" aria-hidden="true">🦾</span>
+            <span class="label">Humanoids Guide<small>The field, by release year</small></span>
+          </a>
+        </div>
+      </div>
       <!-- <a class="navlink" href="blog.html" aria-current="page">Blog</a> -->
     </div>
 
@@ -562,6 +613,9 @@
   <a role="menuitem" href="index.html#projects">Projects</a>
   <a role="menuitem" href="index.html#skills">Skills</a>
   <a role="menuitem" href="index.html#startups">Startups</a>
+  <hr>
+  <a role="menuitem" href="umi/index.html">🤖 Robolog · UMI Catalog</a>
+  <a role="menuitem" href="humanoids/index.html">🦾 Robolog · Humanoids Guide</a>
   <hr>
   <a role="menuitem" href="blog.html" aria-current="page">Blog</a>
 </div>
