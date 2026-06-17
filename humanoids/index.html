@@ -493,7 +493,7 @@ function openSheet(r){
   const specHTML=(r.hg_attributes||[]).filter(a=>a.value&&a.value!=="-").map(a=>`<div class="specrow"><div class="sk">${esc(a.label)}</div><div class="sv">${esc(a.value)}</div></div>`).join("");
   const fundRows=[["Total raised",r.funding_total],["Latest round",[r.last_round,r.last_round_date].filter(Boolean).join(" · ")],["Status",r.funding_status],["Valuation",r.valuation]].filter(([,v])=>v).map(([k,v])=>`<div class="specrow"><div class="sk">${k}</div><div class="sv">${esc(String(v))}</div></div>`).join("");
   const inv=(r.investors||[]).length?`<div style="margin-top:14px"><div class="sk" style="font-size:13px;color:var(--ink3);margin-bottom:4px">Notable investors</div><div class="invs">${r.investors.map(esc).join(" · ")}</div></div>`:"";
-  const founders=(r.founders||[]).map(f=>`<div class="founder"><div class="fn">${esc(f.name)}</div>${f.role?`<div class="fr">${esc(f.role)}</div>`:""}${(f.universities||[]).length?`<div class="uni">${f.universities.map(u=>`<span>🎓 ${esc(u)}</span>`).join("")}</div>`:""}${f.background?`<div class="bg">${esc(f.background)}</div>`:""}</div>`).join("");
+  const founders=(r.founders||[]).map(f=>`<div class="founder"><div class="fn">${esc(f.name)}</div>${f.role?`<div class="fr">${esc(f.role)}</div>`:""}${(f.universities||[]).length?`<div class="uni">${f.universities.map(u=>`<span>${esc(u)}</span>`).join("")}</div>`:""}${f.background?`<div class="bg">${esc(f.background)}</div>`:""}</div>`).join("");
   const links=[r.website&&`<a href="${esc(r.website)}" target="_blank" rel="noopener">Official site ↗</a>`,
     r.detail_url&&`<a class="alt" href="${esc(r.detail_url)}" target="_blank" rel="noopener">humanoid.guide ↗</a>`].filter(Boolean).join("");
   sheet.innerHTML=`
