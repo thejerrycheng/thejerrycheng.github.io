@@ -121,9 +121,9 @@ body{margin:0;color:var(--ink);min-height:100vh;overflow-x:hidden;background:var
 .acard .athumb img{width:100%;height:100%;object-fit:contain;padding:5px}
 .acard .typepill{display:inline-block;font-size:10px;font-weight:600;color:var(--blue2);background:rgba(0,113,227,.1);padding:2px 8px;border-radius:980px;margin-left:7px;vertical-align:middle}
 [data-theme="dark"] .acard .typepill{background:rgba(41,151,255,.14);color:var(--blue)}
-.sactimg{border-radius:18px;overflow:hidden;background:radial-gradient(120% 120% at 50% 0,#eef1f6,#e2e6ee);aspect-ratio:16/9;display:grid;place-items:center;margin:20px 0 4px}
+.sactimg{border-radius:18px;background:radial-gradient(120% 120% at 50% 0,#eef1f6,#e2e6ee);margin:20px 0 4px;padding:18px;display:flex;align-items:center;justify-content:center}
 [data-theme="dark"] .sactimg{background:radial-gradient(120% 120% at 50% 0,#1b1c20,#121316)}
-.sactimg img{width:100%;height:100%;object-fit:contain;padding:20px}
+.sactimg img{max-width:100%;max-height:340px;width:auto;height:auto;object-fit:contain;display:block}
 
 .empty{grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--ink2)}
 .empty .ttl{font-family:"SF Pro Display";font-size:24px;font-weight:600;color:var(--ink);margin-bottom:6px;letter-spacing:-.02em}
