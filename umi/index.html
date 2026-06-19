@@ -292,6 +292,7 @@ footer a:hover{text-decoration:underline}
     <button data-tab="about">About</button>
   </div>
   <div class="navutil">
+    <button class="iconbtn" id="langToggle" title="语言 / Language" aria-label="Language" style="font-size:13px;font-weight:700;letter-spacing:0"></button>
     <a class="iconbtn" href="https://thejerrycheng.github.io" title="Home — Jerry Cheng" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h3v-6h6v6h3a1 1 0 0 0 1-1v-9"/></svg></a>
     <button class="iconbtn" id="themeToggle" title="Toggle appearance" aria-label="Toggle appearance"></button>
   </div>
@@ -395,9 +396,94 @@ const LABELS={
   paper_only:"Paper only",oss_diy:"OSS / DIY",commercial_product:"Commercial product",full_stack_business:"Full-stack business",oss_ecosystem:"OSS ecosystem",
   us:"United States",china:"China",japan:"Japan",germany:"Germany",uae:"United Arab Emirates",russia:"Russia",uk:"United Kingdom",south_korea:"South Korea",canada:"Canada",china_global:"China (global)"
 };
-const lbl=v=>LABELS[v]||prettify(v);
+const lbl=v=>(LANG==="zh"&&LABELS_ZH[v])||LABELS[v]||prettify(v);
 function prettify(s){if(s==null)return"";s=String(s);if(/^https?:\/\//.test(s))return s;return s.replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase());}
 const SPEC_LABELS={cost_usd:"Cost",fov_deg:"Field of view",main_camera:"Main camera",endeffector:"End-effector",dof:"Degrees of freedom",weight_g:"Weight",ros_support:"ROS support",supported_robots:"Supported robots",data_modalities:"Data modalities",policy_framework:"Policy framework",key_authors:"Key authors",authors:"Authors",venue:"Venue",cost_breakdown:"Cost breakdown",tracking_details:"Pose tracking",gripper_width_method:"Gripper width sensing",year_latest:"Latest year",datasets_public:"Public datasets",business_model:"Business model",auxiliary_sensor:"Auxiliary sensor"};
+
+/* ===================== i18n (EN / 中文) ===================== */
+let LANG=localStorage.getItem("umi-lang")||((navigator.language||"").toLowerCase().startsWith("zh")?"zh":"en");
+const T={
+ en:{devices:"Devices",datasets:"Datasets",standards:"Standards",library:"Library",about:"About",
+   eyebrow:"Awesome UMI · Catalog",lede:"A field guide to the handheld and wearable interfaces teaching robots to manipulate the world.",
+   search_ph:"Search devices, labs, authors, innovations",filters:"Filters",
+   sort_featured:"Featured",sort_new:"Newest",sort_old:"Oldest",sort_az:"Name A–Z",sort_cost:"Lowest cost",
+   filters_active:"Filters",clear_all:"Clear all",no_title:"No matches",no_body:"Try removing a filter or search term.",
+   since:"Since ",license_label:"License: ",key_innovation:"Key innovation",significance:"Significance",specifications:"Specifications",
+   src_project_page:"Project",src_github:"Code",src_paper:"Paper",src_press:"Press",src_video:"Video",src_docs:"Docs",
+   verified:"verified",confidence:"confidence",trajectories:"trajectories",tasks:"tasks",size:"size"},
+ zh:{devices:"设备",datasets:"数据集",standards:"标准",library:"资料库",about:"关于",
+   eyebrow:"Awesome UMI · 目录",lede:"一份手持与可穿戴接口指南——它们正教机器人操作真实世界。",
+   search_ph:"搜索设备、实验室、作者、创新点",filters:"筛选",
+   sort_featured:"精选",sort_new:"最新",sort_old:"最早",sort_az:"名称 A–Z",sort_cost:"价格最低",
+   filters_active:"筛选条件",clear_all:"清除全部",no_title:"无匹配结果",no_body:"试试移除某个筛选或搜索词。",
+   since:"始于 ",license_label:"许可：",key_innovation:"关键创新",significance:"意义",specifications:"规格参数",
+   src_project_page:"项目主页",src_github:"代码",src_paper:"论文",src_press:"报道",src_video:"视频",src_docs:"文档",
+   verified:"核实于",confidence:"置信度",trajectories:"条轨迹",tasks:"个任务",size:"大小"}
+};
+const t=k=>(T[LANG]&&T[LANG][k])||T.en[k]||k;
+function srcLabel(type){const k="src_"+type;return (T[LANG]&&T[LANG][k])||T.en[k]||prettify(type);}
+const LABELS_ZH={
+ handheld_gripper:"手持夹爪",wearable_hand:"穿戴手部",wearable_arm:"穿戴手臂",head_mounted:"头戴式",teleop_station:"遥操作台",software_only:"软件",sensor_module:"传感模块",robot_arm_kit:"机械臂套件",platform_infrastructure:"平台",
+ handheld_parallel_jaw:"手持平行夹爪",handheld_multi_finger:"手持多指",wearable_exoskeleton_hand:"手部外骨骼",wearable_full_arm:"全臂穿戴",mocap_glove:"动捕手套",smart_glasses:"智能眼镜",stick_with_phone:"杆+手机",ar_virtual:"AR/虚拟",rgb_camera_only:"仅RGB相机",humanoid_teleop:"人形遥操作",seated_teleop:"坐姿遥操作",finger_worn:"指戴式",sensor_pad_module:"传感垫",wearable_full_arm_chest:"臂+胸装具",robotic_arm:"机械臂",tactile_sensor_fingertip:"指尖触觉",bimanual_imitation_kit:"双臂套件",wearable_exoskeleton_hand_passive:"被动手部外骨骼",
+ none:"无",type_unspecified:"未指定",vision_based:"视觉式",contact_microphone:"接触式麦克风",piezoresistive:"压阻式",hall_array:"霍尔阵列",emf:"电磁",
+ "6axis_ft":"六轴力/力矩",single_axis:"单轴",joint_torque:"关节力矩",
+ visual_slam:"视觉SLAM",visual_inertial:"视觉惯性",lidar_inertial:"激光雷达惯性",vr_controller_tracker:"VR追踪器",external_mocap:"外部动捕",
+ yes:"双臂",no:"单臂",extensible:"可扩展",
+ mit:"MIT",apache:"Apache",mpl_2:"MPL-2.0",partial_oss:"部分开源",commercial_closed:"商业闭源",diy_open:"DIY/开源",
+ paper_only:"仅论文",oss_diy:"开源/DIY",commercial_product:"商业产品",full_stack_business:"全栈业务",oss_ecosystem:"开源生态",
+ us:"美国",china:"中国",japan:"日本",germany:"德国",uae:"阿联酋",russia:"俄罗斯",uk:"英国",south_korea:"韩国",canada:"加拿大",china_global:"中国（全球）"};
+const FACET_ZH={form_category:"形态",commercialization_stage:"阶段",country:"国家/地区",tactile_integration:"触觉",force_torque_integration:"力/力矩",pose_tracking:"位姿",bimanual:"双臂",license:"许可",yearbucket:"年份"};
+const SPEC_LABELS_ZH={cost_usd:"成本",fov_deg:"视场角",main_camera:"主相机",endeffector:"末端执行器",dof:"自由度",weight_g:"重量",ros_support:"ROS 支持",supported_robots:"支持的机器人",data_modalities:"数据模态",policy_framework:"策略框架",key_authors:"主要作者",authors:"作者",venue:"发表会议",cost_breakdown:"成本明细",tracking_details:"位姿追踪",gripper_width_method:"夹爪宽度感知",year_latest:"最新年份",datasets_public:"公开数据集",business_model:"商业模式",auxiliary_sensor:"辅助传感器"};
+function aboutHTML(lang){
+  const eb='font-size:13px;font-weight:600;letter-spacing:.02em;text-transform:uppercase';
+  if(lang==="zh")return `<p class="eyebrow" style="text-align:center;color:var(--blue2);${eb}">关于</p>
+    <h2 class="lead" style="text-align:center">为一份优秀清单打造的个人浏览器</h2>
+    <div class="about">
+      <p>这是对 <a href="https://commissure-inc.github.io/Awesome-UMI/" target="_blank" rel="noopener">Awesome-UMI</a> 目录的个人化、液态玻璃风格重制——一份关于 UMI 式手持与可穿戴接口（用于机器人触觉与操作数据采集）的公开清单。我为自己的研究而做，方便快速浏览、筛选和比较这些设备。</p>
+      <div class="creditbox glass-soft">
+        <p class="ch">致谢</p>
+        <p style="margin:0">每一个设备、每一项规格，以及为 UMI 生态建立目录的想法，都来自原始项目 <a href="https://github.com/commissure-inc/Awesome-UMI" target="_blank" rel="noopener">Awesome-UMI</a>（由 Commissure&nbsp;Inc 及其贡献者维护）。感谢你们整理并维护这份清单——本站只是一个粉丝制作的浏览器，完全建立在你们的工作之上。设备数据依 <a href="https://github.com/commissure-inc/Awesome-UMI/blob/main/LICENSE-DATA.md" target="_blank" rel="noopener">CC&nbsp;BY&nbsp;4.0</a> 使用。</p>
+      </div>
+      <h3>由 Claude 构建，便于更新</h3>
+      <p>本浏览器由 Claude（Anthropic）为我 <a href="https://thejerrycheng.github.io" target="_blank" rel="noopener">Jerry&nbsp;Cheng</a> 构建，以便跟上快速发展的 UMI 硬件领域。它读取上游项目自带的同一份 <code>umi_devices_data.json</code>，因此更新目录只需替换该文件即可。</p>
+      <h3>欢迎所有人</h3>
+      <p>本站供我个人使用，但欢迎贡献。对于数据本身，请将新增与更正提交至上游 <a href="https://github.com/commissure-inc/Awesome-UMI" target="_blank" rel="noopener">Awesome-UMI</a>，让整个社区受益。在本浏览器中发现了问题？请告诉我。</p>
+      <p class="longlive">UMI 万岁。</p>
+    </div>`;
+  return `<p class="eyebrow" style="text-align:center;color:var(--blue2);${eb}">About</p>
+    <h2 class="lead" style="text-align:center">A personal viewer for an awesome list</h2>
+    <div class="about">
+      <p>This is a personal, liquid-glass reimagining of the <a href="https://commissure-inc.github.io/Awesome-UMI/" target="_blank" rel="noopener">Awesome-UMI</a> catalog — a public list of UMI-style handheld and wearable interfaces for robot tactile and manipulation data collection. I built it for my own research, so I can browse, filter, and compare these devices quickly.</p>
+      <div class="creditbox glass-soft">
+        <p class="ch">Credit where it's due</p>
+        <p style="margin:0">Every device, every spec, and the idea of cataloguing the UMI ecosystem come from the original <a href="https://github.com/commissure-inc/Awesome-UMI" target="_blank" rel="noopener">Awesome-UMI</a> project by Commissure&nbsp;Inc and its contributors. Thank you for assembling and maintaining this list — this site is a fan-made viewer that stands entirely on your work. Device data is used under <a href="https://github.com/commissure-inc/Awesome-UMI/blob/main/LICENSE-DATA.md" target="_blank" rel="noopener">CC&nbsp;BY&nbsp;4.0</a>.</p>
+      </div>
+      <h3>Built by Claude, for easy updates</h3>
+      <p>This viewer was built by Claude (Anthropic) for me, <a href="https://thejerrycheng.github.io" target="_blank" rel="noopener">Jerry&nbsp;Cheng</a>, so I can keep pace with the fast-moving UMI hardware scene. It reads the same <code>umi_devices_data.json</code> that ships with the upstream project, so refreshing the catalog is as simple as dropping in a newer copy of that file.</p>
+      <h3>Everyone is welcome</h3>
+      <p>This is for my personal use, but contributions are welcome. For the data itself, please send additions and corrections upstream to <a href="https://github.com/commissure-inc/Awesome-UMI" target="_blank" rel="noopener">Awesome-UMI</a> so the whole community benefits. Found a bug in this viewer? Let me know.</p>
+      <p class="longlive">Long live UMI.</p>
+    </div>`;
+}
+function footerHTML(lang){
+  if(lang==="zh")return `<p>目录数据 © <a href="https://github.com/commissure-inc/Awesome-UMI" target="_blank" rel="noopener">Awesome-UMI</a> 贡献者，依 CC&nbsp;BY&nbsp;4.0 使用。</p>
+    <p>浏览器由 <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude</a> 为 <a href="https://thejerrycheng.github.io" target="_blank" rel="noopener">Jerry Cheng</a> 设计与构建。<span id="footMeta"></span></p>`;
+  return `<p>Catalog data © <a href="https://github.com/commissure-inc/Awesome-UMI" target="_blank" rel="noopener">Awesome-UMI</a> contributors, used under CC&nbsp;BY&nbsp;4.0.</p>
+    <p>Viewer designed and built by <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude</a> for <a href="https://thejerrycheng.github.io" target="_blank" rel="noopener">Jerry Cheng</a>. <span id="footMeta"></span></p>`;
+}
+function applyLang(lang){
+  LANG=lang;localStorage.setItem("umi-lang",lang);document.documentElement.lang=lang==="zh"?"zh-CN":"en";
+  document.querySelectorAll("#navlinks button").forEach(b=>b.textContent=t(b.dataset.tab));
+  document.querySelector("#view-devices .eyebrow").textContent=t("eyebrow");
+  document.querySelector("#view-devices .lede").textContent=t("lede");
+  document.getElementById("search").placeholder=t("search_ph");
+  const ft=document.getElementById("filterToggle");ft.childNodes[0].nodeValue=t("filters");
+  [["featured","sort_featured"],["new","sort_new"],["old","sort_old"],["az","sort_az"],["cost","sort_cost"]].forEach(([val,key])=>{const o=document.querySelector(`#sort option[value="${val}"]`);if(o)o.textContent=t(key);});
+  document.querySelector("#view-about .wrap").innerHTML=aboutHTML(lang);
+  document.querySelector("footer").innerHTML=footerHTML(lang);
+  const lt=document.getElementById("langToggle");if(lt)lt.textContent=lang==="zh"?"EN":"中";
+  if(DB){buildHero();buildFacets();buildAux();render();}
+}
 
 let DB=null,PRODUCTS=[],STATE={q:"",sort:"featured",sel:{}};
 const FACETS=[
@@ -421,11 +507,13 @@ const FACETS=[
 async function fetchData(){for(const u of[DATA_LOCAL,DATA_REMOTE]){try{const r=await fetch(u,{cache:"no-store"});if(r.ok)return await r.json();}catch(e){}}throw new Error("network error");}
 
 function buildHero(){
-  const m=DB.metadata||{},c=new Set(PRODUCTS.map(p=>p.country).filter(Boolean));
-  document.getElementById("heroMeta").textContent=`${PRODUCTS.length} devices · ${c.size} countries · updated ${fmtDate(m.last_updated)}`;
-  document.getElementById("footMeta").textContent=`${m.title||""} v${m.version||""}.`;
+  const m=DB.metadata||{},c=new Set(PRODUCTS.map(p=>p.country).filter(Boolean)),date=fmtDate(m.last_updated);
+  document.getElementById("heroMeta").textContent=LANG==="zh"
+    ?`${PRODUCTS.length} 个设备 · ${c.size} 个国家/地区 · 更新于 ${date}`
+    :`${PRODUCTS.length} devices · ${c.size} countries · updated ${date}`;
+  const fm=document.getElementById("footMeta");if(fm)fm.textContent=`${m.title||""} v${m.version||""}.`;
 }
-function fmtDate(s){if(!s)return"";const[y,mo]=s.split("-");const M=["","January","February","March","April","May","June","July","August","September","October","November","December"];return (M[+mo]||"")+" "+y;}
+function fmtDate(s){if(!s)return"";const[y,mo]=s.split("-");if(LANG==="zh")return `${y}年${+mo}月`;const M=["","January","February","March","April","May","June","July","August","September","October","November","December"];return (M[+mo]||"")+" "+y;}
 
 function facetValues(key){
   const ct={};PRODUCTS.forEach(p=>{const v=p[key];if(v!=null&&v!=="")ct[v]=(ct[v]||0)+1;});
@@ -438,7 +526,7 @@ function facetValues(key){
 function buildFacets(){
   const w=document.getElementById("facets");
   w.innerHTML=FACETS.map(d=>{const vs=facetValues(d.key);if(!vs.length)return"";
-    return `<div class="fgroup"><span class="glab">${d.label}</span>`+
+    return `<div class="fgroup"><span class="glab">${esc((LANG==="zh"&&FACET_ZH[d.key])||d.label)}</span>`+
       vs.map(({v,c})=>`<button class="chip" data-k="${d.key}" data-v="${esc(v)}">${esc(lbl(v))}<span class="c">${c}</span></button>`).join("")+`</div>`;
   }).join("");
   w.querySelectorAll(".chip").forEach(ch=>ch.addEventListener("click",()=>{
@@ -465,10 +553,12 @@ function sortList(list){
 }
 function render(){
   const list=sortList(PRODUCTS.filter(matches)),g=document.getElementById("grid"),n=activeCount();
-  document.getElementById("count").textContent=`${list.length} ${list.length===1?"device":"devices"}${n||STATE.q?" matching":""}`;
+  document.getElementById("count").textContent=LANG==="zh"
+    ?`${list.length} 个设备${n||STATE.q?"（匹配）":""}`
+    :`${list.length} ${list.length===1?"device":"devices"}${n||STATE.q?" matching":""}`;
   const fn=document.getElementById("filterNum");fn.textContent=n;fn.classList.toggle("hidden",!n);
   syncChips();renderActive();
-  if(!list.length){g.innerHTML=`<div class="empty"><div class="ttl">No matches</div><p>Try removing a filter or search term.</p></div>`;return;}
+  if(!list.length){g.innerHTML=`<div class="empty"><div class="ttl">${t("no_title")}</div><p>${t("no_body")}</p></div>`;return;}
   g.innerHTML=list.map(cardHTML).join("");
   const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}}),{threshold:.08});
   g.querySelectorAll(".card").forEach((c,i)=>{c.style.transitionDelay=Math.min(i,8)*22+"ms";c.addEventListener("click",()=>openSheet(PRODUCTS[+c.dataset.i]));io.observe(c);});
@@ -495,9 +585,9 @@ function renderActive(){
   const bar=document.getElementById("activebar"),n=activeCount();
   if(!n){bar.classList.add("hidden");return;}
   bar.classList.remove("hidden");
-  let h=`<span class="lab">Filters</span>`;
+  let h=`<span class="lab">${t("filters_active")}</span>`;
   for(const[k,set]of Object.entries(STATE.sel))for(const v of set)h+=`<button class="tagx" data-k="${k}" data-v="${esc(v)}">${esc(lbl(v))} ✕</button>`;
-  h+=`<button class="clearall" id="clearAll">Clear all</button>`;bar.innerHTML=h;
+  h+=`<button class="clearall" id="clearAll">${t("clear_all")}</button>`;bar.innerHTML=h;
   bar.querySelectorAll(".tagx").forEach(b=>b.addEventListener("click",()=>{STATE.sel[b.dataset.k].delete(b.dataset.v);if(!STATE.sel[b.dataset.k].size)delete STATE.sel[b.dataset.k];render();}));
   document.getElementById("clearAll").addEventListener("click",()=>{STATE.sel={};render();});
 }
@@ -528,9 +618,8 @@ function openSheet(p){
   const sheet=document.getElementById("sheet");
   const init=(p.name||"?").replace(/[^A-Za-z0-9]/g,"").slice(0,2).toUpperCase();
   const imgs=(p.images&&p.images.length)?p.images:(p.image_url?[p.image_url]:[]);
-  const meta=[lbl(p.form_category),p.country&&lbl(p.country),p.year_first&&("Since "+p.year_first),lbl(p.commercialization_stage),p.license&&("License: "+lbl(p.license)),p.bimanual&&lbl(p.bimanual)].filter(Boolean).map(t=>`<span>${esc(t)}</span>`).join("");
-  const ico={project_page:"Project",github:"Code",paper:"Paper",press:"Press",video:"Video",docs:"Docs"};
-  const links=(p.sources||[]).map((s,i)=>`<a class="${i?'alt':''}" href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title&&s.type==='paper'?s.title:(ico[s.type]||prettify(s.type)))} ↗</a>`).join("");
+  const meta=[lbl(p.form_category),p.country&&lbl(p.country),p.year_first&&(t("since")+p.year_first),lbl(p.commercialization_stage),p.license&&(t("license_label")+lbl(p.license)),p.bimanual&&lbl(p.bimanual)].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join("");
+  const links=(p.sources||[]).map((s,i)=>`<a class="${i?'alt':''}" href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title&&s.type==='paper'?s.title:srcLabel(s.type))} ↗</a>`).join("");
   const specs=p.specs||{};
   const sig=specs.significance;
   const rows=Object.entries(specs).filter(([k,v])=>k!=="significance"&&v!=null&&v!==""&&!(Array.isArray(v)&&!v.length)).map(([k,v])=>specRow(k,v)).join("");
@@ -542,17 +631,17 @@ function openSheet(p){
       ${p.full_name&&p.full_name!==p.name?`<p class="full">${esc(p.full_name)}</p>`:""}
       ${(p.organization||[]).length?`<p class="org">${esc(p.organization.join(" · "))}</p>`:""}
       <div class="metarow">${meta}</div>
-      ${p.key_innovation?`<div class="callout"><div class="k">Key innovation</div><div class="v">${esc(p.key_innovation)}</div></div>`:""}
-      ${sig?`<div class="callout" style="border-color:var(--ink3)"><div class="k" style="color:var(--ink3)">Significance</div><div class="v">${esc(sig)}</div></div>`:""}
+      ${p.key_innovation?`<div class="callout"><div class="k">${t("key_innovation")}</div><div class="v">${esc(p.key_innovation)}</div></div>`:""}
+      ${sig?`<div class="callout" style="border-color:var(--ink3)"><div class="k" style="color:var(--ink3)">${t("significance")}</div><div class="v">${esc(sig)}</div></div>`:""}
       ${links?`<div class="links">${links}</div>`:""}
-      ${rows?`<div class="specsec"><h3>Specifications</h3>${rows}</div>`:""}
-      ${p.notes?`<p class="snote">${esc(prettify(p.notes))}${p.last_verified_at?` · verified ${p.last_verified_at}`:""}${p.confidence?` · confidence: ${p.confidence}`:""}</p>`:""}
+      ${rows?`<div class="specsec"><h3>${t("specifications")}</h3>${rows}</div>`:""}
+      ${p.notes?`<p class="snote">${esc(prettify(p.notes))}${p.last_verified_at?` · ${t("verified")} ${p.last_verified_at}`:""}${p.confidence?` · ${t("confidence")}: ${p.confidence}`:""}</p>`:""}
     </div>`;
   document.getElementById("scrim").classList.add("show");sheet.classList.add("show");sheet.scrollTop=0;
   document.body.style.overflow="hidden";
   wireGallery(sheet);
 }
-function specRow(k,v){return `<div class="specrow"><div class="sk">${esc(SPEC_LABELS[k]||prettify(k))}</div><div class="sv">${specVal(k,v)}</div></div>`;}
+function specRow(k,v){return `<div class="specrow"><div class="sk">${esc((LANG==="zh"&&SPEC_LABELS_ZH[k])||SPEC_LABELS[k]||prettify(k))}</div><div class="sv">${specVal(k,v)}</div></div>`;}
 function specVal(k,v){
   if(typeof v==="boolean")return v?"Yes":"No";
   if(typeof v==="number"){
@@ -576,12 +665,14 @@ function closeSheet(){document.getElementById("scrim").classList.remove("show");
 function buildAux(){
   const ds=(DB.datasets||[]).map(d=>`<div class="lcard"><h3>${d.url?`<a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.name)}</a>`:esc(d.name)}</h3>
     <p class="lm">${esc([d.provider,d.type].filter(Boolean).join(" · "))}</p>
-    <div class="nums">${d.trajectories?`<div><b>${esc(d.trajectories)}</b>trajectories</div>`:""}${d.tasks?`<div><b>${esc(String(d.tasks))}</b>tasks</div>`:""}${d.size?`<div><b>${esc(d.size)}</b>size</div>`:""}</div></div>`).join("");
-  document.querySelector("#view-datasets .wrap").innerHTML=`<h2 class="lead">Datasets</h2><p class="subhead">${(DB.datasets||[]).length} public datasets referenced by the catalog.</p><div class="listgrid">${ds}</div>`;
+    <div class="nums">${d.trajectories?`<div><b>${esc(d.trajectories)}</b>${t("trajectories")}</div>`:""}${d.tasks?`<div><b>${esc(String(d.tasks))}</b>${t("tasks")}</div>`:""}${d.size?`<div><b>${esc(d.size)}</b>${t("size")}</div>`:""}</div></div>`).join("");
+  const nDs=(DB.datasets||[]).length;
+  document.querySelector("#view-datasets .wrap").innerHTML=`<h2 class="lead">${t("datasets")}</h2><p class="subhead">${LANG==="zh"?`目录引用的 ${nDs} 个公开数据集。`:`${nDs} public datasets referenced by the catalog.`}</p><div class="listgrid">${ds}</div>`;
 
   const st=(DB.policy_standards||[]).map(s=>`<div class="lcard"><h3>${s.url?`<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a>`:esc(s.name)}</h3>
     <p class="lm">${esc([s.country&&lbl(s.country),s.year].filter(Boolean).join(" · "))}</p><p>${esc(s.scope||"")}</p></div>`).join("");
-  document.querySelector("#view-standards .wrap").innerHTML=`<h2 class="lead">Standards</h2><p class="subhead">${(DB.policy_standards||[]).length} data &amp; policy standards shaping the field.</p><div class="listgrid">${st}</div>`;
+  const nSt=(DB.policy_standards||[]).length;
+  document.querySelector("#view-standards .wrap").innerHTML=`<h2 class="lead">${t("standards")}</h2><p class="subhead">${LANG==="zh"?`塑造该领域的 ${nSt} 项数据与政策标准。`:`${nSt} data &amp; policy standards shaping the field.`}</p><div class="listgrid">${st}</div>`;
 
   const lib=(DB.curated_content||[]).map(c=>{
     const cl=(c.companion_links||[]).map(l=>`<a href="${esc(l.url)}" target="_blank" rel="noopener" style="color:var(--blue2);text-decoration:none;font-size:13px;margin-right:14px">${esc(prettify(l.role||"link"))} ↗</a>`).join("");
@@ -590,7 +681,8 @@ function buildAux(){
       <p>${esc(c.summary||"")}</p>${cl?`<div style="margin-top:12px">${cl}</div>`:""}
       ${(c.tags||[]).length?`<div class="tags">${c.tags.map(t=>`<span>${esc(prettify(t))}</span>`).join("")}</div>`:""}</div>`;
   }).join("");
-  document.querySelector("#view-library .wrap").innerHTML=`<h2 class="lead">Library</h2><p class="subhead">${(DB.curated_content||[]).length} curated articles &amp; videos.</p><div class="listgrid">${lib}</div>`;
+  const nLb=(DB.curated_content||[]).length;
+  document.querySelector("#view-library .wrap").innerHTML=`<h2 class="lead">${t("library")}</h2><p class="subhead">${LANG==="zh"?`${nLb} 篇精选文章与视频。`:`${nLb} curated articles &amp; videos.`}</p><div class="listgrid">${lib}</div>`;
 }
 
 function wireUI(){
@@ -610,6 +702,9 @@ function wireUI(){
   let theme=localStorage.getItem("umi-theme")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");
   applyTheme(theme);
   tg.addEventListener("click",()=>{theme=theme==="dark"?"light":"dark";localStorage.setItem("umi-theme",theme);applyTheme(theme);});
+  const lt=document.getElementById("langToggle");
+  lt.addEventListener("click",()=>applyLang(LANG==="zh"?"en":"zh"));
+  applyLang(LANG);
 }
 const SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>';
 const MOON='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
