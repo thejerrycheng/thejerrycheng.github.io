@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projects — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="Selected robotics and machine-learning projects by Jerry (Qilong) Cheng.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/projects.html">
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+  <meta name="theme-color" content="#F4EEE2">
+  <link rel="stylesheet" href="assets/css/liquid.css">
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><img src="assets/images/favicon.svg" alt="">Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="cv.html">CV</a>
+      <a href="index.html#news">News</a>
+      <a href="blog.html">Blog</a>
+      <div class="dropdown">
+        <button type="button" class="robolog-toggle" id="robologToggle"
+                aria-haspopup="true" aria-expanded="false" aria-controls="robologMenu">
+          Robolog <span class="caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="dropdown-menu" id="robologMenu" role="menu" aria-label="Robolog">
+          <a role="menuitem" href="umi/index.html"><span class="ico" aria-hidden="true">🤖</span><span class="label">UMI Device Catalog<small>Awesome-UMI gripper builds</small></span></a>
+          <a role="menuitem" href="humanoids/index.html"><span class="ico" aria-hidden="true">🦾</span><span class="label">Humanoids Guide<small>The field, by release year</small></span></a>
+          <a role="menuitem" href="actuators/index.html"><span class="ico" aria-hidden="true">⚙️</span><span class="label">Joint Actuator Guide<small>Makers, lineups &amp; specs</small></span></a>
+        </div>
+      </div>
+    </div>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+  <a href="cv.html">CV</a>
+  <a href="index.html#news">News</a>
+  <a href="blog.html">Blog</a>
+  <hr>
+  <a href="umi/index.html">🤖 Robolog · UMI Catalog</a>
+  <a href="humanoids/index.html">🦾 Robolog · Humanoids Guide</a>
+  <a href="actuators/index.html">⚙️ Robolog · Actuator Guide</a>
+</div>
+
+<section class="section" id="projects">
+  <h2 class="section-title">Selected Projects</h2>
+  <div class="pub-list">
+
+    <!-- GeoDEX -->
+    <div class="pub card card-hover">
+      <div class="pub-thumb">
+        <img src="assets/images/projects/geodex/geodex.jpg" alt="GeoDEX dexterous manipulation" loading="lazy">
+        <div class="hover-video"><video muted autoplay loop playsinline><source src="assets/videos/robust_test_get_a_grip.mp4" type="video/mp4"></video></div>
+      </div>
+      <div class="pub-meta">
+        <span class="papertitle">GeoDEX: Geometric Diffusion Transformers for Dexterous Manipulation</span><span class="proj-year">2026</span>
+        <p class="proj-body">Diffusion-transformer policy for 26-DOF dexterous pick-and-place. Maps dual-view RGBD and proprioception to action chunks with SE(3) geometric regularization. Includes Vision Pro-based human retargeting in MuJoCo.</p>
+        <div class="links">
+          <a href="assets/pdf/projects/GeoDEX_DS_GA_3001_Course_Project_Final_Report.pdf" target="_blank" rel="noopener">PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- TINTIN -->
+    <div class="pub card card-hover">
+      <div class="pub-thumb">
+        <img src="assets/images/projects/rocket/overview.jpg" alt="TINTIN lunar landing RL" loading="lazy">
+        <div class="hover-video"><video muted autoplay loop playsinline><source src="assets/videos/1mill_step.mp4" type="video/mp4"></video></div>
+      </div>
+      <div class="pub-meta">
+        <span class="papertitle">TINTIN: RL-Based Lunar Rocket Landing</span><span class="proj-year">2025</span>
+        <p class="proj-body">6-DoF variable-mass lander in MuJoCo with 2-DoF gimbaled thrust; PID baseline vs PPO policy; pose-targeted touchdown and fuel-efficiency metrics.</p>
+        <div class="links">
+          <a href="assets/pdf/projects/Space_Robot_Course_Project_2_Report-3.pdf" target="_blank" rel="noopener" aria-label="TINTIN project PDF">PDF</a>
+          <a href="https://youtube.com/shorts/YfmAeDVPjt4?feature=share" target="_blank" rel="noopener" aria-label="TINTIN project youtube video demo">Video</a>
+          <a href="tintin.html" target="_blank" rel="noopener" aria-label="TINTIN project website demo">Website</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monocular Depth -->
+    <div class="pub card card-hover">
+      <div class="pub-thumb">
+        <img src="assets/images/publications/mono_dep_pipeline.png" alt="Monocular Depth Estimation results" loading="lazy">
+      </div>
+      <div class="pub-meta">
+        <span class="papertitle">Monocular Depth Estimation for Human-Robot Locomotion</span><span class="proj-year">2024</span>
+        <p class="proj-body">Monocular depth pipeline for human-robot walking environments: ZoeDepth baseline, metric reprojection to 3D point clouds, and iterative RANSAC to extract stair planes and dimensions.</p>
+        <div class="links">
+          <a href="https://www.researchgate.net/publication/382269581_Monocular_depth_estimation_of_human-robot_walking_environments_using_deep_learning" target="_blank" rel="noopener" aria-label="research_gate">PDF</a>
+          <a href="assets/pdf/projects/mono_est_poster.pdf" target="_blank" rel="noopener" aria-label="research_gate">Poster</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLEAR-Net -->
+    <div class="pub card card-hover">
+      <div class="pub-thumb">
+        <img src="assets/images/projects/rl/sac.png" alt="CLEAR-Net cart-pole reinforcement learning project" loading="lazy">
+        <div class="hover-video"><video muted autoplay loop playsinline><source src="assets/videos/RL_demo.mp4" type="video/mp4"></video></div>
+      </div>
+      <div class="pub-meta">
+        <span class="papertitle">CLEAR-Net: Cart-Pole Learning with Enhanced Adaptive Reinforcement Network</span><span class="proj-year">2024</span>
+        <p class="proj-body">Compared tabular Q-learning, DQN, PPO, and SAC on noisy Cart-Pole; designed noise-robust wrappers, tuned hyperparameters, and analyzed robustness under disturbances and varying noise levels.</p>
+        <div class="links">
+          <a href="assets/pdf/projects/ECE1508__Project_Progress_Report.pdf" target="_blank" rel="noopener" aria-label="CLEAR-Net Cart-Pole RL project PDF">PDF</a>
+          <a href="assets/pdf/projects/ECE1508_Project_Poster.pdf" target="_blank" rel="noopener" aria-label="CLEAR-Net Cart-Pole RL project PDF">Poster</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Biped VHC -->
+    <div class="pub card card-hover">
+      <div class="pub-thumb">
+        <img src="assets/images/projects/biped_vhc/stair_walking.jpg" alt="Biped VHC walking" loading="lazy">
+        <div class="hover-video"><video muted autoplay loop playsinline><source src="assets/videos/walking_stairs.mp4" type="video/mp4"></video></div>
+      </div>
+      <div class="pub-meta">
+        <span class="papertitle">Geometric Nonlinear Control for Biped Walking</span><span class="proj-year">2024</span>
+        <p class="proj-body">Virtual Holonomic Constraints with polynomial gait design, feedback linearization, and terrain generalization to slopes and stairs.</p>
+        <div class="links">
+          <a href="assets/pdf/projects/ECE1658_final_report-3.pdf" target="_blank" rel="noopener" aria-label="Biped VHC project PDF">PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aerospace Localization -->
+    <div class="pub card card-hover">
+      <div class="pub-thumb">
+        <img src="assets/images/projects/localization_barfoot/localization.jpg" alt="Aerospace localization" loading="lazy">
+        <div class="hover-video"><video muted autoplay loop playsinline><source src="assets/videos/state_estimation_teaser.mp4" type="video/mp4"></video></div>
+      </div>
+      <div class="pub-meta">
+        <span class="papertitle">Localization for Aerospace Vehicles (IMU + Stereo)</span><span class="proj-year">2023</span>
+        <p class="proj-body">Batch Gauss-Newton fusion with EKF; compared batch vs sliding-window estimators for trajectory accuracy.</p>
+        <div class="links">
+          <a href="assets/pdf/projects/AER1513_assignment_3-3.pdf" target="_blank" rel="noopener" aria-label="Aerospace Localization project PDF">PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Robot Mechatronics -->
+    <div class="pub card card-hover">
+      <div class="pub-thumb">
+        <img src="assets/images/projects/arduino/robot.jpg" alt="Mobile robot mechatronics design" loading="lazy">
+        <div class="hover-video"><video muted autoplay loop playsinline><source src="assets/videos/arduino_mobile_robot.mp4" type="video/mp4"></video></div>
+      </div>
+      <div class="pub-meta">
+        <span class="papertitle">Mobile Robot Mechatronics Design Project</span><span class="proj-year">2023</span>
+        <p class="proj-body"><em>MATLAB, SolidWorks</em> — Designed a 3D-printed Arduino-based mobile robot in Fusion 360; implemented localization and obstacle-avoidance for maze navigation in MATLAB; commanded the robot via Bluetooth.</p>
+        <div class="links">
+          <a href="assets/pdf/projects/MIE444 - Group 1 - Final Report.pdf" target="_blank" rel="noopener" aria-label="Mobile Robot Mechatronics Design Project PDF">PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8×8×8 LED Cube -->
+    <div class="pub card card-hover">
+      <div class="pub-thumb">
+        <img src="assets/images/projects/led_cube/cover.jpg" alt="8x8x8 LED cube" loading="lazy">
+        <div class="hover-video" aria-hidden="true"><video muted playsinline webkit-playsinline loop preload="metadata"><source src="assets/videos/led_cube.mp4" type="video/mp4"></video></div>
+      </div>
+      <div class="pub-meta">
+        <span class="papertitle">8×8×8 LED Cube Embedded System</span><span class="proj-year">2022</span>
+        <p class="proj-body">ESP32-based driver with SPI multiplexing; API control; interactive 3D Snake and Pong demos.</p>
+        <div class="links">
+          <a href="assets/pdf/projects/MIE438_Final_Report.pdf" target="_blank" rel="noopener" aria-label="8x8x8 LED Cube Embedded System PDF">PDF</a>
+          <a href="https://www.youtube.com/watch?v=cC_NXlKTEwk&list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV" target="_blank" rel="noopener" aria-label="8x8x8 LED Cube video on YouTube">Video</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Turtlebot2 SLAM -->
+    <div class="pub card card-hover">
+      <div class="pub-thumb">
+        <img src="assets/images/projects/turtlebot_mapping.jpeg" alt="Turtlebot2 SLAM & navigation" loading="lazy">
+        <div class="hover-video"><video muted autoplay loop playsinline><source src="assets/videos/turtlebot_localization.mp4" type="video/mp4"></video></div>
+      </div>
+      <div class="pub-meta">
+        <span class="papertitle">Turtlebot2 SLAM, Navigation & Perception</span><span class="proj-year">2022</span>
+        <p class="proj-body">Gmapping, frontier exploration, PID control; OpenCV perception and a CNN for 7-class emotion recognition.</p>
+        <div class="links">
+          <a href="assets/pdf/projects/mie443_merged_contest_1_2.pdf" target="_blank" rel="noopener" aria-label="Turtlebot2 SLAM, Navigation & Perception PDF">PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formula Drivetrain -->
+    <div class="pub card card-hover">
+      <div class="pub-thumb">
+        <img src="assets/images/projects/formula_car.JPG" alt="Formula racing drivetrain" loading="lazy">
+        <div class="hover-video"><video muted autoplay loop playsinline><source src="assets/videos/gearbox.mp4" type="video/mp4"></video></div>
+      </div>
+      <div class="pub-meta">
+        <span class="papertitle">Electric Formula Racing Car Drive-train</span><span class="proj-year">2022</span>
+        <p class="proj-body">Planetary gearbox quadrupling torque at &gt;90% efficiency; kinematics, stress, thermal, and vibration analyses.</p>
+        <div class="links">
+          <a href="assets/pdf/projects/Capstone_Project-2.pdf" target="_blank" rel="noopener" aria-label="Electric Formula Racing Car Drive-train PDF">PDF</a>
+          <a href="https://www.youtube.com/watch?v=lSZsrUMRv3I&list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV&index=2" target="_blank" rel="noopener" aria-label="Formula drivetrain video on YouTube">Video</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love — in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>
