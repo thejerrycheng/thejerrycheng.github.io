@@ -1,28 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Jerry Cheng">
   <defs>
-    <linearGradient id="tile" x1="10" y1="6" x2="54" y2="58" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#2C2856"/>
-      <stop offset="1" stop-color="#151229"/>
-    </linearGradient>
-    <linearGradient id="spark" x1="34" y1="9" x2="47" y2="22" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#FFD25A"/>
-      <stop offset="1" stop-color="#FF9500"/>
-    </linearGradient>
-    <linearGradient id="sheen" x1="32" y1="2" x2="32" y2="34" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    <linearGradient id="jc" x1="32" y1="3" x2="32" y2="61" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFB13C"/>
+      <stop offset="1" stop-color="#FF8A00"/>
     </linearGradient>
   </defs>
-
-  <!-- Deep squircle tile -->
-  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#tile)"/>
-  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#sheen)"/>
-
-  <!-- Monogram J -->
-  <path d="M40 18 V35 a11 11 0 0 1 -22 0" fill="none" stroke="#F6F3EC"
-        stroke-width="5.2" stroke-linecap="round"/>
-
-  <!-- Creative / AI spark -->
-  <path d="M40 11 l1.7 4.7 4.7 1.7 -4.7 1.7 -1.7 4.7 -1.7 -4.7 -4.7 -1.7 4.7 -1.7 z"
-        fill="url(#spark)"/>
+  <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#jc)"/>
+  <path d="M42 16.5 V37 a12 12 0 0 1 -24 0" transform="translate(2 -0.5)"
+        fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
 </svg>
