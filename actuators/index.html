@@ -9,15 +9,15 @@
 <link rel="apple-touch-icon" href="./actuator-logo.svg">
 <style>
 :root{
-  --bg:#f4f5f8; --bg2:#ffffff; --ink:#1d1d1f; --ink2:#52525a; --ink3:#86868b;
-  --line:rgba(0,0,0,.10); --line2:rgba(0,0,0,.06); --blue:#0071e3; --blue2:#0066cc; --green:#1a8a4a;
+  --bg:#F4EEE2; --bg2:#ffffff; --ink:#1d1d1f; --ink2:#52525a; --ink3:#86868b;
+  --line:rgba(0,0,0,.10); --line2:rgba(0,0,0,.06); --blue:#FF9500; --blue2:#C56A00; --green:#1a8a4a;
   --card:#ffffff;
   --glass-tint:rgba(255,255,255,.5); --rim:rgba(255,255,255,.97); --rim2:rgba(255,255,255,.18); --spec:rgba(255,255,255,.6);
   --float:0 10px 34px rgba(20,28,48,.16); --r:28px; --r-sm:18px;
 }
 [data-theme="dark"]{
   --bg:#070809; --bg2:#101114; --ink:#f5f5f7; --ink2:#a8a8ad; --ink3:#86868b;
-  --line:rgba(255,255,255,.14); --line2:rgba(255,255,255,.08); --blue:#2997ff; --blue2:#2997ff; --green:#41d98b; --card:#161719;
+  --line:rgba(255,255,255,.14); --line2:rgba(255,255,255,.08); --blue:#FFA53C; --blue2:#FFB25C; --green:#41d98b; --card:#161719;
   --glass-tint:rgba(40,42,50,.55); --rim:rgba(255,255,255,.5); --rim2:rgba(255,255,255,.1); --spec:rgba(255,255,255,.28);
   --float:0 12px 40px rgba(0,0,0,.55);
 }
@@ -27,11 +27,11 @@ body{margin:0;color:var(--ink);min-height:100vh;overflow-x:hidden;background:var
   font-family:"SF Pro Text",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size:17px;line-height:1.47;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
 .scene{position:fixed;inset:0;z-index:-1;background:
-  radial-gradient(60vw 50vh at 78% -8%,rgba(120,150,210,.16),transparent 70%),
-  radial-gradient(55vw 45vh at 8% 108%,rgba(150,170,210,.14),transparent 70%),linear-gradient(180deg,var(--bg),var(--bg))}
+  radial-gradient(60vw 50vh at 78% -8%,rgba(255,196,140,.22),transparent 70%),
+  radial-gradient(55vw 45vh at 8% 108%,rgba(255,172,120,.16),transparent 70%),linear-gradient(180deg,var(--bg),var(--bg))}
 [data-theme="dark"] .scene{background:
-  radial-gradient(60vw 50vh at 78% -8%,rgba(60,90,160,.22),transparent 70%),
-  radial-gradient(55vw 45vh at 8% 108%,rgba(40,70,140,.18),transparent 70%),linear-gradient(180deg,var(--bg),#050608)}
+  radial-gradient(60vw 50vh at 78% -8%,rgba(150,96,44,.24),transparent 70%),
+  radial-gradient(55vw 45vh at 8% 108%,rgba(120,72,32,.18),transparent 70%),linear-gradient(180deg,var(--bg),#050608)}
 .svgdefs{position:absolute;width:0;height:0;overflow:hidden}
 .glass{position:relative;background:var(--glass-tint);
   -webkit-backdrop-filter:blur(22px) saturate(200%) brightness(1.08);
@@ -92,8 +92,8 @@ body{margin:0;color:var(--ink);min-height:100vh;overflow-x:hidden;background:var
 [data-theme="dark"] .chip.on .c{color:#111}
 .active{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
 .active .lab{font-size:13px;color:var(--ink3)}
-.tagx{border:none;background:rgba(0,113,227,.12);color:var(--blue2);font:inherit;font-size:12.5px;font-weight:600;padding:5px 10px;border-radius:980px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
-[data-theme="dark"] .tagx{background:rgba(41,151,255,.16);color:var(--blue)}
+.tagx{border:none;background:rgba(255,149,0,.16);color:var(--blue2);font:inherit;font-size:12.5px;font-weight:600;padding:5px 10px;border-radius:980px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+[data-theme="dark"] .tagx{background:rgba(255,149,0,.20);color:var(--blue)}
 .clearall{margin-left:auto;border:none;background:none;color:var(--blue2);font:inherit;font-size:13px;font-weight:500;cursor:pointer}
 .count{font-size:14px;color:var(--ink3);margin:0 4px 16px}
 
@@ -106,8 +106,8 @@ body{margin:0;color:var(--ink);min-height:100vh;overflow-x:hidden;background:var
 .acard .tq{font-family:"SF Pro Display";font-size:30px;font-weight:600;letter-spacing:-.03em;line-height:1;color:var(--ink)}
 .acard .tq small{font-size:13px;font-weight:500;color:var(--ink3);letter-spacing:0}
 .acard .tqlab{font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);margin-top:3px}
-.acard .type{font-size:10.5px;font-weight:600;color:var(--blue2);background:rgba(0,113,227,.1);padding:5px 9px;border-radius:980px;text-align:center;white-space:nowrap}
-[data-theme="dark"] .acard .type{background:rgba(41,151,255,.14);color:var(--blue)}
+.acard .type{font-size:10.5px;font-weight:600;color:var(--blue2);background:rgba(255,149,0,.13);padding:5px 9px;border-radius:980px;text-align:center;white-space:nowrap}
+[data-theme="dark"] .acard .type{background:rgba(255,149,0,.17);color:var(--blue)}
 .acard .amodel{font-family:"SF Pro Display";font-size:17px;font-weight:600;letter-spacing:-.02em;margin:13px 0 0;line-height:1.2}
 .acard .acomp{font-size:12.5px;color:var(--ink3);margin:1px 0 0}
 .acard .stats{display:grid;grid-template-columns:1fr 1fr;gap:7px 12px;margin:13px 0 0;padding-top:12px;border-top:1px solid var(--line2)}
@@ -119,8 +119,8 @@ body{margin:0;color:var(--ink);min-height:100vh;overflow-x:hidden;background:var
 .acard .athumb{width:74px;height:74px;border-radius:13px;overflow:hidden;flex:none;background:radial-gradient(120% 120% at 50% 0,#eef1f6,#e2e6ee);display:grid;place-items:center}
 [data-theme="dark"] .acard .athumb{background:radial-gradient(120% 120% at 50% 0,#1b1c20,#121316)}
 .acard .athumb img{width:100%;height:100%;object-fit:contain;padding:5px}
-.acard .typepill{display:inline-block;font-size:10px;font-weight:600;color:var(--blue2);background:rgba(0,113,227,.1);padding:2px 8px;border-radius:980px;margin-left:7px;vertical-align:middle}
-[data-theme="dark"] .acard .typepill{background:rgba(41,151,255,.14);color:var(--blue)}
+.acard .typepill{display:inline-block;font-size:10px;font-weight:600;color:var(--blue2);background:rgba(255,149,0,.13);padding:2px 8px;border-radius:980px;margin-left:7px;vertical-align:middle}
+[data-theme="dark"] .acard .typepill{background:rgba(255,149,0,.17);color:var(--blue)}
 .sactimg{border-radius:18px;background:radial-gradient(120% 120% at 50% 0,#eef1f6,#e2e6ee);margin:20px 0 4px;padding:18px;display:flex;align-items:center;justify-content:center}
 [data-theme="dark"] .sactimg{background:radial-gradient(120% 120% at 50% 0,#1b1c20,#121316)}
 .sactimg img{max-width:100%;max-height:340px;width:auto;height:auto;object-fit:contain;display:block}
@@ -194,6 +194,47 @@ footer p{font-size:12.5px;color:var(--ink3);line-height:1.7;margin:4px 0;max-wid
 footer a{color:var(--ink2);text-decoration:none}
 .view{padding-top:14px}.hidden{display:none!important}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===================== MOBILE OPTIMIZATION (site-consistent) ===================== */
+@media (max-width:760px){
+  .wrap{padding:0 15px}
+  /* floating nav spans the screen; tabs scroll horizontally */
+  .nav{width:calc(100% - 16px); max-width:calc(100% - 16px); flex-wrap:wrap; row-gap:8px; column-gap:8px; padding:8px 10px; border-radius:22px}
+  .nav .brand{order:1; flex:0 0 auto; font-size:15px}
+  .nav .brand img{width:22px; height:22px}
+  .navutil{order:2; margin-left:auto; flex:0 0 auto; gap:4px}
+  .nav .links{order:3; flex:1 1 100%; min-width:0; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch}
+  .iconbtn{width:33px; height:33px}
+  /* hero: tighter on phones */
+  .hero{padding:56px 16px 20px}
+  .hero .lede{font-size:17px}
+  /* controls: don't steal vertical space by sticking */
+  .controls{position:static; top:auto; margin:6px 0 16px; border-radius:20px}
+  .crow{gap:8px}
+  .searchbox{flex:1 1 100%}
+  .pillbtn,.sel{flex:1 1 auto; justify-content:center}
+  /* one column of cards */
+  .grid{grid-template-columns:1fr; gap:14px}
+  .listgrid{grid-template-columns:1fr; gap:14px}
+  .lead{font-size:26px}
+  .bigstats{grid-template-columns:1fr 1fr}
+  .shero{flex-direction:column}
+  .acard .type{white-space:normal; max-width:58%; text-align:right}
+  .acard .top{gap:8px}
+  /* detail sheet becomes a bottom sheet that slides up */
+  .scrim{-webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px)}
+  .sheet{left:0; right:0; top:auto; bottom:0; width:100%; max-width:100%; max-height:90vh;
+    border-radius:22px 22px 0 0; transform:none}
+  .sheet.show{transform:none}
+  .sgallery{border-radius:22px 22px 0 0}
+  .sheet .smedia{aspect-ratio:16/9}
+  .sbody{padding:24px 20px 40px}
+}
+@media (max-width:430px){
+  .hero h1{font-size:44px}
+  .acard .stats{grid-template-columns:1fr 1fr}
+  .bigstats{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body data-theme="light">

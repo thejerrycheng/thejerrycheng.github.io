@@ -9,10 +9,10 @@
 <link rel="apple-touch-icon" href="./umi-logo.svg">
 <style>
 :root{
-  --bg:#f4f5f8; --bg2:#ffffff;
+  --bg:#F4EEE2; --bg2:#ffffff;
   --ink:#1d1d1f; --ink2:#52525a; --ink3:#86868b;
   --line:rgba(0,0,0,.10); --line2:rgba(0,0,0,.06);
-  --blue:#0071e3; --blue2:#0066cc;
+  --blue:#FF9500; --blue2:#C56A00;
   --card:#ffffff;
   /* liquid glass */
   --glass-tint:rgba(255,255,255,.5);
@@ -27,7 +27,7 @@
   --bg:#070809; --bg2:#101114;
   --ink:#f5f5f7; --ink2:#a8a8ad; --ink3:#86868b;
   --line:rgba(255,255,255,.14); --line2:rgba(255,255,255,.08);
-  --blue:#2997ff; --blue2:#2997ff;
+  --blue:#FFA53C; --blue2:#FFB25C;
   --card:#161719;
   --glass-tint:rgba(40,42,50,.55);
   --glass-tint2:rgba(40,42,48,.62);
@@ -48,14 +48,14 @@ body{
 /* calm backdrop — gives the glass something to refract, no rainbow */
 .scene{position:fixed; inset:0; z-index:-1;
   background:
-    radial-gradient(60vw 50vh at 78% -8%, rgba(120,150,210,.16), transparent 70%),
-    radial-gradient(55vw 45vh at 8% 108%, rgba(150,170,210,.14), transparent 70%),
+    radial-gradient(60vw 50vh at 78% -8%, rgba(255,196,140,.22), transparent 70%),
+    radial-gradient(55vw 45vh at 8% 108%, rgba(255,172,120,.16), transparent 70%),
     linear-gradient(180deg, var(--bg), var(--bg));
 }
 [data-theme="dark"] .scene{
   background:
-    radial-gradient(60vw 50vh at 78% -8%, rgba(60,90,160,.22), transparent 70%),
-    radial-gradient(55vw 45vh at 8% 108%, rgba(40,70,140,.18), transparent 70%),
+    radial-gradient(60vw 50vh at 78% -8%, rgba(150,96,44,.24), transparent 70%),
+    radial-gradient(55vw 45vh at 8% 108%, rgba(120,72,32,.18), transparent 70%),
     linear-gradient(180deg, var(--bg), #050608);
 }
 .svgdefs{position:absolute;width:0;height:0;overflow:hidden}
@@ -143,9 +143,9 @@ body{
 
 .active{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:12px}
 .active .lab{font-size:13px; color:var(--ink3)}
-.tagx{border:none; background:rgba(0,113,227,.12); color:var(--blue2); font:inherit; font-size:12.5px; font-weight:600;
+.tagx{border:none; background:rgba(255,149,0,.16); color:var(--blue2); font:inherit; font-size:12.5px; font-weight:600;
   padding:5px 10px; border-radius:980px; cursor:pointer; display:inline-flex; gap:6px; align-items:center}
-[data-theme="dark"] .tagx{background:rgba(41,151,255,.16); color:var(--blue)}
+[data-theme="dark"] .tagx{background:rgba(255,149,0,.20); color:var(--blue)}
 .clearall{margin-left:auto; border:none; background:none; color:var(--blue2); font:inherit; font-size:13px; font-weight:500; cursor:pointer}
 
 .count{font-size:14px; color:var(--ink3); margin:0 4px 16px; font-weight:400}
@@ -156,7 +156,7 @@ body{
   display:flex; flex-direction:column; transition:transform .3s cubic-bezier(.2,.7,.2,1), box-shadow .3s; opacity:0; transform:translateY(14px)}
 .card.in{opacity:1; transform:none}
 .card:hover{transform:translateY(-5px); box-shadow:var(--float)}
-.media{position:relative; aspect-ratio:4/3; overflow:hidden; background:linear-gradient(135deg,#e9ecf3,#dfe3ec)}
+.media{position:relative; aspect-ratio:4/3; overflow:hidden; background:linear-gradient(135deg,#efe7d7,#e6dbc6)}
 [data-theme="dark"] .media{background:linear-gradient(135deg,#1c1d21,#141518)}
 .media img{width:100%;height:100%;object-fit:cover; transition:transform .6s cubic-bezier(.2,.7,.2,1); display:block}
 .card:hover .media img{transform:scale(1.06)}
@@ -187,7 +187,7 @@ body{
   transition:opacity .35s, transform .35s cubic-bezier(.2,.8,.2,1)}
 .sheet.show{opacity:1; pointer-events:auto; transform:translate(-50%,-50%) scale(1)}
 .sheet::-webkit-scrollbar{width:0}
-.sheet .smedia{position:relative; aspect-ratio:21/9; background:linear-gradient(135deg,#e9ecf3,#dfe3ec); overflow:hidden}
+.sheet .smedia{position:relative; aspect-ratio:21/9; background:linear-gradient(135deg,#efe7d7,#e6dbc6); overflow:hidden}
 [data-theme="dark"] .sheet .smedia{background:linear-gradient(135deg,#1c1d21,#141518)}
 .sheet .smedia img{width:100%;height:100%;object-fit:cover}
 .sheet .smedia .ph{position:absolute; inset:0; display:grid; place-items:center; font-family:"SF Pro Display"; font-size:54px; font-weight:600; color:var(--ink3); opacity:.4}
@@ -219,7 +219,7 @@ body{
 @media(max-width:560px){.specrow{grid-template-columns:1fr; gap:4px}}
 /* image gallery */
 .sgallery{position:relative; border-radius:30px 30px 0 0; overflow:hidden}
-.gallery{position:relative; overflow:hidden; background:linear-gradient(135deg,#e9ecf3,#dfe3ec); aspect-ratio:16/9}
+.gallery{position:relative; overflow:hidden; background:linear-gradient(135deg,#efe7d7,#e6dbc6); aspect-ratio:16/9}
 [data-theme="dark"] .gallery{background:linear-gradient(135deg,#1c1d21,#141518)}
 .gtrack{display:flex; height:100%; transition:transform .45s cubic-bezier(.2,.8,.2,1)}
 .gslide{min-width:100%; height:100%; display:grid; place-items:center}
@@ -268,6 +268,47 @@ footer a:hover{text-decoration:underline}
 .view{padding-top:14px}
 .hidden{display:none!important}
 @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+
+/* ===================== MOBILE OPTIMIZATION (site-consistent) ===================== */
+@media (max-width:760px){
+  .wrap{padding:0 15px}
+  /* floating nav spans the screen; tabs scroll horizontally */
+  .nav{width:calc(100% - 16px); max-width:calc(100% - 16px); flex-wrap:wrap; row-gap:8px; column-gap:8px; padding:8px 10px; border-radius:22px}
+  .nav .brand{order:1; flex:0 0 auto; font-size:15px}
+  .nav .brand img{width:22px; height:22px}
+  .navutil{order:2; margin-left:auto; flex:0 0 auto; gap:4px}
+  .nav .links{order:3; flex:1 1 100%; min-width:0; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch}
+  .iconbtn{width:33px; height:33px}
+  /* hero: tighter on phones */
+  .hero{padding:56px 16px 20px}
+  .hero .lede{font-size:17px}
+  /* controls: don't steal vertical space by sticking */
+  .controls{position:static; top:auto; margin:6px 0 16px; border-radius:20px}
+  .crow{gap:8px}
+  .searchbox{flex:1 1 100%}
+  .pillbtn,.sel{flex:1 1 auto; justify-content:center}
+  /* one column of cards */
+  .grid{grid-template-columns:1fr; gap:14px}
+  .listgrid{grid-template-columns:1fr; gap:14px}
+  .lead{font-size:26px}
+  .bigstats{grid-template-columns:1fr 1fr}
+  .shero{flex-direction:column}
+  .acard .type{white-space:normal; max-width:58%; text-align:right}
+  .acard .top{gap:8px}
+  /* detail sheet becomes a bottom sheet that slides up */
+  .scrim{-webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px)}
+  .sheet{left:0; right:0; top:auto; bottom:0; width:100%; max-width:100%; max-height:90vh;
+    border-radius:22px 22px 0 0; transform:none}
+  .sheet.show{transform:none}
+  .sgallery{border-radius:22px 22px 0 0}
+  .sheet .smedia{aspect-ratio:16/9}
+  .sbody{padding:24px 20px 40px}
+}
+@media (max-width:430px){
+  .hero h1{font-size:44px}
+  .acard .stats{grid-template-columns:1fr 1fr}
+  .bigstats{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body data-theme="light">
