@@ -370,8 +370,15 @@ a .papertitle:hover { color: var(--accent-ink); }
 .news-dot.active { background: var(--accent); transform: scale(1.25); }
 .timeline-label { font-size: 11px; color: var(--text-3); }
 
-/* ---- Home "sneak peek" rows (Research + Projects) ---- */
-.peek-cta { display: inline-block; margin-top: 8px; color: var(--accent-ink); font-weight: 700; font-size: 14px; }
+/* ---- Home "sneak peek" cards (Research + Projects) ---- */
+.peek-card { display: block; padding: 18px; text-decoration: none; color: inherit; }
+.peek-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.peek-card .pub-desc { margin: 8px 0 0; }
+.peek-cta { color: var(--accent-ink); font-weight: 700; font-size: 14px; white-space: nowrap; }
+.peek-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 14px; }
+.peek-strip img { width: 100%; aspect-ratio: 3 / 2; object-fit: contain; border-radius: 10px;
+  border: 1px solid var(--hairline); background: rgba(255,255,255,0.55); display: block; }
+@media (max-width: 640px) { .peek-strip { grid-template-columns: repeat(3, 1fr); } }
 
 /* =============================================================================
    STARTUPS + SKILLS
