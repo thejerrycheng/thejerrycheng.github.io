@@ -370,6 +370,14 @@ a .papertitle:hover { color: var(--accent-ink); }
 .news-dot.active { background: var(--accent); transform: scale(1.25); }
 .timeline-label { font-size: 11px; color: var(--text-3); }
 
+/* ---- Home "sneak peek" grid (Research + Projects) ---- */
+.peek-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.peek-grid > a { display: block; text-decoration: none; color: inherit; }
+.peek-grid h3 { margin: 0 0 8px; font-size: 18px; }
+.peek-grid p { font-size: 14.5px; line-height: 1.55; margin: 0 0 12px; }
+.peek-cta { color: var(--accent-ink); font-weight: 700; font-size: 14px; }
+@media (max-width: 640px) { .peek-grid { grid-template-columns: 1fr; } }
+
 /* =============================================================================
    STARTUPS + SKILLS
    ============================================================================= */

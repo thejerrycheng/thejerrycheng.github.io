@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Research — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="How I think robotics gets solved: data as the bottleneck, world-model pretraining, real-world RL, classical-x-learning hybrids, embodied reasoning, and humanoids — grounded in the literature.">
+  <meta name="author" content="Jerry Cheng">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://thejerrycheng.github.io/research.html">
+
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#F4EEE2">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Research — Jerry (Qilong) Cheng">
+  <meta property="og:description" content="How I think robotics gets solved — with data as the centerpiece.">
+  <meta property="og:url" content="https://thejerrycheng.github.io/research.html">
+
+  <link rel="stylesheet" href="assets/css/liquid.css">
+</head>
+<body>
+
+<!-- =================== NAV =================== -->
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><img src="assets/images/favicon.v4.svg" alt="">Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html">Projects</a>
+      <a href="research.html" aria-current="page">Research</a>
+      <a href="cv.html">CV</a>
+      <div class="dropdown">
+        <button type="button" class="robolog-toggle" id="robologToggle"
+                aria-haspopup="true" aria-expanded="false" aria-controls="robologMenu">
+          Robolog <span class="caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="dropdown-menu" id="robologMenu" role="menu" aria-label="Robolog">
+          <a role="menuitem" href="umi/index.html"><span class="ico" aria-hidden="true">🤖</span><span class="label">UMI Device Catalog<small>Awesome-UMI gripper builds</small></span></a>
+          <a role="menuitem" href="humanoids/index.html"><span class="ico" aria-hidden="true">🦾</span><span class="label">Humanoids Guide<small>The field, by release year</small></span></a>
+          <a role="menuitem" href="actuators/index.html"><span class="ico" aria-hidden="true">⚙️</span><span class="label">Joint Actuator Guide<small>Makers, lineups &amp; specs</small></span></a>
+        </div>
+      </div>
+    </div>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+  <a href="research.html">Research</a>
+  <a href="cv.html">CV</a>
+  <hr>
+  <a href="umi/index.html">🤖 Robolog · UMI Catalog</a>
+  <a href="humanoids/index.html">🦾 Robolog · Humanoids Guide</a>
+  <a href="actuators/index.html">⚙️ Robolog · Actuator Guide</a>
+</div>
+
+<!-- =================== RESEARCH ESSAY =================== -->
+<section class="section" id="research">
+  <h2 class="section-title">Research — How I Think Robotics Gets Solved</h2>
+  <div class="card card-pad">
+    <p class="vision" style="color:var(--accent-ink); font-weight:600; margin-bottom:16px;">
+      A longer, referenced take on my research — the summary lives on the <a href="index.html#about">home page</a>; this is the full argument, with data at its center.
+    </p>
+
+    <p class="vision">
+      Robotics today looks a lot like natural language processing did before GPT, or computer vision before ImageNet: the architectures are largely in place, the compute is here, and generalist models are starting to work — vision–language–action policies like <a href="https://arxiv.org/abs/2307.15818" target="_blank" rel="noopener">RT-2</a>, <a href="https://arxiv.org/abs/2406.09246" target="_blank" rel="noopener">OpenVLA</a>, and <a href="https://www.pi.website/blog/pi0" target="_blank" rel="noopener">π0</a> already map pixels and language to motor commands across many different robots. What’s missing isn’t a clever loss function; it’s <strong>data</strong>. I believe robotics gets <em>solved</em> the way language, vision, and self-driving were — by scaling the right data through the right recipe — and that the single highest-leverage problem in the field is how we produce that data.
+    </p>
+
+    <p class="vision" style="margin-top:14px;">
+      <strong>Data is the bottleneck — and it’s an infrastructure problem.</strong> Text and images already exist on the internet by the trillion; robot experience does not. Every trajectory has to be generated, and generating it is expensive, physical, and embodiment-specific. The largest open efforts make the gap concrete: the <a href="https://robotics-transformer-x.github.io/" target="_blank" rel="noopener">Open X-Embodiment</a> collaboration — dozens of labs — pooled 60 datasets across 22 robot types into roughly a million real trajectories, and <a href="https://droid-dataset.github.io/" target="_blank" rel="noopener">DROID</a> added 76,000 teleoperated demonstrations across hundreds of scenes. Both are landmark efforts, and both are still tiny next to a language corpus. The lesson I take is that robot data is fundamentally an <em>infrastructure</em> problem — capture rigs, calibration, time-synchronization, action-label extraction, storage formats, quality filtering, and the deploy → collect → retrain loop. The unglamorous pipeline is the real product; the policy is downstream of it.
+    </p>
+
+    <p class="vision" style="margin-top:14px;">
+      <strong>Not more data — the right data.</strong> A demonstration only helps if its action space and embodiment match the robot that will replay it, if it covers the contact-rich long tail rather than the easy middle, and if it is genuinely diverse across objects, scenes, and strategies rather than thousands of near-duplicates. A million trajectories of the same tabletop pick teach less than a well-chosen ten thousand that span the failure modes. So much of what I care about is <em>curation and coverage</em>: measuring what distribution a dataset actually spans, finding where a policy is brittle, and collecting against those gaps — treating data as an experiment to be designed, not a resource to be hoarded.
+    </p>
+
+    <p class="vision" style="margin-top:14px;">
+      <strong>How to collect it at scale.</strong> There’s a spectrum of ways to produce robot data, each trading off fidelity, cost, and embodiment gap. Teleoperation (ALOHA-style rigs, DROID) yields clean, action-labeled data but scales with human hours and a physical robot. Portable capture like <a href="https://umi-gripper.github.io/" target="_blank" rel="noopener">UMI</a> — a handheld gripper you can use anywhere — decouples collection from the robot, and is my favorite point on the curve: co-designing the capture device to share the robot’s embodiment turns the human-to-robot gap into a hardware choice instead of a modeling correction. Egocentric and third-person human video is the largest and cheapest source of all, but its action labels are missing and must be inferred. Simulation is effectively free and infinitely repeatable, yet only as good as its contact physics and sim-to-real gap. No single source wins; the interesting engineering is a pipeline that fuses all of them and tracks the provenance and reliability of each.
+    </p>
+
+    <p class="vision" style="margin-top:14px;">
+      <strong>Pretrain a world model; learn the last mile on hardware.</strong> With data in hand, I want to run the LLM playbook on the physical world: pre-train a <a href="https://arxiv.org/abs/1803.10122" target="_blank" rel="noopener">world model</a> — a predictive model of how the world moves in response to actions — on egocentric, third-person, and simulated experience, then fine-tune it on real robot data. Video-scale world models are advancing fast (<a href="https://arxiv.org/abs/2506.09985" target="_blank" rel="noopener">V-JEPA 2</a> already does narrow zero-shot planning on a real arm; <a href="https://arxiv.org/abs/2501.03575" target="_blank" rel="noopener">NVIDIA Cosmos</a> targets physics-aware synthetic data), but the last mile of skill has to be learned where the robot actually acts — no simulator reproduces the full tail of real contact and dynamics. Encouragingly, real-world reinforcement fine-tuning is now practical: <a href="https://serl-robot.github.io/" target="_blank" rel="noopener">SERL</a> and <a href="https://arxiv.org/abs/2410.21845" target="_blank" rel="noopener">HIL-SERL</a> reach near-perfect success on precise, contact-rich tasks in one to two hours of on-robot training. Pretrain broad, fine-tune on hardware — that is how I think dexterous skill should be acquired. You don’t learn to ride a bike by reading about it.
+    </p>
+
+    <p class="vision" style="margin-top:14px;">
+      <strong>Classical methods and learning are complementary, not rivals.</strong> The classical stack doesn’t go away. SLAM, state estimation, model-predictive control, and whole-body control provide structure, constraints, stability, and sample efficiency that a purely learned policy would have to rediscover the hard way. The productive path is hybrids — learned perception feeding model-based control, or making the optimizer itself differentiable so gradients flow through it (<a href="https://arxiv.org/abs/1703.00443" target="_blank" rel="noopener">OptNet</a>, differentiable MPC, and <a href="https://arxiv.org/abs/2207.09442" target="_blank" rel="noopener">Theseus</a> for the least-squares under factor-graph estimation). Learning should absorb what’s hard to model; optimization should enforce what we already know.
+    </p>
+
+    <p class="vision" style="margin-top:14px;">
+      <strong>Reasoning, and an honest look at self-improvement.</strong> The reasoning shift in LLMs has a robotics analog. Grounding a language model’s plan in what a robot can actually do (<a href="https://arxiv.org/abs/2204.01691" target="_blank" rel="noopener">SayCan</a>) and forcing a policy to reason — plan, sub-goal, grounded features — before it acts (<a href="https://embodied-cot.github.io/" target="_blank" rel="noopener">Embodied Chain-of-Thought</a>) both measurably help on long-horizon tasks. The dream beyond that is a data flywheel: robots that propose tasks, attempt them, judge the outcome, and retrain on their own experience. I want to build toward it — while being honest that it’s largely still aspiration. Autonomous real-world RL and self-generated data are demonstrated at small scale (one robot, tens of hours; <a href="https://arxiv.org/abs/2306.11706" target="_blank" rel="noopener">RoboCat</a>’s narrow self-bootstrapping), whereas the fleet-scale, self-compounding flywheel that companies advertise has not yet been shown in the open literature. Closing that gap is exactly the kind of problem worth a career.
+    </p>
+
+    <p class="vision" style="margin-top:14px;">
+      <strong>Why humanoids, and why now — with the caveats.</strong> I care about general-purpose and increasingly humanoid robots because the built world is human-shaped: a machine with our form factor can work in our spaces without re-tooling them, and a fleet of them is also a data engine. The momentum is real — Figure, 1X, Unitree, Tesla, and an all-electric Atlas from Boston Dynamics — but I try to hold the honest view alongside the excitement: today’s humanoids are expensive, battery-limited, frequently teleoperated in their flashiest demos, and commercially useful only in narrow, structured settings (<a href="https://www.agilityrobotics.com/" target="_blank" rel="noopener">Agility</a>’s logistics deployments are the clearest real ones). The distance between a curated demo and a robot you’d trust in your kitchen is the whole game — and closing it comes back to data, real-world learning, and a genuinely good human-robot interface. We’re early, but early in the way that means there is everything left to build. Solving robotics is one of the highest-leverage things we can do for human abundance, and the general-purpose robot may well be this century’s most important machine.
+    </p>
+
+    <div class="btn-row" style="margin-top:22px;">
+      <a class="btn btn-primary" href="projects.html">See the projects →</a>
+      <a class="btn" href="publications.html">Publications</a>
+      <a class="btn" href="index.html#about">← Back home</a>
+    </div>
+  </div>
+</section>
+
+<!-- =================== FOOTER =================== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love — in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>
