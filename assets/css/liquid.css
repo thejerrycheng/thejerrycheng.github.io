@@ -473,13 +473,13 @@ a .papertitle:hover { color: var(--accent-ink); }
 /* =============================================================================
    HOME — live stat dashboard (under profile pic)
    ============================================================================= */
-.stat-dash { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+.stat-dash { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 11px; }
 .stat {
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-  padding: 9px 5px; border-radius: 12px; text-decoration: none;
-  background: rgba(255,255,255,0.5); border: 1px solid var(--hairline);
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+  padding: 5px 3px; border-radius: 8px; text-decoration: none;
+  background: rgba(255,255,255,0.38); border: 1px solid var(--hairline);
   transition: transform .15s ease, background .15s ease, border-color .15s ease;
 }
-a.stat:hover { transform: translateY(-1px); background: rgba(255,149,0,0.10); border-color: rgba(255,149,0,0.35); }
-.stat-num { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; line-height: 1.1; }
-.stat-label { font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-3); text-align: center; white-space: nowrap; }
+a.stat:hover { transform: translateY(-1px); background: rgba(255,149,0,0.10); border-color: rgba(255,149,0,0.3); }
+.stat-num { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; line-height: 1.15; }
+.stat-label { font-size: 7.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2px; color: var(--text-3); text-align: center; white-space: nowrap; }
