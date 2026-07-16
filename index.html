@@ -115,13 +115,15 @@
         </p>
 
         <p class="vision">
-          Robotics is the next field to be <em>solved</em> by learning at scale — like language, vision, and self-driving — and the bottleneck is <strong>data</strong>. I port the LLM playbook to hardware: pre-train a <strong>world model</strong> on egocentric and third-person human data (UMI, video, sim), fine-tune on real robot data, and refine with <strong>real-world RL</strong>. Solving robotics is the greatest thing we can do for human abundance and prosperity — the humanoid will be humanity’s greatest machine of this century.
+          Robotics is the next field to be <em>solved</em> by learning at scale, and I think the recipe is already written — by LLMs and by autonomous driving. That makes robotics both easy and hard: <strong>easy</strong> because the methods already exist, <strong>hard</strong> because the binding constraint is <strong>data</strong>. So my research is one full-stack pipeline aimed squarely at that bottleneck — from the capture hardware to the deployed policy. Solving robotics is the greatest thing we can do for human abundance and prosperity — the humanoid will be humanity’s greatest machine of this century.
         </p>
 
         <div class="bullets">
-          <p>• <strong>Data &amp; hardware co-design</strong> — scale low-cost human-demonstration capture (egocentric &amp; third-person video, simulation), with the capture device and robot designed as one embodiment.</p>
-          <p>• <strong>Classical × learning</strong> — fuse SLAM, navigation, and whole-body control with learned policies, then fine-tune on hardware, not in simulation.</p>
-          <p>• <strong>Reasoning &amp; auto-research flywheel</strong> — chain-of-thought and self-improving loops that let robots reason through long-horizon tasks and learn from their own experience.</p>
+          <p>• <strong>Hardware co-design for dexterity</strong> — a UMI-style glove geometrically and kinematically aligned to the hand, capturing force and tactile data for re-targeting-free demonstration transfer (re-targeting being the dominant failure mode of dexterous manipulation).</p>
+          <p>• <strong>Learning from human video</strong> — egocentric and internet-scale third-person video, via hand/body pose estimation, 3D scene reconstruction, and embodiment re-targeting (with a real–sim–real bridge when RL is required).</p>
+          <p>• <strong>Foundation-model pretraining</strong> — a world-action model (WAM) / large behavior model (LBM) pretrained on internet, egocentric, UMI, and teleoperation data; post-trained on in-embodiment robot data.</p>
+          <p>• <strong>Real-world RL fine-tuning</strong> — on-hardware reinforcement learning and post-training on embodiment-specific data for the deployed policy.</p>
+          <p>• <strong>Embodied reasoning</strong> — the LLM agentic paradigm (chain-of-thought, auto-reasoning, auto-research) applied to long-horizon robot autonomy.</p>
         </div>
 
         <p class="vision" style="margin-top:14px;">
