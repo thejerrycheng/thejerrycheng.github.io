@@ -335,9 +335,14 @@ a .papertitle:hover { color: var(--accent-ink); }
   width: 30px; height: 30px; border-radius: 50%; border: 0; cursor: pointer;
   background: rgba(255,255,255,0.85); color: #333; font-size: 16px; line-height: 1;
   display: grid; place-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  opacity: 0; transition: opacity .2s;
+  opacity: 1; transition: opacity .2s;
 }
-.pub-thumb:hover .c-btn, .news-media:hover .c-btn { opacity: 1; }
+/* On devices with a real pointer (desktop), reveal the arrows on hover.
+   On touch devices (no hover), keep them always visible. */
+@media (hover: hover) {
+  .c-btn { opacity: 0; }
+  .pub-thumb:hover .c-btn, .news-media:hover .c-btn { opacity: 1; }
+}
 .c-btn.prev { left: 6px; } .c-btn.next { right: 6px; }
 .c-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; }
 
