@@ -483,3 +483,21 @@ a .papertitle:hover { color: var(--accent-ink); }
 a.stat:hover { transform: translateY(-1px); background: rgba(255,149,0,0.10); border-color: rgba(255,149,0,0.3); }
 .stat-num { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; line-height: 1.15; }
 .stat-label { font-size: 7.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2px; color: var(--text-3); text-align: center; white-space: nowrap; }
+
+/* =============================================================================
+   CV — startup cards (media + copy)
+   ============================================================================= */
+.startup { display: grid; grid-template-columns: 1fr 330px; gap: 26px; align-items: center; }
+.startup-body h3 { margin-bottom: 4px; }
+.startup-body .meta { margin-bottom: 10px; }
+.startup-hero { width: 100%; border-radius: 14px; border: 1px solid var(--hairline); display: block; }
+.startup-shots { display: flex; gap: 8px; }
+.startup-shots img {
+  width: calc((100% - 16px) / 3); border-radius: 11px;
+  border: 1px solid var(--hairline); display: block; background: #0b0b0f;
+}
+@media (max-width: 720px) {
+  .startup { grid-template-columns: 1fr; gap: 18px; }
+  .startup-media { order: -1; }
+  .startup-shots { max-width: 330px; margin: 0 auto; }
+}
