@@ -359,13 +359,13 @@ a .papertitle:hover { color: var(--accent-ink); }
   flex: 0 0 320px; scroll-snap-align: start; overflow: hidden;
   display: flex; flex-direction: column;
 }
-.news-text { padding: 18px 20px 14px; }
-.news-text p { font-size: 14.5px; line-height: 1.55; }
+.news-text { padding: 14px 18px 12px; }
+.news-text p { font-size: 14px; line-height: 1.5; color: var(--text-2); }
 .news-text a { color: var(--accent-ink); font-weight: 600; text-decoration: none; }
 .news-text a:hover { text-decoration: underline; }
 .lead a, .vision a { color: var(--accent-ink); font-weight: 600; text-decoration: none; }
 .lead a:hover, .vision a:hover { text-decoration: underline; }
-.news-media { position: relative; aspect-ratio: 4 / 3; background: rgba(255,255,255,0.4); }
+.news-media { position: relative; aspect-ratio: 3 / 2; background: rgba(255,255,255,0.4); }
 .news-media .carousel-track { height: 100%; }
 .news-media img { width: 100%; height: 100%; object-fit: contain; }
 .news-timeline { display: flex; justify-content: space-between; gap: 6px; max-width: 760px;
@@ -469,3 +469,17 @@ a .papertitle:hover { color: var(--accent-ink); }
 }
 .resume-embed iframe { width: 100%; height: 80vh; min-height: 540px; border: 0; display: block; }
 @media (max-width: 640px) { .resume-embed iframe { height: 64vh; min-height: 420px; } }
+
+/* =============================================================================
+   HOME — live stat dashboard (under profile pic)
+   ============================================================================= */
+.stat-dash { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+.stat {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 9px 5px; border-radius: 12px; text-decoration: none;
+  background: rgba(255,255,255,0.5); border: 1px solid var(--hairline);
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+}
+a.stat:hover { transform: translateY(-1px); background: rgba(255,149,0,0.10); border-color: rgba(255,149,0,0.35); }
+.stat-num { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; line-height: 1.1; }
+.stat-label { font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-3); text-align: center; white-space: nowrap; }

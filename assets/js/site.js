@@ -93,4 +93,35 @@
     });
     lu.setAttribute("datetime", d.toISOString());
   }
+
+  /* ---- Live stat dashboard (hero) ---- */
+  var dash = document.getElementById("stat-dash");
+  if (dash) {
+    var fmt = function (n) {
+      n = Number(n);
+      if (!isFinite(n)) return "—";
+      if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, "") + "M";
+      if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, "") + "k";
+      return String(n);
+    };
+    var setStat = function (name, val) {
+      var el = dash.querySelector('[data-stat="' + name + '"]');
+      if (el && val != null && val !== "") el.textContent = fmt(val);
+    };
+    // Manual / periodic values (Scholar, X, TikTok — no free live API)
+    fetch("stats.json", { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (s) { setStat("citations", s.citations); setStat("hindex", s.hindex); setStat("x", s.x); setStat("tiktok", s.tiktok); })
+      .catch(function () {});
+    // GitHub stars — live
+    fetch("https://api.github.com/users/thejerrycheng/repos?per_page=100&type=owner")
+      .then(function (r) { return r.json(); })
+      .then(function (repos) { if (Array.isArray(repos)) setStat("stars", repos.reduce(function (a, b) { return a + (b.stargazers_count || 0); }, 0)); })
+      .catch(function () {});
+    // Total visits — live counter (increments per view)
+    fetch("https://api.counterapi.dev/v1/thejerrycheng-github-io/visits/up")
+      .then(function (r) { return r.json(); })
+      .then(function (d) { if (d && d.count != null) setStat("visitors", d.count); })
+      .catch(function () {});
+  }
 })();
