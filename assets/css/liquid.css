@@ -1,18 +1,20 @@
 /* =============================================================================
    SOFT UI — shared design system for thejerrycheng.github.io
-   Neumorphic light-grey base (#e0e0e0, per neumorphism.io) · Apple system fonts
-   · Apple-orange accent. Every surface is extruded from, or pressed into, the
-   same #e0e0e0 ground: no borders, no glass — only light and shadow.
+   Warm-paper beige ground (#F4EEE2) · Apple system fonts · Apple-orange accent.
+   Neumorphic construction (per neumorphism.io) with Apple's light model: every
+   surface is extruded from, or pressed into, the same beige — no borders, no
+   glass, only light and shadow.
    One stylesheet, used by every page, for extreme cross-page consistency.
    ============================================================================= */
 
 :root {
-  /* --- Neumorphic ground (neumorphism.io · #e0e0e0) --- */
-  --nm:               #e0e0e0;   /* the one background colour, everywhere */
-  --nm-light:         #ffffff;   /* top-left light source */
-  --nm-dark:          #bebebe;   /* bottom-right shadow */
-  --nm-convex:        linear-gradient(145deg, #f0f0f0, #cacaca);
-  --nm-concave:       linear-gradient(145deg, #cacaca, #f0f0f0);
+  /* --- Neumorphic ground. Shadow pair derived from the beige the way
+         neumorphism.io derives it: base x 0.85 and base x 1.15 (clamped). --- */
+  --nm:               #F4EEE2;   /* warm paper — the one background colour */
+  --nm-light:         #ffffff;   /* highlight  (#F4EEE2 x 1.15, clamped) */
+  --nm-dark:          #CFCAC0;   /* shadow     (#F4EEE2 x 0.85) */
+  --nm-convex:        linear-gradient(145deg, #FBF7EF, #E0D9CB);
+  --nm-concave:       linear-gradient(145deg, #E0D9CB, #FBF7EF);
 
   /* Extruded (raised). Light comes from straight overhead, the way it does in
      every Apple surface: the shadow falls below, and the highlight sits ON the
@@ -35,8 +37,8 @@
 
   /* --- Legacy aliases (kept so older inline styles keep resolving) --- */
   --beige:            var(--nm);
-  --beige-2:          var(--nm);
-  --beige-3:          var(--nm);
+  --beige-2:          #FBF7EF;   /* lighter cream wash */
+  --beige-3:          #EFE6D6;   /* deeper sand wash */
   --card:             var(--nm);
   --card-strong:      var(--nm);
   --card-border:      transparent;
@@ -46,13 +48,13 @@
   --blur:             0px;
   --blur-nav:         0px;
 
-  /* --- Ink (Apple label greys, contrast-tuned for the #e0e0e0 ground) --- */
-  --text:             #1d1d1f;   /* 14.4:1 — primary label */
-  --text-2:           #4b4b50;   /*  6.4:1 — secondary label */
-  --text-3:           #5c5c61;   /*  5.1:1 — tertiary label */
+  /* --- Ink (Apple label greys, contrast-tuned for the beige ground) --- */
+  --text:             #1d1d1f;   /* 14.6:1 — primary label */
+  --text-2:           #4b4b50;   /*  7.5:1 — secondary label */
+  --text-3:           #5c5c61;   /*  5.8:1 — tertiary label */
 
   --accent:           #FF9500;   /* Apple orange — fills, ticks, indicators */
-  --accent-ink:       #964F00;   /* darkened orange for small text on grey (4.6:1) */
+  --accent-ink:       #A15600;   /* orange for small text on beige (4.7:1) */
   --accent-hover:     #E9850A;
   --accent-soft:      rgba(255, 149, 0, 0.16);
 
