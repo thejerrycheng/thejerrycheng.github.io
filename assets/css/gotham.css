@@ -342,7 +342,7 @@ code, pre, kbd { font-family: var(--font-mono); font-size: 0.9em; }
 .cover-lead { font-size: 16px; line-height: 1.55; color: var(--ash-light); max-width: 48ch; margin-top: 14px; }
 .cover .btn { background: transparent; color: var(--bone); border-color: rgba(217,161,63,0.8); box-shadow: 4px 4px 0 rgba(0,0,0,0.8); }
 .cover .btn:hover { background: rgba(253,246,226,0.1); border-color: var(--gold); box-shadow: 6px 6px 0 rgba(0,0,0,0.8); color: var(--bone); }
-.cover-photo { justify-self: end; width: min(100%, 360px); }
+.cover-photo { justify-self: center; width: min(100%, 360px); }
 .photo-panel {
   margin: 0; background: var(--panel); padding: 9px 9px 9px; border: var(--line-w) solid var(--ink); border-radius: 6px;
   box-shadow: var(--sh-night); transform: rotate(2deg);
@@ -359,17 +359,6 @@ html.js .cover-photo { animation: rise 1s var(--ease-out) .25s both; }
 @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { html.js .cover-copy > *, html.js .cover-photo { animation: none; } }
 
-/* Stats — a trading-card strip under the portrait */
-.stat-dash { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 22px; }
-.stat {
-  display: flex; flex-direction: column; align-items: center; padding: 7px 4px 6px;
-  border-radius: 5px; text-decoration: none; background: var(--panel); border: 1.5px solid var(--ink);
-  box-shadow: 3px 3px 0 rgba(0,0,0,0.8); transition: transform .15s ease, background .15s ease;
-}
-a.stat:hover { transform: translate(-1px, -1px); background: var(--panel-2); }
-a.stat:hover .stat-num { color: var(--hi-deep); }
-.stat-num { font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.15; transition: color .15s ease; }
-.stat-label { font-family: var(--font-comic); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); white-space: nowrap; margin-top: 1px; }
 
 /* ---- Page cover (sub-pages) ---- */
 .page-cover { margin-top: calc(-1 * (var(--nav-h) + 24px)); padding: calc(var(--nav-h) + 64px) 0 clamp(96px, 13vw, 150px); }
@@ -473,18 +462,23 @@ a .papertitle:hover { color: var(--hi-deep); }
 .c-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; }
 
 /* =============================================================================
-   NEWS — a comic strip you scroll sideways; every date is a narration box
+   NEWS — a comic strip you scroll sideways; every date is a narration box.
+   Cards share the publication / project card geometry (.slide): 292px wide,
+   3:2 media on top, text below, so the three strips read as one system.
    ============================================================================= */
 .news-scroll {
-  display: flex; gap: 24px; overflow-x: auto; padding: 22px 20px 30px; margin: -22px -20px 0;
+  display: flex; gap: 18px; overflow-x: auto; padding: 16px 20px 30px; margin: -16px -20px 0;
   scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--ink) var(--paper);
 }
 .news-scroll::-webkit-scrollbar { height: 10px; }
 .news-scroll::-webkit-scrollbar-track { background: var(--paper); border-radius: 0; border: 1.5px solid var(--ink); }
 .news-scroll::-webkit-scrollbar-thumb { background: var(--ink); border-radius: 0; }
-.news-card { flex: 0 0 330px; scroll-snap-align: start; overflow: visible; display: flex; flex-direction: column; }
-.news-text { padding: 16px 18px 14px; }
-.news-text p { font-size: 14px; line-height: 1.5; color: var(--ink-soft); }
+.news-card { flex: 0 0 min(292px, 78vw); scroll-snap-align: start; overflow: visible; display: flex; flex-direction: column; }
+.news-text { padding: 14px 16px 15px; flex: 1; }
+.news-text p {
+  font-size: 14px; line-height: 1.5; color: var(--ink-soft);
+  display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden;
+}
 .news-text p > b:first-child {
   display: inline-block; background: var(--yellow); color: var(--ink);
   border: 1.5px solid var(--ink); border-radius: 3px; box-shadow: var(--sh-xs);
@@ -493,7 +487,7 @@ a .papertitle:hover { color: var(--hi-deep); }
 }
 .news-text a { color: var(--hi-deep); font-weight: 600; text-decoration: none; }
 .news-text a:hover { text-decoration: underline; }
-.news-media { position: relative; aspect-ratio: 3 / 2; background: var(--bone); border-top: var(--line-w) solid var(--ink); overflow: hidden; border-radius: 0 0 8px 8px; }
+.news-media { position: relative; aspect-ratio: 3 / 2; background: var(--bone); border-bottom: var(--line-w) solid var(--ink); overflow: hidden; border-radius: 8px 8px 0 0; }
 .news-media .carousel-track { height: 100%; }
 .news-media img { width: 100%; height: 100%; object-fit: contain; }
 .news-timeline { display: flex; justify-content: space-between; gap: 6px; max-width: 800px; margin: 22px auto 0; padding: 0 8px; }
@@ -577,7 +571,6 @@ a .papertitle:hover { color: var(--hi-deep); }
   .menu-btn { display: inline-flex; }
   .cover-inner { grid-template-columns: 1fr; gap: 34px; }
   .cover-photo { justify-self: center; width: min(100%, 300px); margin: 0 auto; }
-  .news-card { flex-basis: min(330px, 82vw); }
   .grid-2 { grid-template-columns: 1fr; }
   .startup { grid-template-columns: 1fr; gap: 18px; }
   .startup-media { order: -1; }
@@ -590,7 +583,6 @@ a .papertitle:hover { color: var(--hi-deep); }
   .section-title { font-size: 26px; gap: 12px; }
   .cover-name { font-size: clamp(44px, 14vw, 64px); }
   .cover .kicker, .page-cover .kicker { font-size: 13px; letter-spacing: .1em; }
-  .stat-dash { gap: 6px; }
   .quote { padding-left: 40px; }
 }
 
