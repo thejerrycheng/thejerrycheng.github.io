@@ -10,11 +10,11 @@
 
   /* ---- strip arrows: scroll two cards at a time ---- */
   document.querySelectorAll(".strip-wrap").forEach(function (wrap) {
-    var strip = wrap.querySelector(".strip");
+    var strip = wrap.querySelector(".strip, .news-scroll");
     if (!strip) return;
     wrap.querySelectorAll(".strip-btn").forEach(function (btn) {
       btn.addEventListener("click", function () {
-        var card = strip.querySelector(".slide");
+        var card = strip.querySelector(".slide, .news-card");
         var step = card ? card.getBoundingClientRect().width + 18 : 310;
         strip.scrollBy({ left: (btn.classList.contains("next") ? 1 : -1) * step * 2, behavior: "smooth" });
       });

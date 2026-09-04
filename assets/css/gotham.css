@@ -326,7 +326,7 @@ code, pre, kbd { font-family: var(--font-mono); font-size: 0.9em; }
 .cover-inner { max-width: var(--maxw); margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: 1.35fr 1fr; gap: 40px; align-items: center; }
 .cover .kicker { color: var(--gold); margin-bottom: 18px; }
 .cover-name {
-  font-family: var(--font-display); font-weight: 400; font-size: clamp(54px, 9vw, 112px);
+  font-family: var(--font-display); font-weight: 400; font-size: clamp(44px, 5.6vw, 72px); /* sized so "Jerry (Qǐlóng)" holds one line */
   line-height: .95; letter-spacing: 0.015em; color: var(--bone);
   text-shadow: 5px 5px 0 rgba(0,0,0,0.55);
 }
@@ -339,6 +339,19 @@ code, pre, kbd { font-family: var(--font-mono); font-size: 0.9em; }
   font-family: var(--font-comic); font-size: clamp(22px, 2.8vw, 32px); line-height: 1.1; letter-spacing: .03em;
   color: var(--bone); margin-top: 18px; max-width: 18ch;
 }
+/* Pronunciation button: sits after the surname, scales with the heading */
+.say-name {
+  display: inline-grid; place-items: center; vertical-align: middle; box-sizing: border-box; font-size: inherit;
+  width: max(.6em, 36px); height: max(.6em, 36px); margin: 0 0 .1em .22em; padding: 0;
+  border-radius: 50%; cursor: pointer; text-shadow: none;
+  background: var(--panel); border: 2px solid var(--ink); color: var(--ink); box-shadow: 4px 4px 0 rgba(0,0,0,0.8);
+  transition: transform .15s ease, background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.say-name svg { width: 52%; height: 52%; fill: currentColor; margin-left: 9%; }
+.say-name:hover, .say-name:focus-visible { background: var(--hi); color: #FFF9F0; transform: translate(-1px, -1px); box-shadow: 5px 5px 0 rgba(0,0,0,0.8); outline: none; }
+.say-name.playing { background: var(--yellow); color: var(--ink); animation: sayPulse .9s ease-in-out infinite; }
+@keyframes sayPulse { 50% { transform: scale(1.08); } }
+@media (prefers-reduced-motion: reduce) { .say-name.playing { animation: none; } }
 .cover-lead { font-size: 16px; line-height: 1.55; color: var(--ash-light); max-width: 48ch; margin-top: 14px; }
 .cover .btn { background: transparent; color: var(--bone); border-color: rgba(217,161,63,0.8); box-shadow: 4px 4px 0 rgba(0,0,0,0.8); }
 .cover .btn:hover { background: rgba(253,246,226,0.1); border-color: var(--gold); box-shadow: 6px 6px 0 rgba(0,0,0,0.8); color: var(--bone); }
@@ -490,15 +503,6 @@ a .papertitle:hover { color: var(--hi-deep); }
 .news-media { position: relative; aspect-ratio: 3 / 2; background: var(--bone); border-bottom: var(--line-w) solid var(--ink); overflow: hidden; border-radius: 8px 8px 0 0; }
 .news-media .carousel-track { height: 100%; }
 .news-media img { width: 100%; height: 100%; object-fit: contain; }
-.news-timeline { display: flex; justify-content: space-between; gap: 6px; max-width: 800px; margin: 22px auto 0; padding: 0 8px; }
-.timeline-item { display: flex; flex-direction: column; align-items: center; gap: 7px; flex: 1; }
-.news-dot {
-  width: 13px; height: 13px; border-radius: 50%; cursor: pointer;
-  background: var(--panel); border: 2px solid var(--ink); transition: background .2s, transform .2s;
-}
-.news-dot:hover { background: var(--yellow); }
-.news-dot.active { background: var(--hi); transform: scale(1.3); }
-.timeline-label { font-family: var(--font-mono); font-size: 10.5px; color: var(--ash); }
 
 /* =============================================================================
    STARTUPS + SKILLS + BLOG
@@ -581,9 +585,25 @@ a .papertitle:hover { color: var(--hi-deep); }
   .section { padding-top: 44px; }
   .card-pad { padding: 22px 18px; }
   .section-title { font-size: 26px; gap: 12px; }
-  .cover-name { font-size: clamp(44px, 14vw, 64px); }
+  .cover-name { font-size: clamp(36px, 12vw, 64px); }
   .cover .kicker, .page-cover .kicker { font-size: 13px; letter-spacing: .1em; }
   .quote { padding-left: 40px; }
+}
+
+/* =============================================================================
+   NYC DIE-CUT STICKERS — the same set as the MABEL site
+   (assets/images/stickers/, 220x220 SVG). Decorative: empty alt, no pointer.
+   ============================================================================= */
+.sticker { pointer-events: none; user-select: none; filter: drop-shadow(3px 4px 0 rgba(21,24,32,0.35)); }
+.section-title > .sticker { width: 64px; height: 64px; order: 0; margin: -16px 2px -14px -2px; }
+.has-sticker { position: relative; }
+.sticker-corner { position: absolute; top: -30px; right: -18px; width: 84px; height: 84px; z-index: 2; }
+/* on a text panel the sticker is a FLOAT, so the paragraph wraps around it instead of running under it */
+.about-panel .sticker-corner { position: static; float: right; margin: -42px -34px 6px 14px; }
+@media (max-width: 620px) {
+  .section-title > .sticker { width: 46px; height: 46px; margin: -10px 0 -8px -2px; }
+  .sticker-corner { width: 60px; height: 60px; top: -22px; right: -8px; }
+  .about-panel .sticker-corner { margin: -30px -20px 4px 10px; }
 }
 
 /* =============================================================================
@@ -737,8 +757,4 @@ body.modal-open { overflow: hidden; }
   .modal-photo .modal-panel { max-height: 94vh; }
   .modal-body { padding: 18px 18px 26px; }
   .sticker-nyc { margin: 8px 0 0; }
-  .news-timeline { gap: 2px; padding: 0; }
-  .timeline-item { min-width: 0; gap: 5px; }
-  .news-dot { width: 10px; height: 10px; }
-  .timeline-label { font-size: 8.5px; letter-spacing: -0.02em; }
 }

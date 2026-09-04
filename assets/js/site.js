@@ -1,6 +1,6 @@
 /* =============================================================================
    site.js — shared behaviour for all pages
-   Nav (mobile + Robolog dropdown) · media carousels · news timeline · last-updated
+   Nav (mobile + Robolog dropdown) · media carousels · name pronunciation · last-updated
    ============================================================================= */
 (function () {
   "use strict";
@@ -77,29 +77,21 @@
     wrap.style.touchAction = "pan-y";
   });
 
-  /* ---- News timeline ---- */
-  var scroller = document.getElementById("news-horizontal");
-  var dots = Array.prototype.slice.call(document.querySelectorAll(".news-dot"));
-  if (scroller && dots.length) {
-    dots.forEach(function (dot) {
-      dot.addEventListener("click", function () {
-        var card = document.getElementById("news-" + dot.dataset.target);
-        if (card) scroller.scrollTo({ left: card.offsetLeft - scroller.offsetLeft, behavior: "smooth" });
-      });
+  /* ---- Name pronunciation (hero) ---- */
+  [].forEach.call(document.querySelectorAll(".say-name[data-audio]"), function (btn) {
+    var audio = null;
+    btn.addEventListener("click", function () {
+      if (!audio) {
+        audio = new Audio(btn.getAttribute("data-audio"));
+        audio.addEventListener("ended", function () { btn.classList.remove("playing"); });
+        audio.addEventListener("error", function () { btn.classList.remove("playing"); });
+      }
+      audio.currentTime = 0;
+      btn.classList.add("playing");
+      var p = audio.play();
+      if (p && p.catch) p.catch(function () { btn.classList.remove("playing"); });
     });
-    var setActive = function () {
-      var mid = scroller.scrollLeft + scroller.clientWidth / 2;
-      var best = 0, bestD = Infinity;
-      var cards = scroller.querySelectorAll(".news-card");
-      cards.forEach(function (c, i) {
-        var center = c.offsetLeft + c.offsetWidth / 2 - scroller.offsetLeft;
-        var d = Math.abs(center - mid);
-        if (d < bestD) { bestD = d; best = i; }
-      });
-      dots.forEach(function (d, i) { d.classList.toggle("active", i === best); });
-    };
-    scroller.addEventListener("scroll", function () { window.requestAnimationFrame(setActive); }, { passive: true });
-  }
+  });
 
   /* ---- Last updated ---- */
   var lu = document.querySelector("#last-updated time");
