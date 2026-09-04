@@ -634,6 +634,10 @@ a .papertitle:hover { color: var(--hi-deep); }
 }
 .slide-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .slide-media img.fit-contain { object-fit: contain; padding: 8px; }
+.slide-media { position: relative; }
+.slide-media .hover-video { position: absolute; inset: 0; opacity: 0; transition: opacity .3s ease; background: var(--ink); }
+.slide-media .hover-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (hover: hover) { .slide:hover .hover-video.playing { opacity: 1; } }
 .slide-tag {
   position: absolute; top: -11px; left: 12px; z-index: 2;
   background: var(--yellow); color: var(--ink); border: 1.5px solid var(--ink); border-radius: 3px; box-shadow: var(--sh-xs);
@@ -657,30 +661,37 @@ a .papertitle:hover { color: var(--hi-deep); }
 .strip-btn.prev { left: -22px; } .strip-btn.next { right: -22px; }
 @media (max-width: 1120px) { .strip-btn { display: none; } }
 
-/* quick-look popup */
+/* quick-look popup — opens like a comic panel reveal (same recipe as the MABEL site):
+   the backdrop fades, the panel flies in from the thing you clicked with a spring
+   overshoot, and a few onomatopoeia words burst out behind it and fade. */
 .modal { position: fixed; inset: 0; z-index: 2000; display: grid; place-items: center; padding: 20px; }
-.modal-backdrop { position: absolute; inset: 0; background: rgba(21,24,32,0.62); }
+.modal-backdrop { position: absolute; inset: 0; background: rgba(21,24,32,0.78); animation: popFade .18s ease both; }
+@keyframes popFade { from { opacity: 0; } to { opacity: 1; } }
 .modal-panel {
-  position: relative; width: min(760px, 100%); max-height: calc(100vh - 40px); overflow: auto;
-  background: var(--panel); border: var(--line-w) solid var(--ink); border-radius: 12px;
-  box-shadow: 10px 10px 0 rgba(21,24,32,0.9); animation: pop .28s var(--spring) both;
+  position: relative; z-index: 1; width: min(760px, 100%); max-height: calc(100vh - 40px); overflow: auto;
+  background: var(--panel); border: 3px solid var(--ink); border-radius: 8px;
+  box-shadow: 12px 12px 0 var(--hi), 0 0 0 3px var(--ink);
+  animation: popIn .42s cubic-bezier(0.22, 1.4, 0.36, 1) both;
 }
-@keyframes pop { from { opacity: 0; transform: translateY(18px) scale(.97); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .modal-panel { animation: none; } }
-.modal-media { position: relative; aspect-ratio: 16 / 9; background: var(--bone); border-bottom: var(--line-w) solid var(--ink); overflow: hidden; }
+@keyframes popIn {
+  from { transform: translate(var(--from-x, 0px), var(--from-y, 0px)) scale(0.16) rotate(-7deg); opacity: 0; }
+  62%  { transform: translate(0, 0) scale(1.05) rotate(1.2deg); opacity: 1; }
+  to   { transform: none; opacity: 1; }
+}
+.modal-media { position: relative; aspect-ratio: 16 / 9; background: var(--bone); border-bottom: 3px solid var(--ink); overflow: hidden; }
 .modal-media img, .modal-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
 .modal-media img.fit-contain { object-fit: contain; padding: 10px; }
 .modal-media .carousel-track { height: 100%; }
 .modal-media .carousel-track > div { flex: 0 0 100%; height: 100%; }
 .modal-media .c-btn { opacity: 1; }
 .modal-close {
-  position: absolute; top: 10px; right: 10px; z-index: 3; width: 36px; height: 36px; cursor: pointer;
-  font-family: var(--font-comic); font-size: 24px; line-height: 1; color: var(--ink);
-  background: var(--panel); border: var(--line-w) solid var(--ink); border-radius: 6px; box-shadow: var(--sh-xs);
+  position: absolute; top: 12px; right: 12px; z-index: 3; width: 38px; height: 38px; cursor: pointer;
+  display: grid; place-items: center; color: var(--ink);
+  background: var(--yellow); border: 3px solid var(--ink); border-radius: 50%; box-shadow: 3px 3px 0 var(--ink);
+  transition: transform .18s var(--spring), background .15s ease;
 }
-.modal-close { display: grid; place-items: center; }
-.modal-close svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; }
-.modal-close:hover { background: var(--hi); color: #FFF9F0; }
+.modal-close svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 3.2; stroke-linecap: round; }
+.modal-close:hover { transform: rotate(90deg) scale(1.08); background: var(--hi); color: #FFF9F0; }
 .modal-body { padding: 22px 24px 26px; }
 .modal-body .caption-box { margin-bottom: 4px; }
 .modal-body h3 { font-size: 21px; line-height: 1.25; margin: 12px 0 6px; letter-spacing: -0.015em; }
@@ -689,10 +700,49 @@ a .papertitle:hover { color: var(--hi-deep); }
 .modal-authors .venue em { font-style: normal; font-weight: 700; color: var(--hi-deep); }
 .modal-desc { font-size: 14.5px; line-height: 1.55; color: var(--ink-soft); margin-top: 12px; }
 .modal-body .btn-row { margin-top: 18px; }
+
+/* the onomatopoeia flung out behind the panel */
+.modal-burst { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
+.pop-fx {
+  position: absolute; font-family: var(--font-comic); color: var(--yellow); white-space: nowrap;
+  -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; text-shadow: 5px 5px 0 var(--hi);
+}
+.pop-fx-main { top: 9%; left: 50%; font-size: clamp(48px, 9vw, 104px); animation: fxMain .85s cubic-bezier(0.2, 1.5, 0.4, 1) both; }
+@keyframes fxMain {
+  from { transform: translate(-50%, 40px) scale(0.2) rotate(-16deg); opacity: 0; }
+  40%  { transform: translate(-50%, 0) scale(1.15) rotate(-6deg); opacity: 1; }
+  75%  { opacity: 1; }
+  to   { transform: translate(-50%, -26px) scale(1) rotate(-4deg); opacity: 0; }
+}
+.pop-fx-mini { font-size: clamp(22px, 3.4vw, 40px); color: var(--hi); text-shadow: 3px 3px 0 var(--ink); animation: fxMini .95s ease-out both; }
+.pop-fx-0 { top: 24%; left: 9%; animation-delay: .06s; }
+.pop-fx-1 { top: 68%; right: 11%; left: auto; animation-delay: .13s; }
+.pop-fx-2 { bottom: 15%; left: 16%; animation-delay: .2s; }
+@keyframes fxMini {
+  from { transform: scale(0.2) rotate(12deg); opacity: 0; }
+  45%  { transform: scale(1.1) rotate(-8deg); opacity: 1; }
+  to   { transform: scale(0.9) rotate(-5deg); opacity: 0; }
+}
+
+/* portrait lightbox — the same panel, just the photograph and a name plate */
+.photo-panel a { cursor: zoom-in; }
+.modal-photo .modal-panel { width: min(620px, 100%); }
+.modal-photo .modal-media { aspect-ratio: auto; background: var(--ink); }
+.modal-photo .modal-media img { width: 100%; height: auto; max-height: 70vh; object-fit: contain; padding: 0; }
+.modal-photo .modal-body { padding: 16px 22px 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.modal-photo .modal-body h3 { margin: 0; font-size: 19px; }
+.modal-photo .modal-body h3 .sc { font-family: 'ZCOOL QingKe HuangYou', 'PingFang SC', 'Noto Sans SC', sans-serif; font-weight: 400; font-size: 24px; letter-spacing: .12em; color: var(--hi-deep); margin-left: 10px; vertical-align: -2px; }
+.modal-photo .modal-authors, .modal-photo .modal-desc, .modal-photo #modalLinks, .modal-photo .btn-row { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-panel { animation: popFade .2s ease both; }
+  .pop-fx { display: none; }
+}
 body.modal-open { overflow: hidden; }
 @media (max-width: 620px) {
   .modal { padding: 0; align-items: end; }
-  .modal-panel { max-height: 94vh; border-radius: 12px 12px 0 0; border-bottom: 0; box-shadow: none; }
+  .modal-panel { max-height: 94vh; border-radius: 12px 12px 0 0; border-bottom: 0; box-shadow: 0 0 0 3px var(--ink); }
+  .modal-photo .modal-panel { max-height: 94vh; }
   .modal-body { padding: 18px 18px 26px; }
   .sticker-nyc { margin: 8px 0 0; }
   .news-timeline { gap: 2px; padding: 0; }

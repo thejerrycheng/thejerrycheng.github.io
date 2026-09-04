@@ -66,8 +66,10 @@ def strip_card(kind, p):
     sub = p["authors"] if kind == "publications" else p["desc"]
     fit = f' class="fit-{p.get("fit", "cover")}"'
     alt = (p.get("alts") or [""])[0]
+    clip = (f'<span class="hover-video"><video muted loop playsinline preload="none" poster="{attr(p["images"][0])}" data-src="{attr(p["video"])}"></video></span>'
+            if p.get("video") else "")
     return f'''      <a class="slide" href="{page}#{p["id"]}" data-kind="{kind}" data-id="{p["id"]}">
-        <span class="slide-media"><img src="{attr(p["images"][0])}" alt="{attr(alt)}" loading="lazy" decoding="async"{fit}></span>
+        <span class="slide-media"><img src="{attr(p["images"][0])}" alt="{attr(alt)}" loading="lazy" decoding="async"{fit}>{clip}</span>
         <span class="slide-tag">{tag}</span>
         <span class="slide-body">
           <span class="slide-title">{p.get("short", p["title"])}</span>

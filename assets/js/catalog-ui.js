@@ -21,6 +21,34 @@
     });
   });
 
+  /* ---- swipe: a horizontal drag (mouse or finger) steps a carousel ---- */
+  function enableSwipe(el, step) {
+    var x0 = null, y0 = null;
+    el.addEventListener("pointerdown", function (e) { x0 = e.clientX; y0 = e.clientY; }, { passive: true });
+    el.addEventListener("pointerup", function (e) {
+      if (x0 === null) return;
+      var dx = e.clientX - x0, dy = e.clientY - y0; x0 = y0 = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? 1 : -1);
+    });
+    el.addEventListener("pointercancel", function () { x0 = y0 = null; });
+    el.style.touchAction = "pan-y";
+  }
+  window.enableSwipe = enableSwipe;
+
+  /* ---- hover a card: its clip loads on first hover and plays while the pointer stays ---- */
+  document.querySelectorAll(".slide").forEach(function (card) {
+    var v = card.querySelector(".hover-video video");
+    if (!v) return;
+    var wrap = v.parentNode;
+    card.addEventListener("mouseenter", function () {
+      if (!v.getAttribute("src")) { v.src = v.dataset.src; v.load(); }
+      var p = v.play();
+      if (p && p.then) p.then(function () { wrap.classList.add("playing"); }).catch(function () {});
+      else wrap.classList.add("playing");
+    });
+    card.addEventListener("mouseleave", function () { v.pause(); wrap.classList.remove("playing"); });
+  });
+
   /* ---- quick-look popup ---- */
   var modal = document.getElementById("modal");
   if (!modal) return;
@@ -58,16 +86,51 @@
     return '<img src="' + esc(item.images[0]) + '" alt="' + esc(alts[0] || "") + '"' + fit + ">";
   }
 
+  var stepCarousel = null;
   function bindCarousel() {
+    stepCarousel = null;
     var track = media.querySelector(".carousel-track");
     if (!track) return;
     var idx = 0, n = track.children.length;
+    stepCarousel = function (dir) {
+      idx = (idx + dir + n) % n;
+      track.style.transform = "translateX(" + (-idx * 100) + "%)";
+    };
     media.querySelectorAll(".c-btn").forEach(function (b) {
-      b.addEventListener("click", function () {
-        idx = (idx + (b.classList.contains("next") ? 1 : -1) + n) % n;
-        track.style.transform = "translateX(" + (-idx * 100) + "%)";
-      });
+      b.addEventListener("click", function () { stepCarousel(b.classList.contains("next") ? 1 : -1); });
     });
+    enableSwipe(media, stepCarousel);
+  }
+
+  /* onomatopoeia burst behind the panel — removed once the words have faded */
+  var FX = ["KA-POW!", "VHOOM!", "BOOM!", "ZAP!", "WHAMM!", "THWIP!", "KRAK!"];
+  var fxIndex = 0;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function burst(main) {
+    if (reduce) return;
+    var old = modal.querySelector(".modal-burst");
+    if (old) old.remove();
+    var minis = ["POW!", "BAM!", "ZING!"];
+    var el = document.createElement("div");
+    el.className = "modal-burst";
+    el.setAttribute("aria-hidden", "true");
+    el.innerHTML = '<span class="pop-fx pop-fx-main">' + esc(main) + "</span>" +
+      minis.map(function (w, i) { return '<span class="pop-fx pop-fx-mini pop-fx-' + i + '">' + w + "</span>"; }).join("");
+    modal.appendChild(el);
+    setTimeout(function () { el.remove(); }, 1200);
+  }
+  /* the panel flies in from whatever was clicked */
+  function flyFrom(trigger) {
+    var panel = modal.querySelector(".modal-panel");
+    var dx = 0, dy = 0;
+    if (trigger && trigger.getBoundingClientRect) {
+      var r = trigger.getBoundingClientRect();
+      dx = r.left + r.width / 2 - window.innerWidth / 2;
+      dy = r.top + r.height / 2 - window.innerHeight / 2;
+    }
+    panel.style.setProperty("--from-x", Math.round(dx) + "px");
+    panel.style.setProperty("--from-y", Math.round(dy) + "px");
+    panel.style.animation = "none"; void panel.offsetWidth; panel.style.animation = "";
   }
 
   function open(kind, id, trigger) {
@@ -88,11 +151,30 @@
       return '<a href="' + esc(l.href) + '"' + ext + ">" + esc(l.label) + "</a>";
     }).join("");
     more.href = (isPub ? "publications.html" : "projects.html") + "#" + item.id;
+    modal.classList.remove("modal-photo");
     lastTrigger = trigger || null;
     modal.hidden = false;
+    flyFrom(trigger);
+    burst(FX[fxIndex++ % FX.length]);
     document.body.classList.add("modal-open");
     closeBtn.focus();
     return true;
+  }
+
+  /* portrait lightbox */
+  function openPhoto(link) {
+    var img = link.querySelector("img");
+    media.innerHTML = '<img src="' + esc(link.getAttribute("href")) + '" alt="' + esc(img ? img.alt : "") + '">';
+    tag.textContent = "Portrait";
+    title.innerHTML = 'Jerry (Qilong) Cheng <span class="sc" lang="zh">程启龙</span>';
+    authors.innerHTML = ""; desc.innerHTML = ""; links.innerHTML = ""; more.removeAttribute("href");
+    modal.classList.add("modal-photo");
+    lastTrigger = link;
+    modal.hidden = false;
+    flyFrom(link);
+    burst("TA-DA!");
+    document.body.classList.add("modal-open");
+    closeBtn.focus();
   }
 
   function close() {
@@ -100,16 +182,25 @@
     var v = media.querySelector("video");
     if (v) v.pause();
     media.innerHTML = "";
+    modal.classList.remove("modal-photo");
+    var b = modal.querySelector(".modal-burst"); if (b) b.remove();
     modal.hidden = true;
     document.body.classList.remove("modal-open");
     if (lastTrigger && lastTrigger.focus) lastTrigger.focus();
   }
 
   document.addEventListener("click", function (e) {
-    var card = e.target.closest ? e.target.closest(".slide[data-id]") : null;
-    if (!card || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
-    if (open(card.dataset.kind, card.dataset.id, card)) e.preventDefault();
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1 || !e.target.closest) return;
+    var photo = e.target.closest(".photo-panel a");
+    if (photo) { e.preventDefault(); openPhoto(photo); return; }
+    var card = e.target.closest(".slide[data-id]");
+    if (card && open(card.dataset.kind, card.dataset.id, card)) e.preventDefault();
   });
   modal.querySelectorAll("[data-close]").forEach(function (el) { el.addEventListener("click", close); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+  document.addEventListener("keydown", function (e) {
+    if (modal.hidden) return;
+    if (e.key === "Escape") close();
+    else if (e.key === "ArrowRight" && stepCarousel) stepCarousel(1);
+    else if (e.key === "ArrowLeft" && stepCarousel) stepCarousel(-1);
+  });
 })();
