@@ -17,7 +17,7 @@
   <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
   <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
   <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
-  <meta name="theme-color" content="#F4EEE2">
+  <meta name="theme-color" content="#151820">
 
   <!-- Social preview -->
   <meta property="og:site_name" content="Jerry (Qilong) Cheng">
@@ -32,7 +32,11 @@
   <meta name="twitter:image" content="https://thejerrycheng.github.io/assets/images/og/site-hero.jpg">
   <link rel="alternate" type="application/rss+xml" title="Jerry’s Blog" href="feed.xml">
 
-  <link rel="stylesheet" href="assets/css/liquid.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <script>document.documentElement.classList.add('js');</script>
 
   <script type="application/ld+json">
   {
@@ -60,7 +64,7 @@
 <!-- =================== NAV =================== -->
 <nav class="nav" role="navigation" aria-label="Primary">
   <div class="nav-inner">
-    <a class="brand" href="index.html"><img src="assets/images/favicon.v4.svg" alt="">Jerry Cheng</a>
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
     <div class="nav-links">
       <a href="index.html" aria-current="page">Home</a>
       <a href="publications.html">Publications</a>
@@ -93,34 +97,17 @@
   <a href="actuators/index.html">⚙️ Robolog · Actuator Guide</a>
 </div>
 
-<!-- =================== HERO / ABOUT =================== -->
-<section class="section" id="about">
-  <div class="card card-pad">
-    <div class="hero">
-      <div class="hero-body">
-        <p class="name">Jerry (Qilong) Cheng <span class="name-sc">「程启龙」</span></p>
-
-        <p class="lead">
-          I’m <strong>Jerry (Qilong) Cheng</strong>, a Robotics Ph.D. Candidate at the <a href="https://www.utoronto.ca/" target="_blank" rel="noopener"><strong>University of Toronto</strong></a> building the next generation of <strong>Embodied Intelligence</strong> — machines that move, sense, and think.
-          I work with <a href="https://starslab.ca/people/prof-jonathan-kelly/" target="_blank" rel="noopener">Prof. Jonathan Kelly</a> in the <a href="https://starslab.ca/" target="_blank" rel="noopener">STARS Lab</a> (UTIAS), and began my Ph.D. at <a href="https://www.nyu.edu/" target="_blank" rel="noopener">New York University</a> with <a href="https://righetti.github.io/" target="_blank" rel="noopener">Prof. Ludovic Righetti</a> (<a href="https://www.machinesinmotion.org/" target="_blank" rel="noopener">Machines in Motion</a>).
-          My mission is to engineer generalized, highly articulate robots for the home—vertically integrated systems designed to automate daily tasks, save us time, and seamlessly enrich our lives.
-        </p>
-
-        <p class="subhead">Research Vision</p>
-
-        <p class="vision" style="border-left:3px solid var(--accent); padding-left:14px; font-style:italic;">
-          “We are born too late to explore the Earth and too early to explore the stars — but just in time to solve AI and robotics.” — Jim Fan
-        </p>
-
-        <p class="vision">
-          Robotics is nearing the scaling inflection that reshaped language and vision — and the binding constraint is <strong>large-scale, diverse action data</strong>, not new methods. I build one <strong>full-stack</strong> pipeline aimed at that bottleneck, connecting <strong>hardware co-design</strong>, <strong>learning from human video</strong>, and <strong>real-world reinforcement learning</strong> — toward general-purpose robots for the home.
-        </p>
-
-        <p class="vision" style="border-left:3px solid var(--accent); padding-left:14px; font-style:italic; margin-top:14px;">
-          “Those who are truly serious about software should design their own hardware.” — Steve Jobs
-        </p>
-
-        <div class="btn-row btn-row-social">
+<!-- =================== COVER =================== -->
+<header class="cover night" id="about">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="cover-inner">
+    <div class="cover-copy">
+      <p class="kicker">Robotics Ph.D. candidate ◆ University of Toronto ◆ Made in NYC</p>
+      <h1 class="cover-name">Jerry<br>Cheng</h1>
+      <p class="cover-sc" lang="zh">程启龙</p>
+      <p class="cover-tag">Robots for the home, built end to end.</p>
+      <div class="btn-row btn-row-social">
           <a class="btn" href="mailto:qilong.cheng@mail.utoronto.ca" aria-label="Email">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3.5"/><path d="M4 8l7.3 5a1.2 1.2 0 0 0 1.4 0L20 8"/></svg>Email
           </a>
@@ -137,11 +124,10 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 2 9l10 5 10-5-10-5z"/><path d="M6 11v4c0 1.6 2.7 3 6 3s6-1.4 6-3v-4"/></svg>Scholar
           </a>
         </div>
-      </div>
-
-      <div class="hero-photo">
-        <a href="assets/images/profile_pic.png"><img src="assets/images/profile_pic.png" alt="profile photo"></a>
-        <div class="stat-dash" id="stat-dash" aria-label="Stats">
+    </div>
+    <div class="cover-photo">
+      <figure class="photo-panel"><a href="assets/images/profile_pic.png"><img src="assets/images/profile_pic.png" alt="Jerry (Qilong) Cheng"></a></figure>
+      <div class="stat-dash" id="stat-dash" aria-label="Stats">
           <a class="stat" href="https://scholar.google.com/citations?user=iQuHS3MAAAAJ" target="_blank" rel="noopener" title="Google Scholar — citations">
             <span class="stat-num" data-stat="citations">106</span><span class="stat-label">Citations</span>
           </a>
@@ -161,17 +147,63 @@
             <span class="stat-num" data-stat="visitors">2,093</span><span class="stat-label">Visitors</span>
           </a>
         </div>
+    </div>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
+<!-- =================== ABOUT =================== -->
+<section class="section" id="story">
+  <div class="card card-pad about-panel">
+    <p class="lead">
+          I’m <strong>Jerry (Qilong) Cheng</strong>, a Robotics Ph.D. Candidate at the <a href="https://www.utoronto.ca/" target="_blank" rel="noopener"><strong>University of Toronto</strong></a> building the next generation of <strong>Embodied Intelligence</strong> — machines that move, sense, and think.
+          I work with <a href="https://starslab.ca/people/prof-jonathan-kelly/" target="_blank" rel="noopener">Prof. Jonathan Kelly</a> in the <a href="https://starslab.ca/" target="_blank" rel="noopener">STARS Lab</a> (UTIAS), and began my Ph.D. at <a href="https://www.nyu.edu/" target="_blank" rel="noopener">New York University</a> with <a href="https://righetti.github.io/" target="_blank" rel="noopener">Prof. Ludovic Righetti</a> (<a href="https://www.machinesinmotion.org/" target="_blank" rel="noopener">Machines in Motion</a>).
+          My mission is to engineer generalized, highly articulate robots for the home—vertically integrated systems designed to automate daily tasks, save us time, and seamlessly enrich our lives.
+        </p>
+
+    <p class="subhead">Research Vision</p>
+
+    <p class="quote">“We are born too late to explore the Earth and too early to explore the stars — but just in time to solve AI and robotics.” — Jim Fan</p>
+
+    <p class="vision">
+          Robotics is nearing the scaling inflection that reshaped language and vision — and the binding constraint is <strong>large-scale, diverse action data</strong>, not new methods. I build one <strong>full-stack</strong> pipeline aimed at that bottleneck, connecting <strong>hardware co-design</strong>, <strong>learning from human video</strong>, and <strong>real-world reinforcement learning</strong> — toward general-purpose robots for the home.
+        </p>
+
+    <p class="quote">“Those who are truly serious about software should design their own hardware.” — Steve Jobs</p>
+  </div>
+  <p id="last-updated" class="last-updated"><time aria-label="Last updated"></time></p>
+</section>
+
+<!-- =================== NOW BUILDING: MABEL =================== -->
+<section class="section" id="mabel">
+  <h2 class="section-title">Now Building</h2>
+  <div class="feature card">
+    <div class="feature-media">
+      <div class="panel-frame"><img src="assets/images/projects/mabel/mabel_empire.jpg" alt="MABEL, an open mobile bimanual robot, in front of the Empire State Building at night" loading="lazy" decoding="async"></div>
+      <span class="burst" aria-hidden="true">New!</span>
+    </div>
+    <div class="feature-body">
+      <p class="kicker">MABEL</p>
+      <h3>An open mobile bimanual robot you can actually afford to build.</h3>
+      <p>A whole-body robot built in the open: a holonomic swerve base, a 0.635&nbsp;m lift with an actuated torso, two 7-DOF arms, two 17-DOF dexterous hands, and a 3-DOF head, all 3D-printed and MIT-licensed. One Vision Pro is its visualizer, controller, and demonstration recorder. A full MuJoCo digital twin and a demonstration-to-policy learning pipeline take it from a recorded demo to a policy running onboard. Assembled in a New York studio apartment; the system paper is under review.</p>
+      <div class="spec-strip">
+        <div class="spec"><b>56</b><span>degrees of freedom</span></div>
+        <div class="spec"><b>34</b><span>finger joints</span></div>
+        <div class="spec"><b>$8,722</b><span>starting build cost</span></div>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="https://robotmabel.github.io/website/" target="_blank" rel="noopener">Visit the MABEL site</a>
+        <a class="btn" href="https://github.com/robotmabel/MABEL" target="_blank" rel="noopener">GitHub</a>
       </div>
     </div>
   </div>
-  <p id="last-updated" class="last-updated"><time aria-label="Last updated"></time></p>
 </section>
 
 <!-- =================== EXPLORE: RESEARCH + PROJECTS =================== -->
 <section class="section" id="explore">
   <h2 class="section-title">Research &amp; Projects</h2>
   <a class="peek-card card card-hover" href="research.html">
-    <div class="peek-head"><span class="papertitle">Research&nbsp;→</span><span class="peek-cta">See the papers →</span></div>
+    <div class="peek-head"><span class="papertitle">Research</span><span class="peek-cta">Read the papers</span></div>
     <p class="pub-desc">Peer-reviewed papers &amp; preprints — cinema robot learning, calibration, humanoid locomotion, and haptics.</p>
     <div class="peek-strip">
       <img src="assets/images/previews/r_iris.jpg" alt="IRIS cinema robot arm (CRV 2026)" loading="lazy" decoding="async">
@@ -183,14 +215,14 @@
   </a>
 
   <a class="peek-card card card-hover" href="projects.html" style="margin-top:14px;">
-    <div class="peek-head"><span class="papertitle">Projects&nbsp;→</span><span class="peek-cta">Browse projects →</span></div>
-    <p class="pub-desc">Robots and systems I’ve built end to end — dexterous manipulation, rocket-landing RL, legged locomotion, SLAM, and racing hardware.</p>
+    <div class="peek-head"><span class="papertitle">Projects</span><span class="peek-cta">Browse the builds</span></div>
+    <p class="pub-desc">Robots and systems I’ve built end to end — a 56-DOF mobile bimanual robot, dexterous manipulation, rocket-landing RL, legged locomotion, and SLAM.</p>
     <div class="peek-strip">
+      <img src="assets/images/previews/p_mabel.jpg" alt="MABEL open mobile bimanual robot" loading="lazy" decoding="async">
       <img src="assets/images/previews/p_geodex.jpg" alt="GeoDEX dexterous manipulation" loading="lazy" decoding="async">
       <img src="assets/images/previews/p_rocket.jpg" alt="TINTIN lunar-landing RL" loading="lazy" decoding="async">
       <img src="assets/images/previews/p_biped.jpg" alt="Biped walking control" loading="lazy" decoding="async">
       <img src="assets/images/previews/p_slam.jpg" alt="Turtlebot SLAM &amp; navigation" loading="lazy" decoding="async">
-      <img src="assets/images/previews/p_formula.jpg" alt="Electric formula racing drivetrain" loading="lazy" decoding="async">
     </div>
   </a>
 </section>
@@ -372,7 +404,7 @@
     <p>I'm always open to chatting about <b>Robotics, Research, Startups</b>, or just connecting!
       Feel free to grab a time on my calendar below.</p>
     <p class="muted">Location: Any Cafe with Enough Clearance for a 6-DOF Robot Arm</p>
-    <a class="btn btn-primary" href="https://calendly.com/jerrychengh990427/coffee-chat-with-jerry-cheng" target="_blank" rel="noopener">
+    <a class="btn btn-pop" href="https://calendly.com/jerrychengh990427/coffee-chat-with-jerry-cheng" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
         <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -395,10 +427,12 @@
 </section>
 
 <!-- =================== FOOTER =================== -->
-<footer class="site-footer">
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
   <div class="wrap">
     <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
-    <div class="footer-note">Designed in New York City with love — in a tiny studio apartment.</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
     <div class="footer-rule"></div>
     <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
     <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>

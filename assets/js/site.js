@@ -5,6 +5,14 @@
 (function () {
   "use strict";
 
+
+  /* ---- Nav: tighten the masthead once the page scrolls ---- */
+  var navEl = document.querySelector(".nav");
+  if (navEl) {
+    var onScroll = function () { navEl.classList.toggle("scrolled", window.scrollY > 24); };
+    window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  }
+
   /* ---- Mobile menu ---- */
   var menuBtn  = document.getElementById("menuButton");
   var menu     = document.getElementById("mobileMenu");

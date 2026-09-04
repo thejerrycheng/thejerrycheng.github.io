@@ -12,14 +12,18 @@
   <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
   <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
   <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
-  <meta name="theme-color" content="#F4EEE2">
-  <link rel="stylesheet" href="assets/css/liquid.css">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
 
 <nav class="nav" role="navigation" aria-label="Primary">
   <div class="nav-inner">
-    <a class="brand" href="index.html"><img src="assets/images/favicon.v4.svg" alt="">Jerry Cheng</a>
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
     <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="publications.html">Publications</a>
@@ -52,9 +56,36 @@
   <a href="actuators/index.html">⚙️ Robolog · Actuator Guide</a>
 </div>
 
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">Robots and systems, built end to end</p>
+    <h1>Projects</h1>
+    <p>From a 56-DOF mobile bimanual robot to an 8×8×8 LED cube. If it moves, senses, or thinks, it is probably here.</p>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
 <section class="section" id="projects">
-  <h2 class="section-title">Selected Projects</h2>
   <div class="pub-list">
+
+    <!-- MABEL -->
+    <div class="pub card card-hover">
+      <div class="pub-thumb">
+        <img src="assets/images/projects/mabel/mabel_night.jpg" alt="MABEL mobile bimanual robot against the Manhattan skyline at night" loading="lazy">
+        <div class="hover-video"><video muted autoplay loop playsinline preload="none"><source src="assets/videos/mabel_night.mp4" type="video/mp4"></video></div>
+      </div>
+      <div class="pub-meta">
+        <span class="papertitle">MABEL: An Open Mobile Anthropomorphic Bimanual Robot</span><span class="proj-year">2026</span>
+        <p class="proj-body">Open-source (MIT) whole-body robot: a 3-module holonomic swerve base, a 0.635&nbsp;m lift with actuated torso, two 7-DOF arms, two 17-DOF ORCA hands, and a 3-DOF active head. 56 DOF from $8,722, with no machine shop. Teleoperated from Apple Vision Pro, iPhone, browser, or gamepad; full MuJoCo digital twin; demonstration-to-policy pipeline (ACT, Diffusion Policy, π0) deployed onboard. System paper under review.</p>
+        <div class="links">
+          <a href="https://robotmabel.github.io/website/" target="_blank" rel="noopener">Website</a>
+          <a href="https://github.com/robotmabel/MABEL" target="_blank" rel="noopener">Code</a>
+          <a href="https://robotmabel.github.io/website/docs/" target="_blank" rel="noopener">Build guide</a>
+        </div>
+      </div>
+    </div>
 
     <!-- GeoDEX -->
     <div class="pub card card-hover">
@@ -214,10 +245,12 @@
   </div>
 </section>
 
-<footer class="site-footer">
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
   <div class="wrap">
     <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
-    <div class="footer-note">Designed in New York City with love — in a tiny studio apartment.</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
     <div class="footer-rule"></div>
     <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
     <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>

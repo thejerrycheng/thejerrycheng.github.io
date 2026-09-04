@@ -12,14 +12,18 @@
   <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
   <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
   <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
-  <meta name="theme-color" content="#F4EEE2">
-  <link rel="stylesheet" href="assets/css/liquid.css">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
 
 <nav class="nav" role="navigation" aria-label="Primary">
   <div class="nav-inner">
-    <a class="brand" href="index.html"><img src="assets/images/favicon.v4.svg" alt="">Jerry Cheng</a>
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
     <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="publications.html">Publications</a>
@@ -52,8 +56,18 @@
   <a href="actuators/index.html">⚙️ Robolog · Actuator Guide</a>
 </div>
 
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">Notes from the workshop</p>
+    <h1>Blog</h1>
+    <p>Long-form notes on robotics, control, hardware builds, and the occasional strong opinion.</p>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
 <section class="section">
-  <h2 class="section-title">Blog Posts</h2>
   <div class="blog-grid">
 
     <a class="blog-card card card-hover" href="blog/neo-x1-robot.html" aria-label="Open NEO X1 blog post">
@@ -86,10 +100,12 @@
   </div>
 </section>
 
-<footer class="site-footer">
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
   <div class="wrap">
     <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
-    <div class="footer-note">Designed in New York City with love — in a tiny studio apartment.</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
     <div class="footer-rule"></div>
     <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
     <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>

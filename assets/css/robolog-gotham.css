@@ -1,0 +1,106 @@
+/* =============================================================================
+   ROBOLOG — Gotham overrides for the umi/, humanoids/, actuators/ guides.
+   These pages keep their own inline CSS and JSON loaders; this sheet loads
+   after it and re-themes the tokens + the handful of surfaces to the same
+   print language as gotham.css: newsprint ground, ink line-work, hard offset
+   shadows, Limelight titles, Bangers labels, Jost body, Space Mono data.
+   ============================================================================= */
+:root{
+  --bg:#F4EAD2; --bg2:#FDF6E2;
+  --ink:#151820; --ink2:#2A2E3A; --ink3:#6D6551;
+  --line:rgba(21,24,32,.85); --line2:rgba(21,24,32,.35);
+  --blue:#E4442A; --blue2:#B92E17; --green:#2E7D4F;
+  --card:#FDF6E2;
+  --glass-tint:#FDF6E2; --glass-tint2:#FFFDF0; --rim:transparent; --rim2:transparent; --spec:transparent;
+  --float:8px 8px 0 rgba(21,24,32,.9);
+  --r:14px; --r-sm:10px;
+  --g-ink:#151820; --g-sh:6px 6px 0 rgba(21,24,32,.9); --g-sh-sm:4px 4px 0 rgba(21,24,32,.9); --g-sh-xs:2px 2px 0 rgba(21,24,32,.9);
+  --g-yellow:#F2C94C; --g-gold:#D9A13F;
+  --font-display:'Limelight','Arial Narrow',Impact,sans-serif;
+  --font-comic:'Bangers','Arial Black',Impact,sans-serif;
+  --font-sans:'Jost',-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;
+  --font-mono:'Space Mono','SFMono-Regular',Menlo,monospace;
+}
+[data-theme="dark"]{
+  --bg:#151820; --bg2:#1E2333;
+  --ink:#F4EAD2; --ink2:#D9CFB6; --ink3:#A99F87;
+  --line:rgba(217,161,63,.7); --line2:rgba(217,161,63,.35);
+  --blue:#D9A13F; --blue2:#F2C94C; --green:#5CC98A;
+  --card:#1E2333;
+  --glass-tint:#1E2333; --glass-tint2:#262C40;
+  --float:8px 8px 0 rgba(0,0,0,.8);
+  --g-ink:#D9A13F; --g-sh:6px 6px 0 rgba(0,0,0,.8); --g-sh-sm:4px 4px 0 rgba(0,0,0,.8); --g-sh-xs:2px 2px 0 rgba(0,0,0,.8);
+}
+body{font-family:var(--font-sans); letter-spacing:0; font-size:16.5px}
+::selection{background:#E4442A; color:#FFF9F0}
+.scene, [data-theme="dark"] .scene{background:var(--bg)}
+.glass, .nav.glass, .controls, .sheet{backdrop-filter:none; -webkit-backdrop-filter:none}
+
+/* masthead */
+.nav, [data-theme="dark"] .nav{background:var(--bg2); border:2px solid var(--g-ink); border-radius:12px; box-shadow:var(--g-sh-sm); padding:7px 12px 7px 16px}
+.nav .brand{font-family:var(--font-display); font-weight:400; font-size:18px; letter-spacing:.05em}
+.nav .brand img{border:1.5px solid var(--g-ink); border-radius:7px}
+.nav .links, [data-theme="dark"] .nav .links{background:transparent; box-shadow:none; padding:0; border-radius:8px}
+.nav .links button{font-family:var(--font-sans); font-weight:600; letter-spacing:0; border-radius:8px; color:var(--ink); opacity:.78}
+.nav .links button:hover{opacity:1; background:rgba(21,24,32,.07)}
+.nav .links button.active, [data-theme="dark"] .nav .links button.active{opacity:1; background:var(--g-ink); color:var(--bg); box-shadow:none}
+[data-theme="dark"] .nav .links button.active{color:#151820}
+.iconbtn{border:1.5px solid var(--g-ink); border-radius:8px; background:var(--bg); box-shadow:var(--g-sh-xs)}
+.iconbtn:hover{background:var(--g-yellow); color:#151820}
+
+/* hero */
+.hero .eyebrow{font-family:var(--font-comic); font-weight:400; font-size:16px; letter-spacing:.12em; color:var(--blue)}
+.hero h1{font-family:var(--font-display); font-weight:400; letter-spacing:.02em; text-shadow:5px 5px 0 rgba(21,24,32,.14)}
+[data-theme="dark"] .hero h1{text-shadow:5px 5px 0 rgba(0,0,0,.6)}
+.hero .lede{font-family:var(--font-sans); letter-spacing:0}
+.hero .meta{font-family:var(--font-mono); font-size:12px}
+
+/* controls: search, pills, chips */
+.controls, [data-theme="dark"] .controls{background:var(--bg2); border:2px solid var(--g-ink); border-radius:12px; box-shadow:var(--g-sh)}
+.searchbox{background:var(--bg); border:1.5px solid var(--g-ink); border-radius:8px; box-shadow:var(--g-sh-xs)}
+.searchbox:focus-within{border-color:var(--blue); background:var(--bg2)}
+.searchbox input{font-family:var(--font-sans)}
+.pillbtn,.sel{background:var(--bg); border:1.5px solid var(--g-ink); border-radius:8px; box-shadow:var(--g-sh-xs); font-family:var(--font-sans); font-weight:600}
+.pillbtn:hover,.sel:hover{background:var(--g-yellow); color:#151820}
+.pillbtn .num{font-family:var(--font-mono); border-radius:4px}
+.chip{border:1.5px solid var(--g-ink); border-radius:6px; background:var(--bg); color:var(--ink); box-shadow:var(--g-sh-xs); font-family:var(--font-sans)}
+.chip:hover{background:var(--g-yellow); color:#151820}
+.chip.on{background:var(--blue); color:#FFF9F0; border-color:var(--g-ink)}
+.fgroup .glab, .specsec h3{font-family:var(--font-comic); font-weight:400; font-size:13px; letter-spacing:.1em; color:var(--blue)}
+
+/* cards */
+.card{border:2px solid var(--g-ink); border-radius:var(--r-sm); box-shadow:var(--g-sh); background:var(--card)}
+.card:hover{transform:translate(-2px,-2px); box-shadow:var(--float)}
+.card:hover .media img{transform:none}
+.media, [data-theme="dark"] .media{background:var(--bg); border-bottom:2px solid var(--g-ink)}
+.media .ph{font-family:var(--font-display); font-weight:400}
+.media .form{font-family:var(--font-comic); font-weight:400; letter-spacing:.08em; font-size:12px; background:var(--g-yellow); color:#151820; border:1.5px solid #151820; border-radius:4px; box-shadow:2px 2px 0 rgba(21,24,32,.9); transform:rotate(-2deg)}
+.cname{font-family:var(--font-sans); font-weight:700}
+.corg{font-family:var(--font-mono); font-size:11.5px}
+
+/* detail sheet + link chips */
+.sheet{border:2px solid var(--g-ink); border-radius:14px; box-shadow:10px 10px 0 rgba(21,24,32,.9)}
+.sheet .smedia, [data-theme="dark"] .sheet .smedia{background:var(--bg); border-bottom:2px solid var(--g-ink)}
+.links a{font-family:var(--font-comic); font-weight:400; font-size:14px; letter-spacing:.08em; text-transform:uppercase; border-radius:6px; border:1.5px solid #151820; box-shadow:var(--g-sh-xs); color:#FFF9F0}
+.links a:hover{filter:none; transform:translate(-1px,-1px); box-shadow:3px 3px 0 rgba(21,24,32,.9); background:var(--blue2)}
+.links a.alt{background:var(--bg); color:var(--ink)}
+.links a.alt:hover{background:var(--g-yellow); color:#151820}
+
+/* footer + misc */
+footer{font-family:var(--font-mono); font-size:12px}
+h2.lead{font-family:var(--font-display); font-weight:400; letter-spacing:.02em}
+.tagx{border:1.5px solid var(--g-ink); border-radius:4px; font-family:var(--font-mono)}
+
+/* actuators/ — spec cards */
+.acard{border:2px solid var(--g-ink); border-radius:var(--r-sm); box-shadow:var(--g-sh-sm)}
+.acard:hover{transform:translate(-2px,-2px); box-shadow:var(--g-sh)}
+.acard .tq{font-family:var(--font-mono); font-weight:700; letter-spacing:0}
+.acard .tq small{font-family:var(--font-mono)}
+.acard .tqlab, .acard .stats div{font-family:var(--font-mono); font-size:10px}
+.acard .type, .acard .typepill{font-family:var(--font-comic); font-weight:400; letter-spacing:.06em; font-size:11px; color:#151820; background:var(--g-yellow); border:1.5px solid #151820; border-radius:4px}
+.acard .amodel{font-family:var(--font-sans); font-weight:700; letter-spacing:0}
+.acard .acomp{font-family:var(--font-mono); font-size:11.5px}
+.acard .stats{border-top:1.5px dashed var(--line2)}
+.acard .comm span{border:1.5px solid var(--g-ink); border-radius:4px; background:var(--bg); font-family:var(--font-mono); font-size:10px}
+.acard .athumb{border:1.5px solid var(--g-ink); border-radius:8px; background:var(--bg)}
+.acard .type{white-space:normal; text-align:right; max-width:58%; line-height:1.15}
