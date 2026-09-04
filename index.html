@@ -34,7 +34,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/gotham.css">
   <script>document.documentElement.classList.add('js');</script>
 
@@ -70,17 +70,6 @@
       <a href="publications.html">Publications</a>
       <a href="projects.html">Projects</a>
       <a href="cv.html">CV</a>
-      <div class="dropdown">
-        <button type="button" class="robolog-toggle" id="robologToggle"
-                aria-haspopup="true" aria-expanded="false" aria-controls="robologMenu">
-          Robolog <span class="caret" aria-hidden="true">▾</span>
-        </button>
-        <div class="dropdown-menu" id="robologMenu" role="menu" aria-label="Robolog">
-          <a role="menuitem" href="umi/index.html"><span class="ico" aria-hidden="true">🤖</span><span class="label">UMI Device Catalog<small>Awesome-UMI gripper builds</small></span></a>
-          <a role="menuitem" href="humanoids/index.html"><span class="ico" aria-hidden="true">🦾</span><span class="label">Humanoids Guide<small>The field, by release year</small></span></a>
-          <a role="menuitem" href="actuators/index.html"><span class="ico" aria-hidden="true">⚙️</span><span class="label">Joint Actuator Guide<small>Makers, lineups &amp; specs</small></span></a>
-        </div>
-      </div>
     </div>
     <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
   </div>
@@ -91,10 +80,6 @@
   <a href="publications.html">Publications</a>
   <a href="projects.html">Projects</a>
   <a href="cv.html">CV</a>
-  <hr>
-  <a href="umi/index.html">🤖 Robolog · UMI Catalog</a>
-  <a href="humanoids/index.html">🦾 Robolog · Humanoids Guide</a>
-  <a href="actuators/index.html">⚙️ Robolog · Actuator Guide</a>
 </div>
 
 <!-- =================== COVER =================== -->
@@ -103,7 +88,7 @@
   <div class="skyline" aria-hidden="true"></div>
   <div class="cover-inner">
     <div class="cover-copy">
-      <p class="kicker">Robotics Ph.D. candidate ◆ University of Toronto ◆ Made in NYC</p>
+      <p class="kicker">Robotics Ph.D. candidate ◆ University of Toronto <span class="sticker-nyc"><img src="assets/images/stickers/taxi.svg" alt="">Made in NYC</span></p>
       <h1 class="cover-name">Jerry<br>Cheng</h1>
       <p class="cover-sc" lang="zh">程启龙</p>
       <p class="cover-tag">Robots for the home, built end to end.</p>
@@ -174,57 +159,225 @@
   <p id="last-updated" class="last-updated"><time aria-label="Last updated"></time></p>
 </section>
 
-<!-- =================== NOW BUILDING: MABEL =================== -->
-<section class="section" id="mabel">
-  <h2 class="section-title">Now Building</h2>
-  <div class="feature card">
-    <div class="feature-media">
-      <div class="panel-frame"><img src="assets/images/projects/mabel/mabel_empire.jpg" alt="MABEL, an open mobile bimanual robot, in front of the Empire State Building at night" loading="lazy" decoding="async"></div>
-      <span class="burst" aria-hidden="true">New!</span>
-    </div>
-    <div class="feature-body">
-      <p class="kicker">MABEL</p>
-      <h3>An open mobile bimanual robot you can actually afford to build.</h3>
-      <p>A whole-body robot built in the open: a holonomic swerve base, a 0.635&nbsp;m lift with an actuated torso, two 7-DOF arms, two 17-DOF dexterous hands, and a 3-DOF head, all 3D-printed and MIT-licensed. One Vision Pro is its visualizer, controller, and demonstration recorder. A full MuJoCo digital twin and a demonstration-to-policy learning pipeline take it from a recorded demo to a policy running onboard. Assembled in a New York studio apartment; the system paper is under review.</p>
-      <div class="spec-strip">
-        <div class="spec"><b>56</b><span>degrees of freedom</span></div>
-        <div class="spec"><b>34</b><span>finger joints</span></div>
-        <div class="spec"><b>$8,722</b><span>starting build cost</span></div>
-      </div>
-      <div class="btn-row">
-        <a class="btn btn-primary" href="https://robotmabel.github.io/website/" target="_blank" rel="noopener">Visit the MABEL site</a>
-        <a class="btn" href="https://github.com/robotmabel/MABEL" target="_blank" rel="noopener">GitHub</a>
-      </div>
+<!-- =================== PUBLICATIONS (card strip) =================== -->
+<section class="section" id="publications">
+  <div class="section-head">
+    <h2 class="section-title">Publications</h2>
+    <a class="see-all" href="publications.html">All publications</a>
+  </div>
+  <div class="strip-wrap">
+    <button class="strip-btn prev" type="button" aria-label="Scroll publications left"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg></button>
+    <button class="strip-btn next" type="button" aria-label="Scroll publications right"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+    <div class="strip" aria-label="Publications">
+<!-- catalog:pub-strip -->
+      <a class="slide" href="publications.html#locomotion-survey" data-kind="publications" data-id="locomotion-survey">
+        <span class="slide-media"><img src="assets/images/publications/sr_fig1.jpg" alt="Fig. 1 — Evolution of humanoid locomotion control across classical, learning-based, and emerging eras" loading="lazy" decoding="async" class="fit-contain"></span>
+        <span class="slide-tag">Science Robotics 2026</span>
+        <span class="slide-body">
+          <span class="slide-title">Evolution of Humanoid Locomotion Control</span>
+          <span class="slide-sub">Y. Gu, G. Shi, F. Shi, I. Chang, Y. Wang, <b>Q. Cheng</b>, Z. Olkin, I. Lopez-Sanchez, Y. Feng, J. Zhang, A. D. Ames, H. Su, and K. Sreenath</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="publications.html#iris-crv" data-kind="publications" data-id="iris-crv">
+        <span class="slide-media"><img src="assets/images/publications/iris_cover.jpg" alt="IRIS cinema robot arm" loading="lazy" decoding="async" class="fit-cover"></span>
+        <span class="slide-tag">CRV (Oral, top 10%) 2026</span>
+        <span class="slide-body">
+          <span class="slide-title">IRIS: Learning-Driven Task-Specific Cinema Robot Arm for Visuomotor Motion Control</span>
+          <span class="slide-sub"><b>Q. Cheng</b>, M. Mackay and A. Bereyhi</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="publications.html#calibration-ijrr" data-kind="publications" data-id="calibration-ijrr">
+        <span class="slide-media"><img src="assets/images/publications/robot_world.jpg" alt="Robot-World &amp; Hand-Eye Calibration" loading="lazy" decoding="async" class="fit-contain"></span>
+        <span class="slide-tag">IJRR 2025</span>
+        <span class="slide-body">
+          <span class="slide-title">A Certifiably Correct Algorithm for Generalized Robot-World and Hand-Eye Calibration</span>
+          <span class="slide-sub">E. Wise, P. Kaveti, <b>Q. Cheng</b>, W. Wang, H. Singh, J. Kelly, D. M. Rosen, and M. Giamou</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="publications.html#iris-thesis" data-kind="publications" data-id="iris-thesis">
+        <span class="slide-media"><img src="assets/images/projects/iris/iris_design.jpg" alt="IRIS cinema robot arm thesis cover" loading="lazy" decoding="async" class="fit-contain"></span>
+        <span class="slide-tag">M.Eng. Thesis, University of Toronto 2025</span>
+        <span class="slide-body">
+          <span class="slide-title">IRIS: A Low-Cost, 3D-Printed Cinema Robot Arm (M.Eng. Thesis)</span>
+          <span class="slide-sub"><b>Q. Cheng</b>, M. Mackay, A. Bereyhi</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="publications.html#vibraforge" data-kind="publications" data-id="vibraforge">
+        <span class="slide-media"><img src="assets/images/publications/vibraforge_toolkit.JPG" alt="VibraForge toolkit" loading="lazy" decoding="async" class="fit-cover"></span>
+        <span class="slide-tag">CHI 2025</span>
+        <span class="slide-body">
+          <span class="slide-title">VibraForge: A Scalable Prototyping Toolkit For Creating Spatialized Vibrotactile Feedback Systems</span>
+          <span class="slide-sub">B. Huang, S. Ren, Y. Luo, Q. Cheng, H. Cai, Y. Sang, M. Sousa, P. H. Dietz, and D. Wigdor</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="publications.html#aerohaptix" data-kind="publications" data-id="aerohaptix">
+        <span class="slide-media"><img src="assets/images/publications/drone_teleop.jpg" alt="AeroHaptix UAV teleoperation" loading="lazy" decoding="async" class="fit-cover"></span>
+        <span class="slide-tag">IEEE RA-L 2024</span>
+        <span class="slide-body">
+          <span class="slide-title">AeroHaptix: A Wearable Vibrotactile Feedback System for Enhancing Collision Avoidance in UAV Teleoperation</span>
+          <span class="slide-sub">B. Huang, Z. Wang, Q. Cheng, S. Ren, H. Cai, A. Alvarez Valdivia, K. Mahadevan, and D. Wigdor</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="publications.html#radar-radar" data-kind="publications" data-id="radar-radar">
+        <span class="slide-media"><img src="assets/images/publications/2d_radar_radar.jpg" alt="Radar pair calibration" loading="lazy" decoding="async" class="fit-contain"></span>
+        <span class="slide-tag">IEEE AIM 2023</span>
+        <span class="slide-body">
+          <span class="slide-title">Extrinsic Calibration of 2D Millimetre-Wavelength Radar Pairs Using Ego-Velocity Estimates</span>
+          <span class="slide-sub"><b>Q. Cheng</b>, E. Wise, and J. Kelly</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="publications.html#radar-camera" data-kind="publications" data-id="radar-camera">
+        <span class="slide-media"><img src="assets/images/publications/3d_radar_camera.jpg" alt="Radar-camera spatiotemporal calibration" loading="lazy" decoding="async" class="fit-contain"></span>
+        <span class="slide-tag">IEEE TRO 2022</span>
+        <span class="slide-body">
+          <span class="slide-title">Spatiotemporal Calibration of 3D Millimetre-Wavelength Radar-Camera Pairs</span>
+          <span class="slide-sub">E. Wise, <b>Q. Cheng</b>, and J. Kelly</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="publications.html#wsadm" data-kind="publications" data-id="wsadm">
+        <span class="slide-media"><img src="assets/images/publications/perception_overview.png" alt="Weakly supervised augmentation overview" loading="lazy" decoding="async" class="fit-contain"></span>
+        <span class="slide-tag">IEEE Access 2022</span>
+        <span class="slide-body">
+          <span class="slide-title">Weakly Supervised Semantic and Attentive Data Mixing Augmentation for Fine-Grained Visual Categorization</span>
+          <span class="slide-sub">M. He, <b>Q. Cheng</b>, and G. Qi</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="publications.html#unicycle" data-kind="publications" data-id="unicycle">
+        <span class="slide-media"><img src="assets/images/publications/unicycle.jpg" alt="Generative design for a unicycle robot" loading="lazy" decoding="async" class="fit-contain"></span>
+        <span class="slide-tag">SPIE ACAIB 2022</span>
+        <span class="slide-body">
+          <span class="slide-title">Generative Design for Self-Balancing Unicycle Robot in Additive Manufacturing</span>
+          <span class="slide-sub">J. Chen, <b>Q. Cheng</b>, and M. Han</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+<!-- /catalog:pub-strip -->
     </div>
   </div>
 </section>
 
-<!-- =================== EXPLORE: RESEARCH + PROJECTS =================== -->
-<section class="section" id="explore">
-  <h2 class="section-title">Research &amp; Projects</h2>
-  <a class="peek-card card card-hover" href="research.html">
-    <div class="peek-head"><span class="papertitle">Research</span><span class="peek-cta">Read the papers</span></div>
-    <p class="pub-desc">Peer-reviewed papers &amp; preprints — cinema robot learning, calibration, humanoid locomotion, and haptics.</p>
-    <div class="peek-strip">
-      <img src="assets/images/previews/r_iris.jpg" alt="IRIS cinema robot arm (CRV 2026)" loading="lazy" decoding="async">
-      <img src="assets/images/previews/r_locomotion.jpg" alt="Evolution of humanoid locomotion control" loading="lazy" decoding="async">
-      <img src="assets/images/previews/r_calib.jpg" alt="Robot-world &amp; hand-eye calibration (IJRR)" loading="lazy" decoding="async">
-      <img src="assets/images/previews/r_vibraforge.jpg" alt="VibraForge haptics toolkit (CHI)" loading="lazy" decoding="async">
-      <img src="assets/images/previews/r_aerohaptix.jpg" alt="AeroHaptix UAV teleoperation (RA-L)" loading="lazy" decoding="async">
+<!-- =================== PROJECTS (card strip) =================== -->
+<section class="section" id="projects">
+  <div class="section-head">
+    <h2 class="section-title">Projects</h2>
+    <a class="see-all" href="projects.html">All projects</a>
+  </div>
+  <div class="strip-wrap">
+    <button class="strip-btn prev" type="button" aria-label="Scroll projects left"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg></button>
+    <button class="strip-btn next" type="button" aria-label="Scroll projects right"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+    <div class="strip" aria-label="Projects">
+<!-- catalog:proj-strip -->
+      <a class="slide" href="projects.html#mabel" data-kind="projects" data-id="mabel">
+        <span class="slide-media"><img src="assets/images/projects/mabel/mabel_hero.jpg" alt="MABEL, an open-source anthropomorphic mobile bimanual robot (paper Figure 1)" loading="lazy" decoding="async" class="fit-cover"></span>
+        <span class="slide-tag">Open hardware 2026</span>
+        <span class="slide-body">
+          <span class="slide-title">MABEL: Open Mobile Bimanual Robot</span>
+          <span class="slide-sub">Open-source (MIT) whole-body robot: a 3-module holonomic swerve base, a 0.635&nbsp;m lift with actuated torso, two 7-DOF arms, two 17-DOF ORCA hands, and a 3-DOF active head. 56 DOF from $8,722, with no machine shop. Teleoperated from Apple Vision Pro, iPhone, browser, or gamepad; full MuJoCo digital twin; demonstration-to-policy pipeline (ACT, Diffusion Policy, π0) deployed onboard. System paper under review.</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="projects.html#geodex" data-kind="projects" data-id="geodex">
+        <span class="slide-media"><img src="assets/images/projects/geodex/geodex.jpg" alt="GeoDEX dexterous manipulation" loading="lazy" decoding="async" class="fit-cover"></span>
+        <span class="slide-tag">Robot learning 2026</span>
+        <span class="slide-body">
+          <span class="slide-title">GeoDEX: Diffusion Transformers for Dexterous Hands</span>
+          <span class="slide-sub">Diffusion-transformer policy for 26-DOF dexterous pick-and-place. Maps dual-view RGBD and proprioception to action chunks with SE(3) geometric regularization. Includes Vision Pro-based human retargeting in MuJoCo.</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="projects.html#tintin" data-kind="projects" data-id="tintin">
+        <span class="slide-media"><img src="assets/images/projects/rocket/overview.jpg" alt="TINTIN lunar landing RL" loading="lazy" decoding="async" class="fit-cover"></span>
+        <span class="slide-tag">Reinforcement learning 2025</span>
+        <span class="slide-body">
+          <span class="slide-title">TINTIN: RL-Based Lunar Rocket Landing</span>
+          <span class="slide-sub">6-DoF variable-mass lander in MuJoCo with 2-DoF gimbaled thrust; PID baseline vs PPO policy; pose-targeted touchdown and fuel-efficiency metrics.</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="projects.html#mono-depth" data-kind="projects" data-id="mono-depth">
+        <span class="slide-media"><img src="assets/images/publications/mono_dep_pipeline.png" alt="Monocular depth estimation pipeline" loading="lazy" decoding="async" class="fit-contain"></span>
+        <span class="slide-tag">Perception 2024</span>
+        <span class="slide-body">
+          <span class="slide-title">Monocular Depth Estimation for Human-Robot Locomotion</span>
+          <span class="slide-sub">Monocular depth pipeline for human-robot walking environments: ZoeDepth baseline, metric reprojection to 3D point clouds, and iterative RANSAC to extract stair planes and dimensions.</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="projects.html#clear-net" data-kind="projects" data-id="clear-net">
+        <span class="slide-media"><img src="assets/images/projects/rl/sac.png" alt="CLEAR-Net cart-pole reinforcement learning" loading="lazy" decoding="async" class="fit-contain"></span>
+        <span class="slide-tag">Reinforcement learning 2024</span>
+        <span class="slide-body">
+          <span class="slide-title">CLEAR-Net: Noise-Robust Cart-Pole RL</span>
+          <span class="slide-sub">Compared tabular Q-learning, DQN, PPO, and SAC on noisy Cart-Pole; designed noise-robust wrappers, tuned hyperparameters, and analyzed robustness under disturbances and varying noise levels.</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="projects.html#biped-vhc" data-kind="projects" data-id="biped-vhc">
+        <span class="slide-media"><img src="assets/images/projects/biped_vhc/stair_walking.jpg" alt="Biped walking on stairs with virtual holonomic constraints" loading="lazy" decoding="async" class="fit-contain"></span>
+        <span class="slide-tag">Control 2024</span>
+        <span class="slide-body">
+          <span class="slide-title">Geometric Nonlinear Control for Biped Walking</span>
+          <span class="slide-sub">Virtual Holonomic Constraints with polynomial gait design, feedback linearization, and terrain generalization to slopes and stairs.</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="projects.html#aero-localization" data-kind="projects" data-id="aero-localization">
+        <span class="slide-media"><img src="assets/images/projects/localization_barfoot/localization.jpg" alt="Aerospace vehicle localization" loading="lazy" decoding="async" class="fit-contain"></span>
+        <span class="slide-tag">State estimation 2023</span>
+        <span class="slide-body">
+          <span class="slide-title">Localization for Aerospace Vehicles (IMU + Stereo)</span>
+          <span class="slide-sub">Batch Gauss-Newton fusion with EKF; compared batch vs sliding-window estimators for trajectory accuracy.</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="projects.html#mobile-robot" data-kind="projects" data-id="mobile-robot">
+        <span class="slide-media"><img src="assets/images/projects/arduino/robot.jpg" alt="Arduino mobile robot" loading="lazy" decoding="async" class="fit-cover"></span>
+        <span class="slide-tag">Mechatronics 2023</span>
+        <span class="slide-body">
+          <span class="slide-title">Mobile Robot Mechatronics Design Project</span>
+          <span class="slide-sub"><em>MATLAB, SolidWorks</em> — Designed a 3D-printed Arduino-based mobile robot in Fusion 360; implemented localization and obstacle-avoidance for maze navigation in MATLAB; commanded the robot via Bluetooth.</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="projects.html#led-cube" data-kind="projects" data-id="led-cube">
+        <span class="slide-media"><img src="assets/images/projects/led_cube/cover.jpg" alt="8x8x8 LED cube" loading="lazy" decoding="async" class="fit-cover"></span>
+        <span class="slide-tag">Embedded 2022</span>
+        <span class="slide-body">
+          <span class="slide-title">8×8×8 LED Cube Embedded System</span>
+          <span class="slide-sub">ESP32-based driver with SPI multiplexing; API control; interactive 3D Snake and Pong demos.</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="projects.html#turtlebot" data-kind="projects" data-id="turtlebot">
+        <span class="slide-media"><img src="assets/images/projects/turtlebot_mapping.jpeg" alt="Turtlebot2 SLAM and navigation" loading="lazy" decoding="async" class="fit-cover"></span>
+        <span class="slide-tag">SLAM 2022</span>
+        <span class="slide-body">
+          <span class="slide-title">Turtlebot2 SLAM, Navigation & Perception</span>
+          <span class="slide-sub">Gmapping, frontier exploration, PID control; OpenCV perception and a CNN for 7-class emotion recognition.</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+      <a class="slide" href="projects.html#formula" data-kind="projects" data-id="formula">
+        <span class="slide-media"><img src="assets/images/projects/formula_car.JPG" alt="Formula racing car drivetrain" loading="lazy" decoding="async" class="fit-cover"></span>
+        <span class="slide-tag">Mechanical design 2022</span>
+        <span class="slide-body">
+          <span class="slide-title">Electric Formula Racing Car Drive-train</span>
+          <span class="slide-sub">Planetary gearbox quadrupling torque at &gt;90% efficiency; kinematics, stress, thermal, and vibration analyses.</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
+<!-- /catalog:proj-strip -->
     </div>
-  </a>
-
-  <a class="peek-card card card-hover" href="projects.html" style="margin-top:14px;">
-    <div class="peek-head"><span class="papertitle">Projects</span><span class="peek-cta">Browse the builds</span></div>
-    <p class="pub-desc">Robots and systems I’ve built end to end — a 56-DOF mobile bimanual robot, dexterous manipulation, rocket-landing RL, legged locomotion, and SLAM.</p>
-    <div class="peek-strip">
-      <img src="assets/images/previews/p_mabel.jpg" alt="MABEL open mobile bimanual robot" loading="lazy" decoding="async">
-      <img src="assets/images/previews/p_geodex.jpg" alt="GeoDEX dexterous manipulation" loading="lazy" decoding="async">
-      <img src="assets/images/previews/p_rocket.jpg" alt="TINTIN lunar-landing RL" loading="lazy" decoding="async">
-      <img src="assets/images/previews/p_biped.jpg" alt="Biped walking control" loading="lazy" decoding="async">
-      <img src="assets/images/previews/p_slam.jpg" alt="Turtlebot SLAM &amp; navigation" loading="lazy" decoding="async">
-    </div>
-  </a>
+  </div>
 </section>
 
 <!-- =================== NEWS =================== -->
@@ -446,6 +599,25 @@
 { "@context":"https://schema.org","@type":"Blog","name":"Jerry’s Blog","url":"https://thejerrycheng.github.io/blog.html","description":"Notes on robotics, RL, control, and hardware builds.","publisher":{"@type":"Person","name":"Jerry (Qilong) Cheng","url":"https://thejerrycheng.github.io/"} }
 </script>
 
+<!-- =================== QUICK LOOK (popup) =================== -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-close" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="modal-media" id="modalMedia"></div>
+    <div class="modal-body">
+      <span class="caption-box" id="modalTag"></span>
+      <h3 id="modalTitle"></h3>
+      <p class="modal-authors" id="modalAuthors"></p>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="links" id="modalLinks"></div>
+      <div class="btn-row"><a class="btn btn-primary" id="modalMore" href="#">Open the full entry</a></div>
+    </div>
+  </div>
+</div>
+
 <script src="assets/js/site.js"></script>
+<script src="assets/js/catalog.js"></script>
+<script src="assets/js/catalog-ui.js"></script>
 </body>
 </html>

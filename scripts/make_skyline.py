@@ -59,11 +59,44 @@ tower(815, 100, 215, steps=2, crown=True, spire=50)     # Chrysler
 tower(930, 55, 120, water=True)
 tower(990, 95, 160, steps=1)
 tower(1095, 65, 110)
-tower(1165, 130, 190, steps=2)
-tower(1310, 50, 100, water=True)
-tower(1365, 90, 145, steps=1)
-tower(1465, 70, 125)
-tower(1540, 60, 95)
+tower(1165, 90, 150, steps=1)
+
+def bridge(x0, x1, towers, deck_y=224, top=88, tw=50):
+    """Brooklyn Bridge: stone gothic towers with pointed double arches, a deck,
+    main cables sagging between the towers, vertical suspenders and the
+    radiating diagonal stays that make the silhouette unmistakable."""
+    box(x0, deck_y, x1 - x0, 9)                          # deck
+    for tx in towers:                                    # towers (evenodd: arch holes)
+        L, R = tx - tw / 2, tx + tw / 2
+        outer = f"M{L:.0f} {GROUND} V{top+12} L{L+7:.0f} {top} H{R-7:.0f} L{R:.0f} {top+12} V{GROUND} Z"
+        def arch(y0, y1, w=20):
+            aL, aR, ym = tx - w / 2, tx + w / 2, y0 + (y1 - y0) * 0.34
+            return f"M{aL:.0f} {y1:.0f} V{ym:.0f} L{tx:.0f} {y0:.0f} L{aR:.0f} {ym:.0f} V{y1:.0f} Z"
+        parts.append(f'<path fill-rule="evenodd" d="{outer} {arch(top+22, top+70)} {arch(top+80, deck_y-4)}"/>')
+    # main cable: anchor → tower → sag → tower → anchor (quadratic Béziers)
+    a0, a1 = (x0 + 6, deck_y), (x1 - 4, deck_y)
+    t0, t1 = (towers[0], top - 2), (towers[1], top - 2)
+    mid = ((t0[0] + t1[0]) / 2, deck_y - 34)
+    c0 = ((a0[0] + t0[0]) / 2, deck_y - 8); c1 = ((t1[0] + a1[0]) / 2, deck_y - 8)
+    def q(P0, P1, P2, t):
+        return ((1-t)**2*P0[0] + 2*(1-t)*t*P1[0] + t**2*P2[0], (1-t)**2*P0[1] + 2*(1-t)*t*P1[1] + t**2*P2[1])
+    cable = (f"M{a0[0]:.0f} {a0[1]:.0f} Q{c0[0]:.0f} {c0[1]:.0f} {t0[0]:.0f} {t0[1]:.0f} "
+             f"Q{mid[0]:.0f} {mid[1]:.0f} {t1[0]:.0f} {t1[1]:.0f} Q{c1[0]:.0f} {c1[1]:.0f} {a1[0]:.0f} {a1[1]:.0f}")
+    lines = [f'<path d="{cable}" fill="none" stroke="{ink}" stroke-width="4"/>']
+    for (P0, P1, P2) in ((a0, c0, t0), (t0, mid, t1), (t1, c1, a1)):     # suspenders
+        n = int(abs(P2[0] - P0[0]) // 18)
+        for k in range(1, n):
+            x, y = q(P0, P1, P2, k / n)
+            lines.append(f'<line x1="{x:.0f}" y1="{y:.0f}" x2="{x:.0f}" y2="{deck_y}" stroke="{ink}" stroke-width="1.3"/>')
+    for tx in towers:                                                    # diagonal stays
+        for d in (34, 60, 88, 118, 150):
+            for sgn in (-1, 1):
+                lines.append(f'<line x1="{tx:.0f}" y1="{top+4}" x2="{tx+sgn*d:.0f}" y2="{deck_y}" stroke="{ink}" stroke-width="1.4" opacity="0.85"/>')
+    parts.extend(lines)
+    for x in range(x0 + 20, x1, 46):                                     # deck lamps
+        windows.append(f'<rect x="{x}" y="{deck_y-6}" width="3" height="3"/>')
+
+bridge(1260, W, towers=(1370, 1560))
 
 svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Art-deco Manhattan skyline silhouette">
 <g fill="{ink}">
