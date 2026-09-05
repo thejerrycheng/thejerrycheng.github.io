@@ -660,6 +660,7 @@ a .papertitle:hover { color: var(--link); }
   background: var(--yellow); color: var(--ink); border: 2px solid var(--line); border-radius: 4px;
   padding: 3px 11px 2px 6px; transform: rotate(-4deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.8);
   font-family: var(--font-comic); font-size: 15px; letter-spacing: .1em; line-height: 1;
+  color: #151820; text-shadow: none;   /* printed sticker: ink on yellow, no shadow, whatever the theme */
 }
 .sticker-nyc img { width: 28px; height: 28px; display: block; }
 
