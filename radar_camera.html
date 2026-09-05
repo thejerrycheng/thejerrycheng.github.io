@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Radar-Camera Spatiotemporal Calibration — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="Targetless spatiotemporal calibration of 3D radar-camera pairs (IEEE T-RO 2023): continuous-time B-splines, radar ego-velocity, extrinsics + scale + time offset. Re-implemented in Python with simulation studies, an identifiability check and the real handheld-rig front end.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/radar_camera.html">
+  <meta property="og:title" content="Radar-Camera Spatiotemporal Calibration">
+  <meta property="og:description" content="Radar ego-velocity + monocular camera on one continuous-time trajectory: extrinsics, scale and time offset without targets. Re-implemented and re-run.">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/radar_camera/video_poster.jpg">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+
+  <style>
+    /* ---- page-local components (same print recipe as gotham.css) ---- */
+    .bn-lead { font-size: 17px; line-height: 1.6; max-width: 70ch; }
+    .bn-lead a { color: var(--hi-deep); font-weight: 600; text-decoration: none; }
+    .bn-lead a:hover { text-decoration: underline; }
+    .hero-video { position: relative; border-radius: var(--radius); overflow: hidden; background: var(--ink); border: var(--line-w) solid var(--ink); box-shadow: var(--sh); }
+    .hero-video video { width: 100%; display: block; aspect-ratio: 16 / 9; background: var(--ink); }
+    .hero-caption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px; margin-top: 16px; }
+    .hero-caption p { font-size: 14px; color: var(--ink-soft); max-width: 62ch; }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-top: 28px; }
+    .stat-tile { padding: 14px 14px 12px; text-align: left; }
+    .stat-tile .num { font-family: var(--font-mono); font-weight: 700; font-size: 26px; letter-spacing: -0.02em; color: var(--ink); line-height: 1.05; }
+    .stat-tile .num small { font-size: 14px; font-weight: 400; color: var(--ash); margin-left: 3px; }
+    .stat-tile .lab { font-family: var(--font-comic); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--hi); margin-top: 6px; line-height: 1.2; }
+    .stat-tile .sub { font-size: 12px; color: var(--ash); margin-top: 4px; line-height: 1.35; }
+    .strip3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .panel { overflow: hidden; display: flex; flex-direction: column; }
+    .panel .media { background: var(--bone); border-bottom: var(--line-w) solid var(--ink); aspect-ratio: 4 / 3; overflow: hidden; position: relative; }
+    .panel .media img, .panel .media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .panel .media img.contain, .panel .media video.contain { object-fit: contain; background: var(--panel); }
+    .panel .body { padding: 14px 16px 16px; }
+    .panel h3 { font-size: 16px; margin-bottom: 4px; }
+    .panel p { font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
+    .panel .caption-box { margin: -26px 0 0 12px; position: relative; z-index: 2; }
+    .fig { margin: 22px 0 0; }
+    .fig img, .fig video { width: 100%; display: block; background: var(--panel); border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); box-shadow: var(--sh-sm); }
+    .fig figcaption { font-size: 13px; line-height: 1.5; color: var(--ash); margin-top: 10px; }
+    .fig figcaption b { color: var(--ink); font-weight: 600; }
+    .grid-2 { align-items: start; }
+    .grid-2 > *, .strip3 > *, .clip-row > *, .finding, .prose { min-width: 0; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .photos3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .eq { font-family: var(--font-mono); font-size: 13.5px; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 6px; padding: 10px 14px; margin: 12px 0; overflow-x: auto; white-space: nowrap; box-shadow: var(--sh-xs); max-width: 100%; }
+    .eq .m { color: var(--hi-deep); }
+    .prose p { font-size: 15.5px; line-height: 1.62; margin-bottom: 12px; }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose ul { padding-left: 20px; margin: 8px 0 12px; }
+    .prose li { font-size: 15px; line-height: 1.55; margin-bottom: 6px; }
+    .prose li::marker { color: var(--hi); }
+    .prose code { background: var(--paper); border: 1px solid rgba(21,24,32,.35); border-radius: 4px; padding: 1px 6px; font-size: 12.5px; }
+    .data-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12.5px; background: var(--panel); border: var(--line-w) solid var(--ink); box-shadow: var(--sh-sm); }
+    .data-table th, .data-table td { padding: 8px 10px; border-bottom: 1.5px dashed rgba(21,24,32,.35); text-align: right; white-space: nowrap; }
+    .data-table th:first-child, .data-table td:first-child { text-align: left; }
+    .data-table thead th { background: var(--ink); color: var(--bone); font-weight: 700; border-bottom: var(--line-w) solid var(--ink); }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table td.hi { color: var(--hi-deep); font-weight: 700; }
+    .data-table td.ok { color: var(--green); font-weight: 700; }
+    .data-table td.bad { color: var(--rust); font-weight: 700; }
+    .table-wrap { overflow-x: auto; margin-top: 18px; }
+    .finding { position: relative; padding: 22px 24px 22px 66px; }
+    .finding .no { position: absolute; left: 16px; top: 14px; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--yellow); border: var(--line-w) solid var(--ink); font-family: var(--font-comic); font-size: 20px; box-shadow: var(--sh-xs); transform: rotate(-6deg); }
+    .finding h3 { font-size: 19px; margin-bottom: 8px; }
+    .finding p { font-size: 15px; line-height: 1.58; color: var(--ink-soft); }
+    .finding p + p { margin-top: 8px; }
+    .gallery { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 18px; }
+    .gallery img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border: 1.5px solid var(--ink); border-radius: 4px; background: var(--panel); display: block; }
+    .gallery img.profile { object-fit: contain; }
+    .gallery .lbl { grid-column: 1 / -1; font-family: var(--font-mono); font-size: 11px; color: var(--ash); margin-top: 4px; }
+    .gallery-head { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 12px; }
+    .gallery-head span { font-family: var(--font-comic); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--hi); text-align: center; }
+    .clip-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+    .clip { overflow: hidden; }
+    .clip video { width: 100%; display: block; aspect-ratio: 16 / 9; background: var(--ink); }
+    .clip .body { padding: 12px 16px 14px; }
+    .clip h3 { font-size: 15.5px; margin-bottom: 4px; }
+    .clip p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .rule { font-family: var(--font-comic); font-size: 22px; letter-spacing: .04em; line-height: 1.15; color: var(--ink); }
+    .rule b { color: var(--hi); font-weight: 400; }
+    .cmd { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; background: var(--ink); color: var(--bone); border-radius: 8px; padding: 14px 16px; overflow-x: auto; border: var(--line-w) solid var(--ink); box-shadow: var(--sh-sm); }
+    .cmd .c { color: var(--gold); }
+    .credits { font-size: 14.5px; line-height: 1.6; color: var(--ink-soft); }
+    .credits b { color: var(--ink); }
+    .poster-embed img { border: var(--line-w) solid var(--ink); border-radius: 6px; box-shadow: var(--sh-sm); background: #fff; }
+    /* ---- try-it demo ---- */
+    .bn-demo-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; align-items: start; }
+    .bn-drop { border: 2px dashed var(--ink); border-radius: var(--radius); background: var(--panel); padding: 26px 20px; text-align: center; cursor: pointer; transition: background .15s ease, transform .15s ease; box-shadow: var(--sh-sm); }
+    .bn-drop:hover, .bn-drop.over { background: var(--panel-2); transform: translate(-1px,-1px); }
+    .bn-drop .big { font-family: var(--font-comic); font-size: 22px; letter-spacing: .05em; color: var(--hi); }
+    .bn-drop .small { font-size: 13px; color: var(--ash); margin-top: 4px; }
+    .bn-stock { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 12px; }
+    .bn-stock img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border: 2px solid var(--ink); border-radius: 5px; cursor: pointer; box-shadow: var(--sh-xs); transition: transform .15s ease; }
+    .bn-stock img:hover { transform: translate(-1px,-1px); box-shadow: var(--sh-sm); }
+    .bn-controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: end; margin-top: 14px; }
+    .bn-controls label { font-family: var(--font-mono); font-size: 11.5px; color: var(--ash); display: flex; flex-direction: column; gap: 4px; }
+    .bn-controls input, .bn-controls select { font-family: var(--font-mono); font-size: 14px; padding: 6px 8px; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--panel); width: 110px; }
+    .bn-status { font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); margin-top: 10px; min-height: 18px; }
+    .bn-status.busy::before { content: "◌ "; color: var(--hi); animation: bulb 1s linear infinite; display: inline-block; }
+    .bn-canvases { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .bn-canvases canvas { width: 100%; height: auto; border: var(--line-w) solid var(--ink); border-radius: 6px; background: var(--panel); display: block; }
+    .bn-canvases .lbl { font-family: var(--font-comic); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--hi); margin-bottom: 4px; }
+    .bn-result { margin-top: 12px; }
+    .bn-big { display: flex; flex-wrap: wrap; gap: 10px 22px; font-family: var(--font-mono); font-size: 15px; color: var(--ink-soft); }
+    .bn-big b { font-size: 26px; color: var(--ink); font-weight: 700; margin-left: 4px; }
+    .bn-result p { font-size: 13px; color: var(--ash); margin-top: 8px; line-height: 1.5; }
+    .bn-result .muted { color: var(--hi-deep); font-weight: 600; }
+    @media (max-width: 820px) { .bn-demo-grid { grid-template-columns: 1fr; } .bn-stock { grid-template-columns: repeat(5, 1fr); } }
+    @media (max-width: 820px) {
+      .strip3, .grid-3 { grid-template-columns: 1fr; }
+      .eq { font-size: 12px; }
+      .gallery, .gallery-head { grid-template-columns: repeat(3, 1fr); }
+      .clip-row { grid-template-columns: 1fr; }
+      .finding { padding-left: 24px; padding-top: 64px; }
+    }
+    .hero-video video.loop { aspect-ratio: 16 / 9; }
+    .photos2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .photos2 img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border: 1.5px solid var(--ink); border-radius: 4px; }
+  </style>
+</head>
+<body>
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html" aria-current="page">Publications</a>
+      <a href="projects.html">Projects</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button type="button" class="theme-btn" aria-label="Switch between day and night" aria-pressed="false">
+      <span class="if-night"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Day</span></span>
+      <span class="if-day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="lbl">Night</span></span>
+    </button>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+  <a href="cv.html">CV</a>
+</div>
+
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">Sensor calibration ◆ Continuous time ◆ STARS Lab, University of Toronto, IEEE T-RO 2023 → re-run 2026</p>
+    <h1>Radar-Camera Spatiotemporal Calibration</h1>
+    <p>A 3D radar measures its own velocity from Doppler; a monocular camera measures where it is, up to scale, from what it sees. Put both on one continuous-time trajectory and the relative pose between them, the camera's scale and the offset between the two clocks all fall out, with no reflectors and no overlapping fields of view. The T-RO paper was re-implemented from scratch in Python: B-splines on rotations, the joint estimator, the paper's simulation studies, its identifiability analysis, and the radar front end on the original 2020 handheld recordings.</p>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
+<!-- =================== HERO VIDEO =================== -->
+<section class="section" id="demo">
+  <div class="hero-video">
+    <video class="loop" muted loop playsinline autoplay preload="metadata" poster="assets/images/projects/radar_camera/video_poster.jpg">
+      <source src="assets/videos/radarcam_thumb.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p>Fifteen seconds: the rig flies its B-spline in front of a checkerboard while both data streams arrive on their own clocks, the radar stream is slid in time until it matches the camera-derived motion, and the extrinsic estimate converges. The <a href="#fulldemo">full demo</a> adds the simulation studies, the identifiability check and the real corridor data.</p>
+    <div class="links">
+      <a href="assets/pdf/projects/radar_camera_calibration_report.pdf" target="_blank" rel="noopener">Technical report</a>
+      <a href="https://arxiv.org/abs/2211.01871" target="_blank" rel="noopener">Paper (arXiv)</a>
+      <a href="https://ieeexplore.ieee.org/abstract/document/10256219" target="_blank" rel="noopener">IEEE T-RO</a>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="card stat-tile"><div class="num">0.3<small>cm</small></div><div class="lab">translation, traj. B</div><div class="sub">median over 100 trials at σ<sub>r</sub> = 0.05 m/s, σ<sub>c</sub> = 0.2 px; rotation 0.55°</div></div>
+    <div class="card stat-tile"><div class="num">1.7<small>ms</small></div><div class="lab">time offset, traj. B</div><div class="sub">true offset 50 ms; paper: within 10 ms with two-axis rotation</div></div>
+    <div class="card stat-tile"><div class="num">0.43<small>%</small></div><div class="lab">scale error</div><div class="sub">camera scale α = 0.5 from a wrongly sized checkerboard; paper: under 1 %</div></div>
+    <div class="card stat-tile"><div class="num">13.6<small>cm</small></div><div class="lab">translation, traj. A</div><div class="sub">high linear / low angular velocity at the highest noise: the paper's "up to 15 cm" case</div></div>
+    <div class="card stat-tile"><div class="num">0.031<small>m/s</small></div><div class="lab">real radar noise</div><div class="sub">inlier range-rate spread on the 2020 handheld data; paper assumed 0.05–0.15</div></div>
+    <div class="card stat-tile"><div class="num">1.3<small>°</small></div><div class="lab">closed-form start</div><div class="sub">median rotation error of the linear initialiser; no ground truth needed</div></div>
+  </div>
+</section>
+
+<!-- =================== THE STRIP =================== -->
+<section class="section" id="strip">
+  <h2 class="section-title">In one strip</h2>
+  <div class="strip3">
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/radar_camera/card.jpg" alt="Handheld rig flying along a B-spline with the camera frustum and radar cone" loading="lazy"></div>
+      <span class="caption-box">1 · Two streams</span>
+      <div class="body"><h3>One body, two clocks, two frames</h3><p>Camera poses at 30 Hz, up to a scale α. Radar ego-velocities at 20 Hz, stamped τ late. The trajectory is a cumulative cubic B-spline on R³ × SO(3), so it can be queried at any instant and differentiated analytically.</p></div>
+    </div>
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/radar_camera/strip_tau.jpg" alt="Radar velocity stream sliding in time until it matches the camera-derived prediction" loading="lazy"></div>
+      <span class="caption-box">2 · Align</span>
+      <div class="body"><h3>τ is just another parameter</h3><p><b>h</b><sub>j</sub> = R<sub>cr</sub>ᵀ ( R<sub>wc</sub>ᵀ <b>ṗ</b> + <b>ω</b> × <b>r</b> ) evaluated at t<sub>j</sub> + τ. A linear closed form on the paper's identifiability model gives R<sub>cr</sub>, <b>r</b>, α and a τ grid search; sparse Levenberg–Marquardt over spline and parameters finishes the job.</p></div>
+    </div>
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/radar_camera/corridor_frame.jpg" alt="Corridor frame from the handheld rig's camera" loading="lazy"></div>
+      <span class="caption-box">3 · Real data</span>
+      <div class="body"><h3>The 2020 handheld recordings</h3><p>TI AWR1843 radar, Point Grey Flea3, VectorNav IMU, walked through the corridors of FER Zagreb. The RANSAC front end validates 80 % of the scans and measures the radar noise the paper only assumed.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== METHOD =================== -->
+<section class="section" id="method">
+  <h2 class="section-title">Method</h2>
+  <div class="grid-2">
+    <div class="card card-pad prose">
+      <p class="bn-lead">Temporal calibration is natural in continuous time: shifting one sensor's timestamps means querying the trajectory somewhere else, so the trajectory must be a function, not a list. The paper uses the cumulative B-spline of Sommer et al., R(u) = R<sub>i</sub> ∏ exp(λ<sub>j</sub>(u) log(R<sub>i+j−1</sub>ᵀR<sub>i+j</sub>)), whose body angular velocity has a closed form; the re-implementation verifies it against finite differences to 10⁻⁹.</p>
+      <div class="eq">e<span class="m">r</span> = log( R̃<span class="m">k</span>ᵀ R<span class="m">wc</span>(t<span class="m">k</span>) ),   e<span class="m">t</span> = p̃<span class="m">k</span> − α p<span class="m">c</span>(t<span class="m">k</span>),   e<span class="m">v</span> = h<span class="m">j</span> − R<span class="m">cr</span>ᵀ( R<span class="m">wc</span>ᵀ ṗ + ω × r )|<span class="m">t_j + τ</span></div>
+      <p>Unknowns: about 300 translation and 300 rotation control points for a 30-s run, plus R<sub>cr</sub>, <b>r</b>, α and τ. The Jacobian is sparse (each residual touches four control points), so finite differences through the sparsity pattern need only 57 evaluations, and the normal equations are solved by sparse LU. Rotation control points are perturbed locally and re-linearised after every accepted step.</p>
+      <ul>
+        <li><b>Initialisation:</b> the paper's identifiability model <b>a</b> = α R<sub>cr</sub> <b>h</b>(t + τ) − α <b>ω</b> × <b>r</b> is linear in vec(αR<sub>cr</sub>) and α<b>r</b> for a fixed τ; solve it on a τ grid, take α from the singular values and R<sub>cr</sub> from the SO(3) projection.</li>
+        <li><b>Camera noise as in the paper:</b> a checkerboard is projected, pixel noise added, and <code>solvePnP</code> run with the wrong square size, which is exactly what produces a scaled position with realistic pose noise.</li>
+        <li><b>Identifiability:</b> the stacked gradient matrix of the paper's eq. 23 has rank 7 of 8 when the body rotates about one axis only, and is zero at rest.</li>
+      </ul>
+      <div class="tag-row"><span class="chip">cumulative B-splines on SO(3)</span><span class="chip">sparse finite-difference LM</span><span class="chip">PnP camera model</span><span class="chip">pure-Python bag reader</span></div>
+    </div>
+    <div>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_camera/sim_trajectories.png" alt="The two simulated trajectories with speed and angular-rate profiles" loading="lazy"><figcaption><b>Paper Figs. 3–4.</b> Trajectory A: high linear, low angular velocity (0.73 m/s, 0.39 rad/s). Trajectory B: low linear, high angular (0.40 m/s, 1.75 rad/s). Both keep a 9×7 checkerboard in a 700-px camera's view.</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/radar_camera/sim_identifiability.png" alt="Singular values of the identifiability matrix for full, one-axis and no motion" loading="lazy"><figcaption><b>Identifiability, numerically.</b> Singular values of the paper's observability matrix over 8 s of trajectory B: full excitation keeps all eight, rotation about a single axis loses rank, and no motion loses everything.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- =================== SIMULATION =================== -->
+<section class="section" id="simulation">
+  <h2 class="section-title">Simulation studies</h2>
+  <div class="grid-2">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_camera/sim_hist_B.png" alt="Error histograms for trajectory B at four noise levels" loading="lazy"><figcaption><b>Paper Fig. 6, re-run (trajectory B).</b> Histograms of translation, rotation, scale and offset errors over 100 trials per noise level. With rotation about two axes everything is well determined: 0.3–0.7 cm, 0.55–1.46°, 0.43–2.84 %, 1.7–9.8 ms across the four noise levels.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_camera/sim_hist_A.png" alt="Error histograms for trajectory A at four noise levels" loading="lazy"><figcaption><b>Paper Fig. 5 (trajectory A).</b> Rotation and scale stay at 0.39–1.42° and 0.50–4.89 %, but with little rotation the translation and the offset are poorly conditioned: 1.7–13.6 cm and 4.3–25.1 ms medians, with 95th percentiles of 21 cm and 66 ms at the highest noise. The paper reports the same asymmetry ("as large as 15 cm and 30 ms").</figcaption></figure>
+  </div>
+  <div class="table-wrap" style="margin-top:22px">
+    <table class="data-table">
+      <thead><tr><th>traj.</th><th>σ<sub>r</sub> [m/s]</th><th>σ<sub>c</sub> [px]</th><th>trans med [cm]</th><th>p95</th><th>rot med [°]</th><th>p95</th><th>scale med [%]</th><th>p95</th><th>τ med [ms]</th><th>p95</th><th>converged</th></tr></thead>
+      <tbody>
+            <tr><td>A</td><td>0.05</td><td>0.2</td><td>1.7</td><td>3.1</td><td>0.39</td><td>0.69</td><td>0.50</td><td>1.22</td><td>4.3</td><td>11.7</td><td>87 %</td></tr>
+            <tr><td>A</td><td>0.05</td><td>0.4</td><td>2.6</td><td>4.5</td><td>0.39</td><td>0.81</td><td>0.90</td><td>1.80</td><td>3.8</td><td>11.3</td><td>91 %</td></tr>
+            <tr><td>A</td><td>0.15</td><td>0.2</td><td>11.1</td><td>19.1</td><td>1.45</td><td>2.60</td><td>4.68</td><td>8.65</td><td>23.5</td><td>63.6</td><td>21 %</td></tr>
+            <tr><td>A</td><td>0.15</td><td>0.4</td><td>13.6</td><td>21.2</td><td>1.42</td><td>2.95</td><td>4.89</td><td>7.42</td><td>25.1</td><td>66.1</td><td>49 %</td></tr>
+            <tr><td>B</td><td>0.05</td><td>0.2</td><td>0.3</td><td>0.5</td><td>0.55</td><td>1.10</td><td>0.43</td><td>1.37</td><td>1.7</td><td>5.9</td><td>100 %</td></tr>
+            <tr><td>B</td><td>0.05</td><td>0.4</td><td>0.3</td><td>0.5</td><td>0.49</td><td>1.00</td><td>0.43</td><td>1.17</td><td>2.1</td><td>5.2</td><td>100 %</td></tr>
+            <tr><td>B</td><td>0.15</td><td>0.2</td><td>0.7</td><td>1.4</td><td>1.71</td><td>3.05</td><td>3.63</td><td>6.29</td><td>7.6</td><td>20.2</td><td>7 %</td></tr>
+            <tr><td>B</td><td>0.15</td><td>0.4</td><td>0.7</td><td>1.4</td><td>1.46</td><td>2.98</td><td>2.84</td><td>5.26</td><td>9.8</td><td>24.6</td><td>41 %</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:10px">100 trials per row, 30-s runs, camera 30 Hz, radar 20 Hz, true offset 50 ms, true scale 0.5, random extrinsics per trial. "Converged" counts runs that met the tolerance within 40 iterations; the rest are slow tails, not divergence, and are included.</p>
+</section>
+
+<!-- =================== REAL DATA =================== -->
+<section class="section" id="real">
+  <h2 class="section-title">The handheld rig</h2>
+  <div class="grid-2">
+    <div class="card card-pad prose">
+      <p class="bn-lead">The paper's handheld experiment was recorded in 2020 at the University of Zagreb: a TI AWR1843BOOST radar, a Point Grey Flea3 camera and a VectorNav VN-100, carried through office corridors. The archived bags hold radar clouds with Doppler at 10 Hz, 1920×1200 images at 10 Hz and the IMU at 100 Hz. Every header stamp is zero, so the bag receive times are the clock.</p>
+      <p>The 3-point RANSAC ego-velocity estimator (the paper's eqs. 7–9) validates 476 of 594 scans with 21 of 23 returns as inliers, an inlier range-rate spread of <b>0.031 m/s</b> and a median least-squares velocity uncertainty of 0.054 m/s. The rig walks at 1.5 m/s and turns at 0.5 rad/s: closer to trajectory B than A.</p>
+      <p>What could not be re-run: the joint spatiotemporal solve. It needs the monocular camera trajectory from ORB-SLAM3 and the camera intrinsics, and neither is available here; the AprilGrid in the calibration bag is not detected by two AprilTag libraries at this resolution. The paper's real-data tables are therefore not reproduced, and the page says so.</p>
+      <div class="photos2" style="margin-top:14px">
+        <img src="assets/images/projects/radar_camera/corridor_frame.jpg" alt="Corridor seen by the rig's camera" loading="lazy">
+        <img src="assets/images/projects/radar_camera/aprilgrid_frame.jpg" alt="The AprilGrid calibration target held in front of the rig" loading="lazy">
+      </div>
+    </div>
+    <div>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_camera/real_frontend.png" alt="Radar ego-velocity components, return counts and gyro rates over the recording" loading="lazy"><figcaption><b>Radar and IMU streams.</b> Ego-velocity per axis with the number of returns and inliers per scan, and the gyro. Gaps are scans with too few static returns.</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/radar_camera/real_scan_example.png" alt="One real scan: range-rate against direction cosine, and the inlier residual histogram" loading="lazy"><figcaption><b>One scan.</b> Range-rate against the cosine of the angle between each return and the ego-velocity; static returns lie on the line −|h| cos θ, the rest are rejected. Right: all inlier residuals of the run.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- =================== FINDINGS =================== -->
+<section class="section" id="findings">
+  <h2 class="section-title">What the re-run found</h2>
+  <p class="quote">Two of the paper's statements were tested harder than the paper could, and one part could not be tested at all.</p>
+  <div class="card finding" style="margin-top:22px">
+    <span class="no">1</span>
+    <h3>Excitation, not noise, decides translation and offset</h3>
+    <p>Across the four noise levels the rotation and scale errors barely move on either trajectory. Translation and offset errors on trajectory A are several times those on B at every noise level, and their reported 1σ under-states the spread there. The lever-arm term <b>ω</b> × <b>r</b> is the only thing that ties the radar position to the camera, so a calibration drive needs to rotate about two axes, fast.</p>
+  </div>
+  <div class="card finding" style="margin-top:22px">
+    <span class="no">2</span>
+    <h3>A closed-form start exists, and it is good enough</h3>
+    <p>The paper's identifiability model, meant for a proof, doubles as an initialiser: linear in the scaled rotation and scaled lever arm, with a one-dimensional search in τ. Median start error 1.3° on B, and the joint estimator converged from it in 62 % of the runs without touching the ground truth.</p>
+  </div>
+  <div class="card finding" style="margin-top:22px">
+    <span class="no">3</span>
+    <h3>The real radar is quieter than the paper assumed</h3>
+    <p>The paper places the ego-velocity noise between 0.05 and 0.15 m/s and notes it is "closer to the lower end". The archived corridor run gives 0.031 m/s on the inliers and 0.054 m/s as the propagated velocity uncertainty, so the low-noise simulation rows are the ones that describe this hardware.</p>
+  </div>
+</section>
+
+<!-- =================== FULL DEMO =================== -->
+<section class="section" id="fulldemo">
+  <h2 class="section-title">Full demo</h2>
+  <div class="hero-video">
+    <video controls playsinline preload="metadata" poster="assets/images/projects/radar_camera/strip_tau.jpg">
+      <source src="assets/videos/radarcam_demo.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption"><p>The flight, the time alignment, the convergence of all four quantities, both simulation studies, the identifiability check, and the real corridor data with the radar ego-velocity and gyro streams next to the camera frames.</p></div>
+</section>
+
+<!-- =================== REPRODUCE =================== -->
+<section class="section" id="reproduce">
+  <h2 class="section-title">Reproduce</h2>
+  <div class="grid-2">
+    <div class="card card-pad prose">
+      <p>Python only (numpy, scipy, OpenCV for PnP, matplotlib, the pure-Python <code>rosbags</code> reader). The simulation campaign is sharded; a 30-s solve takes 5–10 s.</p>
+      <div class="cmd">cd experiments
+for k in 0 1 2 3 4; do python sim_studies.py 100 --shard $k --nshards 5 &amp; done; wait
+python sim_studies.py                            <span class="c"># merge → histograms, identifiability</span>
+python real_frontend.py path/to/handheld.bag     <span class="c"># radar front end on the real rig</span>
+python make_tables.py &amp;&amp; (cd ../docs &amp;&amp; make)      <span class="c"># technical report</span>
+python make_video.py</div>
+      <div class="links" style="margin-top:16px">
+        <a href="assets/pdf/projects/radar_camera_calibration_report.pdf" target="_blank" rel="noopener">Technical report</a>
+        <a href="https://arxiv.org/abs/2211.01871" target="_blank" rel="noopener">Paper</a>
+      </div>
+    </div>
+    <div class="card card-pad credits">
+      <p class="subhead" style="margin-top:0">Credits</p>
+      <p><b>Paper.</b> Emmett Wise, Qilong Cheng and Jonathan Kelly, STARS Lab, University of Toronto Institute for Aerospace Studies. <i>IEEE Transactions on Robotics</i>, 2023; extends Wise, Peršić, Grebe, Petrović &amp; Kelly, ICRA 2021.</p>
+      <p style="margin-top:10px"><b>Data.</b> Handheld-rig recordings from the 2020 collaboration with the University of Zagreb (FER); IRS and Boreas datasets in the paper.</p>
+      <p style="margin-top:10px"><b>2026 re-run.</b> Python re-implementation of the spline estimator, initialiser and simulator; campaigns; the real-data front end; report, videos and this page.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>

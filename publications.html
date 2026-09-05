@@ -84,13 +84,13 @@
     </div>
 
     <div class="pub card card-hover" id="calibration-ijrr">
-      <div class="pub-thumb"><img src="assets/images/publications/robot_world.jpg" alt="Robot-World &amp; Hand-Eye Calibration" loading="lazy" decoding="async" class="fit-contain"></div>
+      <div class="pub-thumb"><div class="pub-carousel" data-carousel><div class="carousel-track"><div class="slide"><img src="assets/images/projects/rwhe/card.jpg" alt="A camera orbiting an AprilTag target: the AX = YB kinematic loop" decoding="async" class="fit-cover"></div><div class="slide"><img src="assets/images/publications/robot_world.jpg" alt="Robot-World &amp; Hand-Eye Calibration" decoding="async" class="fit-cover"></div></div><button class="c-btn prev" aria-label="Previous slide"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg></button><button class="c-btn next" aria-label="Next slide"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div></div>
       <div class="pub-meta">
         <a href="https://arxiv.org/abs/2507.23045" target="_blank" rel="noopener"><span class="papertitle">A Certifiably Correct Algorithm for Generalized Robot-World and Hand-Eye Calibration</span></a><span class="proj-year">2025</span>
         <span class="authors">E. Wise, P. Kaveti, <b>Q. Cheng</b>, W. Wang, H. Singh, J. Kelly, D. M. Rosen, and M. Giamou</span>
         <span class="venue"><em>IJRR</em>, 2025</span>
-        <div class="links"><a href="https://arxiv.org/abs/2507.23045" target="_blank" rel="noopener">Paper</a></div>
-        <p class="pub-desc">Certifiably correct calibration achieving globally optimal robot-world and hand-eye alignment under general conditions.</p>
+        <div class="links"><a href="rwhe_calibration.html">Website</a><a href="https://arxiv.org/abs/2507.23045" target="_blank" rel="noopener">Paper</a><a href="https://github.com/utiasSTARS/certifiable-rwhe-calibration" target="_blank" rel="noopener">Code (original, Julia)</a><a href="assets/pdf/projects/rwhe_calibration_report.pdf" target="_blank" rel="noopener">Report</a></div>
+        <p class="pub-desc">Generalized robot-world and hand-eye calibration (many sensors, many targets, unknown monocular scale) solved to certified global optimality by a semidefinite relaxation over the rotations. Re-implemented in Python in 2026: the paper's simulation studies, and the real 8-camera / 16-tag rig data solved with a duality gap of 1e-8, recovering the paper's 2.5 % tag-scale finding.</p>
       </div>
     </div>
 
@@ -139,24 +139,24 @@
     </div>
 
     <div class="pub card card-hover" id="radar-radar">
-      <div class="pub-thumb"><img src="assets/images/publications/2d_radar_radar.jpg" alt="Radar pair calibration" loading="lazy" decoding="async" class="fit-contain"></div>
+      <div class="pub-thumb"><div class="pub-carousel" data-carousel><div class="carousel-track"><div class="slide"><img src="assets/images/projects/radar_radar/card.jpg" alt="Two radars on a vehicle with Doppler returns and ego-velocity arrows" decoding="async" class="fit-cover"></div><div class="slide"><img src="assets/images/publications/2d_radar_radar.jpg" alt="Radar pair calibration" decoding="async" class="fit-cover"></div></div><button class="c-btn prev" aria-label="Previous slide"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg></button><button class="c-btn next" aria-label="Next slide"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div></div>
       <div class="pub-meta">
         <a href="https://ieeexplore.ieee.org/document/10196187" target="_blank" rel="noopener"><span class="papertitle">Extrinsic Calibration of 2D Millimetre-Wavelength Radar Pairs Using Ego-Velocity Estimates</span></a><span class="proj-year">2023</span>
         <span class="authors"><b>Q. Cheng</b>, E. Wise, and J. Kelly</span>
         <span class="venue"><em>IEEE AIM</em>, 2023</span>
-        <div class="links"><a href="https://arxiv.org/abs/2302.00660" target="_blank" rel="noopener">Paper</a><a href="https://www.youtube.com/watch?v=hfXdG6j3sjE" target="_blank" rel="noopener">Video</a></div>
-        <p class="pub-desc">Proposes a calibration framework for radar-radar pairs leveraging ego-motion cues without overlapping views for improved pose estimation accuracy.</p>
+        <div class="links"><a href="radar_radar.html">Website</a><a href="https://arxiv.org/abs/2302.00660" target="_blank" rel="noopener">Paper</a><a href="https://www.youtube.com/watch?v=hfXdG6j3sjE" target="_blank" rel="noopener">Video</a><a href="https://github.com/thejerrycheng/radar-radar-calibration" target="_blank" rel="noopener">Code</a><a href="assets/pdf/projects/radar_radar_calibration_report.pdf" target="_blank" rel="noopener">Report</a></div>
+        <p class="pub-desc">Two Doppler radars on one vehicle calibrate each other from their own ego-velocities: the yaw and the translation axis are identifiable without targets or overlapping views. Re-implemented in Python and re-run in 2026: simulation sweep inside the paper's 2°/3° envelope, and the Endeavour bus pairs reproduced to 0.01 rad, with the weakly identifiable short-baseline pair called out.</p>
       </div>
     </div>
 
     <div class="pub card card-hover" id="radar-camera">
-      <div class="pub-thumb"><img src="assets/images/publications/3d_radar_camera.jpg" alt="Radar-camera spatiotemporal calibration" loading="lazy" decoding="async" class="fit-contain"></div>
+      <div class="pub-thumb"><div class="pub-carousel" data-carousel><div class="carousel-track"><div class="slide"><img src="assets/images/projects/radar_camera/card.jpg" alt="Handheld radar-camera rig flying along a continuous-time B-spline" decoding="async" class="fit-cover"></div><div class="slide"><img src="assets/images/publications/3d_radar_camera.jpg" alt="Radar-camera spatiotemporal calibration" decoding="async" class="fit-cover"></div></div><button class="c-btn prev" aria-label="Previous slide"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg></button><button class="c-btn next" aria-label="Next slide"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div></div>
       <div class="pub-meta">
         <a href="https://ieeexplore.ieee.org/abstract/document/10256219" target="_blank" rel="noopener"><span class="papertitle">Spatiotemporal Calibration of 3D Millimetre-Wavelength Radar-Camera Pairs</span></a><span class="proj-year">2022</span>
         <span class="authors">E. Wise, <b>Q. Cheng</b>, and J. Kelly</span>
         <span class="venue"><em>IEEE TRO</em>, 2022</span>
-        <div class="links"><a href="https://arxiv.org/abs/2211.01871" target="_blank" rel="noopener">Paper</a></div>
-        <p class="pub-desc">Introduces continuous-time B-spline calibration for radar-camera systems, outperforming state-of-the-art methods in robustness and precision.</p>
+        <div class="links"><a href="radar_camera.html">Website</a><a href="https://arxiv.org/abs/2211.01871" target="_blank" rel="noopener">Paper</a><a href="https://ieeexplore.ieee.org/abstract/document/10256219" target="_blank" rel="noopener">IEEE T-RO</a><a href="assets/pdf/projects/radar_camera_calibration_report.pdf" target="_blank" rel="noopener">Report</a></div>
+        <p class="pub-desc">Targetless spatiotemporal calibration of a 3D radar and a monocular camera: radar ego-velocity and scaled camera poses fused on a continuous-time B-spline trajectory to estimate the extrinsics, the scale and the time offset. Re-implemented in Python in 2026 with the paper's simulation studies, an identifiability check, and the radar front end run on the original handheld-rig recordings.</p>
       </div>
     </div>
 

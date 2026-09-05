@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Radar-to-Radar Calibration from Ego-Velocity — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="2D radar-to-radar extrinsic calibration from ego-velocity estimates (IEEE AIM 2023), re-implemented in Python and re-run in 2026: simulation studies, a scatterer-level pipeline, the Endeavour dataset, videos, technical report and open-source code.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/radar_radar.html">
+  <meta property="og:title" content="Radar-to-Radar Calibration from Ego-Velocity">
+  <meta property="og:description" content="Two Doppler radars calibrate each other from their own velocities: no targets, no overlap. Paper re-implemented and re-run on real data.">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/radar_radar/video_poster.jpg">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+
+  <style>
+    /* ---- page-local components (same print recipe as gotham.css) ---- */
+    .bn-lead { font-size: 17px; line-height: 1.6; max-width: 70ch; }
+    .bn-lead a { color: var(--hi-deep); font-weight: 600; text-decoration: none; }
+    .bn-lead a:hover { text-decoration: underline; }
+    .hero-video { position: relative; border-radius: var(--radius); overflow: hidden; background: var(--ink); border: var(--line-w) solid var(--ink); box-shadow: var(--sh); }
+    .hero-video video { width: 100%; display: block; aspect-ratio: 16 / 9; background: var(--ink); }
+    .hero-caption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px; margin-top: 16px; }
+    .hero-caption p { font-size: 14px; color: var(--ink-soft); max-width: 62ch; }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-top: 28px; }
+    .stat-tile { padding: 14px 14px 12px; text-align: left; }
+    .stat-tile .num { font-family: var(--font-mono); font-weight: 700; font-size: 26px; letter-spacing: -0.02em; color: var(--ink); line-height: 1.05; }
+    .stat-tile .num small { font-size: 14px; font-weight: 400; color: var(--ash); margin-left: 3px; }
+    .stat-tile .lab { font-family: var(--font-comic); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--hi); margin-top: 6px; line-height: 1.2; }
+    .stat-tile .sub { font-size: 12px; color: var(--ash); margin-top: 4px; line-height: 1.35; }
+    .strip3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .panel { overflow: hidden; display: flex; flex-direction: column; }
+    .panel .media { background: var(--bone); border-bottom: var(--line-w) solid var(--ink); aspect-ratio: 4 / 3; overflow: hidden; position: relative; }
+    .panel .media img, .panel .media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .panel .media img.contain, .panel .media video.contain { object-fit: contain; background: var(--panel); }
+    .panel .body { padding: 14px 16px 16px; }
+    .panel h3 { font-size: 16px; margin-bottom: 4px; }
+    .panel p { font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
+    .panel .caption-box { margin: -26px 0 0 12px; position: relative; z-index: 2; }
+    .fig { margin: 22px 0 0; }
+    .fig img, .fig video { width: 100%; display: block; background: var(--panel); border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); box-shadow: var(--sh-sm); }
+    .fig figcaption { font-size: 13px; line-height: 1.5; color: var(--ash); margin-top: 10px; }
+    .fig figcaption b { color: var(--ink); font-weight: 600; }
+    .grid-2 { align-items: start; }
+    .grid-2 > *, .strip3 > *, .clip-row > *, .finding, .prose { min-width: 0; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .photos3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .eq { font-family: var(--font-mono); font-size: 13.5px; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 6px; padding: 10px 14px; margin: 12px 0; overflow-x: auto; white-space: nowrap; box-shadow: var(--sh-xs); max-width: 100%; }
+    .eq .m { color: var(--hi-deep); }
+    .prose p { font-size: 15.5px; line-height: 1.62; margin-bottom: 12px; }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose ul { padding-left: 20px; margin: 8px 0 12px; }
+    .prose li { font-size: 15px; line-height: 1.55; margin-bottom: 6px; }
+    .prose li::marker { color: var(--hi); }
+    .prose code { background: var(--paper); border: 1px solid rgba(21,24,32,.35); border-radius: 4px; padding: 1px 6px; font-size: 12.5px; }
+    .data-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12.5px; background: var(--panel); border: var(--line-w) solid var(--ink); box-shadow: var(--sh-sm); }
+    .data-table th, .data-table td { padding: 8px 10px; border-bottom: 1.5px dashed rgba(21,24,32,.35); text-align: right; white-space: nowrap; }
+    .data-table th:first-child, .data-table td:first-child { text-align: left; }
+    .data-table thead th { background: var(--ink); color: var(--bone); font-weight: 700; border-bottom: var(--line-w) solid var(--ink); }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table td.hi { color: var(--hi-deep); font-weight: 700; }
+    .data-table td.ok { color: var(--green); font-weight: 700; }
+    .data-table td.bad { color: var(--rust); font-weight: 700; }
+    .table-wrap { overflow-x: auto; margin-top: 18px; }
+    .finding { position: relative; padding: 22px 24px 22px 66px; }
+    .finding .no { position: absolute; left: 16px; top: 14px; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--yellow); border: var(--line-w) solid var(--ink); font-family: var(--font-comic); font-size: 20px; box-shadow: var(--sh-xs); transform: rotate(-6deg); }
+    .finding h3 { font-size: 19px; margin-bottom: 8px; }
+    .finding p { font-size: 15px; line-height: 1.58; color: var(--ink-soft); }
+    .finding p + p { margin-top: 8px; }
+    .gallery { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 18px; }
+    .gallery img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border: 1.5px solid var(--ink); border-radius: 4px; background: var(--panel); display: block; }
+    .gallery img.profile { object-fit: contain; }
+    .gallery .lbl { grid-column: 1 / -1; font-family: var(--font-mono); font-size: 11px; color: var(--ash); margin-top: 4px; }
+    .gallery-head { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 12px; }
+    .gallery-head span { font-family: var(--font-comic); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--hi); text-align: center; }
+    .clip-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+    .clip { overflow: hidden; }
+    .clip video { width: 100%; display: block; aspect-ratio: 16 / 9; background: var(--ink); }
+    .clip .body { padding: 12px 16px 14px; }
+    .clip h3 { font-size: 15.5px; margin-bottom: 4px; }
+    .clip p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .rule { font-family: var(--font-comic); font-size: 22px; letter-spacing: .04em; line-height: 1.15; color: var(--ink); }
+    .rule b { color: var(--hi); font-weight: 400; }
+    .cmd { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; background: var(--ink); color: var(--bone); border-radius: 8px; padding: 14px 16px; overflow-x: auto; border: var(--line-w) solid var(--ink); box-shadow: var(--sh-sm); }
+    .cmd .c { color: var(--gold); }
+    .credits { font-size: 14.5px; line-height: 1.6; color: var(--ink-soft); }
+    .credits b { color: var(--ink); }
+    .poster-embed img { border: var(--line-w) solid var(--ink); border-radius: 6px; box-shadow: var(--sh-sm); background: #fff; }
+    /* ---- try-it demo ---- */
+    .bn-demo-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; align-items: start; }
+    .bn-drop { border: 2px dashed var(--ink); border-radius: var(--radius); background: var(--panel); padding: 26px 20px; text-align: center; cursor: pointer; transition: background .15s ease, transform .15s ease; box-shadow: var(--sh-sm); }
+    .bn-drop:hover, .bn-drop.over { background: var(--panel-2); transform: translate(-1px,-1px); }
+    .bn-drop .big { font-family: var(--font-comic); font-size: 22px; letter-spacing: .05em; color: var(--hi); }
+    .bn-drop .small { font-size: 13px; color: var(--ash); margin-top: 4px; }
+    .bn-stock { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 12px; }
+    .bn-stock img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border: 2px solid var(--ink); border-radius: 5px; cursor: pointer; box-shadow: var(--sh-xs); transition: transform .15s ease; }
+    .bn-stock img:hover { transform: translate(-1px,-1px); box-shadow: var(--sh-sm); }
+    .bn-controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: end; margin-top: 14px; }
+    .bn-controls label { font-family: var(--font-mono); font-size: 11.5px; color: var(--ash); display: flex; flex-direction: column; gap: 4px; }
+    .bn-controls input, .bn-controls select { font-family: var(--font-mono); font-size: 14px; padding: 6px 8px; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--panel); width: 110px; }
+    .bn-status { font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); margin-top: 10px; min-height: 18px; }
+    .bn-status.busy::before { content: "◌ "; color: var(--hi); animation: bulb 1s linear infinite; display: inline-block; }
+    .bn-canvases { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .bn-canvases canvas { width: 100%; height: auto; border: var(--line-w) solid var(--ink); border-radius: 6px; background: var(--panel); display: block; }
+    .bn-canvases .lbl { font-family: var(--font-comic); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--hi); margin-bottom: 4px; }
+    .bn-result { margin-top: 12px; }
+    .bn-big { display: flex; flex-wrap: wrap; gap: 10px 22px; font-family: var(--font-mono); font-size: 15px; color: var(--ink-soft); }
+    .bn-big b { font-size: 26px; color: var(--ink); font-weight: 700; margin-left: 4px; }
+    .bn-result p { font-size: 13px; color: var(--ash); margin-top: 8px; line-height: 1.5; }
+    .bn-result .muted { color: var(--hi-deep); font-weight: 600; }
+    @media (max-width: 820px) { .bn-demo-grid { grid-template-columns: 1fr; } .bn-stock { grid-template-columns: repeat(5, 1fr); } }
+    @media (max-width: 820px) {
+      .strip3, .grid-3 { grid-template-columns: 1fr; }
+      .eq { font-size: 12px; }
+      .gallery, .gallery-head { grid-template-columns: repeat(3, 1fr); }
+      .clip-row { grid-template-columns: 1fr; }
+      .finding { padding-left: 24px; padding-top: 64px; }
+    }
+    .hero-video video.loop { aspect-ratio: 16 / 9; }
+    .two-col-eq { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+    @media (max-width: 820px) { .two-col-eq { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html" aria-current="page">Publications</a>
+      <a href="projects.html">Projects</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button type="button" class="theme-btn" aria-label="Switch between day and night" aria-pressed="false">
+      <span class="if-night"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Day</span></span>
+      <span class="if-day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="lbl">Night</span></span>
+    </button>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+  <a href="cv.html">CV</a>
+</div>
+
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">Sensor calibration ◆ mm-wave radar ◆ STARS Lab, University of Toronto, 2023 → re-run 2026</p>
+    <h1>Radar-to-Radar Calibration</h1>
+    <p>Two Doppler radars on the same vehicle each measure their own velocity from the static world. From the two velocity streams alone they can tell how they are rotated with respect to each other and along which line they sit: no reflectors, no shared field of view, no third sensor. The IEEE AIM 2023 paper was re-implemented from scratch in Python, its simulations re-run, and the Endeavour shuttle-bus experiment repeated from the raw bags. What matched, and what did not, is reported below.</p>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
+<!-- =================== HERO VIDEO =================== -->
+<section class="section" id="demo">
+  <div class="hero-video">
+    <video class="loop" muted loop playsinline autoplay preload="metadata" poster="assets/images/projects/radar_radar/video_poster.jpg">
+      <source src="assets/videos/radar2d_thumb.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p>Fifteen seconds: a vehicle drives through a field of scatterers, each radar turns its Doppler returns into an ego-velocity, and one batch problem snaps the second radar's frame into place. The <a href="#fulldemo">full demo (63 s)</a> walks through the simulations and the real data.</p>
+    <div class="links">
+      <a href="assets/pdf/projects/radar_radar_calibration_report.pdf" target="_blank" rel="noopener">Technical report (11 pp.)</a>
+      <a href="https://arxiv.org/abs/2302.00660" target="_blank" rel="noopener">Paper (arXiv)</a>
+      <a href="https://ieeexplore.ieee.org/document/10196187" target="_blank" rel="noopener">IEEE AIM 2023</a>
+      <a href="https://github.com/thejerrycheng/radar-radar-calibration" target="_blank" rel="noopener">Code</a>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="card stat-tile"><div class="num">0.16<small>°</small></div><div class="lab">axis error, 120 s</div><div class="sub">median over 100 trials at σ = 0.1 m/s; rotation 0.19°. Paper: within 2° / 3°</div></div>
+    <div class="card stat-tile"><div class="num">1.75<small>rad</small></div><div class="lab">Near 5–Near 1, East 2</div><div class="sub">paper: 1.74; dataset: 1.71. Rotation −1.583 vs −1.58</div></div>
+    <div class="card stat-tile"><div class="num">9<small>mm/s</small></div><div class="lab">held-out velocity error</div><div class="sub">best of the three parameter sets on 11 of 13 run–pair cases (paper Table III metric)</div></div>
+    <div class="card stat-tile"><div class="num">60<small>ms</small></div><div class="lab">per solve</div><div class="sub">1681 time steps, 5045 unknowns, Schur-eliminated Levenberg–Marquardt</div></div>
+    <div class="card stat-tile"><div class="num">3.6<small>cm/s</small></div><div class="lab">fused velocity gain</div><div class="sub">median ego-velocity error drops from 23 to 19 cm/s at σ = 0.2 m/s; paper: 4</div></div>
+    <div class="card stat-tile"><div class="num">1,600</div><div class="lab">simulated solves</div><div class="sub">4 noise levels × 4 durations × 100 seeded trials, 141 s total</div></div>
+  </div>
+</section>
+
+<!-- =================== THE STRIP =================== -->
+<section class="section" id="strip">
+  <h2 class="section-title">In one strip</h2>
+  <div class="strip3">
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/radar_radar/endeavour_scan.png" alt="One real radar scan: returns coloured by range-rate and the fitted ego-velocity" class="contain" loading="lazy"></div>
+      <span class="caption-box">1 · Measure</span>
+      <div class="body"><h3>Doppler returns → ego-velocity</h3><p>A static target at azimuth θ has range-rate −[cos θ, sin θ]·<b>h</b>. Fifty-odd returns per scan, a two-point RANSAC to drop moving cars and multipath, then linear least squares with a covariance. One velocity vector per radar per scan.</p></div>
+    </div>
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/radar_radar/strip_converge.jpg" alt="The estimated frame of radar b snapping into place as the batch solver converges" loading="lazy"></div>
+      <span class="caption-box">2 · Fuse</span>
+      <div class="body"><h3>One batch problem</h3><p><b>h</b><sub>b</sub> = R(θ<sub>ba</sub>)(ω<sub>γ</sub> <b>u</b><sub>⊥</sub> + <b>v</b><sub>a</sub>). Only the yaw and the translation <i>axis</i> are identifiable, since a yaw rate and a baseline scale trade off. Levenberg–Marquardt over every velocity and yaw rate plus the two angles, from a closed-form start.</p></div>
+    </div>
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/radar_radar/endeavour_speeds.png" alt="Ego-velocity of four radars against the odometry speed of the Endeavour bus" class="contain" loading="lazy"></div>
+      <span class="caption-box">3 · Verify</span>
+      <div class="body"><h3>A shuttle bus with five radars</h3><p>The Endeavour dataset: five Continental ARS430 radars around a bus, six runs of 4–12 minutes. Calibrate on East 2, check on the other five runs. Two of the three available pairs land within 0.01 rad of the paper; the third is weakly identifiable, and says so.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== METHOD =================== -->
+<section class="section" id="method">
+  <h2 class="section-title">Method</h2>
+  <div class="grid-2">
+    <div class="card card-pad prose">
+      <p class="bn-lead">A radar cannot see its own rotation, but it can see its own <b>velocity</b>: every static scatterer returns a range-rate equal to minus the projection of the ego-velocity on its line of sight. Two radars rigidly mounted on a body see two velocities of the same body at two different points, and the difference between them is the lever-arm term <b>ω × t</b>. In the plane that term always points along the perpendicular of the translation, so the batch model is</p>
+      <div class="eq"><b>h</b><span class="m">a</span> = <b>v</b><span class="m">a</span> + <b>n</b><span class="m">a</span>,     <b>h</b><span class="m">b</span> = R(θ<span class="m">ba</span>) ( ω<span class="m">γ</span> <b>u</b><span class="m">⊥</span> + <b>v</b><span class="m">a</span> ) + <b>n</b><span class="m">b</span>,     <b>u</b> = [cos θ<span class="m">t</span>, sin θ<span class="m">t</span>]</div>
+      <p>with ω<sub>γ</sub> = ω |<b>t</b>| the <i>unscaled</i> yaw rate. Scaling the yaw rate up and the baseline down leaves the data unchanged, so the paper fixes |<b>t</b>| = 1 and estimates the axis θ<sub>t</sub> ∈ [0, π) and the yaw θ<sub>ba</sub>, which are exactly the two parameters that drift in service and are hardest to measure by hand. The cost is the weighted sum of both residuals over every time step (paper eq. 12).</p>
+      <ul>
+        <li><b>Front end:</b> RANSAC least squares per scan, 200 hypotheses at once, covariance from the residuals.</li>
+        <li><b>Initialisation:</b> yaw from the velocity pairs of equal magnitude, axis from the residual <b>b</b> = Rᵀ<b>h</b><sub>b</sub> − <b>h</b><sub>a</sub> ≈ ω<sub>γ</sub><b>u</b><sub>⊥</sub>, then a linear solve for the states.</li>
+        <li><b>Solver:</b> analytic Jacobians, Schur complement over the 3×3 per-time blocks, so a 2-minute run costs 60 ms; the covariance of (θ<sub>t</sub>, θ<sub>ba</sub>) and its smallest eigenvalue come for free.</li>
+        <li><b>Identifiability:</b> det <b>O</b> ∝ α<sub>γ</sub> (<b>h</b><sub>a</sub> × <b>u</b>): the yaw rate must change, the body must move, and not along the translation axis. Checked numerically below.</li>
+      </ul>
+      <div class="tag-row"><span class="chip">numpy + scipy only</span><span class="chip">no ROS (pure-Python bag reader)</span><span class="chip">fixed seeds</span><span class="chip">16 unit tests</span></div>
+    </div>
+    <div>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/pipeline_scene.png" alt="Scatterer simulation: trajectories of both radars and one scan with the RANSAC fit" loading="lazy"><figcaption><b>Scatterer-level pipeline.</b> Sixty seconds through 900 random scatterers with 12 % moving targets, both radars scanning at 14 Hz. The RANSAC fit recovers each ego-velocity to 2 cm/s median; the calibration from the valid pairs lands at 158.06° / 95.11° against 158.20° / 95.00°.</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/radar_radar/sim_trajectory.png" alt="Nominal simulation trajectory: ego-velocity and yaw rate" loading="lazy"><figcaption><b>The paper's nominal trajectory</b> (its Fig. 2), taken from the archived MATLAB generator: a periodic velocity and a yaw rate that is zero half of the time, which is exactly where det <b>O</b> vanishes.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- =================== SIMULATION =================== -->
+<section class="section" id="simulation">
+  <h2 class="section-title">Simulation studies</h2>
+  <div class="grid-2">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/sim_errors.png" alt="Box plots of axis and rotation errors per noise level and duration" loading="lazy"><figcaption><b>Paper Fig. 3, re-run.</b> Absolute error of the translation axis (top) and the rotation (bottom) over 100 trials for each noise level (x axis) and duration (colour). Dashed: the paper's 2° / 3° envelope. Every trial longer than 30 s at σ ≤ 0.15 m/s sits inside it; the isolated 20° points are wrong local minima reached from a poor closed-form start on the shortest, noisiest runs.</figcaption></figure>
+    <div>
+      <div class="table-wrap" style="margin-top:0">
+        <table class="data-table">
+          <thead><tr><th>σ<sub>r</sub> [m/s]</th><th>T [s]</th><th>θ<sub>t</sub> med</th><th>θ<sub>t</sub> p95</th><th>θ<sub>ba</sub> med</th><th>θ<sub>ba</sub> p95</th><th>in 2°/3°</th></tr></thead>
+          <tbody>
+            <tr><td>0.05</td><td>15</td><td>0.19</td><td>0.61</td><td>0.24</td><td>0.88</td><td class="ok">100 %</td></tr>
+            <tr><td>0.05</td><td>120</td><td class="hi">0.08</td><td>0.27</td><td class="hi">0.09</td><td>0.26</td><td class="ok">100 %</td></tr>
+            <tr><td>0.10</td><td>15</td><td>0.54</td><td>1.67</td><td>0.39</td><td>1.49</td><td>98 %</td></tr>
+            <tr><td>0.10</td><td>120</td><td>0.16</td><td>0.45</td><td>0.19</td><td>0.61</td><td class="ok">100 %</td></tr>
+            <tr><td>0.20</td><td>15</td><td>1.05</td><td class="bad">19.5</td><td>1.08</td><td class="bad">13.4</td><td class="bad">76 %</td></tr>
+            <tr><td>0.20</td><td>60</td><td>0.63</td><td>1.50</td><td>0.50</td><td>1.28</td><td>99 %</td></tr>
+            <tr><td>0.20</td><td>120</td><td>0.38</td><td>1.02</td><td>0.28</td><td>1.07</td><td class="ok">100 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:13px;color:var(--ash);margin-top:10px">Errors in degrees. All sixteen settings are in the report; the reported 1σ tracks the empirical spread.</p>
+      <figure class="fig"><img src="assets/images/projects/radar_radar/sim_fused_velocity.png" alt="Raw versus fused ego-velocity error for both radars" loading="lazy"><figcaption><b>Paper Fig. 4.</b> Because the batch problem ties both radars to one motion, the fused velocities beat the raw ones: median error 0.231 → 0.192 m/s (a) and 0.244 → 0.206 m/s (b) at σ = 0.2 m/s; 3.6 ± 0.3 cm/s averaged over 100 trials, the paper says 4.</figcaption></figure>
+    </div>
+  </div>
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/sim_degeneracy.png" alt="Degeneracy sweeps: constant yaw rate and ego-motion aligned with the translation axis" loading="lazy"><figcaption><b>The two degenerate motions, measured.</b> Left: the yaw-rate oscillation is shrunk to zero (constant ω): the errors grow 4–6× and the information eigenvalue (gold) drops 15×, but the problem stays solvable because the heading still changes. Right: driving along the translation axis. At 0° the smallest eigenvalue is numerically zero, the unobservable case the paper's determinant predicts; 5° away it is back to nominal.</figcaption></figure>
+    <div>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/sim_detO.png" alt="Observability determinant along the nominal trajectory" loading="lazy"><figcaption><b>det O along the nominal trajectory:</b> zero whenever the yaw rate is constant, which the paper's own trajectory does for half of every period.</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/radar_radar/sim_scale.png" alt="Histogram of the recovered translation magnitude with a coarse gyro" loading="lazy"><figcaption><b>Paper Table IV.</b> Add any coarse yaw-rate source (here 0.02 rad/s noise) and the unscaled yaw rate gives the metric baseline: 4.96 ± 0.09 m for a 5 m truth.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- =================== REAL DATA =================== -->
+<section class="section" id="endeavour">
+  <h2 class="section-title">Endeavour dataset</h2>
+  <div class="grid-2">
+    <div class="card card-pad prose">
+      <p class="bn-lead">The Xi'an Jiaotong "Endeavour" shuttle bus carries five ARS430 radars (front, and two on each side) sampled at 13 Hz, plus an RTK-corrected odometry. Six loops of 4–12 minutes. The archived raw bags were converted to point clouds twice, and the two conversions do not agree: in the July-2022 set the azimuth is <b>mirrored</b> and offset by 3.3°, and the ego-velocities computed from it over-read the odometry speed by 7 % on the side radars but only 2.6 % on the front one. With such a between-radar bias the batch problem prefers a degenerate answer. The September-2022 set has consistent azimuths, speed ratios of 0.995–0.999 on every radar, and is what everything below uses. It lacks radar Near 4, so three of the paper's four pairs could be re-run.</p>
+      <p>Pipeline: returns beyond 1 m with |ṙ| &lt; 10 m/s → RANSAC at 0.1 m/s (the paper's 0.025 m/s only passes 5–30 % of these scans; the ARS430 spread is 0.05-class) → interpolate radar b onto radar a's clock → drop pairs slower than 0.05 m/s → batch calibration with per-scan covariances, about 6,470 pairs each.</p>
+      <div class="table-wrap" style="margin-top:14px">
+        <table class="data-table">
+          <thead><tr><th>pair (a = Near 5)</th><th>dataset θ<sub>t</sub></th><th>dataset θ<sub>ba</sub></th><th>paper θ<sub>t</sub></th><th>paper θ<sub>ba</sub></th><th>re-run θ<sub>t</sub></th><th>re-run θ<sub>ba</sub></th></tr></thead>
+          <tbody>
+            <tr><td>Near 1 (rear, 5.7 m)</td><td>1.71</td><td>−1.57</td><td>1.74</td><td>−1.58</td><td class="ok">1.754</td><td class="ok">−1.583</td></tr>
+            <tr><td>Near 2 (rear, 5.8 m)</td><td>1.44</td><td>1.59</td><td>1.41</td><td>1.61</td><td class="ok">1.409</td><td class="ok">1.615</td></tr>
+            <tr><td>Near 3 (front side, 0.8 m)</td><td>2.73</td><td>−1.58</td><td>2.79</td><td>−1.58</td><td class="bad">3.134</td><td class="ok">−1.573</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:13px;color:var(--ash);margin-top:10px">Radians, in the paper's convention (its rotation matrix is the transpose of the one used here, so the sign of θ<sub>ba</sub> is flipped in the code). Reported 1σ: 0.05° on the axis, 0.02° on the yaw.</p>
+    </div>
+    <div>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/endeavour_params.png" alt="Bar chart of the calibration parameters: dataset, paper, re-run" loading="lazy"><figcaption><b>Paper Table I.</b> For the two long-baseline pairs the re-run reproduces the 2023 estimates to 0.015 rad and the dataset's extrinsics to 2.5°. Near 5–Near 3 has a 0.83 m baseline, so its lever-arm signal is at most 0.25 m/s, comparable to the noise: the axis comes out 23° off and the reported 1σ is over-confident there.</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/radar_radar/endeavour_eval.png" alt="Held-out velocity errors per run for dataset, paper and re-run parameters" loading="lazy"><figcaption><b>Paper Table III.</b> Mean velocity-error magnitude on the five other runs with each parameter set (yaw rate chosen per time step, unit moment arm). The re-run wins on every run for the two long-baseline pairs (9–18 mm/s against 17–28 mm/s with the dataset values); for the weak pair the dataset's axis is better on four of five runs, which is the honest way to read the 23°.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- =================== FINDINGS =================== -->
+<section class="section" id="findings">
+  <h2 class="section-title">What the re-run found</h2>
+  <p class="quote">Three things that are not in the paper and that anyone re-using the method or the dataset should know.</p>
+
+  <div class="card finding" style="margin-top:22px">
+    <span class="no">1</span>
+    <h3>A mirrored bag makes the batch problem lie</h3>
+    <p>The per-time yaw rate ω<sub>γ</sub><sup>j</sup> is a free variable, so the model can absorb <i>any</i> residual along the perpendicular of the translation axis. If the two radars' speeds disagree by a few percent, the cheapest explanation is a wrong yaw plus an axis chosen so that its perpendicular soaks up the difference: on the mirrored July-2022 bags every pair converged to θ<sub>t</sub> ≈ 93° with the yaw 25–30° off, at a <i>lower</i> cost than the truth. The cure was the data, not the solver; the diagnostic is the odometry speed ratio, which should be 1.00 on every radar.</p>
+  </div>
+
+  <div class="card finding" style="margin-top:22px">
+    <span class="no">2</span>
+    <h3>Short baselines are weakly identifiable</h3>
+    <p>The information about the axis scales with |ω| |<b>t</b>|. For the two rear radars that signal is up to 1.7 m/s; for the front-side pair it is 0.25 m/s at most, the same size as the ego-velocity noise. The solver still converges from both the automatic and the dataset-based start to one crisp answer with a 0.06° reported sigma, and that answer is 23° from the dataset's. The covariance is exact for the model; the model is not the whole story when the excitation is that small. A prior on the axis, or a longer run with more turning, is the fix.</p>
+  </div>
+
+  <div class="card finding" style="margin-top:22px">
+    <span class="no">3</span>
+    <h3>The basin of attraction is about 25° wide</h3>
+    <p>Starting the batch solver 38° / 45° away from the truth lands in a spurious minimum 63° / 60° away with 30× the cost; starting 25° / 30° away converges in four iterations. The closed-form initialisation is inside that basin in every 60-s run and in 76–98 % of the 15-s runs at the highest noise, which is where the 20° outliers of the simulation sweep come from. Whenever the yaw rate changes sign with a small amplitude the initialiser also fails, while the batch problem itself is fine from a better start.</p>
+  </div>
+</section>
+
+<!-- =================== FULL DEMO =================== -->
+<section class="section" id="fulldemo">
+  <h2 class="section-title">Full demo</h2>
+  <div class="hero-video">
+    <video controls playsinline preload="metadata" poster="assets/images/projects/radar_radar/card.jpg">
+      <source src="assets/videos/radar2d_demo.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p>63 s: the scatterer simulation with both radars' returns and ego-velocity streams, the batch problem converging from a deliberately wrong start, the simulation sweep and the degeneracy check, the Endeavour ego-velocities against odometry with the calibration read-out, and the held-out evaluation.</p>
+  </div>
+</section>
+
+<!-- =================== REPRODUCE =================== -->
+<section class="section" id="reproduce">
+  <h2 class="section-title">Reproduce</h2>
+  <div class="grid-2">
+    <div class="card card-pad prose">
+      <p>The re-implementation is an installable package, <code>r2rcal</code>, with a pytest suite and a harness that regenerates every figure, table, the report and both videos from scratch (numpy, scipy, matplotlib, the pure-Python <code>rosbags</code> reader; ffmpeg for the videos). The Endeavour bags are not redistributed; the report says which conversion to use.</p>
+      <div class="cmd">pip install -e . &amp;&amp; pytest                     <span class="c"># 16 tests</span>
+cd experiments
+python sim_sweep.py                              <span class="c"># 1600 solves, ~2.5 min</span>
+python sim_pipeline.py                           <span class="c"># scatterers → RANSAC → calibration</span>
+ENDEAVOUR_DIR=/bags python run_endeavour.py      <span class="c"># 6 runs, stage 1 + 2</span>
+python fig_endeavour.py &amp;&amp; python make_tables.py &amp;&amp; (cd ../docs &amp;&amp; make)
+python make_video.py                             <span class="c"># thumbnail + full demo</span></div>
+      <div class="links" style="margin-top:16px">
+        <a href="https://github.com/thejerrycheng/radar-radar-calibration" target="_blank" rel="noopener">radar-radar-calibration on GitHub</a>
+        <a href="assets/pdf/projects/radar_radar_calibration_report.pdf" target="_blank" rel="noopener">Technical report</a>
+        <a href="https://arxiv.org/abs/2302.00660" target="_blank" rel="noopener">Paper</a>
+      </div>
+    </div>
+    <div class="card card-pad credits">
+      <p class="subhead" style="margin-top:0">Credits</p>
+      <p><b>Paper.</b> Qilong Cheng, Emmett Wise (equal contribution) and Jonathan Kelly, Space &amp; Terrestrial Autonomous Robotic Systems Laboratory, University of Toronto Institute for Aerospace Studies. IEEE/ASME AIM 2023.</p>
+      <p style="margin-top:10px"><b>Data.</b> Endeavour Radar Dataset, Institute of Artificial Intelligence and Robotics, Xi'an Jiaotong University (five ARS430 radars, RTK/INS odometry).</p>
+      <p style="margin-top:10px"><b>2026 re-run.</b> Python re-implementation, simulation and scatterer studies, the Endeavour re-run from the raw bags, the report, the videos and this page. The original MATLAB solver and ego-velocity tools were consulted for the trajectory generator and the dataset conventions.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>

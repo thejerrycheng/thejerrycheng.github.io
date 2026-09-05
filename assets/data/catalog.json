@@ -79,19 +79,36 @@
       "year": 2025,
       "href": "https://arxiv.org/abs/2507.23045",
       "images": [
+        "assets/images/projects/rwhe/card.jpg",
         "assets/images/publications/robot_world.jpg"
       ],
       "alts": [
+        "A camera orbiting an AprilTag target: the AX = YB kinematic loop",
         "Robot-World & Hand-Eye Calibration"
       ],
-      "fit": "contain",
+      "fit": "cover",
       "links": [
+        {
+          "label": "Website",
+          "href": "rwhe_calibration.html",
+          "internal": true
+        },
         {
           "label": "Paper",
           "href": "https://arxiv.org/abs/2507.23045"
+        },
+        {
+          "label": "Code (original, Julia)",
+          "href": "https://github.com/utiasSTARS/certifiable-rwhe-calibration"
+        },
+        {
+          "label": "Report",
+          "href": "assets/pdf/projects/rwhe_calibration_report.pdf"
         }
       ],
-      "desc": "Certifiably correct calibration achieving globally optimal robot-world and hand-eye alignment under general conditions."
+      "desc": "Generalized robot-world and hand-eye calibration (many sensors, many targets, unknown monocular scale) solved to certified global optimality by a semidefinite relaxation over the rotations. Re-implemented in Python in 2026: the paper's simulation studies, and the real 8-camera / 16-tag rig data solved with a duality gap of 1e-8, recovering the paper's 2.5 % tag-scale finding.",
+      "video": "assets/videos/rwhe_thumb.mp4",
+      "short": "Certifiably correct hand-eye calibration"
     },
     {
       "id": "iris-thesis",
@@ -249,13 +266,20 @@
       "year": 2023,
       "href": "https://ieeexplore.ieee.org/document/10196187",
       "images": [
+        "assets/images/projects/radar_radar/card.jpg",
         "assets/images/publications/2d_radar_radar.jpg"
       ],
       "alts": [
+        "Two radars on a vehicle with Doppler returns and ego-velocity arrows",
         "Radar pair calibration"
       ],
-      "fit": "contain",
+      "fit": "cover",
       "links": [
+        {
+          "label": "Website",
+          "href": "radar_radar.html",
+          "internal": true
+        },
         {
           "label": "Paper",
           "href": "https://arxiv.org/abs/2302.00660"
@@ -263,9 +287,19 @@
         {
           "label": "Video",
           "href": "https://www.youtube.com/watch?v=hfXdG6j3sjE"
+        },
+        {
+          "label": "Code",
+          "href": "https://github.com/thejerrycheng/radar-radar-calibration"
+        },
+        {
+          "label": "Report",
+          "href": "assets/pdf/projects/radar_radar_calibration_report.pdf"
         }
       ],
-      "desc": "Proposes a calibration framework for radar-radar pairs leveraging ego-motion cues without overlapping views for improved pose estimation accuracy."
+      "desc": "Two Doppler radars on one vehicle calibrate each other from their own ego-velocities: the yaw and the translation axis are identifiable without targets or overlapping views. Re-implemented in Python and re-run in 2026: simulation sweep inside the paper's 2°/3° envelope, and the Endeavour bus pairs reproduced to 0.01 rad, with the weakly identifiable short-baseline pair called out.",
+      "video": "assets/videos/radar2d_thumb.mp4",
+      "short": "Radar-to-radar calibration from ego-velocity"
     },
     {
       "id": "radar-camera",
@@ -275,19 +309,36 @@
       "year": 2022,
       "href": "https://ieeexplore.ieee.org/abstract/document/10256219",
       "images": [
+        "assets/images/projects/radar_camera/card.jpg",
         "assets/images/publications/3d_radar_camera.jpg"
       ],
       "alts": [
+        "Handheld radar-camera rig flying along a continuous-time B-spline",
         "Radar-camera spatiotemporal calibration"
       ],
-      "fit": "contain",
+      "fit": "cover",
       "links": [
+        {
+          "label": "Website",
+          "href": "radar_camera.html",
+          "internal": true
+        },
         {
           "label": "Paper",
           "href": "https://arxiv.org/abs/2211.01871"
+        },
+        {
+          "label": "IEEE T-RO",
+          "href": "https://ieeexplore.ieee.org/abstract/document/10256219"
+        },
+        {
+          "label": "Report",
+          "href": "assets/pdf/projects/radar_camera_calibration_report.pdf"
         }
       ],
-      "desc": "Introduces continuous-time B-spline calibration for radar-camera systems, outperforming state-of-the-art methods in robustness and precision."
+      "desc": "Targetless spatiotemporal calibration of a 3D radar and a monocular camera: radar ego-velocity and scaled camera poses fused on a continuous-time B-spline trajectory to estimate the extrinsics, the scale and the time offset. Re-implemented in Python in 2026 with the paper's simulation studies, an identifiability check, and the radar front end run on the original handheld-rig recordings.",
+      "video": "assets/videos/radarcam_thumb.mp4",
+      "short": "Radar-camera spatiotemporal calibration"
     },
     {
       "id": "wsadm",
