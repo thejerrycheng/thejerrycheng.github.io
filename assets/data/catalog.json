@@ -203,6 +203,48 @@
       "desc": "Introduces a wearable vibrotactile system integrated with UAV teleoperation, leveraging control barrier functions for safe human-drone interaction."
     },
     {
+      "id": "bipednav",
+      "title": "Monocular Depth Estimation of Human-Robot Walking Environments using Deep Learning (BipedNav)",
+      "short": "BipedNav: stair geometry from one image, then walked",
+      "authors": "A. Qiu, A. Narayanan, <b>Q. Cheng</b>, and B. Laschowski",
+      "venue": "Poster, Neural Robotics Lab, KITE Research Institute &amp; Robotics Institute, University of Toronto",
+      "year": 2024,
+      "note": "re-implemented and stress-tested in 2026",
+      "href": "https://www.researchgate.net/publication/382269581_Monocular_depth_estimation_of_human-robot_walking_environments_using_deep_learning",
+      "images": [
+        "assets/images/projects/bipednav/poster/fig4_results_grid.jpg"
+      ],
+      "alts": [
+        "Stair scenes: RGB, estimated normals, extracted tread planes"
+      ],
+      "video": "assets/videos/bipednav_perception.mp4",
+      "fit": "contain",
+      "links": [
+        {
+          "label": "Website",
+          "href": "bipednav.html",
+          "internal": true
+        },
+        {
+          "label": "Poster",
+          "href": "assets/pdf/projects/mono_est_poster.pdf"
+        },
+        {
+          "label": "ResearchGate",
+          "href": "https://www.researchgate.net/publication/382269581_Monocular_depth_estimation_of_human-robot_walking_environments_using_deep_learning"
+        },
+        {
+          "label": "Technical report",
+          "href": "assets/pdf/projects/bipednav_technical_report.pdf"
+        },
+        {
+          "label": "Code",
+          "href": "https://github.com/thejerrycheng/BipedNav"
+        }
+      ],
+      "desc": "Metric3D v2 fine-tuned on 16,780 RGB-D stair images recovers stair rise and run from a single image (1.7 cm / 2.5 cm mean error on the archived scenes). BipedNav feeds that geometry to a one-motor biped walking by virtual holonomic constraints, shown to climb and descend real, collision-checked staircases."
+    },
+    {
       "id": "radar-radar",
       "title": "Extrinsic Calibration of 2D Millimetre-Wavelength Radar Pairs Using Ego-Velocity Estimates",
       "authors": "<b>Q. Cheng</b>, E. Wise, and J. Kelly",
@@ -384,13 +426,20 @@
       "year": 2024,
       "tag": "Perception",
       "images": [
+        "assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_profile_gt.png",
         "assets/images/publications/mono_dep_pipeline.png"
       ],
       "alts": [
+        "Stair point-cloud profile with fitted tread and riser planes",
         "Monocular depth estimation pipeline"
       ],
       "fit": "contain",
       "links": [
+        {
+          "label": "Website",
+          "href": "bipednav.html#perception",
+          "internal": true
+        },
         {
           "label": "PDF",
           "href": "https://www.researchgate.net/publication/382269581_Monocular_depth_estimation_of_human-robot_walking_environments_using_deep_learning"
@@ -400,7 +449,7 @@
           "href": "assets/pdf/projects/mono_est_poster.pdf"
         }
       ],
-      "desc": "Monocular depth pipeline for human-robot walking environments: ZoeDepth baseline, metric reprojection to 3D point clouds, and iterative RANSAC to extract stair planes and dimensions."
+      "desc": "Monocular depth pipeline for human-robot walking environments: Metric3D v2 fine-tuned on 16,780 RGB-D stair images, metric reprojection to 3D point clouds, and plane extraction for stair rise and run. Re-run in 2026 on the archived scenes: 1.7 cm rise / 2.5 cm run mean error against a tape measure."
     },
     {
       "id": "clear-net",
@@ -430,24 +479,38 @@
     },
     {
       "id": "biped-vhc",
-      "title": "Geometric Nonlinear Control for Biped Walking",
+      "title": "BipedNav: Stair Perception + VHC Biped Walking",
       "year": 2024,
-      "tag": "Control",
+      "tag": "Perception + Control",
       "images": [
-        "assets/images/projects/biped_vhc/stair_walking.jpg"
+        "assets/images/projects/bipednav/stairs_real_slope_+5_reflect_strobe.png"
       ],
       "alts": [
-        "Biped walking on stairs with virtual holonomic constraints"
+        "Acrobot biped climbing a collision-checked staircase under a virtual holonomic constraint"
       ],
-      "video": "assets/videos/walking_stairs.mp4",
+      "video": "assets/videos/bipednav_stairs_up.mp4",
       "fit": "contain",
       "links": [
         {
-          "label": "PDF",
+          "label": "Website",
+          "href": "bipednav.html",
+          "internal": true
+        },
+        {
+          "label": "Technical report",
+          "href": "assets/pdf/projects/bipednav_technical_report.pdf"
+        },
+        {
+          "label": "ECE1658 report",
           "href": "assets/pdf/projects/ECE1658_final_report-3.pdf"
+        },
+        {
+          "label": "Code",
+          "href": "https://github.com/thejerrycheng/BipedNav"
         }
       ],
-      "desc": "Virtual Holonomic Constraints with polynomial gait design, feedback linearization, and terrain generalization to slopes and stairs."
+      "desc": "One-motor biped walking by virtual holonomic constraints (ECE1658), re-implemented and stress-tested in 2026: the report's flat gait reproduced to 4e-5, the impact-map convention corrected, and slope gaits shown to climb and descend real collision-checked staircases when the foot lands within 5% of the nosing (up) or on the nosing (down). Fed by the monocular stair-geometry pipeline.",
+      "short": "BipedNav: stairs, seen once, then walked"
     },
     {
       "id": "aero-localization",

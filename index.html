@@ -205,6 +205,15 @@
           <span class="slide-cta">Quick look</span>
         </span>
       </a>
+      <a class="slide" href="publications.html#bipednav" data-kind="publications" data-id="bipednav">
+        <span class="slide-media"><img src="assets/images/projects/bipednav/poster/fig4_results_grid.jpg" alt="Stair scenes: RGB, estimated normals, extracted tread planes" loading="lazy" decoding="async" class="fit-contain"><span class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/projects/bipednav/poster/fig4_results_grid.jpg" data-src="assets/videos/bipednav_perception.mp4"></video></span></span>
+        <span class="slide-tag">Poster, Neural Robotics Lab, KITE Research Institute &amp; Robotics Institute, University of Toronto 2024</span>
+        <span class="slide-body">
+          <span class="slide-title">BipedNav: stair geometry from one image, then walked</span>
+          <span class="slide-sub">A. Qiu, A. Narayanan, <b>Q. Cheng</b>, and B. Laschowski</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
       <a class="slide" href="publications.html#radar-radar" data-kind="publications" data-id="radar-radar">
         <span class="slide-media"><img src="assets/images/publications/2d_radar_radar.jpg" alt="Radar pair calibration" loading="lazy" decoding="async" class="fit-contain"></span>
         <span class="slide-tag">IEEE AIM 2023</span>
@@ -285,11 +294,11 @@
         </span>
       </a>
       <a class="slide" href="projects.html#mono-depth" data-kind="projects" data-id="mono-depth">
-        <span class="slide-media"><img src="assets/images/publications/mono_dep_pipeline.png" alt="Monocular depth estimation pipeline" loading="lazy" decoding="async" class="fit-contain"></span>
+        <span class="slide-media"><img src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_profile_gt.png" alt="Stair point-cloud profile with fitted tread and riser planes" loading="lazy" decoding="async" class="fit-contain"></span>
         <span class="slide-tag">Perception 2024</span>
         <span class="slide-body">
           <span class="slide-title">Monocular Depth Estimation for Human-Robot Locomotion</span>
-          <span class="slide-sub">Monocular depth pipeline for human-robot walking environments: ZoeDepth baseline, metric reprojection to 3D point clouds, and iterative RANSAC to extract stair planes and dimensions.</span>
+          <span class="slide-sub">Monocular depth pipeline for human-robot walking environments: Metric3D v2 fine-tuned on 16,780 RGB-D stair images, metric reprojection to 3D point clouds, and plane extraction for stair rise and run. Re-run in 2026 on the archived scenes: 1.7 cm rise / 2.5 cm run mean error against a tape measure.</span>
           <span class="slide-cta">Quick look</span>
         </span>
       </a>
@@ -303,11 +312,11 @@
         </span>
       </a>
       <a class="slide" href="projects.html#biped-vhc" data-kind="projects" data-id="biped-vhc">
-        <span class="slide-media"><img src="assets/images/projects/biped_vhc/stair_walking.jpg" alt="Biped walking on stairs with virtual holonomic constraints" loading="lazy" decoding="async" class="fit-contain"><span class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/projects/biped_vhc/stair_walking.jpg" data-src="assets/videos/walking_stairs.mp4"></video></span></span>
-        <span class="slide-tag">Control 2024</span>
+        <span class="slide-media"><img src="assets/images/projects/bipednav/stairs_real_slope_+5_reflect_strobe.png" alt="Acrobot biped climbing a collision-checked staircase under a virtual holonomic constraint" loading="lazy" decoding="async" class="fit-contain"><span class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/projects/bipednav/stairs_real_slope_+5_reflect_strobe.png" data-src="assets/videos/bipednav_stairs_up.mp4"></video></span></span>
+        <span class="slide-tag">Perception + Control 2024</span>
         <span class="slide-body">
-          <span class="slide-title">Geometric Nonlinear Control for Biped Walking</span>
-          <span class="slide-sub">Virtual Holonomic Constraints with polynomial gait design, feedback linearization, and terrain generalization to slopes and stairs.</span>
+          <span class="slide-title">BipedNav: stairs, seen once, then walked</span>
+          <span class="slide-sub">One-motor biped walking by virtual holonomic constraints (ECE1658), re-implemented and stress-tested in 2026: the report's flat gait reproduced to 4e-5, the impact-map convention corrected, and slope gaits shown to climb and descend real collision-checked staircases when the foot lands within 5% of the nosing (up) or on the nosing (down). Fed by the monocular stair-geometry pipeline.</span>
           <span class="slide-cta">Quick look</span>
         </span>
       </a>

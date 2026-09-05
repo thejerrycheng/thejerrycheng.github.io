@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BipedNav — stairs, seen once, then walked — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="BipedNav: monocular stair perception (rise and run from one image) feeding a virtual-holonomic-constraint walker that climbs and descends real, collision-checked staircases. Figures, videos, dataset, technical report.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/bipednav.html">
+  <meta property="og:title" content="BipedNav — stairs, seen once, then walked">
+  <meta property="og:description" content="Monocular stair perception + VHC biped walking, re-implemented, verified and stress-tested.">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/bipednav/stairs_real_slope_+5_reflect_strobe.png">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <style>
+    /* ---- page-local components (same print recipe as gotham.css) ---- */
+    .bn-lead { font-size: 17px; line-height: 1.6; max-width: 70ch; }
+    .bn-lead a { color: var(--hi-deep); font-weight: 600; text-decoration: none; }
+    .bn-lead a:hover { text-decoration: underline; }
+    .hero-video { position: relative; border-radius: var(--radius); overflow: hidden; background: var(--ink); border: var(--line-w) solid var(--ink); box-shadow: var(--sh); }
+    .hero-video video { width: 100%; display: block; aspect-ratio: 16 / 9; background: var(--ink); }
+    .hero-caption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px; margin-top: 16px; }
+    .hero-caption p { font-size: 14px; color: var(--ink-soft); max-width: 62ch; }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-top: 28px; }
+    .stat-tile { padding: 14px 14px 12px; text-align: left; }
+    .stat-tile .num { font-family: var(--font-mono); font-weight: 700; font-size: 26px; letter-spacing: -0.02em; color: var(--ink); line-height: 1.05; }
+    .stat-tile .num small { font-size: 14px; font-weight: 400; color: var(--ash); margin-left: 3px; }
+    .stat-tile .lab { font-family: var(--font-comic); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--hi); margin-top: 6px; line-height: 1.2; }
+    .stat-tile .sub { font-size: 12px; color: var(--ash); margin-top: 4px; line-height: 1.35; }
+    .strip3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .panel { overflow: hidden; display: flex; flex-direction: column; }
+    .panel .media { background: var(--bone); border-bottom: var(--line-w) solid var(--ink); aspect-ratio: 4 / 3; overflow: hidden; position: relative; }
+    .panel .media img, .panel .media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .panel .media img.contain, .panel .media video.contain { object-fit: contain; background: var(--panel); }
+    .panel .body { padding: 14px 16px 16px; }
+    .panel h3 { font-size: 16px; margin-bottom: 4px; }
+    .panel p { font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
+    .panel .caption-box { margin: -26px 0 0 12px; position: relative; z-index: 2; }
+    .fig { margin: 22px 0 0; }
+    .fig img, .fig video { width: 100%; display: block; background: var(--panel); border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); box-shadow: var(--sh-sm); }
+    .fig figcaption { font-size: 13px; line-height: 1.5; color: var(--ash); margin-top: 10px; }
+    .fig figcaption b { color: var(--ink); font-weight: 600; }
+    .grid-2 { align-items: start; }
+    .grid-2 > *, .strip3 > *, .clip-row > *, .finding, .prose { min-width: 0; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .photos3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .eq { font-family: var(--font-mono); font-size: 13.5px; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 6px; padding: 10px 14px; margin: 12px 0; overflow-x: auto; white-space: nowrap; box-shadow: var(--sh-xs); max-width: 100%; }
+    .eq .m { color: var(--hi-deep); }
+    .prose p { font-size: 15.5px; line-height: 1.62; margin-bottom: 12px; }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose ul { padding-left: 20px; margin: 8px 0 12px; }
+    .prose li { font-size: 15px; line-height: 1.55; margin-bottom: 6px; }
+    .prose li::marker { color: var(--hi); }
+    .prose code { background: var(--paper); border: 1px solid rgba(21,24,32,.35); border-radius: 4px; padding: 1px 6px; font-size: 12.5px; }
+    .data-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12.5px; background: var(--panel); border: var(--line-w) solid var(--ink); box-shadow: var(--sh-sm); }
+    .data-table th, .data-table td { padding: 8px 10px; border-bottom: 1.5px dashed rgba(21,24,32,.35); text-align: right; white-space: nowrap; }
+    .data-table th:first-child, .data-table td:first-child { text-align: left; }
+    .data-table thead th { background: var(--ink); color: var(--bone); font-weight: 700; border-bottom: var(--line-w) solid var(--ink); }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table td.hi { color: var(--hi-deep); font-weight: 700; }
+    .data-table td.ok { color: var(--green); font-weight: 700; }
+    .data-table td.bad { color: var(--rust); font-weight: 700; }
+    .table-wrap { overflow-x: auto; margin-top: 18px; }
+    .finding { position: relative; padding: 22px 24px 22px 66px; }
+    .finding .no { position: absolute; left: 16px; top: 14px; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--yellow); border: var(--line-w) solid var(--ink); font-family: var(--font-comic); font-size: 20px; box-shadow: var(--sh-xs); transform: rotate(-6deg); }
+    .finding h3 { font-size: 19px; margin-bottom: 8px; }
+    .finding p { font-size: 15px; line-height: 1.58; color: var(--ink-soft); }
+    .finding p + p { margin-top: 8px; }
+    .gallery { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 18px; }
+    .gallery img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border: 1.5px solid var(--ink); border-radius: 4px; background: var(--panel); display: block; }
+    .gallery img.profile { object-fit: contain; }
+    .gallery .lbl { grid-column: 1 / -1; font-family: var(--font-mono); font-size: 11px; color: var(--ash); margin-top: 4px; }
+    .gallery-head { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 12px; }
+    .gallery-head span { font-family: var(--font-comic); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--hi); text-align: center; }
+    .clip-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+    .clip { overflow: hidden; }
+    .clip video { width: 100%; display: block; aspect-ratio: 16 / 9; background: var(--ink); }
+    .clip .body { padding: 12px 16px 14px; }
+    .clip h3 { font-size: 15.5px; margin-bottom: 4px; }
+    .clip p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .rule { font-family: var(--font-comic); font-size: 22px; letter-spacing: .04em; line-height: 1.15; color: var(--ink); }
+    .rule b { color: var(--hi); font-weight: 400; }
+    .cmd { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; background: var(--ink); color: var(--bone); border-radius: 8px; padding: 14px 16px; overflow-x: auto; border: var(--line-w) solid var(--ink); box-shadow: var(--sh-sm); }
+    .cmd .c { color: var(--gold); }
+    .credits { font-size: 14.5px; line-height: 1.6; color: var(--ink-soft); }
+    .credits b { color: var(--ink); }
+    .poster-embed img { border: var(--line-w) solid var(--ink); border-radius: 6px; box-shadow: var(--sh-sm); background: #fff; }
+    @media (max-width: 820px) {
+      .strip3, .grid-3 { grid-template-columns: 1fr; }
+      .eq { font-size: 12px; }
+      .gallery, .gallery-head { grid-template-columns: repeat(3, 1fr); }
+      .clip-row { grid-template-columns: 1fr; }
+      .finding { padding-left: 24px; padding-top: 64px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+  <a href="cv.html">CV</a>
+</div>
+
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">Perception ◆ Nonlinear control ◆ University of Toronto, 2024 → re-tested 2026</p>
+    <h1>BipedNav</h1>
+    <p>Stairs, seen once, then walked. A monocular network turns one photo of a staircase into rise and run; a one-motor biped turns rise and run into a walking gait that is a hybrid limit cycle. Everything below was re-run from the archived code and data, and the parts that broke are reported as found.</p>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
+<!-- =================== HERO VIDEO =================== -->
+<section class="section" id="demo">
+  <div class="hero-video">
+    <video controls playsinline preload="metadata" poster="assets/images/projects/bipednav/video_poster.jpg">
+      <source src="assets/videos/bipednav_demo.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p>Demonstration (1 min 20 s): the perception layer on a real staircase, the walker on flat ground, down a slope, up a 5° staircase and down a 10° staircase with treads and risers, and the geometric reason a knee-less biped cannot take steeper stairs.</p>
+    <div class="links">
+      <a href="assets/pdf/projects/bipednav_technical_report.pdf" target="_blank" rel="noopener">Technical report (14 pp.)</a>
+      <a href="assets/pdf/projects/mono_est_poster.pdf" target="_blank" rel="noopener">Perception poster</a>
+      <a href="assets/pdf/projects/ECE1658_final_report-3.pdf" target="_blank" rel="noopener">ECE1658 report</a>
+      <a href="https://github.com/thejerrycheng/BipedNav" target="_blank" rel="noopener">Code</a>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="card stat-tile"><div class="num">1.7<small>cm</small></div><div class="lab">stair rise error</div><div class="sub">mean over 5 scenes, RealSense cloud (2.1 cm monocular); poster: 2.9 cm</div></div>
+    <div class="card stat-tile"><div class="num">91<small>%</small></div><div class="lab">tread run accuracy</div><div class="sub">2.5 cm mean error, both clouds; poster: 81 %</div></div>
+    <div class="card stat-tile"><div class="num">4e-5</div><div class="lab">reproduction</div><div class="sub">max difference to the report's six VHC coefficients</div></div>
+    <div class="card stat-tile"><div class="num">0.9329</div><div class="lab">return-map slope</div><div class="sub">measured over 25 steps; analytic δ²/M⁻ = 0.9326</div></div>
+    <div class="card stat-tile"><div class="num">12/12</div><div class="lab">stair steps</div><div class="sub">up 5°, down 5° and 10°, zero collisions with treads or risers</div></div>
+    <div class="card stat-tile"><div class="num">0.09<small>s</small></div><div class="lab">per scene</div><div class="sub">stair geometry on a laptop CPU, no GPU after the depth network</div></div>
+  </div>
+</section>
+
+<!-- =================== THE STRIP =================== -->
+<section class="section" id="strip">
+  <h2 class="section-title">In one strip</h2>
+  <div class="strip3">
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_profile_gt.png" alt="Side profile of a stair point cloud with fitted tread and riser planes" class="contain" loading="lazy"></div>
+      <span class="caption-box">1 · Perceive</span>
+      <div class="body"><h3>One image → rise and run</h3><p>Metric depth from a fine-tuned Metric3D v2, surface normals, two predominant normal directions (treads, risers), plane offsets clustered into a lattice. This scene: rise 14.2 cm, run 28.1 cm (tape: 12.0 / 29.6).</p></div>
+    </div>
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/bipednav/flat_vhc_curve.png" alt="Virtual holonomic constraint curve in the joint plane" class="contain" loading="lazy"></div>
+      <span class="caption-box">2 · Design</span>
+      <div class="body"><h3>A curve in the joint plane is the gait</h3><p>The hip motor keeps <i>q₂ = φ(q₁)</i>. Six conditions fix a degree-5 polynomial; hybrid invariance through the impact map, transversality and a virtual mass/potential test decide whether a stable limit cycle exists.</p></div>
+    </div>
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/bipednav/stairs_real_slope_+5_reflect_strobe.png" alt="Acrobot walker climbing a staircase, strobe of configurations" class="contain" loading="lazy"></div>
+      <span class="caption-box">3 · Walk</span>
+      <div class="body"><h3>Real treads, real risers</h3><p>The walker is simulated as a hybrid system on the actual staircase with collision checks. Climbing works when the foot lands within 5 % of the tread depth from the nosing; descending, when it stands on the nosing.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== PERCEPTION =================== -->
+<section class="section" id="perception">
+  <h2 class="section-title">Perception layer</h2>
+  <div class="grid-2">
+    <div class="card card-pad prose">
+      <p class="bn-lead">Depth sensors on walking robots and exoskeletons are bulky; the 2024 study asked whether one RGB camera can recover the geometry that matters for a stair, its <b>rise</b> and <b>run</b>. Metric3D v2 was fine-tuned on a new dataset of <b>16,780 RGB-D images</b> of indoor and outdoor stairs (Intel RealSense D415/D435, head-mounted), the metric depth was back-projected with the camera intrinsics, and planes were extracted from the point cloud.</p>
+      <p>The archived sample set has five scenes with the RGB image, the RealSense depth, the network's point cloud and normal map, and tape measurements of two steps per staircase. The re-implemented extractor works from surface normals instead of iterative RANSAC, which on these clouds fragments the grazing treads and fits planes across the nosing:</p>
+      <ul>
+        <li><b>Normals</b> from the organised depth grid (3-px baseline, jumps over 6 cm rejected), oriented toward the camera.</li>
+        <li><b>Predominant normals:</b> a 4° spherical histogram; the most populated up-pointing mode is the tread normal, the walking direction is the optical axis on the tread plane, refined by a riser mode if one lies within 30° of it (side walls, whose normals are lateral, are rejected).</li>
+        <li><b>Offset clustering:</b> tread points projected on the up axis and riser points on the forward axis form 1-D lattices whose spacings are rise and run; a least-squares lattice fit tolerates missing steps.</li>
+      </ul>
+      <p>Deterministic, 0.09 s per scene from the RealSense cloud (0.32 s from the ASCII monocular cloud, dominated by parsing).</p>
+    </div>
+    <div>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/poster/fig3_pipeline.jpg" alt="Poster figure: end-to-end pipeline for plane extraction" loading="lazy"><figcaption><b>From the poster.</b> Depth-estimated point cloud → planar features → predominant normal → plane extraction → rise and run.</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/bipednav/poster/fig1_experimental_design.jpg" alt="Poster figure: experimental design for sensing 3D walking environments" loading="lazy"><figcaption><b>Experimental design.</b> A head-mounted camera looking down the staircase; the quantities to recover are the shortest distance to the next step, its height and its depth.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="gallery-head" aria-hidden="true"><span>RGB</span><span>RealSense depth</span><span>Normals (network)</span><span>Treads / risers</span><span>Profile, D435</span><span>Profile, monocular</span></div>
+  <div class="gallery">
+    <img src="assets/images/projects/bipednav/samples/WE_20240608_175134-up-1-240_rgb.jpg" alt="Scene WE 17:51 RGB" loading="lazy"><img src="assets/images/projects/bipednav/samples/WE_20240608_175134-up-1-240_depth.jpg" alt="depth" loading="lazy"><img src="assets/images/projects/bipednav/samples/WE_20240608_175134-up-1-240_normals.jpg" alt="normals" loading="lazy"><img src="assets/images/projects/bipednav/samples/WE_20240608_175134-up-1-240_seg.png" alt="treads and risers" loading="lazy"><img class="profile" src="assets/images/projects/bipednav/samples/WE_20240608_175134-up-1-240_profile_gt.png" alt="profile RealSense" loading="lazy"><img class="profile" src="assets/images/projects/bipednav/samples/WE_20240608_175134-up-1-240_profile_est.png" alt="profile monocular" loading="lazy">
+    <img src="assets/images/projects/bipednav/samples/WE_20240608_182747-up-1-152_rgb.jpg" alt="Scene WE 18:27 RGB" loading="lazy"><img src="assets/images/projects/bipednav/samples/WE_20240608_182747-up-1-152_depth.jpg" alt="depth" loading="lazy"><img src="assets/images/projects/bipednav/samples/WE_20240608_182747-up-1-152_normals.jpg" alt="normals" loading="lazy"><img src="assets/images/projects/bipednav/samples/WE_20240608_182747-up-1-152_seg.png" alt="treads and risers" loading="lazy"><img class="profile" src="assets/images/projects/bipednav/samples/WE_20240608_182747-up-1-152_profile_gt.png" alt="profile RealSense" loading="lazy"><img class="profile" src="assets/images/projects/bipednav/samples/WE_20240608_182747-up-1-152_profile_est.png" alt="profile monocular" loading="lazy">
+    <img src="assets/images/projects/bipednav/samples/WI_20240608_174157-up-1-338_rgb.jpg" alt="Scene WI 17:41 RGB" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_174157-up-1-338_depth.jpg" alt="depth" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_174157-up-1-338_normals.jpg" alt="normals" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_174157-up-1-338_seg.png" alt="treads and risers" loading="lazy"><img class="profile" src="assets/images/projects/bipednav/samples/WI_20240608_174157-up-1-338_profile_gt.png" alt="profile RealSense" loading="lazy"><img class="profile" src="assets/images/projects/bipednav/samples/WI_20240608_174157-up-1-338_profile_est.png" alt="profile monocular" loading="lazy">
+    <img src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_rgb.jpg" alt="Scene WI 17:47 RGB" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_depth.jpg" alt="depth" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_normals.jpg" alt="normals" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_seg.png" alt="treads and risers" loading="lazy"><img class="profile" src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_profile_gt.png" alt="profile RealSense" loading="lazy"><img class="profile" src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_profile_est.png" alt="profile monocular" loading="lazy">
+    <img src="assets/images/projects/bipednav/samples/WI_20240608_181219-up-1-228_rgb.jpg" alt="Scene WI 18:12 RGB" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_181219-up-1-228_depth.jpg" alt="depth" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_181219-up-1-228_normals.jpg" alt="normals" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_181219-up-1-228_seg.png" alt="treads and risers" loading="lazy"><img class="profile" src="assets/images/projects/bipednav/samples/WI_20240608_181219-up-1-228_profile_gt.png" alt="profile RealSense" loading="lazy"><img class="profile" src="assets/images/projects/bipednav/samples/WI_20240608_181219-up-1-228_profile_est.png" alt="profile monocular" loading="lazy">
+    <span class="lbl">The five archived scenes (8 June 2024, two buildings), one per row. Blue = tread points, red = riser points; dashed lines are the fitted lattices. Full-resolution panel in the report.</span>
+  </div>
+
+  <div class="grid-2" style="margin-top:22px">
+    <div>
+      <div class="table-wrap" style="margin-top:0">
+        <table class="data-table">
+          <thead><tr><th>scene</th><th>tape h</th><th>D435 h</th><th>mono h</th><th>tape b</th><th>D435 b</th><th>mono b</th></tr></thead>
+          <tbody>
+            <tr><td>WE 17:51</td><td>14.2</td><td>16.5</td><td>10.7</td><td>27.1</td><td class="bad">19.3</td><td>25.9</td></tr>
+            <tr><td>WE 18:27</td><td>19.5</td><td class="ok">19.6</td><td class="ok">19.9</td><td>25.3</td><td class="ok">25.1</td><td>23.3</td></tr>
+            <tr><td>WI 17:41</td><td>12.0</td><td>15.1</td><td>15.5</td><td>29.6</td><td>31.2</td><td>33.5</td></tr>
+            <tr><td>WI 17:47</td><td>12.0</td><td>14.2</td><td class="ok">12.0</td><td>29.6</td><td>28.1</td><td>28.3</td></tr>
+            <tr><td>WI 18:12</td><td>15.0</td><td class="ok">15.7</td><td>18.0</td><td>32.1</td><td>33.3</td><td>27.7</td></tr>
+            <tr><td><b>MAE [cm]</b></td><td></td><td class="hi">1.7</td><td class="hi">2.1</td><td></td><td class="hi">2.5</td><td class="hi">2.5</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:13px;color:var(--ash);margin-top:10px">All in cm. The tape values average the two measured steps. Largest misses: the WE 17:51 scene (camera pitched only 47°, risers nearly edge-on) and a worn concrete stair whose nosing strip reads 3 cm high on both clouds.</p>
+    </div>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/perception_summary.png" alt="Bar chart of stair rise and run per scene: tape, RealSense cloud, monocular cloud" loading="lazy"><figcaption><b>Pipeline vs tape.</b> The monocular cloud is metrically consistent with the RealSense cloud on every scene, which is what the study set out to show.</figcaption></figure>
+  </div>
+
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig poster-embed" style="margin-top:0"><a href="assets/pdf/projects/mono_est_poster.pdf" target="_blank" rel="noopener"><img src="assets/images/projects/bipednav/poster/poster_full.jpg" alt="Poster: Monocular Depth Estimation of Human-Robot Walking Environments using Deep Learning" loading="lazy"></a><figcaption><b>Poster.</b> A. Qiu, A. Narayanan, Q. Cheng, B. Laschowski — Neural Robotics Lab, KITE Toronto Rehabilitation Institute, University of Toronto, 2024. Click to open the PDF.</figcaption></figure>
+    <div class="card card-pad prose">
+      <p class="subhead" style="margin-top:0">Dataset & data products</p>
+      <ul>
+        <li><b>Training set:</b> 16,780 RGB-D stair images, indoor and outdoor, varied lighting, RealSense D415 and D435.</li>
+        <li><b>Archived samples:</b> 5 scenes × {RGB 640×480, RealSense depth (mm PNG), RealSense point cloud (binary PLY, 307,200 pts), monocular point cloud (ASCII PLY), monocular normal map (3×480×640 tensor)} + <code>measurements.csv</code>. The monocular depth tensors are empty files in the archive; the point clouds derived from them are intact.</li>
+        <li><b>Tools in the repo:</b> rosbag → RGB-D subsequence extractor with a frame-range GUI (<code>data_scripts/process.py</code>), depth → PLY back-projection, rosbag point-cloud extractor with Open3D filtering, a RealSense ROS workspace and an RViz distance-measuring plugin used for the tape-measure protocol.</li>
+      </ul>
+      <div class="photos3" style="margin-top:14px">
+        <img src="assets/images/projects/bipednav/poster/photo_exo_legs.jpg" alt="Exoskeleton legs with depth cameras" loading="lazy" style="border:1.5px solid var(--ink);border-radius:4px;aspect-ratio:3/4;object-fit:cover;width:100%">
+        <img src="assets/images/projects/bipednav/poster/photo_head_camera_front.jpg" alt="Head-mounted camera, front" loading="lazy" style="border:1.5px solid var(--ink);border-radius:4px;aspect-ratio:3/4;object-fit:cover;width:100%">
+        <img src="assets/images/projects/bipednav/poster/photo_head_camera_side.jpg" alt="Head-mounted camera, side" loading="lazy" style="border:1.5px solid var(--ink);border-radius:4px;aspect-ratio:3/4;object-fit:cover;width:100%">
+      </div>
+      <p style="font-size:12.5px;color:var(--ash);margin-top:8px">Recording rigs from the poster: a lower-limb exoskeleton with leg-mounted cameras and the head-mounted RealSense used for the stair scenes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== CONTROL =================== -->
+<section class="section" id="control">
+  <h2 class="section-title">Locomotion layer</h2>
+  <div class="grid-2">
+    <div class="card card-pad prose">
+      <p class="bn-lead">The walker is the <b>acrobot biped</b>: two identical 1 m legs (1 kg each, mass at mid-leg), point feet, no knees, no torso, one motor at the hip. The stance leg is a passive pivot on the ground; the only freedom the controller has is the angle between the legs. Walking is a hybrid system: a smooth swing phase ended by the impact of the swing foot, an instantaneous velocity jump, and a relabelling of the legs.</p>
+      <p><b>Virtual holonomic constraint.</b> Instead of tracking a trajectory in time, the hip motor enforces a curve in the joint plane, <i>q₂ = φ(θ)</i> with <i>θ</i> the normalised stance angle, by input–output feedback linearisation:</p>
+      <div class="eq">τ = (H D⁻¹ B)⁻¹ ( H D⁻¹ (C q̇ + G) − K<span class="m">p</span> sin y − K<span class="m">d</span> H q̇ − Ḣ q̇ ),   y = q₂ − φ(θ)</div>
+      <p>Once on the constraint, the robot behaves like a one-degree-of-freedom system with a <b>virtual mass</b> <i>M(θ)</i> and <b>virtual potential</b> <i>V(θ)</i>. With <i>δ</i> the fraction of phase velocity that survives the impact, the step-to-step map is affine in the kinetic-like variable <i>ζ = ½ M⁻ θ̇⁻²</i>:</p>
+      <div class="eq">ζ<span class="m">k+1</span> = (δ² / M⁻) ζ<span class="m">k</span> − V⁻      →  stable orbit iff  0 &lt; δ²/M⁻ &lt; 1,  V⁻ &lt; 0,  −V⁻ δ²/(M⁻ − δ²) &gt; V<span class="m">max</span></div>
+      <p>The slope <i>δ²/M⁻</i> is the Floquet multiplier of the gait. The design chooses a degree-5 polynomial <i>φ</i> from six conditions (post- and pre-impact angles, legs together at mid-step, and three tangents, one of which enforces hybrid invariance through the impact map). For slopes and stairs the coefficients and two tangent parameters are optimised under transversality, existence, stability and swing-foot clearance constraints.</p>
+      <div class="tag-row"><span class="chip">sympy-verified dynamics</span><span class="chip">impact map checked against angular momentum</span><span class="chip">DOP853, rtol 1e-9</span><span class="chip">event-based touchdown</span><span class="chip">collision-checked terrain</span></div>
+    </div>
+    <div>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/flat_strobe.png" alt="Strobe of acrobot configurations on the constraint set, flat ground" loading="lazy"><figcaption><b>The constraint set on flat ground.</b> Configurations along one step (purple → yellow) and the swing-foot path (green). The legs pass each other with the swing foot at the stance foot, an unavoidable grazing touch for a knee-less walker.</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/bipednav/flat_mass_potential.png" alt="Virtual mass and potential over one step" loading="lazy"><figcaption><b>Virtual mass and potential</b> of the report's flat-ground gait: δ = 0.336, M⁻ = 0.121, V⁻ = −0.254, V<sub>max</sub> = 3.42, Floquet multiplier 0.933, both existence and stability satisfied — barely: the energy margin above the barrier is 0.09.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="clip-row">
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_flat.mp4" type="video/mp4"></video><div class="body"><h3>Flat ground, the report's gait</h3><p>25 steps at 0.302 m/s, period 1.044 s, stride 0.315 m, hip torque 110 N·m peak / 13.5 N·m rms, constraint error below 3·10⁻¹¹ rad. Started 20 % fast, the orbit converges at the analytic rate.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_slope.mp4" type="video/mp4"></video><div class="body"><h3>Down a 10° slope, exact impact map</h3><p>Gait found by constrained optimisation; the swing leg <i>retracts</i> before touchdown (v₁ = +1.36), which keeps 68 % of the phase velocity through the impact. Floquet multiplier 0.44, 12 N·m peak torque: gravity does the work.</p></div></div>
+  </div>
+
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/flat_phase_portrait.png" alt="Energy levels of the constrained dynamics with 25 simulated steps" loading="lazy"><figcaption><b>Energy levels and the hybrid orbit.</b> Contours of E = ½Mθ̇² + V; the dashed red level is the barrier V<sub>max</sub>. Twenty-five simulated steps from 1.2× the limit-cycle speed; dotted segments are the impact map.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/flat_return_map.png" alt="Measured return map against the analytic affine map" loading="lazy"><figcaption><b>Verification.</b> The step-to-step map measured in simulation (dots) sits on the analytic affine map (dashed): slope 0.9329 and 0.9327 for two initial speeds against δ²/M⁻ = 0.9326.</figcaption></figure>
+  </div>
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/flat_time_series.png" alt="Joint angles, hip torque and constraint error over six steps" loading="lazy"><figcaption><b>Six steps in time.</b> Joint angles, hip torque and the constraint error; the torque spikes are the post-impact re-acceleration of the swing leg.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/flat_disturbance.png" alt="Disturbance sweeps on flat ground" loading="lazy"><figcaption><b>How much can be pushed.</b> The gait survives any initial speed from 1.0× to 3× the limit cycle but not slower (the energy margin is 0.09), and joint offsets from −0.26 rad to 0 but no positive offset. The report only tested faster starts.</figcaption></figure>
+  </div>
+</section>
+
+<!-- =================== FINDINGS =================== -->
+<section class="section" id="findings">
+  <h2 class="section-title">What the re-test found</h2>
+  <p class="quote">“Honesty over polish.” Three things came out of running the archived controller against physics instead of against itself.</p>
+
+  <div class="card finding" style="margin-top:22px">
+    <span class="no">1</span>
+    <h3>The course impact map is not the leg swap</h3>
+    <p>The ECE1658 template relabels velocities after impact with a reflection, q̇⁺ = −q̇. The actual swap of stance and swing legs is q₁⁺ = q₁ + q₂ − π, q₂⁺ = 2π − q₂, whose Jacobian is [[1, 1], [0, −1]]: the new stance leg keeps the angular velocity the swing leg had. The two agree only for velocities tangent to the impact surface, which post-impact velocities are not (the old stance foot lifts off).</p>
+    <p>For the report's parameters the exact map retains δ = 0.115 of the phase velocity instead of 0.336, and the gait fails the energy test: no degree-5 design is stable on flat ground under the exact map. Retracting the swing foot before touchdown recovers δ (right), and the optimiser finds exact-map gaits with degree 7 on flat ground and a clean one on the −10° slope. Both conventions are implemented and every result on this page says which one it uses.</p>
+    <div class="table-wrap" style="margin-top:14px">
+      <table class="data-table">
+        <thead><tr><th>velocity relabelling (report parameters β = 0.3166, v₁ = −0.894, v₂ = 1.9)</th><th>δ</th><th>M⁻</th><th>V⁻</th><th>V<sub>max</sub></th><th>δ²/M⁻</th><th>stable orbit</th></tr></thead>
+        <tbody>
+          <tr><td>reflection R = −I (course template)</td><td>0.336</td><td>0.121</td><td>−0.254</td><td>3.42</td><td>0.933</td><td class="ok">yes</td></tr>
+          <tr><td>exact leg swap R = [[1, 1], [0, −1]]</td><td>0.115</td><td>0.061</td><td>−0.203</td><td>1.67</td><td>0.214</td><td class="bad">no</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figure class="fig" style="max-width:640px"><img src="assets/images/projects/bipednav/impact_delta_vs_v1.png" alt="Phase-velocity retention through the impact versus swing-leg rate at touchdown" loading="lazy"><figcaption>Retention δ against the swing-leg rate at touchdown for both conventions; positive v₁ is foot retraction.</figcaption></figure>
+  </div>
+
+  <div class="card finding" style="margin-top:22px">
+    <span class="no">2</span>
+    <h3>A knee-less biped cannot take human stairs</h3>
+    <p>Two facts of geometry. The legs can only pass each other in the folded configuration, where the swing foot sits at the stance foot and moves perpendicular to the legs; on a flat tread that dips into the step unless the stance leg is vertical at that instant, which needs a leg aperture <b>β &gt; 2α</b> for a stair of pitch α. And the swing foot moves on a circle of radius ℓ around a hip that is never higher than ℓ, so it only clears the next riser if the foot lands within <b>b − √(2h − h²)</b> (leg units) of the nosing.</p>
+    <p>The perceived staircase (rise 12 cm, run 28 cm, pitch 23°) would need a 46° aperture, i.e. 2.6 steps per stride for a 1 m leg, and a landing window of a few centimetres. The report's stair proof of concept (b = 1, h = 0.5, d = 0.9) used the slope model, which lets the swing foot pass 5 cm inside the tread behind the stance foot. An 80-cell sweep of fold-constrained gait designs over pitch, aperture and direction found none that is stable, clears the risers and passes transversality.</p>
+    <div class="grid-2" style="margin-top:14px">
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/stairs_feasibility_geometry.png" alt="Map of admissible landing window versus stair pitch and aperture" loading="lazy"><figcaption>Admissible landing window versus pitch and aperture; white where the legs cannot pass with a vertical stance leg.</figcaption></figure>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/stairs_slope_gait_collision.png" alt="Slope-model swing-foot path checked against a real staircase" loading="lazy"><figcaption>The slope model's swing-foot path on the report's staircase; the highlighted part is inside the step.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="card finding" style="margin-top:22px">
+    <span class="no">3</span>
+    <h3>…but it can take shallow ones, if it places its feet right</h3>
+    <p>The slope gaits were run on staircases of the same pitch and stride while sweeping the distance d from the stance foot to the next riser. Ascending a 5° staircase (rise 6.7 cm, run 76 cm) works iff the foot lands within 5 % of the tread depth from the nosing; descending 5° and 10° staircases works iff the stance foot stands on the nosing. Both are the two geometric facts above turned into a rule.</p>
+    <p class="rule" style="margin-top:12px">Going up: <b>land 5 % before the edge.</b>  Going down: <b>stand on the edge.</b></p>
+    <figure class="fig"><img src="assets/images/projects/bipednav/stairs_real_dsweep.png" alt="Steps completed versus foot placement on real staircases" loading="lazy"><figcaption><b>Foot-placement sweep.</b> Steps completed (of 12) versus d/b for the four slope gaits on collision-checked staircases: green walks, gold scuffs the tread, red trips on the riser.</figcaption></figure>
+    <div class="clip-row">
+      <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs_up.mp4" type="video/mp4"></video><div class="body"><h3>Up, 5° pitch, d = 0.97 b</h3><p>12/12 steps, 1.02 m/s along the stair, climb rate 0.089 m/s, 77 N·m peak. The foot arrives from above with retraction, so it clears the riser it lands just behind.</p></div></div>
+      <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs_down.mp4" type="video/mp4"></video><div class="body"><h3>Down, 10° pitch, d = 0.03 b</h3><p>12/12 steps, 0.73 m/s, 9.3 N·m peak with the exact impact map (189 N·m with the course map). Leaving the fold downward, the foot is already past the tread.</p></div></div>
+    </div>
+    <div class="grid-2" style="margin-top:18px">
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/stairs_real_slope_+5_reflect_strobe.png" alt="Strobe of the ascending stair gait" loading="lazy"><figcaption>Ascending: configurations and swing-foot path on the 5° staircase.</figcaption></figure>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/stairs_real_slope_-10_kinematic_strobe.png" alt="Strobe of the descending stair gait" loading="lazy"><figcaption>Descending: the exact-map retraction gait on the 10° staircase, stance foot on the nosing.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- =================== SLOPES =================== -->
+<section class="section" id="slopes">
+  <h2 class="section-title">Slopes</h2>
+  <div class="grid-2">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/slopes_strobe.png" alt="Constraint sets of the slope gaits" loading="lazy"><figcaption><b>Four slope gaits</b> (β = 45°, stride 0.765 m), designed by constrained optimisation and accepted only after walking 25 collision-checked steps. Downhill is easy for both impact conventions; uphill only +5° under the course map, and nothing at +10°: the virtual potential the impact must pay back turns positive as the slope rises.</figcaption></figure>
+    <div>
+      <div class="table-wrap" style="margin-top:0">
+        <table class="data-table">
+          <thead><tr><th>slope</th><th>map</th><th>k</th><th>v₁</th><th>δ²/M⁻</th><th>period</th><th>speed</th><th>τ peak</th><th>steps</th></tr></thead>
+          <tbody>
+            <tr><td>−10°</td><td>course</td><td>6</td><td>−2.02</td><td>0.380</td><td>1.03 s</td><td>0.75 m/s</td><td>204 N·m</td><td class="ok">12/12</td></tr>
+            <tr><td>−10°</td><td>exact</td><td>6</td><td>+1.36</td><td>0.443</td><td>1.00 s</td><td>0.78 m/s</td><td class="hi">12 N·m</td><td class="ok">12/12</td></tr>
+            <tr><td>−5°</td><td>course</td><td>6</td><td>−2.55</td><td>0.575</td><td>0.93 s</td><td>0.85 m/s</td><td>242 N·m</td><td class="ok">12/12</td></tr>
+            <tr><td>+5°</td><td>course</td><td>8</td><td>−3.32</td><td>0.950</td><td>0.59 s</td><td>1.29 m/s</td><td>90 N·m</td><td class="ok">12/12</td></tr>
+            <tr><td>+10°</td><td>both</td><td>—</td><td colspan="6" style="text-align:left">no feasible design (14 starts per convention)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:13px;color:var(--ash);margin-top:10px">k is the number of polynomial coefficients; v₁ the swing-leg rate at touchdown (positive = retraction). The report's +10° and +30° slope cases could not be reproduced with the stability test enforced.</p>
+      <figure class="fig"><img src="assets/images/projects/bipednav/slope_-10_kinematic_phase.png" alt="Phase portrait of the −10° exact-map gait" loading="lazy"><figcaption>−10°, exact impact map: energy levels and 12 simulated steps.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- =================== REPRODUCE =================== -->
+<section class="section" id="reproduce">
+  <h2 class="section-title">Reproduce</h2>
+  <div class="grid-2">
+    <div class="card card-pad prose">
+      <p>Everything on this page is regenerated by a Python harness in <code>BipedNav/experiments</code> (numpy, scipy, sympy, matplotlib, OpenCV; ffmpeg for the video; no ROS, no MATLAB). The MATLAB originals remain in <code>control/MATLAB</code>. The technical report is the lab notebook: methods, every number, and the limitations.</p>
+      <div class="cmd">cd BipedNav/experiments
+python3 stair_perception.py out/perception_results.json   <span class="c"># 10 clouds, ~2 s</span>
+python3 fig_perception.py                                  <span class="c"># perception figures</span>
+python3 design_all.py                                      <span class="c"># gait batch → out/gaits.json</span>
+python3 sweep_stairs.py                                    <span class="c"># 80-cell stair sweep</span>
+python3 run_experiments.py                                 <span class="c"># controller figures + metrics.json</span>
+python3 make_video.py                                      <span class="c"># the demo video</span>
+cd ../docs &amp;&amp; make                                         <span class="c"># bipednav.pdf</span></div>
+      <div class="links" style="margin-top:16px">
+        <a href="assets/pdf/projects/bipednav_technical_report.pdf" target="_blank" rel="noopener">Technical report</a>
+        <a href="https://github.com/thejerrycheng/BipedNav" target="_blank" rel="noopener">BipedNav repo</a>
+        <a href="assets/pdf/projects/ECE1658_final_report-3.pdf" target="_blank" rel="noopener">ECE1658 report</a>
+        <a href="assets/pdf/projects/mono_est_poster.pdf" target="_blank" rel="noopener">Poster</a>
+      </div>
+    </div>
+    <div class="card card-pad credits">
+      <p class="subhead" style="margin-top:0">Credits</p>
+      <p><b>Perception.</b> Andrew Qiu, Aravind Narayanan, Qilong Cheng, Brokoslaw Laschowski — Neural Robotics Lab, KITE Toronto Rehabilitation Institute and the Robotics Institute, University of Toronto, 2024. Metric3D v2 (Hu et al., 2024).</p>
+      <p style="margin-top:10px"><b>Control.</b> Qilong Cheng, ECE1658 Geometric Nonlinear Control of Robotic Systems (Prof. Manfredi Maggiore), University of Toronto, 2024; virtual holonomic constraints after Maggiore &amp; Consolini (2013), impact model after Westervelt, Grizzle et al. (2007).</p>
+      <p style="margin-top:10px"><b>2026 re-test.</b> Python re-implementation, verification, terrain and collision model, gait optimiser, video and this page. Limitations, including the open question of the impact-map convention in the course material, are listed in the report.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>

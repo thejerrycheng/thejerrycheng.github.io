@@ -83,11 +83,11 @@
     </div>
 
     <div class="pub card card-hover" id="mono-depth">
-      <div class="pub-thumb"><img src="assets/images/publications/mono_dep_pipeline.png" alt="Monocular depth estimation pipeline" loading="lazy" decoding="async" class="fit-contain"></div>
+      <div class="pub-thumb"><div class="pub-carousel" data-carousel><div class="carousel-track"><div class="slide"><img src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_profile_gt.png" alt="Stair point-cloud profile with fitted tread and riser planes" decoding="async" class="fit-contain"></div><div class="slide"><img src="assets/images/publications/mono_dep_pipeline.png" alt="Monocular depth estimation pipeline" decoding="async" class="fit-contain"></div></div><button class="c-btn prev" aria-label="Previous slide"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg></button><button class="c-btn next" aria-label="Next slide"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div></div>
       <div class="pub-meta">
         <span class="papertitle">Monocular Depth Estimation for Human-Robot Locomotion</span><span class="proj-year">2024</span>
-        <p class="proj-body">Monocular depth pipeline for human-robot walking environments: ZoeDepth baseline, metric reprojection to 3D point clouds, and iterative RANSAC to extract stair planes and dimensions.</p>
-        <div class="links"><a href="https://www.researchgate.net/publication/382269581_Monocular_depth_estimation_of_human-robot_walking_environments_using_deep_learning" target="_blank" rel="noopener">PDF</a><a href="assets/pdf/projects/mono_est_poster.pdf" target="_blank" rel="noopener">Poster</a></div>
+        <p class="proj-body">Monocular depth pipeline for human-robot walking environments: Metric3D v2 fine-tuned on 16,780 RGB-D stair images, metric reprojection to 3D point clouds, and plane extraction for stair rise and run. Re-run in 2026 on the archived scenes: 1.7 cm rise / 2.5 cm run mean error against a tape measure.</p>
+        <div class="links"><a href="bipednav.html#perception">Website</a><a href="https://www.researchgate.net/publication/382269581_Monocular_depth_estimation_of_human-robot_walking_environments_using_deep_learning" target="_blank" rel="noopener">PDF</a><a href="assets/pdf/projects/mono_est_poster.pdf" target="_blank" rel="noopener">Poster</a></div>
       </div>
     </div>
 
@@ -101,11 +101,11 @@
     </div>
 
     <div class="pub card card-hover" id="biped-vhc">
-      <div class="pub-thumb"><img src="assets/images/projects/biped_vhc/stair_walking.jpg" alt="Biped walking on stairs with virtual holonomic constraints" loading="lazy" decoding="async" class="fit-contain"><div class="hover-video"><video muted autoplay loop playsinline preload="none"><source src="assets/videos/walking_stairs.mp4" type="video/mp4"></video></div></div>
+      <div class="pub-thumb"><img src="assets/images/projects/bipednav/stairs_real_slope_+5_reflect_strobe.png" alt="Acrobot biped climbing a collision-checked staircase under a virtual holonomic constraint" loading="lazy" decoding="async" class="fit-contain"><div class="hover-video"><video muted autoplay loop playsinline preload="none"><source src="assets/videos/bipednav_stairs_up.mp4" type="video/mp4"></video></div></div>
       <div class="pub-meta">
-        <span class="papertitle">Geometric Nonlinear Control for Biped Walking</span><span class="proj-year">2024</span>
-        <p class="proj-body">Virtual Holonomic Constraints with polynomial gait design, feedback linearization, and terrain generalization to slopes and stairs.</p>
-        <div class="links"><a href="assets/pdf/projects/ECE1658_final_report-3.pdf" target="_blank" rel="noopener">PDF</a></div>
+        <span class="papertitle">BipedNav: Stair Perception + VHC Biped Walking</span><span class="proj-year">2024</span>
+        <p class="proj-body">One-motor biped walking by virtual holonomic constraints (ECE1658), re-implemented and stress-tested in 2026: the report's flat gait reproduced to 4e-5, the impact-map convention corrected, and slope gaits shown to climb and descend real collision-checked staircases when the foot lands within 5% of the nosing (up) or on the nosing (down). Fed by the monocular stair-geometry pipeline.</p>
+        <div class="links"><a href="bipednav.html">Website</a><a href="assets/pdf/projects/bipednav_technical_report.pdf" target="_blank" rel="noopener">Technical report</a><a href="assets/pdf/projects/ECE1658_final_report-3.pdf" target="_blank" rel="noopener">ECE1658 report</a><a href="https://github.com/thejerrycheng/BipedNav" target="_blank" rel="noopener">Code</a></div>
       </div>
     </div>
 
