@@ -62,7 +62,7 @@ def proj_row(p):
 
 def strip_card(kind, p):
     page = "publications.html" if kind == "publications" else "projects.html"
-    tag = f'{p["venue"]} {p["year"]}' if kind == "publications" else f'{p.get("tag", "Project")} {p["year"]}'
+    tag = f'{p.get("venue_short", p["venue"])} {p["year"]}' if kind == "publications" else f'{p.get("tag", "Project")} {p["year"]}'
     sub = p["authors"] if kind == "publications" else p["desc"]
     fit = f' class="fit-{p.get("fit", "cover")}"'
     alt = (p.get("alts") or [""])[0]

@@ -139,7 +139,7 @@
     var isPub = kind === "publications";
     media.innerHTML = renderMedia(item);
     bindCarousel();
-    tag.textContent = isPub ? item.venue + " " + item.year : (item.tag || "Project") + " " + item.year;
+    tag.textContent = isPub ? (item.venue_short || item.venue) + " " + item.year : (item.tag || "Project") + " " + item.year;
     title.innerHTML = item.title;
     authors.innerHTML = isPub
       ? item.authors + '<span class="venue"><em>' + esc(item.venue) + "</em>, " + item.year + (item.note ? " &middot; " + item.note : "") + "</span>"
