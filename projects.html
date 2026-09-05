@@ -107,10 +107,10 @@
     </div>
 
     <div class="pub card card-hover" id="biped-vhc">
-      <div class="pub-thumb"><img src="assets/images/projects/bipednav/stairs_real_slope_+5_reflect_strobe.png" alt="Acrobot biped climbing a collision-checked staircase under a virtual holonomic constraint" loading="lazy" decoding="async" class="fit-contain"><div class="hover-video"><video muted autoplay loop playsinline preload="none"><source src="assets/videos/bipednav_stairs_up.mp4" type="video/mp4"></video></div></div>
+      <div class="pub-thumb"><img src="assets/images/projects/bipednav/biped5_flat_strobe.png" alt="Five-link biped with knees walking under virtual holonomic constraints" loading="lazy" decoding="async" class="fit-contain"><div class="hover-video"><video muted autoplay loop playsinline preload="none"><source src="assets/videos/bipednav_preview.mp4" type="video/mp4"></video></div></div>
       <div class="pub-meta">
-        <span class="papertitle">BipedNav: Stair Perception + VHC Biped Walking</span><span class="proj-year">2024</span>
-        <p class="proj-body">One-motor biped walking by virtual holonomic constraints (ECE1658), re-implemented and stress-tested in 2026: the report's flat gait reproduced to 4e-5, the impact-map convention corrected, and slope gaits shown to climb and descend real collision-checked staircases when the foot lands within 5% of the nosing (up) or on the nosing (down). Fed by the monocular stair-geometry pipeline.</p>
+        <span class="papertitle">BipedNav: Stair & Obstacle Perception + VHC Walking with a Five-Link Biped</span><span class="proj-year">2024</span>
+        <p class="proj-body">Monocular stair/obstacle geometry from one image feeds a five-link biped with knees walking by virtual holonomic constraints (hybrid limit cycles, verified against their return maps). From one view of an obstacle the planner schedules the approach and two step-over gaits chained through the impact map. Includes the re-test of the two-link ECE1658 design and an in-browser demo.</p>
         <div class="links"><a href="bipednav.html">Website</a><a href="assets/pdf/projects/bipednav_technical_report.pdf" target="_blank" rel="noopener">Technical report</a><a href="assets/pdf/projects/ECE1658_final_report-3.pdf" target="_blank" rel="noopener">ECE1658 report</a><a href="https://github.com/thejerrycheng/BipedNav" target="_blank" rel="noopener">Code</a></div>
       </div>
     </div>

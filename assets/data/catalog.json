@@ -218,7 +218,7 @@
       "alts": [
         "Stair scenes: RGB, estimated normals, extracted tread planes"
       ],
-      "video": "assets/videos/bipednav_perception.mp4",
+      "video": "assets/videos/bipednav_preview.mp4",
       "fit": "contain",
       "links": [
         {
@@ -239,7 +239,7 @@
           "href": "https://github.com/thejerrycheng/BipedNav"
         }
       ],
-      "desc": "Metric3D v2 fine-tuned on 16,780 RGB-D stair images recovers stair rise and run from a single image (1.7 cm / 2.5 cm mean error on the archived scenes). BipedNav feeds that geometry to a one-motor biped walking by virtual holonomic constraints, shown to climb and descend real, collision-checked staircases."
+      "desc": "Metric3D v2 fine-tuned on 16,780 RGB-D stair images recovers stair rise and run from a single image (1.7 cm / 2.5 cm mean error on the archived scenes). BipedNav feeds that geometry to a five-link biped walking by virtual holonomic constraints; the page has an in-browser demo that runs the pipeline on your own photo."
     },
     {
       "id": "radar-radar",
@@ -476,16 +476,16 @@
     },
     {
       "id": "biped-vhc",
-      "title": "BipedNav: Stair Perception + VHC Biped Walking",
+      "title": "BipedNav: Stair & Obstacle Perception + VHC Walking with a Five-Link Biped",
       "year": 2024,
       "tag": "Perception + Control",
       "images": [
-        "assets/images/projects/bipednav/stairs_real_slope_+5_reflect_strobe.png"
+        "assets/images/projects/bipednav/biped5_flat_strobe.png"
       ],
       "alts": [
-        "Acrobot biped climbing a collision-checked staircase under a virtual holonomic constraint"
+        "Five-link biped with knees walking under virtual holonomic constraints"
       ],
-      "video": "assets/videos/bipednav_stairs_up.mp4",
+      "video": "assets/videos/bipednav_preview.mp4",
       "fit": "contain",
       "links": [
         {
@@ -506,8 +506,8 @@
           "href": "https://github.com/thejerrycheng/BipedNav"
         }
       ],
-      "desc": "One-motor biped walking by virtual holonomic constraints (ECE1658), re-implemented and stress-tested in 2026: the report's flat gait reproduced to 4e-5, the impact-map convention corrected, and slope gaits shown to climb and descend real collision-checked staircases when the foot lands within 5% of the nosing (up) or on the nosing (down). Fed by the monocular stair-geometry pipeline.",
-      "short": "BipedNav: stairs, seen once, then walked"
+      "desc": "Monocular stair/obstacle geometry from one image feeds a five-link biped with knees walking by virtual holonomic constraints (hybrid limit cycles, verified against their return maps). From one view of an obstacle the planner schedules the approach and two step-over gaits chained through the impact map. Includes the re-test of the two-link ECE1658 design and an in-browser demo.",
+      "short": "BipedNav: see the stairs once, then walk"
     },
     {
       "id": "aero-localization",

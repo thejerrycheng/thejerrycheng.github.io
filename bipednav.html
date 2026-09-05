@@ -72,6 +72,7 @@
     .data-table td.ok { color: var(--green); font-weight: 700; }
     .data-table td.bad { color: var(--rust); font-weight: 700; }
     .table-wrap { overflow-x: auto; margin-top: 18px; }
+    #plan-table td:nth-child(4), #plan-table td:nth-child(5) { white-space: normal; min-width: 200px; }
     .finding { position: relative; padding: 22px 24px 22px 66px; }
     .finding .no { position: absolute; left: 16px; top: 14px; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--yellow); border: var(--line-w) solid var(--ink); font-family: var(--font-comic); font-size: 20px; box-shadow: var(--sh-xs); transform: rotate(-6deg); }
     .finding h3 { font-size: 19px; margin-bottom: 8px; }
@@ -97,6 +98,29 @@
     .credits { font-size: 14.5px; line-height: 1.6; color: var(--ink-soft); }
     .credits b { color: var(--ink); }
     .poster-embed img { border: var(--line-w) solid var(--ink); border-radius: 6px; box-shadow: var(--sh-sm); background: #fff; }
+    /* ---- try-it demo ---- */
+    .bn-demo-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; align-items: start; }
+    .bn-drop { border: 2px dashed var(--ink); border-radius: var(--radius); background: var(--panel); padding: 26px 20px; text-align: center; cursor: pointer; transition: background .15s ease, transform .15s ease; box-shadow: var(--sh-sm); }
+    .bn-drop:hover, .bn-drop.over { background: var(--panel-2); transform: translate(-1px,-1px); }
+    .bn-drop .big { font-family: var(--font-comic); font-size: 22px; letter-spacing: .05em; color: var(--hi); }
+    .bn-drop .small { font-size: 13px; color: var(--ash); margin-top: 4px; }
+    .bn-stock { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 12px; }
+    .bn-stock img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border: 2px solid var(--ink); border-radius: 5px; cursor: pointer; box-shadow: var(--sh-xs); transition: transform .15s ease; }
+    .bn-stock img:hover { transform: translate(-1px,-1px); box-shadow: var(--sh-sm); }
+    .bn-controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: end; margin-top: 14px; }
+    .bn-controls label { font-family: var(--font-mono); font-size: 11.5px; color: var(--ash); display: flex; flex-direction: column; gap: 4px; }
+    .bn-controls input, .bn-controls select { font-family: var(--font-mono); font-size: 14px; padding: 6px 8px; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--panel); width: 110px; }
+    .bn-status { font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); margin-top: 10px; min-height: 18px; }
+    .bn-status.busy::before { content: "◌ "; color: var(--hi); animation: bulb 1s linear infinite; display: inline-block; }
+    .bn-canvases { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .bn-canvases canvas { width: 100%; height: auto; border: var(--line-w) solid var(--ink); border-radius: 6px; background: var(--panel); display: block; }
+    .bn-canvases .lbl { font-family: var(--font-comic); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--hi); margin-bottom: 4px; }
+    .bn-result { margin-top: 12px; }
+    .bn-big { display: flex; flex-wrap: wrap; gap: 10px 22px; font-family: var(--font-mono); font-size: 15px; color: var(--ink-soft); }
+    .bn-big b { font-size: 26px; color: var(--ink); font-weight: 700; margin-left: 4px; }
+    .bn-result p { font-size: 13px; color: var(--ash); margin-top: 8px; line-height: 1.5; }
+    .bn-result .muted { color: var(--hi-deep); font-weight: 600; }
+    @media (max-width: 820px) { .bn-demo-grid { grid-template-columns: 1fr; } .bn-stock { grid-template-columns: repeat(5, 1fr); } }
     @media (max-width: 820px) {
       .strip3, .grid-3 { grid-template-columns: 1fr; }
       .eq { font-size: 12px; }
@@ -138,7 +162,7 @@
   <div class="wrap">
     <p class="kicker">Perception ◆ Nonlinear control ◆ University of Toronto, 2024 → re-tested 2026</p>
     <h1>BipedNav</h1>
-    <p>Stairs, seen once, then walked. A monocular network turns one photo of a staircase into rise and run; a one-motor biped turns rise and run into a walking gait that is a hybrid limit cycle. Everything below was re-run from the archived code and data, and the parts that broke are reported as found.</p>
+    <p>Stairs and obstacles, seen once, then walked. A monocular network turns one photo into stair rise and run, or an obstacle's distance, depth and height; a five-link biped with knees turns that geometry into virtual-holonomic-constraint gaits that are hybrid limit cycles, pre-plans its steps and walks over the obstacle. Everything below was re-run from the archived code and data, and the parts that broke are reported as found.</p>
   </div>
 </header>
 <div class="deco-band" aria-hidden="true"></div>
@@ -164,8 +188,8 @@
     <div class="card stat-tile"><div class="num">1.7<small>cm</small></div><div class="lab">stair rise error</div><div class="sub">mean over 5 scenes, RealSense cloud (2.1 cm monocular); poster: 2.9 cm</div></div>
     <div class="card stat-tile"><div class="num">91<small>%</small></div><div class="lab">tread run accuracy</div><div class="sub">2.5 cm mean error, both clouds; poster: 81 %</div></div>
     <div class="card stat-tile"><div class="num">4e-5</div><div class="lab">reproduction</div><div class="sub">max difference to the report's six VHC coefficients</div></div>
-    <div class="card stat-tile"><div class="num">0.9329</div><div class="lab">return-map slope</div><div class="sub">measured over 25 steps; analytic δ²/M⁻ = 0.9326</div></div>
-    <div class="card stat-tile"><div class="num">12/12</div><div class="lab">stair steps</div><div class="sub">up 5°, down 5° and 10°, zero collisions with treads or risers</div></div>
+    <div class="card stat-tile"><div class="num">0.79</div><div class="lab">Floquet multiplier</div><div class="sub">five-link flat gait; measured return-map slope matches the analytic δ²/M⁻</div></div>
+    <div class="card stat-tile"><div class="num">7/7</div><div class="lab">step-over plan</div><div class="sub">five-link walker: approach, over the box with both legs, resume; zero collisions</div></div>
     <div class="card stat-tile"><div class="num">0.09<small>s</small></div><div class="lab">per scene</div><div class="sub">stair geometry on a laptop CPU, no GPU after the depth network</div></div>
   </div>
 </section>
@@ -182,12 +206,12 @@
     <div class="card panel">
       <div class="media"><img src="assets/images/projects/bipednav/flat_vhc_curve.png" alt="Virtual holonomic constraint curve in the joint plane" class="contain" loading="lazy"></div>
       <span class="caption-box">2 · Design</span>
-      <div class="body"><h3>A curve in the joint plane is the gait</h3><p>The hip motor keeps <i>q₂ = φ(q₁)</i>. Six conditions fix a degree-5 polynomial; hybrid invariance through the impact map, transversality and a virtual mass/potential test decide whether a stable limit cycle exists.</p></div>
+      <div class="body"><h3>A curve in joint space is the gait</h3><p>Virtual holonomic constraints tie the actuated joints to the stance-leg angle; hybrid invariance through the impact map, transversality and a virtual mass/potential test decide whether a stable limit cycle exists. Shown: the two-link curve; the five-link walker uses four Bézier curves.</p></div>
     </div>
     <div class="card panel">
-      <div class="media"><img src="assets/images/projects/bipednav/stairs_real_slope_+5_reflect_strobe.png" alt="Acrobot walker climbing a staircase, strobe of configurations" class="contain" loading="lazy"></div>
+      <div class="media"><img src="assets/images/projects/bipednav/plan_case0_strobe.png" alt="Five-link biped stepping over a box, strobe of configurations" class="contain" loading="lazy"></div>
       <span class="caption-box">3 · Walk</span>
-      <div class="body"><h3>Real treads, real risers</h3><p>The walker is simulated as a hybrid system on the actual staircase with collision checks. Climbing works when the foot lands within 5 % of the tread depth from the nosing; descending, when it stands on the nosing.</p></div>
+      <div class="body"><h3>A five-link biped with knees walks it</h3><p>Hybrid limit cycles for a RABBIT-style walker, verified against its return map. From one view of an obstacle the planner schedules the approach and two step-over gaits chained through the impact map, and the robot clears the box in collision-checked simulation.</p></div>
     </div>
   </div>
 </section>
@@ -261,111 +285,150 @@
   </div>
 </section>
 
-<!-- =================== CONTROL =================== -->
+
+<!-- =================== TRY IT =================== -->
+<section class="section" id="tryit">
+  <h2 class="section-title">Try it: one photo → stair or obstacle geometry</h2>
+  <p class="quote">Runs entirely in your browser: a 27 MB Depth Anything V2 network estimates depth, the BipedNav pipeline finds the treads and risers (or the floor and the first obstacle), and prints rise/run or distance/depth/height. Nothing is uploaded.</p>
+  <div class="bn-demo-grid" style="margin-top:22px">
+    <div>
+      <div class="bn-drop" id="bn-drop" role="button" tabindex="0">
+        <div class="big">Drop a staircase or obstacle photo here</div>
+        <div class="small">or click to choose one · phone photos work best when taken from standing height, looking down at the steps</div>
+        <input type="file" id="bn-file" accept="image/*" hidden>
+      </div>
+      <p style="font-family:var(--font-mono);font-size:11.5px;color:var(--ash);margin-top:12px">Stock scenes from the archived dataset (tape measurements known; camera height set automatically):</p>
+      <div class="bn-stock" id="bn-stock">
+        <img src="assets/images/projects/bipednav/samples/WE_20240608_175134-up-1-240_rgb.jpg" alt="stock scene WE 17:51" data-rise="14.15" data-run="27.1" data-camh="1.66" title="WE 17:51 — tape rise 14.2 cm, run 27.1 cm">
+        <img src="assets/images/projects/bipednav/samples/WE_20240608_182747-up-1-152_rgb.jpg" alt="stock scene WE 18:27" data-rise="19.5" data-run="25.25" data-camh="1.39" title="WE 18:27 — tape rise 19.5 cm, run 25.3 cm">
+        <img src="assets/images/projects/bipednav/samples/WI_20240608_174157-up-1-338_rgb.jpg" alt="stock scene WI 17:41" data-rise="12.0" data-run="29.55" data-camh="1.29" title="WI 17:41 — tape rise 12.0 cm, run 29.6 cm">
+        <img src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_rgb.jpg" alt="stock scene WI 17:47" data-rise="12.0" data-run="29.55" data-camh="1.28" title="WI 17:47 — tape rise 12.0 cm, run 29.6 cm">
+        <img src="assets/images/projects/bipednav/samples/WI_20240608_181219-up-1-228_rgb.jpg" alt="stock scene WI 18:12" data-rise="15.0" data-run="32.1" data-camh="1.64" title="WI 18:12 — tape rise 15.0 cm, run 32.1 cm">
+      </div>
+      <div class="bn-controls">
+        <label>camera height above the nearest floor / tread [m]<input type="number" id="bn-camh" value="1.40" step="0.05" min="0.3" max="3"></label>
+        <label>horizontal field of view [°]<input type="number" id="bn-fov" value="56" step="1" min="30" max="110"></label>
+        <label>what to look for<select id="bn-mode"><option value="auto">auto</option><option value="stairs">stairs</option><option value="obstacle">obstacle</option></select></label>
+        <button class="btn btn-primary" id="bn-run" type="button">Run</button>
+      </div>
+      <div class="bn-status" id="bn-status">loading…</div>
+      <div class="bn-result" id="bn-result"></div>
+    </div>
+    <div class="bn-canvases">
+      <div><div class="lbl">photo</div><canvas id="bn-canvas-in" width="640" height="480"></canvas></div>
+      <div><div class="lbl">monocular depth (metric)</div><canvas id="bn-canvas-depth" width="640" height="480"></canvas></div>
+      <div><div class="lbl">treads · risers / floor · obstacle</div><canvas id="bn-canvas-seg" width="640" height="480"></canvas></div>
+      <div><div class="lbl">side profile + fitted lattice</div><canvas id="bn-canvas-profile" width="640" height="480"></canvas></div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:14px">How the scale is recovered: the network's output is inverse depth up to an affine map, so the pipeline searches the shift that makes the dominant up-facing surface planar and sets the scale so that surface lies at the camera height you enter. The stock scenes use the camera height measured by the depth camera; for your own photo, enter roughly the height of your phone above the floor (1.4–1.7 m when standing). The metric fine-tuned Metric3D v2 of the original study is more accurate than this browser-sized model; the geometry pipeline is the same.</p>
+</section>
+
+<!-- =================== CONTROL (five-link) =================== -->
 <section class="section" id="control">
-  <h2 class="section-title">Locomotion layer</h2>
+  <h2 class="section-title">Locomotion layer: a five-link biped with knees</h2>
   <div class="grid-2">
     <div class="card card-pad prose">
-      <p class="bn-lead">The walker is the <b>acrobot biped</b>: two identical 1 m legs (1 kg each, mass at mid-leg), point feet, no knees, no torso, one motor at the hip. The stance leg is a passive pivot on the ground; the only freedom the controller has is the angle between the legs. Walking is a hybrid system: a smooth swing phase ended by the impact of the swing foot, an instantaneous velocity jump, and a relabelling of the legs.</p>
-      <p><b>Virtual holonomic constraint.</b> Instead of tracking a trajectory in time, the hip motor enforces a curve in the joint plane, <i>q₂ = φ(θ)</i> with <i>θ</i> the normalised stance angle, by input–output feedback linearisation:</p>
-      <div class="eq">τ = (H D⁻¹ B)⁻¹ ( H D⁻¹ (C q̇ + G) − K<span class="m">p</span> sin y − K<span class="m">d</span> H q̇ − Ḣ q̇ ),   y = q₂ − φ(θ)</div>
-      <p>Once on the constraint, the robot behaves like a one-degree-of-freedom system with a <b>virtual mass</b> <i>M(θ)</i> and <b>virtual potential</b> <i>V(θ)</i>. With <i>δ</i> the fraction of phase velocity that survives the impact, the step-to-step map is affine in the kinetic-like variable <i>ζ = ½ M⁻ θ̇⁻²</i>:</p>
-      <div class="eq">ζ<span class="m">k+1</span> = (δ² / M⁻) ζ<span class="m">k</span> − V⁻      →  stable orbit iff  0 &lt; δ²/M⁻ &lt; 1,  V⁻ &lt; 0,  −V⁻ δ²/(M⁻ − δ²) &gt; V<span class="m">max</span></div>
-      <p>The slope <i>δ²/M⁻</i> is the Floquet multiplier of the gait. The design chooses a degree-5 polynomial <i>φ</i> from six conditions (post- and pre-impact angles, legs together at mid-step, and three tangents, one of which enforces hybrid invariance through the impact map). For slopes and stairs the coefficients and two tangent parameters are optimised under transversality, existence, stability and swing-foot clearance constraints.</p>
-      <div class="tag-row"><span class="chip">sympy-verified dynamics</span><span class="chip">impact map checked against angular momentum</span><span class="chip">DOP853, rtol 1e-9</span><span class="chip">event-based touchdown</span><span class="chip">collision-checked terrain</span></div>
+      <p class="bn-lead">The walker is the <b>five-link biped</b> of the course's first assignment, the structure of the RABBIT robot: two legs with <b>knees</b>, a <b>torso</b>, point masses at the joints, point feet, four actuators (both knees, the hip, the torso) and an unactuated pivot at the stance foot. Shank and thigh are 0.5 m each, the torso 0.3 m; the whole robot weighs 1.9 kg.</p>
+      <p><b>Virtual holonomic constraints.</b> The four actuated joints are tied to the stance-shank angle <i>θ</i> by Bézier polynomials <i>q<sub>k</sub> = φ<sub>k</sub>(θ)</i> and enforced by input–output feedback linearisation. The end coefficients encode the touchdown posture, its mirror image after the leg swap, and <b>hybrid invariance</b> (the post-impact velocity is tangent to the constraint); the interior coefficients, the touchdown tangents and the posture (stance-knee flexion, swing-knee flexion, torso lean) are optimised under transversality, existence and stability of the hybrid orbit, no knee hyper-extension, torso and hip bounds, and swing-foot clearance over the terrain.</p>
+      <div class="eq">ζ<span class="m">k+1</span> = (δ²/M⁻) ζ<span class="m">k</span> − V⁻      same return map as the two-link walker, now with knees to lift the foot</div>
+      <p><b>Verified, not assumed.</b> The closed-form dynamics match a symbolic derivation to 4·10⁻¹⁵, the impact map conserves angular momentum about the new stance foot to 10⁻¹⁵, and the leg-swap relabelling reproduces every physical point (the archived assignment code had a stray torso term in the new stance-knee angle, caught by that check). On flat ground the 0.40 m gait is a stable hybrid limit cycle with Floquet multiplier 0.79, and the return-map slope measured in simulation matches it.</p>
+      <div class="tag-row"><span class="chip">RABBIT structure</span><span class="chip">4 actuators, 1 passive pivot</span><span class="chip">Bézier VHCs</span><span class="chip">chained through the impact map</span><span class="chip">collision-checked terrain</span></div>
     </div>
     <div>
-      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/flat_strobe.png" alt="Strobe of acrobot configurations on the constraint set, flat ground" loading="lazy"><figcaption><b>The constraint set on flat ground.</b> Configurations along one step (purple → yellow) and the swing-foot path (green). The legs pass each other with the swing foot at the stance foot, an unavoidable grazing touch for a knee-less walker.</figcaption></figure>
-      <figure class="fig"><img src="assets/images/projects/bipednav/flat_mass_potential.png" alt="Virtual mass and potential over one step" loading="lazy"><figcaption><b>Virtual mass and potential</b> of the report's flat-ground gait: δ = 0.336, M⁻ = 0.121, V⁻ = −0.254, V<sub>max</sub> = 3.42, Floquet multiplier 0.933, both existence and stability satisfied — barely: the energy margin above the barrier is 0.09.</figcaption></figure>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/biped5_flat_strobe.png" alt="Five-link biped: strobe of configurations on the constraint set" loading="lazy"><figcaption><b>The constraint set on flat ground</b> (stride 0.40 m) with the swing-foot path.</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/bipednav/biped5_return_map.png" alt="Five-link return map: simulation versus the analytic slope" loading="lazy"><figcaption><b>Return map</b> measured over 16 steps from three initial speeds against the analytic affine map.</figcaption></figure>
     </div>
   </div>
-
   <div class="clip-row">
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_flat.mp4" type="video/mp4"></video><div class="body"><h3>Flat ground, the report's gait</h3><p>25 steps at 0.302 m/s, period 1.044 s, stride 0.315 m, hip torque 110 N·m peak / 13.5 N·m rms, constraint error below 3·10⁻¹¹ rad. Started 20 % fast, the orbit converges at the analytic rate.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_slope.mp4" type="video/mp4"></video><div class="body"><h3>Down a 10° slope, exact impact map</h3><p>Gait found by constrained optimisation; the swing leg <i>retracts</i> before touchdown (v₁ = +1.36), which keeps 68 % of the phase velocity through the impact. Floquet multiplier 0.44, 12 N·m peak torque: gravity does the work.</p></div></div>
-  </div>
-
-  <div class="grid-2" style="margin-top:22px">
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/flat_phase_portrait.png" alt="Energy levels of the constrained dynamics with 25 simulated steps" loading="lazy"><figcaption><b>Energy levels and the hybrid orbit.</b> Contours of E = ½Mθ̇² + V; the dashed red level is the barrier V<sub>max</sub>. Twenty-five simulated steps from 1.2× the limit-cycle speed; dotted segments are the impact map.</figcaption></figure>
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/flat_return_map.png" alt="Measured return map against the analytic affine map" loading="lazy"><figcaption><b>Verification.</b> The step-to-step map measured in simulation (dots) sits on the analytic affine map (dashed): slope 0.9329 and 0.9327 for two initial speeds against δ²/M⁻ = 0.9326.</figcaption></figure>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_biped5_flat.mp4" type="video/mp4"></video><div class="body"><h3>Flat ground, 0.40 m stride</h3><p>Ten steps from 1.25× the limit-cycle speed. Period 1.24 s at the fixed point, 0.32 m/s, peak actuator torque 1.8 N·m for the 1.9 kg robot; the energy plot shows the orbit settling onto the fixed point.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case0.mp4" type="video/mp4"></video><div class="body"><h3>Perceive → plan → step over a box</h3><p>The planner reads the obstacle from one view (1.20 m ahead, 15 cm deep, 8 cm high), schedules two 0.47 m approach steps, a 0.59 m step with the leading leg, brings the trailing leg over and resumes the 0.40 m gait. 7/7 steps, no collision.</p></div></div>
   </div>
   <div class="grid-2" style="margin-top:22px">
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/flat_time_series.png" alt="Joint angles, hip torque and constraint error over six steps" loading="lazy"><figcaption><b>Six steps in time.</b> Joint angles, hip torque and the constraint error; the torque spikes are the post-impact re-acceleration of the swing leg.</figcaption></figure>
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/flat_disturbance.png" alt="Disturbance sweeps on flat ground" loading="lazy"><figcaption><b>How much can be pushed.</b> The gait survives any initial speed from 1.0× to 3× the limit cycle but not slower (the energy margin is 0.09), and joint offsets from −0.26 rad to 0 but no positive offset. The report only tested faster starts.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/biped5_flat_phase.png" alt="Energy levels of the constrained dynamics with sixteen simulated steps" loading="lazy"><figcaption><b>Energy levels and the hybrid orbit</b>, 16 steps from 1.3× the limit-cycle speed; dotted segments are the impact map.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/biped5_flat_torques.png" alt="The four actuator torques and the constraint error" loading="lazy"><figcaption><b>Four torques and the constraint error</b> over six steps; the stance knee carries the impact, the hip drives the swing.</figcaption></figure>
   </div>
 </section>
 
-<!-- =================== FINDINGS =================== -->
-<section class="section" id="findings">
-  <h2 class="section-title">What the re-test found</h2>
-  <p class="quote">“Honesty over polish.” Three things came out of running the archived controller against physics instead of against itself.</p>
-
-  <div class="card finding" style="margin-top:22px">
-    <span class="no">1</span>
-    <h3>The course impact map is not the leg swap</h3>
-    <p>The ECE1658 template relabels velocities after impact with a reflection, q̇⁺ = −q̇. The actual swap of stance and swing legs is q₁⁺ = q₁ + q₂ − π, q₂⁺ = 2π − q₂, whose Jacobian is [[1, 1], [0, −1]]: the new stance leg keeps the angular velocity the swing leg had. The two agree only for velocities tangent to the impact surface, which post-impact velocities are not (the old stance foot lifts off).</p>
-    <p>For the report's parameters the exact map retains δ = 0.115 of the phase velocity instead of 0.336, and the gait fails the energy test: no degree-5 design is stable on flat ground under the exact map. Retracting the swing foot before touchdown recovers δ (right), and the optimiser finds exact-map gaits with degree 7 on flat ground and a clean one on the −10° slope. Both conventions are implemented and every result on this page says which one it uses.</p>
-    <div class="table-wrap" style="margin-top:14px">
-      <table class="data-table">
-        <thead><tr><th>velocity relabelling (report parameters β = 0.3166, v₁ = −0.894, v₂ = 1.9)</th><th>δ</th><th>M⁻</th><th>V⁻</th><th>V<sub>max</sub></th><th>δ²/M⁻</th><th>stable orbit</th></tr></thead>
-        <tbody>
-          <tr><td>reflection R = −I (course template)</td><td>0.336</td><td>0.121</td><td>−0.254</td><td>3.42</td><td>0.933</td><td class="ok">yes</td></tr>
-          <tr><td>exact leg swap R = [[1, 1], [0, −1]]</td><td>0.115</td><td>0.061</td><td>−0.203</td><td>1.67</td><td>0.214</td><td class="bad">no</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <figure class="fig" style="max-width:640px"><img src="assets/images/projects/bipednav/impact_delta_vs_v1.png" alt="Phase-velocity retention through the impact versus swing-leg rate at touchdown" loading="lazy"><figcaption>Retention δ against the swing-leg rate at touchdown for both conventions; positive v₁ is foot retraction.</figcaption></figure>
-  </div>
-
-  <div class="card finding" style="margin-top:22px">
-    <span class="no">2</span>
-    <h3>A knee-less biped cannot take human stairs</h3>
-    <p>Two facts of geometry. The legs can only pass each other in the folded configuration, where the swing foot sits at the stance foot and moves perpendicular to the legs; on a flat tread that dips into the step unless the stance leg is vertical at that instant, which needs a leg aperture <b>β &gt; 2α</b> for a stair of pitch α. And the swing foot moves on a circle of radius ℓ around a hip that is never higher than ℓ, so it only clears the next riser if the foot lands within <b>b − √(2h − h²)</b> (leg units) of the nosing.</p>
-    <p>The perceived staircase (rise 12 cm, run 28 cm, pitch 23°) would need a 46° aperture, i.e. 2.6 steps per stride for a 1 m leg, and a landing window of a few centimetres. The report's stair proof of concept (b = 1, h = 0.5, d = 0.9) used the slope model, which lets the swing foot pass 5 cm inside the tread behind the stance foot. An 80-cell sweep of fold-constrained gait designs over pitch, aperture and direction found none that is stable, clears the risers and passes transversality.</p>
-    <div class="grid-2" style="margin-top:14px">
-      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/stairs_feasibility_geometry.png" alt="Map of admissible landing window versus stair pitch and aperture" loading="lazy"><figcaption>Admissible landing window versus pitch and aperture; white where the legs cannot pass with a vertical stance leg.</figcaption></figure>
-      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/stairs_slope_gait_collision.png" alt="Slope-model swing-foot path checked against a real staircase" loading="lazy"><figcaption>The slope model's swing-foot path on the report's staircase; the highlighted part is inside the step.</figcaption></figure>
-    </div>
-  </div>
-
-  <div class="card finding" style="margin-top:22px">
-    <span class="no">3</span>
-    <h3>…but it can take shallow ones, if it places its feet right</h3>
-    <p>The slope gaits were run on staircases of the same pitch and stride while sweeping the distance d from the stance foot to the next riser. Ascending a 5° staircase (rise 6.7 cm, run 76 cm) works iff the foot lands within 5 % of the tread depth from the nosing; descending 5° and 10° staircases works iff the stance foot stands on the nosing. Both are the two geometric facts above turned into a rule.</p>
-    <p class="rule" style="margin-top:12px">Going up: <b>land 5 % before the edge.</b>  Going down: <b>stand on the edge.</b></p>
-    <figure class="fig"><img src="assets/images/projects/bipednav/stairs_real_dsweep.png" alt="Steps completed versus foot placement on real staircases" loading="lazy"><figcaption><b>Foot-placement sweep.</b> Steps completed (of 12) versus d/b for the four slope gaits on collision-checked staircases: green walks, gold scuffs the tread, red trips on the riser.</figcaption></figure>
-    <div class="clip-row">
-      <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs_up.mp4" type="video/mp4"></video><div class="body"><h3>Up, 5° pitch, d = 0.97 b</h3><p>12/12 steps, 1.02 m/s along the stair, climb rate 0.089 m/s, 77 N·m peak. The foot arrives from above with retraction, so it clears the riser it lands just behind.</p></div></div>
-      <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs_down.mp4" type="video/mp4"></video><div class="body"><h3>Down, 10° pitch, d = 0.03 b</h3><p>12/12 steps, 0.73 m/s, 9.3 N·m peak with the exact impact map (189 N·m with the course map). Leaving the fold downward, the foot is already past the tread.</p></div></div>
-    </div>
-    <div class="grid-2" style="margin-top:18px">
-      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/stairs_real_slope_+5_reflect_strobe.png" alt="Strobe of the ascending stair gait" loading="lazy"><figcaption>Ascending: configurations and swing-foot path on the 5° staircase.</figcaption></figure>
-      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/stairs_real_slope_-10_kinematic_strobe.png" alt="Strobe of the descending stair gait" loading="lazy"><figcaption>Descending: the exact-map retraction gait on the 10° staircase, stance foot on the nosing.</figcaption></figure>
-    </div>
-  </div>
-</section>
-
-<!-- =================== SLOPES =================== -->
-<section class="section" id="slopes">
-  <h2 class="section-title">Slopes</h2>
+<!-- =================== OBSTACLES =================== -->
+<section class="section" id="obstacles">
+  <h2 class="section-title">Obstacles: perceive, pre-plan, walk over</h2>
   <div class="grid-2">
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/slopes_strobe.png" alt="Constraint sets of the slope gaits" loading="lazy"><figcaption><b>Four slope gaits</b> (β = 45°, stride 0.765 m), designed by constrained optimisation and accepted only after walking 25 collision-checked steps. Downhill is easy for both impact conventions; uphill only +5° under the course map, and nothing at +10°: the virtual potential the impact must pay back turns positive as the slope rises.</figcaption></figure>
-    <div>
-      <div class="table-wrap" style="margin-top:0">
-        <table class="data-table">
-          <thead><tr><th>slope</th><th>map</th><th>k</th><th>v₁</th><th>δ²/M⁻</th><th>period</th><th>speed</th><th>τ peak</th><th>steps</th></tr></thead>
-          <tbody>
-            <tr><td>−10°</td><td>course</td><td>6</td><td>−2.02</td><td>0.380</td><td>1.03 s</td><td>0.75 m/s</td><td>204 N·m</td><td class="ok">12/12</td></tr>
-            <tr><td>−10°</td><td>exact</td><td>6</td><td>+1.36</td><td>0.443</td><td>1.00 s</td><td>0.78 m/s</td><td class="hi">12 N·m</td><td class="ok">12/12</td></tr>
-            <tr><td>−5°</td><td>course</td><td>6</td><td>−2.55</td><td>0.575</td><td>0.93 s</td><td>0.85 m/s</td><td>242 N·m</td><td class="ok">12/12</td></tr>
-            <tr><td>+5°</td><td>course</td><td>8</td><td>−3.32</td><td>0.950</td><td>0.59 s</td><td>1.29 m/s</td><td>90 N·m</td><td class="ok">12/12</td></tr>
-            <tr><td>+10°</td><td>both</td><td>—</td><td colspan="6" style="text-align:left">no feasible design (14 starts per convention)</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p style="font-size:13px;color:var(--ash);margin-top:10px">k is the number of polynomial coefficients; v₁ the swing-leg rate at touchdown (positive = retraction). The report's +10° and +30° slope cases could not be reproduced with the stability test enforced.</p>
-      <figure class="fig"><img src="assets/images/projects/bipednav/slope_-10_kinematic_phase.png" alt="Phase portrait of the −10° exact-map gait" loading="lazy"><figcaption>−10°, exact impact map: energy levels and 12 simulated steps.</figcaption></figure>
+    <div class="card card-pad prose">
+      <p class="bn-lead">From one view of the floor ahead, the perception layer returns the first obstacle in the walking corridor: its <b>distance</b>, <b>depth</b> and <b>height</b> (floor plane from the up-facing normal mode, points above it clustered along the walk, top surface for the depth). On synthetic RGB-D scenes with a 45° head camera the distance is recovered to 1 cm, the height to 1 cm and the depth to 2 cm out to about 2 m; beyond that the box holds too few pixels.</p>
+      <p><b>Pre-planning from the current pose.</b> The walker accepts boxes up to 25 cm high and 30 cm deep. It takes off 25 cm before the box and lands 20 cm past it, so the leading step is <i>a + d + b</i>; the approach is split into equal regular steps between 0.28 and 0.55 m and a regular VHC gait is designed for that stride. Two step-over gaits are then designed as periodic VHCs and <b>re-anchored to the actual impacts</b>: the leading step starts where the approach gait's impact leaves the robot, the trailing step starts where the leading step's impact leaves it and is forced to end in the nominal gait. Every transition is hybrid-invariant by construction; the incoming phase velocity follows from energy conservation on the zero dynamics and must clear the next barrier.</p>
+      <p>The plan is then executed against the <b>true</b> box, so the perception error is part of the test.</p>
     </div>
+    <div>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/plan_case0_strobe.png" alt="The two chained step-over gaits over the box" loading="lazy"><figcaption><b>Case 0, the two step-over gaits.</b> Leading leg over the box (left), trailing leg over it and back into the regular gait (right).</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/bipednav/plan_case0_footpath.png" alt="Swing-foot paths of the whole plan" loading="lazy"><figcaption><b>The whole plan</b>: swing-foot paths in world coordinates, alternating colours per step.</figcaption></figure>
+    </div>
+  </div>
+  <div class="table-wrap" id="plan-table">
+    <table class="data-table">
+      <thead><tr><th>case</th><th>true box (dist / depth / height)</th><th>perceived</th><th>plan</th><th>result</th><th>peak torque</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>1.20 m / 15 cm / 8 cm</td><td>1.20 m / 14 cm / 9 cm</td><td>2 × 0.47 m, then 0.59 m over, resume 0.40 m</td><td class="ok">7/7 steps, no collision</td><td>24 N·m</td></tr>
+        <tr><td>1</td><td>1.60 m / 20 cm / 15 cm</td><td>1.59 m / 18 cm / 16 cm</td><td>3 × 0.45 m, then 0.63 m over, resume 0.40 m</td><td class="bad">3/8 steps, then trip</td><td>29 N·m</td></tr>
+        <tr><td>2</td><td>2.00 m / 25 cm / 22 cm</td><td>1.99 m / 23 cm / 23 cm</td><td>4 × 0.44 m, then 0.68 m over, resume 0.40 m</td><td class="bad">4/9 steps, then singular</td><td>2 N·m</td></tr>
+        <tr><td>3</td><td>1.00 m / 30 cm / 12 cm</td><td>1.00 m / 28 cm / 13 cm</td><td>2 × 0.38 m, then 0.73 m over, resume 0.40 m</td><td class="bad">2/7 steps, then singular</td><td>2 N·m</td></tr>
+        <tr><td>4</td><td>1.40 m / 10 cm / 5 cm</td><td>1.40 m / 9 cm / 6 cm</td><td>3 × 0.38 m, then 0.54 m over, resume 0.40 m</td><td class="bad">4/8 steps, then singular</td><td>10 N·m</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="clip-row" id="plan-clips">
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case0.mp4" type="video/mp4"></video><div class="body"><h3>Case 0: 8 cm box, 1.2 m ahead</h3><p>2 approach steps of 0.47 m, 0.59 m over with the leading leg, trailing leg over, regular gait resumed — 7/7 steps, no collision.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case1.mp4" type="video/mp4"></video><div class="body"><h3>Case 1: 15 cm box, 1.6 m ahead</h3><p>3 approach steps of 0.45 m, 0.63 m over with the leading leg, trailing leg over, regular gait resumed — 3/8 steps, then trip.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case2.mp4" type="video/mp4"></video><div class="body"><h3>Case 2: 22 cm box, 2.0 m ahead</h3><p>4 approach steps of 0.44 m, 0.68 m over with the leading leg, trailing leg over, regular gait resumed — 4/9 steps, then singular.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case3.mp4" type="video/mp4"></video><div class="body"><h3>Case 3: 12 cm box, 1.0 m ahead</h3><p>2 approach steps of 0.38 m, 0.73 m over with the leading leg, trailing leg over, regular gait resumed — 2/7 steps, then singular.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case4.mp4" type="video/mp4"></video><div class="body"><h3>Case 4: 5 cm box, 1.4 m ahead</h3><p>3 approach steps of 0.38 m, 0.54 m over with the leading leg, trailing leg over, regular gait resumed — 4/8 steps, then singular.</p></div></div>
+  </div>
+</section>
+
+<!-- =================== STAIRS =================== -->
+<section class="section" id="stairs">
+  <h2 class="section-title">Stairs</h2>
+  <div class="grid-2">
+    <div class="card card-pad prose">
+      <p class="bn-lead"><b>Why the two-link walker cannot take human stairs.</b> A point-foot biped without knees passes its legs with the swing foot at the stance foot, moving perpendicular to the legs; on a flat tread that dips into the step unless the stance leg is vertical at that instant (aperture β &gt; 2·pitch), and the hip circle must lift the foot above the next riser (d ≥ √(2h − h²) in leg units). The perceived staircase (rise 12 cm, run 28 cm, pitch 23°) is out of reach for that morphology; the report's stair proof of concept used the slope model, which hides a 5 cm dip at the rear nosing.</p>
+      <p><b>What the two-link walker can do</b>: slope gaits walk real, collision-checked staircases of 5° (up) and 5°/10° (down) with a foot-placement rule found by sweeping the landing point: land within 5 % of the tread depth from the nosing going up, stand on the nosing going down.</p>
+      <p><b>Knees solve the geometry, not yet the energetics.</b> With the five-link model the swing foot clears the risers of the perceived staircase, but a periodic climbing gait needs the virtual potential to fall over the step (V⁻ &lt; 0) so the impact can pay it back; a 72-start search over touchdown postures and tangents has not produced one yet — every candidate leaves V⁻ &gt; 0 (up) or violates transversality (down). Uphill VHC design is the open item of this project.</p>
+    </div>
+    <div>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/stairs_feasibility_geometry.png" alt="Map of admissible landing window versus stair pitch and aperture" loading="lazy"><figcaption>Which stairs a point-foot compass walker can take: the admissible landing window versus pitch and aperture.</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/bipednav/stairs_real_dsweep.png" alt="Steps completed versus foot placement on real staircases" loading="lazy"><figcaption>Two-link slope gaits on real staircases: steps completed versus foot placement; green walks, gold scuffs, red trips.</figcaption></figure>
+    </div>
+  </div>
+  <div class="clip-row">
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs_up.mp4" type="video/mp4"></video><div class="body"><h3>Two-link, up a 5° staircase</h3><p>Real treads and risers; the foot lands within 5 % of the nosing. 12/12 steps.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs_down.mp4" type="video/mp4"></video><div class="body"><h3>Two-link, down a 10° staircase</h3><p>Stance foot on the nosing; exact impact map; 9 N·m peak torque.</p></div></div>
+  </div>
+</section>
+
+<!-- =================== TWO-LINK REDUCTION =================== -->
+<section class="section" id="acrobot">
+  <h2 class="section-title">The two-link reduction, re-tested</h2>
+  <p class="quote">The course project designed the gait on the acrobot (two links, one hip motor). Re-running it against physics instead of against itself gave three findings.</p>
+  <div class="grid-3" style="margin-top:22px">
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/bipednav/flat_return_map.png" alt="Return map of the two-link gait" class="contain" loading="lazy"></div>
+      <span class="caption-box">Reproduced</span>
+      <div class="body"><h3>Exact to 4·10⁻⁵</h3><p>The report's six VHC coefficients, δ = 0.336, M⁻ = 0.121, V⁻ = −0.254, V<sub>max</sub> = 3.42; the measured return-map slope 0.9329 matches δ²/M⁻ = 0.9326. The basin is one-sided: the gait cannot start slower than its limit cycle.</p></div>
+    </div>
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/bipednav/impact_delta_vs_v1.png" alt="Velocity retention through the impact for both conventions" class="contain" loading="lazy"></div>
+      <span class="caption-box">Impact map</span>
+      <div class="body"><h3>The template's relabelling is not the leg swap</h3><p>q̇⁺ = −q̇ is not the Jacobian of q₁⁺ = q₁ + q₂ − π, q₂⁺ = 2π − q₂. Under the exact swap the report gait keeps δ = 0.115 instead of 0.336 and has no stable orbit; retraction gaits recover it. Both conventions are implemented; the five-link walker uses the exact one.</p></div>
+    </div>
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/bipednav/stairs_slope_gait_collision.png" alt="Slope-model swing-foot path against a real staircase" class="contain" loading="lazy"></div>
+      <span class="caption-box">Collisions</span>
+      <div class="body"><h3>Slopes are not stairs</h3><p>The slope model lets the swing foot pass through the tread behind the stance foot; on the report's staircase the dip is 5 cm. Checking gaits against treads and risers is what produced the foot-placement rule above.</p></div>
+    </div>
+  </div>
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/flat_phase_portrait.png" alt="Two-link flat gait: energy levels and 25 simulated steps" loading="lazy"><figcaption>Two-link flat gait: 25 steps from 1.2× the limit-cycle speed.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/slopes_strobe.png" alt="Two-link slope gaits" loading="lazy"><figcaption>Two-link slope gaits found by constrained optimisation (−10°, −5°, +5°; none at +10°).</figcaption></figure>
   </div>
 </section>
 
@@ -412,5 +475,6 @@ cd ../docs &amp;&amp; make                                         <span class="
 </footer>
 
 <script src="assets/js/site.js"></script>
+<script type="module" src="assets/js/bipednav-demo.js"></script>
 </body>
 </html>
