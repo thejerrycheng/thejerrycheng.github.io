@@ -6,6 +6,31 @@
   "use strict";
 
 
+  /* ---- Day / night ---- */
+  var root = document.documentElement;
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  function applyTheme(mode, persist) {
+    root.setAttribute("data-theme", mode);
+    if (themeMeta) themeMeta.setAttribute("content", mode === "day" ? "#7FB6DF" : "#151820");
+    [].forEach.call(document.querySelectorAll(".theme-btn"), function (b) { b.setAttribute("aria-pressed", String(mode === "day")); });
+    if (persist) { try { localStorage.setItem("theme", mode); } catch (e) {} }
+  }
+  applyTheme(root.getAttribute("data-theme") === "day" ? "day" : "night", false);
+  [].forEach.call(document.querySelectorAll(".theme-btn"), function (btn) {
+    btn.addEventListener("click", function () { applyTheme(root.getAttribute("data-theme") === "day" ? "night" : "day", true); });
+  });
+
+  /* ---- Critters: bats after dark, pigeons by day; one flock per sky ---- */
+  [].forEach.call(document.querySelectorAll(".night-sky"), function (sky) {
+    for (var i = 1; i <= 5; i++) {
+      var c = document.createElement("i"); c.className = "critter c" + i; c.setAttribute("aria-hidden", "true"); sky.appendChild(c);
+    }
+  });
+  var portrait = document.querySelector(".cover .photo-panel");
+  if (portrait) ["p1", "p2"].forEach(function (k) {
+    var b = document.createElement("i"); b.className = "perch " + k; b.setAttribute("aria-hidden", "true"); portrait.appendChild(b);
+  });
+
   /* ---- Nav: tighten the masthead once the page scrolls ---- */
   var navEl = document.querySelector(".nav");
   if (navEl) {
@@ -77,9 +102,34 @@
     wrap.style.touchAction = "pan-y";
   });
 
-  /* ---- Name pronunciation (hero) ---- */
+  /* ---- Name pronunciation (hero): play the clip, type out how it sounds, fling a word or two ---- */
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   [].forEach.call(document.querySelectorAll(".say-name[data-audio]"), function (btn) {
-    var audio = null;
+    var audio = null, wrap = btn.parentNode, timers = [];
+    function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+    function typeOut() {
+      clearTimers();
+      var old = wrap.querySelector(".say-bubble"); if (old) old.remove();
+      [].forEach.call(wrap.querySelectorAll(".say-fx"), function (f) { f.remove(); });
+      var spell = btn.getAttribute("data-spell") || "";
+      var pinyin = btn.getAttribute("data-pinyin") || "";
+      var bubble = document.createElement("span"); bubble.className = "say-bubble";
+      var typed = document.createElement("span"); typed.className = "say-typed"; bubble.appendChild(typed);
+      if (pinyin) { var sm = document.createElement("small"); sm.textContent = pinyin; bubble.appendChild(sm); }
+      wrap.appendChild(bubble);
+      if (reduceMotion) { typed.textContent = spell; typed.classList.add("done"); }
+      else {
+        for (var i = 1; i <= spell.length; i++) (function (n) {
+          timers.push(setTimeout(function () { typed.textContent = spell.slice(0, n); if (n === spell.length) typed.classList.add("done"); }, 70 * n));
+        })(i);
+        ["HEY!", "YO!"].forEach(function (w, k) {
+          var f = document.createElement("span"); f.className = "pop-fx pop-fx-mini say-fx f" + k; f.textContent = w; wrap.appendChild(f);
+          timers.push(setTimeout(function () { f.remove(); }, 1100));
+        });
+      }
+      timers.push(setTimeout(function () { bubble.classList.add("gone"); }, 70 * spell.length + 2200));
+      timers.push(setTimeout(function () { bubble.remove(); }, 70 * spell.length + 2500));
+    }
     btn.addEventListener("click", function () {
       if (!audio) {
         audio = new Audio(btn.getAttribute("data-audio"));
@@ -90,6 +140,7 @@
       btn.classList.add("playing");
       var p = audio.play();
       if (p && p.catch) p.catch(function () { btn.classList.remove("playing"); });
+      typeOut();
     });
   });
 

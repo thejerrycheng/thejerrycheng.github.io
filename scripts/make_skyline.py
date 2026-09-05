@@ -109,3 +109,6 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" preserve
 '''
 open("assets/images/gotham-skyline.svg", "w").write(svg)
 print("wrote assets/images/gotham-skyline.svg", len(parts), "shapes,", len(windows), "windows")
+# daytime variant: same silhouette, no lit windows (used when data-theme="day")
+open("assets/images/gotham-skyline-day.svg", "w").write(svg.replace(chr(10).join(windows), ""))
+print("wrote assets/images/gotham-skyline-day.svg")
