@@ -42,7 +42,7 @@ def pub_row(p):
     return f'''    <div class="pub card card-hover" id="{p["id"]}">
       {thumb_html(p)}
       <div class="pub-meta">
-        <a href="{attr(p["href"])}" target="_blank" rel="noopener"><span class="papertitle">{p["title"]}</span></a>
+        <a href="{attr(p["href"])}" target="_blank" rel="noopener"><span class="papertitle">{p["title"]}</span></a><span class="proj-year">{p["year"]}</span>
         <span class="authors">{p["authors"]}</span>
         <span class="venue">{venue}</span>
         {links_html(p)}

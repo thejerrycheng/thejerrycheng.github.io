@@ -331,7 +331,7 @@ code, pre, kbd { font-family: var(--font-mono); font-size: 0.9em; }
 /* ---- Home cover ---- */
 .cover { margin-top: calc(-1 * (var(--nav-h) + 24px)); padding: calc(var(--nav-h) + 72px) 0 clamp(120px, 18vw, 230px); }
 .cover-inner { max-width: var(--maxw); margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: 1.35fr 1fr; gap: 40px; align-items: center; }
-.cover .kicker { color: var(--imp); margin-bottom: 18px; text-shadow: 2px 2px 0 #151820; }
+.cover .kicker { color: var(--imp); margin-bottom: 18px; text-shadow: none; -webkit-text-stroke: .7px #151820; paint-order: stroke fill; }
 .cover-name {
   font-family: var(--font-display); font-weight: 400; font-size: clamp(44px, 5.6vw, 72px); /* sized so "Jerry (Qǐlóng)" holds one line */
   line-height: .95; letter-spacing: 0.015em; color: var(--cream);
@@ -415,7 +415,7 @@ html.js .cover-photo { animation: rise 1s var(--ease-out) .25s both; }
 
 /* ---- Page cover (sub-pages) ---- */
 .page-cover { margin-top: calc(-1 * (var(--nav-h) + 24px)); padding: calc(var(--nav-h) + 64px) 0 clamp(96px, 13vw, 150px); }
-.page-cover .kicker { color: var(--imp); margin-bottom: 10px; text-shadow: 2px 2px 0 #151820; }
+.page-cover .kicker { color: var(--imp); margin-bottom: 10px; text-shadow: none; -webkit-text-stroke: .7px #151820; paint-order: stroke fill; }
 .page-cover h1 {
   font-family: var(--font-display); font-weight: 400; font-size: clamp(40px, 6.5vw, 74px);
   line-height: 1; letter-spacing: .02em; color: var(--cream); text-shadow: 4px 4px 0 rgba(0,0,0,0.55);
@@ -575,7 +575,7 @@ a .papertitle:hover { color: var(--link); }
 }
 .site-footer .wrap { display: flex; flex-direction: column; gap: 16px; }
 .footer-name { font-family: var(--font-display); font-weight: 400; font-size: 24px; letter-spacing: .03em; color: var(--cream); }
-.footer-note { font-family: var(--font-mono); font-size: 12px; color: var(--imp); letter-spacing: .02em; text-shadow: 1px 1px 0 #151820; }
+.footer-note { font-family: var(--font-mono); font-size: 12px; color: var(--imp); letter-spacing: .02em; }
 .footer-rule { height: 2px; background: rgba(217,161,63,0.45); }
 .footer-credit { font-size: 12px; color: var(--ash-light); }
 .footer-credit a { color: var(--imp); text-decoration: none; }
