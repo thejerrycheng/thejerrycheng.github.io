@@ -119,7 +119,8 @@
   /* ---------- UI ---------- */
   var root = document.getElementById("demo-rwhe"); if (!root) return;
   var $ = function (id) { return root.querySelector("#" + id); };
-  var view = new CD.View3($("rw-scene"), { az: -0.8, el: 0.4, scale: 110, center: [0, 0, 0] });
+  var view = null;   /* 2-D fallback; the three.js arm (rwhe_scene3d.js) takes over when it loads */
+  function ensureView() { if (!view && !(window.RW3D && window.RW3D.demoView)) { view = new CD.View3($("rw-scene"), { az: -0.8, el: 0.4, scale: 110, center: [0, 0, 0] }); view.onchange = drawScene; } return view; }
   var plotLocal = new CD.Plot($("rw-plot-local"), { title: "local solver: cost vs iteration, 8 random starts", xlabel: "iteration", ylabel: "cost", logy: true });
   var plotSdp = new CD.Plot($("rw-plot-sdp"), { title: "SDP (ADMM): objective and residuals", xlabel: "ADMM iteration", ylabel: "", logy: true });
   var plotErr = new CD.Plot($("rw-plot-err"), { title: "hand→camera error per method", xlabel: "method (1 linear · 2-9 local random · 10 local from linear · 11 SDP)", ylabel: "translation error [mm]", logy: true });
@@ -127,13 +128,18 @@
   var S = { running: false, data: null, sol: null, frame: 0 }, C = CD.colors();
   function readControls() { S.X = se3(rpy(+$("rw-xr").value / DEG, +$("rw-xp").value / DEG, +$("rw-xy").value / DEG), [+$("rw-xt").value / 100, 0.02, -0.03]); S.Y = se3(rpy(0.2, -0.3, +$("rw-yy").value / DEG), [+$("rw-yx").value / 100, 0.3, 0.1]); S.kappa = +$("rw-kappa").value; S.sigma = +$("rw-sigma").value / 100; S.N = +$("rw-N").value;
     $("rw-xr-v").textContent = $("rw-xr").value + "°"; $("rw-xp-v").textContent = $("rw-xp").value + "°"; $("rw-xy-v").textContent = $("rw-xy").value + "°"; $("rw-xt-v").textContent = $("rw-xt").value + " cm"; $("rw-yy-v").textContent = $("rw-yy").value + "°"; $("rw-yx-v").textContent = $("rw-yx").value + " cm"; $("rw-kappa-v").textContent = S.kappa + " (≈" + (Math.sqrt(1 / (2 * S.kappa)) * DEG).toFixed(1) + "°)"; $("rw-sigma-v").textContent = $("rw-sigma").value + " cm"; $("rw-N-v").textContent = S.N; }
-  function spherePoses(n, radius) { var out = []; for (var i = 0; i < n; i++) { var phi = Math.acos(1 - 2 * (i + 0.5) / n), th = Math.PI * (1 + Math.sqrt(5)) * i; var p = [radius * Math.sin(phi) * Math.cos(th), radius * Math.sin(phi) * Math.sin(th), radius * Math.cos(phi)]; var z = p.map(function (x) { return -x / radius; }); var up = [0, 0, -1], x = LA.cross(up, z), nx = norm(x); if (nx < 1e-6) { x = LA.cross([1, 0, 0], z); nx = norm(x); } x = x.map(function (v) { return v / nx; }); var y = LA.cross(z, x); out.push(se3([[x[0], y[0], z[0]], [x[1], y[1], z[1]], [x[2], y[2], z[2]]], p)); } return out; }
+  function spherePoses(n, radius) {   /* a spiral from near the pole to near the antipode: consecutive poses are neighbours, so the arm sweeps instead of jumping */
+    var out = [], turns = Math.max(2, Math.round(Math.sqrt(n) / 1.6));
+    for (var i = 0; i < n; i++) { var u = (i + 0.5) / n, phi = Math.acos(0.85 - 1.7 * u), th = 2 * Math.PI * turns * u; var p = [radius * Math.sin(phi) * Math.cos(th), radius * Math.sin(phi) * Math.sin(th), radius * Math.cos(phi)]; var z = p.map(function (x) { return -x / radius; }); var up = [0, 0, -1], x = LA.cross(up, z), nx = norm(x); if (nx < 1e-6) { x = LA.cross([1, 0, 0], z); nx = norm(x); } x = x.map(function (v) { return v / nx; }); var y = LA.cross(z, x); out.push(se3([[x[0], y[0], z[0]], [x[1], y[1], z[1]], [x[2], y[2], z[2]]], p)); }
+    return out; }
   function generate() { var rng = CD.rng(777 + S.N + Math.round(S.kappa) + Math.round(S.sigma * 1000) + Math.round($("rw-xy").value)), Bt = spherePoses(S.N, 1.0), A = [], B = [];
     Bt.forEach(function (Tb) { A.push(compose(compose(S.Y, Tb), inv(S.X))); B.push(se3(LA.mul(Tb.R, langevin(S.kappa, rng)), Tb.t.map(function (x) { return x + S.sigma * rng.normal(); }))); });
     return { A: A, B: B, Bt: Bt }; }
   function tagDraw(T, size, col) { var c = [[-1, -1, 0], [1, -1, 0], [1, 1, 0], [-1, 1, 0]].map(function (v) { return add(T.t, mv(T.R, [size * v[0], size * v[1], 0])); }); for (var i = 0; i < 4; i++) view.line(c[i], c[(i + 1) % 4], col, 2); view.line(c[0], c[2], col, 1); view.line(c[1], c[3], col, 1); }
   function drawScene() {
-    C = CD.colors(); view.clear(); var d = S.data;
+    C = CD.colors(); var d = S.data;
+    if (window.RW3D && window.RW3D.demoView) { var kk = d ? Math.min(S.frame, d.A.length - 1) : 0; window.RW3D.demoView.update({ X: S.X, Y: S.Y, A: d ? d.A[kk] : { R: rpy(0, 0.6, 0.3), t: [0.9, 0.2, 0.2] }, B: d ? d.B[kk] : null, idx: d ? kk : undefined, est: S.sol, reset: !d || kk === 0, snap: !d }); return; }
+    if (!ensureView()) return; view.clear();
     var base = [0, 0, -0.9]; view.point(base, C.text, 5); view.text(base, "base", C.text, 8, 0);
     tagDraw(S.Y, 0.18, C.pop); view.text(S.Y.t, "target  Y", C.pop, 8, -12);
     if (d) { var k = Math.min(S.frame, d.A.length - 1); for (var i = 0; i <= k; i += 3) { var cam = compose(d.A[i], S.X); view.frustum(cam.R, cam.t, 0.07, C.blue, 0.8); } var camk = compose(d.A[k], S.X); view.frustum(camk.R, camk.t, 0.14, C.blue, 2); view.line(base, d.A[k].t, C.hi, 1.5); view.point(d.A[k].t, C.hi, 4); view.text(d.A[k].t, "hand A_i", C.hi, 8, -10); view.line(d.A[k].t, camk.t, C.gold, 2.5); view.text(camk.t, "X", C.gold, 8, 8);
@@ -141,7 +147,6 @@
     if (S.sol) { var camE = compose(d.A[Math.min(S.frame, d.A.length - 1)], S.sol.X); view.frustum(camE.R, camE.t, 0.14, C.green, 2.5); tagDraw(S.sol.Y, 0.18, C.green); }
     view.ctx.fillStyle = C.ash; view.ctx.font = "10px 'Jost', sans-serif"; view.ctx.textAlign = "right"; view.ctx.fillText("blue = true camera poses · green = as measured by the camera (noisy B_i) / final estimate · drag to orbit", view.W - 8, view.H - 8);
   }
-  view.onchange = drawScene;
   function errs(sol, X, Y) { return { tx: 1000 * norm(add(sol.X.t, X.t, -1)), rx: rotErr(sol.X.R, X.R), ty: 1000 * norm(add(sol.Y.t, Y.t, -1)), ry: rotErr(sol.Y.R, Y.R) }; }
   function fmtE(e) { return "X: " + e.tx.toFixed(1) + " mm / " + e.rx.toFixed(2) + "°   Y: " + e.ty.toFixed(1) + " mm / " + e.ry.toFixed(2) + "°"; }
 
@@ -149,7 +154,7 @@
     if (S.running) return; S.running = true; readControls(); $("rw-run").disabled = true; log.clear(); S.sol = null; plotLocal.clear(); plotSdp.clear(); plotErr.clear();
     var d = S.data = generate(), A = d.A, B = d.B, kappa = S.kappa, sigma = S.sigma, rng = CD.rng(99);
     log.add("── setup ──", "hl"); log.add(S.N + " poses on the unit sphere · rotation noise Lang(κ=" + kappa + ") ≈ " + (Math.sqrt(1 / (2 * kappa)) * DEG).toFixed(1) + "° · translation noise σ = " + (100 * sigma).toFixed(0) + " cm · unknowns X (hand→camera), Y (base→target)");
-    for (var f = 0; f < A.length; f += 2) { S.frame = f; drawScene(); await CD.sleep(24); if (!S.running) return; }
+    for (var f = 0; f < A.length; f += 1) { S.frame = f; drawScene(); await CD.sleep(window.RW3D && window.RW3D.demoView ? 55 : 30); if (!S.running) return; }
     var truthCost = cost(A, B, S.X, S.Y, kappa, sigma); log.add("cost at the true X, Y: " + truthCost.toFixed(3) + "  (the noise-only floor)");
     /* linear */
     var lin = linearSolve(A, B, kappa, sigma), eL = errs(lin, S.X, S.Y); log.add("── linear two-stage (Shah / Wang) ──", "hl"); log.add("cost " + cost(A, B, lin.X, lin.Y, kappa, sigma).toFixed(3) + "   " + fmtE(eL));
@@ -182,7 +187,7 @@
   }
   ["rw-xr", "rw-xp", "rw-xy", "rw-xt", "rw-yy", "rw-yx", "rw-kappa", "rw-sigma", "rw-N"].forEach(function (id) { $(id).addEventListener("input", function () { readControls(); S.sol = null; S.data = null; S.frame = 0; drawScene(); }); });
   $("rw-run").addEventListener("click", run); $("rw-stop").addEventListener("click", function () { S.running = false; $("rw-run").disabled = false; log.add("stopped", "warn"); });
-  window.addEventListener("resize", function () { [plotLocal, plotSdp, plotErr].forEach(function (p) { p.resize(); p.draw(); }); view.resize(); drawScene(); });
+  window.addEventListener("resize", function () { [plotLocal, plotSdp, plotErr].forEach(function (p) { p.resize(); p.draw(); }); if (view) view.resize(); drawScene(); });
   document.querySelectorAll(".theme-btn").forEach(function (b) { b.addEventListener("click", function () { setTimeout(function () { drawScene(); plotLocal.draw(); plotSdp.draw(); plotErr.draw(); }, 30); }); });
-  readControls(); drawScene(); plotLocal.draw(); plotSdp.draw(); plotErr.draw();
+  readControls(); document.addEventListener("rw3d-ready", drawScene); setTimeout(function () { if (!(window.RW3D && window.RW3D.demoView)) drawScene(); }, 1500); plotLocal.draw(); plotSdp.draw(); plotErr.draw();
 })();
