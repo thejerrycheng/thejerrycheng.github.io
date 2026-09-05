@@ -130,6 +130,56 @@
     .hero-video video.loop { aspect-ratio: 16 / 9; }
     .photos2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .photos2 img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border: 1.5px solid var(--ink); border-radius: 4px; }
+    /* ---- layout fixes shared by the calibration pages ---- */
+    .cmd { white-space: pre; overflow-x: auto; max-width: 100%; }
+    .eq { white-space: normal; line-height: 1.7; }
+    .table-wrap { position: relative; }
+    .table-wrap.full { margin-top: 18px; }
+    .data-table.compact { font-size: 11.5px; }
+    .data-table.compact th, .data-table.compact td { padding: 6px 8px; }
+    .data-table th { white-space: normal; line-height: 1.25; vertical-align: bottom; }
+    .scroll-hint { display: none; font-family: var(--font-comic); font-size: 11px; letter-spacing: .06em; color: var(--hi); margin-top: 6px; }
+    @media (max-width: 820px) { .scroll-hint { display: block; } .data-table { font-size: 11px; } }
+    /* ---- clip grids (short autoplaying loops) ---- */
+    .clip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 18px; }
+    .clip-grid.three { grid-template-columns: repeat(3, 1fr); }
+    .clip-grid .card { overflow: hidden; }
+    .clip-grid video { width: 100%; display: block; aspect-ratio: 16 / 9; background: #151820; }
+    .clip-grid .body { padding: 12px 16px 14px; }
+    .clip-grid h3 { font-size: 15.5px; margin-bottom: 4px; }
+    .clip-grid p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+    .clip-grid .caption-box { margin: -22px 0 0 12px; position: relative; z-index: 2; }
+    .big-clip video { width: 100%; display: block; aspect-ratio: 16 / 9; background: #151820; border: var(--line-w) solid var(--ink); border-radius: var(--radius); box-shadow: var(--sh); }
+    .ledger { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 16px; }
+    .ledger .card { padding: 14px 16px; }
+    .ledger h4 { font-family: var(--font-comic); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+    .ledger h4.known { color: var(--green, #2E9E5B); } .ledger h4.unknown { color: var(--hi); } .ledger h4.truth { color: var(--gold); }
+    .ledger ul { padding-left: 18px; margin: 0; } .ledger li { font-size: 13.5px; line-height: 1.5; margin-bottom: 4px; }
+    .photos3 img { border: 1.5px solid var(--ink); border-radius: 4px; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+    @media (max-width: 820px) { .clip-grid, .clip-grid.three, .ledger { grid-template-columns: 1fr; } }
+    @media (max-width: 1000px) and (min-width: 821px) { .clip-grid.three { grid-template-columns: repeat(2, 1fr); } }
+    /* ---- live demo panels ---- */
+    .demo { padding: 18px 18px 14px; margin-top: 18px; }
+    .demo-head h3 { font-size: 20px; margin: 10px 0 6px; }
+    .demo-head p { font-size: 14.5px; line-height: 1.55; color: var(--ink-soft); max-width: 80ch; }
+    .demo-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-top: 14px; align-items: start; }
+    .demo-scene canvas { width: 100%; height: 380px; display: block; border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); background: var(--panel); box-shadow: var(--sh-xs); touch-action: none; }
+    .demo-controls label { display: block; font-family: var(--font-comic); font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); margin-bottom: 8px; }
+    .demo-controls label span { float: right; font-family: var(--font-mono); text-transform: none; letter-spacing: 0; color: var(--hi-deep); }
+    .demo-controls input[type=range] { width: 100%; display: block; margin: 2px 0 4px; accent-color: var(--hi); }
+    .demo-controls select { width: 100%; display: block; margin: 4px 0 6px; font: 13px var(--font-body); padding: 5px 6px; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--panel); color: var(--ink); }
+    .demo-buttons { display: flex; gap: 10px; margin: 10px 0 8px; flex-wrap: wrap; }
+    .demo-buttons .btn { font-size: 13px; padding: 8px 14px; }
+    .demo-result { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.5; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 6px; padding: 8px 10px; }
+    .demo-result small { color: var(--ash); }
+    .demo-plots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+    .demo-plots canvas { width: 100%; height: 230px; display: block; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--panel); }
+    .demo-log { font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; background: #151820; color: #F4EAD2; border-radius: 8px; padding: 12px 14px; height: 220px; overflow: auto; margin-top: 14px; border: var(--line-w) solid var(--ink); white-space: pre-wrap; }
+    .demo-log .hl { color: var(--pop); font-weight: 700; }
+    .demo-log .ok { color: #7ED957; }
+    .demo-log .warn { color: #ffa94d; }
+    @media (max-width: 900px) { .demo-grid { grid-template-columns: 1fr; } .demo-plots { grid-template-columns: 1fr; } .demo-scene canvas { height: 320px; } }
+    .demo-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
   </style>
 </head>
 <body>
@@ -168,7 +218,6 @@
 </header>
 <div class="deco-band" aria-hidden="true"></div>
 
-<!-- =================== HERO VIDEO =================== -->
 <section class="section" id="demo">
   <div class="hero-video">
     <video class="loop" muted loop playsinline autoplay preload="metadata" poster="assets/images/projects/rwhe/video_poster.jpg">
@@ -194,7 +243,17 @@
   </div>
 </section>
 
-<!-- =================== THE STRIP =================== -->
+<!-- =================== PROBLEM =================== -->
+<section class="section" id="problem">
+  <h2 class="section-title">The problem, in fifteen seconds</h2>
+  <div class="big-clip"><video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/rwhe_problem.jpg" controls><source src="assets/videos/clips/rwhe_problem.mp4" type="video/mp4"></video></div>
+  <div class="ledger">
+    <div class="card"><h4 class="known">What is measured</h4><ul><li><b>A</b><sub>i</sub>: the pose of the hand (or of the rig, from motion capture) at every time i.</li><li><b>B</b><sub>i</sub>: the pose of a fiducial target as the camera sees it, from an AprilTag detector with a hand-measured tag size.</li><li>Which camera saw which tag: a bipartite graph. On the real rig, 16 tags, 8 cameras, 73 edges, 3,230 pose pairs.</li></ul></div>
+    <div class="card"><h4 class="unknown">What we want</h4><ul><li><b>X</b><sub>j</sub>: where each tag sits in the world.</li><li><b>Y</b><sub>k</sub>: where each camera sits on the hand. That is the calibration.</li><li>α: the true tag scale, when the hand-measured size cannot be trusted (the monocular case).</li></ul></div>
+    <div class="card"><h4 class="truth">The insight</h4><ul><li>Every observation closes a loop: <b>A</b><sub>i</sub><b>X</b><sub>j</sub> = <b>Y</b><sub>k</sub><b>B</b><sub>i</sub>.</li><li>The rotations make the least-squares fit non-convex, so a local solver can stop in the wrong valley without warning.</li><li>Lift the rotations into a positive-semidefinite matrix, drop the rank-one condition, and the relaxed problem is convex: no initial guess, and a duality gap that <i>proves</i> the answer is the global optimum.</li></ul></div>
+  </div>
+</section>
+
 <section class="section" id="strip">
   <h2 class="section-title">In one strip</h2>
   <div class="strip3">
@@ -216,6 +275,38 @@
   </div>
 </section>
 
+<!-- =================== LIVE DEMO =================== -->
+<section class="section" id="live">
+  <h2 class="section-title">Try it live</h2>
+<div class="demo card" id="demo-rwhe">
+  <div class="demo-head">
+    <span class="caption-box">LIVE DEMO · runs in your browser</span>
+    <h3>Mount the camera, place the target, orbit, certify</h3>
+    <p>Set the unknown transforms yourself: <b>X</b> (hand → camera) and <b>Y</b> (base → target), the rotation noise concentration κ and the translation noise σ of the camera's target measurements, and how many poses the arm visits. Press <b>Orbit &amp; calibrate</b>: the camera orbits the target on a sphere, every pose closes one loop A<sub>i</sub>X = YB<sub>i</sub>, and three solvers run live on the same objective: the linear two-stage closed form, a local Levenberg–Marquardt solver from eight random starts, and the paper's semidefinite relaxation (translations Schur-eliminated, both rotations lifted into a 19×19 matrix with the 42 quadratic SO(3) constraints) solved by an ADMM iteration with the rank check and the duality-gap certificate. Drag the 3-D view to orbit.</p>
+  </div>
+  <div class="demo-grid">
+    <div class="demo-scene"><canvas id="rw-scene" aria-label="3-D scene: robot base, hand poses, camera and target"></canvas></div>
+    <div class="demo-controls">
+      <div class="demo-cols">
+        <label>X roll <span id="rw-xr-v"></span><input type="range" id="rw-xr" min="-180" max="180" step="1" value="35"></label>
+        <label>X pitch <span id="rw-xp-v"></span><input type="range" id="rw-xp" min="-90" max="90" step="1" value="-20"></label>
+        <label>X yaw <span id="rw-xy-v"></span><input type="range" id="rw-xy" min="-180" max="180" step="1" value="120"></label>
+        <label>X offset <span id="rw-xt-v"></span><input type="range" id="rw-xt" min="-30" max="30" step="1" value="8"></label>
+        <label>Y yaw <span id="rw-yy-v"></span><input type="range" id="rw-yy" min="-180" max="180" step="1" value="-60"></label>
+        <label>Y offset x <span id="rw-yx-v"></span><input type="range" id="rw-yx" min="-100" max="100" step="5" value="40"></label>
+      </div>
+      <label>rotation noise κ <span id="rw-kappa-v"></span><input type="range" id="rw-kappa" min="5" max="300" step="5" value="125"></label>
+      <label>translation noise σ <span id="rw-sigma-v"></span><input type="range" id="rw-sigma" min="0.5" max="10" step="0.5" value="2"></label>
+      <label>poses on the sphere <span id="rw-N-v"></span><input type="range" id="rw-N" min="10" max="100" step="5" value="40"></label>
+      <div class="demo-buttons"><button class="btn btn-primary" id="rw-run">Orbit &amp; calibrate</button><button class="btn" id="rw-stop">Stop</button></div>
+      <div class="demo-result" id="rw-result">no run yet</div>
+    </div>
+  </div>
+  <div class="demo-plots"><canvas id="rw-plot-local"></canvas><canvas id="rw-plot-sdp"></canvas><canvas id="rw-plot-err"></canvas></div>
+  <pre class="demo-log" id="rw-log" aria-live="polite">solver log will appear here</pre>
+</div>
+</section>
+
 <!-- =================== METHOD =================== -->
 <section class="section" id="method">
   <h2 class="section-title">Method</h2>
@@ -223,18 +314,19 @@
     <div class="card card-pad prose">
       <p class="bn-lead">The maximum-likelihood cost is a sum over every loop of a translation term and a chordal rotation term, both quadratic in the unknowns once the rotation matrices are vectorised:</p>
       <div class="eq">J = ½ Σ ( 1/σ² ‖ R<span class="m">A</span> t<span class="m">X</span> + α t<span class="m">A</span> − t<span class="m">Y</span> − R<span class="m">Y</span> t<span class="m">B</span> ‖² + κ ‖ R<span class="m">A</span> R<span class="m">X</span> − R<span class="m">Y</span> R<span class="m">B</span> ‖<span class="m">F</span>² )</div>
-      <p>Translation noise is Gaussian (σ) and rotation noise is Langevin on SO(3) (concentration κ; 125 ≈ 3.6°, 12 ≈ 12°). The translations and the scale appear without constraints, so they are solved out by a generalized Schur complement, leaving a quadratic form in the rotations alone. Each rotation is kept in SO(3) by 21 homogenised quadratic constraints (row and column orthonormality plus the right-hand rule), and the relaxation drops the rank-one condition on the lifted variable.</p>
+      <p>The translations and the scale appear without constraints, so they are solved out by a generalized Schur complement, leaving a quadratic form in the rotations alone. Each rotation is kept in SO(3) by 21 homogenised quadratic constraints (row and column orthonormality plus the right-hand rule), and the relaxation drops the rank-one condition on the lifted variable.</p>
       <ul>
+        <li><b>Noise model (paper §8):</b> translations get Gaussian noise N(0, σ²I); rotations get isotropic Langevin noise, p(R) ∝ exp(κ tr(R̄ᵀR)), sampled by rejection. κ = 125 is about 3.6° of angular error, κ = 12 about 12°.</li>
+        <li><b>Identifiability (Theorem 3, Corollary 4):</b> on a weakly connected graph, one sensor–target edge with three measurements whose relative rotations have distinct principal axes fixes that edge, and every other X and Y follows by propagating loop closures across the graph. The re-run checks this criterion on each edge of the real data.</li>
+        <li><b>Tightness (Proposition 7):</b> for noise-free data with a unique solution the relaxation is exact, and it stays tight under moderate noise. The certificate is ρ̂ = (p − d)/|d| between the rounded cost and the SDP bound, plus the eigenvalue ratio λ₂/λ₁ of the lifted matrix.</li>
         <li><b>Solver:</b> the primal SDP in cvxpy, SCS at 10⁻¹¹ with a Clarabel fallback; leading-eigenvector rounding, per-block SO(3) projection, translations and α back-substituted.</li>
-        <li><b>Certificate:</b> ρ̂ = (p − d)/|d| between the rounded cost and the SDP bound, and the eigenvalue ratio of the lifted matrix.</li>
-        <li><b>Identifiability:</b> a single sensor–target pair excited about two distinct rotation axes makes the whole weakly connected graph identifiable (paper Theorem 3 / Corollary 4); the re-run checks this criterion on every edge of the real data.</li>
         <li><b>Baselines:</b> a linear two-stage solver in the Shah / Wang style and a local Levenberg–Marquardt solver on the same objective, started at random, from the linear solution, or (unknown scale) 10° and 10 cm from the truth.</li>
       </ul>
       <div class="tag-row"><span class="chip">cvxpy + SCS / Clarabel</span><span class="chip">Langevin sampling by rejection</span><span class="chip">sharded campaigns</span><span class="chip">paper's real CSVs</span></div>
     </div>
     <div>
-      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/rwhe/rig_photo.jpg" alt="The real data-collection rig with eight cameras and OptiTrack markers" loading="lazy"><figcaption><b>The rig behind the real data</b> (from the thesis figures): eight hardware-synchronised Blackfly cameras and OptiTrack markers, moved through a motion-capture room with sixteen AprilTags. The OptiTrack pose is <b>A</b>, each tag detection is <b>B</b>, the tag poses are the <b>X</b><sub>j</sub> and the camera poses the <b>Y</b><sub>k</sub>.</figcaption></figure>
-      <figure class="fig"><img src="assets/images/projects/rwhe/real_graph.png" alt="Grid of which camera saw which tag, coloured by identifiability" loading="lazy"><figcaption><b>The measurement graph</b> (paper Fig. 10): blue pairs satisfy the two-axis criterion on their own, red pairs were seen but need the rest of the graph, numbers are pose pairs. 52 of 73 edges are identifiable alone; the graph is connected, so the whole problem is.</figcaption></figure>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/rwhe/real_graph.png" alt="Grid of which camera saw which tag, coloured by identifiability" loading="lazy"><figcaption><b>The measurement graph</b> (paper Fig. 10): blue pairs satisfy the two-axis criterion on their own, red pairs were seen but need the rest of the graph, numbers are pose pairs. 52 of 73 edges are identifiable alone; the graph is connected, so the whole problem is.</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/rwhe/sparsity.png" alt="Sparsity pattern of the quadratic-form matrices before and after Schur elimination" loading="lazy"><figcaption><b>Sparsity after the Schur complement</b> (the paper’s Figs. 3–4): the same eight-camera rig modelled as one shared <b>X</b> with eight <b>Y</b>s (left) fills the reduced matrix Q′ almost completely, while modelled as eight <b>X</b>s with one <b>Y</b> (right) it leaves a block-diagonal-plus-border pattern the solver can exploit. Which side of the loop the unknowns sit on changes the cost of the SDP.</figcaption></figure>
     </div>
   </div>
 </section>
@@ -242,67 +334,218 @@
 <!-- =================== SIMULATION =================== -->
 <section class="section" id="simulation">
   <h2 class="section-title">Simulation studies</h2>
-  <div class="grid-2">
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/rwhe/sim_sphere_known.png" alt="Bar chart of hand–camera errors per method and noise level, poses on a sphere" loading="lazy"><figcaption><b>Paper Table 2, re-run.</b> A camera on a robot hand visits 100 poses on a sphere around a target; four noise levels, 100 runs each. The certified SDP and the well-started local solver agree to a tenth of a millimetre (they minimise the same objective and the relaxation is tight), both beat the linear two-stage method, and the local solver from random starts is off by hundreds of millimetres in 1–40 % of runs.</figcaption></figure>
-    <div>
-      <div class="table-wrap" style="margin-top:0">
-        <table class="data-table">
-          <thead><tr><th>κ, σ</th><th>method</th><th>t<sub>X</sub> [mm]</th><th>R<sub>X</sub> [°]</th><th>t<sub>Y</sub> [mm]</th><th>R<sub>Y</sub> [°]</th></tr></thead>
-          <tbody>
-            <tr><td>κ=125, σ=1 cm</td><td>linear two-stage</td><td>7.5</td><td>0.75</td><td>1.9</td><td>0.75</td></tr>
-            <tr><td></td><td>local, random start</td><td class="bad">362.7</td><td class="bad">48.98</td><td class="bad">2.1</td><td class="bad">48.74</td></tr>
-            <tr><td></td><td>local, linear start</td><td>3.6</td><td>0.65</td><td>1.9</td><td>0.22</td></tr>
-            <tr><td></td><td>SDP (certified)</td><td class="ok">3.6</td><td class="ok">0.65</td><td class="ok">1.9</td><td class="ok">0.22</td></tr>
-            <tr><td>κ=125, σ=5 cm</td><td>linear two-stage</td><td>11.3</td><td>0.74</td><td>9.0</td><td>0.74</td></tr>
-            <tr><td></td><td>local, random start</td><td class="bad">540.2</td><td class="bad">72.26</td><td class="bad">9.0</td><td class="bad">72.23</td></tr>
-            <tr><td></td><td>local, linear start</td><td>11.0</td><td>0.73</td><td>9.0</td><td>0.59</td></tr>
-            <tr><td></td><td>SDP (certified)</td><td class="ok">11.0</td><td class="ok">0.73</td><td class="ok">9.0</td><td class="ok">0.59</td></tr>
-            <tr><td>κ=12, σ=1 cm</td><td>linear two-stage</td><td>21.7</td><td>2.42</td><td>2.0</td><td>2.26</td></tr>
-            <tr><td></td><td>local, random start</td><td class="bad">350.1</td><td class="bad">47.89</td><td class="bad">2.5</td><td class="bad">46.97</td></tr>
-            <tr><td></td><td>local, linear start</td><td>4.1</td><td>1.97</td><td>2.1</td><td>0.26</td></tr>
-            <tr><td></td><td>SDP (certified)</td><td class="ok">4.1</td><td class="ok">1.97</td><td class="ok">2.1</td><td class="ok">0.26</td></tr>
-            <tr><td>κ=12, σ=5 cm</td><td>linear two-stage</td><td>23.6</td><td>2.36</td><td>9.0</td><td>2.27</td></tr>
-            <tr><td></td><td>local, random start</td><td class="bad">385.6</td><td class="bad">51.38</td><td class="bad">9.1</td><td class="bad">50.97</td></tr>
-            <tr><td></td><td>local, linear start</td><td>15.9</td><td>2.08</td><td>9.0</td><td>0.95</td></tr>
-            <tr><td></td><td>SDP (certified)</td><td class="ok">15.9</td><td class="ok">2.08</td><td class="ok">9.0</td><td class="ok">0.95</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p style="font-size:13px;color:var(--ash);margin-top:10px">Mean over 100 runs. The absolute values differ from the paper's table because its sphere geometry and random transforms are not specified; the ordering of the methods is what is reproduced.</p>
-      <figure class="fig"><img src="assets/images/projects/rwhe/sim_certificate.png" alt="Maximum duality gap per study and noise level" loading="lazy"><figcaption><b>The certificate never failed.</b> Largest relative duality gap over all 1,600 solves: 2e-8; largest second-to-first eigenvalue ratio: 3e-11. Tight at κ = 12, σ = 5 cm too, beyond what the paper's Proposition 7 promises.</figcaption></figure>
+  <div class="clip-grid">
+    <div class="card">
+      <video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/rwhe_setup.jpg"><source src="assets/videos/clips/rwhe_setup.mp4" type="video/mp4"></video>
+      <span class="caption-box">Setup</span>
+      <div class="body"><h3>The setup: what is given, what is estimated</h3><p>A camera on a robot hand visits poses on a sphere around a fiducial target; the ledger of knowns, unknowns and ground truth appears alongside the measurements as they are taken.</p></div>
+    </div>
+    <div class="card">
+      <video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/rwhe_campaign.jpg"><source src="assets/videos/clips/rwhe_campaign.mp4" type="video/mp4"></video>
+      <span class="caption-box">Recording</span>
+      <div class="body"><h3>The campaign, recorded</h3><p>Four noise levels, one hundred seeded runs each, four solvers per run. Every random-start local solve lands on the error axis as it finishes; the certified SDP points stack at the bottom.</p></div>
     </div>
   </div>
-  <div class="grid-2" style="margin-top:22px">
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/rwhe/sim_multicam_known.png" alt="Four fixed cameras observing a hand-mounted target: errors per method" loading="lazy"><figcaption><b>Paper Table 4.</b> Four fixed cameras watch a target on the hand through 108 poses: five rotations solved jointly in one 46×46 SDP. Camera rotations to 0.31° (linear: 0.58°) at the lowest noise.</figcaption></figure>
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/rwhe/sim_sphere_mono.png" alt="Unknown-scale study: errors per method" loading="lazy"><figcaption><b>Paper Table 3.</b> Unknown scale (α = 0.5) with poses on two spheres: the scale comes back to 0.44 % at σ = 1 cm, and the SDP needs no initial guess while the local solver must start within 10° / 10 cm.</figcaption></figure>
+  <div class="ledger">
+    <div class="card"><h4 class="known">Given</h4><ul><li>Hand poses <b>A</b><sub>i</sub> with translation noise σ ∈ {{1, 5}} cm and Langevin rotation noise κ ∈ {{125, 12}}.</li><li>Target poses <b>B</b><sub>i</sub> with the same noise; in the monocular study their translations are scaled by α = 0.5.</li><li>Sphere study: 100 poses on a sphere around one target. Four-camera study: 108 poses, four fixed cameras watching a target on the hand.</li></ul></div>
+    <div class="card"><h4 class="unknown">Estimated</h4><ul><li><b>X</b> (hand–camera, or the target on the hand) and <b>Y</b> (world–base, or each of the four cameras).</li><li>α in the monocular study.</li><li>Four solvers on identical data: linear two-stage, local LM from random starts, local LM from the linear solution, and the certified SDP.</li></ul></div>
+    <div class="card"><h4 class="truth">Ground truth and protocol</h4><ul><li>Random rigid transforms per run, fixed seeds, 100 runs per noise level: 1,600 SDP solves plus baselines.</li><li>Errors: translation of X and Y in mm, chordal rotation error in degrees, scale error in percent.</li><li>The certificate is recorded for every solve: relative gap, eigenvalue ratio, solver time.</li></ul></div>
   </div>
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/rwhe/thesis_rpos-crop.png" alt="End-effector rotation and translation over the 100 sphere poses" loading="lazy"><figcaption><b>The pose sequence of the sphere study</b> (from the thesis figures): end-effector rotation and translation against pose number. The rotations sweep about several axes, which is what Corollary 4 asks for.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/rwhe/thesis_fcrw-crop.png" alt="End-effector rotation and translation over the 108 four-camera poses" loading="lazy"><figcaption><b>The four-camera sequence</b>: 108 poses that keep the hand-mounted target in every camera’s view in turn.</figcaption></figure>
+  </div>
+  <h3 style="margin-top:30px">Poses on a sphere, known scale (paper Table 2)</h3>
+  <div class="grid-2">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/rwhe/sim_sphere_known.png" alt="Bar chart of hand–camera errors per method and noise level, poses on a sphere" loading="lazy"><figcaption><b>Re-run.</b> The certified SDP and the well-started local solver agree to a tenth of a millimetre (same objective, tight relaxation), both beat the linear two-stage method, and the local solver from random starts is off by hundreds of millimetres in 26–40 % of runs.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/rwhe/sim_certificate.png" alt="Maximum duality gap per study and noise level" loading="lazy"><figcaption><b>The certificate never failed.</b> Largest relative duality gap over all 1,600 solves: 2e-8; largest λ₂/λ₁: 3e-11. Tight at κ = 12, σ = 5 cm too, beyond what Proposition 7 promises.</figcaption></figure>
+  </div>
+  <div class="table-wrap full">
+    <table class="data-table compact">
+      <thead>
+        <tr><th>noise</th><th>method</th><th>t<sub>X</sub> err [mm]</th><th>r<sub>X</sub> err [deg]</th><th>t<sub>Y</sub> err [mm]</th><th>r<sub>Y</sub> err [deg]</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>κ=125, σ=1 cm</td><td>linear two-stage</td><td>7.50 ± 4.88</td><td>0.75 ± 0.34</td><td>1.92 ± 0.93</td><td>0.75 ± 0.34</td></tr>
+        <tr><td></td><td>local (random init)</td><td>362.69 ± 590.64</td><td>48.98 ± 79.49</td><td>2.06 ± 1.07</td><td>48.74 ± 79.79</td></tr>
+        <tr><td></td><td>local (linear init)</td><td>3.58 ± 1.83</td><td>0.65 ± 0.24</td><td>1.93 ± 0.94</td><td>0.22 ± 0.13</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">3.58 ± 1.83</td><td class="ok">0.65 ± 0.24</td><td class="ok">1.93 ± 0.94</td><td class="ok">0.22 ± 0.13</td></tr>
+        <tr><td>κ=125, σ=5 cm</td><td>linear two-stage</td><td>11.28 ± 5.07</td><td>0.74 ± 0.39</td><td>9.03 ± 4.24</td><td>0.74 ± 0.29</td></tr>
+        <tr><td></td><td>local (random init)</td><td>540.23 ± 648.30</td><td>72.26 ± 87.57</td><td>9.02 ± 4.33</td><td>72.23 ± 87.74</td></tr>
+        <tr><td></td><td>local (linear init)</td><td>10.95 ± 5.31</td><td>0.73 ± 0.37</td><td>9.03 ± 4.24</td><td>0.59 ± 0.32</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">10.95 ± 5.31</td><td class="ok">0.73 ± 0.37</td><td class="ok">9.03 ± 4.24</td><td class="ok">0.59 ± 0.32</td></tr>
+        <tr><td>κ=12, σ=1 cm</td><td>linear two-stage</td><td>21.70 ± 15.74</td><td>2.42 ± 0.99</td><td>2.05 ± 0.95</td><td>2.26 ± 1.04</td></tr>
+        <tr><td></td><td>local (random init)</td><td>350.07 ± 583.44</td><td>47.89 ± 77.53</td><td>2.50 ± 1.65</td><td>46.97 ± 78.77</td></tr>
+        <tr><td></td><td>local (linear init)</td><td>4.09 ± 2.17</td><td>1.97 ± 0.80</td><td>2.05 ± 0.93</td><td>0.26 ± 0.16</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">4.09 ± 2.17</td><td class="ok">1.97 ± 0.80</td><td class="ok">2.05 ± 0.93</td><td class="ok">0.26 ± 0.16</td></tr>
+        <tr><td>κ=12, σ=5 cm</td><td>linear two-stage</td><td>23.62 ± 14.32</td><td>2.36 ± 1.04</td><td>9.04 ± 4.16</td><td>2.27 ± 1.03</td></tr>
+        <tr><td></td><td>local (random init)</td><td>385.60 ± 594.33</td><td>51.38 ± 79.29</td><td>9.11 ± 4.13</td><td>50.97 ± 80.23</td></tr>
+        <tr><td></td><td>local (linear init)</td><td>15.85 ± 7.07</td><td>2.08 ± 0.93</td><td>9.05 ± 4.14</td><td>0.95 ± 0.49</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">15.85 ± 7.07</td><td class="ok">2.08 ± 0.93</td><td class="ok">9.05 ± 4.14</td><td class="ok">0.95 ± 0.49</td></tr>
+      </tbody>
+    </table>
+    <div class="scroll-hint">← scroll the table sideways →</div>
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:10px">Mean ± std over 100 runs. Absolute values differ from the paper’s table because its sphere geometry and random transforms are not specified; the ordering of the methods is what is reproduced.</p>
+  <h3 style="margin-top:30px">Four fixed cameras, known scale (paper Table 4)</h3>
+  <div class="grid-2">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/rwhe/sim_multicam_known.png" alt="Four fixed cameras observing a hand-mounted target: errors per method" loading="lazy"><figcaption><b>Five rotations solved jointly</b> in one 46×46 SDP. Camera rotations to 0.31° (linear: 0.58°) and camera translations to 7.9 mm (linear: 14.4 mm) at the lowest noise; t<sub>Y</sub> and r<sub>Y</sub> are averaged over the four cameras.</figcaption></figure>
+    <div class="card card-pad prose">
+      <p class="bn-lead">Why the local solver fails less here.</p>
+      <p>With four cameras every hand pose closes four loops, and the random-start local solver finds a wrong minimum in only 1–29 % of runs against 26–40 % on the sphere. It still fails. The SDP solves the 46-dimensional lifted problem in 5–16 s and certifies every one of the 400 runs.</p>
+    </div>
+  </div>
+  <div class="table-wrap full">
+    <table class="data-table compact">
+      <thead>
+        <tr><th>noise</th><th>method</th><th>t<sub>X</sub> err [mm]</th><th>r<sub>X</sub> err [deg]</th><th>t<sub>Y</sub> err [mm]</th><th>r<sub>Y</sub> err [deg]</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>κ=125, σ=1 cm</td><td>linear two-stage</td><td>1.34 ± 0.67</td><td>0.36 ± 0.12</td><td>14.36 ± 4.17</td><td>0.58 ± 0.13</td></tr>
+        <tr><td></td><td>local (random init)</td><td>42.40 ± 132.96</td><td>16.48 ± 51.37</td><td>234.72 ± 725.11</td><td>16.42 ± 51.22</td></tr>
+        <tr><td></td><td>local (linear init)</td><td>1.13 ± 0.50</td><td>0.33 ± 0.11</td><td>7.87 ± 2.67</td><td>0.31 ± 0.09</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">1.13 ± 0.50</td><td class="ok">0.33 ± 0.11</td><td class="ok">7.87 ± 2.67</td><td class="ok">0.31 ± 0.09</td></tr>
+        <tr><td>κ=125, σ=5 cm</td><td>linear two-stage</td><td>4.70 ± 2.21</td><td>0.37 ± 0.15</td><td>17.00 ± 4.43</td><td>0.60 ± 0.14</td></tr>
+        <tr><td></td><td>local (random init)</td><td>119.99 ± 196.30</td><td>52.40 ± 81.41</td><td>775.58 ± 1193.33</td><td>52.49 ± 81.26</td></tr>
+        <tr><td></td><td>local (linear init)</td><td>4.67 ± 2.22</td><td>0.37 ± 0.15</td><td>16.24 ± 4.35</td><td>0.56 ± 0.13</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">4.67 ± 2.22</td><td class="ok">0.37 ± 0.15</td><td class="ok">16.24 ± 4.35</td><td class="ok">0.56 ± 0.13</td></tr>
+        <tr><td>κ=12, σ=1 cm</td><td>linear two-stage</td><td>3.02 ± 2.23</td><td>1.07 ± 0.52</td><td>48.59 ± 13.96</td><td>1.92 ± 0.44</td></tr>
+        <tr><td></td><td>local (random init)</td><td>6.16 ± 50.13</td><td>2.67 ± 17.82</td><td>37.96 ± 281.75</td><td>2.18 ± 17.85</td></tr>
+        <tr><td></td><td>local (linear init)</td><td>1.13 ± 0.54</td><td>0.88 ± 0.37</td><td>9.63 ± 3.68</td><td>0.38 ± 0.13</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">1.13 ± 0.54</td><td class="ok">0.88 ± 0.37</td><td class="ok">9.63 ± 3.68</td><td class="ok">0.38 ± 0.13</td></tr>
+        <tr><td>κ=12, σ=5 cm</td><td>linear two-stage</td><td>5.61 ± 2.43</td><td>1.11 ± 0.46</td><td>47.16 ± 13.70</td><td>1.99 ± 0.45</td></tr>
+        <tr><td></td><td>local (random init)</td><td>62.69 ± 152.15</td><td>25.97 ± 61.85</td><td>398.15 ± 912.46</td><td>26.11 ± 61.44</td></tr>
+        <tr><td></td><td>local (linear init)</td><td>5.08 ± 2.06</td><td>1.01 ± 0.44</td><td>32.22 ± 10.13</td><td>1.33 ± 0.36</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">5.08 ± 2.06</td><td class="ok">1.01 ± 0.44</td><td class="ok">32.22 ± 10.13</td><td class="ok">1.33 ± 0.36</td></tr>
+      </tbody>
+    </table>
+    <div class="scroll-hint">← scroll the table sideways →</div>
+  </div>
+  <h3 style="margin-top:30px">Unknown scale: the monocular case (paper Tables 3 and 5)</h3>
+  <div class="grid-2">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/rwhe/sim_sphere_mono.png" alt="Unknown-scale sphere study: errors per method" loading="lazy"><figcaption><b>Two spheres, α = 0.5.</b> The scale comes back to 0.44 % at σ = 1 cm and 2.2 % at σ = 5 cm. The SDP needs no initial guess; the local solver is started 10° and 10 cm from the truth, and from random starts it diverges when α is free.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/rwhe/sim_multicam_mono.png" alt="Unknown-scale four-camera study: errors per method" loading="lazy"><figcaption><b>Four cameras, α = 0.5.</b> Same picture: 0.6 % scale error at low noise, 2.9–3.1 % at σ = 5 cm, identical to the close-start local solution because the relaxation is tight.</figcaption></figure>
+  </div>
+  <div class="table-wrap full">
+    <table class="data-table compact">
+      <thead>
+        <tr><th>noise</th><th>method</th><th>t<sub>X</sub> err [mm]</th><th>r<sub>X</sub> err [deg]</th><th>t<sub>Y</sub> err [mm]</th><th>r<sub>Y</sub> err [deg]</th><th>α<sub>err</sub> [%]</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>κ=125, σ=1 cm</td><td>local (close init)</td><td>5.99 ± 2.71</td><td>0.64 ± 0.26</td><td>3.96 ± 1.70</td><td>0.35 ± 0.16</td><td>4.4e-1 ± 3.8e-1</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">5.99 ± 2.71</td><td class="ok">0.64 ± 0.26</td><td class="ok">3.96 ± 1.70</td><td class="ok">0.35 ± 0.16</td><td class="ok">4.4e-1 ± 3.8e-1</td></tr>
+        <tr><td>κ=125, σ=5 cm</td><td>local (close init)</td><td>26.33 ± 11.86</td><td>0.68 ± 0.27</td><td>19.62 ± 8.43</td><td>0.67 ± 0.28</td><td>2.2 ± 1.6</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">26.33 ± 11.86</td><td class="ok">0.68 ± 0.27</td><td class="ok">19.62 ± 8.43</td><td class="ok">0.67 ± 0.28</td><td class="ok">2.2 ± 1.6</td></tr>
+        <tr><td>κ=12, σ=1 cm</td><td>local (close init)</td><td>5.54 ± 2.56</td><td>1.83 ± 0.75</td><td>3.75 ± 1.63</td><td>0.37 ± 0.17</td><td>5.1e-1 ± 3.7e-1</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">5.54 ± 2.56</td><td class="ok">1.83 ± 0.75</td><td class="ok">3.75 ± 1.63</td><td class="ok">0.37 ± 0.17</td><td class="ok">5.1e-1 ± 3.7e-1</td></tr>
+        <tr><td>κ=12, σ=5 cm</td><td>local (close init)</td><td>29.42 ± 12.46</td><td>2.10 ± 0.96</td><td>19.43 ± 7.99</td><td>1.58 ± 0.77</td><td>2.6 ± 1.6</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">29.42 ± 12.46</td><td class="ok">2.10 ± 0.96</td><td class="ok">19.43 ± 7.99</td><td class="ok">1.58 ± 0.77</td><td class="ok">2.6 ± 1.6</td></tr>
+      </tbody>
+    </table>
+    <div class="scroll-hint">← scroll the table sideways →</div>
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:10px">Sphere study, unknown scale.</p>
+  <div class="table-wrap full">
+    <table class="data-table compact">
+      <thead>
+        <tr><th>noise</th><th>method</th><th>t<sub>X</sub> err [mm]</th><th>r<sub>X</sub> err [deg]</th><th>t<sub>Y</sub> err [mm]</th><th>r<sub>Y</sub> err [deg]</th><th>α<sub>err</sub> [%]</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>κ=125, σ=1 cm</td><td>local (close init)</td><td>2.99 ± 1.68</td><td>0.31 ± 0.15</td><td>17.17 ± 6.21</td><td>0.45 ± 0.11</td><td>6.1e-1 ± 4.5e-1</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">2.99 ± 1.68</td><td class="ok">0.31 ± 0.15</td><td class="ok">17.17 ± 6.21</td><td class="ok">0.45 ± 0.11</td><td class="ok">6.1e-1 ± 4.5e-1</td></tr>
+        <tr><td>κ=125, σ=5 cm</td><td>local (close init)</td><td>14.57 ± 8.52</td><td>0.35 ± 0.16</td><td>57.41 ± 33.30</td><td>0.59 ± 0.12</td><td>2.9 ± 2.1</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">14.57 ± 8.52</td><td class="ok">0.35 ± 0.16</td><td class="ok">57.41 ± 33.30</td><td class="ok">0.59 ± 0.12</td><td class="ok">2.9 ± 2.1</td></tr>
+        <tr><td>κ=12, σ=1 cm</td><td>local (close init)</td><td>3.18 ± 1.40</td><td>0.92 ± 0.38</td><td>21.86 ± 7.97</td><td>0.69 ± 0.24</td><td>5.9e-1 ± 4.4e-1</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">3.18 ± 1.40</td><td class="ok">0.92 ± 0.38</td><td class="ok">21.86 ± 7.97</td><td class="ok">0.69 ± 0.24</td><td class="ok">5.9e-1 ± 4.4e-1</td></tr>
+        <tr><td>κ=12, σ=5 cm</td><td>local (close init)</td><td>15.05 ± 7.26</td><td>1.01 ± 0.46</td><td>75.29 ± 31.46</td><td>1.73 ± 0.38</td><td>3.1 ± 2.4</td></tr>
+        <tr><td></td><td><b>SDP (ours)</b></td><td class="ok">15.05 ± 7.26</td><td class="ok">1.01 ± 0.46</td><td class="ok">75.29 ± 31.46</td><td class="ok">1.73 ± 0.38</td><td class="ok">3.1 ± 2.4</td></tr>
+      </tbody>
+    </table>
+    <div class="scroll-hint">← scroll the table sideways →</div>
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:10px">Four-camera study, unknown scale.</p>
+  <h3 style="margin-top:30px">Certificate and runtime, every setting</h3>
+  <div class="table-wrap full">
+    <table class="data-table compact">
+      <thead>
+        <tr><th>study</th><th>κ</th><th>σ [cm]</th><th>median ρ̂</th><th>max |ρ̂|</th><th>max λ₂/λ₁</th><th>local minima (random init)</th><th>SDP time [s]</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>sphere, known scale</td><td>125</td><td>1</td><td>-8.9e-10</td><td>1.7e-8</td><td>3.8e-12</td><td>27%</td><td>0.39</td></tr>
+        <tr><td>sphere, known scale</td><td>125</td><td>5</td><td>-3.1e-9</td><td>1.2e-8</td><td>2.2e-11</td><td>40%</td><td>3.44</td></tr>
+        <tr><td>sphere, known scale</td><td>12</td><td>1</td><td>+1.1e-12</td><td>1.9e-8</td><td>6.0e-12</td><td>26%</td><td>0.26</td></tr>
+        <tr><td>sphere, known scale</td><td>12</td><td>5</td><td>+9.3e-11</td><td>4.1e-10</td><td>4.0e-12</td><td>28%</td><td>0.24</td></tr>
+        <tr><td>sphere, unknown scale</td><td>125</td><td>1</td><td>-6.2e-10</td><td>5.0e-9</td><td>8.7e-12</td><td>28%</td><td>2.36</td></tr>
+        <tr><td>sphere, unknown scale</td><td>125</td><td>5</td><td>-4.4e-9</td><td>1.9e-8</td><td>3.4e-11</td><td>33%</td><td>3.51</td></tr>
+        <tr><td>sphere, unknown scale</td><td>12</td><td>1</td><td>-5.1e-13</td><td>2.6e-9</td><td>4.2e-12</td><td>24%</td><td>0.25</td></tr>
+        <tr><td>sphere, unknown scale</td><td>12</td><td>5</td><td>-2.0e-10</td><td>9.0e-10</td><td>1.9e-11</td><td>33%</td><td>3.44</td></tr>
+        <tr><td>4 cameras, known scale</td><td>125</td><td>1</td><td>+1.3e-9</td><td>7.5e-9</td><td>1.0e-11</td><td>9%</td><td>16.00</td></tr>
+        <tr><td>4 cameras, known scale</td><td>125</td><td>5</td><td>+1.4e-9</td><td>5.2e-9</td><td>6.7e-12</td><td>29%</td><td>11.97</td></tr>
+        <tr><td>4 cameras, known scale</td><td>12</td><td>1</td><td>+1.3e-10</td><td>7.4e-9</td><td>9.6e-12</td><td>1%</td><td>4.82</td></tr>
+        <tr><td>4 cameras, known scale</td><td>12</td><td>5</td><td>+1.2e-10</td><td>5.7e-10</td><td>8.5e-12</td><td>14%</td><td>8.36</td></tr>
+        <tr><td>4 cameras, unknown scale</td><td>125</td><td>1</td><td>+9.7e-10</td><td>6.0e-9</td><td>8.3e-12</td><td>24%</td><td>8.32</td></tr>
+        <tr><td>4 cameras, unknown scale</td><td>125</td><td>5</td><td>+1.0e-9</td><td>4.9e-9</td><td>6.3e-12</td><td>25%</td><td>6.85</td></tr>
+        <tr><td>4 cameras, unknown scale</td><td>12</td><td>1</td><td>+1.0e-10</td><td>3.4e-9</td><td>8.8e-12</td><td>17%</td><td>4.56</td></tr>
+        <tr><td>4 cameras, unknown scale</td><td>12</td><td>5</td><td>+1.3e-10</td><td>5.4e-10</td><td>7.5e-12</td><td>31%</td><td>5.69</td></tr>
+      </tbody>
+    </table>
+    <div class="scroll-hint">← scroll the table sideways →</div>
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:10px">Median and worst relative duality gap, worst eigenvalue ratio, fraction of random-start local solves that ended in a local minimum, and SCS solve time on a laptop. The paper reports at most seven seconds per synthetic problem with COSMO; the real problem below takes 230 s here.</p>
 </section>
 
 <!-- =================== REAL DATA =================== -->
 <section class="section" id="real">
   <h2 class="section-title">The real rig</h2>
-  <div class="grid-2">
+  <div class="big-clip"><video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/rwhe_rig.jpg" controls><source src="assets/videos/clips/rwhe_rig.mp4" type="video/mp4"></video></div>
+  <p style="font-size:14px;color:var(--ink-soft);margin-top:12px;max-width:80ch">The paper’s experiment from its public data: the OptiTrack trajectory of the eight-camera rig through a motion-capture room, the sixteen AprilTags, which camera sees which tag as the rig moves, the measurement graph filling in, and the certified camera cluster.</p>
+  <div class="photos3" style="margin-top:22px">
+    <img src="assets/images/projects/rwhe/thesis_env1.jpg" alt="Motion-capture room with AprilTags on a dark wall" loading="lazy">
+    <img src="assets/images/projects/rwhe/thesis_env2.jpg" alt="Second view of the room with AprilTags on stands and boxes" loading="lazy">
+    <img src="assets/images/projects/rwhe/rig_photo.jpg" alt="The data-collection rig with eight cameras and OptiTrack markers" loading="lazy">
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:8px">Paper Figs. 7–8: the environment seen from camera 0, and the rig. Eight hardware-synchronised Point Grey Blackfly S cameras, OptiTrack markers and a VectorNav VN-100. The tag at the bottom left of the middle image carries its own markers, so its world pose is ground truth.</p>
+  <div class="grid-2" style="margin-top:22px">
     <div class="card card-pad prose">
-      <p class="bn-lead">The public repository ships the processed measurements of the paper's experiment. With the paper's weights (κ = 125, σ = 0.1 m) the joint problem has 24 rotations, a 217×217 lifted matrix and 504 constraints. SCS solves it in 230 s with the scale known and 81 s with the scale free.</p>
-      <div class="table-wrap" style="margin-top:14px">
-        <table class="data-table">
-          <thead><tr><th>solve</th><th>duality gap ρ̂</th><th>λ₂/λ₁</th><th>α</th><th>median residual</th><th>paper</th></tr></thead>
+      <p class="bn-lead">Pipeline, as in the paper’s §9.1: OptiTrack gives the rig pose <b>A</b>, an AprilTag detector gives each camera-to-tag pose <b>B</b>, the two clocks are joined by interpolating OptiTrack onto the image timestamps, and a RANSAC on the loop closure <b>X</b><sub>j</sub> = <b>A</b>⁻¹<b>Y</b><sub>k</sub><b>B</b> (inliers within 0.6 m and 60°) rejects bad detections before the batch solve.</p>
+      <p>The public repository ships the processed measurements. With the paper’s weights (κ = 125, σ = 0.1 m) the joint problem has 24 rotations, a 217×217 lifted matrix and 504 constraints. SCS solves it in 230 s with the scale known and 81 s with the scale free.</p>
+      <div class="table-wrap full" style="margin-top:14px">
+        <table class="data-table compact">
+          <thead><tr><th>solve</th><th>duality gap ρ̂</th><th>λ₂/λ₁</th><th>α</th><th>median loop residual</th><th>paper</th></tr></thead>
           <tbody>
             <tr><td>known scale</td><td class="ok">−1.09e-8</td><td>7.7e-13</td><td>1</td><td>2.5 cm / 1.3°</td><td>−6.41e-9</td></tr>
             <tr><td>unknown scale</td><td class="ok">−1.19e-8</td><td>4.1e-12</td><td class="hi">1.0255</td><td>6.6 cm / 1.3°</td><td>8.55e-9, tags 2.5 % small</td></tr>
           </tbody>
         </table>
       </div>
-      <p style="margin-top:12px">The certified solution coincides with the local solver started from the linear solution (cost 985.244 both), while the linear two-stage answer sits at 1027.3 and differs by up to 3.8 cm and 1.1° per camera. The Kalibr ground truth of the paper's Table 6 is not in the repository, so the accuracy on the real rig is reported as internal consistency: the eight camera baselines (22–81 cm) agree between the known- and unknown-scale solutions to a few millimetres.</p>
-      <div class="photos2" style="margin-top:14px">
-        <img src="assets/images/projects/rwhe/rig_cameras.jpg" alt="Close-up of the camera cluster on the rig" loading="lazy">
-        <img src="assets/images/projects/rwhe/rig_photo.jpg" alt="The rig in the motion-capture room" loading="lazy">
-      </div>
+      <p style="margin-top:12px">The certified solution coincides with the local solver started from the linear solution (cost 985.244 both), while the linear two-stage answer sits at 1027.3 and differs by up to 3.8 cm and 1.1° per camera. The paper found the same 2.5 % tag-scale error and traced it to a 3 mm mistake in the hand-measured tag size.</p>
     </div>
     <div>
-      <div class="table-wrap" style="margin-top:0">
-        <table class="data-table">
-          <thead><tr><th>camera</th><th>baseline to cam 0</th><th>roll</th><th>pitch</th><th>yaw</th><th>unknown-scale baseline</th></tr></thead>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/rwhe/real_trajectory.png" alt="The rig trajectory from the public data, 3-D and top view coloured by time" loading="lazy"><figcaption><b>The rig’s trajectory</b> reconstructed from the public CSVs (the <b>A</b> poses), coloured by time; the paper’s own plot of it is its Fig. 9.</figcaption></figure>
+      <figure class="fig"><img style="max-height:300px;width:auto;display:block;margin:0 auto" src="assets/images/projects/rwhe/thesis_apriltag.png" alt="A sheet of AprilTags" loading="lazy"><figcaption><b>The tags</b> (tag36h11 family, paper Fig. 8): sixteen of them, on walls, stands and boxes, so that every camera sees several from most rig poses.</figcaption></figure>
+    </div>
+  </div>
+  <h3 style="margin-top:30px">What the paper measured against Kalibr (its Table 6)</h3>
+  <div class="table-wrap full">
+    <table class="data-table compact">
+      <thead><tr><th>method (initialisation)</th><th>camera translation error [cm]</th><th>camera rotation error [°]</th><th>tag-20 translation error [cm]</th><th>tag-20 rotation error [°]</th></tr></thead>
+      <tbody>
+        <tr><td>Wang et al. 2022 (linear)</td><td>3.46 ± 1.69</td><td>1.38 ± 0.81</td><td>11.7</td><td>5.30</td></tr>
+        <tr><td>local optimiser (Wang)</td><td>3.34 ± 2.44</td><td>0.88 ± 0.49</td><td>11.4</td><td>4.50</td></tr>
+        <tr><td>certified SDP</td><td class="ok">3.20 ± 1.88</td><td>0.99 ± 0.52</td><td>11.5</td><td>4.73</td></tr>
+        <tr><td>local optimiser, unknown scale (Wang)</td><td>3.28 ± 2.42</td><td>0.86 ± 0.47</td><td>7.92</td><td>4.50</td></tr>
+        <tr><td>certified SDP, unknown scale</td><td class="ok">2.87 ± 1.94</td><td>0.99 ± 0.52</td><td class="ok">7.94</td><td>4.72</td></tr>
+      </tbody>
+    </table>
+    <div class="scroll-hint">← scroll the table sideways →</div>
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:10px">These are the paper’s numbers: the Kalibr camera extrinsics and the OptiTrack-marked tag it compares against are not in the public repository, so the re-run reports internal consistency instead (below). Freeing the scale cuts the tag-20 translation error from 11.5 to 7.9 cm.</p>
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/rwhe/real_cameras.png" alt="The eight camera frames and the loop-closure residual histogram" loading="lazy"><figcaption><b>The certified camera cluster</b> (optical axes in red) and the distribution of loop-closure translation residuals |AX − YB| over the 3,230 measurements, known scale in blue and unknown scale in pink.</figcaption></figure>
+    <div>
+      <div class="table-wrap full" style="margin-top:0">
+        <table class="data-table compact">
+          <thead><tr><th>camera</th><th>baseline to cam 0 [cm]</th><th>roll [°]</th><th>pitch [°]</th><th>yaw [°]</th><th>unknown-scale baseline [cm]</th></tr></thead>
           <tbody>
             <tr><td>cam 0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
             <tr><td>cam 1</td><td>22.2</td><td>-2.1</td><td>-2.8</td><td>-0.9</td><td>21.5</td></tr>
@@ -314,13 +557,13 @@
             <tr><td>cam 7</td><td>57.6</td><td>-120.0</td><td>79.3</td><td>-87.0</td><td>59.0</td></tr>
           </tbody>
         </table>
+        <div class="scroll-hint">← scroll the table sideways →</div>
       </div>
-      <p style="font-size:13px;color:var(--ash);margin-top:10px">Certified known-scale solution, camera frame of camera 0; baselines in cm, angles in degrees.</p>
+      <p style="font-size:13px;color:var(--ash);margin-top:10px">Certified known-scale solution in the frame of camera 0. The eight baselines (22–81 cm) agree between the known- and unknown-scale solutions to within 1.5 cm, the α = 1.0255 stretch.</p>
     </div>
   </div>
 </section>
 
-<!-- =================== FINDINGS =================== -->
 <section class="section" id="findings">
   <h2 class="section-title">What the re-run found</h2>
   <p class="quote">The paper's claims held; the notes below are about getting there from scratch.</p>
@@ -341,7 +584,6 @@
   </div>
 </section>
 
-<!-- =================== FULL DEMO =================== -->
 <section class="section" id="fulldemo">
   <h2 class="section-title">Full demo</h2>
   <div class="hero-video">
@@ -352,7 +594,6 @@
   <div class="hero-caption"><p>The loop, the local-minima scatter against the certified optimum, the simulation tables, the certificate across noise levels, and the real eight-camera rig with its measurement graph.</p></div>
 </section>
 
-<!-- =================== REPRODUCE =================== -->
 <section class="section" id="reproduce">
   <h2 class="section-title">Reproduce</h2>
   <div class="grid-2">
@@ -392,5 +633,7 @@ python make_video.py</div>
 </footer>
 
 <script src="assets/js/site.js"></script>
+<script src="assets/js/calib_demo_common.js"></script>
+<script src="assets/js/demo_rwhe.js"></script>
 </body>
 </html>

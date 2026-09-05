@@ -1,0 +1,25 @@
+<div class="demo card" id="demo-radar2d">
+  <div class="demo-head">
+    <span class="caption-box">LIVE DEMO · runs in your browser</span>
+    <h3>Place radar b, drive, calibrate</h3>
+    <p>Drag radar b anywhere on the vehicle (or use the sliders), pick the noise, the run length and the kind of motion, then press <b>Drive &amp; calibrate</b>. The drive is simulated at 14 Hz, both ego-velocity streams are generated with the noise you chose, and the paper's solver runs iteration by iteration: closed-form initialisation, then Levenberg–Marquardt with the Schur complement over every time step. The log is the solver's own output.</p>
+  </div>
+  <div class="demo-grid">
+    <div class="demo-scene"><canvas id="r2d-scene" aria-label="Top-down scene: radar a fixed, radar b draggable"></canvas></div>
+    <div class="demo-controls">
+      <label>baseline axis θt <span id="r2d-tt-v"></span><input type="range" id="r2d-tt" min="0" max="179" step="1" value="158"></label>
+      <label>yaw θba <span id="r2d-tb-v"></span><input type="range" id="r2d-tb" min="-179" max="180" step="1" value="95"></label>
+      <label>baseline length <span id="r2d-dist-v"></span><input type="range" id="r2d-dist" min="0.5" max="6" step="0.1" value="3.2"></label>
+      <label>ego-velocity noise σ <span id="r2d-sigma-v"></span><input type="range" id="r2d-sigma" min="0.02" max="0.30" step="0.01" value="0.10"></label>
+      <label>run length <span id="r2d-T-v"></span><input type="range" id="r2d-T" min="15" max="120" step="5" value="60"></label>
+      <label>motion <select id="r2d-motion"><option value="nominal">paper's nominal drive (turning)</option><option value="constant">constant yaw rate (no angular acceleration)</option><option value="straight">straight along the x-axis of radar a</option></select></label>
+      <label>perturb the initial guess <span id="r2d-init-v"></span><input type="range" id="r2d-init" min="0" max="60" step="5" value="0"></label>
+      <div class="demo-buttons"><button class="btn btn-primary" id="r2d-run">Drive &amp; calibrate</button><button class="btn" id="r2d-stop">Stop</button></div>
+      <div class="demo-result" id="r2d-result">no run yet</div>
+    </div>
+  </div>
+  <div class="demo-plots">
+    <canvas id="r2d-plot-vel"></canvas><canvas id="r2d-plot-conv"></canvas><canvas id="r2d-plot-est"></canvas>
+  </div>
+  <pre class="demo-log" id="r2d-log" aria-live="polite">solver log will appear here</pre>
+</div>

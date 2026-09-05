@@ -130,6 +130,56 @@
     .hero-video video.loop { aspect-ratio: 16 / 9; }
     .photos2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .photos2 img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border: 1.5px solid var(--ink); border-radius: 4px; }
+    /* ---- layout fixes shared by the calibration pages ---- */
+    .cmd { white-space: pre; overflow-x: auto; max-width: 100%; }
+    .eq { white-space: normal; line-height: 1.7; }
+    .table-wrap { position: relative; }
+    .table-wrap.full { margin-top: 18px; }
+    .data-table.compact { font-size: 11.5px; }
+    .data-table.compact th, .data-table.compact td { padding: 6px 8px; }
+    .data-table th { white-space: normal; line-height: 1.25; vertical-align: bottom; }
+    .scroll-hint { display: none; font-family: var(--font-comic); font-size: 11px; letter-spacing: .06em; color: var(--hi); margin-top: 6px; }
+    @media (max-width: 820px) { .scroll-hint { display: block; } .data-table { font-size: 11px; } }
+    /* ---- clip grids (short autoplaying loops) ---- */
+    .clip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 18px; }
+    .clip-grid.three { grid-template-columns: repeat(3, 1fr); }
+    .clip-grid .card { overflow: hidden; }
+    .clip-grid video { width: 100%; display: block; aspect-ratio: 16 / 9; background: #151820; }
+    .clip-grid .body { padding: 12px 16px 14px; }
+    .clip-grid h3 { font-size: 15.5px; margin-bottom: 4px; }
+    .clip-grid p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+    .clip-grid .caption-box { margin: -22px 0 0 12px; position: relative; z-index: 2; }
+    .big-clip video { width: 100%; display: block; aspect-ratio: 16 / 9; background: #151820; border: var(--line-w) solid var(--ink); border-radius: var(--radius); box-shadow: var(--sh); }
+    .ledger { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 16px; }
+    .ledger .card { padding: 14px 16px; }
+    .ledger h4 { font-family: var(--font-comic); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+    .ledger h4.known { color: var(--green, #2E9E5B); } .ledger h4.unknown { color: var(--hi); } .ledger h4.truth { color: var(--gold); }
+    .ledger ul { padding-left: 18px; margin: 0; } .ledger li { font-size: 13.5px; line-height: 1.5; margin-bottom: 4px; }
+    .photos3 img { border: 1.5px solid var(--ink); border-radius: 4px; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+    @media (max-width: 820px) { .clip-grid, .clip-grid.three, .ledger { grid-template-columns: 1fr; } }
+    @media (max-width: 1000px) and (min-width: 821px) { .clip-grid.three { grid-template-columns: repeat(2, 1fr); } }
+    /* ---- live demo panels ---- */
+    .demo { padding: 18px 18px 14px; margin-top: 18px; }
+    .demo-head h3 { font-size: 20px; margin: 10px 0 6px; }
+    .demo-head p { font-size: 14.5px; line-height: 1.55; color: var(--ink-soft); max-width: 80ch; }
+    .demo-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-top: 14px; align-items: start; }
+    .demo-scene canvas { width: 100%; height: 380px; display: block; border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); background: var(--panel); box-shadow: var(--sh-xs); touch-action: none; }
+    .demo-controls label { display: block; font-family: var(--font-comic); font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); margin-bottom: 8px; }
+    .demo-controls label span { float: right; font-family: var(--font-mono); text-transform: none; letter-spacing: 0; color: var(--hi-deep); }
+    .demo-controls input[type=range] { width: 100%; display: block; margin: 2px 0 4px; accent-color: var(--hi); }
+    .demo-controls select { width: 100%; display: block; margin: 4px 0 6px; font: 13px var(--font-body); padding: 5px 6px; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--panel); color: var(--ink); }
+    .demo-buttons { display: flex; gap: 10px; margin: 10px 0 8px; flex-wrap: wrap; }
+    .demo-buttons .btn { font-size: 13px; padding: 8px 14px; }
+    .demo-result { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.5; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 6px; padding: 8px 10px; }
+    .demo-result small { color: var(--ash); }
+    .demo-plots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+    .demo-plots canvas { width: 100%; height: 230px; display: block; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--panel); }
+    .demo-log { font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; background: #151820; color: #F4EAD2; border-radius: 8px; padding: 12px 14px; height: 220px; overflow: auto; margin-top: 14px; border: var(--line-w) solid var(--ink); white-space: pre-wrap; }
+    .demo-log .hl { color: var(--pop); font-weight: 700; }
+    .demo-log .ok { color: #7ED957; }
+    .demo-log .warn { color: #ffa94d; }
+    @media (max-width: 900px) { .demo-grid { grid-template-columns: 1fr; } .demo-plots { grid-template-columns: 1fr; } .demo-scene canvas { height: 320px; } }
+    .demo-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
   </style>
 </head>
 <body>
@@ -168,7 +218,6 @@
 </header>
 <div class="deco-band" aria-hidden="true"></div>
 
-<!-- =================== HERO VIDEO =================== -->
 <section class="section" id="demo">
   <div class="hero-video">
     <video class="loop" muted loop playsinline autoplay preload="metadata" poster="assets/images/projects/radar_camera/video_poster.jpg">
@@ -194,7 +243,17 @@
   </div>
 </section>
 
-<!-- =================== THE STRIP =================== -->
+<!-- =================== PROBLEM =================== -->
+<section class="section" id="problem">
+  <h2 class="section-title">The problem, in fifteen seconds</h2>
+  <div class="big-clip"><video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/rc_problem.jpg" controls><source src="assets/videos/clips/rc_problem.mp4" type="video/mp4"></video></div>
+  <div class="ledger">
+    <div class="card"><h4 class="known">What is measured</h4><ul><li><b>Radar:</b> one 3-D ego-velocity per scan, from the Doppler of the static returns (a 3-point RANSAC), on the radar’s clock.</li><li><b>Camera:</b> its own trajectory from monocular SLAM or from a target, correct only up to a scale α, on the camera’s clock.</li><li>No shared field of view, no radar reflector, no checkerboard in the calibration run.</li></ul></div>
+    <div class="card"><h4 class="unknown">What we want</h4><ul><li>R<sub>cr</sub> and <b>r</b>: the rotation and lever arm between radar and camera.</li><li>τ: the clock offset between the two sensors.</li><li>α: the scale of the camera trajectory.</li></ul></div>
+    <div class="card"><h4 class="truth">The insight</h4><ul><li>Both sensors ride one rigid body, so the radar velocity must equal the camera velocity rotated into the radar frame plus the lever-arm term <b>ω</b> × <b>r</b>, evaluated at t + τ.</li><li>A continuous-time B-spline makes the camera trajectory a smooth function of time, so velocity, angular velocity and the shift τ all come from the same curve.</li><li>One sparse least-squares problem then returns all four unknowns, with a covariance, and a rank test says whether the motion was rich enough.</li></ul></div>
+  </div>
+</section>
+
 <section class="section" id="strip">
   <h2 class="section-title">In one strip</h2>
   <div class="strip3">
@@ -216,63 +275,190 @@
   </div>
 </section>
 
+<!-- =================== PIPELINE CLIPS =================== -->
+<section class="section" id="pipeline">
+  <h2 class="section-title">Watch it work</h2>
+  <p class="quote">Three short loops from the re-implementation: the continuous-time trajectory, the measurement model that ties the two sensors together, and the motions that break it.</p>
+  <div class="clip-grid three">
+    <div class="card">
+      <video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/rc_spline.jpg"><source src="assets/videos/clips/rc_spline.mp4" type="video/mp4"></video>
+      <span class="caption-box">1 · Represent</span>
+      <div class="body"><h3>Continuous time: a cumulative B-spline</h3><p>Control points every 0.1 s on R³ × SO(3); the curve, its velocity and angular velocity are all closed-form, which is what lets τ be a differentiable unknown. Paper Fig. 10 shows the same thing on the real rig.</p></div>
+    </div>
+    <div class="card">
+      <video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/rc_measurement.jpg"><source src="assets/videos/clips/rc_measurement.mp4" type="video/mp4"></video>
+      <span class="caption-box">2 · Constrain</span>
+      <div class="body"><h3>The measurement model</h3><p>The camera’s spline velocity, the lever-arm term ω × r, and the radar’s ego-velocity h, sampled τ later. Slide the radar stream in time and the residual collapses at the true offset.</p></div>
+    </div>
+    <div class="card">
+      <video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/rc_identifiability.jpg"><source src="assets/videos/clips/rc_identifiability.mp4" type="video/mp4"></video>
+      <span class="caption-box">3 · Identifiability</span>
+      <div class="body"><h3>When it cannot work</h3><p>The singular values of the paper’s observability matrix along the flight: rotation about a single axis drops one, standing still drops all eight.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== LIVE DEMO =================== -->
+<section class="section" id="live">
+  <h2 class="section-title">Try it live</h2>
+<div class="demo card" id="demo-radarcam">
+  <div class="demo-head">
+    <span class="caption-box">LIVE DEMO · runs in your browser</span>
+    <h3>Mount the radar, offset the clocks, fly, calibrate</h3>
+    <p>Choose where the radar sits on the camera (rotation and lever arm), how late its clock runs (Δt), the monocular scale α the camera is missing, and the radar noise. Press <b>Fly &amp; calibrate</b>: the rig flies the trajectory, the camera stream (30 Hz, scaled poses) and the radar stream (20 Hz ego-velocities, time-shifted) are simulated, then the solver runs live: a Δt grid search with the paper's linear identifiability model as the closed form, then Levenberg–Marquardt over rotation, lever arm, scale and Δt. Drag the 3-D view to orbit.</p>
+  </div>
+  <div class="demo-grid">
+    <div class="demo-scene"><canvas id="rc-scene" aria-label="3-D scene: camera trajectory with the radar cone"></canvas></div>
+    <div class="demo-controls">
+      <div class="demo-cols">
+        <label>roll <span id="rc-roll-v"></span><input type="range" id="rc-roll" min="-180" max="180" step="1" value="8"></label>
+        <label>pitch <span id="rc-pitch-v"></span><input type="range" id="rc-pitch" min="-90" max="90" step="1" value="-40"></label>
+        <label>yaw <span id="rc-yaw-v"></span><input type="range" id="rc-yaw" min="-180" max="180" step="1" value="150"></label>
+        <label>lever arm x <span id="rc-rx-v"></span><input type="range" id="rc-rx" min="-30" max="30" step="1" value="5"></label>
+        <label>lever arm y <span id="rc-ry-v"></span><input type="range" id="rc-ry" min="-30" max="30" step="1" value="12"></label>
+        <label>lever arm z <span id="rc-rz-v"></span><input type="range" id="rc-rz" min="-30" max="30" step="1" value="-3"></label>
+      </div>
+      <label>clock offset Δt <span id="rc-tau-v"></span><input type="range" id="rc-tau" min="-200" max="200" step="5" value="50"></label>
+      <label>camera scale α <span id="rc-alpha-v"></span><input type="range" id="rc-alpha" min="0.3" max="2" step="0.05" value="0.5"></label>
+      <label>radar noise σ<sub>r</sub> <span id="rc-sigr-v"></span><input type="range" id="rc-sigr" min="0.01" max="0.20" step="0.01" value="0.05"></label>
+      <label>trajectory <select id="rc-traj"><option value="B">B: slow, twisting (rotation about two axes)</option><option value="A">A: fast, straight-ish (little rotation)</option></select></label>
+      <label>duration <span id="rc-T-v"></span><input type="range" id="rc-T" min="10" max="40" step="5" value="20"></label>
+      <div class="demo-buttons"><button class="btn btn-primary" id="rc-run">Fly &amp; calibrate</button><button class="btn" id="rc-stop">Stop</button></div>
+      <div class="demo-result" id="rc-result">no run yet</div>
+    </div>
+  </div>
+  <div class="demo-plots"><canvas id="rc-plot-tau"></canvas><canvas id="rc-plot-conv"></canvas><canvas id="rc-plot-fit"></canvas></div>
+  <pre class="demo-log" id="rc-log" aria-live="polite">solver log will appear here</pre>
+</div>
+</section>
+
 <!-- =================== METHOD =================== -->
 <section class="section" id="method">
   <h2 class="section-title">Method</h2>
   <div class="grid-2">
     <div class="card card-pad prose">
-      <p class="bn-lead">Temporal calibration is natural in continuous time: shifting one sensor's timestamps means querying the trajectory somewhere else, so the trajectory must be a function, not a list. The paper uses the cumulative B-spline of Sommer et al., R(u) = R<sub>i</sub> ∏ exp(λ<sub>j</sub>(u) log(R<sub>i+j−1</sub>ᵀR<sub>i+j</sub>)), whose body angular velocity has a closed form; the re-implementation verifies it against finite differences to 10⁻⁹.</p>
+      <p class="bn-lead">Temporal calibration is natural in continuous time: shifting one sensor’s timestamps means querying the trajectory somewhere else, so the trajectory must be a function, not a list. The paper uses the cumulative B-spline of Sommer et al., R(u) = R<sub>i</sub> ∏ exp(λ<sub>j</sub>(u) log(R<sub>i+j−1</sub>ᵀR<sub>i+j</sub>)), whose body angular velocity has a closed form; the re-implementation verifies it against finite differences to 10⁻⁹.</p>
       <div class="eq">e<span class="m">r</span> = log( R̃<span class="m">k</span>ᵀ R<span class="m">wc</span>(t<span class="m">k</span>) ),   e<span class="m">t</span> = p̃<span class="m">k</span> − α p<span class="m">c</span>(t<span class="m">k</span>),   e<span class="m">v</span> = h<span class="m">j</span> − R<span class="m">cr</span>ᵀ( R<span class="m">wc</span>ᵀ ṗ + ω × r )|<span class="m">t_j + τ</span></div>
       <p>Unknowns: about 300 translation and 300 rotation control points for a 30-s run, plus R<sub>cr</sub>, <b>r</b>, α and τ. The Jacobian is sparse (each residual touches four control points), so finite differences through the sparsity pattern need only 57 evaluations, and the normal equations are solved by sparse LU. Rotation control points are perturbed locally and re-linearised after every accepted step.</p>
       <ul>
-        <li><b>Initialisation:</b> the paper's identifiability model <b>a</b> = α R<sub>cr</sub> <b>h</b>(t + τ) − α <b>ω</b> × <b>r</b> is linear in vec(αR<sub>cr</sub>) and α<b>r</b> for a fixed τ; solve it on a τ grid, take α from the singular values and R<sub>cr</sub> from the SO(3) projection.</li>
+        <li><b>Radar front end (paper eqs. 7–9):</b> a static return at direction <b>u</b> has range-rate −<b>u</b>·<b>h</b>; three returns fix <b>h</b>, RANSAC removes movers and multipath, least squares on the inliers gives <b>h</b> and its covariance.</li>
+        <li><b>Initialisation:</b> the paper’s identifiability model <b>a</b> = α R<sub>cr</sub> <b>h</b>(t + τ) − α <b>ω</b> × <b>r</b> is linear in vec(αR<sub>cr</sub>) and α<b>r</b> for a fixed τ; solve it on a τ grid, take α from the singular values and R<sub>cr</sub> from the SO(3) projection.</li>
         <li><b>Camera noise as in the paper:</b> a checkerboard is projected, pixel noise added, and <code>solvePnP</code> run with the wrong square size, which is exactly what produces a scaled position with realistic pose noise.</li>
-        <li><b>Identifiability:</b> the stacked gradient matrix of the paper's eq. 23 has rank 7 of 8 when the body rotates about one axis only, and is zero at rest.</li>
+        <li><b>Identifiability (paper §IV, Appendix A):</b> the observability rank condition on the Lie derivatives of the measurement holds when the body rotates about two or more axes. Rotation about a single axis and standing still are the degenerate motions; with τ known, spatial calibration alone is locally weakly observable (the appendix’s quaternion analysis).</li>
       </ul>
       <div class="tag-row"><span class="chip">cumulative B-splines on SO(3)</span><span class="chip">sparse finite-difference LM</span><span class="chip">PnP camera model</span><span class="chip">pure-Python bag reader</span></div>
     </div>
     <div>
-      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_camera/sim_trajectories.png" alt="The two simulated trajectories with speed and angular-rate profiles" loading="lazy"><figcaption><b>Paper Figs. 3–4.</b> Trajectory A: high linear, low angular velocity (0.73 m/s, 0.39 rad/s). Trajectory B: low linear, high angular (0.40 m/s, 1.75 rad/s). Both keep a 9×7 checkerboard in a 700-px camera's view.</figcaption></figure>
-      <figure class="fig"><img src="assets/images/projects/radar_camera/sim_identifiability.png" alt="Singular values of the identifiability matrix for full, one-axis and no motion" loading="lazy"><figcaption><b>Identifiability, numerically.</b> Singular values of the paper's observability matrix over 8 s of trajectory B: full excitation keeps all eight, rotation about a single axis loses rank, and no motion loses everything.</figcaption></figure>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_camera/thesis_main_pic_4-crop.png" alt="Radar (triangle) and camera (circle) rigidly attached, moving along a trajectory" loading="lazy"><figcaption><b>Paper Fig. 1.</b> Radar (triangle) and camera (circle) on one moving body: the camera sees a scene, the radar sees range-rates to static landmarks, and the two only meet through the motion.</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/radar_camera/thesis_ego-velocity-2-crop.png" alt="Radar measurement model: range-rates to several static landmarks" loading="lazy"><figcaption><b>Paper Fig. 2.</b> Each static landmark returns the projection of the ego-velocity on its line of sight; three or more non-collinear landmarks give the full 3-D velocity.</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/radar_camera/thesis_spline.png" alt="Segment of the handheld-rig B-spline with active control points" loading="lazy"><figcaption><b>Paper Fig. 10.</b> A segment of the estimated spline for the handheld rig: the diamond is the rig 6.3 s in, orange the four control points active at that instant.</figcaption></figure>
     </div>
   </div>
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_camera/sim_trajectories.png" alt="The two simulated trajectories with speed and angular-rate profiles" loading="lazy"><figcaption><b>Paper Figs. 3–4.</b> Trajectory A: high linear, low angular velocity (0.73 m/s, 0.39 rad/s). Trajectory B: low linear, high angular (0.40 m/s, 1.75 rad/s). Both keep a 9×7 checkerboard in a 700-px camera’s view.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_camera/sim_identifiability.png" alt="Singular values of the identifiability matrix for full, one-axis and no motion" loading="lazy"><figcaption><b>Identifiability, numerically.</b> Singular values of the paper’s observability matrix over 8 s of trajectory B: full excitation keeps all eight, rotation about a single axis loses rank, and no motion loses everything.</figcaption></figure>
+  </div>
+  <div class="table-wrap full">
+    <table class="data-table compact">
+      <thead>
+        <tr><th>motion</th><th>σ<sub>1</sub></th><th>σ<sub>2</sub></th><th>σ<sub>3</sub></th><th>σ<sub>4</sub></th><th>σ<sub>5</sub></th><th>σ<sub>6</sub></th><th>σ<sub>7</sub></th><th>σ<sub>8</sub></th></tr>
+      </thead>
+      <tbody>
+        <tr><td>trajectory B, full excitation</td><td>1.07e+1</td><td>9.89</td><td>6.39</td><td>6.02</td><td>4.98</td><td>2.38</td><td>2.23</td><td>1.65</td></tr>
+        <tr><td>rotation about one axis only</td><td>8.81</td><td>8.72</td><td>6.07</td><td>4.95</td><td>2.31</td><td>2.21</td><td>1.63</td><td>1.60e-16</td></tr>
+        <tr><td>no motion</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+      </tbody>
+    </table>
+    <div class="scroll-hint">← scroll the table sideways →</div>
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:10px">Singular values of the 8-parameter identifiability matrix over 8 s of trajectory B; the one-axis case has rank 7.</p>
 </section>
 
 <!-- =================== SIMULATION =================== -->
 <section class="section" id="simulation">
   <h2 class="section-title">Simulation studies</h2>
-  <div class="grid-2">
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_camera/sim_hist_B.png" alt="Error histograms for trajectory B at four noise levels" loading="lazy"><figcaption><b>Paper Fig. 6, re-run (trajectory B).</b> Histograms of translation, rotation, scale and offset errors over 100 trials per noise level. With rotation about two axes everything is well determined: 0.3–0.7 cm, 0.55–1.46°, 0.43–2.84 %, 1.7–9.8 ms across the four noise levels.</figcaption></figure>
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_camera/sim_hist_A.png" alt="Error histograms for trajectory A at four noise levels" loading="lazy"><figcaption><b>Paper Fig. 5 (trajectory A).</b> Rotation and scale stay at 0.39–1.42° and 0.50–4.89 %, but with little rotation the translation and the offset are poorly conditioned: 1.7–13.6 cm and 4.3–25.1 ms medians, with 95th percentiles of 21 cm and 66 ms at the highest noise. The paper reports the same asymmetry ("as large as 15 cm and 30 ms").</figcaption></figure>
+  <div class="clip-grid">
+    <div class="card">
+      <video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/rc_setup.jpg"><source src="assets/videos/clips/rc_setup.mp4" type="video/mp4"></video>
+      <span class="caption-box">Setup</span>
+      <div class="body"><h3>The setup: what is given, what is estimated</h3><p>The rig flies trajectory B in front of the checkerboard; the radar returns, the PnP camera poses on their own clock, and the ledger of knowns, unknowns and ground truth for every trial.</p></div>
+    </div>
+    <div class="card">
+      <video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/rc_campaign.jpg"><source src="assets/videos/clips/rc_campaign.mp4" type="video/mp4"></video>
+      <span class="caption-box">Recording</span>
+      <div class="body"><h3>The campaign, recorded</h3><p>Two trajectories, four noise levels, one hundred seeded trials each. Every finished solve drops its four errors onto the histograms as the campaign runs.</p></div>
+    </div>
   </div>
-  <div class="table-wrap" style="margin-top:22px">
-    <table class="data-table">
-      <thead><tr><th>traj.</th><th>σ<sub>r</sub> [m/s]</th><th>σ<sub>c</sub> [px]</th><th>trans med [cm]</th><th>p95</th><th>rot med [°]</th><th>p95</th><th>scale med [%]</th><th>p95</th><th>τ med [ms]</th><th>p95</th><th>converged</th></tr></thead>
+  <div class="ledger">
+    <div class="card"><h4 class="known">Given</h4><ul><li>Radar ego-velocities at 20 Hz with noise σ<sub>r</sub> ∈ {{0.05, 0.15}} m/s.</li><li>Camera poses at 30 Hz from PnP on a 9×7 checkerboard with corner noise σ<sub>c</sub> ∈ {{0.2, 0.4}} px and the wrong square size.</li><li>30-s runs on trajectory A (fast, little rotation) or B (slow, twisting).</li></ul></div>
+    <div class="card"><h4 class="unknown">Estimated</h4><ul><li>R<sub>cr</sub>, <b>r</b>, α, τ.</li><li>About 600 spline control points for the camera trajectory.</li><li>Started from the closed-form initialiser, never from the truth.</li></ul></div>
+    <div class="card"><h4 class="truth">Ground truth</h4><ul><li>Random extrinsics per trial; α = 0.5; τ = 50 ms.</li><li>100 seeded trials per setting: 800 solves, 5–25 s each.</li><li>Errors: translation [cm], chordal rotation [°], scale [%], offset [ms]; medians, 95th percentiles and maxima.</li></ul></div>
+  </div>
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_camera/sim_hist_B.png" alt="Error histograms for trajectory B at four noise levels" loading="lazy"><figcaption><b>Paper Fig. 6, re-run (trajectory B).</b> With rotation about two axes everything is well determined: 0.3–0.7 cm, 0.55–1.46°, 0.43–2.84 %, 1.7–9.8 ms across the four noise levels.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_camera/sim_hist_A.png" alt="Error histograms for trajectory A at four noise levels" loading="lazy"><figcaption><b>Paper Fig. 5 (trajectory A).</b> Rotation and scale stay at 0.39–1.42° and 0.50–4.89 %, but with little rotation the translation and the offset are poorly conditioned: 1.7–13.6 cm and 4.3–25.1 ms medians, with 95th percentiles of 21 cm and 66 ms at the highest noise. The paper reports the same asymmetry (“as large as 15 cm and 30 ms”).</figcaption></figure>
+  </div>
+  <div class="table-wrap full">
+    <table class="data-table compact">
+      <thead>
+        <tr><th>traj.</th><th>σ<sub>r</sub></th><th>σ<sub>c</sub></th><th colspan="3">translation [cm]</th><th colspan="3">rotation [deg]</th><th colspan="3">scale [%]</th><th colspan="3">offset [ms]</th><th>conv.</th><th>time [s]</th></tr>
+        <tr><th></th><th>[m/s]</th><th>[px]</th><th>med</th><th>p95</th><th>max</th><th>med</th><th>p95</th><th>max</th><th>med</th><th>p95</th><th>max</th><th>med</th><th>p95</th><th>max</th><th></th><th></th></tr>
+      </thead>
       <tbody>
-            <tr><td>A</td><td>0.05</td><td>0.2</td><td>1.7</td><td>3.1</td><td>0.39</td><td>0.69</td><td>0.50</td><td>1.22</td><td>4.3</td><td>11.7</td><td>87 %</td></tr>
-            <tr><td>A</td><td>0.05</td><td>0.4</td><td>2.6</td><td>4.5</td><td>0.39</td><td>0.81</td><td>0.90</td><td>1.80</td><td>3.8</td><td>11.3</td><td>91 %</td></tr>
-            <tr><td>A</td><td>0.15</td><td>0.2</td><td>11.1</td><td>19.1</td><td>1.45</td><td>2.60</td><td>4.68</td><td>8.65</td><td>23.5</td><td>63.6</td><td>21 %</td></tr>
-            <tr><td>A</td><td>0.15</td><td>0.4</td><td>13.6</td><td>21.2</td><td>1.42</td><td>2.95</td><td>4.89</td><td>7.42</td><td>25.1</td><td>66.1</td><td>49 %</td></tr>
-            <tr><td>B</td><td>0.05</td><td>0.2</td><td>0.3</td><td>0.5</td><td>0.55</td><td>1.10</td><td>0.43</td><td>1.37</td><td>1.7</td><td>5.9</td><td>100 %</td></tr>
-            <tr><td>B</td><td>0.05</td><td>0.4</td><td>0.3</td><td>0.5</td><td>0.49</td><td>1.00</td><td>0.43</td><td>1.17</td><td>2.1</td><td>5.2</td><td>100 %</td></tr>
-            <tr><td>B</td><td>0.15</td><td>0.2</td><td>0.7</td><td>1.4</td><td>1.71</td><td>3.05</td><td>3.63</td><td>6.29</td><td>7.6</td><td>20.2</td><td>7 %</td></tr>
-            <tr><td>B</td><td>0.15</td><td>0.4</td><td>0.7</td><td>1.4</td><td>1.46</td><td>2.98</td><td>2.84</td><td>5.26</td><td>9.8</td><td>24.6</td><td>41 %</td></tr>
+        <tr><td>A</td><td>0.05</td><td>0.2</td><td>1.71</td><td>3.10</td><td>3.9</td><td>0.39</td><td>0.69</td><td>1.0</td><td>0.50</td><td>1.22</td><td>1.7</td><td>4.26</td><td>11.69</td><td>15.7</td><td>87%</td><td>21.6</td></tr>
+        <tr><td>A</td><td>0.05</td><td>0.4</td><td>2.58</td><td>4.53</td><td>5.6</td><td>0.39</td><td>0.81</td><td>1.0</td><td>0.90</td><td>1.80</td><td>2.2</td><td>3.81</td><td>11.26</td><td>14.3</td><td>91%</td><td>20.1</td></tr>
+        <tr><td>A</td><td>0.15</td><td>0.2</td><td>11.11</td><td>19.15</td><td>24.8</td><td>1.45</td><td>2.60</td><td>3.4</td><td>4.68</td><td>8.65</td><td>10.1</td><td>23.53</td><td>63.64</td><td>76.3</td><td>21%</td><td>32.6</td></tr>
+        <tr><td>A</td><td>0.15</td><td>0.4</td><td>13.64</td><td>21.25</td><td>25.0</td><td>1.42</td><td>2.95</td><td>4.1</td><td>4.89</td><td>7.42</td><td>8.3</td><td>25.09</td><td>66.14</td><td>112.8</td><td>49%</td><td>16.7</td></tr>
+        <tr><td>B</td><td>0.05</td><td>0.2</td><td>0.26</td><td>0.45</td><td>0.7</td><td>0.55</td><td>1.10</td><td>1.5</td><td>0.43</td><td>1.37</td><td>1.8</td><td>1.74</td><td>5.93</td><td>8.4</td><td>100%</td><td>8.2</td></tr>
+        <tr><td>B</td><td>0.05</td><td>0.4</td><td>0.27</td><td>0.52</td><td>0.6</td><td>0.49</td><td>1.00</td><td>1.3</td><td>0.43</td><td>1.17</td><td>1.8</td><td>2.08</td><td>5.23</td><td>10.7</td><td>100%</td><td>6.9</td></tr>
+        <tr><td>B</td><td>0.15</td><td>0.2</td><td>0.70</td><td>1.36</td><td>1.9</td><td>1.71</td><td>3.05</td><td>4.4</td><td>3.63</td><td>6.29</td><td>7.8</td><td>7.65</td><td>20.21</td><td>24.8</td><td>7%</td><td>12.8</td></tr>
+        <tr><td>B</td><td>0.15</td><td>0.4</td><td>0.75</td><td>1.36</td><td>2.0</td><td>1.46</td><td>2.98</td><td>3.4</td><td>2.84</td><td>5.26</td><td>7.1</td><td>9.83</td><td>24.60</td><td>58.3</td><td>41%</td><td>10.1</td></tr>
       </tbody>
     </table>
+    <div class="scroll-hint">← scroll the table sideways →</div>
   </div>
-  <p style="font-size:13px;color:var(--ash);margin-top:10px">100 trials per row, 30-s runs, camera 30 Hz, radar 20 Hz, true offset 50 ms, true scale 0.5, random extrinsics per trial. "Converged" counts runs that met the tolerance within 40 iterations; the rest are slow tails, not divergence, and are included.</p>
+  <p style="font-size:13px;color:var(--ash);margin-top:10px">100 trials per row, 30-s runs, true offset 50 ms, true scale 0.5, random extrinsics per trial. “conv.” counts runs that met the tolerance within 40 iterations; the rest are slow tails, not divergence, and are included.</p>
+  <h3 style="margin-top:30px">Where the solver starts, and what it says about itself</h3>
+  <div class="table-wrap full">
+    <table class="data-table compact">
+      <thead>
+        <tr><th>traj.</th><th>σ<sub>r</sub></th><th>σ<sub>c</sub></th><th colspan="4">closed-form initialisation, median error</th><th colspan="2">reported 1σ, median</th><th>radar residual</th></tr>
+        <tr><th></th><th>[m/s]</th><th>[px]</th><th>rot [deg]</th><th>trans [cm]</th><th>scale [%]</th><th>offset [ms]</th><th>trans [mm]</th><th>offset [ms]</th><th>RMS [m/s]</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>A</td><td>0.05</td><td>0.2</td><td>0.85</td><td>11.1</td><td>5.0</td><td>45</td><td>17.4</td><td>1.9</td><td>0.038</td></tr>
+        <tr><td>A</td><td>0.05</td><td>0.4</td><td>1.01</td><td>4.5</td><td>3.1</td><td>50</td><td>17.3</td><td>1.9</td><td>0.039</td></tr>
+        <tr><td>A</td><td>0.15</td><td>0.2</td><td>2.48</td><td>109.4</td><td>34.6</td><td>45</td><td>50.3</td><td>3.1</td><td>0.127</td></tr>
+        <tr><td>A</td><td>0.15</td><td>0.4</td><td>2.02</td><td>96.9</td><td>32.7</td><td>50</td><td>50.0</td><td>2.8</td><td>0.130</td></tr>
+        <tr><td>B</td><td>0.05</td><td>0.2</td><td>0.90</td><td>0.4</td><td>6.9</td><td>80</td><td>3.1</td><td>1.6</td><td>0.038</td></tr>
+        <tr><td>B</td><td>0.05</td><td>0.4</td><td>0.88</td><td>0.4</td><td>6.9</td><td>95</td><td>3.1</td><td>1.6</td><td>0.038</td></tr>
+        <tr><td>B</td><td>0.15</td><td>0.2</td><td>2.09</td><td>1.8</td><td>33.4</td><td>65</td><td>8.3</td><td>2.7</td><td>0.127</td></tr>
+        <tr><td>B</td><td>0.15</td><td>0.4</td><td>2.00</td><td>2.0</td><td>33.3</td><td>90</td><td>8.3</td><td>2.7</td><td>0.128</td></tr>
+      </tbody>
+    </table>
+    <div class="scroll-hint">← scroll the table sideways →</div>
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:10px">The closed-form initialiser is within 1–2.5° of the truth on every setting and, on trajectory B, within 2 cm; on trajectory A its translation is poor for the same reason the final estimate is. The reported 1σ from the covariance tracks the empirical spread on B and under-states it on A.</p>
 </section>
 
 <!-- =================== REAL DATA =================== -->
 <section class="section" id="real">
   <h2 class="section-title">The handheld rig</h2>
-  <div class="grid-2">
+  <div class="big-clip"><video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/rc_corridor.jpg" controls><source src="assets/videos/clips/rc_corridor.mp4" type="video/mp4"></video></div>
+  <p style="font-size:14px;color:var(--ink-soft);margin-top:12px;max-width:80ch">The paper’s 2020 corridor recording from the University of Zagreb, replayed from the archived bag: the camera frames, the radar returns with the RANSAC inliers, the three ego-velocity components, and the gyro, all on the bag clock.</p>
+  <div class="photos3" style="margin-top:22px">
+    <img src="assets/images/projects/radar_camera/thesis_handheld_rig-2-crop.png" alt="The handheld rig: TI AWR1843 radar, Flea3 camera and VN-100 IMU" loading="lazy">
+    <img src="assets/images/projects/radar_camera/thesis_target.png" alt="The trihedral retroreflector and the AprilTag mounted in front of it" loading="lazy">
+    <img src="assets/images/projects/radar_camera/thesis_office.jpg" alt="The office environment seen by the rig’s camera" loading="lazy">
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:8px">Paper Figs. 7–9: the rig (TI AWR1843BOOST radar, Point Grey Flea3, VectorNav VN-100), the verification target (a trihedral corner reflector with an AprilTag on radar-transparent cardboard in front of it), and the office where the targetless part of the run was recorded.</p>
+  <div class="grid-2" style="margin-top:22px">
     <div class="card card-pad prose">
-      <p class="bn-lead">The paper's handheld experiment was recorded in 2020 at the University of Zagreb: a TI AWR1843BOOST radar, a Point Grey Flea3 camera and a VectorNav VN-100, carried through office corridors. The archived bags hold radar clouds with Doppler at 10 Hz, 1920×1200 images at 10 Hz and the IMU at 100 Hz. Every header stamp is zero, so the bag receive times are the clock.</p>
-      <p>The 3-point RANSAC ego-velocity estimator (the paper's eqs. 7–9) validates 476 of 594 scans with 21 of 23 returns as inliers, an inlier range-rate spread of <b>0.031 m/s</b> and a median least-squares velocity uncertainty of 0.054 m/s. The rig walks at 1.5 m/s and turns at 0.5 rad/s: closer to trajectory B than A.</p>
-      <p>What could not be re-run: the joint spatiotemporal solve. It needs the monocular camera trajectory from ORB-SLAM3 and the camera intrinsics, and neither is available here; the AprilGrid in the calibration bag is not detected by two AprilTag libraries at this resolution. The paper's real-data tables are therefore not reproduced, and the page says so.</p>
+      <p class="bn-lead">The archived bags hold radar clouds with Doppler at 10 Hz, 1920×1200 images at 10 Hz and the IMU at 100 Hz. Every header stamp is zero, so the bag receive times are the clock.</p>
+      <p>The 3-point RANSAC ego-velocity estimator validates 476 of 594 scans with 21 of 23 returns as inliers, an inlier range-rate spread of <b>0.031 m/s</b> and a median least-squares velocity uncertainty of 0.054 m/s. The rig walks at 1.5 m/s and turns at 0.5 rad/s: closer to trajectory B than A.</p>
+      <p>What could not be re-run: the joint spatiotemporal solve. It needs the monocular camera trajectory from ORB-SLAM3 and the camera intrinsics, and neither is available here; the AprilGrid in the calibration bag is not detected by two AprilTag libraries at this resolution. The paper’s real-data tables below are therefore the paper’s own numbers, reproduced for reference and labelled as such.</p>
       <div class="photos2" style="margin-top:14px">
-        <img src="assets/images/projects/radar_camera/corridor_frame.jpg" alt="Corridor seen by the rig's camera" loading="lazy">
+        <img src="assets/images/projects/radar_camera/corridor_frame.jpg" alt="Corridor seen by the rig’s camera" loading="lazy">
         <img src="assets/images/projects/radar_camera/aprilgrid_frame.jpg" alt="The AprilGrid calibration target held in front of the rig" loading="lazy">
       </div>
     </div>
@@ -281,9 +467,63 @@
       <figure class="fig"><img src="assets/images/projects/radar_camera/real_scan_example.png" alt="One real scan: range-rate against direction cosine, and the inlier residual histogram" loading="lazy"><figcaption><b>One scan.</b> Range-rate against the cosine of the angle between each return and the ego-velocity; static returns lie on the line −|h| cos θ, the rest are rejected. Right: all inlier residuals of the run.</figcaption></figure>
     </div>
   </div>
+  <h3 style="margin-top:30px">Against a target-based method (paper Table I)</h3>
+  <div class="table-wrap full">
+    <table class="data-table compact">
+      <thead><tr><th>method</th><th>r<sub>x</sub> [cm]</th><th>r<sub>y</sub> [cm]</th><th>r<sub>z</sub> [cm]</th><th>θ<sub>x</sub> [rad]</th><th>θ<sub>y</sub> [rad]</th><th>θ<sub>z</sub> [rad]</th><th>τ [ms]</th></tr></thead>
+      <tbody>
+        <tr><td>Peršić et al. (trihedral target)</td><td>−1.60</td><td>11.9</td><td>−5.02</td><td>−1.59</td><td>0.07</td><td>−3.12</td><td>−63.8</td></tr>
+        <tr><td>targetless, continuous-time (paper)</td><td class="ok">−0.48</td><td class="ok">12.2</td><td class="ok">−3.42</td><td class="ok">−1.62</td><td class="ok">0.02</td><td class="ok">−3.15</td><td class="ok">−57.9</td></tr>
+      </tbody>
+    </table>
+    <div class="scroll-hint">← scroll the table sideways →</div>
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:10px">Paper values. Per axis the targetless estimate is within 1.6 cm and 3° of the target-based one, and the offsets differ by 6 ms; the reprojection-error median of the retroreflector corner is 3 mm larger than the target-based method’s (paper Fig. 11).</p>
+
+  <h2 class="section-title" style="margin-top:44px">Two more environments from the paper</h2>
+  <div class="grid-2">
+    <div class="card card-pad prose">
+      <p class="bn-lead">IRS radar–thermal–visual–inertial datasets. The calibration was plugged into RRxIO, the radar–camera–IMU odometry of Doer and Trommer, on three of its trajectories. The dataset’s own radar–IMU extrinsics came from a target-based radar–IMU procedure with an ad-hoc temporal offset; the paper’s parameters, combined with the dataset’s IMU–camera calibration, improved the translation error on every trajectory and most on Gym, the one with the largest offset.</p>
+    </div>
+    <div>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_camera/thesis_boreas-3-crop.png" alt="The radar and the three cameras mounted on the Boreas vehicle" loading="lazy"><figcaption><b>Paper Fig. 12: the vehicle.</b> Three Point Grey cameras face forward and 45° to either side; the TI radar sits more than a metre away, facing the rear. No field of view is shared, so no target-based method applies.</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/radar_camera/thesis_sensor_fov-crop.png" alt="Top view of the fields of view of the radar and the cameras on the car" loading="lazy"><figcaption><b>Paper Fig. 13.</b> The cameras’ fields of view (orange) and the radar’s (blue). The paper drove two laps of a figure eight, nine datasets in all, and judged the calibration by the distance between the left and right cameras against a Leica MultiStation survey: most estimates within 5 cm, two above 10 cm, which is what chaining two radar–camera transforms with 1 m lever arms and rotation errors of a few degrees predicts.</figcaption></figure>
+    </div>
+  </div>
+  <div class="table-wrap full">
+    <table class="data-table compact">
+      <thead><tr><th>parameters</th><th>r<sub>x</sub> [cm]</th><th>r<sub>y</sub> [cm]</th><th>r<sub>z</sub> [cm]</th><th>θ<sub>x</sub></th><th>θ<sub>y</sub></th><th>θ<sub>z</sub></th><th>τ [ms]</th></tr></thead>
+      <tbody>
+        <tr><td>RRxIO (dataset)</td><td>6.00</td><td>4.00</td><td>−4.00</td><td>−3.14</td><td>0.02</td><td>−1.59</td><td>8.0</td></tr>
+        <tr><td>MoCap Easy (paper)</td><td>4.08</td><td>4.71</td><td>−5.05</td><td>−3.12</td><td>0.01</td><td>−1.59</td><td>13.1</td></tr>
+        <tr><td>MoCap Medium (paper)</td><td>3.90</td><td>4.46</td><td>−5.63</td><td>−3.11</td><td>0.01</td><td>−1.59</td><td>15.4</td></tr>
+        <tr><td>Gym (paper)</td><td>3.27</td><td>4.48</td><td>−3.62</td><td>−3.15</td><td>−0.06</td><td>−1.60</td><td class="hi">40.7</td></tr>
+      </tbody>
+    </table>
+    <div class="scroll-hint">← scroll the table sideways →</div>
+  </div>
+  <div class="table-wrap full">
+    <table class="data-table compact">
+      <thead><tr><th rowspan="2">trajectory</th><th colspan="2">RTE [%]</th><th colspan="2">RRE [°/m]</th><th colspan="2">ATE [m]</th><th colspan="2">ARE [°]</th></tr><tr><th>RRxIO</th><th>paper</th><th>RRxIO</th><th>paper</th><th>RRxIO</th><th>paper</th><th>RRxIO</th><th>paper</th></tr></thead>
+      <tbody>
+        <tr><td>MoCap Easy</td><td>0.809</td><td class="ok">0.669</td><td class="ok">0.084</td><td>0.089</td><td>0.177</td><td class="ok">0.144</td><td class="ok">1.567</td><td>1.918</td></tr>
+        <tr><td>MoCap Medium</td><td>1.377</td><td class="ok">1.097</td><td>0.122</td><td class="ok">0.095</td><td>0.351</td><td class="ok">0.260</td><td>2.522</td><td class="ok">2.027</td></tr>
+        <tr><td>Gym</td><td>1.170</td><td class="ok">0.752</td><td>0.076</td><td class="ok">0.054</td><td>0.308</td><td class="ok">0.195</td><td>2.087</td><td class="ok">1.349</td></tr>
+      </tbody>
+    </table>
+    <div class="scroll-hint">← scroll the table sideways →</div>
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:10px">Paper Tables II and III: radar–IMU parameters and odometry errors after a yaw alignment (relative and absolute translation and rotation RMSE).</p>
+
+  <div class="grid-2" style="margin-top:22px">
+      <div class="card card-pad prose">
+        <p class="bn-lead">Where calibration can be done (paper §VI-E).</p>
+        <p>At least four stationary landmarks in the radar’s view, more being better; enough light and texture for the camera’s SLAM; no crowds of moving targets, dim scenes, or fog. The vehicle problem is poorly conditioned because a car barely rolls or pitches, so the smallest eigenvalue of the identifiability matrix sits near zero and the estimate is sensitive to noise.</p>
+      </div>
+    <div></div>
+  </div>
 </section>
 
-<!-- =================== FINDINGS =================== -->
 <section class="section" id="findings">
   <h2 class="section-title">What the re-run found</h2>
   <p class="quote">Two of the paper's statements were tested harder than the paper could, and one part could not be tested at all.</p>
@@ -304,7 +544,6 @@
   </div>
 </section>
 
-<!-- =================== FULL DEMO =================== -->
 <section class="section" id="fulldemo">
   <h2 class="section-title">Full demo</h2>
   <div class="hero-video">
@@ -315,7 +554,6 @@
   <div class="hero-caption"><p>The flight, the time alignment, the convergence of all four quantities, both simulation studies, the identifiability check, and the real corridor data with the radar ego-velocity and gyro streams next to the camera frames.</p></div>
 </section>
 
-<!-- =================== REPRODUCE =================== -->
 <section class="section" id="reproduce">
   <h2 class="section-title">Reproduce</h2>
   <div class="grid-2">
@@ -354,5 +592,7 @@ python make_video.py</div>
 </footer>
 
 <script src="assets/js/site.js"></script>
+<script src="assets/js/calib_demo_common.js"></script>
+<script src="assets/js/demo_radarcam.js"></script>
 </body>
 </html>

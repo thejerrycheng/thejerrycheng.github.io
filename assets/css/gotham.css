@@ -476,8 +476,9 @@ html.js .cover-photo { animation: rise 1s var(--ease-out) .25s both; }
   background: var(--bone); border: var(--line-w) solid var(--line);
 }
 .pub-thumb img, .pub-thumb video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
-.pub-thumb .hover-video { position: absolute; inset: 0; opacity: 0; transition: opacity .3s ease; background: #151820; }
-.pub:hover .hover-video { opacity: 1; }
+.pub-thumb .hover-video { position: absolute; inset: 0; opacity: 0; transition: opacity .3s ease; background: #151820; z-index: 3; pointer-events: none; }
+.pub-thumb .hover-video video { object-fit: cover; }
+@media (hover: hover) { .pub:hover .hover-video.playing { opacity: 1; } }
 .papertitle { font-size: 17px; font-weight: 700; letter-spacing: -0.012em; color: var(--ink); line-height: 1.3; }
 a .papertitle:hover { color: var(--link); }
 .pub-meta a { text-decoration: none; }

@@ -29,13 +29,13 @@ def links_html(item):
 def thumb_html(item):
     imgs, alts = item["images"], item.get("alts", [])
     fit = f' class="fit-{item.get("fit", "cover")}"'
+    clip = (f'<div class="hover-video"><video muted loop playsinline preload="none" poster="{attr(imgs[0])}" data-src="{attr(item["video"])}"></video></div>'
+            if item.get("video") else "")
     if len(imgs) > 1:
         slides = "".join(f'<div class="slide"><img src="{attr(src)}" alt="{attr(alts[i] if i < len(alts) else "")}" decoding="async"{fit}></div>' for i, src in enumerate(imgs))
-        return f'<div class="pub-thumb"><div class="pub-carousel" data-carousel><div class="carousel-track">{slides}</div>{ARROW_L}{ARROW_R}</div></div>'
+        return f'<div class="pub-thumb"><div class="pub-carousel" data-carousel><div class="carousel-track">{slides}</div>{ARROW_L}{ARROW_R}</div>{clip}</div>'
     out = f'<img src="{attr(imgs[0])}" alt="{attr(alts[0] if alts else "")}" loading="lazy" decoding="async"{fit}>'
-    if item.get("video"):
-        out += f'<div class="hover-video"><video muted autoplay loop playsinline preload="none"><source src="{attr(item["video"])}" type="video/mp4"></video></div>'
-    return f'<div class="pub-thumb">{out}</div>'
+    return f'<div class="pub-thumb">{out}{clip}</div>'
 
 def pub_row(p):
     venue = f'<em>{p["venue"]}</em>, {p["year"]}' + (f' &middot; {p["note"]}' if p.get("note") else "")

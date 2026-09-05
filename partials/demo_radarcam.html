@@ -1,0 +1,29 @@
+<div class="demo card" id="demo-radarcam">
+  <div class="demo-head">
+    <span class="caption-box">LIVE DEMO · runs in your browser</span>
+    <h3>Mount the radar, offset the clocks, fly, calibrate</h3>
+    <p>Choose where the radar sits on the camera (rotation and lever arm), how late its clock runs (Δt), the monocular scale α the camera is missing, and the radar noise. Press <b>Fly &amp; calibrate</b>: the rig flies the trajectory, the camera stream (30 Hz, scaled poses) and the radar stream (20 Hz ego-velocities, time-shifted) are simulated, then the solver runs live: a Δt grid search with the paper's linear identifiability model as the closed form, then Levenberg–Marquardt over rotation, lever arm, scale and Δt. Drag the 3-D view to orbit.</p>
+  </div>
+  <div class="demo-grid">
+    <div class="demo-scene"><canvas id="rc-scene" aria-label="3-D scene: camera trajectory with the radar cone"></canvas></div>
+    <div class="demo-controls">
+      <div class="demo-cols">
+        <label>roll <span id="rc-roll-v"></span><input type="range" id="rc-roll" min="-180" max="180" step="1" value="8"></label>
+        <label>pitch <span id="rc-pitch-v"></span><input type="range" id="rc-pitch" min="-90" max="90" step="1" value="-40"></label>
+        <label>yaw <span id="rc-yaw-v"></span><input type="range" id="rc-yaw" min="-180" max="180" step="1" value="150"></label>
+        <label>lever arm x <span id="rc-rx-v"></span><input type="range" id="rc-rx" min="-30" max="30" step="1" value="5"></label>
+        <label>lever arm y <span id="rc-ry-v"></span><input type="range" id="rc-ry" min="-30" max="30" step="1" value="12"></label>
+        <label>lever arm z <span id="rc-rz-v"></span><input type="range" id="rc-rz" min="-30" max="30" step="1" value="-3"></label>
+      </div>
+      <label>clock offset Δt <span id="rc-tau-v"></span><input type="range" id="rc-tau" min="-200" max="200" step="5" value="50"></label>
+      <label>camera scale α <span id="rc-alpha-v"></span><input type="range" id="rc-alpha" min="0.3" max="2" step="0.05" value="0.5"></label>
+      <label>radar noise σ<sub>r</sub> <span id="rc-sigr-v"></span><input type="range" id="rc-sigr" min="0.01" max="0.20" step="0.01" value="0.05"></label>
+      <label>trajectory <select id="rc-traj"><option value="B">B: slow, twisting (rotation about two axes)</option><option value="A">A: fast, straight-ish (little rotation)</option></select></label>
+      <label>duration <span id="rc-T-v"></span><input type="range" id="rc-T" min="10" max="40" step="5" value="20"></label>
+      <div class="demo-buttons"><button class="btn btn-primary" id="rc-run">Fly &amp; calibrate</button><button class="btn" id="rc-stop">Stop</button></div>
+      <div class="demo-result" id="rc-result">no run yet</div>
+    </div>
+  </div>
+  <div class="demo-plots"><canvas id="rc-plot-tau"></canvas><canvas id="rc-plot-conv"></canvas><canvas id="rc-plot-fit"></canvas></div>
+  <pre class="demo-log" id="rc-log" aria-live="polite">solver log will appear here</pre>
+</div>

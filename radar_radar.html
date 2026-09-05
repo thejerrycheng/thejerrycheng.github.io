@@ -130,6 +130,56 @@
     .hero-video video.loop { aspect-ratio: 16 / 9; }
     .two-col-eq { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
     @media (max-width: 820px) { .two-col-eq { grid-template-columns: 1fr; } }
+    /* ---- layout fixes shared by the calibration pages ---- */
+    .cmd { white-space: pre; overflow-x: auto; max-width: 100%; }
+    .eq { white-space: normal; line-height: 1.7; }
+    .table-wrap { position: relative; }
+    .table-wrap.full { margin-top: 18px; }
+    .data-table.compact { font-size: 11.5px; }
+    .data-table.compact th, .data-table.compact td { padding: 6px 8px; }
+    .data-table th { white-space: normal; line-height: 1.25; vertical-align: bottom; }
+    .scroll-hint { display: none; font-family: var(--font-comic); font-size: 11px; letter-spacing: .06em; color: var(--hi); margin-top: 6px; }
+    @media (max-width: 820px) { .scroll-hint { display: block; } .data-table { font-size: 11px; } }
+    /* ---- clip grids (short autoplaying loops) ---- */
+    .clip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 18px; }
+    .clip-grid.three { grid-template-columns: repeat(3, 1fr); }
+    .clip-grid .card { overflow: hidden; }
+    .clip-grid video { width: 100%; display: block; aspect-ratio: 16 / 9; background: #151820; }
+    .clip-grid .body { padding: 12px 16px 14px; }
+    .clip-grid h3 { font-size: 15.5px; margin-bottom: 4px; }
+    .clip-grid p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+    .clip-grid .caption-box { margin: -22px 0 0 12px; position: relative; z-index: 2; }
+    .big-clip video { width: 100%; display: block; aspect-ratio: 16 / 9; background: #151820; border: var(--line-w) solid var(--ink); border-radius: var(--radius); box-shadow: var(--sh); }
+    .ledger { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 16px; }
+    .ledger .card { padding: 14px 16px; }
+    .ledger h4 { font-family: var(--font-comic); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+    .ledger h4.known { color: var(--green, #2E9E5B); } .ledger h4.unknown { color: var(--hi); } .ledger h4.truth { color: var(--gold); }
+    .ledger ul { padding-left: 18px; margin: 0; } .ledger li { font-size: 13.5px; line-height: 1.5; margin-bottom: 4px; }
+    .photos3 img { border: 1.5px solid var(--ink); border-radius: 4px; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+    @media (max-width: 820px) { .clip-grid, .clip-grid.three, .ledger { grid-template-columns: 1fr; } }
+    @media (max-width: 1000px) and (min-width: 821px) { .clip-grid.three { grid-template-columns: repeat(2, 1fr); } }
+    /* ---- live demo panels ---- */
+    .demo { padding: 18px 18px 14px; margin-top: 18px; }
+    .demo-head h3 { font-size: 20px; margin: 10px 0 6px; }
+    .demo-head p { font-size: 14.5px; line-height: 1.55; color: var(--ink-soft); max-width: 80ch; }
+    .demo-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-top: 14px; align-items: start; }
+    .demo-scene canvas { width: 100%; height: 380px; display: block; border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); background: var(--panel); box-shadow: var(--sh-xs); touch-action: none; }
+    .demo-controls label { display: block; font-family: var(--font-comic); font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); margin-bottom: 8px; }
+    .demo-controls label span { float: right; font-family: var(--font-mono); text-transform: none; letter-spacing: 0; color: var(--hi-deep); }
+    .demo-controls input[type=range] { width: 100%; display: block; margin: 2px 0 4px; accent-color: var(--hi); }
+    .demo-controls select { width: 100%; display: block; margin: 4px 0 6px; font: 13px var(--font-body); padding: 5px 6px; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--panel); color: var(--ink); }
+    .demo-buttons { display: flex; gap: 10px; margin: 10px 0 8px; flex-wrap: wrap; }
+    .demo-buttons .btn { font-size: 13px; padding: 8px 14px; }
+    .demo-result { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.5; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 6px; padding: 8px 10px; }
+    .demo-result small { color: var(--ash); }
+    .demo-plots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+    .demo-plots canvas { width: 100%; height: 230px; display: block; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--panel); }
+    .demo-log { font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; background: #151820; color: #F4EAD2; border-radius: 8px; padding: 12px 14px; height: 220px; overflow: auto; margin-top: 14px; border: var(--line-w) solid var(--ink); white-space: pre-wrap; }
+    .demo-log .hl { color: var(--pop); font-weight: 700; }
+    .demo-log .ok { color: #7ED957; }
+    .demo-log .warn { color: #ffa94d; }
+    @media (max-width: 900px) { .demo-grid { grid-template-columns: 1fr; } .demo-plots { grid-template-columns: 1fr; } .demo-scene canvas { height: 320px; } }
+    .demo-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
   </style>
 </head>
 <body>
@@ -168,7 +218,6 @@
 </header>
 <div class="deco-band" aria-hidden="true"></div>
 
-<!-- =================== HERO VIDEO =================== -->
 <section class="section" id="demo">
   <div class="hero-video">
     <video class="loop" muted loop playsinline autoplay preload="metadata" poster="assets/images/projects/radar_radar/video_poster.jpg">
@@ -195,7 +244,16 @@
   </div>
 </section>
 
-<!-- =================== THE STRIP =================== -->
+<!-- =================== PROBLEM =================== -->
+<section class="section" id="problem">
+  <h2 class="section-title">The problem, in sixteen seconds</h2>
+  <div class="big-clip"><video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/r2d_problem.jpg" controls><source src="assets/videos/clips/r2d_problem.mp4" type="video/mp4"></video></div>
+  <div class="ledger">
+    <div class="card"><h4 class="known">What each radar can measure</h4><ul><li>Its own velocity, every scan, from the Doppler of static returns.</li><li>Nothing about its orientation; nothing about the other radar.</li><li>No map, no reflectors, no shared field of view, no IMU.</li></ul></div>
+    <div class="card"><h4 class="unknown">What we want</h4><ul><li>The yaw θ<sub>ba</sub> between the two radars.</li><li>The direction θ<sub>t</sub> of the baseline that joins them.</li><li>Those two are what drifts in service and what data fusion is most sensitive to.</li></ul></div>
+    <div class="card"><h4 class="truth">The insight</h4><ul><li>Two points on one rigid body move differently only when it turns: <b>v</b><sub>b</sub> − <b>v</b><sub>a</sub> = <b>ω</b> × <b>t</b>.</li><li>In the plane that difference always points along the baseline’s perpendicular.</li><li>Turn a little, fit both streams at once, and the yaw and the axis fall out.</li></ul></div>
+  </div>
+</section>
 <section class="section" id="strip">
   <h2 class="section-title">In one strip</h2>
   <div class="strip3">
@@ -217,7 +275,62 @@
   </div>
 </section>
 
-<!-- =================== METHOD =================== -->
+<!-- =================== PIPELINE CLIPS =================== -->
+<section class="section" id="pipeline">
+  <h2 class="section-title">Watch it work</h2>
+  <p class="quote">Four short loops from the re-implementation: what the radars see, how one scan becomes a velocity, how the batch solver snaps the second radar into place, and what happens when the motion is degenerate.</p>
+  <div class="clip-grid">
+    <div class="card">
+      <video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/r2d_drive.jpg"><source src="assets/videos/clips/r2d_drive.mp4" type="video/mp4"></video>
+      <span class="caption-box">1 · Measure</span>
+      <div class="body"><h3>Two radars, one drive</h3><p>A simulated vehicle through a field of scatterers: returns coloured by range-rate, × for the moving targets RANSAC rejects, arrows for each radar’s own ego-velocity. Neither radar sees the other.</p></div>
+    </div>
+    <div class="card">
+      <video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/r2d_ransac.jpg"><source src="assets/videos/clips/r2d_ransac.mp4" type="video/mp4"></video>
+      <span class="caption-box">2 · RANSAC</span>
+      <div class="body"><h3>One scan → one velocity</h3><p>A static return’s range-rate is −[cos θ, sin θ]·h. Two-point hypotheses flash until a consensus set appears; the inliers give h by least squares, with a covariance.</p></div>
+    </div>
+    <div class="card">
+      <video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/r2d_converge.jpg"><source src="assets/videos/clips/r2d_converge.mp4" type="video/mp4"></video>
+      <span class="caption-box">3 · Fuse</span>
+      <div class="body"><h3>The batch problem converging</h3><p>From a start 25° / 30° away, Levenberg–Marquardt with the Schur complement over every time step lands within 0.1° in four iterations; 1,715 unknowns, 60 ms.</p></div>
+    </div>
+    <div class="card">
+      <video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/r2d_degenerate.jpg"><source src="assets/videos/clips/r2d_degenerate.mp4" type="video/mp4"></video>
+      <span class="caption-box">4 · Identifiability</span>
+      <div class="body"><h3>When it cannot work</h3><p>Drive straight along the baseline axis and the information about the axis vanishes exactly, as det O ∝ α (h<sub>a</sub> × u) predicts; five degrees of yaw are enough to bring it back.</p></div>
+    </div>
+  </div>
+</section>
+<!-- =================== LIVE DEMO =================== -->
+<section class="section" id="live">
+  <h2 class="section-title">Try it live</h2>
+<div class="demo card" id="demo-radar2d">
+  <div class="demo-head">
+    <span class="caption-box">LIVE DEMO · runs in your browser</span>
+    <h3>Place radar b, drive, calibrate</h3>
+    <p>Drag radar b anywhere on the vehicle (or use the sliders), pick the noise, the run length and the kind of motion, then press <b>Drive &amp; calibrate</b>. The drive is simulated at 14 Hz, both ego-velocity streams are generated with the noise you chose, and the paper's solver runs iteration by iteration: closed-form initialisation, then Levenberg–Marquardt with the Schur complement over every time step. The log is the solver's own output.</p>
+  </div>
+  <div class="demo-grid">
+    <div class="demo-scene"><canvas id="r2d-scene" aria-label="Top-down scene: radar a fixed, radar b draggable"></canvas></div>
+    <div class="demo-controls">
+      <label>baseline axis θt <span id="r2d-tt-v"></span><input type="range" id="r2d-tt" min="0" max="179" step="1" value="158"></label>
+      <label>yaw θba <span id="r2d-tb-v"></span><input type="range" id="r2d-tb" min="-179" max="180" step="1" value="95"></label>
+      <label>baseline length <span id="r2d-dist-v"></span><input type="range" id="r2d-dist" min="0.5" max="6" step="0.1" value="3.2"></label>
+      <label>ego-velocity noise σ <span id="r2d-sigma-v"></span><input type="range" id="r2d-sigma" min="0.02" max="0.30" step="0.01" value="0.10"></label>
+      <label>run length <span id="r2d-T-v"></span><input type="range" id="r2d-T" min="15" max="120" step="5" value="60"></label>
+      <label>motion <select id="r2d-motion"><option value="nominal">paper's nominal drive (turning)</option><option value="constant">constant yaw rate (no angular acceleration)</option><option value="straight">straight along the x-axis of radar a</option></select></label>
+      <label>perturb the initial guess <span id="r2d-init-v"></span><input type="range" id="r2d-init" min="0" max="60" step="5" value="0"></label>
+      <div class="demo-buttons"><button class="btn btn-primary" id="r2d-run">Drive &amp; calibrate</button><button class="btn" id="r2d-stop">Stop</button></div>
+      <div class="demo-result" id="r2d-result">no run yet</div>
+    </div>
+  </div>
+  <div class="demo-plots">
+    <canvas id="r2d-plot-vel"></canvas><canvas id="r2d-plot-conv"></canvas><canvas id="r2d-plot-est"></canvas>
+  </div>
+  <pre class="demo-log" id="r2d-log" aria-live="polite">solver log will appear here</pre>
+</div>
+</section>
 <section class="section" id="method">
   <h2 class="section-title">Method</h2>
   <div class="grid-2">
@@ -243,63 +356,99 @@
 <!-- =================== SIMULATION =================== -->
 <section class="section" id="simulation">
   <h2 class="section-title">Simulation studies</h2>
-  <div class="grid-2">
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/sim_errors.png" alt="Box plots of axis and rotation errors per noise level and duration" loading="lazy"><figcaption><b>Paper Fig. 3, re-run.</b> Absolute error of the translation axis (top) and the rotation (bottom) over 100 trials for each noise level (x axis) and duration (colour). Dashed: the paper's 2° / 3° envelope. Every trial longer than 30 s at σ ≤ 0.15 m/s sits inside it; the isolated 20° points are wrong local minima reached from a poor closed-form start on the shortest, noisiest runs.</figcaption></figure>
-    <div>
-      <div class="table-wrap" style="margin-top:0">
-        <table class="data-table">
-          <thead><tr><th>σ<sub>r</sub> [m/s]</th><th>T [s]</th><th>θ<sub>t</sub> med</th><th>θ<sub>t</sub> p95</th><th>θ<sub>ba</sub> med</th><th>θ<sub>ba</sub> p95</th><th>in 2°/3°</th></tr></thead>
-          <tbody>
-            <tr><td>0.05</td><td>15</td><td>0.19</td><td>0.61</td><td>0.24</td><td>0.88</td><td class="ok">100 %</td></tr>
-            <tr><td>0.05</td><td>120</td><td class="hi">0.08</td><td>0.27</td><td class="hi">0.09</td><td>0.26</td><td class="ok">100 %</td></tr>
-            <tr><td>0.10</td><td>15</td><td>0.54</td><td>1.67</td><td>0.39</td><td>1.49</td><td>98 %</td></tr>
-            <tr><td>0.10</td><td>120</td><td>0.16</td><td>0.45</td><td>0.19</td><td>0.61</td><td class="ok">100 %</td></tr>
-            <tr><td>0.20</td><td>15</td><td>1.05</td><td class="bad">19.5</td><td>1.08</td><td class="bad">13.4</td><td class="bad">76 %</td></tr>
-            <tr><td>0.20</td><td>60</td><td>0.63</td><td>1.50</td><td>0.50</td><td>1.28</td><td>99 %</td></tr>
-            <tr><td>0.20</td><td>120</td><td>0.38</td><td>1.02</td><td>0.28</td><td>1.07</td><td class="ok">100 %</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p style="font-size:13px;color:var(--ash);margin-top:10px">Errors in degrees. All sixteen settings are in the report; the reported 1σ tracks the empirical spread.</p>
-      <figure class="fig"><img src="assets/images/projects/radar_radar/sim_fused_velocity.png" alt="Raw versus fused ego-velocity error for both radars" loading="lazy"><figcaption><b>Paper Fig. 4.</b> Because the batch problem ties both radars to one motion, the fused velocities beat the raw ones: median error 0.231 → 0.192 m/s (a) and 0.244 → 0.206 m/s (b) at σ = 0.2 m/s; 3.6 ± 0.3 cm/s averaged over 100 trials, the paper says 4.</figcaption></figure>
+  <div class="clip-grid">
+    <div class="card">
+      <video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/r2d_setup.jpg"><source src="assets/videos/clips/r2d_setup.mp4" type="video/mp4"></video>
+      <span class="caption-box">Setup</span>
+      <div class="body"><h3>The setup: what is given, what is estimated</h3><p>The paper’s nominal drive (its Fig. 2) with the noise being added to both velocity streams, and the ledger of knowns, unknowns and ground truth used for every trial.</p></div>
+    </div>
+    <div class="card">
+      <video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/r2d_sweep.jpg"><source src="assets/videos/clips/r2d_sweep.mp4" type="video/mp4"></video>
+      <span class="caption-box">Recording</span>
+      <div class="body"><h3>The campaign, recorded</h3><p>Sixteen noise / duration settings, one hundred seeded trials each. Every dot is one 60-ms solve landing on the error plot; the histograms fill as the campaign runs. Four settings are shown.</p></div>
     </div>
   </div>
+  <div class="ledger">
+    <div class="card"><h4 class="known">Given</h4><ul><li>Two ego-velocity streams at 14 Hz with isotropic noise σ<sub>r</sub> ∈ {0.05, 0.10, 0.15, 0.20} m/s.</li><li>Run lengths 15, 30, 60 and 120 s.</li><li>Nothing else: no odometry, no IMU, no map.</li></ul></div>
+    <div class="card"><h4 class="unknown">Estimated</h4><ul><li>θ<sub>t</sub> and θ<sub>ba</sub>.</li><li>The velocity of radar a and the unscaled yaw rate ω<sub>γ</sub> at every step (3M states).</li></ul></div>
+    <div class="card"><h4 class="truth">Ground truth</h4><ul><li>θ<sub>ba</sub> = 90°, baseline 5 m along the x axis of radar a (θ<sub>t</sub> = 0).</li><li>Yaw rate max(0.3 sin(t/2), 0): zero half of the time, so det O vanishes periodically.</li><li>100 seeded trials per setting: 1,600 solves in 141 s.</li></ul></div>
+  </div>
   <div class="grid-2" style="margin-top:22px">
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/sim_degeneracy.png" alt="Degeneracy sweeps: constant yaw rate and ego-motion aligned with the translation axis" loading="lazy"><figcaption><b>The two degenerate motions, measured.</b> Left: the yaw-rate oscillation is shrunk to zero (constant ω): the errors grow 4–6× and the information eigenvalue (gold) drops 15×, but the problem stays solvable because the heading still changes. Right: driving along the translation axis. At 0° the smallest eigenvalue is numerically zero, the unobservable case the paper's determinant predicts; 5° away it is back to nominal.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/sim_errors.png" alt="Box plots of axis and rotation errors per noise level and duration" loading="lazy"><figcaption><b>Paper Fig. 3, re-run.</b> Absolute error of the translation axis (top) and the rotation (bottom) over 100 trials for each noise level (x axis) and duration (colour). Dashed: the paper’s 2° / 3° envelope. Every trial longer than 30 s at σ ≤ 0.15 m/s sits inside it; the isolated 20° points are wrong local minima reached from a poor closed-form start on the shortest, noisiest runs.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/sim_fused_velocity.png" alt="Raw versus fused ego-velocity error for both radars" loading="lazy"><figcaption><b>Paper Fig. 4.</b> Because the batch problem ties both radars to one motion, the fused velocities beat the raw ones: median error 0.231 → 0.192 m/s (a) and 0.244 → 0.206 m/s (b) at σ = 0.2 m/s; 3.6 ± 0.3 cm/s averaged over 100 trials, the paper says 4.</figcaption></figure>
+  </div>
+  <div class="table-wrap full">
+    <table class="data-table compact">
+      <thead><tr><th>σ<sub>r</sub> [m/s]</th><th>T [s]</th><th>θ<sub>t</sub> median [°]</th><th>θ<sub>t</sub> p95</th><th>θ<sub>t</sub> max</th><th>θ<sub>ba</sub> median [°]</th><th>θ<sub>ba</sub> p95</th><th>θ<sub>ba</sub> max</th><th>reported 1σ θ<sub>t</sub> / θ<sub>ba</sub></th><th>inside 2° / 3°</th></tr></thead>
+      <tbody>
+        <tr><td>0.05</td><td>15</td><td>0.19</td><td>0.61</td><td>1.1</td><td>0.24</td><td>0.88</td><td>1.2</td><td>0.36 / 0.36</td><td class="ok">100 %</td></tr>
+        <tr><td>0.05</td><td>120</td><td class="hi">0.08</td><td>0.27</td><td>0.4</td><td class="hi">0.09</td><td>0.26</td><td>0.4</td><td>0.13 / 0.12</td><td class="ok">100 %</td></tr>
+        <tr><td>0.10</td><td>15</td><td>0.54</td><td>1.67</td><td class="bad">20.6</td><td>0.39</td><td>1.49</td><td class="bad">16.8</td><td>0.71 / 0.72</td><td>98 %</td></tr>
+        <tr><td>0.10</td><td>60</td><td>0.24</td><td>0.82</td><td>1.0</td><td>0.27</td><td>0.74</td><td>1.1</td><td>0.36 / 0.35</td><td class="ok">100 %</td></tr>
+        <tr><td>0.10</td><td>120</td><td>0.16</td><td>0.45</td><td>1.0</td><td>0.19</td><td>0.61</td><td>0.7</td><td>0.26 / 0.25</td><td class="ok">100 %</td></tr>
+        <tr><td>0.15</td><td>30</td><td>0.40</td><td>1.59</td><td class="bad">19.8</td><td>0.51</td><td>1.72</td><td class="bad">14.7</td><td>0.71 / 0.78</td><td>96 %</td></tr>
+        <tr><td>0.15</td><td>120</td><td>0.29</td><td>0.77</td><td>1.2</td><td>0.26</td><td>0.87</td><td>1.0</td><td>0.38 / 0.37</td><td class="ok">100 %</td></tr>
+        <tr><td>0.20</td><td>15</td><td>1.05</td><td class="bad">19.5</td><td class="bad">21.8</td><td>1.08</td><td class="bad">13.4</td><td class="bad">18.9</td><td>1.36 / 1.48</td><td class="bad">76 %</td></tr>
+        <tr><td>0.20</td><td>60</td><td>0.63</td><td>1.50</td><td>2.4</td><td>0.50</td><td>1.28</td><td>1.6</td><td>0.70 / 0.68</td><td>99 %</td></tr>
+        <tr><td>0.20</td><td>120</td><td>0.38</td><td>1.02</td><td>1.2</td><td>0.28</td><td>1.07</td><td>1.6</td><td>0.49 / 0.49</td><td class="ok">100 %</td></tr>
+      </tbody>
+    </table>
+    <div class="scroll-hint">← scroll the table sideways →</div>
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:10px">Ten of the sixteen settings; all are in the report. The reported 1σ tracks the empirical spread.</p>
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/sim_degeneracy.png" alt="Degeneracy sweeps: constant yaw rate and ego-motion aligned with the translation axis" loading="lazy"><figcaption><b>The two degenerate motions, measured.</b> Left: the yaw-rate oscillation is shrunk to zero (constant ω): the errors grow 4–6× and the information eigenvalue (gold) drops 15×, but the problem stays solvable because the heading still changes. Right: driving along the translation axis. At 0° the smallest eigenvalue is numerically zero, the unobservable case the paper’s determinant predicts; 5° away it is back to nominal.</figcaption></figure>
     <div>
-      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/sim_detO.png" alt="Observability determinant along the nominal trajectory" loading="lazy"><figcaption><b>det O along the nominal trajectory:</b> zero whenever the yaw rate is constant, which the paper's own trajectory does for half of every period.</figcaption></figure>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/sim_detO.png" alt="Observability determinant along the nominal trajectory" loading="lazy"><figcaption><b>det O along the nominal trajectory:</b> zero whenever the yaw rate is constant, which the paper’s own trajectory does for half of every period.</figcaption></figure>
       <figure class="fig"><img src="assets/images/projects/radar_radar/sim_scale.png" alt="Histogram of the recovered translation magnitude with a coarse gyro" loading="lazy"><figcaption><b>Paper Table IV.</b> Add any coarse yaw-rate source (here 0.02 rad/s noise) and the unscaled yaw rate gives the metric baseline: 4.96 ± 0.09 m for a 5 m truth.</figcaption></figure>
     </div>
   </div>
 </section>
-
 <!-- =================== REAL DATA =================== -->
 <section class="section" id="endeavour">
   <h2 class="section-title">Endeavour dataset</h2>
-  <div class="grid-2">
+  <div class="big-clip"><video muted loop playsinline autoplay preload="metadata" poster="assets/videos/clips/r2d_endeavour.jpg" controls><source src="assets/videos/clips/r2d_endeavour.mp4" type="video/mp4"></video></div>
+  <p style="font-size:14px;color:var(--ink-soft);margin-top:12px;max-width:80ch">Forty seconds of the real East 2 run: the four available Continental ARS430 radars around the shuttle bus, their returns coloured by range-rate in the vehicle frame, the RANSAC inliers, each radar’s ego-velocity arrow, the speeds against the odometry, and the lever-arm signal (the speed difference between a side radar and the front radar) that carries the calibration information.</p>
+  <div class="grid-2" style="margin-top:22px">
     <div class="card card-pad prose">
-      <p class="bn-lead">The Xi'an Jiaotong "Endeavour" shuttle bus carries five ARS430 radars (front, and two on each side) sampled at 13 Hz, plus an RTK-corrected odometry. Six loops of 4–12 minutes. The archived raw bags were converted to point clouds twice, and the two conversions do not agree: in the July-2022 set the azimuth is <b>mirrored</b> and offset by 3.3°, and the ego-velocities computed from it over-read the odometry speed by 7 % on the side radars but only 2.6 % on the front one. With such a between-radar bias the batch problem prefers a degenerate answer. The September-2022 set has consistent azimuths, speed ratios of 0.995–0.999 on every radar, and is what everything below uses. It lacks radar Near 4, so three of the paper's four pairs could be re-run.</p>
-      <p>Pipeline: returns beyond 1 m with |ṙ| &lt; 10 m/s → RANSAC at 0.1 m/s (the paper's 0.025 m/s only passes 5–30 % of these scans; the ARS430 spread is 0.05-class) → interpolate radar b onto radar a's clock → drop pairs slower than 0.05 m/s → batch calibration with per-scan covariances, about 6,470 pairs each.</p>
-      <div class="table-wrap" style="margin-top:14px">
-        <table class="data-table">
-          <thead><tr><th>pair (a = Near 5)</th><th>dataset θ<sub>t</sub></th><th>dataset θ<sub>ba</sub></th><th>paper θ<sub>t</sub></th><th>paper θ<sub>ba</sub></th><th>re-run θ<sub>t</sub></th><th>re-run θ<sub>ba</sub></th></tr></thead>
-          <tbody>
-            <tr><td>Near 1 (rear, 5.7 m)</td><td>1.71</td><td>−1.57</td><td>1.74</td><td>−1.58</td><td class="ok">1.754</td><td class="ok">−1.583</td></tr>
-            <tr><td>Near 2 (rear, 5.8 m)</td><td>1.44</td><td>1.59</td><td>1.41</td><td>1.61</td><td class="ok">1.409</td><td class="ok">1.615</td></tr>
-            <tr><td>Near 3 (front side, 0.8 m)</td><td>2.73</td><td>−1.58</td><td>2.79</td><td>−1.58</td><td class="bad">3.134</td><td class="ok">−1.573</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p style="font-size:13px;color:var(--ash);margin-top:10px">Radians, in the paper's convention (its rotation matrix is the transpose of the one used here, so the sign of θ<sub>ba</sub> is flipped in the code). Reported 1σ: 0.05° on the axis, 0.02° on the yaw.</p>
+      <p class="bn-lead">The Xi’an Jiaotong “Endeavour” shuttle bus carries five ARS430 radars (front, and two on each side) sampled at 13 Hz, plus an RTK-corrected odometry. Six loops of 4–12 minutes. The archived raw bags were converted to point clouds twice, and the two conversions do not agree: in the July-2022 set the azimuth is <b>mirrored</b> and offset by 3.3°, and the ego-velocities computed from it over-read the odometry speed by 7 % on the side radars but only 2.6 % on the front one. With such a between-radar bias the batch problem prefers a degenerate answer. The September-2022 set has consistent azimuths, speed ratios of 0.995–0.999 on every radar, and is what everything here uses. It lacks radar Near 4, so three of the paper’s four pairs could be re-run.</p>
+      <p>Pipeline: returns beyond 1 m with |ṙ| &lt; 10 m/s → RANSAC at 0.1 m/s (the paper’s 0.025 m/s only passes 5–30 % of these scans; the ARS430 spread is 0.05-class) → interpolate radar b onto radar a’s clock → drop pairs slower than 0.05 m/s → batch calibration with per-scan covariances, about 6,470 pairs each.</p>
     </div>
     <div>
-      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/endeavour_params.png" alt="Bar chart of the calibration parameters: dataset, paper, re-run" loading="lazy"><figcaption><b>Paper Table I.</b> For the two long-baseline pairs the re-run reproduces the 2023 estimates to 0.015 rad and the dataset's extrinsics to 2.5°. Near 5–Near 3 has a 0.83 m baseline, so its lever-arm signal is at most 0.25 m/s, comparable to the noise: the axis comes out 23° off and the reported 1σ is over-confident there.</figcaption></figure>
-      <figure class="fig"><img src="assets/images/projects/radar_radar/endeavour_eval.png" alt="Held-out velocity errors per run for dataset, paper and re-run parameters" loading="lazy"><figcaption><b>Paper Table III.</b> Mean velocity-error magnitude on the five other runs with each parameter set (yaw rate chosen per time step, unit moment arm). The re-run wins on every run for the two long-baseline pairs (9–18 mm/s against 17–28 mm/s with the dataset values); for the weak pair the dataset's axis is better on four of five runs, which is the honest way to read the 23°.</figcaption></figure>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/endeavour_speeds.png" alt="Ego-velocity magnitudes of the four radars against the odometry speed" loading="lazy"><figcaption><b>Front end on real data.</b> RANSAC ego-velocity magnitudes of the four radars against the odometry speed over a two-minute window of East 2; 99.8 % of the scans yield an estimate.</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/radar_radar/endeavour_scan.png" alt="One real radar scan: returns and the fitted ego-velocity" loading="lazy"><figcaption><b>One real scan</b> of the front radar: inliers, rejected returns and the fitted range-rate curve.</figcaption></figure>
     </div>
   </div>
+  <div class="table-wrap full">
+    <table class="data-table compact">
+      <thead><tr><th>pair (a = Near 5)</th><th>pairs M</th><th>dataset θ<sub>t</sub></th><th>dataset θ<sub>ba</sub></th><th>paper θ<sub>t</sub></th><th>paper θ<sub>ba</sub></th><th>re-run θ<sub>t</sub></th><th>re-run θ<sub>ba</sub></th><th>1σ θ<sub>t</sub> / θ<sub>ba</sub> [°]</th><th>Δ to dataset [°]</th></tr></thead>
+      <tbody>
+        <tr><td>Near 1 (rear, 5.7 m)</td><td>6477</td><td>1.71</td><td>−1.57</td><td>1.74</td><td>−1.58</td><td class="ok">1.754</td><td class="ok">−1.583</td><td>0.05 / 0.02</td><td>+2.5 / +0.8</td></tr>
+        <tr><td>Near 2 (rear, 5.8 m)</td><td>6472</td><td>1.44</td><td>1.59</td><td>1.41</td><td>1.61</td><td class="ok">1.409</td><td class="ok">1.615</td><td>0.05 / 0.02</td><td>−1.9 / −1.6</td></tr>
+        <tr><td>Near 3 (front side, 0.8 m)</td><td>6478</td><td>2.73</td><td>−1.58</td><td>2.79</td><td>−1.58</td><td class="bad">3.134</td><td class="ok">−1.573</td><td>0.06 / 0.003</td><td class="bad">+23.2 / −0.1</td></tr>
+      </tbody>
+    </table>
+    <div class="scroll-hint">← scroll the table sideways →</div>
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:10px">Radians, in the paper’s convention (its rotation matrix is the transpose of the one used here, so the sign of θ<sub>ba</sub> is flipped in the code). East 2 is the calibration run.</p>
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/endeavour_params.png" alt="Bar chart of the calibration parameters: dataset, paper, re-run" loading="lazy"><figcaption><b>Paper Table I.</b> For the two long-baseline pairs the re-run reproduces the 2023 estimates to 0.015 rad and the dataset’s extrinsics to 2.5°. Near 5–Near 3 has a 0.83 m baseline, so its lever-arm signal is at most 0.25 m/s, comparable to the noise: the axis comes out 23° off and the reported 1σ is over-confident there.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/radar_radar/endeavour_eval.png" alt="Held-out velocity errors per run for dataset, paper and re-run parameters" loading="lazy"><figcaption><b>Paper Table III.</b> Mean velocity-error magnitude on the five other runs with each parameter set (yaw rate chosen per time step, unit moment arm). The re-run wins on every run for the two long-baseline pairs (9–18 mm/s against 17–28 mm/s with the dataset values); for the weak pair the dataset’s axis is better on four of five runs, which is the honest way to read the 23°.</figcaption></figure>
+  </div>
+  <div class="table-wrap full">
+    <table class="data-table compact">
+      <thead><tr><th rowspan="2">run</th><th colspan="3">Near 5–Near 1 [m/s]</th><th colspan="3">Near 5–Near 2 [m/s]</th><th colspan="3">Near 5–Near 3 [m/s]</th></tr><tr><th>dataset</th><th>paper</th><th>re-run</th><th>dataset</th><th>paper</th><th>re-run</th><th>dataset</th><th>paper</th><th>re-run</th></tr></thead>
+      <tbody>
+        <tr><td>east1</td><td>0.0174</td><td>0.0095</td><td class="ok">0.0089</td><td>0.0207</td><td>0.0105</td><td class="ok">0.0099</td><td class="ok">0.0109</td><td>0.0233</td><td>0.0145</td></tr>
+        <tr><td>mid1</td><td>0.0284</td><td>0.0195</td><td class="ok">0.0179</td><td>0.0258</td><td>0.0136</td><td class="ok">0.0121</td><td class="ok">0.0182</td><td>0.0215</td><td>0.0189</td></tr>
+        <tr><td>mid2</td><td>0.0272</td><td>0.0188</td><td class="ok">0.0170</td><td>0.0264</td><td>0.0146</td><td class="ok">0.0133</td><td class="ok">0.0178</td><td>0.0191</td><td>0.0200</td></tr>
+        <tr><td>west1</td><td>—</td><td>—</td><td>—</td><td>0.0236</td><td>0.0112</td><td class="ok">0.0106</td><td class="ok">0.0127</td><td>0.0240</td><td>0.0154</td></tr>
+        <tr><td>west2</td><td>—</td><td>—</td><td>—</td><td>0.0248</td><td>0.0127</td><td class="ok">0.0122</td><td class="ok">0.0126</td><td>0.0242</td><td>0.0157</td></tr>
+      </tbody>
+    </table>
+    <div class="scroll-hint">← scroll the table sideways →</div>
+  </div>
 </section>
-
-<!-- =================== FINDINGS =================== -->
 <section class="section" id="findings">
   <h2 class="section-title">What the re-run found</h2>
   <p class="quote">Three things that are not in the paper and that anyone re-using the method or the dataset should know.</p>
@@ -323,7 +472,6 @@
   </div>
 </section>
 
-<!-- =================== FULL DEMO =================== -->
 <section class="section" id="fulldemo">
   <h2 class="section-title">Full demo</h2>
   <div class="hero-video">
@@ -336,7 +484,6 @@
   </div>
 </section>
 
-<!-- =================== REPRODUCE =================== -->
 <section class="section" id="reproduce">
   <h2 class="section-title">Reproduce</h2>
   <div class="grid-2">
@@ -377,5 +524,7 @@ python make_video.py                             <span class="c"># thumbnail + f
 </footer>
 
 <script src="assets/js/site.js"></script>
+<script src="assets/js/calib_demo_common.js"></script>
+<script src="assets/js/demo_radar2d.js"></script>
 </body>
 </html>

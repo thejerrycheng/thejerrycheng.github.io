@@ -36,7 +36,7 @@
   window.enableSwipe = enableSwipe;
 
   /* ---- hover a card: its clip loads on first hover and plays while the pointer stays ---- */
-  document.querySelectorAll(".slide").forEach(function (card) {
+  document.querySelectorAll(".slide, .pub").forEach(function (card) {
     var v = card.querySelector(".hover-video video");
     if (!v) return;
     var wrap = v.parentNode;
