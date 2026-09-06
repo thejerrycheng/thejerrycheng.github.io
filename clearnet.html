@@ -186,6 +186,101 @@
 </section>
 
 <!-- =================== METHOD =================== -->
+<!-- =================== DERIVATIONS =================== -->
+<section class="section" id="theory">
+  <h2 class="section-title">Four algorithms, from the same equation</h2>
+  <p class="lead">Every method on this page is an answer to the same question, and they differ only in what they are willing to approximate. Setting the problem up properly makes the family tree obvious, so here is the whole derivation — from the Bellman equation to the entropy-regularised actor that ends up working best.</p>
+
+  <div class="card card-pad" style="margin-top:22px">
+    <h3 style="font-size:19px;margin-bottom:10px">0. The problem</h3>
+    <div class="prose">
+      <p>Cart-pole is a Markov decision process (𝒮, 𝒜, P, r, γ). The state is s = [x, ẋ, θ, θ̇], the action a ∈ {left, right} is a ±10 N impulse, and the reward is +1 for every step the pole stays up. The agent wants a policy π(a|s) maximising the expected discounted return:</p>
+      <div class="eq">G<sub>t</sub> = Σ<sub>k=0</sub><sup>∞</sup> γ<sup>k</sup> r<sub>t+k+1</sub> &nbsp;&nbsp;&nbsp; J(π) = 𝔼<sub>τ∼π</sub>[ G<sub>0</sub> ]</div>
+      <p>Two value functions follow, and the Bellman equations that define them:</p>
+      <div class="eq">V<sup>π</sup>(s) = 𝔼<sub>π</sub>[ G<sub>t</sub> | s<sub>t</sub>=s ] &nbsp;&nbsp; Q<sup>π</sup>(s,a) = 𝔼<sub>π</sub>[ G<sub>t</sub> | s<sub>t</sub>=s, a<sub>t</sub>=a ]</div>
+      <div class="eq">Q<sup>π</sup>(s,a) = 𝔼<sub>s′</sub>[ r + γ 𝔼<sub>a′∼π</sub> Q<sup>π</sup>(s′,a′) ] &nbsp;&nbsp;&nbsp; Q<sup>*</sup>(s,a) = 𝔼<sub>s′</sub>[ r + γ max<sub>a′</sub> Q<sup>*</sup>(s′,a′) ]</div>
+      <p>The second is the <em>optimality</em> equation, and it is a contraction: the Bellman operator 𝒯 satisfies ‖𝒯Q₁ − 𝒯Q₂‖<sub>∞</sub> ≤ γ‖Q₁ − Q₂‖<sub>∞</sub>, so iterating it converges to the unique fixed point Q*. Everything below is a way of applying that operator without knowing P.</p>
+      <p>The wrinkle here is that the agent never sees s. It sees</p>
+      <div class="eq">o<sub>t</sub> = s<sub>t</sub> + <span class="m">N</span>(0, σ) ⊙ [2 m, 0.5 m/s, 2°, 0.5°/s]</div>
+      <p>which makes the process formally a POMDP. Every method below treats o as if it were s — a deliberate approximation, and the one the noise sweep is measuring the cost of.</p>
+    </div>
+  </div>
+
+  <div class="card card-pad" style="margin-top:20px">
+    <h3 style="font-size:19px;margin-bottom:10px">1. Tabular Q-learning</h3>
+    <div class="prose">
+      <p>Replace the expectation in the optimality equation with a single sample and take a step towards it. That is the whole algorithm:</p>
+      <div class="eq">Q(s<sub>t</sub>,a<sub>t</sub>) ← Q(s<sub>t</sub>,a<sub>t</sub>) + α [ r<sub>t+1</sub> + γ max<sub>a′</sub> Q(s<sub>t+1</sub>,a′) − Q(s<sub>t</sub>,a<sub>t</sub>) ]</div>
+      <p>The bracket is the temporal-difference error δ<sub>t</sub>. Q-learning is <em>off-policy</em>: the max makes the target independent of the behaviour policy, so it can learn the greedy policy while exploring with an ε-greedy one,</p>
+      <div class="eq">π<sub>ε</sub>(a|s) = (1−ε)·1[a = argmax<sub>a′</sub>Q(s,a′)] + ε/|𝒜| &nbsp;&nbsp;&nbsp; ε<sub>n+1</sub> = max(ε<sub>min</sub>, λ ε<sub>n</sub>)</div>
+      <p>and it converges to Q* with probability 1 provided every pair is visited infinitely often and the step sizes satisfy the Robbins–Monro conditions Σα<sub>t</sub> = ∞, Σα<sub>t</sub>² &lt; ∞.</p>
+      <p>Neither condition survives contact with a continuous state. The table needs a finite index, so each dimension is binned:</p>
+      <div class="eq">b<sub>i</sub>(o) = clip( round( (n<sub>i</sub>−1) · (o<sub>i</sub> − ℓ<sub>i</sub>)/(u<sub>i</sub> − ℓ<sub>i</sub>) ), 0, n<sub>i</sub>−1 )</div>
+      <p>with n = (8, 12, 8, 12), giving Π n<sub>i</sub> × |𝒜| = 18,432 entries. Two things break here, and both are measured above. The bins alias states that are genuinely different, which turns the MDP into a POMDP a second time over; and "visited infinitely often" becomes a budget question — at 3,000 episodes a 16×20×16×20 table sees most of its entries once or never, which is why the <a href="#findings">coarse grid wins</a>. The choice of ℓ<sub>i</sub>, u<sub>i</sub> is not innocent either, as finding 1 shows.</p>
+    </div>
+  </div>
+
+  <div class="card card-pad" style="margin-top:20px">
+    <h3 style="font-size:19px;margin-bottom:10px">2. Deep Q-learning</h3>
+    <div class="prose">
+      <p>Drop the table for a function approximator Q<sub>φ</sub>(s,a) and fit it by regression onto the Bellman target:</p>
+      <div class="eq">ℒ(φ) = 𝔼<sub>(s,a,r,s′)∼𝒟</sub> [ ( r + γ max<sub>a′</sub> Q<sub>φ⁻</sub>(s′,a′) − Q<sub>φ</sub>(s,a) )² ]</div>
+      <p>Two details in that line are the entire reason DQN works at all.</p>
+      <p><b>The replay buffer 𝒟.</b> Consecutive transitions in an episode are strongly correlated, and stochastic gradient descent assumes they are not. Sampling uniformly from a buffer of the last 10⁴ transitions decorrelates them and reuses each one many times, which matters when samples cost simulator time.</p>
+      <p><b>The target network φ⁻.</b> Without it the regression target moves every time the parameters do, and the fixed point of the Bellman operator becomes a moving target chasing itself. Freezing a copy every C steps — or Polyak-averaging it — restores something closer to supervised regression. The price is bias: the target lags.</p>
+      <p>The max is also biased. Because 𝔼[max X] ≥ max 𝔼[X], taking a maximum over noisy estimates systematically <em>overestimates</em>. <b>Double DQN</b> splits the argmax from the evaluation and largely removes it:</p>
+      <div class="eq">y = r + γ Q<sub>φ⁻</sub>( s′, argmax<sub>a′</sub> Q<sub>φ</sub>(s′,a′) )</div>
+      <p>What none of this fixes is <em>catastrophic forgetting</em>. The buffer is a sliding window, so as the policy improves the distribution in it shifts; the network fits the new region and quietly loses the old one, and the return curve falls off a cliff for no visible reason. It is the dominant failure mode of DQN on this problem, and it is why the next two methods constrain how far the policy may move in one update.</p>
+      <p>Hyperparameters used: γ = 0.9, α = 10⁻⁴ (Adam), batch 64, buffer 10⁴, ε: 0.99 → 0.01 with decay 0.9995.</p>
+    </div>
+  </div>
+
+  <div class="card card-pad" style="margin-top:20px">
+    <h3 style="font-size:19px;margin-bottom:10px">3. Policy gradients, and why PPO clips</h3>
+    <div class="prose">
+      <p>Instead of learning values and reading a policy off them, parameterise the policy directly and differentiate the objective. The policy gradient theorem gives the gradient without differentiating the environment:</p>
+      <div class="eq">∇<sub>θ</sub>J(θ) = 𝔼<sub>τ∼π<sub>θ</sub></sub>[ Σ<sub>t</sub> ∇<sub>θ</sub> log π<sub>θ</sub>(a<sub>t</sub>|s<sub>t</sub>) · A<sup>π</sup>(s<sub>t</sub>,a<sub>t</sub>) ]</div>
+      <p>with the advantage A<sup>π</sup>(s,a) = Q<sup>π</sup>(s,a) − V<sup>π</sup>(s). Subtracting V is what makes it usable: it is a baseline that leaves the gradient unbiased (because 𝔼<sub>a∼π</sub>[∇log π] = 0) while cutting the variance enormously. In practice A is estimated by generalised advantage estimation,</p>
+      <div class="eq">δ<sub>t</sub> = r<sub>t</sub> + γV(s<sub>t+1</sub>) − V(s<sub>t</sub>) &nbsp;&nbsp;&nbsp; Â<sub>t</sub><sup>GAE(λ)</sup> = Σ<sub>l≥0</sub> (γλ)<sup>l</sup> δ<sub>t+l</sub></div>
+      <p>which interpolates between the low-variance, high-bias TD estimate (λ = 0) and the unbiased, high-variance Monte Carlo one (λ = 1).</p>
+      <p>The trouble with plain REINFORCE is that it is on-policy: every sample must come from the current π<sub>θ</sub>, so each batch is used once and a step that is slightly too large destroys the policy that generated it. Importance sampling lets a batch be reused,</p>
+      <div class="eq">r<sub>t</sub>(θ) = π<sub>θ</sub>(a<sub>t</sub>|s<sub>t</sub>) / π<sub>θ<sub>old</sub></sub>(a<sub>t</sub>|s<sub>t</sub>) &nbsp;&nbsp;&nbsp; ℒ<sup>IS</sup> = 𝔼[ r<sub>t</sub>(θ) Â<sub>t</sub> ]</div>
+      <p>but only while the ratio stays near 1; far from it the estimator's variance explodes. TRPO enforces that with a hard KL trust region, max ℒ<sup>IS</sup> s.t. 𝔼[D<sub>KL</sub>(π<sub>θ<sub>old</sub></sub>‖π<sub>θ</sub>)] ≤ δ, which needs a constrained second-order solve. <b>PPO</b> gets the same effect with a first-order trick — clip the ratio and take the pessimistic branch:</p>
+      <div class="eq">ℒ<sup>CLIP</sup>(θ) = 𝔼<sub>t</sub>[ min( r<sub>t</sub>(θ) Â<sub>t</sub>, &nbsp; clip(r<sub>t</sub>(θ), 1−ϵ, 1+ϵ) Â<sub>t</sub> ) ]</div>
+      <p>Read the two cases. If Â &gt; 0 the objective stops improving once r exceeds 1+ϵ, so there is no gradient pulling the policy further towards an action it already prefers. If Â &lt; 0 it stops once r falls below 1−ϵ. Either way the update cannot move the policy far in one step, which is exactly the property DQN lacks — and it is why PPO's curve on this problem is the smooth one. Used here with ϵ = 0.2, γ = 0.99, 10 epochs per batch of 64.</p>
+    </div>
+  </div>
+
+  <div class="card card-pad" style="margin-top:20px">
+    <h3 style="font-size:19px;margin-bottom:10px">4. Soft actor-critic</h3>
+    <div class="prose">
+      <p>SAC changes the objective rather than the optimiser. Add the policy's entropy to the reward, so the agent is paid to stay uncertain:</p>
+      <div class="eq">J(π) = Σ<sub>t</sub> 𝔼[ r(s<sub>t</sub>,a<sub>t</sub>) + α ℋ(π(·|s<sub>t</sub>)) ] &nbsp;&nbsp;&nbsp; ℋ(π(·|s)) = −𝔼<sub>a∼π</sub>[ log π(a|s) ]</div>
+      <p>The Bellman equations pick up the entropy term and become <em>soft</em>:</p>
+      <div class="eq">Q<sup>soft</sup>(s,a) = r + γ 𝔼<sub>s′</sub>[ V<sup>soft</sup>(s′) ] &nbsp;&nbsp;&nbsp; V<sup>soft</sup>(s) = 𝔼<sub>a∼π</sub>[ Q<sup>soft</sup>(s,a) − α log π(a|s) ]</div>
+      <p>and the optimal policy is no longer a delta function but a Boltzmann distribution over Q, π*(a|s) ∝ exp(Q<sup>soft</sup>(s,a)/α). That is worth dwelling on: exploration is no longer bolted on as an ε that has to be scheduled down by hand, it falls out of the objective. It is the reason SAC converges fastest here — there is one fewer schedule to get wrong.</p>
+      <p>The critics are fitted to the soft target, with <b>twin</b> networks and a minimum to counter the same overestimation bias Double DQN addresses:</p>
+      <div class="eq">y = r + γ [ min<sub>i=1,2</sub> Q<sub>φ̄<sub>i</sub></sub>(s′,a′) − α log π<sub>θ</sub>(a′|s′) ], &nbsp; a′ ∼ π<sub>θ</sub>(·|s′)</div>
+      <div class="eq">ℒ<sub>Q</sub>(φ<sub>i</sub>) = 𝔼<sub>𝒟</sub>[ (Q<sub>φ<sub>i</sub></sub>(s,a) − y)² ] &nbsp;&nbsp;&nbsp; φ̄<sub>i</sub> ← τφ<sub>i</sub> + (1−τ)φ̄<sub>i</sub></div>
+      <p>The actor minimises the KL divergence to that Boltzmann policy, which reduces to</p>
+      <div class="eq">ℒ<sub>π</sub>(θ) = 𝔼<sub>s∼𝒟, a∼π<sub>θ</sub></sub>[ α log π<sub>θ</sub>(a|s) − min<sub>i</sub> Q<sub>φ<sub>i</sub></sub>(s,a) ]</div>
+      <p>and is differentiated through the <em>reparameterisation</em> a = f<sub>θ</sub>(s, ξ) = tanh(μ<sub>θ</sub>(s) + σ<sub>θ</sub>(s) ⊙ ξ), ξ ∼ 𝒩(0, I), which gives a pathwise gradient with far lower variance than the score-function estimator a policy gradient would use. The tanh squashing needs its Jacobian in the log-likelihood: log π(a|s) = log 𝒩(u|μ,σ) − Σ<sub>i</sub> log(1 − tanh²(u<sub>i</sub>)). And α itself can be learned, by treating the entropy as a constraint with target ℋ̄:</p>
+      <div class="eq">ℒ(α) = 𝔼<sub>a∼π</sub>[ −α ( log π(a|s) + ℋ̄ ) ]</div>
+      <p>One catch: all of that assumes a continuous action space, and cart-pole's is binary. The project bridges it with an action-space wrapper — SAC produces a scalar in [−1, 1] which is thresholded into left/right. That works, but it is worth being honest that it is a workaround; the principled version is discrete SAC, which takes the expectation over actions analytically instead of sampling. Used here with γ = 0.99, τ = 0.005, α = 0.2, lr = 3×10⁻⁴, batch 64, buffer 10⁵.</p>
+    </div>
+  </div>
+
+  <div class="card card-pad" style="margin-top:20px">
+    <h3 style="font-size:19px;margin-bottom:10px">5. Reward shaping, and when it is safe</h3>
+    <div class="prose">
+      <p>The environment's reward is +1 per step, which says nothing about <em>where</em> the cart should be. The project replaces it with a shaped version that asks for the middle of the track and an upright pole, and penalises ending early:</p>
+      <div class="eq">r̃(s) = 1 − ½·|x|/x<sub>max</sub> − ½·|θ|/θ<sub>max</sub> &nbsp;&nbsp;&nbsp; (and a large negative terminal if the episode ends before 500 steps)</div>
+      <p>Shaping is not free. Ng, Harada and Russell showed that the only class of shaping guaranteed to leave the optimal policy unchanged is <em>potential-based</em>, F(s,a,s′) = γΦ(s′) − Φ(s), for any Φ. The shaping above is not of that form — it is a state-dependent bonus, so it changes the optimal policy, which here is the intent: a controller that balances the pole while wandering to the end of the track is not the controller anyone wanted.</p>
+      <p>The finding worth carrying away is that shaping was not the whole story. The poster attributes the residual drift to the reward not asking for a centred cart. <a href="#findings">Finding 1</a> shows a good part of it was that the agent could not <em>see</em> where the cart was, because the discretisation had collapsed cart position into two bins. Shaping the reward is the natural first thing to reach for, and it was treating a symptom.</p>
+    </div>
+  </div>
+</section>
+
 <section class="section" id="method">
   <h2 class="section-title">The setup</h2>
   <div class="grid-2">

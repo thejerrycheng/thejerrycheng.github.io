@@ -36,6 +36,10 @@
     .t3-bad { border-color: var(--hi); box-shadow: inset 3px 0 0 var(--hi); }
     .t3-rate { font-family: var(--font-comic); font-size: 19px; letter-spacing: .03em; margin-bottom: 8px; }
     .t3-rate b { color: var(--hi); font-size: 26px; }
+    .t3-plots { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    .t3-plots canvas { width: 100%; height: 190px; display: block; border: 1.5px solid var(--ink);
+                       border-radius: 6px; background: var(--panel); }
+    @media (max-width: 760px) { .t3-plots { grid-template-columns: 1fr; } }
     #tt-mc-canvas { width: 100%; height: 300px; display: block; border: 1.5px solid var(--ink);
                     border-radius: 6px; background: var(--panel); }
     .tt-hud { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.75; background: var(--paper);
@@ -186,8 +190,22 @@
           <button class="btn btn-primary" id="t3-go" type="button">Launch</button>
           <button class="btn" id="t3-reset" type="button">Reset</button>
         </div>
-        <p class="plot-note">Drag the scene to orbit, scroll to zoom. <b>Vehicle randomisation</b> resamples dry mass ±15 %, propellant load ±30 %, specific impulse ±10 %, engine authority ±15 %, a permanent gimbal misalignment up to 2°, and a constant lateral drift — the same envelope the policy trained against. Push it past 1 and you are asking for a vehicle it never saw.</p>
+        <p class="plot-note">Drag the scene to orbit, scroll to zoom. The plots below stream live as it flies. <b>Vehicle randomisation</b> resamples dry mass ±15 %, propellant load ±30 %, specific impulse ±10 %, engine authority ±15 %, a permanent gimbal misalignment up to 2°, and a constant lateral drift — the same envelope the policy trained against. Push it past 1 and you are asking for a vehicle it never saw.</p>
       </div>
+    </div>
+  </div>
+
+  <div class="card scene-block" style="margin-top:22px">
+    <span class="caption-box">Telemetry</span>
+    <div class="scene-head">
+      <h3>What the vehicle is doing, as it does it</h3>
+      <p>Altitude against downrange, speed against descent rate, tilt against gimbal deflection, throttle against propellant. Watch the tilt trace during a big lateral correction: the vehicle leans over, translates, and has to stand back up before it can touch down, and the gimbal trace shows how much authority that costs.</p>
+    </div>
+    <div class="t3-plots">
+      <canvas id="t3-plot-alt" aria-label="Altitude and downrange"></canvas>
+      <canvas id="t3-plot-vel" aria-label="Speed and descent rate"></canvas>
+      <canvas id="t3-plot-att" aria-label="Tilt and gimbal"></canvas>
+      <canvas id="t3-plot-thr" aria-label="Throttle and propellant"></canvas>
     </div>
   </div>
 

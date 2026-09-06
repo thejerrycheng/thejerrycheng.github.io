@@ -9,11 +9,30 @@
   if (!T || !cv) return;
 
   const SKIP = 5;                       // 100 Hz physics, 20 Hz control
+  let MESH = null;                      // the real Tintin rocket, loaded async
+  fetch('assets/data/tintin_rocket_mesh.json')
+    .then((r) => r.json())
+    .then((m) => {
+      // face centroids and normals, precomputed once
+      m.n = []; m.c = [];
+      m.f.forEach((f) => {
+        const a = m.v[f[0]], b = m.v[f[1]], c = m.v[f[2]];
+        const u = [b[0]-a[0], b[1]-a[1], b[2]-a[2]];
+        const w = [c[0]-a[0], c[1]-a[1], c[2]-a[2]];
+        const n = [u[1]*w[2]-u[2]*w[1], u[2]*w[0]-u[0]*w[2], u[0]*w[1]-u[1]*w[0]];
+        const L = Math.hypot(n[0], n[1], n[2]) || 1;
+        m.n.push([n[0]/L, n[1]/L, n[2]/L]);
+        m.c.push([(a[0]+b[0]+c[0])/3, (a[1]+b[1]+c[1])/3, (a[2]+b[2]+c[2])/3]);
+      });
+      MESH = m;
+      if (!S.running) draw();
+    })
+    .catch(() => {});
   const S = {
     r: null, mode: 'pd', policy: null, policies: {}, running: false,
     yaw: 0.7, pitch: 0.30, dist: 1.15, drag: null, keys: {},
     throttle: 0.35, gy: 0, gp: 0, last: 0, acc: 0, raf: 0, bundle: null,
-    held: null, holdN: 0
+    held: null, holdN: 0, hist: []
   };
 
   // ------------------------------------------------------------------ camera
@@ -107,13 +126,54 @@
     g.stroke();
   }
 
+  /* The real Tintin rocket: the MJCF's own mesh, decimated to ~3.8k faces and
+     drawn with a painter's algorithm. Faces are shaded by their normal against
+     a fixed light and painted with the rocket's red-and-white checker, so the
+     roll of the vehicle is legible even at this size. */
   function drawRocket(g, P, r, dpr) {
     const R = T.qmat(r.q);
     const body = (v) => [r.p[0] + R[0]*v[0]+R[1]*v[1]+R[2]*v[2],
                          r.p[1] + R[3]*v[0]+R[4]*v[1]+R[5]*v[2],
                          r.p[2] + R[6]*v[0]+R[7]*v[1]+R[8]*v[2]];
+    drawPlume(g, P, r, dpr, body);
+    if (!MESH) { drawRocketFallback(g, P, r, dpr, body); return; }
+
+    const LIGHT = [0.45, 0.35, 0.82];
+    const order = [];
+    for (let i = 0; i < MESH.f.length; i++) {
+      const q = P(body(MESH.c[i]));
+      order.push([q[2], i]);
+    }
+    order.sort((a, b) => b[0] - a[0]);          // far faces first
+
+    g.lineJoin = 'round';
+    for (let k = 0; k < order.length; k++) {
+      const i = order[k][1], f = MESH.f[i];
+      const a = P(body(MESH.v[f[0]])), b = P(body(MESH.v[f[1]])), c = P(body(MESH.v[f[2]]));
+      // backface cull in screen space
+      if ((b[0]-a[0]) * (c[1]-a[1]) - (b[1]-a[1]) * (c[0]-a[0]) <= 0) continue;
+
+      const n = MESH.n[i];
+      const nw = [R[0]*n[0]+R[1]*n[1]+R[2]*n[2],
+                  R[3]*n[0]+R[4]*n[1]+R[5]*n[2],
+                  R[6]*n[0]+R[7]*n[1]+R[8]*n[2]];
+      const lam = Math.max(0.18, nw[0]*LIGHT[0] + nw[1]*LIGHT[1] + nw[2]*LIGHT[2]);
+
+      // the rocket's checkerboard, in body coordinates
+      const p = MESH.c[i];
+      const zc = p[2], th = Math.atan2(p[1], p[0]);
+      const checker = (Math.floor(zc / 11) + Math.floor((th + Math.PI) / (Math.PI / 3))) & 1;
+      const white = checker && zc > 8 && zc < 78;
+      const base = white ? [244, 234, 210] : [188, 40, 34];
+      const sh = 0.32 + 0.68 * lam;
+      g.fillStyle = `rgb(${base[0]*sh|0},${base[1]*sh|0},${base[2]*sh|0})`;
+      g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); g.lineTo(c[0], c[1]);
+      g.closePath(); g.fill();
+    }
+  }
+
+  function drawRocketFallback(g, P, r, dpr, body) {
     const H = 100, W = 7;
-    // body as a quad strip between the nose and the base ring
     const nose = P(body([0, 0, H]));
     const base = [];
     for (let i = 0; i < 8; i++) {
@@ -127,46 +187,22 @@
     for (let i = 0; i < 8; i += 2) {
       g.beginPath(); g.moveTo(base[i][0], base[i][1]); g.lineTo(nose[0], nose[1]); g.stroke();
     }
-    // checker stripes up the body
-    for (let k = 1; k <= 4; k++) {
-      const z = H * k / 5, rr = W * (1 - k / 5.6);
-      g.strokeStyle = k % 2 ? '#F4EAD2' : '#C7302A';
-      g.beginPath();
-      for (let i = 0; i <= 8; i++) {
-        const a = i / 8 * Math.PI * 2, q = P(body([rr * Math.cos(a), rr * Math.sin(a), z]));
-        i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]);
-      }
-      g.stroke();
-    }
-    // fins
-    g.fillStyle = '#D9A13F';
-    for (let i = 0; i < 3; i++) {
-      const a = i / 3 * Math.PI * 2;
-      const p1 = P(body([W * Math.cos(a), W * Math.sin(a), 0]));
-      const p2 = P(body([W * 2.1 * Math.cos(a), W * 2.1 * Math.sin(a), -8]));
-      const p3 = P(body([W * Math.cos(a), W * Math.sin(a), 18]));
-      g.beginPath(); g.moveTo(p1[0], p1[1]); g.lineTo(p2[0], p2[1]); g.lineTo(p3[0], p3[1]);
-      g.closePath(); g.fill();
-    }
-    // Plume.  In the MJCF the thrust site sits 30 m below the body origin —
-    // that is the torque arm the dynamics uses — but the body origin is also
-    // the fin base, so drawing the plume there leaves it floating in space
-    // under the vehicle. It is drawn from the fin base instead; the 30 m arm
-    // is in the physics either way.
+  }
+
+  function drawPlume(g, P, r, dpr, body) {
     const thr = r.thrust / r.maxThrust;
-    if (thr > 0.02) {
-      const cg = Math.cos(r.gp);
-      const dir = [Math.sin(r.gp), -Math.sin(r.gy) * cg, Math.cos(r.gy) * cg];
-      const a0 = P(body([0, 0, -2]));
-      const len = 25 + 90 * thr;
-      const a1 = P(body([-dir[0] * len, -dir[1] * len, -2 - dir[2] * len]));
-      const grad = g.createLinearGradient(a0[0], a0[1], a1[0], a1[1]);
-      grad.addColorStop(0, 'rgba(255,206,10,0.95)');
-      grad.addColorStop(0.55, 'rgba(228,68,42,0.55)');
-      grad.addColorStop(1, 'rgba(228,68,42,0)');
-      g.strokeStyle = grad; g.lineWidth = (5 + 12 * thr) * dpr; g.lineCap = 'round';
-      line(g, a0, a1);
-    }
+    if (thr <= 0.02) return;
+    const cg = Math.cos(r.gp);
+    const dir = [Math.sin(r.gp), -Math.sin(r.gy) * cg, Math.cos(r.gy) * cg];
+    const a0 = P(body([0, 0, -2]));
+    const len = 25 + 90 * thr;
+    const a1 = P(body([-dir[0] * len, -dir[1] * len, -2 - dir[2] * len]));
+    const grad = g.createLinearGradient(a0[0], a0[1], a1[0], a1[1]);
+    grad.addColorStop(0, 'rgba(255,206,10,0.95)');
+    grad.addColorStop(0.55, 'rgba(228,68,42,0.55)');
+    grad.addColorStop(1, 'rgba(228,68,42,0)');
+    g.strokeStyle = grad; g.lineWidth = (5 + 12 * thr) * dpr; g.lineCap = 'round';
+    line(g, a0, a1);
   }
 
   const OUTCOME = {
@@ -196,12 +232,99 @@
     };
   }
 
+  /* One row per control step: everything the plots need. */
+  function sample() {
+    const r = S.r;
+    S.hist.push({
+      t: r.t,
+      alt: r.alt(),
+      lat: r.lateral(),
+      vz: r.v[2],
+      speed: r.speed(),
+      tilt: r.tiltDeg(),
+      thr: r.thrust / r.maxThrust * 100,
+      gim: Math.hypot(r.gy, r.gp) * 180 / Math.PI,
+      prop: (r.p[2] !== undefined ? (r.fuel / r.startFuel) * 100 : 100)
+    });
+    if (S.hist.length > 1200) S.hist.shift();
+  }
+
+  const PLOTS = [
+    { id: 't3-plot-alt', title: 'altitude and downrange  [m]',
+      series: [['alt', '--hi', 'altitude'], ['lat', '--gold', 'downrange']] },
+    { id: 't3-plot-vel', title: 'speed and descent rate  [m/s]',
+      series: [['speed', '--hi', 'speed'], ['vz', '--ink', 'v_z']] },
+    { id: 't3-plot-att', title: 'tilt and gimbal  [deg]',
+      series: [['tilt', '--hi', 'tilt'], ['gim', '--gold', 'gimbal']] },
+    { id: 't3-plot-thr', title: 'throttle and propellant  [%]',
+      series: [['thr', '--hi', 'throttle'], ['prop', '--ink', 'propellant left']] }
+  ];
+
+  function css(n, f) {
+    return (getComputedStyle(document.documentElement).getPropertyValue(n) || f).trim();
+  }
+
+  function drawPlots() {
+    PLOTS.forEach((spec) => {
+      const c = $(spec.id);
+      if (!c) return;
+      const dpr = sizeCanvas(c);
+      const g = c.getContext('2d'), w = c.width, h = c.height;
+      const ink = css('--ink', '#151820');
+      g.clearRect(0, 0, w, h);
+      g.fillStyle = css('--panel', '#FDF6E2'); g.fillRect(0, 0, w, h);
+      const H = S.hist;
+      const pad = 30 * dpr, padL = 44 * dpr;
+      g.strokeStyle = ink; g.lineWidth = 1.2 * dpr; g.globalAlpha = .55;
+      g.beginPath(); g.moveTo(padL, 8 * dpr); g.lineTo(padL, h - pad);
+      g.lineTo(w - 8 * dpr, h - pad); g.stroke(); g.globalAlpha = 1;
+      g.fillStyle = ink; g.font = `${10.5 * dpr}px "Space Mono", monospace`;
+      g.fillText(spec.title, padL + 4 * dpr, 15 * dpr);
+      if (H.length < 2) return;
+
+      let lo = Infinity, hi = -Infinity;
+      spec.series.forEach(([k]) => H.forEach((r) => {
+        lo = Math.min(lo, r[k]); hi = Math.max(hi, r[k]);
+      }));
+      if (hi - lo < 1e-6) { hi = lo + 1; }
+      const m = (hi - lo) * 0.12; lo -= m; hi += m;
+      const t0 = H[0].t, t1 = Math.max(H[H.length - 1].t, t0 + 1e-3);
+      const X = (t) => padL + (t - t0) / (t1 - t0) * (w - padL - 10 * dpr);
+      const Y = (v) => (h - pad) - (v - lo) / (hi - lo) * (h - pad - 20 * dpr);
+
+      if (lo < 0 && hi > 0) {
+        g.strokeStyle = ink; g.globalAlpha = .25; g.setLineDash([3 * dpr, 3 * dpr]);
+        g.beginPath(); g.moveTo(padL, Y(0)); g.lineTo(w - 8 * dpr, Y(0)); g.stroke();
+        g.setLineDash([]); g.globalAlpha = 1;
+      }
+      spec.series.forEach(([k, col]) => {
+        g.strokeStyle = css(col, '#E4442A'); g.lineWidth = 1.8 * dpr;
+        g.beginPath();
+        H.forEach((r, i) => i ? g.lineTo(X(r.t), Y(r[k])) : g.moveTo(X(r.t), Y(r[k])));
+        g.stroke();
+      });
+      // axis numbers and a legend
+      g.fillStyle = ink; g.font = `${9.5 * dpr}px "Space Mono", monospace`;
+      g.fillText(hi.toFixed(0), 4 * dpr, 22 * dpr);
+      g.fillText(lo.toFixed(0), 4 * dpr, h - pad - 2 * dpr);
+      g.fillText('t ' + t1.toFixed(1) + ' s', w - 62 * dpr, h - 10 * dpr);
+      spec.series.forEach(([k, col, lab], i) => {
+        g.fillStyle = css(col, '#E4442A');
+        g.fillRect(padL + 4 * dpr + i * 108 * dpr, h - 20 * dpr, 12 * dpr, 3 * dpr);
+        g.fillStyle = ink;
+        g.fillText(lab, padL + 20 * dpr + i * 108 * dpr, h - 16 * dpr);
+      });
+    });
+  }
+
   function reset() {
     S.r = new T.Lander();
     S.r.reset(opts());
     S.throttle = 0.35; S.gy = 0; S.gp = 0; S.held = null; S.holdN = 0;
+    S.hist = [];
     const v = $('t3-verdict'); v.hidden = true; v.className = 'demo-result';
-    draw(); status();
+    sample();
+    draw(); drawPlots(); status();
   }
 
   function status() {
@@ -254,9 +377,12 @@
     while (S.acc >= S.r.P.dt && n < 400) {
       if (S.holdN <= 0) { S.held = action(); S.holdN = SKIP; }
       S.r.step(S.held); S.holdN--; S.acc -= S.r.P.dt; n++;
+      if (S.r.steps % 5 === 0) sample();
       if (S.r.done) break;
     }
+    if (S.r.done) sample();
     draw();
+    drawPlots();
     if (S.r.done) { finish(); return; }
     S.raf = requestAnimationFrame(tick);
   }
@@ -361,7 +487,7 @@
   });
   $('t3-reset').addEventListener('click', () => { S.running = false; $('t3-go').textContent = 'Launch'; S.bundle = null; reset(); });
   $('t3-mc').addEventListener('click', runMC);
-  window.addEventListener('resize', () => draw());
+  window.addEventListener('resize', () => { draw(); drawPlots(); });
 
   reset();
 })();
