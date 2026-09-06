@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>An 8×8×8 LED cube game console — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="512 LEDs, nine shift registers, one SPI bus and an illusion held together by refreshing faster than the eye can follow. Play 3-D Snake in the browser, and drag the refresh rate down until persistence of vision gives out.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/ledcube.html">
+  <meta property="og:title" content="An 8×8×8 LED cube you can play">
+  <meta property="og:description" content="Play 3-D Snake on a simulated LED cube, and watch multiplexing fall apart when you slow the refresh rate down.">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/ledcube/poster.jpg">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <link rel="stylesheet" href="assets/css/project-page.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <style>
+    #lb-canvas { width: 100%; height: 480px; display: block; border: var(--line-w) solid var(--ink);
+                 border-radius: var(--radius-sm); background: #0C1018; box-shadow: var(--sh-xs);
+                 cursor: grab; touch-action: none; }
+    #lb-canvas:active { cursor: grabbing; }
+    .lb-note { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.8; background: var(--paper);
+               border: 1.5px solid var(--ink); border-radius: 6px; padding: 10px 12px; }
+    .lb-note b { color: var(--hi-deep); }
+    @media (max-width: 900px) { #lb-canvas { height: 360px; } }
+  </style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button type="button" class="theme-btn" aria-label="Switch between day and night" aria-pressed="false">
+      <span class="if-night"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Day</span></span>
+      <span class="if-day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="lbl">Night</span></span>
+    </button>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+  <a href="cv.html">CV</a>
+</div>
+
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">Embedded systems ◆ 512 LEDs ◆ MIE438 ◆ University of Toronto ◆ 2022</p>
+    <h1>512 lights</h1>
+    <p>Console games have been stuck behind a flat pane of glass since Computer Space. So we soldered 512 LEDs into a cube, drove them with nine shift registers over one SPI bus, and rewrote Snake and Pong for three dimensions. The whole thing is an illusion: only one of the eight layers is ever lit, and it works because the cube refreshes faster than your eye can follow. Below you can play it — and take that refresh rate away.</p>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
+<section class="section" id="demo">
+  <div class="hero-video">
+    <video controls playsinline preload="metadata" poster="assets/images/projects/ledcube/poster.jpg">
+      <source src="assets/videos/ledcube_demo.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p>The real thing: 512 5 mm LEDs on a 3D-printed base under an acrylic enclosure, driven from a breadboard because the PCB did not make it off the bench in time.</p>
+    <div class="links">
+      <a href="assets/pdf/projects/MIE438_Final_Report.pdf" target="_blank" rel="noopener">Report (PDF)</a>
+      <a href="https://github.com/thejerrycheng/MIE438_LED_cubic_console" target="_blank" rel="noopener">Code</a>
+      <a href="https://www.youtube.com/watch?v=cC_NXlKTEwk&list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV" target="_blank" rel="noopener">Video</a>
+      <a href="#sandbox">Play it</a>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="card stat-tile"><div class="num">512</div><div class="lab">LEDs</div><div class="sub">8 × 8 × 8, hand-soldered</div></div>
+    <div class="card stat-tile"><div class="num">9</div><div class="lab">Shift registers</div><div class="sub">Down from 65, by multiplexing</div></div>
+    <div class="card stat-tile"><div class="num">1</div><div class="lab">Layer lit at a time</div><div class="sub">The other seven are dark</div></div>
+    <div class="card stat-tile"><div class="num">1</div><div class="lab">SPI bus</div><div class="sub">Daisy-chained, one byte per register</div></div>
+    <div class="card stat-tile"><div class="num">2</div><div class="lab">Games</div><div class="sub">3-D Snake and Pong, on a PS2 pad</div></div>
+    <div class="card stat-tile"><div class="num">~60<small>Hz</small></div><div class="lab">Where the eye gives up</div><div class="sub">Below it, the illusion breaks</div></div>
+  </div>
+</section>
+
+<!-- =================== SANDBOX =================== -->
+<section class="section" id="sandbox">
+  <h2 class="section-title">Play it, then break it</h2>
+  <p class="lead">The cube below runs the same way the hardware does: a frame buffer of 512 bits, and a multiplexer that lights one layer at a time in sequence. The glow you see is a persistence-of-vision model — an LED reads as lit for about 55 ms after it is driven. Drag the refresh rate down and the illusion comes apart in front of you, which is exactly the constraint the whole electronics design is built around.</p>
+
+  <div class="card scene-block">
+    <span class="caption-box">The cube</span>
+    <div class="demo-grid">
+      <div class="demo-scene">
+        <canvas id="lb-canvas" aria-label="8x8x8 LED cube"></canvas>
+        <div class="keycaps" id="lb-keys" hidden>
+          <kbd>←</kbd><kbd>→</kbd> x &nbsp; <kbd>↑</kbd><kbd>↓</kbd> y &nbsp; <kbd>W</kbd><kbd>S</kbd> z
+          &nbsp;— six directions, which is the whole point of playing Snake in a cube.
+        </div>
+      </div>
+      <div class="demo-controls">
+        <div class="lb-note" id="lb-note">
+          Only <b>one layer</b> is lit at any instant. The yellow ring marks the layer the
+          multiplexer is driving right now; everything else you see is your own eye
+          holding on to a light that has already gone out.
+        </div>
+        <label style="margin-top:12px">Showing
+          <select id="lb-mode">
+            <option value="wave">Wave</option>
+            <option value="rain">Rain</option>
+            <option value="firework">Firework</option>
+            <option value="spin">Spinning bar</option>
+            <option value="snake">3-D Snake — play it</option>
+          </select>
+        </label>
+        <label>Refresh rate <span id="lb-refresh-v">120</span> Hz<input type="range" id="lb-refresh" min="3" max="200" step="1" value="120"></label>
+        <label id="lb-speed-wrap" hidden>Snake speed <span id="lb-speed-v">4</span> steps/s<input type="range" id="lb-speed" min="1" max="10" step="1" value="4"></label>
+        <div class="demo-buttons">
+          <button class="btn" id="lb-reset" type="button">Reset</button>
+        </div>
+        <p class="plot-note">Drag the cube to turn it. Take the refresh rate below about 40 Hz and the layers start to separate; below 10 Hz you can watch the multiplexer walk up the cube one plane at a time, which is all it has ever been doing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== THE ELECTRONICS =================== -->
+<section class="section" id="electronics">
+  <h2 class="section-title">Nine chips instead of sixty-five</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>512 LEDs, and a microcontroller with a few dozen pins. The naive wiring — one output per LED — needs 512 lines, or 64 shift registers plus one to select. The design that ships needs <b>nine</b>, and the difference is entirely multiplexing.</p>
+      <p>The cube is wired as eight horizontal layers. Within a layer, the 64 anodes are addressed by eight daisy-chained shift registers — one byte each, 64 bits in total, clocked out over SPI and released together on a latch. A ninth register drives the eight <em>cathode</em> layers through MOSFETs, grounding exactly one at a time.</p>
+      <p>So at any instant the hardware can light an arbitrary pattern on <em>one</em> layer, and nothing else. The full cube is produced by walking the layer select in a loop:</p>
+      <div class="eq">for ℓ = 0…7: &nbsp; SPI.write(buffer[ℓ]) ; latch ; select_layer(ℓ) ; wait(Δt)</div>
+      <p>and if 8·Δt is short enough, the eye integrates the eight layers into one solid image. That is the whole trick, and it is why the refresh rate is not a nice-to-have — it is the thing holding the display together. Get it wrong and you do not get a dimmer cube, you get a visibly flickering stack of planes.</p>
+      <p>It also bounds the design. The duty cycle per LED is 1/8, so each one is off 87.5 % of the time and has to be driven correspondingly harder to look the same brightness — which is why the build moved from 3 mm to 5 mm LEDs, for the current and voltage headroom, and why the MOSFETs replaced BJTs on the cathode side. And it caps what the display can do: the cube has no room left in the loop for per-LED brightness, so everything is on or off.</p>
+      <p>Two changes late in the build are worth recording because both were about the same constraint. Anodes and cathodes were originally driven separately from the microcontroller; daisy-chaining every register onto one chain removed a pile of wiring and a pile of pins. And the register link moved from bit-banged serial to <b>SPI</b>, purely for the clock rate — the refresh budget is the whole game.</p>
+    </div>
+    <div>
+      <div class="ledger" style="margin-top:0">
+        <div class="card"><h4 class="known">Per layer</h4><ul><li>8 shift registers</li><li>64 anodes, 1 byte each</li><li>Latched together</li></ul></div>
+        <div class="card"><h4 class="unknown">Per cube</h4><ul><li>1 more register</li><li>8 cathodes via MOSFETs</li><li>Exactly one grounded</li></ul></div>
+        <div class="card"><h4 class="truth">Per LED</h4><ul><li>1/8 duty cycle</li><li>On or off, no dimming</li><li>5 mm, no series resistor</li></ul></div>
+      </div>
+      <div class="cmd" style="margin-top:18px"><span class="c">// the inner loop, in one line of intent</span>
+for (uint8_t L = 0; L &lt; 8; L++) {
+  SPI.transfer(&amp;buffer[L * 8], 8);  <span class="c">// 64 anodes</span>
+  SPI.transfer(1 &lt;&lt; L);             <span class="c">// layer select</span>
+  digitalWrite(LATCH, HIGH);
+  digitalWrite(LATCH, LOW);
+  delayMicroseconds(dt);
+}</div>
+      <p class="plot-note" style="margin-top:10px">Shown in intent rather than verbatim — the shipped version runs off a TimerOne interrupt so the games are not blocked by the display.</p>
+      <div class="table-wrap">
+        <table class="data-table compact">
+          <thead><tr><th>Built</th><th>Changed, and why</th></tr></thead>
+          <tbody>
+            <tr><td>3 mm LEDs</td><td>→ 5 mm, for current and voltage headroom</td></tr>
+            <tr><td>BJT cathode switches</td><td>→ MOSFETs, lower drop at 64-LED current</td></tr>
+            <tr><td>Separate anode/cathode drive</td><td>→ one daisy chain, far less wiring</td></tr>
+            <tr><td>Bit-banged serial</td><td>→ SPI, for the refresh budget</td></tr>
+            <tr><td>Custom PCB</td><td>designed, not populated — the prototype stayed on breadboard</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card finding" style="margin-top:26px">
+    <div class="no">!</div>
+    <h3>The microcontroller was the ceiling</h3>
+    <p>The Arduino Mega ran the cube, but the report is clear that it was at its limit: one SPI bus, one I²C bus, and a library stack — Adafruit SSD1306, SPI, Wire, TimerOne, PS2X — competing for the same interrupts as the refresh loop. Any upgrade to RGB LEDs triples the data per frame and there is no second SPI bus to put it on.</p>
+    <p>The named successor is the ESP32: 160–240 MHz against 16, 520 KB of RAM, <b>four</b> SPI buses and two I²C controllers, plus WiFi and Bluetooth for a controller that is not tethered. The interesting part is that the bottleneck was never compute — it was I/O lines and interrupt budget, which is the usual shape of an embedded ceiling and not the one people design against first.</p>
+  </div>
+</section>
+
+<!-- =================== GAMES =================== -->
+<section class="section" id="games">
+  <h2 class="section-title">Snake, with a third axis</h2>
+  <div class="prose" style="max-width:74ch">
+    <p>Snake in two dimensions has four inputs. In a cube it has six, and that changes the game rather than decorating it: the body occludes itself from every viewing angle, so a player has to hold a mental model of a volume rather than read a plane. The build drives it from a PS2 controller, with the two shoulder buttons taking the z-axis.</p>
+    <p>The sandbox above runs the same rules — grow on food, die on a wall or on yourself, and no straight reversal, which is the one input the hardware also refuses. Pong went in as well; a 3-D pong paddle turns out to be much harder to aim than it sounds, for exactly the occlusion reason.</p>
+  </div>
+</section>
+
+<section class="section" id="credits">
+  <h2 class="section-title">Credits</h2>
+  <div class="card card-pad credits">
+    <p><b>MIE438: Microprocessors and Embedded Microcontrollers</b> at the University of Toronto, joint work with <b>Jiaming (Jason) Dong</b>. The cube, the PCB design, the display library and both games are from the course project.</p>
+    <p style="margin-top:8px">The browser cube on this page — the frame buffer, the multiplexer, the persistence-of-vision model and 3-D Snake — was written afterwards, to make the constraint the electronics are built around something you can see rather than read about.</p>
+    <div class="links" style="margin-top:12px">
+      <a href="assets/pdf/projects/MIE438_Final_Report.pdf" target="_blank" rel="noopener">Report</a>
+      <a href="https://github.com/thejerrycheng/MIE438_LED_cubic_console" target="_blank" rel="noopener">Code</a>
+      <a href="https://www.youtube.com/watch?v=cC_NXlKTEwk&list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV" target="_blank" rel="noopener">Video</a>
+      <a href="projects.html">All projects</a>
+    </div>
+  </div>
+</section>
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+<script src="assets/js/ledcube.js"></script>
+<script src="assets/js/ledcube_ui.js"></script>
+</body>
+</html>

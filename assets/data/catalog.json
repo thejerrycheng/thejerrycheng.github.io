@@ -665,7 +665,7 @@
     },
     {
       "id": "led-cube",
-      "title": "8×8×8 LED Cube Embedded System",
+      "title": "8×8×8 LED Cube Game Console",
       "year": 2022,
       "tag": "Embedded",
       "images": [
@@ -678,15 +678,25 @@
       "fit": "cover",
       "links": [
         {
+          "label": "Website",
+          "href": "ledcube.html",
+          "internal": true
+        },
+        {
           "label": "PDF",
           "href": "assets/pdf/projects/MIE438_Final_Report.pdf"
+        },
+        {
+          "label": "Code",
+          "href": "https://github.com/thejerrycheng/MIE438_LED_cubic_console"
         },
         {
           "label": "Video",
           "href": "https://www.youtube.com/watch?v=cC_NXlKTEwk&list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV"
         }
       ],
-      "desc": "ESP32-based driver with SPI multiplexing; API control; interactive 3D Snake and Pong demos."
+      "desc": "512 hand-soldered LEDs driven by nine daisy-chained shift registers over one SPI bus. Only one of the eight layers is ever lit; the cube is an illusion held together by refreshing faster than the eye can follow. The page lets you play 3-D Snake on it and drag the refresh rate down until persistence of vision gives out.",
+      "short": "512 lights, nine chips, one illusion"
     },
     {
       "id": "turtlebot",
