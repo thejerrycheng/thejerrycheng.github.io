@@ -337,7 +337,7 @@
       `<span class="dim">max thrust</span> <b>${(r.maxThrust / 1e6).toFixed(1)} MN</b> ` +
       `<span class="dim">TWR</span> <b>${(r.maxThrust / (r.wetMass * 1.62)).toFixed(2)}</b><br>` +
       `<span class="dim">gimbal bias</span> <b>${(r.dr.biasY * 180 / Math.PI).toFixed(1)}°,${(r.dr.biasP * 180 / Math.PI).toFixed(1)}°</b> ` +
-      `<span class="dim">drift</span> <b>${Math.hypot(r.dr.wind[0], r.dr.wind[1]).toFixed(2)} m/s²</b>`;
+      `<span class="dim">gain</span> <b>${(r.dr.gimbalGain * 100).toFixed(0)}%</b>`;
   }
 
   function action() {

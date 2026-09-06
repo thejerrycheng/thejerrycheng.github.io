@@ -89,7 +89,7 @@
   class Lander {
     constructor(opts) {
       this.P = Object.assign({}, P, opts || {});
-      this.dr = { mass: 1, fuel: 1, isp: 1, thrust: 1, biasY: 0, biasP: 0, wind: [0, 0, 0] };
+      this.dr = { mass: 1, fuel: 1, isp: 1, thrust: 1, gimbalGain: 1, biasY: 0, biasP: 0, rate0: 0 };
       this.reset({});
     }
 
@@ -97,22 +97,23 @@
     randomizeVehicle(rng, amount) {
       const k = amount == null ? 1 : amount;
       const u = (lo, hi) => 1 + ((lo + rng() * (hi - lo)) - 1) * k;
-      this.dr.mass = u(0.85, 1.15);
-      this.dr.fuel = u(0.70, 1.30);
-      this.dr.isp = u(0.90, 1.10);
-      this.dr.thrust = u(0.85, 1.15);
-      const b = 2 * Math.PI / 180 * k;
+      this.dr.mass = u(0.80, 1.20);
+      this.dr.fuel = u(0.65, 1.35);
+      this.dr.isp = u(0.88, 1.12);
+      this.dr.thrust = u(0.80, 1.20);
+      this.dr.gimbalGain = u(0.85, 1.15);
+      const b = 2.5 * Math.PI / 180 * k;
       this.dr.biasY = (rng() * 2 - 1) * b;
       this.dr.biasP = (rng() * 2 - 1) * b;
-      const ang = rng() * 2 * Math.PI, w = rng() * 0.25 * k;
-      this.dr.wind = [w * Math.cos(ang), w * Math.sin(ang), 0];
+      this.dr.rate0 = 0.04 * k;
     }
 
     reset(o) {
       o = o || {};
       const rng = o.rng || Math.random;
       if (o.randomize) this.randomizeVehicle(rng, o.drAmount);
-      else this.dr = { mass: 1, fuel: 1, isp: 1, thrust: 1, biasY: 0, biasP: 0, wind: [0, 0, 0] };
+      else this.dr = { mass: 1, fuel: 1, isp: 1, thrust: 1, gimbalGain: 1,
+                       biasY: 0, biasP: 0, rate0: 0 };
 
       this.dryMass = this.P.dryMass * this.dr.mass;
       this.startFuel = this.P.fuel * this.dr.fuel;
@@ -133,7 +134,10 @@
         const t = rng() * tiltDeg * Math.PI / 180, ax = rng() * 2 * Math.PI;
         this.q = [Math.cos(t / 2), Math.cos(ax) * Math.sin(t / 2), Math.sin(ax) * Math.sin(t / 2), 0];
       } else this.q = [1, 0, 0, 0];
-      this.w = [0, 0, 0];
+      // a small initial body rate, the disturbance that defeats the cascade
+      this.w = this.dr.rate0
+        ? [0, 1, 2].map(() => (rng() * 2 - 1) * this.dr.rate0)
+        : [0, 0, 0];
 
       this.t = 0; this.steps = 0; this.done = false; this.outcome = null;
       this.thrust = 0;
@@ -169,8 +173,7 @@
       const Fb = [T * Math.sin(gp), -T * Math.sin(gy) * cg, T * Math.cos(gy) * cg];
       const Fw = rot(R, Fb);
       const m = this.mass();
-      const a = [Fw[0] / m + this.dr.wind[0], Fw[1] / m + this.dr.wind[1],
-                 Fw[2] / m - this.P.g + this.dr.wind[2]];
+      const a = [Fw[0] / m, Fw[1] / m, Fw[2] / m - this.P.g];
       // tau = r x F with r = (0, 0, -L)
       const L = this.P.L;
       const tau = [L * Fb[1], -L * Fb[0], 0];
@@ -190,10 +193,11 @@
       if (this.done) return this;
       const cl = (x) => Math.max(-1, Math.min(1, x));
       let T = (cl(action[0]) + 1) * 0.5 * this.maxThrust;
+      const gg = this.dr.gimbalGain;
       const gyCmd = Math.max(-this.P.gimbalMax, Math.min(this.P.gimbalMax,
-                  cl(action[1]) * this.P.gimbalMax + this.dr.biasY));
+                  cl(action[1]) * this.P.gimbalMax * gg + this.dr.biasY));
       const gpCmd = Math.max(-this.P.gimbalMax, Math.min(this.P.gimbalMax,
-                  cl(action[2]) * this.P.gimbalMax + this.dr.biasP));
+                  cl(action[2]) * this.P.gimbalMax * gg + this.dr.biasP));
 
       const dt = this.P.dt;
       if (this.fuel > 0) {
