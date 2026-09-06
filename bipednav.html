@@ -596,6 +596,7 @@
         <li>A handover to the hybrid gait needs ≥ 90 % of its speed (measured basin: 0.90 walks, 0.85 falls).</li>
         <li>Landing 22 cm past a crate left the centre of mass half a metre behind the foot; 5 cm past it works.</li>
         <li>The upper body is split into trunk, head and arms whose composite mass and centre stay at the design's torso point mass; a heavier head or arms shifted the period each step.</li>
+        <li>Knees cannot bend backwards: MuJoCo joint limits of 0–150° on both knees, and every step design keeps at least 3° of flexion inside the step. The neck servo cancels the torso pitch so the head stays level and the camera keeps looking 38° down at the floor.</li>
         <li>Open: the climbing steps execute in physics only with the arms held still (the arm swing perturbs the 1.3 s climbing steps), and the step off the top of a flight and the ramp entries execute in the model but not yet in physics.</li>
       </ul>
     </div>
