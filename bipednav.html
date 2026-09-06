@@ -490,8 +490,158 @@
 </tbody></table></div>
       <p><b>What broke in physics and what fixed it</b> (each verified by an A/B run of the same flight). Designing the centre of pressure inside 80 % of the foot for margin made the steps slow (1.2 s) and torque-hungry, and they fell; the physical foot as the bound with steps pulled to 0.9× the cell's period (0.85 s, under 160 N·m) walked. Blending the measured post-impact velocity into the reference whipped the swing leg on the third stair (3.8 rad/s of impact transient); clipping it to 1 rad/s fixed that flight with no other change. A handover to the hybrid-zero-dynamics regular gait must arrive at 90 % of its speed or more (the basin was measured: 0.90 walks, 0.85 falls). The crate's leading step used to land 22 cm past the crate, leaving the centre of mass half a metre behind the new stance foot; landing 5 cm past it made the trailing step feasible. Edge clearance has to be a crossing test, not a band: a band flagged the landing toe two centimetres before the next riser.</p>
       <p><b>Ascent.</b> The point-foot robot could not climb in physics at all. The footed robot's ascending cells (10 and 12 cm rises on 30 cm treads) are feasible once the lift-off requirement is relaxed to 5 cm/s (a climbing step's rigid impact cannot also throw the trailing foot up) and the swing toe is kept short of the next riser; <span id="b7-up-status">the entry from the regular gait and the three climbing steps execute in MuJoCo with exact landings, and the step off the top of the flight is the open piece: a fully actuated exit exists in the model only at the torque and duration bounds, because the climb leaves the robot at 0.47 m/s and a flat gait lands at twice that.</span></p>
-      <p><b>Perception in the loop with the footed robot.</b> The same onboard depth camera, world model and decision-at-touchdown loop drive the seven-link walker; the difference is that the stair steps are now designed online against the perceived edge distance and rise (design time on the HUD and in the trace). <span id="b7-online-status">Run below.</span></p>
-      <pre class="cmd" id="mj7-trace" style="max-height:300px; overflow:auto"></pre>
+      <p><b>Perception in the loop with the footed robot.</b> The same onboard depth camera, world model and decision-at-touchdown loop drive the seven-link walker; the difference is that the stair steps are now designed online against the perceived edge distance and rise (design time on the HUD and in the trace). <span id="b7-online-status">Two runs, both walked to the end of the scene: on the three-stair flight the robot perceives the drop edges and rises from 1.5 m away, approaches with 0.35 m steps so that it stands 18 cm before the edge, takes the three perceived stairs (drops of 11.0, 9.0 and 12.0 cm, strides 0.32, 0.31 and 0.34 m, each designed in 20 to 320 s of wall time), exits and resumes the regular gait (34 steps in 30 s of simulation). On the combined course it perceives the crate, arrives with 0.34 m steps, takes the 0.50 m leading step and the trailing step, walks on, perceives the staircase, descends its three stairs and continues (50 steps in 45 s; one stair step peaked at 520 N·m, within the 800 N·m peak rating but above the 400 N·m continuous bound the designs use). The design time is real and reported: the simulation waits for it, so this is a planner that runs between steps, not a reflex.</span></p>
+      <div class="clip-row" style="margin:10px 0">
+        <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_b7on_course.mp4" type="video/mp4"></video><div class="cap"><b>Footed biped, perception in the loop, combined course</b>: crate perceived and stepped over, staircase perceived and descended, onboard camera picture-in-picture, decisions on the HUD.</div></div>
+        <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_b7on_stairs_down.mp4" type="video/mp4"></video><div class="cap"><b>Footed biped, perception in the loop, staircase</b>: three different perceived drops taken in one go, then the regular gait.</div></div>
+      </div>
+      <figure class="fig" style="margin:10px 0"><img src="assets/images/projects/bipednav/mj_traj3d_b7on_course.png" alt="3D hip trajectory and footholds of the footed biped on the combined course with perception in the loop" loading="lazy"><figcaption>The combined course with perception in the loop: hip trajectory (colour = time) and footholds over the crate and down the staircase.</figcaption></figure>
+      <pre class="cmd" id="mj7-trace" style="max-height:300px; overflow:auto"># online_b7on_course: seven-link (feet, actuated ankles) -> walking after 50 steps, 45.0 s simulated, 256 s of step design
+[  0.00 s  step  0] perceive (67 ms): levels z+0cm x0.25-2.28, z+0cm x2.81-5.57
+[  0.82 s  step  1] touchdown: step of 0.82 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 355 N·m, tracking 0.001 rad
+[  0.82 s  step  1] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[  1.00 s  step  1] perceive (32 ms): levels z+0cm x0.67-2.33, z+10cm x2.35-2.55, z+0cm x2.77-2.77 | obstacle: box 1.95 m ahead, 20 cm deep, 10 cm high
+[  1.67 s  step  2] touchdown: step of 0.85 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 315 N·m, tracking 0.016 rad
+[  1.67 s  step  2] decide: crate in 1.55 m: approach flat 0.34 m (designed, 2 s)  [2.36 s]
+[  2.00 s  step  2] perceive (33 ms): levels z+0cm x1.06-2.34, z+10cm x2.35-2.55, z+0cm x2.72-3.33 | obstacle: box 1.55 m ahead, 20 cm deep, 10 cm high
+[  2.58 s  step  3] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 197 N·m, tracking 0.021 rad
+[  2.58 s  step  3] decide: crate in 1.21 m: approach flat 0.34 m (designed, 3 s)  [2.72 s]
+[  3.00 s  step  3] perceive (36 ms): levels z-0cm x1.39-2.33, z+10cm x2.35-2.53, z-0cm x2.67-4.89 | obstacle: box 1.21 m ahead, 18 cm deep, 10 cm high
+[  3.49 s  step  4] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 93 N·m, tracking 0.027 rad
+[  3.49 s  step  4] decide: crate in 0.87 m: approach flat 0.34 m (designed, 3 s)  [2.62 s]
+[  4.00 s  step  4] perceive (28 ms): levels z+0cm x1.73-2.35, z+10cm x2.35-2.54, z+0cm x2.64-5.51 | obstacle: box 0.87 m ahead, 19 cm deep, 10 cm high
+[  4.40 s  step  5] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 225 N·m, tracking 0.048 rad
+[  4.40 s  step  5] decide: crate in 0.53 m: approach flat 0.34 m (designed, 2 s)  [2.49 s]
+[  5.00 s  step  5] perceive (28 ms): levels z+0cm x2.09-2.35, z+10cm x2.35-2.55, z+0cm x2.62-5.42 | obstacle: box 0.53 m ahead, 20 cm deep, 10 cm high
+[  5.31 s  step  6] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 93 N·m, tracking 0.048 rad
+[  5.31 s  step  6] decide: crate 10 cm high, 20 cm deep, 19 cm ahead: leading stride 0.50 m (ok), trailing (ok), 85 s  [84.77 s]
+[  6.00 s  step  6] perceive (28 ms): levels z+10cm x2.42-2.55, z+0cm x2.60-5.46
+[  6.72 s  step  7] touchdown: step of 1.41 s, stride (+0.498, -0.001) m, slip -0.0 cm, peak torque 298 N·m, tracking 0.052 rad
+[  6.72 s  step  7] decide: crate: trailing step (queued)  (queued)
+[  7.00 s  step  7] perceive (26 ms): levels z+0cm x2.92-3.98
+[  8.00 s  step  7] perceive (19 ms): levels z-0cm x3.27-5.49
+[  8.00 s  step  8] touchdown: step of 1.28 s, stride (+0.400, -0.001) m, slip 0.0 cm, peak torque 251 N·m, tracking 0.019 rad
+[  8.00 s  step  8] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[  8.89 s  step  9] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 315 N·m, tracking 0.034 rad
+[  8.89 s  step  9] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[  9.00 s  step  9] perceive (27 ms): levels z+0cm x3.72-5.55
+[  9.77 s  step 10] touchdown: step of 0.88 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 325 N·m, tracking 0.017 rad
+[  9.77 s  step 10] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 10.00 s  step 10] perceive (23 ms): levels z+0cm x4.12-5.57, z-10cm x5.75-5.92 | stairs: down first riser 1.71 m, rise -10 cm, run nan cm, 1 treads
+[ 10.66 s  step 11] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 315 N·m, tracking 0.019 rad
+[ 10.66 s  step 11] decide: stairs down in 1.31 m: approach flat 0.38 m (designed, 3 s)  [2.68 s]
+[ 11.00 s  step 11] perceive (30 ms): levels z+0cm x4.52-5.58, z-10cm x5.72-5.91, z-30cm x6.37-7.57 | stairs: down first riser 1.32 m, rise -15 cm, run 33 cm, 2 treads
+[ 11.56 s  step 12] touchdown: step of 0.91 s, stride (+0.377, -0.000) m, slip 0.0 cm, peak torque 122 N·m, tracking 0.021 rad
+[ 11.56 s  step 12] decide: stairs down in 0.94 m: approach flat 0.38 m (designed, 3 s)  [2.59 s]
+[ 12.00 s  step 12] perceive (25 ms): levels z+0cm x4.89-5.59, z-10cm x5.68-5.91, z-21cm x6.03-6.23, z-30cm x6.35-9.44 | stairs: down first riser 0.95 m, rise -10 cm, run 32 cm, 3 treads
+[ 12.47 s  step 13] touchdown: step of 0.91 s, stride (+0.380, -0.001) m, slip 0.0 cm, peak torque 80 N·m, tracking 0.071 rad
+[ 12.47 s  step 13] decide: stairs down in 0.57 m: approach regular 0.40 m  [0.00 s]
+[ 13.00 s  step 13] perceive (26 ms): levels z+0cm x5.27-5.59, z-10cm x5.64-5.92, z-21cm x5.99-6.22, z-30cm x6.30-9.78 | stairs: down first riser 0.57 m, rise -10 cm, run 31 cm, 3 treads
+[ 13.25 s  step 14] touchdown: step of 0.78 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 382 N·m, tracking 0.126 rad
+[ 13.25 s  step 14] decide: stair down: edge in 17 cm, rise -10.0 cm, stride 0.31 m (ok, tau 162 N·m, 10 s)  [10.00 s]
+[ 14.00 s  step 14] perceive (22 ms): levels z-21cm x6.02-6.23, z-30cm x6.28-11.36 | stairs: down first riser 0.81 m, rise -9 cm, run nan cm, 1 treads
+[ 14.11 s  step 15] touchdown: step of 0.86 s, stride (+0.310, -0.100) m, slip 0.0 cm, peak torque 140 N·m, tracking 0.022 rad
+[ 14.11 s  step 15] decide: stair down: edge in 19 cm, rise -11.0 cm, stride 0.33 m (ok, tau 128 N·m, 80 s)  [80.49 s]
+[ 15.00 s  step 15] perceive (27 ms): levels z-20cm x6.49-11.29
+[ 15.00 s  step 16] touchdown: step of 0.89 s, stride (+0.330, -0.110) m, slip 0.4 cm, peak torque 517 N·m, tracking 0.174 rad
+[ 15.00 s  step 16] decide: stair down: edge in 16 cm, rise -9.0 cm, stride 0.30 m (ok, tau 115 N·m, 63 s)  [63.03 s]
+[ 15.85 s  step 17] touchdown: step of 0.85 s, stride (+0.300, -0.090) m, slip 0.0 cm, peak torque 93 N·m, tracking 0.053 rad
+[ 15.85 s  step 17] decide: exit step (ok, tau 69 N·m, 2 s)  [2.24 s]
+[ 16.00 s  step 17] perceive (28 ms): levels z+0cm x6.70-11.47
+[ 16.75 s  step 18] touchdown: step of 0.90 s, stride (+0.400, -0.000) m, slip 0.0 cm, peak torque 167 N·m, tracking 0.067 rad
+[ 16.75 s  step 18] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 17.00 s  step 18] perceive (24 ms): levels z+0cm x7.02-8.62
+[ 17.56 s  step 19] touchdown: step of 0.81 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 336 N·m, tracking 0.026 rad
+[ 17.56 s  step 19] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 18.00 s  step 19] perceive (29 ms): levels z+0cm x7.43-9.07
+[ 18.40 s  step 20] touchdown: step of 0.84 s, stride (+0.400, -0.001) m, slip 0.2 cm, peak torque 370 N·m, tracking 0.020 rad
+[ 18.40 s  step 20] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 19.00 s  step 20] perceive (29 ms): levels z+0cm x7.83-11.40
+[ 19.26 s  step 21] touchdown: step of 0.86 s, stride (+0.400, -0.001) m, slip 0.2 cm, peak torque 315 N·m, tracking 0.019 rad
+[ 19.26 s  step 21] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 20.00 s  step 21] perceive (20 ms): levels z+0cm x8.49-13.24
+[ 20.14 s  step 22] touchdown: step of 0.88 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 376 N·m, tracking 0.014 rad
+[ 20.14 s  step 22] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 21.00 s  step 22] perceive (21 ms): levels z+0cm x8.99-13.48
+[ 21.03 s  step 23] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 315 N·m, tracking 0.016 rad
+[ 21.03 s  step 23] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 21.91 s  step 24] touchdown: step of 0.89 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 341 N·m, tracking 0.015 rad
+[ 21.91 s  step 24] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 22.00 s  step 24] perceive (25 ms): levels z+0cm x9.43-13.62
+[ 22.80 s  step 25] touchdown: step of 0.89 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 312 N·m, tracking 0.018 rad
+[ 22.80 s  step 25] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 23.00 s  step 25] perceive (23 ms): levels z+0cm x9.84-11.75
+[ 23.69 s  step 26] touchdown: step of 0.89 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 319 N·m, tracking 0.018 rad
+[ 23.69 s  step 26] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 24.00 s  step 26] perceive (29 ms): levels z+0cm x10.24-11.74
+[ 24.59 s  step 27] touchdown: step of 0.90 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 354 N·m, tracking 0.017 rad
+[ 24.59 s  step 27] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 25.00 s  step 27] perceive (27 ms): levels z+0cm x10.64-12.13
+[ 25.49 s  step 28] touchdown: step of 0.89 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 321 N·m, tracking 0.018 rad
+[ 25.49 s  step 28] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 26.00 s  step 28] perceive (28 ms): levels z+0cm x11.04-12.88
+[ 26.38 s  step 29] touchdown: step of 0.89 s, stride (+0.400, +0.000) m, slip 0.1 cm, peak torque 316 N·m, tracking 0.018 rad
+[ 26.38 s  step 29] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 27.00 s  step 29] perceive (27 ms): levels z+0cm x11.44-14.83
+[ 27.27 s  step 30] touchdown: step of 0.89 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 341 N·m, tracking 0.010 rad
+[ 27.27 s  step 30] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 28.00 s  step 30] perceive (22 ms): levels z+0cm x12.07-16.88
+[ 28.15 s  step 31] touchdown: step of 0.88 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 351 N·m, tracking 0.020 rad
+[ 28.15 s  step 31] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 29.00 s  step 31] perceive (29 ms): levels z+0cm x12.60-17.17
+[ 29.03 s  step 32] touchdown: step of 0.88 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 346 N·m, tracking 0.020 rad
+[ 29.03 s  step 32] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 29.92 s  step 33] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 313 N·m, tracking 0.014 rad
+[ 29.92 s  step 33] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 30.00 s  step 33] perceive (25 ms): levels z+0cm x13.05-17.26
+[ 30.81 s  step 34] touchdown: step of 0.89 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 339 N·m, tracking 0.015 rad
+[ 30.81 s  step 34] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 31.00 s  step 34] perceive (20 ms): levels z+0cm x13.45-15.41
+[ 31.69 s  step 35] touchdown: step of 0.89 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 364 N·m, tracking 0.018 rad
+[ 31.69 s  step 35] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 32.00 s  step 35] perceive (24 ms): levels z+0cm x13.85-15.34
+[ 32.59 s  step 36] touchdown: step of 0.90 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 359 N·m, tracking 0.014 rad
+[ 32.59 s  step 36] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 33.00 s  step 36] perceive (31 ms): levels z+0cm x14.25-15.74
+[ 33.48 s  step 37] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 329 N·m, tracking 0.019 rad
+[ 33.48 s  step 37] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 34.00 s  step 37] perceive (27 ms): levels z+0cm x14.65-16.54
+[ 34.37 s  step 38] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 326 N·m, tracking 0.016 rad
+[ 34.37 s  step 38] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 35.00 s  step 38] perceive (21 ms): levels z+0cm x15.05-18.87
+[ 35.26 s  step 39] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 314 N·m, tracking 0.020 rad
+[ 35.26 s  step 39] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 36.00 s  step 39] perceive (20 ms): levels z+0cm x15.70-20.52
+[ 36.14 s  step 40] touchdown: step of 0.88 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 336 N·m, tracking 0.016 rad
+[ 36.14 s  step 40] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 37.00 s  step 40] perceive (20 ms): levels z+0cm x16.22-20.80
+[ 37.03 s  step 41] touchdown: step of 0.90 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 340 N·m, tracking 0.016 rad
+[ 37.03 s  step 41] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 37.91 s  step 42] touchdown: step of 0.88 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 335 N·m, tracking 0.020 rad
+[ 37.91 s  step 42] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 38.00 s  step 42] perceive (25 ms): levels z+0cm x16.65-20.79
+[ 38.81 s  step 43] touchdown: step of 0.90 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 339 N·m, tracking 0.015 rad
+[ 38.81 s  step 43] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 39.00 s  step 43] perceive (23 ms): levels z+0cm x17.05-19.08
+[ 39.70 s  step 44] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 331 N·m, tracking 0.020 rad
+[ 39.70 s  step 44] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 40.00 s  step 44] perceive (27 ms): levels z+0cm x17.46-18.96
+[ 40.58 s  step 45] touchdown: step of 0.88 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 362 N·m, tracking 0.016 rad
+[ 40.58 s  step 45] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 41.00 s  step 45] perceive (28 ms): levels z+0cm x17.86-19.38
+[ 41.46 s  step 46] touchdown: step of 0.88 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 380 N·m, tracking 0.019 rad
+[ 41.46 s  step 46] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 42.00 s  step 46] perceive (26 ms): levels z+0cm x18.26-20.41
+[ 42.34 s  step 47] touchdown: step of 0.88 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 359 N·m, tracking 0.020 rad
+[ 42.34 s  step 47] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 43.00 s  step 47] perceive (22 ms): levels z+0cm x18.66-24.36
+[ 43.22 s  step 48] touchdown: step of 0.88 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 331 N·m, tracking 0.019 rad
+[ 43.22 s  step 48] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 44.00 s  step 48] perceive (27 ms): levels z+0cm x19.40-23.97
+[ 44.09 s  step 49] touchdown: step of 0.88 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 348 N·m, tracking 0.016 rad
+[ 44.09 s  step 49] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 44.97 s  step 50] touchdown: step of 0.88 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 340 N·m, tracking 0.015 rad
+[ 44.97 s  step 50] decide: regular 0.40 m (flat ahead)  [0.00 s]</pre>
       <p><b>What was checked.</b> On flat ground the simulated walker settles onto the analytic limit cycle (step period within 1 %, exact 0.40 m strides, tracking error below 4·10⁻³ rad, 0.7 cm of foot slip per step). The onboard estimates of rise, run, riser distance, box distance, depth and height are within a centimetre of the scene from a metre or more away. The runs below are the end-to-end tests: perception, planning and control in the loop, with the compute time of every decision on the HUD.</p>
       <div class="tag-row"><span class="chip">MuJoCo 3.5</span><span class="chip">planar biped, 3D scene</span><span class="chip">depth camera 1 Hz</span><span class="chip">world model</span><span class="chip">1 kHz VHC torques</span></div>
     </div>
