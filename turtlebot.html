@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Where am I? Autonomous exploration with a TurtleBot — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="MIE443 Contest 1: a TurtleBot 2 exploring an unknown 6x6 m room with a Kinect, three bumpers and GMapping. Watch the occupancy grid fill in live, switch between random walk, reactive, frontier and the hybrid controller that actually ran, and race all four.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/turtlebot.html">
+  <meta property="og:title" content="Where am I? Autonomous exploration with a TurtleBot">
+  <meta property="og:description" content="Four exploration strategies, one unknown room, and a map you can watch being built.">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/turtlebot/poster.jpg">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <link rel="stylesheet" href="assets/css/project-page.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <style>
+    #tb-canvas { width: 100%; height: 440px; display: block; border: var(--line-w) solid var(--ink);
+                 border-radius: var(--radius-sm); background: #20252F; box-shadow: var(--sh-xs); }
+    #tb-plot { width: 100%; height: 160px; display: block; border: 1.5px solid var(--ink);
+               border-radius: 6px; background: var(--panel); margin-top: 12px; }
+    .tb-out { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.8; background: var(--paper);
+              border: 1.5px solid var(--ink); border-radius: 6px; padding: 10px 12px; }
+    .tb-out b { color: var(--hi-deep); }
+    .tb-plan { color: var(--gold); }
+    .tb-check { display: flex; align-items: center; gap: 8px; font-size: 13px; margin: 10px 0; }
+    .tb-check input { width: 16px; height: 16px; accent-color: var(--hi); }
+    @media (max-width: 900px) { #tb-canvas { height: 340px; } }
+  </style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button type="button" class="theme-btn" aria-label="Switch between day and night" aria-pressed="false">
+      <span class="if-night"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Day</span></span>
+      <span class="if-day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="lbl">Night</span></span>
+    </button>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+  <a href="cv.html">CV</a>
+</div>
+
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">SLAM ◆ Autonomous exploration ◆ MIE443 ◆ University of Toronto ◆ 2022</p>
+    <h1>Where am I?</h1>
+    <p>A TurtleBot 2 is put in a 6 × 6 metre room it has never seen, with a Kinect, three bumpers, wheel odometry and a clock. It has to map as much of the floor as it can before the time runs out. That is the whole problem, and the interesting part is that the answer is not an algorithm — it is knowing when to switch between three of them.</p>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
+<section class="section" id="demo">
+  <div class="hero-video">
+    <video controls playsinline preload="metadata" poster="assets/images/projects/turtlebot/poster.jpg">
+      <source src="assets/videos/turtlebot_demo.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p>The TurtleBot localising and navigating in the contest environment, with the map building in RViz alongside.</p>
+    <div class="links">
+      <a href="assets/pdf/projects/mie443_merged_contest_1_2.pdf" target="_blank" rel="noopener">Contest reports (PDF)</a>
+      <a href="https://github.com/thejerrycheng/turtlebot-exploration" target="_blank" rel="noopener">Code</a>
+      <a href="#sandbox">Watch it map</a>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="card stat-tile"><div class="num">6×6<small>m</small></div><div class="lab">Unknown room</div><div class="sub">Static obstacles, no prior map</div></div>
+    <div class="card stat-tile"><div class="num">57<small>°</small></div><div class="lab">Kinect field of view</div><div class="sub">One horizontal slice, 1-D from a 2-D image</div></div>
+    <div class="card stat-tile"><div class="num">3</div><div class="lab">Bumpers</div><div class="sub">180° of contact sensing at base level</div></div>
+    <div class="card stat-tile"><div class="num">3</div><div class="lab">Strategies</div><div class="sub">And a state machine to pick between them</div></div>
+    <div class="card stat-tile"><div class="num">100<small>s</small></div><div class="lab">Stall detector</div><div class="sub">No new area, and frontier takes over</div></div>
+    <div class="card stat-tile"><div class="num">5<small>×</small></div><div class="lab">Frontier's margin</div><div class="sub">Over a naive nearest-frontier bug</div></div>
+  </div>
+</section>
+
+<!-- =================== SANDBOX =================== -->
+<section class="section" id="sandbox">
+  <h2 class="section-title">Watch the map appear</h2>
+  <p class="lead">The robot below has the same sensors and the same four controllers: a 57° range scan, an occupancy grid updated by ray casting, and a differential base at 0.25 m/s. Cream is floor it has confirmed, red is obstacle it has seen, and dark grey is everything it still does not know. Pick a strategy and watch the grey get eaten.</p>
+
+  <div class="card scene-block">
+    <span class="caption-box">The room</span>
+    <div class="demo-grid">
+      <div class="demo-scene">
+        <canvas id="tb-canvas" aria-label="Occupancy grid exploration"></canvas>
+        <canvas id="tb-plot" aria-label="Coverage against time"></canvas>
+      </div>
+      <div class="demo-controls">
+        <div class="tb-out" id="tb-out"></div>
+        <label style="margin-top:12px">Strategy
+          <select id="tb-mode">
+            <option value="hybrid" selected>Hybrid — what the contest ran</option>
+            <option value="random">Biased random walk</option>
+            <option value="reactive">Reactive wall-following</option>
+            <option value="frontier">Frontier exploration</option>
+          </select>
+        </label>
+        <div class="demo-cols">
+          <label>Room <span id="tb-seed-v">3</span><input type="range" id="tb-seed" min="0" max="40" step="1" value="3"></label>
+          <label>Obstacles <span id="tb-obst-v">7</span><input type="range" id="tb-obst" min="0" max="14" step="1" value="7"></label>
+        </div>
+        <label>Speed <span id="tb-speed-v">8×</span><input type="range" id="tb-speed" min="1" max="20" step="1" value="8"></label>
+        <label class="tb-check"><input type="checkbox" id="tb-truth"> Show me the room it cannot see</label>
+        <div class="demo-buttons">
+          <button class="btn btn-primary" id="tb-go" type="button">Run</button>
+          <button class="btn" id="tb-reset" type="button">Reset</button>
+        </div>
+        <p class="plot-note">Green is where it has been; the yellow wedge is what the Kinect can see right now. When frontier exploration is driving, the dashed yellow line is the path it planned to the nearest unmapped boundary.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card scene-block" style="margin-top:22px">
+    <span class="caption-box">Race them</span>
+    <div class="scene-head">
+      <h3>All four strategies, same room, 300 seconds each</h3>
+      <p>The contest's actual question. Run it on whatever room you have set above — the seed and the obstacle count both change the answer, which is the point.</p>
+    </div>
+    <button class="btn btn-primary" id="tb-race" type="button">Race the four</button>
+    <div id="tb-race-out" style="margin-top:14px"><p class="plot-note">Press the button.</p></div>
+  </div>
+</section>
+
+<!-- =================== THE CONTROLLER =================== -->
+<section class="section" id="controller">
+  <h2 class="section-title">Three controllers and a state machine</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>The classic taxonomy splits robot control three ways, and the contest controller uses all three because each fails somewhere the others do not.</p>
+      <p><b>Reactive control</b> maps sensor straight to actuator with no state: a bumper closes, the wheels reverse. It is the fastest possible response and it is the only thing that can be trusted to prevent damage, so it sits at the bottom and can pre-empt everything above it.</p>
+      <p><b>Behaviour control</b> keeps a little state and pursues a short-horizon goal — follow this wall, back away from that obstacle, turn towards open space. It is what the robot does most of the time.</p>
+      <p><b>Deliberate control</b> builds a model and plans over it. Frontier exploration is the deliberate layer: take the occupancy grid, find the boundary between known-free and unknown, plan a path there, follow it. It is the only one of the three that can decide to cross the room.</p>
+      <p>The insight the contest forces on you is that the deliberate layer is <em>not</em> simply better. Frontier exploration needs a map to plan over, and at the start there is no map. Running it from the first second means planning to a frontier that is a metre away, arriving, and re-planning to one a metre beyond that — all the cost of a planner and none of the benefit.</p>
+      <p>So the controller starts in the behaviour layer, and watches its own progress:</p>
+      <div class="eq">if new cells mapped over the last 100 s ≈ 0 &nbsp; → &nbsp; frontier exploration<br>else &nbsp; → &nbsp; biased random walk with wall-following</div>
+      <p>The random walk gets a rough map cheaply. When it stalls — which it does, once it has seen everything within easy reach — the planner takes over precisely when it has something worth planning over. And when frontier exploration is defeated three times by the reactive layer (a "false frontier": a boundary that turns out to be unreachable), it hands control back.</p>
+      <p>The sensing has its own compromise worth recording. The Kinect returns a 2-D depth image; GMapping wants a laser scan. The controller takes <b>a single horizontal slice</b> from the middle of the image and treats it as a 1-D range array — throwing away almost all the depth data to fit an interface. It works, and it is also why a table edge at chest height is invisible to the map and only ever discovered by a bumper.</p>
+    </div>
+    <div>
+      <div class="ledger" style="margin-top:0">
+        <div class="card"><h4 class="known">Reactive</h4><ul><li>3 bumpers, 180°</li><li>Contact → reverse and turn</li><li>Pre-empts everything</li></ul></div>
+        <div class="card"><h4 class="unknown">Behaviour</h4><ul><li>Kinect slice, 57°</li><li>Wall-follow, turn to open space</li><li>The default mode</li></ul></div>
+        <div class="card"><h4 class="truth">Deliberate</h4><ul><li>Occupancy grid</li><li>Nearest frontier + path</li><li>Only once there is a map</li></ul></div>
+      </div>
+      <figure class="fig">
+        <img src="assets/images/projects/turtlebot/maps.png" alt="The map each strategy built in the same room" class="pad">
+        <figcaption><b>Same room, same clock, four controllers.</b> Cream is confirmed floor, red is seen obstacle, grey is still unknown.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- =================== FINDINGS =================== -->
+<section class="section" id="findings">
+  <h2 class="section-title">Nobody wins</h2>
+  <p class="lead">Six randomly generated rooms, 300 seconds each, all four controllers on every one, everything in <code>scripts/tools/run_explore.py</code>. I expected a ranking. What came out is more useful than a ranking.</p>
+
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead><tr><th>Strategy</th><th>mean coverage</th><th>spread (sd)</th><th>worst room</th><th>best room</th><th>time to half the floor</th></tr></thead>
+      <tbody>
+        <tr><td>biased random walk</td><td>62.1 %</td><td class="ok">± 9.4</td><td class="ok">46.1 %</td><td>71.5 %</td><td>177 s <span class="dim">(1/6 never)</span></td></tr>
+        <tr><td>reactive wall-following</td><td>60.0 %</td><td>± 23.7</td><td>25.6 %</td><td>92.2 %</td><td>42 s <span class="dim">(2/6 never)</span></td></tr>
+        <tr><td>frontier exploration</td><td>51.7 %</td><td>± 20.7</td><td>13.2 %</td><td>76.7 %</td><td class="ok">9 s <span class="dim">(3/6 never)</span></td></tr>
+        <tr><td><b>hybrid</b> (the contest controller)</td><td class="hi">63.0 %</td><td class="bad">± 33.2</td><td class="bad">11.2 %</td><td class="ok">99.2 %</td><td>36 s <span class="dim">(2/6 never)</span></td></tr>
+      </tbody>
+    </table>
+    <p class="scroll-hint">← swipe the table →</p>
+  </div>
+
+  <div class="grid-2" style="margin-top:24px">
+    <div class="card finding">
+      <div class="no">1</div>
+      <h3>The means are a coin toss. The variance is the whole story.</h3>
+      <p>62.1 %, 60.0 %, 51.7 %, 63.0 % — across six rooms the four controllers are separated by less than their own standard deviations, and the hybrid's nominal win over a <em>random walk</em> is nine tenths of a percent. If the contest had been scored on one room, the winner would have been whichever robot got the lucky floor plan.</p>
+      <p>What actually separates them is consistency. The random walk has a spread of <b>±9.4</b> and never does better than 71.5 % or worse than 46.1 %. The hybrid has a spread of <b>±33.2</b>, ranging from <b>11.2 % to 99.2 %</b>. It is simultaneously the best controller and the worst one, depending on the room.</p>
+    </div>
+    <div class="card finding">
+      <div class="no">2</div>
+      <h3>The switching rule is the risk</h3>
+      <p>Look at where the hybrid fails. In rooms 3 and 4 it scores <b>11.2 %</b> and <b>24.0 %</b> while plain reactive wall-following — which is what the hybrid does until it decides otherwise — scores <b>71.2 %</b> and <b>81.4 %</b>. The hybrid did not lose because frontier exploration is bad. It lost because the stall detector fired while the behaviour layer was doing fine, handed control to a planner that then did worse, and the hybrid can only be as good as its worst decision about which mode to be in.</p>
+      <p>When the detector is right — rooms 0, 1, 2 and 5 — the hybrid beats every single-strategy controller, by up to 62 points. Composing controllers does not average their performance; it multiplies the best case and the worst case both.</p>
+    </div>
+  </div>
+
+  <figure class="fig">
+    <img src="assets/images/projects/turtlebot/coverage.png" alt="Coverage against time for all four strategies" class="pad">
+    <figcaption><b>Coverage against time, six rooms, mean ± one standard deviation.</b> The bands overlap for the entire run. Note how early frontier's curve rises and how early it flattens — it is the fastest to half a room and the least likely to ever get there.</figcaption>
+  </figure>
+
+  <div class="card finding" style="margin-top:24px">
+    <div class="no">3</div>
+    <h3>Nearest-frontier has a trap in it, and it costs 57 points</h3>
+    <p>The obvious implementation of frontier exploration — BFS from the robot to the nearest cell bordering unknown space, then drive there — does not work at all. The nearest such cell is always the one just past the edge of the current sensor footprint, five centimetres away. The robot arrives instantly, re-plans to another one five centimetres beyond that, and never travels anywhere. Naive nearest-frontier scored <b>13 %</b> coverage against <b>70 %</b> for a random walk.</p>
+    <p>Two changes fix it, and both are in the report if you read it carefully. Require the goal to be at least a body length away, so the planner is planning rather than twitching. And <em>follow the planned path</em> rather than driving at the goal in a straight line — the report says "a targeted frontier point <em>and a path</em> are calculated", and the path is the part that matters, because a straight line wedges on the first obstacle between here and there.</p>
+  </div>
+
+  <figure class="fig">
+    <img src="assets/images/projects/turtlebot/final.png" alt="Final coverage and time to half coverage, by strategy" class="pad">
+    <figcaption><b>Coverage and speed are different questions.</b> Frontier exploration reaches half the floor in 9 seconds when it reaches it at all — and in three rooms out of six it never does. Reactive wall-following is slower to start and finishes further.</figcaption>
+  </figure>
+</section>
+
+<!-- =================== REPRODUCE =================== -->
+<section class="section" id="reproduce">
+  <h2 class="section-title">Reproduce it</h2>
+  <div class="cmd"><span class="c"># NumPy and matplotlib only</span>
+git clone https://github.com/thejerrycheng/turtlebot-exploration
+cd turtlebot-exploration
+python scripts/tools/run_explore.py --rooms 6      <span class="c"># three figures + results JSON</span></div>
+  <p class="plot-note" style="margin-top:14px">The sandbox runs <code>assets/js/turtlebot_explore.js</code> — the same grid resolution, field of view, speeds and four controllers as <code>scripts/tools/explore.py</code>. The ROS stack that ran on the real TurtleBot (GMapping, the bumper callbacks, the Kinect slice) is in the contest report; this harness reproduces the exploration logic rather than the ROS plumbing, because the exploration logic is what the contest was actually about.</p>
+</section>
+
+<section class="section" id="credits">
+  <h2 class="section-title">Credits</h2>
+  <div class="card card-pad credits">
+    <p><b>MIE443: Mechatronics Systems Design and Integration</b> at the University of Toronto. Contest 1 (autonomous exploration) with <b>Maryam Hosseini</b>, <b>Yuntao Cai</b>, <b>Yicheng Wang</b> and <b>Qingyun (Ada) Yang</b>; Contest 2 added object recognition and a CNN for seven-class emotion recognition.</p>
+    <p style="margin-top:8px">The ROS controller, the state machine and the contest runs are from the course. The six-room study, the three findings above and the browser sandbox were built afterwards.</p>
+    <div class="links" style="margin-top:12px">
+      <a href="assets/pdf/projects/mie443_merged_contest_1_2.pdf" target="_blank" rel="noopener">Contest reports</a>
+      <a href="https://github.com/thejerrycheng/turtlebot-exploration" target="_blank" rel="noopener">Code</a>
+      <a href="projects.html">All projects</a>
+    </div>
+  </div>
+</section>
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+<script src="assets/js/turtlebot_explore.js"></script>
+<script src="assets/js/turtlebot_ui.js"></script>
+</body>
+</html>

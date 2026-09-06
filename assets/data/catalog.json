@@ -700,7 +700,7 @@
     },
     {
       "id": "turtlebot",
-      "title": "Turtlebot2 SLAM, Navigation & Perception",
+      "title": "Where Am I? TurtleBot SLAM, Navigation and Autonomous Exploration",
       "year": 2022,
       "tag": "SLAM",
       "images": [
@@ -713,11 +713,21 @@
       "fit": "cover",
       "links": [
         {
+          "label": "Website",
+          "href": "turtlebot.html",
+          "internal": true
+        },
+        {
           "label": "PDF",
           "href": "assets/pdf/projects/mie443_merged_contest_1_2.pdf"
+        },
+        {
+          "label": "Code",
+          "href": "https://github.com/thejerrycheng/turtlebot-exploration"
         }
       ],
-      "desc": "Gmapping, frontier exploration, PID control; OpenCV perception and a CNN for 7-class emotion recognition."
+      "desc": "A TurtleBot 2 mapping an unknown 6&times;6&nbsp;m room with a Kinect, three bumpers and GMapping, switching between reactive, behaviour and deliberate control. A six-room re-run found the four strategies are separated by less than their own variance, and that the hybrid controller is simultaneously the best and the worst of them. Watch the occupancy grid fill in live, and race all four.",
+      "short": "Where am I? Exploring an unknown room"
     },
     {
       "id": "formula",
