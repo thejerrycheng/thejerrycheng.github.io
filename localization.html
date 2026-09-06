@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Batch vs sliding-window localization — Jerry (Qilong) Cheng</title>
-  <meta name="description" content="Batch maximum-a-posteriori localization on SE(3) against a sliding window, on the Starry Night stereo-IMU dataset and the Lost in the Woods range-bearing problem. Drag the window size from a Kalman filter to full batch in your browser and watch the error and the 3-sigma bounds move.">
+  <title>SE(3) batch estimation vs a sliding window — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="AER1513 Assignment 3: batch maximum-a-posteriori estimation on SE(3) with a stereo camera and an IMU, against a sliding window. Drag the window size from a Kalman filter to full batch in your browser. Batch is 2-3x more accurate and 9x cheaper than a wide window, and a window looks over-confident only when its noise model is wrong.">
   <meta name="author" content="Jerry Cheng">
   <link rel="canonical" href="https://thejerrycheng.github.io/localization.html">
   <meta property="og:title" content="Batch vs sliding window — where the estimate comes from">
@@ -24,14 +24,18 @@
   <script>document.documentElement.classList.add('js');</script>
   <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
   <style>
-    #lc-canvas { width: 100%; height: 460px; display: block; border: var(--line-w) solid var(--ink);
+    #s3-canvas { width: 100%; height: 460px; display: block; border: var(--line-w) solid var(--ink);
+                 border-radius: var(--radius-sm); background: var(--panel); box-shadow: var(--sh-xs);
+                 cursor: grab; touch-action: none; }
+    #s3-canvas:active { cursor: grabbing; }
+    #lc-canvas { width: 100%; height: 420px; display: block; border: var(--line-w) solid var(--ink);
                  border-radius: var(--radius-sm); background: var(--panel); box-shadow: var(--sh-xs); }
     .lc-out { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.85; background: var(--paper);
               border: 1.5px solid var(--ink); border-radius: 6px; padding: 10px 12px; }
     .lc-out b { color: var(--hi-deep); }
     .lc-check { display: flex; align-items: center; gap: 8px; font-size: 13px; margin: 10px 0; }
     .lc-check input { width: 16px; height: 16px; accent-color: var(--hi); }
-    @media (max-width: 900px) { #lc-canvas { height: 340px; } }
+    @media (max-width: 900px) { #lc-canvas, #s3-canvas { height: 340px; } }
   </style>
 </head>
 <body>
@@ -64,48 +68,170 @@
   <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
   <div class="skyline" aria-hidden="true"></div>
   <div class="wrap">
-    <p class="kicker">State estimation ◆ Batch optimisation ◆ AER1513 ◆ University of Toronto ◆ 2023</p>
+    <p class="kicker">State estimation ◆ SE(3) batch optimisation ◆ AER1513 with Tim Barfoot ◆ University of Toronto ◆ 2023</p>
     <h1>Where am I?</h1>
-    <p>A vehicle with an IMU, a stereo camera and a map of landmarks, asking the oldest question in robotics. The answer is a maximum-a-posteriori estimate over every pose at once — and the only real knob is how many of those poses you are willing to solve for together. One is a Kalman filter. All of them is batch estimation. Below you can drag that knob and watch what it costs.</p>
+    <p>A vehicle with an IMU, a stereo camera and a map of landmarks, asking the oldest question in robotics. The answer is a maximum-a-posteriori estimate over every pose at once, on SE(3) — and the only real knob is how many of those poses you are willing to solve for together. One is a Kalman filter. All of them is batch estimation. This is Assignment 3 of AER1513, and below you can drag that knob and watch what it costs.</p>
   </div>
 </header>
 <div class="deco-band" aria-hidden="true"></div>
 
 <section class="section" id="demo">
-  <div class="hero-video">
-    <video controls autoplay loop muted playsinline preload="metadata">
-      <source src="assets/videos/localization_lost_woods.mp4" type="video/mp4">
-    </video>
-  </div>
+  <figure class="fig" style="margin-top:0">
+    <img src="assets/images/projects/localization/se3_trajectory.png" alt="A 6-DoF trajectory through a landmark field, with dead reckoning and two estimates" class="pad">
+    <figcaption><b>Assignment 3.</b> A vehicle on a 6-DoF path through a field of known landmarks, carrying an IMU that measures its body-frame twist and a stereo camera that sees four numbers per landmark. Dead reckoning walks away within seconds; batch estimation sits on the truth.</figcaption>
+  </figure>
   <div class="hero-caption">
-    <p>Lost in the Woods: the robot wanders among landmarks while the estimator tracks it. Twenty-one minutes of animation at sixteen times speed.</p>
+    <p>The Starry Night dataset: 1,700 timesteps of stereo and IMU data, and the question of how much of the trajectory you are willing to solve for at once.</p>
     <div class="links">
-      <a href="assets/pdf/projects/AER1513_assignment_3-3.pdf" target="_blank" rel="noopener">Report (PDF)</a>
+      <a href="assets/pdf/projects/AER1513_assignment_3-3.pdf" target="_blank" rel="noopener">Assignment 3 report (PDF)</a>
       <a href="https://github.com/thejerrycheng/localization-batch-estimation" target="_blank" rel="noopener">Code</a>
-      <a href="#sandbox">Try the window</a>
+      <a href="#sandbox">Turn the knob</a>
     </div>
   </div>
 
   <div class="stat-row">
-    <div class="card stat-tile"><div class="num">1,700</div><div class="lab">Timesteps</div><div class="sub">Starry Night, stereo + IMU</div></div>
-    <div class="card stat-tile"><div class="num">6<small>DoF</small></div><div class="lab">Pose on SE(3)</div><div class="sub">Estimated jointly, all of them</div></div>
-    <div class="card stat-tile"><div class="num">3</div><div class="lab">Landmarks needed</div><div class="sub">Fewer, and the estimate opens up</div></div>
-    <div class="card stat-tile"><div class="num">1</div><div class="lab">Window = a filter</div><div class="sub">The knob's other end is batch</div></div>
-    <div class="card stat-tile"><div class="num">22<small>×</small></div><div class="lab">Cost of a wide window</div><div class="sub">And batch is cheaper than both</div></div>
-    <div class="card stat-tile"><div class="num">−7<small>px</small></div><div class="lab">Camera bias</div><div class="sub">The noise is not zero-mean</div></div>
+    <div class="card stat-tile"><div class="num">1,700</div><div class="lab">Timesteps</div><div class="sub">Stereo camera + IMU, Starry Night</div></div>
+    <div class="card stat-tile"><div class="num">6<small>DoF</small></div><div class="lab">Pose on SE(3)</div><div class="sub">All of them solved together</div></div>
+    <div class="card stat-tile"><div class="num">4</div><div class="lab">Numbers per landmark</div><div class="sub">u<sub>l</sub>, v<sub>l</sub>, u<sub>r</sub>, v<sub>r</sub> from the stereo rig</div></div>
+    <div class="card stat-tile"><div class="num">2–3<small>×</small></div><div class="lab">Batch's margin</div><div class="sub">Over any sliding window</div></div>
+    <div class="card stat-tile"><div class="num">9<small>×</small></div><div class="lab">And cheaper</div><div class="sub">Than a 20-step window</div></div>
+    <div class="card stat-tile"><div class="num">−7<small>px</small></div><div class="lab">Camera bias</div><div class="sub">v<sub>l</sub>, v<sub>r</sub> are not zero-mean</div></div>
   </div>
 </section>
 
 <!-- =================== SANDBOX =================== -->
 <section class="section" id="sandbox">
   <h2 class="section-title">Turn the knob</h2>
-  <p class="lead">The estimator below is the same one as the report, on the 2-D version of the problem: a robot with noisy odometry measuring range and bearing to known landmarks. Every pose in the window goes into one state, the whole thing is linearised, and one Gauss-Newton system is solved. Drag the window from 1 — which is exactly a Kalman filter — up to the whole trajectory.</p>
+  <p class="lead">This is the Assignment 3 estimator, running in your browser: SE(3) poses, a stereo camera with the rig's real intrinsics, an IMU twist, and Gauss-Newton with a left perturbation. Every pose in the window is solved for at once. Drag the window from 1 — which is an extended Kalman filter — to the whole trajectory, which is batch estimation.</p>
 
   <div class="card scene-block">
     <span class="caption-box">The sandbox</span>
     <div class="demo-grid">
       <div class="demo-scene">
-        <canvas id="lc-canvas" aria-label="Localization sandbox"></canvas>
+        <canvas id="s3-canvas" aria-label="SE(3) localization sandbox"></canvas>
+      </div>
+      <div class="demo-controls">
+        <div class="lc-out" id="s3-out"></div>
+        <label style="margin-top:12px">Window size <span id="s3-window-v">10 steps back</span><input type="range" id="s3-window" min="0" max="5" step="1" value="3"></label>
+        <div class="demo-cols">
+          <label>Trajectory steps <span id="s3-steps-v">120</span><input type="range" id="s3-steps" min="60" max="200" step="20" value="120"></label>
+          <label>Landmarks <span id="s3-land-v">40</span><input type="range" id="s3-land" min="10" max="80" step="5" value="40"></label>
+        </div>
+        <label>Stereo noise σ <span id="s3-px-v">1.2</span> px<input type="range" id="s3-px" min="0.3" max="6" step="0.3" value="1.2"></label>
+        <label class="lc-check"><input type="checkbox" id="s3-blackout" checked> A stretch with no landmarks in view</label>
+        <label>Random world <span id="s3-seed-v">1</span><input type="range" id="s3-seed" min="0" max="60" step="1" value="1"></label>
+        <div class="demo-buttons">
+          <button class="btn btn-primary" id="s3-reroll" type="button">New world</button>
+        </div>
+        <p class="plot-note">Batch is doing something a filter cannot: a landmark seen at step 90 corrects the pose at step 40, because both are unknowns in the same solve. Turn the blackout on and watch the batch estimate stay flat through it while the filter opens up.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== METHOD =================== -->
+<section class="section" id="method">
+  <h2 class="section-title">One state, every pose</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>The trick that makes batch estimation batch is refusing to throw anything away. Rather than carrying a single current belief forward, stack every pose from k₁ to k₂ into one enormous state and ask for the trajectory that best explains the whole dataset at once:</p>
+      <div class="eq">x<sub>k₁:k₂</sub> = [ T<sub>k₁</sub>, …, T<sub>k₂</sub> ], &nbsp;&nbsp; T<sub>k</sub> = T<sub>v<sub>k</sub>,i</sub> = [ C<sub>v<sub>k</sub>,i</sub> &nbsp; t<sub>i</sub><sup>v<sub>k</sub>,i</sup> ; 0<sup>T</sup> &nbsp; 1 ] ∈ SE(3)</div>
+      <p>Poses live on a Lie group, so the motion model is a matrix exponential rather than an addition, driven by the IMU's measured body-frame twist ϖ = [ν; ω]:</p>
+      <div class="eq">T<sub>k</sub> = Ξ<sub>k</sub> T<sub>k−1</sub>, &nbsp;&nbsp; Ξ<sub>k</sub> = exp( Δt<sub>k</sub> ϖ<sub>k</sub><sup>∧</sup> )</div>
+      <p>and the stereo camera gives four numbers per landmark — the same point in the left and right images:</p>
+      <div class="eq">y<sub>k</sub><sup>j</sup> = (1/z<sub>k</sub><sup>j</sup>) M T<sub>cv</sub> T<sub>k</sub> p<sup>j</sup>, &nbsp;&nbsp; M = [ f<sub>u</sub> 0 c<sub>u</sub> 0 ; 0 f<sub>v</sub> c<sub>v</sub> 0 ; f<sub>u</sub> 0 c<sub>u</sub> −f<sub>u</sub>b ; 0 f<sub>v</sub> c<sub>v</sub> 0 ]</div>
+      <p>Errors on a group are logarithms, not differences. The motion error compares the pose the IMU predicts with the pose in the state; the measurement error is an ordinary residual in pixels:</p>
+      <div class="eq">e<sub>v,k</sub>(x) = ln( Ξ<sub>k</sub> T<sub>k−1</sub> T<sub>k</sub><sup>−1</sup> )<sup>∨</sup> ∈ ℝ<sup>6</sup> &nbsp;&nbsp;&nbsp; e<sub>y,k</sub><sup>j</sup>(x) = y<sub>k</sub><sup>j</sup> − h(T<sub>k</sub>, p<sup>j</sup>) ∈ ℝ<sup>4</sup></div>
+      <p>Minimise the Mahalanobis sum of both. Linearising needs a perturbation that stays on the group — a left one, T ← exp(ε<sup>∧</sup>) T — which is what makes the Jacobians clean. The motion Jacobian is the adjoint of the increment; the measurement Jacobian is the projection derivative composed with the circle-dot operator:</p>
+      <div class="eq">J(x) = ½ Σ<sub>k</sub> e<sub>v,k</sub><sup>T</sup> Q<sub>k</sub><sup>−1</sup> e<sub>v,k</sub> + ½ Σ<sub>k,j</sub> e<sub>y,k</sub><sup>j T</sup> R<sub>k</sub><sup>−1</sup> e<sub>y,k</sub><sup>j</sup></div>
+      <div class="eq">∂e<sub>v,k</sub>/∂ε<sub>k−1</sub> = Ad(Ξ<sub>k</sub>) &nbsp;&nbsp;&nbsp; ∂e<sub>v,k</sub>/∂ε<sub>k</sub> = −1 &nbsp;&nbsp;&nbsp; ∂h/∂ε<sub>k</sub> = (∂M/∂p<sub>c</sub>) T<sub>cv</sub> (T<sub>k</sub> p<sup>j</sup>)<sup>⊙</sup></div>
+      <p>Stack all of that and one sparse Gauss-Newton solve, A δ = b with A = H<sup>T</sup>W<sup>−1</sup>H, gives a correction to <em>every</em> pose simultaneously. The information matrix is block-tridiagonal from the motion terms with a block-diagonal fringe from the landmarks, and it is 6N × 6N — which is where the cost lives, and why the window size is the knob it is.</p>
+      <p>The sliding window is the same solve over a suffix of the trajectory, with the poses that fell off the back summarised as a Gaussian prior on the oldest remaining one. Shrink the window to a single step and every term but the newest disappears; what is left is an extended Kalman filter. The report puts it plainly: <em>"when the window size equals 1, this practically becomes a Kalman Filter."</em></p>
+    </div>
+    <div>
+      <div class="ledger" style="margin-top:0">
+        <div class="card"><h4 class="known">Known</h4><ul><li>Landmark positions p<sup>j</sup></li><li>Stereo intrinsics M, baseline b</li><li>T<sub>cv</sub>, IMU-to-camera</li><li>Q, R covariances</li></ul></div>
+        <div class="card"><h4 class="unknown">Solved for</h4><ul><li>Every pose T<sub>k</sub> ∈ SE(3)</li><li>All of them, jointly</li><li>6N unknowns</li></ul></div>
+        <div class="card"><h4 class="truth">Measured</h4><ul><li>IMU twist ϖ<sub>k</sub></li><li>Stereo y<sub>k</sub><sup>j</sup>, 4 per landmark</li><li>Only when in range and in view</li></ul></div>
+      </div>
+      <div class="hero-video" style="margin-top:18px">
+        <video controls playsinline preload="metadata">
+          <source src="assets/videos/localization_teaser.mp4" type="video/mp4">
+        </video>
+      </div>
+      <p class="plot-note" style="margin-top:8px">The estimated trajectory against ground truth, from the assignment.</p>
+      <div class="table-wrap">
+        <table class="data-table compact">
+          <thead><tr><th>AER1513</th><th>Problem</th><th>Estimator</th></tr></thead>
+          <tbody>
+            <tr><td>Assignment 1</td><td>Noise characterisation and linear-Gaussian estimation</td><td>batch least squares</td></tr>
+            <tr><td>Assignment 2</td><td><a href="#assignment2">Lost in the Woods</a>, planar range-bearing</td><td>EKF / batch, ℝ³</td></tr>
+            <tr><td class="hi">Assignment 3</td><td class="hi">Starry Night, stereo + IMU</td><td class="hi">batch and sliding window on SE(3)</td></tr>
+          </tbody>
+        </table>
+        <p class="plot-note">Only the Assignment 3 report is on this site; it is the one that carries the SE(3) derivation and the window study.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="findings">
+  <h2 class="section-title">What the window costs</h2>
+  <p class="lead">Three seeds, 160 steps each, all of it in <code>scripts/tools/run_se3.py</code>. The point is not that batch wins — it should — but by how much, and at what price.</p>
+
+  <figure class="fig">
+    <img src="assets/images/projects/localization/se3_window.png" alt="Translation error, rotation error and cost against window size on SE(3)" class="pad">
+    <figcaption><b>Translation, rotation, cost.</b> Batch reaches <b>0.070 m</b> and <b>10.9 mrad</b>; no sliding window gets below <b>0.140 m</b> or <b>24 mrad</b>. The window results are not monotonic in the window size — with three seeds the spread between windows of 2, 5 and 10 is linearisation noise, not a trend — but every one of them sits two to three times worse than batch.</figcaption>
+  </figure>
+
+  <div class="grid-2" style="margin-top:24px">
+    <div class="card finding">
+      <div class="no">1</div>
+      <h3>On SE(3) the gap is much wider than in 2-D</h3>
+      <p>On the planar problem batch beats a filter by 18 %. Here it is a factor of <b>2.2 in translation</b> and <b>2.2 in rotation</b>. The reason is the observation model: a stereo camera sees a landmark only within range and inside the field of view, so at any instant the vehicle typically has three or four measurements against six degrees of freedom. A filter has to commit to a pose on that. Batch does not — a landmark first seen at step 90 constrains the pose at step 40, because both are unknowns in the same linear system.</p>
+      <p>That is the whole argument for batch estimation in one sentence, and it is why calibration problems are solved this way and navigation problems usually are not.</p>
+    </div>
+    <div class="card finding">
+      <div class="no">2</div>
+      <h3>Batch is also cheaper</h3>
+      <p>The report notes that a smaller window runs faster, and per step that is exactly right — the information matrix is (6N)², so halving the window quarters the solve. But a sliding window does that solve <em>at every step</em>, and batch does one solve, ever.</p>
+      <p>Over 160 steps: a window of 20 costs <b>4.5 s</b>, a window of 1 costs <b>0.3 s</b>, and full batch costs <b>0.5 s</b> — nine times cheaper than the 20-step window and more accurate than all of them. The sliding window earns its place because it runs <em>online</em>, one step at a time, without waiting for the end of the trajectory. Not because it is cheap.</p>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0">
+      <img src="assets/images/projects/localization/se3_blackout.png" alt="Position error against time, with the visible landmark count" class="pad">
+      <figcaption><b>Error tracks the landmark count.</b> The report's third observation, reproduced on SE(3): the uncertainty is set almost entirely by how many landmarks are in view, and the worst stretch is the one with none.</figcaption>
+    </figure>
+    <div class="card finding" style="margin-top:0">
+      <div class="no">3</div>
+      <h3>The noise is not zero-mean, and the estimator assumes it is</h3>
+      <p>Before any of this, the assignment asks whether the noise really is zero-mean Gaussian. The IMU is — comfortably so, and if anything the supplied covariance is <em>under</em>-confident, since the histogram peaks sit above the fitted Gaussian. The stereo camera is not: u<sub>l</sub> and u<sub>r</sub> fit well, but <b>v<sub>l</sub> and v<sub>r</sub> are tail-heavy with a −7 pixel bias</b>.</p>
+      <p>Every estimator on this page assumes that bias away. It is small enough not to matter for this trajectory, and it is exactly the kind of thing that silently limits an accuracy claim, so it is worth stating rather than burying.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== ASSIGNMENT 2 =================== -->
+<section class="section" id="assignment2">
+  <h2 class="section-title">The same estimator, one dimension down</h2>
+  <p class="lead">Assignment 2 is the planar version of the same idea: <em>Lost in the Woods</em>, a wheeled robot with wheel odometry measuring range and bearing to known landmarks. Three states instead of six, a 2×1 measurement instead of a stereo 4×1, and no Lie group — but the same stacked state, the same Gauss-Newton, and the same window knob. It is the right place to build intuition before the SE(3) version, and it runs fast enough to re-solve on every slider move.</p>
+
+  <div class="hero-video" style="margin-top:20px">
+    <video controls autoplay loop muted playsinline preload="metadata">
+      <source src="assets/videos/localization_lost_woods.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p>The Lost in the Woods run: the robot wanders among the landmarks while the estimator tracks it. Twenty-one minutes of animation at sixteen times speed.</p>
+  </div>
+
+  <div class="card scene-block" style="margin-top:22px">
+    <span class="caption-box">The planar sandbox</span>
+    <div class="demo-grid">
+      <div class="demo-scene">
+        <canvas id="lc-canvas" aria-label="Planar localization sandbox"></canvas>
       </div>
       <div class="demo-controls">
         <div class="lc-out" id="lc-out"></div>
@@ -119,75 +245,28 @@
         <div class="demo-buttons">
           <button class="btn btn-primary" id="lc-reroll" type="button">New world</button>
         </div>
-        <p class="plot-note">Take the landmarks down to four and the estimate starts to look like the dead-reckoned path. Turn the blackout on and watch the error grow through it, then snap back when the landmarks return — the estimator is not tracking a position so much as tracking <em>how sure it is</em>.</p>
+        <p class="plot-note">Take the landmarks down to four and the estimate starts to look like the dead-reckoned path.</p>
       </div>
     </div>
   </div>
-</section>
-
-<!-- =================== METHOD =================== -->
-<section class="section" id="method">
-  <h2 class="section-title">One state, every pose</h2>
-  <div class="grid-2">
-    <div class="prose">
-      <p>The trick that makes batch estimation batch is refusing to throw anything away. Instead of carrying a single current belief forward, you stack every pose from k₁ to k₂ into one enormous state vector and ask for the whole trajectory that best explains the whole dataset at once.</p>
-      <div class="eq">x<sub>k₁:k₂</sub> = [ T<sub>k₁</sub>, …, T<sub>k₂</sub> ] &nbsp;&nbsp;&nbsp; T<sub>k</sub> = Ξ<sub>k</sub> T<sub>k−1</sub> = exp(Δt<sub>k</sub> ϖ<sub>k</sub>) T<sub>k−1</sub></div>
-      <p>Poses live on SE(3), so the motion model is a matrix exponential rather than an addition and the errors are logarithms rather than differences:</p>
-      <div class="eq">e<sub>v,k</sub>(x) = ln( Ξ<sub>k</sub> T<sub>k−1</sub> T<sub>k</sub><sup>−1</sup> )<sup>∨</sup> &nbsp;&nbsp;&nbsp; e<sub>y,k</sub><sup>j</sup>(x) = y<sub>k</sub><sup>j</sup> − (1/z) M T<sub>cv</sub> T<sub>k</sub> p<sup>j</sup></div>
-      <p>Linearise both around an operating point, stack the Jacobians, and one sparse Gauss-Newton solve gives a correction to <em>every</em> pose simultaneously. The information matrix is block-tridiagonal with a fringe of landmark terms, and it is 6N × 6N — which is where the cost lives.</p>
-      <p>The sliding window is the same solve over a suffix of the trajectory, with the poses that fell off the back summarised as a prior. Shrink the window to a single step and every term but the newest disappears; what is left is an extended Kalman filter. The report puts it plainly: <em>"when the window size equals 1, this practically becomes a Kalman Filter."</em></p>
-      <p>One more thing the report checks before any of this: whether the noise is actually zero-mean Gaussian. The IMU is — comfortably, and if anything the supplied covariance is <em>under</em>-confident. The stereo camera is not: <b>v<sub>l</sub> and v<sub>r</sub> are tail-heavy with a −7 pixel bias</b>. The estimator assumes it away, and it is worth knowing that it does.</p>
-    </div>
-    <div>
-      <figure class="fig" style="margin-top:0">
-        <img src="assets/images/projects/localization/trajectory.png" alt="The map, the dead-reckoned path, and the estimates" class="pad">
-        <figcaption><b>The 2-D version, 300 steps.</b> Dead reckoning drifts away almost immediately; both estimators sit on the truth. The highlighted stretch is where no landmark is in range.</figcaption>
-      </figure>
-      <div class="hero-video" style="margin-top:18px">
-        <video controls playsinline preload="metadata">
-          <source src="assets/videos/localization_teaser.mp4" type="video/mp4">
-        </video>
-      </div>
-      <p class="plot-note" style="margin-top:8px">The estimated trajectory against ground truth, from the original assignment.</p>
-    </div>
-  </div>
-</section>
-
-<!-- =================== FINDINGS =================== -->
-<section class="section" id="findings">
-  <h2 class="section-title">What the window costs</h2>
-  <p class="lead">Four seeds, 300 steps each, everything in <code>scripts/tools/run_localization.py</code>. The point of the sweep is not that batch wins — it does, and it should — but by how little, and at what price.</p>
-
-  <figure class="fig">
-    <img src="assets/images/projects/localization/window.png" alt="Accuracy, cost and consistency against window size" class="pad">
-    <figcaption><b>Accuracy, cost, consistency.</b> Accuracy improves with window size and then stops: 0.0385 m for a filter, 0.0335 m at a window of 20, 0.0317 m for full batch — a total spread of <b>18 %</b> across the whole range. Cost does not stop: a window of 50 takes <b>22×</b> as long as a filter over the same trajectory.</figcaption>
-  </figure>
 
   <div class="grid-2" style="margin-top:24px">
-    <div class="card finding">
-      <div class="no">1</div>
-      <h3>Batch is more accurate <em>and</em> cheaper</h3>
-      <p>The report says smaller windows run faster, and per step that is exactly right — the information matrix is (6N)², so halving the window quarters the solve. But running a sliding window across a whole trajectory means doing that solve <em>at every step</em>. Batch does one solve, ever.</p>
-      <p>Over 300 steps: a window of 50 costs <b>9.4 s</b>, a window of 1 costs <b>0.43 s</b>, and full batch costs <b>0.53 s</b> — cheaper than every window except the filter, and the most accurate of the lot. The sliding window earns its place because it runs <em>online</em>, not because it is cheap.</p>
-    </div>
-    <div class="card finding">
-      <div class="no">2</div>
-      <h3>The window is not over-confident. The noise model is.</h3>
-      <p>The report finds the sliding-window 3σ bounds fail to cover the error while the batch bounds are "perfectly bounded", and suspects a poor initial covariance estimate. That is testable, so I tested it: hold the true noise fixed and scale the covariance the estimator <em>believes</em>.</p>
-      <p>With the correct Q and R, a window of 10 puts <b>99.6 %</b> of its errors inside its own 3σ — textbook. Tell it the noise is four times smaller than it is and that falls to <b>74.1 %</b>. The position estimate does not move at all: <b>0.0338 m either way</b>. A covariance mismatch does not make the estimate worse, it makes the estimate's own account of itself worse — which is more dangerous, because nothing downstream can tell.</p>
+    <figure class="fig" style="margin-top:0">
+      <img src="assets/images/projects/localization/window.png" alt="Accuracy, cost and consistency against window size in 2-D" class="pad">
+      <figcaption><b>The planar sweep, four seeds.</b> 0.0385 m for a filter, 0.0335 m at a window of 20, 0.0317 m for batch — a spread of 18 %, against the 2–3× on SE(3). With three states and two measurements per landmark the problem is far better constrained at every instant, so there is much less for batch to recover.</figcaption>
+    </figure>
+    <div class="card finding" style="margin-top:0">
+      <div class="no">4</div>
+      <h3>A window is not over-confident. Its noise model is.</h3>
+      <p>The Assignment 3 report finds that the sliding-window 3σ bounds fail to cover the error while the batch bounds are "perfectly bounded", and suspects a poor initial covariance estimate. That is a testable claim, so I tested it on the planar problem, where a four-seed sweep is cheap: hold the true noise fixed and scale the covariance the estimator <em>believes</em>.</p>
+      <p>With the correct Q and R a window of 10 puts <b>99.6 %</b> of its errors inside its own 3σ. Tell it the noise is four times smaller than it is and that falls to <b>74.1 %</b> — while the position estimate does not move at all, <b>0.0338 m either way</b>. The report's diagnosis was right: a covariance mismatch does not make the estimate worse, it makes the estimate's <em>account of itself</em> worse, which is more dangerous, because nothing downstream can tell.</p>
     </div>
   </div>
 
-  <div class="grid-2" style="margin-top:22px">
-    <figure class="fig" style="margin-top:0">
-      <img src="assets/images/projects/localization/mismatch.png" alt="Consistency against assumed covariance scale" class="pad">
-      <figcaption><b>Confirming the report's own diagnosis.</b> Four seeds, window of 10. The estimate is unchanged across the whole sweep; only its claimed confidence moves.</figcaption>
-    </figure>
-    <figure class="fig" style="margin-top:0">
-      <img src="assets/images/projects/localization/blackout.png" alt="Error against time with the landmark count above" class="pad">
-      <figcaption><b>Error tracks the landmark count.</b> The report's third observation, reproduced: uncertainty is driven almost entirely by how many landmarks are in view, and the worst stretch is the one with none.</figcaption>
-    </figure>
-  </div>
+  <figure class="fig">
+    <img src="assets/images/projects/localization/mismatch.png" alt="Consistency against the assumed covariance scale" class="pad">
+    <figcaption><b>Confirming the report's own diagnosis.</b> Four seeds, window of 10, planar problem. The estimate is unchanged across the whole sweep; only its claimed confidence moves.</figcaption>
+  </figure>
 </section>
 
 <!-- =================== REPRODUCE =================== -->
@@ -196,8 +275,9 @@
   <div class="cmd"><span class="c"># NumPy and matplotlib only</span>
 git clone https://github.com/thejerrycheng/localization-batch-estimation
 cd localization-batch-estimation
-python scripts/tools/run_localization.py --seeds 4     <span class="c"># four figures + results JSON</span></div>
-  <p class="plot-note" style="margin-top:14px">The sandbox runs <code>assets/js/localization_engine.js</code> — the same Gauss-Newton solve as <code>scripts/tools/estimator.py</code>, including the marginal covariance of the newest pose, which is what the 3σ readout uses. The SE(3) stereo-IMU version on the Starry Night dataset is in the report; the dataset is course-distributed and is not redistributed here.</p>
+python scripts/tools/run_se3.py --seeds 3              <span class="c"># the Assignment 3 study</span>
+python scripts/tools/run_localization.py --seeds 4     <span class="c"># the planar one</span></div>
+  <p class="plot-note" style="margin-top:14px">The SE(3) sandbox runs <code>assets/js/se3_engine.js</code> and the planar one <code>assets/js/localization_engine.js</code> — the same Gauss-Newton solves as <code>scripts/tools/se3.py</code> and <code>estimator.py</code>, including the marginal covariance of the newest pose, which is what the 3σ readout uses. The Starry Night and Lost in the Woods datasets are course-distributed and are not redistributed here; both harnesses generate their own data from the same models.</p>
 </section>
 
 <section class="section" id="credits">
@@ -225,6 +305,8 @@ python scripts/tools/run_localization.py --seeds 4     <span class="c"># four fi
 </footer>
 
 <script src="assets/js/site.js"></script>
+<script src="assets/js/se3_engine.js"></script>
+<script src="assets/js/se3_ui.js"></script>
 <script src="assets/js/localization_engine.js"></script>
 <script src="assets/js/localization_ui.js"></script>
 </body>
