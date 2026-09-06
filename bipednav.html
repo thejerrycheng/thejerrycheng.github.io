@@ -620,16 +620,107 @@
     <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_hum_long.mp4" type="video/mp4"></video><div class="body"><h3>The long descending course</h3><p>Two crates and two flights of different stairs, all perceived, in one run.</p></div></div>
   </div>
   <div class="grid-2" style="margin-top:22px">
-    <div class="card card-pad prose" style="margin:0"><p class="subhead" style="margin-top:0">Live trace of the combined course</p><pre class="cmd" id="mj7-trace" style="max-height:300px; overflow:auto"># online_b7on_long2: seven-link (feet, actuated ankles) -> fell after 3 steps, 2.5 s simulated, 61 s of step design
-[  0.00 s  step  0] perceive (72 ms): levels z+0cm x0.25-2.29, z+0cm x2.77-5.51
-[  0.78 s  step  1] touchdown: step of 0.78 s, stride (+0.500, +0.000) m, slip 0.0 cm, peak torque 220 N·m, tracking 0.008 rad
-[  0.78 s  step  1] decide: regular 0.50 m (flat ahead)  [0.00 s]
-[  1.00 s  step  1] perceive (59 ms): levels z+0cm x0.90-2.32, z+10cm x2.35-2.53, z+0cm x2.69-5.55 | obstacle: box 1.85 m ahead, 18 cm deep, 10 cm high
-[  1.56 s  step  2] touchdown: step of 0.78 s, stride (+0.500, +0.000) m, slip 0.0 cm, peak torque 243 N·m, tracking 0.076 rad
-[  1.56 s  step  2] decide: crate in 1.35 m: approach flat 0.42 m (designed, 61 s)  [60.99 s]
-[  2.00 s  step  2] perceive (27 ms): levels z+0cm x1.31-2.33, z+10cm x2.35-2.54, z+0cm x2.67-5.58 | obstacle: box 1.35 m ahead, 19 cm deep, 10 cm high
-[  2.48 s  step  3] touchdown: step of 0.92 s, stride (+0.491, +0.082) m, slip 0.0 cm, peak torque 791 N·m, tracking 0.801 rad
-[  2.48 s  step  3] decide: regular 0.50 m (flat ahead)  [0.00 s]</pre></div>
+    <div class="card card-pad prose" style="margin:0"><p class="subhead" style="margin-top:0">Live trace of the combined course</p><pre class="cmd" id="mj7-trace" style="max-height:300px; overflow:auto"># online_b7on_long2: seven-link (feet, actuated ankles) -> done after 34 steps, 31.3 s simulated, 530 s of step design
+[  0.00 s  step  0] perceive (50 ms): levels z+0cm x0.34-2.29, z+0cm x2.76-5.48
+[  0.82 s  step  1] touchdown: step of 0.82 s, stride (+0.399, +0.000) m, slip 0.1 cm, peak torque 332 N·m, tracking 0.009 rad
+[  0.82 s  step  1] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[  1.00 s  step  1] perceive (30 ms): levels z+0cm x0.66-2.34, z+10cm x2.35-2.53, z+0cm x2.69-3.37 | obstacle: box 1.95 m ahead, 18 cm deep, 10 cm high
+[  1.63 s  step  2] touchdown: step of 0.81 s, stride (+0.399, -0.000) m, slip 0.2 cm, peak torque 405 N·m, tracking 0.028 rad
+[  1.63 s  step  2] decide: crate in 1.55 m: approach flat 0.34 m (designed, 3 s)  [2.94 s]
+[  2.00 s  step  2] perceive (33 ms): levels z+0cm x1.06-2.33, z+10cm x2.35-2.53, z+0cm x2.66-4.27 | obstacle: box 1.55 m ahead, 18 cm deep, 10 cm high
+[  2.54 s  step  3] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 200 N·m, tracking 0.078 rad
+[  2.54 s  step  3] decide: crate in 1.21 m: approach flat 0.34 m (designed, 3 s)  [2.87 s]
+[  3.00 s  step  3] perceive (35 ms): levels z+0cm x1.40-2.33, z+10cm x2.35-2.54, z+0cm x2.64-5.53 | obstacle: box 1.21 m ahead, 19 cm deep, 10 cm high
+[  3.45 s  step  4] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 93 N·m, tracking 0.027 rad
+[  3.45 s  step  4] decide: crate in 0.87 m: approach flat 0.34 m (designed, 3 s)  [2.92 s]
+[  4.00 s  step  4] perceive (29 ms): levels z+0cm x1.79-2.35, z+10cm x2.35-2.54, z+0cm x2.62-5.49 | obstacle: box 0.87 m ahead, 19 cm deep, 10 cm high
+[  4.36 s  step  5] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 230 N·m, tracking 0.047 rad
+[  4.36 s  step  5] decide: crate in 0.53 m: approach flat 0.34 m (designed, 3 s)  [2.82 s]
+[  5.00 s  step  5] perceive (25 ms): levels z+0cm x2.30-2.35, z+10cm x2.35-2.54, z+0cm x2.60-5.44 | obstacle: box 0.53 m ahead, 19 cm deep, 10 cm high
+[  5.27 s  step  6] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 93 N·m, tracking 0.047 rad
+[  5.27 s  step  6] decide: crate 10 cm high, 19 cm deep, 19 cm ahead: leading stride 0.49 m (ok), trailing (ok), 45 s  [45.01 s]
+[  6.00 s  step  6] perceive (94 ms): levels z+10cm x2.41-2.55, z+0cm x2.57-5.49
+[  6.44 s  step  7] touchdown: step of 1.17 s, stride (+0.493, -0.000) m, slip -0.0 cm, peak torque 75 N·m, tracking 0.082 rad
+[  6.44 s  step  7] decide: crate: trailing step (queued)  (queued)
+[  7.00 s  step  7] perceive (29 ms): levels z+0cm x2.92-5.54
+[  7.61 s  step  8] touchdown: step of 1.17 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 118 N·m, tracking 0.050 rad
+[  7.61 s  step  8] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[  8.00 s  step  8] perceive (36 ms): levels z+0cm x3.32-5.29
+[  8.49 s  step  9] touchdown: step of 0.88 s, stride (+0.399, +0.000) m, slip 0.1 cm, peak torque 323 N·m, tracking 0.028 rad
+[  8.49 s  step  9] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[  9.00 s  step  9] perceive (43 ms): levels z+0cm x3.72-5.56, z-29cm x6.40-6.86 | stairs: down first riser 2.10 m, rise -29 cm, run nan cm, 1 treads
+[  9.34 s  step 10] touchdown: step of 0.85 s, stride (+0.399, -0.000) m, slip 0.1 cm, peak torque 347 N·m, tracking 0.025 rad
+[  9.34 s  step 10] decide: stairs down in 1.70 m: approach flat 0.38 m (designed, 4 s)  [4.01 s]
+[ 10.00 s  step 10] perceive (39 ms): levels z+0cm x4.37-5.57, z-10cm x5.72-5.91, z-29cm x6.38-7.97, z-29cm x8.39-9.45
+[ 10.25 s  step 11] touchdown: step of 0.91 s, stride (+0.381, -0.000) m, slip 0.0 cm, peak torque 77 N·m, tracking 0.089 rad
+[ 10.25 s  step 11] decide: stairs down in 1.34 m: approach regular 0.40 m  [0.00 s]
+[ 11.00 s  step 11] perceive (33 ms): levels z+0cm x5.03-5.59, z-10cm x5.68-5.91, z-19cm x6.01-6.21, z-29cm x6.34-7.97, z-29cm x8.32-9.39
+[ 11.03 s  step 12] touchdown: step of 0.79 s, stride (+0.399, -0.001) m, slip 0.2 cm, peak torque 370 N·m, tracking 0.128 rad
+[ 11.03 s  step 12] decide: stairs down in 0.95 m: approach flat 0.38 m (designed, 4 s)  [3.99 s]
+[ 11.94 s  step 13] touchdown: step of 0.91 s, stride (+0.385, -0.001) m, slip 0.1 cm, peak torque 108 N·m, tracking 0.020 rad
+[ 11.94 s  step 13] decide: stairs down in 0.56 m: approach flat 0.38 m (designed, 4 s)  [4.40 s]
+[ 12.00 s  step 13] perceive (50 ms): levels z+0cm x5.28-5.59, z-10cm x5.64-5.91, z-19cm x5.98-6.21, z-29cm x6.30-8.00, z-29cm x8.31-9.40
+[ 12.85 s  step 14] touchdown: step of 0.91 s, stride (+0.384, -0.000) m, slip 0.1 cm, peak torque 111 N·m, tracking 0.018 rad
+[ 12.85 s  step 14] decide: stair down: edge in 18 cm, rise -10.0 cm, stride 0.32 m (ok, tau 122 N·m, 149 s)  [148.87 s]
+[ 13.00 s  step 14] perceive (49 ms): levels z-10cm x5.66-5.91, z-19cm x5.94-6.23, z-29cm x6.28-7.97, z-29cm x8.30-9.45
+[ 13.80 s  step 15] touchdown: step of 0.94 s, stride (+0.320, -0.100) m, slip 0.0 cm, peak torque 86 N·m, tracking 0.071 rad
+[ 13.80 s  step 15] decide: stair down: edge in 19 cm, rise -9.0 cm, stride 0.33 m (ok, tau 132 N·m, 12 s)  [12.09 s]
+[ 14.00 s  step 15] perceive (32 ms): levels z-9cm x6.13-6.22, z-19cm x6.26-7.99, z-19cm x8.29-9.46
+[ 14.62 s  step 16] touchdown: step of 0.83 s, stride (+0.330, -0.090) m, slip 0.1 cm, peak torque 107 N·m, tracking 0.063 rad
+[ 14.62 s  step 16] decide: stair down: edge in 17 cm, rise -10.0 cm, stride 0.31 m (ok, tau 120 N·m, 82 s)  [82.20 s]
+[ 15.00 s  step 16] perceive (39 ms): levels z-10cm x6.52-7.98, z-10cm x8.26-9.43
+[ 15.49 s  step 17] touchdown: step of 0.86 s, stride (+0.310, -0.100) m, slip 0.0 cm, peak torque 90 N·m, tracking 0.054 rad
+[ 15.49 s  step 17] decide: exit step (bad clear_obs=-0.002, tau 79 N·m, 66 s)  [66.42 s]
+[ 16.00 s  step 17] perceive (42 ms): levels z-0cm x7.05-7.99, z-0cm x8.27-9.45
+[ 16.37 s  step 18] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.0 cm, peak torque 136 N·m, tracking 0.076 rad
+[ 16.37 s  step 18] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 17.00 s  step 18] perceive (39 ms): levels z+0cm x7.18-7.99, z+8cm x8.00-8.14, z+0cm x8.22-9.44 | obstacle: box 1.23 m ahead, 14 cm deep, 8 cm high
+[ 17.20 s  step 19] touchdown: step of 0.82 s, stride (+0.399, -0.001) m, slip 0.2 cm, peak torque 348 N·m, tracking 0.023 rad
+[ 17.20 s  step 19] decide: crate in 0.83 m: approach flat 0.34 m (designed, 4 s)  [3.72 s]
+[ 18.00 s  step 19] perceive (31 ms): levels z+0cm x7.89-8.00, z+8cm x8.00-8.15, z+0cm x8.21-9.46 | obstacle: box 0.83 m ahead, 15 cm deep, 8 cm high
+[ 18.10 s  step 20] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 102 N·m, tracking 0.021 rad
+[ 18.10 s  step 20] decide: crate in 0.49 m: approach flat 0.34 m (designed, 3 s)  [3.37 s]
+[ 19.00 s  step 20] perceive (27 ms): levels z-0cm x8.25-9.42, z-8cm x9.56-9.78, z-37cm x10.62-14.52 | stairs: down first riser 1.91 m, rise -18 cm, run 36 cm, 2 treads
+[ 19.01 s  step 21] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 93 N·m, tracking 0.027 rad
+[ 19.01 s  step 21] decide: crate 8 cm high, 15 cm deep, 15 cm ahead: leading stride 0.41 m (ok), trailing (ok), 58 s  [57.60 s]
+[ 20.00 s  step 21] perceive (37 ms): levels z-0cm x8.39-9.44, z-8cm x9.54-9.78, z-18cm x9.90-10.10, z-37cm x10.59-15.30 | stairs: down first riser 1.59 m, rise -10 cm, run 33 cm, 3 treads
+[ 20.20 s  step 22] touchdown: step of 1.19 s, stride (+0.409, -0.001) m, slip -0.0 cm, peak torque 93 N·m, tracking 0.048 rad
+[ 20.20 s  step 22] decide: crate: trailing step (queued)  (queued)
+[ 21.00 s  step 22] perceive (28 ms): levels z+0cm x8.62-9.45, z-8cm x9.53-9.80, z-18cm x9.90-10.11, z-37cm x10.56-15.67 | stairs: down first riser 1.19 m, rise -10 cm, run 33 cm, 3 treads
+[ 21.39 s  step 23] touchdown: step of 1.19 s, stride (+0.400, -0.001) m, slip 0.0 cm, peak torque 231 N·m, tracking 0.039 rad
+[ 21.39 s  step 23] decide: stairs down in 0.80 m: approach flat 0.34 m (designed, 3 s)  [3.11 s]
+[ 22.00 s  step 23] perceive (38 ms): levels z+0cm x9.05-9.45, z-8cm x9.50-9.79, z-18cm x9.87-10.11, z-27cm x10.20-10.44, z-37cm x10.56-15.93 | stairs: down first riser 0.79 m, rise -9 cm, run 33 cm, 4 treads
+[ 22.30 s  step 24] touchdown: step of 0.91 s, stride (+0.340, -0.000) m, slip 0.0 cm, peak torque 110 N·m, tracking 0.025 rad
+[ 22.30 s  step 24] decide: stairs down in 0.46 m: approach flat 0.34 m (designed, 3 s)  [2.88 s]
+[ 23.00 s  step 24] perceive (23 ms): levels z-8cm x9.61-9.80, z-18cm x9.85-10.11, z-27cm x10.17-10.44, z-37cm x10.53-15.65 | stairs: down first riser 0.80 m, rise -10 cm, run 32 cm, 3 treads
+[ 23.21 s  step 25] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 114 N·m, tracking 0.042 rad
+[ 23.21 s  step 25] decide: stair down: edge in 12 cm, rise -8.0 cm, stride 0.26 m (ok, tau 155 N·m, 16 s)  [15.80 s]
+[ 24.00 s  step 25] perceive (39 ms): levels z-18cm x10.04-10.12, z-27cm x10.16-10.44, z-37cm x10.51-15.81 | stairs: down first riser 0.78 m, rise -9 cm, run 32 cm, 2 treads
+[ 24.06 s  step 26] touchdown: step of 0.85 s, stride (+0.260, -0.080) m, slip 0.0 cm, peak torque 131 N·m, tracking 0.047 rad
+[ 24.06 s  step 26] decide: stair down: edge in 20 cm, rise -10.0 cm, stride 0.34 m (ok, tau 147 N·m, 5 s)  [4.90 s]
+[ 24.90 s  step 27] touchdown: step of 0.84 s, stride (+0.340, -0.100) m, slip 0.0 cm, peak torque 162 N·m, tracking 0.030 rad
+[ 24.90 s  step 27] decide: stair down: edge in 18 cm, rise -9.0 cm, stride 0.32 m (ok, tau 122 N·m, 9 s)  [9.26 s]
+[ 25.00 s  step 27] perceive (33 ms): levels z-9cm x10.40-10.45, z-19cm x10.49-16.29 | stairs: down first riser 0.51 m, rise -10 cm, run nan cm, 1 treads
+[ 25.74 s  step 28] touchdown: step of 0.84 s, stride (+0.320, -0.091) m, slip 0.1 cm, peak torque 95 N·m, tracking 0.069 rad
+[ 25.74 s  step 28] decide: stair down: edge in 19 cm, rise -10.0 cm, stride 0.33 m (ok, tau 108 N·m, 48 s)  [47.54 s]
+[ 26.00 s  step 28] perceive (41 ms): levels z-10cm x10.69-16.54
+[ 26.59 s  step 29] touchdown: step of 0.85 s, stride (+0.330, -0.100) m, slip 0.0 cm, peak torque 118 N·m, tracking 0.040 rad
+[ 26.59 s  step 29] decide: exit step (ok, tau 74 N·m, 3 s)  [3.38 s]
+[ 27.00 s  step 29] perceive (38 ms): levels z+0cm x11.18-16.30
+[ 27.48 s  step 30] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.0 cm, peak torque 73 N·m, tracking 0.022 rad
+[ 27.48 s  step 30] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 28.00 s  step 30] perceive (86 ms): levels z+0cm x11.25-14.36
+[ 28.29 s  step 31] touchdown: step of 0.81 s, stride (+0.399, +0.000) m, slip 0.2 cm, peak torque 351 N·m, tracking 0.016 rad
+[ 28.29 s  step 31] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 29.00 s  step 31] perceive (29 ms): levels z+0cm x12.15-17.24
+[ 29.10 s  step 32] touchdown: step of 0.81 s, stride (+0.399, -0.001) m, slip 0.2 cm, peak torque 388 N·m, tracking 0.028 rad
+[ 29.10 s  step 32] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 29.90 s  step 33] touchdown: step of 0.81 s, stride (+0.399, -0.000) m, slip 0.1 cm, peak torque 401 N·m, tracking 0.027 rad
+[ 29.90 s  step 33] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 30.00 s  step 33] perceive (30 ms): levels z+0cm x12.45-17.03
+[ 30.70 s  step 34] touchdown: step of 0.80 s, stride (+0.399, -0.001) m, slip 0.2 cm, peak torque 373 N·m, tracking 0.024 rad
+[ 30.70 s  step 34] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 31.00 s  step 34] perceive (43 ms): levels z+0cm x12.86-14.82</pre></div>
     <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/mj_traj3d_b7on_course.png" alt="Hip trajectory and footholds on the combined course (colour = time)." loading="lazy"><figcaption><b>Hip trajectory and footholds</b> on the combined course (colour = time).</figcaption></figure>
   </div>
   <p style="font-size:13px;color:var(--ash);margin-top:14px">Earlier, the point-foot five-link walker ran the same loop: flat walking was exact and one crate was crossed, but every staircase fell at the first transition. The technical report keeps those runs and the diagnosis (negative ground forces, fast touchdowns, a trailing foot that did not lift) that led to the footed robot.</p>
