@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generative Design for a Self-balancing Unicycle — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="Generative design of a 3-D-printed self-balancing unicycle robot (SPIE ACAIB 2022): seven brackets carved by topology optimisation, a lighter body with a higher centre of mass, and the generative vs conventional chassis compared under the same PID controllers. Interactive 3-D twin, a topology-optimisation playground, videos, plots and a full re-run.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/unicycle.html">
+  <meta property="og:title" content="Generative Design for a Self-balancing Unicycle">
+  <meta property="og:description" content="Let the algorithm carve the chassis, then see what the controller gets out of it. Interactive twin robots, topology optimisation in the browser, and the paper's comparison re-run.">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/unicycle/tease_poster.jpg">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <script type="importmap">{"imports": {"three": "./assets/js/vendor/three.module.min.js"}}</script>
+
+  <style>
+    /* ---- page-local components (the print recipe of gotham.css) ---- */
+    .lead { font-size: 17px; line-height: 1.6; max-width: 76ch; }
+    .lead a, .prose a, .credits a { color: var(--hi-deep); font-weight: 600; text-decoration: none; }
+    .lead a:hover, .prose a:hover { text-decoration: underline; }
+    .hero-video { position: relative; border-radius: var(--radius); overflow: hidden; background: var(--ink); border: var(--line-w) solid var(--ink); box-shadow: var(--sh); }
+    .hero-video video { width: 100%; display: block; aspect-ratio: 16 / 9; background: #151820; }
+    .hero-caption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px; margin-top: 16px; }
+    .hero-caption p { font-size: 14px; color: var(--ink-soft); max-width: 66ch; }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-top: 28px; }
+    .stat-tile { padding: 14px 14px 12px; text-align: left; }
+    .stat-tile .num { font-family: var(--font-mono); font-weight: 700; font-size: 26px; letter-spacing: -0.02em; color: var(--ink); line-height: 1.05; }
+    .stat-tile .num small { font-size: 14px; font-weight: 400; color: var(--ash); margin-left: 3px; }
+    .stat-tile .lab { font-family: var(--font-comic); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--hi); margin-top: 6px; line-height: 1.2; }
+    .stat-tile .sub { font-size: 12px; color: var(--ash); margin-top: 4px; line-height: 1.35; }
+    .strip3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .panel { overflow: hidden; display: flex; flex-direction: column; }
+    .panel .media { background: #fff; border-bottom: var(--line-w) solid var(--ink); aspect-ratio: 4 / 3; overflow: hidden; position: relative; }
+    .panel .media img, .panel .media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .panel .media img.contain { object-fit: contain; background: #fff; padding: 8px; box-sizing: border-box; }
+    .panel .body { padding: 14px 16px 16px; }
+    .panel h3 { font-size: 16px; margin-bottom: 4px; }
+    .panel p { font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
+    .panel .caption-box { margin: -26px 0 0 12px; position: relative; z-index: 2; }
+    .fig { margin: 22px 0 0; }
+    .fig img, .fig video { width: 100%; display: block; background: #fff; border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); box-shadow: var(--sh-sm); }
+    .fig img.pad { padding: 10px; box-sizing: border-box; }
+    .fig figcaption { font-size: 13px; line-height: 1.5; color: var(--ash); margin-top: 10px; }
+    .fig figcaption b { color: var(--ink); font-weight: 600; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+    .grid-2 > *, .strip3 > *, .clip-grid > *, .finding, .prose, .grid-3 > * { min-width: 0; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid-32 { display: grid; grid-template-columns: 3fr 2fr; gap: 18px; align-items: start; }
+    .eq { font-family: var(--font-mono); font-size: 13.5px; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 6px; padding: 10px 14px; margin: 12px 0; overflow-x: auto; white-space: normal; line-height: 1.7; box-shadow: var(--sh-xs); max-width: 100%; }
+    .eq .m { color: var(--hi-deep); }
+    .prose p { font-size: 15.5px; line-height: 1.62; margin-bottom: 12px; }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose ul, .prose ol { padding-left: 20px; margin: 8px 0 12px; }
+    .prose li { font-size: 15px; line-height: 1.55; margin-bottom: 6px; }
+    .prose li::marker { color: var(--hi); }
+    .prose code, kbd { background: var(--paper); border: 1px solid rgba(21,24,32,.35); border-radius: 4px; padding: 1px 6px; font-size: 12.5px; font-family: var(--font-mono); }
+    .data-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12.5px; background: var(--panel); border: var(--line-w) solid var(--ink); box-shadow: var(--sh-sm); }
+    .data-table th, .data-table td { padding: 8px 10px; border-bottom: 1.5px dashed rgba(21,24,32,.35); text-align: right; white-space: nowrap; }
+    .data-table th:first-child, .data-table td:first-child { text-align: left; }
+    .data-table thead th { background: var(--ink); color: var(--bone); font-weight: 700; border-bottom: var(--line-w) solid var(--ink); white-space: normal; line-height: 1.25; vertical-align: bottom; }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table td.hi { color: var(--hi-deep); font-weight: 700; }
+    .data-table td.dim { color: var(--ash); }
+    .table-wrap { overflow-x: auto; margin-top: 18px; position: relative; }
+    .scroll-hint { display: none; font-family: var(--font-comic); font-size: 11px; letter-spacing: .06em; color: var(--hi); margin-top: 6px; }
+    .finding { position: relative; padding: 22px 24px 22px 66px; }
+    .finding .no { position: absolute; left: 16px; top: 14px; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--yellow); border: var(--line-w) solid var(--ink); font-family: var(--font-comic); font-size: 20px; box-shadow: var(--sh-xs); transform: rotate(-6deg); color: #151820; }
+    .finding h3 { font-size: 19px; margin-bottom: 8px; }
+    .finding p { font-size: 15px; line-height: 1.58; color: var(--ink-soft); }
+    .clip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 18px; }
+    .clip-grid.three { grid-template-columns: repeat(3, 1fr); }
+    .clip-grid .card { overflow: hidden; }
+    .clip-grid video, .clip-grid img { width: 100%; display: block; aspect-ratio: 16 / 9; background: #151820; object-fit: cover; }
+    .clip-grid .body { padding: 12px 16px 14px; }
+    .clip-grid h3 { font-size: 15.5px; margin-bottom: 4px; }
+    .clip-grid p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+    .clip-grid .caption-box { margin: -22px 0 0 12px; position: relative; z-index: 2; }
+    .big-clip video { width: 100%; display: block; aspect-ratio: 16 / 9; background: #151820; border: var(--line-w) solid var(--ink); border-radius: var(--radius); box-shadow: var(--sh); }
+    .credits { font-size: 14.5px; line-height: 1.6; color: var(--ink-soft); }
+    .credits b { color: var(--ink); }
+    .cmd { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; background: #151820; color: #F4EAD2; border-radius: 8px; padding: 14px 16px; overflow-x: auto; border: var(--line-w) solid var(--ink); box-shadow: var(--sh-sm); white-space: pre; max-width: 100%; }
+    .cmd .c { color: var(--gold); }
+    /* ---- steps ---- */
+    .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-top: 18px; }
+    .step { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+    .step .media { background: #fff; border-bottom: var(--line-w) solid var(--ink); aspect-ratio: 4 / 3; display: grid; place-items: center; overflow: hidden; }
+    .step .media img { width: 100%; height: 100%; object-fit: contain; padding: 6px; box-sizing: border-box; }
+    .step .body { padding: 12px 13px 14px; }
+    .step .no { font-family: var(--font-comic); font-size: 26px; color: var(--hi); line-height: 1; }
+    .step h3 { font-size: 14.5px; margin: 4px 0 4px; line-height: 1.25; }
+    .step p { font-size: 12.5px; color: var(--ink-soft); line-height: 1.45; }
+    /* ---- interactive scenes ---- */
+    .scene-block { margin-top: 22px; padding: 18px 18px 14px; }
+    .scene-head h3 { margin: 10px 0 6px; font-size: 20px; }
+    .scene-head p { margin: 0 0 12px; font-size: 14px; color: var(--ink-soft); max-width: 92ch; }
+    .scene3d { display: block; width: 100%; height: 520px; border-radius: 10px; background: #151820; border: 1px solid rgba(0,0,0,0.25); cursor: grab; touch-action: none; outline: none; }
+    .scene3d:focus { box-shadow: 0 0 0 3px var(--yellow); }
+    .scene3d:active { cursor: grabbing; }
+    .scene-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-top: 10px; font-size: 13px; }
+    .scene-bar input[type="range"] { flex: 1 1 120px; min-width: 90px; max-width: 220px; accent-color: var(--hi); }
+    .scene-bar label { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .scene-bar select, .scene-bar input[type="number"] { font: inherit; font-size: 13px; padding: 3px 6px; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--panel); color: var(--ink); }
+    .scene-bar .btn { font-size: 13px; padding: 7px 12px; }
+    .scene-bar .btn.push { min-width: 44px; padding: 7px 10px; }
+    .scene-bar .out { font-family: var(--font-mono); font-size: 12px; color: var(--ash); min-width: 52px; }
+    .scene-info { margin-top: 8px; font-size: 13px; color: var(--ink-soft); min-height: 1.4em; line-height: 1.5; }
+    .scene-split { display: grid; grid-template-columns: 1fr 320px; gap: 14px; align-items: start; }
+    .scene-side { display: flex; flex-direction: column; gap: 10px; }
+    .trace { display: block; width: 100%; height: 130px; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--panel); }
+    .side-note { font-size: 12.5px; color: var(--ash); line-height: 1.45; }
+    .hud { font-family: var(--font-mono); font-size: 12px; line-height: 1.6; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 6px; padding: 8px 10px; color: var(--ink-soft); overflow-x: auto; }
+    .hud b { color: var(--ink); }
+    kbd { padding: 0 5px; }
+    .gain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px 14px; margin-top: 8px; font-size: 12.5px; }
+    .gain-grid label { display: flex; flex-direction: column; gap: 2px; }
+    .gain-grid input[type="range"] { width: 100%; accent-color: var(--hi); }
+    .gain-grid .lab { font-family: var(--font-comic); letter-spacing: .05em; font-size: 12px; color: var(--hi); }
+    .gains-out { font-family: var(--font-mono); font-size: 11.5px; color: var(--ash); margin-top: 6px; }
+    /* ---- topology playground ---- */
+    .tp-grid { display: grid; grid-template-columns: 1fr 300px; gap: 14px; margin-top: 14px; align-items: start; }
+    .tp-grid canvas { width: 100%; display: block; border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); background: var(--panel); box-shadow: var(--sh-xs); touch-action: none; }
+    #tp-canvas { height: 520px; cursor: crosshair; }
+    #tp-hist { height: 120px; }
+    .tp-col { display: flex; flex-direction: column; gap: 10px; }
+    .tp-legend { font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; }
+    .tp-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 3px; border: 1px solid rgba(0,0,0,.3); }
+    /* ---- plots ---- */
+    .plots-block { margin-top: 22px; }
+    .plot-title { margin: 0 0 8px; font-size: 17px; }
+    .plot2d { display: block; width: 100%; height: 280px; }
+    .plot-note { margin: 8px 0 0; font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+    .plot-tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bone); font: 12px var(--font-mono); padding: 4px 8px; border-radius: 4px; white-space: nowrap; z-index: 5; }
+    .card-pad { padding: 16px 18px; }
+    .phone { display: grid; grid-template-columns: 1fr; }
+    .phone video { width: 100%; display: block; aspect-ratio: 9 / 16; object-fit: cover; background: #151820; border: var(--line-w) solid var(--ink); border-radius: var(--radius); box-shadow: var(--sh); max-height: 520px; }
+    .paper-figs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+    .paper-figs figure img { width: 100%; display: block; background: #fff; border: 1.5px solid var(--ink); border-radius: 4px; padding: 6px; box-sizing: border-box; object-fit: contain; aspect-ratio: 4 / 3; }
+    .paper-figs figcaption { font-size: 12.5px; color: var(--ash); margin-top: 6px; line-height: 1.4; }
+    @media (max-width: 1100px) { .steps { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 1000px) and (min-width: 821px) { .clip-grid.three { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 900px) { .scene-split, .tp-grid { grid-template-columns: 1fr; } .scene3d { height: 420px; } #tp-canvas { height: 420px; } }
+    @media (max-width: 820px) {
+      .strip3, .grid-3, .grid-2, .grid-32, .clip-grid, .clip-grid.three, .paper-figs { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .finding { padding-left: 24px; padding-top: 64px; }
+      .scroll-hint { display: block; } .data-table { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html" aria-current="page">Publications</a>
+      <a href="projects.html">Projects</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button type="button" class="theme-btn" aria-label="Switch between day and night" aria-pressed="false">
+      <span class="if-night"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Day</span></span>
+      <span class="if-day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="lbl">Night</span></span>
+    </button>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+  <a href="cv.html">CV</a>
+</div>
+
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">Generative design ◆ Topology optimisation ◆ Self-balancing robot ◆ University of Toronto ◆ SPIE ACAIB 2022</p>
+    <h1>Generative Design for a Self-balancing Unicycle</h1>
+    <p>Let the algorithm carve the chassis, then see what the controller gets out of it. A reaction-wheel unicycle whose seven printed brackets were grown by Fusion 360's generative design, and a Simulink comparison of the generative and the conventional chassis under the same PID loops. Below: the two robots as an interactive 3-D twin you can push and re-tune, topology optimisation running in your browser, the paper's pipeline step by step, and a full re-run of the comparison with the sweeps the paper did not have room for.</p>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
+<!-- =================== HERO =================== -->
+<section class="section" id="demo">
+  <div class="hero-video">
+    <video controls playsinline preload="metadata" poster="assets/images/projects/unicycle/tease_poster.jpg">
+      <source src="assets/videos/unicycle_tease.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p>Teaser (15 s): a bracket carved by topology optimisation, then the two chassis released from a 5° tilt with the same gain set, scaled to the edge of the conventional chassis' margin. The <a href="#explainer">72-second explainer</a> is further down.</p>
+    <div class="links">
+      <a href="https://doi.org/10.1117/12.2639454" target="_blank" rel="noopener">Paper (SPIE)</a>
+      <a href="assets/pdf/papers/unicycle.pdf" target="_blank" rel="noopener">Paper PDF</a>
+      <a href="assets/pdf/projects/unicycle_report.pdf" target="_blank" rel="noopener">Re-run report</a>
+      <a href="#explainer">Explainer video</a>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="card stat-tile"><div class="num">7</div><div class="lab">generated parts</div><div class="sub">the chassis split by loading condition, each grown in Fusion 360 and merged into one print</div></div>
+    <div class="card stat-tile"><div class="num">169<small>g</small></div><div class="lab">generative body</div><div class="sub">the printed structure; the reaction wheel, motors, batteries and boards add 481 g (paper, Table 1)</div></div>
+    <div class="card stat-tile"><div class="num">&gt;15</div><div class="lab">safety factor</div><div class="sub">Inventor FEA on the merged body under the design loads (paper, Fig. 8); the design target was 2</div></div>
+    <div class="card stat-tile"><div class="num">0.69<small>s</small> vs 19.2<small>s</small></div><div class="lab">pitch settling, paper</div><div class="sub">generative vs conventional in Simulink, 5° release, one PID set for both (Table 2)</div></div>
+    <div class="card stat-tile"><div class="num">−70<small>%</small></div><div class="lab">bracket mass, re-run</div><div class="sub">the side support at 30 % fill keeps a safety factor of 45 (solid plate: 46); this page's topology optimisation</div></div>
+    <div class="card stat-tile"><div class="num">7.8 vs 9.0<small>/s</small></div><div class="lab">unstable pole</div><div class="sub">how fast each chassis falls: lighter and higher centre of mass buys the controller time (re-run)</div></div>
+  </div>
+</section>
+
+<!-- =================== STRIP =================== -->
+<section class="section" id="strip">
+  <h2 class="section-title">In one strip</h2>
+  <div class="strip3">
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/unicycle/paper_fig3_lapse.png" alt="Six stages of a bracket losing material until only a truss is left" class="contain" loading="lazy"></div>
+      <span class="caption-box">1 · Carve</span>
+      <div class="body"><h3>Loads in, brackets out</h3><p>Each part gets a free-body diagram, preserved joints (green), forbidden regions (red) and a material list. The generative study subtracts material until only load paths are left, and the designer picks a solution on a mass against safety-factor chart.</p></div>
+    </div>
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/unicycle/paper_fig8_fea.png" alt="Finite-element safety factor plot of the merged chassis, mostly blue (high safety factor)" class="contain" loading="lazy"></div>
+      <span class="caption-box">2 · Verify</span>
+      <div class="body"><h3>Mirror, merge, check</h3><p>Generated parts are mirrored so they are stiff in all four bending directions, merged into one body, and checked in Inventor: safety factor above 15 everywhere under the loads of step 1. Then it is printed as a single piece.</p></div>
+    </div>
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/unicycle/paper_fig14_results.png" alt="Simulink traces of pitch, roll and top-point movement for the generative and conventional designs" class="contain" loading="lazy"></div>
+      <span class="caption-box">3 · Balance</span>
+      <div class="body"><h3>Same PID, two chassis</h3><p>Pitch and travel are an inverted pendulum on the drive wheel; roll is a reaction-wheel pendulum. Three PID loops with one fixed gain set drive both chassis from a 5° tilt: the lighter, higher generative body settles in 0.69 s, the conventional one wanders for 19 s.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== THE ROBOT, IN 3-D =================== -->
+<section class="section" id="robot">
+  <h2 class="section-title">The robot, twice, in three dimensions</h2>
+  <p class="lead">One drive wheel for pitch and travel, an aluminium reaction wheel on top for roll, three battery cells and the boards in between. The generative chassis carries them on lattice brackets; the conventional one on solid plates, assumed twice as heavy and with its centre of mass 3 cm lower, the two things the paper says about it. Both run the same three PID loops in your browser at 1 kHz. Push them, drop them from a tilt, scale the gains, add loop delay, and read the traces.</p>
+
+  <div class="card scene-block">
+    <div class="scene-head">
+      <span class="caption-box">INTERACTIVE 3-D · TWO CHASSIS, ONE CONTROLLER</span>
+      <h3>Push it, tilt it, re-tune it</h3>
+    </div>
+    <div class="scene-split">
+      <div>
+        <canvas class="scene3d" id="uc-canvas" aria-label="3-D scene with the generative and conventional unicycles balancing"></canvas>
+        <div class="scene-bar">
+          <label>show <select id="uc-mode"><option value="both" selected>both chassis</option><option value="generative">generative only</option><option value="conventional">conventional only</option></select></label>
+          <label>camera <select id="uc-view"><option value="chase" selected>three-quarter</option><option value="front">front</option><option value="side">side</option><option value="top">top</option><option value="free">free</option></select></label>
+          <label>speed <select id="uc-speed"><option value="0.25">¼×</option><option value="0.5">½×</option><option value="1" selected>1×</option></select></label>
+          <label><input type="checkbox" id="uc-motors" checked> motors on</label>
+          <button class="btn" id="uc-reset" type="button">Reset view</button>
+        </div>
+        <div class="scene-bar">
+          <label>drop from <input type="range" id="uc-tilt" min="0" max="14" step="1" value="5"> <span class="out" id="uc-tilt-out">5°</span></label>
+          <button class="btn btn-primary" id="uc-drop" type="button">Drop (Space)</button>
+          <span class="dim">push:</span>
+          <button class="btn push" id="uc-push-f" type="button" title="pitch forward (↑)">▲ fwd</button>
+          <button class="btn push" id="uc-push-b" type="button" title="pitch back (↓)">▼ back</button>
+          <button class="btn push" id="uc-push-l" type="button" title="roll left (←)">◀ left</button>
+          <button class="btn push" id="uc-push-r" type="button" title="roll right (→)">▶ right</button>
+          <label>push size <input type="range" id="uc-push-mag" min="0.2" max="2.0" step="0.1" value="1.0"> <span class="out" id="uc-push-out">1.0 rad/s</span></label>
+        </div>
+        <div class="scene-bar">
+          <span class="dim">presets:</span>
+          <button class="btn" id="uc-preset-paper" type="button">the paper's gains</button>
+          <button class="btn" id="uc-preset-edge" type="button">gains ×1.5 (the edge)</button>
+          <button class="btn" id="uc-preset-delay" type="button">35 ms loop delay</button>
+        </div>
+        <div class="gain-grid">
+          <label><span class="lab">pitch Kp [V/rad]</span><input type="range" id="uc-kp" min="40" max="400" step="5" value="180"></label>
+          <label><span class="lab">pitch Kd [V·s/rad]</span><input type="range" id="uc-kd" min="2" max="30" step="0.5" value="12"></label>
+          <label><span class="lab">position Kx [V/m]</span><input type="range" id="uc-kx" min="0" max="60" step="1" value="18"></label>
+          <label><span class="lab">roll Kp [V/rad]</span><input type="range" id="uc-kpr" min="80" max="500" step="5" value="280"></label>
+          <label><span class="lab">roll Kd [V·s/rad]</span><input type="range" id="uc-kdr" min="5" max="80" step="1" value="40"></label>
+          <label><span class="lab">pitch-loop scale</span><input type="range" id="uc-gscale" min="0.25" max="3" step="0.05" value="1"></label>
+          <label><span class="lab">loop delay [ms]</span><input type="range" id="uc-delay" min="0" max="60" step="1" value="0"></label>
+          <label><span class="lab">control period [ms]</span><input type="range" id="uc-rate" min="2" max="50" step="1" value="5"></label>
+        </div>
+        <div class="gains-out" id="uc-gains-out"></div>
+        <div class="hud" id="uc-hud">Loading…</div>
+        <div class="scene-info" id="uc-info">Loading the scene…</div>
+      </div>
+      <div class="scene-side">
+        <canvas class="trace" id="uc-plot-phi" aria-label="pitch angle trace"></canvas>
+        <canvas class="trace" id="uc-plot-rho" aria-label="roll angle trace"></canvas>
+        <canvas class="trace" id="uc-plot-top" aria-label="top point displacement trace"></canvas>
+        <p class="side-note"><b style="color:#E4442A">Red</b> is the generative chassis, <b style="color:#2a78d6">blue</b> the conventional. The gold band is the paper's 5 % settling band (0.25° of a 5° release). Motors are a 12 V geared brushed motor on the drive wheel and a direct-drive motor on the reaction wheel, both voltage-limited; the recoverable tilt (about 11°) is the reaction-wheel motor's stall torque, the same on both chassis.</p>
+        <p class="side-note">Try the presets: with the paper's gains both balance (0.70 s vs 0.74 s). At ×1.5 the generative chassis still settles in 0.67 s while the conventional one chatters at the voltage limit for the whole run. With 35 ms of loop delay the generative chassis holds and the conventional one wanders half a metre.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-32" style="margin-top:22px">
+    <div>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/publications/unicycle.jpg" alt="Render of the generative unicycle with the reaction wheel on top and the drive wheel below, with the two rotation directions and the translation direction marked" class="pad" loading="lazy" style="max-height:520px;object-fit:contain"><figcaption><b>The paper's Fig. 9: the three degrees of freedom.</b> Direction 1 is pitch, corrected by driving the bottom wheel under the body; direction 2 is roll, corrected by accelerating the reaction wheel; translation along the wheel is held by a third loop. The printed lattices are the generated brackets.</figcaption></figure>
+    </div>
+    <div class="phone">
+      <video controls muted loop playsinline preload="metadata" poster="assets/images/projects/unicycle/prototype_poster.jpg"><source src="assets/videos/unicycle_prototype.mp4" type="video/mp4"></video>
+      <p class="plot-note"><b>The printed prototype</b> (13 s, phone clip): reaction wheel, drive wheel, an Arduino and driver boards on a printed body, balancing on a tile floor. The paper's outlook was to print the two bodies in Nylon and close the comparison on hardware.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== THE PIPELINE =================== -->
+<section class="section" id="pipeline">
+  <h2 class="section-title">The generative design pipeline, step by step</h2>
+  <p class="lead">Generative design here means: tell the software where the loads go, what must stay, what must stay empty, which materials and processes are allowed, and let it grow candidate shapes; then choose among them. The paper walks the unicycle body through five steps.</p>
+  <div class="steps">
+    <div class="card step"><div class="media"><img src="assets/images/projects/unicycle/paper_fig1_loads.png" alt="Free-body diagrams of the seven parts of the unicycle body" loading="lazy"></div><div class="body"><div class="no">1</div><h3>Force distribution</h3><p>A simple reference model is split into seven parts by loading condition and each gets a free-body diagram from the masses of Table 1: reaction wheel and motor, drive motor, batteries, boards. Design safety factor 2.</p></div></div>
+    <div class="card step"><div class="media"><img src="assets/images/projects/unicycle/paper_fig2_inputs.png" alt="Fusion 360 generative design inputs for the seven parts: preserved geometry in green, obstacles in red, starting shapes in yellow" loading="lazy"></div><div class="body"><div class="no">2</div><h3>Preserve, forbid, seed</h3><p>In the Fusion 360 Generative Design workspace: green is preserved (joints, grounds), red is an obstacle where nothing may grow, yellow is an optional starting shape that saves cloud time. Grey is the conventional part for reference.</p></div></div>
+    <div class="card step"><div class="media"><img src="assets/images/projects/unicycle/paper_fig4_outcomes.png" alt="Five generated outcomes of one study" loading="lazy"></div><div class="body"><div class="no">3</div><h3>Materials and process</h3><p>No manufacturing constraint, so the studies range freely; Nylon, ABS, acrylic, resin, aluminium and titanium are allowed. The budget allowed Nylon SLS printing, so Nylon outcomes are what gets picked.</p></div></div>
+    <div class="card step"><div class="media"><img src="assets/images/projects/unicycle/paper_fig5_pareto.png" alt="Safety factor against mass for the generated outcomes, coloured by material" loading="lazy"></div><div class="body"><div class="no">4</div><h3>Generate and pick</h3><p>The cloud computes the outcomes; a safety factor against mass chart shows them by material, with a recommended one. The final part is the Nylon outcome nearest the recommendation.</p></div></div>
+    <div class="card step"><div class="media"><img src="assets/images/projects/unicycle/paper_fig6_mirror.png" alt="A generated support before and after mirroring, stiff in all bending directions" loading="lazy"></div><div class="body"><div class="no">5</div><h3>Mirror and merge</h3><p>Moment analysis was one-sided, so parts are mirrored twice for stiffness in all four bending directions, merged into one body, checked in Inventor (safety factor above 15) and printed in one piece.</p></div></div>
+  </div>
+  <div class="grid-2" style="margin-top:18px">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/unicycle/paper_fig7_constraints.png" alt="Two generated bottom plates: an over-constrained one that stayed almost solid and a minimally constrained one that became a slender cross" class="pad" loading="lazy"><figcaption><b>A lesson from the paper (Fig. 7):</b> over-constraining kills the mass saving. With too many preserved regions the generated part stays close to the original; with the minimum, the bottom plate became a slender cross.</figcaption></figure>
+    <div class="prose">
+      <p><b>What the software is doing underneath.</b> Fusion 360's generative design is a cloud service, but for a bracket under a static load its core is the classic problem of <b>topology optimisation</b>: distribute a fixed amount of material in a domain so that the part is as stiff as possible under the load, with preserved and forbidden regions as constraints. The playground below runs the textbook version of that algorithm (SIMP: penalised densities, a density filter, an optimality-criteria update) on the paper's three main brackets, in your browser, so you can watch the material subtraction of Fig. 3 happen and move the loads yourself.</p>
+      <p>The three time-lapses are the same algorithm run offline on finer grids, with a stress check afterwards: von Mises stress on the final layout under the design load, and the safety factor against Nylon's yield, so a mass against safety-factor chart like the paper's Fig. 5 falls out of the volume-fraction sweep.</p>
+    </div>
+  </div>
+
+  <div class="clip-grid three">
+    <div class="card"><video muted loop playsinline preload="metadata" controls poster="assets/images/projects/unicycle/posters/topopt_side_support.jpg"><source src="assets/videos/unicycle_topopt_side_support.mp4" type="video/mp4"></video><span class="caption-box">SIDE SUPPORT</span><div class="body"><h3>From a 30 % fog to a truss</h3><p>Fixed plane at the bottom, 10 N down from the top plate, 5 N sideways each way. 70 iterations; mass −70 %, safety factor 45 against 46 for the solid plate.</p></div></div>
+    <div class="card"><video muted loop playsinline preload="metadata" controls poster="assets/images/projects/unicycle/posters/topopt_rw_support.jpg"><source src="assets/videos/unicycle_topopt_rw_support.mp4" type="video/mp4"></video><span class="caption-box">REACTION-WHEEL SUPPORT</span><div class="body"><h3>A hollow A-frame</h3><p>The bearing seat carries the wheel's weight, the motor torque as a couple and a sideways load. Mass −72 % at a safety factor above 100.</p></div></div>
+    <div class="card"><video muted loop playsinline preload="metadata" controls poster="assets/images/projects/unicycle/posters/topopt_bottom_plate.jpg"><source src="assets/videos/unicycle_topopt_bottom_plate.mp4" type="video/mp4"></video><span class="caption-box">BOTTOM PLATE</span><div class="body"><h3>An arch with a hanger</h3><p>Both ends fixed, the motor in the middle, batteries either side, a bearing pull below: the plate becomes an arch and a V, the paper's slender cross seen from the side. Mass −68 %.</p></div></div>
+  </div>
+
+  <div class="card scene-block" id="playground">
+    <div class="scene-head">
+      <span class="caption-box">INTERACTIVE · TOPOLOGY OPTIMISATION IN THE BROWSER</span>
+      <h3>Carve a bracket yourself</h3>
+      <p>Pick one of the paper's brackets or a classic case, press Run, and watch the material go where the load paths are. Paint <b style="color:#3fbf5a">preserved</b> regions (they stay solid, like the green joints in Fig. 2) and <b style="color:#E4442A">obstacles</b> (nothing grows there, the red boxes), or move the load. Lower the target volume and read off the mass and the safety factor; the compliance curve shows the optimiser converging. Plane-stress finite elements, SIMP with penalty 3, solved matrix-free by conjugate gradients, all in JavaScript.</p>
+    </div>
+    <div class="scene-bar">
+      <label>part <select id="tp-preset"><option value="side_support" selected>side support (the paper)</option><option value="rw_support">reaction-wheel front support (the paper)</option><option value="bottom_plate">bottom plate + motor support (the paper)</option><option value="cantilever">cantilever beam</option><option value="mbb">MBB beam</option><option value="lbracket">L-bracket with an obstacle</option></select></label>
+      <label>target volume <input type="range" id="tp-volfrac" min="0.1" max="0.8" step="0.01" value="0.3"> <span class="out" id="tp-vol-out">30 %</span></label>
+      <label>filter radius <input type="range" id="tp-rmin" min="1.2" max="4" step="0.1" value="1.8"> <span class="out" id="tp-rmin-out">1.8</span></label>
+      <label>brush <select id="tp-brush"><option value="keep" selected>preserve (green)</option><option value="void">obstacle (red)</option><option value="erase">erase</option><option value="load">move the load</option></select></label>
+      <label>load [N] <input type="number" id="tp-load" min="0.5" max="50" step="0.5" value="5" style="width:64px"></label>
+      <label><input type="checkbox" id="tp-stress"> show stress</label>
+      <button class="btn btn-primary" id="tp-run" type="button">Run</button>
+      <button class="btn" id="tp-step" type="button">Step</button>
+      <button class="btn" id="tp-reset" type="button">Reset</button>
+    </div>
+    <div class="tp-grid">
+      <canvas id="tp-canvas" aria-label="the design domain with material density, loads and supports"></canvas>
+      <div class="tp-col">
+        <div class="hud" id="tp-readout">Loading…</div>
+        <canvas id="tp-hist" aria-label="compliance per iteration"></canvas>
+        <p class="tp-legend" id="tp-story"></p>
+        <p class="tp-legend"><i style="background:#2a78d6"></i> fixed nodes &nbsp; <i style="background:#E4442A"></i> loads (arrows, N) &nbsp; <i style="background:rgba(63,191,90,.6)"></i> preserved &nbsp; <i style="background:rgba(228,68,42,.6)"></i> obstacle &nbsp; ink = material. Element size 1.7 mm for the paper's parts; plate thickness 6 mm; Nylon PA12, yield 48 MPa. The safety factor is the yield stress over the largest von Mises stress on solid elements, a stress post-check on a stiffness-optimised layout, as in the paper's step 5.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:22px">
+    <div class="card card-pad"><canvas class="plot2d" id="pl-pareto"></canvas><p class="plot-note"><b>The paper's Fig. 5, re-made.</b> For each bracket the target volume is swept from 15 % to solid. Above about 30 % fill the safety factor stops improving: the extra material sits off the load paths. That knee is where generative design earns its mass saving, and it is where the paper's chosen outcomes sit.</p></div>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/unicycle/figs/fig_topopt_parts.png" alt="The three brackets after topology optimisation with loads and supports, and their von Mises stress fields" loading="lazy"><figcaption><b>The three brackets at their chosen fills</b>, with loads (red) and supports (blue), and the stress on the final layout. Stresses are a fraction of a megapascal: at these loads the parts are far from yield, so the design is stiffness- and mass-driven, as the paper's safety factor above 15 also says.</figcaption></figure>
+  </div>
+</section>
+
+<!-- =================== DYNAMICS =================== -->
+<section class="section" id="dynamics">
+  <h2 class="section-title">Two pendulums, three PID loops</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>The paper splits the robot the way every reaction-wheel unicycle is split: <b>pitch and travel</b> are a wheeled inverted pendulum driven by the bottom wheel, and <b>roll</b> is a reaction-wheel pendulum pivoting about the ground contact line. With the generalised coordinates q = (θ₂, ϕ, θ₁, φ) of Eq. (3.1), reaction-wheel angle, roll, drive-wheel angle, pitch, and the Lagrangian L = E − U of Eqs. (3.3)–(3.5), the Euler–Lagrange equations give the motion; the paper's Eqs. (3.6)–(3.9) are those with the DC-motor torques substituted.</p>
+      <div class="eq">pitch: (J<sub>b</sub> + m l²) <span class="m">φ̈</span> + m l cos φ <span class="m">ẍ</span> − m g l sin φ = −τ₁ &nbsp;·&nbsp; (M + J<sub>w</sub>/r²) <span class="m">ẍ</span> + m l cos φ <span class="m">φ̈</span> − m l φ̇² sin φ = τ₁ / r</div>
+      <div class="eq">roll: J<sub>p</sub> <span class="m">ρ̈</span> − M<sub>t</sub> g l<sub>b</sub> sin ρ = −τ₂ &nbsp;·&nbsp; J₂ (<span class="m">ρ̈</span> + <span class="m">θ̈₂</span>) = τ₂</div>
+      <div class="eq">motors: τ = K<sub>T</sub> (u − K<sub>E</sub> ω) / R &nbsp;·&nbsp; the paper's K<sub>E</sub>·60/(2π) is K<sub>E</sub> in V per rpm</div>
+      <p>The re-run keeps the wheel/body coupling terms of the pitch subsystem (m l cos φ on both rows), which the paper's Eq. (3.8)–(3.9) drop; their small-angle, uncoupled form is the special case. Three PID loops close the system exactly as in Fig. 10: roll on the reaction-wheel motor, pitch and translation summed onto the drive motor, with one gain set for both chassis. The re-run adds a small reaction-wheel speed term to the roll loop (the standard fix for wheel-speed drift) and drops the roll integrator; the pitch loop keeps its integrator with anti-windup.</p>
+      <div class="eq">u₁ = K<sub>p</sub> φ + K<sub>d</sub> φ̇ + K<sub>i</sub> ∫φ + K<sub>x</sub> x + K<sub>dx</sub> ẋ &nbsp;·&nbsp; u₂ = K<sub>p,ρ</sub> ρ + K<sub>d,ρ</sub> ρ̇ + K<sub>w</sub> θ̇₂ &nbsp;·&nbsp; |u| ≤ 11.1 V, 200 Hz, RK4 at 1 kHz</div>
+      <p><b>Why the chassis matters to the controller.</b> Linearised about upright, the pitch subsystem has one unstable pole at roughly √(g / l<sub>eff</sub>): the higher the centre of mass, the slower the fall. A lighter body also needs less torque per radian of lean (m g l). Generative design moved the chassis from 820 g with the centre of mass 12 cm above the axle to 650 g at 15 cm: from a 9.0 /s pole to a 7.8 /s one, at nearly the same m g l. That is the whole physical effect the sweeps below quantify.</p>
+    </div>
+    <div>
+      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/unicycle/paper_fig10_control.png" alt="Block diagram: translation and pitch PID controllers feeding one DC motor, a roll PID feeding another, a mechanical system block with roll, pitch and translation outputs" class="pad" loading="lazy"><figcaption><b>The paper's control diagram (Fig. 10).</b> Three PID blocks, two motors, one mechanical system: translation and pitch share the drive motor.</figcaption></figure>
+      <figure class="fig"><img src="assets/images/projects/unicycle/figs/fig_poles.png" alt="Unstable pitch pole and gravity torque per radian against centre-of-mass height for four structure masses" loading="lazy"><figcaption><b>The plant the controller sees.</b> Left: the unstable pitch pole falls with the centre-of-mass height and barely depends on the structure mass. Right: m g l, the torque a radian of lean costs, against the drive motor's 0.48 N m stall torque. The dots are the two chassis.</figcaption></figure>
+      <div class="paper-figs" style="grid-template-columns:1fr 1fr">
+        <figure><img src="assets/images/projects/unicycle/paper_fig11_simulink.png" alt="Simulink control layer" loading="lazy"><figcaption>The paper's Simulink control layer (Fig. 11).</figcaption></figure>
+        <figure><img src="assets/images/projects/unicycle/paper_fig12_simulink.png" alt="Simulink Simscape mechanical layer" loading="lazy"><figcaption>Simscape Multibody mechanical layer (Fig. 12), with the CAD bodies imported.</figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== THE COMPARISON =================== -->
+<section class="section" id="compare">
+  <h2 class="section-title">The comparison, re-run</h2>
+  <p class="lead">The paper's Simulink/Simscape model and the Fusion 360 files are not available, so the comparison is re-run with the equations above, the component masses of Table 1, and estimates for what the paper does not give (wheel radius, inertias, motor constants, the conventional body's mass), all stated in the <a href="assets/pdf/projects/unicycle_report.pdf" target="_blank" rel="noopener">report</a>. Same protocol: both chassis released from 5° pitch and 5° roll, one PID set, settling time in the paper's 5 % band, the top-point excursion, and the electrical power of the two motors.</p>
+
+  <div class="table-wrap">
+    <table class="data-table" id="cmp-table">
+      <thead><tr><th>metric</th><th>generative, paper</th><th>conventional, paper</th><th>generative, re-run</th><th>conventional, re-run</th><th>generative, ×1.5 gains</th><th>conventional, ×1.5 gains</th></tr></thead>
+      <tbody>
+        <tr><td>pitch settling time, 5 % band [s]</td><td class="dim">0.688</td><td class="dim">19.21</td><td class="hi">0.70</td><td>0.74</td><td class="hi">0.67</td><td>none in 12 s (limit cycle)</td></tr>
+        <tr><td>roll settling time [s]</td><td class="dim">0.060</td><td class="dim">0.060</td><td>1.27</td><td>1.27</td><td>1.27</td><td>1.27</td></tr>
+        <tr><td>peak top-point excursion [cm]</td><td class="dim">9.2</td><td class="dim">35.6</td><td>3.1</td><td>2.9</td><td class="hi">3.1</td><td>4.4</td></tr>
+        <tr><td>mean electrical power over the run [W]</td><td class="dim">340 (their units)</td><td class="dim">348</td><td>0.53</td><td>0.48</td><td class="hi">0.45</td><td>44</td></tr>
+        <tr><td>peak electrical power [W]</td><td class="dim">2.76e6 (their units)</td><td class="dim">2.98e6</td><td>126</td><td>126</td><td>126</td><td>126</td></tr>
+        <tr><td>energy to recover [J]</td><td class="dim">—</td><td class="dim">—</td><td>5.4</td><td>4.9</td><td class="hi">5.4</td><td>528 (12 s)</td></tr>
+        <tr><td>unstable pitch pole [1/s]</td><td class="dim">—</td><td class="dim">—</td><td class="hi">7.8</td><td>9.0</td><td class="hi">7.8</td><td>9.0</td></tr>
+        <tr><td>body mass / CoM above the axle</td><td class="dim">169 g body, "higher"</td><td class="dim">"heavier, lower"</td><td>650 g / 15 cm</td><td>821 g / 12 cm</td><td>650 g / 15 cm</td><td>821 g / 12 cm</td></tr>
+      </tbody>
+    </table>
+    <div class="scroll-hint">← swipe the table →</div>
+  </div>
+  <p class="plot-note">The paper's roll settled in 0.06 s and its power numbers are unscaled Simulink signals, so those columns are shown for the record only. The re-run's roll takes 1.3 s because the reaction-wheel motor saturates at 11 V for the first 0.2 s: with a realistic motor, roll is the slow axis. The pitch settling of the generative chassis with the paper's gains, 0.70 s, matches the paper's 0.69 s; the difference is what the conventional chassis does.</p>
+
+  <div class="plots-block">
+    <div class="grid-2">
+      <div class="card card-pad"><canvas class="plot2d" id="pl-paper"></canvas></div>
+      <div class="card card-pad"><canvas class="plot2d" id="pl-rerun"></canvas></div>
+    </div>
+    <div class="grid-2" style="margin-top:18px">
+      <div class="card card-pad"><canvas class="plot2d" id="pl-ts-pitch"></canvas></div>
+      <div class="card card-pad"><canvas class="plot2d" id="pl-ts-roll"></canvas></div>
+      <div class="card card-pad"><canvas class="plot2d" id="pl-ts-top"></canvas></div>
+      <div class="card card-pad"><canvas class="plot2d" id="pl-ts-power"></canvas></div>
+    </div>
+    <p class="plot-note"><b>With the paper's gains, both chassis balance</b> and the traces nearly overlap: the conventional one is 40 ms slower in pitch and reaches the same peak power, the voltage limit. The difference the paper reports is not visible here. It appears when the gain set moves towards the edge of what the conventional chassis tolerates:</p>
+    <div class="grid-3" style="margin-top:18px">
+      <div class="card card-pad"><canvas class="plot2d" id="pl-edgebars"></canvas></div>
+      <div class="card card-pad"><canvas class="plot2d" id="pl-edge-top"></canvas></div>
+      <div class="card card-pad"><canvas class="plot2d" id="pl-edge-u"></canvas></div>
+    </div>
+    <p class="plot-note"><b>The same gain set scaled ×1.5.</b> The generative chassis settles in 0.67 s; the conventional one never settles within the 12 s run: its drive voltage sits at the ±11 V limits 81 % of the time, its pitch buzzes within ±0.45°, the wheel wanders over 8 cm, and it burns 528 J against 5 J. Inside one chassis' margin, outside the other's: that is the 0.69 s against 19 s of the paper's Table 2 in this model.</p>
+  </div>
+
+  <div class="clip-grid" id="cmp-clips">
+    <div class="card"><video muted loop playsinline preload="metadata" controls poster="assets/images/projects/unicycle/posters/compare_nominal.jpg"><source src="assets/videos/unicycle_compare_nominal.mp4" type="video/mp4"></video><span class="caption-box">THE PAPER'S GAINS</span><div class="body"><h3>Same gains, both balance</h3><p>5° pitch and 5° roll release. Pitch in 0.70 s against 0.74 s; roll in 1.3 s on both, limited by the reaction-wheel motor.</p></div></div>
+    <div class="card"><video muted loop playsinline preload="metadata" controls poster="assets/images/projects/unicycle/posters/compare_edge.jpg"><source src="assets/videos/unicycle_compare_edge.mp4" type="video/mp4"></video><span class="caption-box">GAINS ×1.5</span><div class="body"><h3>At the edge of the margin</h3><p>The generative chassis settles; the conventional one chatters at the voltage limit and drifts. The drive-voltage trace is the tell.</p></div></div>
+    <div class="card"><video muted loop playsinline preload="metadata" controls poster="assets/images/projects/unicycle/posters/compare_push.jpg"><source src="assets/videos/unicycle_compare_push.mp4" type="video/mp4"></video><span class="caption-box">PUSHED TWICE</span><div class="body"><h3>Kicks at 1 s and 4 s</h3><p>1.2 rad/s on both axes, the largest push either chassis survives with these motors: the reaction wheel's stall torque, not the chassis, sets the limit.</p></div></div>
+    <div class="card"><video muted loop playsinline preload="metadata" controls poster="assets/images/projects/unicycle/posters/compare_delay.jpg"><source src="assets/videos/unicycle_compare_delay.mp4" type="video/mp4"></video><span class="caption-box">35 MS LOOP DELAY</span><div class="body"><h3>A sluggish sensor chain</h3><p>The paper's gains with 35 ms between measurement and voltage: the generative chassis holds, the conventional one wanders. Both fall at 45 ms and 40 ms.</p></div></div>
+  </div>
+
+  <div class="grid-3" style="margin-top:22px">
+    <div class="card finding"><span class="no">1</span><h3>The chassis is a plant, not a tune</h3><p>With one fixed gain set the two chassis behave nearly the same until the set approaches the conventional chassis' limits. The paper's 0.69 s against 19 s is what one gain set looks like when it sits inside one chassis' margin and outside the other's.</p></div>
+    <div class="card finding"><span class="no">2</span><h3>A higher centre of mass buys time</h3><p>The unstable pole went from 9.0 /s to 7.8 /s. In the sweeps that is 10 % more gain margin, 5 ms more loop delay and a 25 % slower control loop before the fall, at the same motors. Mass alone changes little: m g l is nearly equal for the two.</p></div>
+    <div class="card finding"><span class="no">3</span><h3>What the motors set, the chassis cannot move</h3><p>The largest recoverable tilt (11°) and push (1.25 rad/s) are identical for both: the reaction-wheel stall torque against M g l<sub>b</sub> sin ρ. Peak power is the voltage limit on both. Energy per 5° recovery is 5 J either way.</p></div>
+  </div>
+</section>
+
+<!-- =================== SWEEPS =================== -->
+<section class="section" id="sweeps">
+  <h2 class="section-title">What the chassis buys you: the sweeps</h2>
+  <p class="lead">One simulation per point, deterministic, from the same scripts. Red is the generative chassis, blue the conventional; a cross marks a fall.</p>
+  <div class="grid-2">
+    <div class="card card-pad"><canvas class="plot2d" id="pl-gain"></canvas><p class="plot-note"><b>Gain margin.</b> Scaling the paper's pitch and position gains together: both improve until 1.375×, where the conventional chassis breaks into a limit cycle; the generative one holds to 1.5×. Below 0.5× both are simply slower.</p></div>
+    <div class="card card-pad"><canvas class="plot2d" id="pl-gain-energy"></canvas><p class="plot-note"><b>Energy against the gain scale.</b> Inside the margin a 5° recovery costs 5 J; the limit cycle costs a hundred times that, most of it heating the drive motor's winding at the voltage limit.</p></div>
+    <div class="card card-pad"><canvas class="plot2d" id="pl-delay"></canvas><p class="plot-note"><b>Loop delay.</b> Peak top-point excursion as a pure delay is added between measurement and voltage. The conventional chassis starts wandering at 20 ms and falls at 40 ms; the generative one at 30 ms and 45 ms.</p></div>
+    <div class="card card-pad"><canvas class="plot2d" id="pl-rate"></canvas><p class="plot-note"><b>Control period.</b> The same gains with a slower controller: the conventional chassis falls at a 40 ms period, the generative one at 50 ms. A slower fall tolerates a slower loop.</p></div>
+    <div class="card card-pad"><canvas class="plot2d" id="pl-tilt"></canvas><p class="plot-note"><b>Initial tilt.</b> Energy to recover grows with the tilt; both chassis fall from 12°, where the reaction-wheel motor can no longer out-torque gravity in roll. The generative chassis costs slightly more energy per recovery: its centre of mass is higher, so a degree of lean is more potential energy.</p></div>
+    <div class="card card-pad"><canvas class="plot2d" id="pl-push"></canvas><p class="plot-note"><b>Push at 1 s.</b> Peak pitch after an impulsive kick on both axes; both survive up to 1.25 rad/s and fall at 1.5. The generative chassis swings 20 % further for the same kick (lighter, higher) and recovers in the same time.</p></div>
+  </div>
+  <div class="card scene-block">
+    <div class="scene-head">
+      <span class="caption-box">THE MAP · STRUCTURE MASS × CENTRE OF MASS</span>
+      <h3>Where generative design moved the chassis</h3>
+      <p>72 chassis on a grid of structure mass and centre-of-mass height, all with the paper's gains. The white circles are the two chassis; the arrow is the move generative design made. Low centres of mass fall with these gains no matter the mass; the conventional chassis sits one row above that edge, the generative one three.</p>
+    </div>
+    <div class="scene-bar"><label>colour by <select id="pl-grid-key"><option value="pole" selected>unstable pitch pole [1/s]</option><option value="ts">settling time, 5° release [s]</option><option value="energy">energy to recover [J]</option><option value="peak30">peak excursion with 30 ms loop delay [cm]</option></select></label></div>
+    <canvas class="plot2d" id="pl-grid" style="height:360px"></canvas>
+  </div>
+  <div class="grid-2" style="margin-top:18px">
+    <div class="card card-pad"><canvas class="plot2d" id="pl-retuned"></canvas><p class="plot-note"><b>If each chassis gets its own tune.</b> LQR on the linearised plant with the same weights for both, mapped onto the paper's three-loop structure: the two settle in 0.80 s and 0.80 s (pitch), 0.96 s and 0.91 s (roll). Retuned, the chassis difference nearly vanishes; what remains is the margin above.</p></div>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/unicycle/figs/fig_timeseries.png" alt="Pitch, roll, top-point displacement and power traces for both chassis with the paper's gains" loading="lazy"><figcaption><b>The nominal release, all four traces</b> (also in the report as vector figures, with the full sweeps).</figcaption></figure>
+  </div>
+</section>
+
+<!-- =================== EXPLAINER =================== -->
+<section class="section" id="explainer">
+  <h2 class="section-title">The explainer</h2>
+  <div class="big-clip"><video controls playsinline preload="metadata" poster="assets/images/projects/unicycle/tease_poster.jpg"><source src="assets/videos/unicycle_explainer.mp4" type="video/mp4"></video></div>
+  <p class="plot-note" style="margin-top:12px">Seventy-two seconds: the robot and its three degrees of freedom, the five-step pipeline with the topology optimisation running, the mass against safety-factor chart, the two pendulums released with the motors off, the nominal and the edge comparisons, the sweeps, the printed prototype, and what this re-run can and cannot claim.</p>
+</section>
+
+<!-- =================== REPRODUCE =================== -->
+<section class="section" id="reproduce">
+  <h2 class="section-title">Reproduce</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>Everything on this page comes from one small Python package and four scripts; nothing is random, so there are no seeds. The package holds the two chassis, the motors, the dynamics with RK4 and the three PID loops, the metrics, the linearisation with an LQR helper, and the SIMP topology optimiser with the stress check. The scripts run the sweeps in parallel, draw the figures and the results JSON the plots above read, render the videos with a small software rasteriser, and build the report.</p>
+<pre class="cmd"><span class="c"># Unicycle/experiments</span>
+python -m pytest -q tests                <span class="c"># energy conservation, linearisation vs finite differences, closed-loop, settling, topopt</span>
+python run_study.py control              <span class="c"># 2 x main + gain / delay / rate / tilt / push / friction sweeps + the 72-chassis grid -> out/study.json</span>
+python run_study.py topopt               <span class="c"># three brackets x ten volume fractions, time-lapse frames -> out/topopt.{json,npz}</span>
+python make_figures.py                   <span class="c"># docs/figures/*.pdf, site PNGs, assets/data/unicycle_results.json, docs/numbers.tex</span>
+python make_videos.py --which all        <span class="c"># teaser, explainer, comparisons, time-lapses, thumb -> assets/videos/unicycle_*.mp4</span>
+cd ../docs && make                       <span class="c"># unicycle.pdf, the technical report</span></pre>
+    </div>
+    <div class="prose">
+      <p><b>Files.</b> <code>unicycle/params.py</code> (Chassis, Motor, Gains and every estimate in one place), <code>model.py</code> (Unicycle, simulate, metrics, linearise, lqr), <code>topopt.py</code> (LoadCase, topopt, stress_check, the three brackets); <code>render.py</code> is the rasteriser. The browser twins are <code>assets/js/unicycle_sim.js</code> (the same model, line for line), <code>unicycle_scene3d.js</code> (three.js), <code>unicycle_topopt.js</code> (SIMP with a matrix-free conjugate-gradient solve) and <code>unicycle_plots.js</code>.</p>
+      <p><b>Assumptions you can change.</b> Drive wheel 70 mm, 40 g; reaction wheel 120 mm ring, 85 % of m r²; body radius of gyration 0.6 of the CoM height; a 12 V geared drive motor (0.48 N m stall) and a 0.33 N m direct-drive reaction-wheel motor; the conventional structure at twice the generative mass with the centre of mass 3 cm lower. The grid sweep shows how the conclusions move with the last two.</p>
+      <p><a href="assets/pdf/projects/unicycle_report.pdf" target="_blank" rel="noopener">Technical report (PDF)</a>: the derivations, the parameter table, every figure with its numbers, and the limitations.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== CREDITS =================== -->
+<section class="section" id="credits">
+  <h2 class="section-title">Credits</h2>
+  <div class="card card-pad credits">
+    <p><b>Generative Design for Self-balancing Unicycle Robot in Additive Manufacturing.</b> Jiaqi Chen (Tongji University), Qilong Cheng (University of Toronto) and Mengrui Han (Beijing University of Technology); the first two authors contributed equally. International Conference on Automation Control, Algorithm, and Intelligent Bionics (ACAIB 2022), Proc. SPIE 12253, 122530A. <a href="https://doi.org/10.1117/12.2639454" target="_blank" rel="noopener">doi:10.1117/12.2639454</a>.</p>
+    <p style="margin-top:8px">Figures 1 to 14 shown on this page are the paper's. The 3-D twins, the topology-optimisation playground, the time-lapses, the comparison videos, the sweeps and the report are mine, built from the paper's equations and Table 1 with the estimates stated above; the Simulink and Fusion 360 files of the original study were not available for this re-run. The prototype clip is from the project.</p>
+  </div>
+</section>
+
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+<script src="assets/js/unicycle_plots.js"></script>
+<script type="module">
+  import { initScene } from './assets/js/unicycle_scene3d.js';
+  import { initTopopt } from './assets/js/unicycle_topopt.js';
+  const q = (id) => document.getElementById(id);
+  try {
+    initScene({ canvas: q('uc-canvas'), mode: q('uc-mode'), view: q('uc-view'), speed: q('uc-speed'), motors: q('uc-motors'), reset: q('uc-reset'), tilt: q('uc-tilt'), tiltOut: q('uc-tilt-out'), drop: q('uc-drop'),
+      pushF: q('uc-push-f'), pushB: q('uc-push-b'), pushL: q('uc-push-l'), pushR: q('uc-push-r'), pushMag: q('uc-push-mag'), pushOut: q('uc-push-out'),
+      presetPaper: q('uc-preset-paper'), presetEdge: q('uc-preset-edge'), presetDelay: q('uc-preset-delay'),
+      kp: q('uc-kp'), kd: q('uc-kd'), kx: q('uc-kx'), kpr: q('uc-kpr'), kdr: q('uc-kdr'), gscale: q('uc-gscale'), delay: q('uc-delay'), rate: q('uc-rate'), gainsOut: q('uc-gains-out'),
+      hud: q('uc-hud'), info: q('uc-info'), plotPhi: q('uc-plot-phi'), plotRho: q('uc-plot-rho'), plotTop: q('uc-plot-top') });
+  } catch (e) { q('uc-info').textContent = 'The 3-D scene needs WebGL: ' + e.message; console.error(e); }
+  try {
+    initTopopt({ canvas: q('tp-canvas'), hist: q('tp-hist'), preset: q('tp-preset'), volfrac: q('tp-volfrac'), volOut: q('tp-vol-out'), rmin: q('tp-rmin'), rminOut: q('tp-rmin-out'), brush: q('tp-brush'), loadN: q('tp-load'), showStress: q('tp-stress'), run: q('tp-run'), step: q('tp-step'), reset: q('tp-reset'), readout: q('tp-readout'), story: q('tp-story') });
+  } catch (e) { q('tp-readout').textContent = 'The playground failed to start: ' + e.message; console.error(e); }
+  /* autoplay the muted clips while they are on screen */
+  const io = new IntersectionObserver((es) => es.forEach(e => { const v = e.target; if (e.isIntersecting) v.play().catch(() => {}); else v.pause(); }), { threshold: 0.25 });
+  document.querySelectorAll('.clip-grid video, .phone video').forEach(v => io.observe(v));
+</script>
+</body>
+</html>
