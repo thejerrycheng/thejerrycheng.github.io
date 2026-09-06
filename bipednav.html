@@ -98,6 +98,13 @@
     .credits { font-size: 14.5px; line-height: 1.6; color: var(--ink-soft); }
     .credits b { color: var(--ink); }
     .poster-embed img { border: var(--line-w) solid var(--ink); border-radius: 6px; box-shadow: var(--sh-sm); background: #fff; }
+    .bn-gallery { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 14px; }
+    .bn-scene-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 8px 8px 0; }
+    .bn-scene-row img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border: 1.5px solid var(--ink); border-radius: 4px; background: #fff; }
+    .bn-scene .cap { padding: 8px 12px 10px; font-size: 13px; color: var(--ink-soft); }
+    .hero-clip video { width: 100%; display: block; border: var(--line-w) solid var(--ink); border-radius: 10px; box-shadow: var(--sh-md); }
+    .lead-row { display: grid; grid-template-columns: 1.15fr 1fr; gap: 18px; align-items: start; }
+    @media (max-width: 820px) { .bn-scene-row { grid-template-columns: repeat(2, 1fr); } .lead-row { grid-template-columns: 1fr; } }
     /* ---- try-it demo ---- */
     .bn-demo-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; align-items: start; }
     .bn-drop { border: 2px dashed var(--ink); border-radius: var(--radius); background: var(--panel); padding: 26px 20px; text-align: center; cursor: pointer; transition: background .15s ease, transform .15s ease; box-shadow: var(--sh-sm); }
@@ -284,376 +291,18 @@
       <p style="font-size:12.5px;color:var(--ash);margin-top:8px">Recording rigs from the poster: a lower-limb exoskeleton with leg-mounted cameras and the head-mounted RealSense used for the stair scenes.</p>
     </div>
   </div>
-</section>
-
-
-<!-- =================== TRY IT =================== -->
-<section class="section" id="tryit">
-  <h2 class="section-title">Try it: one photo → stair or obstacle geometry</h2>
-  <p class="quote">Runs entirely in your browser: a 27 MB Depth Anything V2 network estimates depth, the BipedNav pipeline finds the treads and risers (or the floor and the first obstacle), and prints rise/run or distance/depth/height. Nothing is uploaded.</p>
-  <div class="bn-demo-grid" style="margin-top:22px">
-    <div>
-      <div class="bn-drop" id="bn-drop" role="button" tabindex="0">
-        <div class="big">Drop a staircase or obstacle photo here</div>
-        <div class="small">or click to choose one · phone photos work best when taken from standing height, looking down at the steps</div>
-        <input type="file" id="bn-file" accept="image/*" hidden>
-      </div>
-      <p style="font-family:var(--font-mono);font-size:11.5px;color:var(--ash);margin-top:12px">Stock scenes from the archived dataset (tape measurements known; camera height set automatically):</p>
-      <div class="bn-stock" id="bn-stock">
-        <img src="assets/images/projects/bipednav/samples/WE_20240608_175134-up-1-240_rgb.jpg" alt="stock scene WE 17:51" data-rise="14.15" data-run="27.1" data-camh="1.66" title="WE 17:51 — tape rise 14.2 cm, run 27.1 cm">
-        <img src="assets/images/projects/bipednav/samples/WE_20240608_182747-up-1-152_rgb.jpg" alt="stock scene WE 18:27" data-rise="19.5" data-run="25.25" data-camh="1.39" title="WE 18:27 — tape rise 19.5 cm, run 25.3 cm">
-        <img src="assets/images/projects/bipednav/samples/WI_20240608_174157-up-1-338_rgb.jpg" alt="stock scene WI 17:41" data-rise="12.0" data-run="29.55" data-camh="1.29" title="WI 17:41 — tape rise 12.0 cm, run 29.6 cm">
-        <img src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_rgb.jpg" alt="stock scene WI 17:47" data-rise="12.0" data-run="29.55" data-camh="1.28" title="WI 17:47 — tape rise 12.0 cm, run 29.6 cm">
-        <img src="assets/images/projects/bipednav/samples/WI_20240608_181219-up-1-228_rgb.jpg" alt="stock scene WI 18:12" data-rise="15.0" data-run="32.1" data-camh="1.64" title="WI 18:12 — tape rise 15.0 cm, run 32.1 cm">
-      </div>
-      <div class="bn-controls">
-        <label>camera height above the nearest floor / tread [m]<input type="number" id="bn-camh" value="1.40" step="0.05" min="0.3" max="3"></label>
-        <label>horizontal field of view [°]<input type="number" id="bn-fov" value="56" step="1" min="30" max="110"></label>
-        <label>what to look for<select id="bn-mode"><option value="auto">auto</option><option value="stairs">stairs</option><option value="obstacle">obstacle</option></select></label>
-        <button class="btn btn-primary" id="bn-run" type="button">Run</button>
-      </div>
-      <div class="bn-status" id="bn-status">loading…</div>
-      <div class="bn-result" id="bn-result"></div>
-    </div>
-    <div class="bn-canvases">
-      <div><div class="lbl">photo</div><canvas id="bn-canvas-in" width="640" height="480"></canvas></div>
-      <div><div class="lbl">monocular depth (metric)</div><canvas id="bn-canvas-depth" width="640" height="480"></canvas></div>
-      <div><div class="lbl">treads · risers / floor · obstacle</div><canvas id="bn-canvas-seg" width="640" height="480"></canvas></div>
-      <div><div class="lbl">side profile + fitted lattice</div><canvas id="bn-canvas-profile" width="640" height="480"></canvas></div>
-    </div>
-  </div>
-  <p style="font-size:13px;color:var(--ash);margin-top:14px">How the scale is recovered: the network's output is inverse depth up to an affine map, so the pipeline searches the shift that makes the dominant up-facing surface planar and sets the scale so that surface lies at the camera height you enter. The stock scenes use the camera height measured by the depth camera; for your own photo, enter roughly the height of your phone above the floor (1.4–1.7 m when standing). The metric fine-tuned Metric3D v2 of the original study is more accurate than this browser-sized model; the geometry pipeline is the same.</p>
-</section>
-
-<!-- =================== CONTROL (five-link) =================== -->
-<section class="section" id="control">
-  <h2 class="section-title">Locomotion layer: a five-link biped with knees</h2>
-  <div class="grid-2">
-    <div class="card card-pad prose">
-      <p class="bn-lead">The walker is the <b>five-link biped</b> of the course's first assignment, the structure of the RABBIT robot: two legs with <b>knees</b>, a <b>torso</b>, point masses at the joints, point feet, four actuators (both knees, the hip, the torso) and an unactuated pivot at the stance foot. Shank and thigh are 0.5 m each, the torso 0.3 m. The robot is scaled to a realistic <b>50 kg</b> (13 kg at each knee, 8 kg at the hip, 13 kg of torso, 1.3 kg feet) and driven by actuators rated at <b>400 N·m continuous</b>, the bound every periodic gait is designed to, with an <b>800 N·m peak</b> for the transients of a few tens of milliseconds at the switch between gaits (the simulator's motors saturate there).</p>
-      <p><b>Virtual holonomic constraints.</b> The four actuated joints are tied to the stance-shank angle <i>θ</i> by Bézier polynomials <i>q<sub>k</sub> = φ<sub>k</sub>(θ)</i> and enforced by input–output feedback linearisation. The end coefficients encode the touchdown posture, its mirror image after the leg swap, and <b>hybrid invariance</b> (the post-impact velocity is tangent to the constraint); the interior coefficients, the touchdown tangents and the posture (stance-knee flexion, swing-knee flexion, torso lean) are optimised under transversality, existence and stability of the hybrid orbit, no knee hyper-extension, torso and hip bounds, and swing-foot clearance over the terrain.</p>
-      <div class="eq">ζ<span class="m">k+1</span> = (δ²/M⁻) ζ<span class="m">k</span> − V⁻      same return map as the two-link walker, now with knees to lift the foot</div>
-      <p><b>Verified, not assumed.</b> The closed-form dynamics match a symbolic derivation to 4·10⁻¹⁵, the impact map conserves angular momentum about the new stance foot to 10⁻¹⁵, and the leg-swap relabelling reproduces every physical point (the archived assignment code had a stray torso term in the new stance-knee angle, caught by that check). On flat ground the 0.40 m gait is a stable hybrid limit cycle with Floquet multiplier 0.79, and the return-map slope measured in simulation matches it.</p>
-      <div class="tag-row"><span class="chip">RABBIT structure</span><span class="chip">4 actuators, 1 passive pivot</span><span class="chip">Bézier VHCs</span><span class="chip">chained through the impact map</span><span class="chip">collision-checked terrain</span></div>
-    </div>
-    <div>
-      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/biped5_flat_strobe.png" alt="Five-link biped: strobe of configurations on the constraint set" loading="lazy"><figcaption><b>The constraint set on flat ground</b> (stride 0.40 m) with the swing-foot path.</figcaption></figure>
-      <figure class="fig"><img src="assets/images/projects/bipednav/biped5_return_map.png" alt="Five-link return map: simulation versus the analytic slope" loading="lazy"><figcaption><b>Return map</b> measured over 16 steps from three initial speeds against the analytic affine map.</figcaption></figure>
-    </div>
-  </div>
-  <div class="clip-row">
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_biped5_flat.mp4" type="video/mp4"></video><div class="body"><h3>Flat ground, 0.40 m stride</h3><p>Ten steps from 1.25× the limit-cycle speed. Period 0.78 s at the fixed point, 0.51 m/s, peak actuator torque 2.0 N·m for the 1.9 kg robot, designed with a 30 % energy margin over its barrier; the energy plot shows the orbit settling onto the fixed point.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case0.mp4" type="video/mp4"></video><div class="body"><h3>Perceive → plan → step over a box</h3><p>The planner reads the obstacle from one view (1.20 m ahead, 15 cm deep, 8 cm high), schedules the approach, a step over the box with the leading leg, brings the trailing leg over and resumes the 0.40 m gait. Every step, no collision; the five cases are in the table below.</p></div></div>
+  <p class="bn-lead" style="margin-top:22px"><b>Five real staircases, one pass each.</b> Left to right: the image, the metric depth, the surface normals (treads and risers are the two dominant directions), and the side profile with the fitted tread and riser planes against the tape measurement. Rise / run in cm: tape → estimate.</p>
+  <div class="bn-gallery">
+    <div class="card bn-scene"><div class="bn-scene-row"><img src="assets/images/projects/bipednav/samples/WE_20240608_175134-up-1-240_rgb.jpg" alt="WE 17:51 rgb" loading="lazy"><img src="assets/images/projects/bipednav/samples/WE_20240608_175134-up-1-240_depth.jpg" alt="WE 17:51 depth" loading="lazy"><img src="assets/images/projects/bipednav/samples/WE_20240608_175134-up-1-240_normals.jpg" alt="WE 17:51 normals" loading="lazy"><img src="assets/images/projects/bipednav/samples/WE_20240608_175134-up-1-240_profile_est.png" alt="WE 17:51 profile_est" loading="lazy"></div><div class="cap"><b>WE 17:51</b> · tape 14.2 / 27.1 → estimate 16.5 / 19.3</div></div>
+    <div class="card bn-scene"><div class="bn-scene-row"><img src="assets/images/projects/bipednav/samples/WE_20240608_182747-up-1-152_rgb.jpg" alt="WE 18:27 rgb" loading="lazy"><img src="assets/images/projects/bipednav/samples/WE_20240608_182747-up-1-152_depth.jpg" alt="WE 18:27 depth" loading="lazy"><img src="assets/images/projects/bipednav/samples/WE_20240608_182747-up-1-152_normals.jpg" alt="WE 18:27 normals" loading="lazy"><img src="assets/images/projects/bipednav/samples/WE_20240608_182747-up-1-152_profile_est.png" alt="WE 18:27 profile_est" loading="lazy"></div><div class="cap"><b>WE 18:27</b> · tape 19.5 / 25.3 → estimate 19.6 / 25.1</div></div>
+    <div class="card bn-scene"><div class="bn-scene-row"><img src="assets/images/projects/bipednav/samples/WI_20240608_174157-up-1-338_rgb.jpg" alt="WI 17:41 rgb" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_174157-up-1-338_depth.jpg" alt="WI 17:41 depth" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_174157-up-1-338_normals.jpg" alt="WI 17:41 normals" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_174157-up-1-338_profile_est.png" alt="WI 17:41 profile_est" loading="lazy"></div><div class="cap"><b>WI 17:41</b> · tape 12.0 / 29.6 → estimate 15.1 / 31.2</div></div>
+    <div class="card bn-scene"><div class="bn-scene-row"><img src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_rgb.jpg" alt="WI 17:47 rgb" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_depth.jpg" alt="WI 17:47 depth" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_normals.jpg" alt="WI 17:47 normals" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_profile_est.png" alt="WI 17:47 profile_est" loading="lazy"></div><div class="cap"><b>WI 17:47</b> · tape 12.0 / 29.6 → estimate 14.2 / 28.1</div></div>
+    <div class="card bn-scene"><div class="bn-scene-row"><img src="assets/images/projects/bipednav/samples/WI_20240608_181219-up-1-228_rgb.jpg" alt="WI 18:12 rgb" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_181219-up-1-228_depth.jpg" alt="WI 18:12 depth" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_181219-up-1-228_normals.jpg" alt="WI 18:12 normals" loading="lazy"><img src="assets/images/projects/bipednav/samples/WI_20240608_181219-up-1-228_profile_est.png" alt="WI 18:12 profile_est" loading="lazy"></div><div class="cap"><b>WI 18:12</b> · tape 15.0 / 32.1 → estimate 15.7 / 33.3</div></div>
   </div>
   <div class="grid-2" style="margin-top:22px">
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/biped5_flat_phase.png" alt="Energy levels of the constrained dynamics with sixteen simulated steps" loading="lazy"><figcaption><b>Energy levels and the hybrid orbit</b>, 16 steps from 1.3× the limit-cycle speed; dotted segments are the impact map.</figcaption></figure>
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/biped5_flat_torques.png" alt="The four actuator torques and the constraint error" loading="lazy"><figcaption><b>Four torques and the constraint error</b> over six steps; the stance knee carries the impact, the hip drives the swing.</figcaption></figure>
-  </div>
-</section>
-
-<!-- =================== OBSTACLES =================== -->
-<section class="section" id="obstacles">
-  <h2 class="section-title">Obstacles: perceive, pre-plan, walk over</h2>
-  <div class="grid-2">
-    <div class="card card-pad prose">
-      <p class="bn-lead">From one view of the floor ahead, the perception layer returns the first obstacle in the walking corridor: its <b>distance</b>, <b>depth</b> and <b>height</b> (floor plane from the up-facing normal mode, points above it clustered along the walk, top surface for the depth). On synthetic RGB-D scenes with a 45° head camera the distance is recovered to 1 cm, the height to 1 cm and the depth to 2 cm out to about 2 m; beyond that the box holds too few pixels.</p>
-      <p><b>Pre-planning from the current pose.</b> The walker is offered boxes of 5 to 22 cm height and 10 to 30 cm depth. It takes off 25 cm before the box and lands 15 to 23 cm past it, so the leading step is <i>a + d + b</i>; the approach is split into equal regular steps between 0.28 and 0.55 m and a regular VHC gait is designed for that stride. The leading and trailing step-over gaits are then designed <b>in sequence, each chained to the previous impact</b>: the leading step starts where the approach gait's impact leaves the robot and must hand a usable impact gain to the next step; the trailing step starts where the leading step's impact leaves it and ends exactly in the nominal gait (or, if that is infeasible, lands freely and a recovery step ends in it). Every transition is hybrid-invariant by construction; the incoming phase velocity is propagated through the zero dynamics and every step must keep an energy margin over its barrier, a feed-forward torque under 400 N·m (the 50 kg robot's continuous rating) and 3 cm of clearance over the perceived box inflated by the perception uncertainty (2 cm in front, 3 cm behind, 2 cm up). At this mass three of the five boxes are crossed end to end; the 12 and 15 cm boxes need a recovery step whose torque exceeds the motors, and the walker trips at the trailing step.</p>
-      <p>The plan is then executed against the <b>true</b> box, so the perception error is part of the test. One bug decided the outcome of the taller boxes: when a step chains from a step that was itself chained, its hand-over tangent has to use the executed step's phase span, not the periodic one; with the wrong span the post-impact velocity was not tangent to the next constraint and the controller's correction transient tripped the trailing leg. With the correct span, all five perceived boxes are crossed.</p>
-    </div>
-    <div>
-      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/plan_case0_strobe.png" alt="The two chained step-over gaits over the box" loading="lazy"><figcaption><b>Case 0, the two step-over gaits.</b> Leading leg over the box (left), trailing leg over it and back into the regular gait (right).</figcaption></figure>
-      <figure class="fig"><img src="assets/images/projects/bipednav/plan_case0_footpath.png" alt="Swing-foot paths of the whole plan" loading="lazy"><figcaption><b>The whole plan</b>: swing-foot paths in world coordinates, alternating colours per step.</figcaption></figure>
-    </div>
-  </div>
-  <div class="table-wrap" id="plan-table">
-    <table class="data-table">
-      <thead><tr><th>case</th><th>true box (dist / depth / height)</th><th>perceived</th><th>plan</th><th>result</th><th>peak torque</th></tr></thead>
-      <tbody>
-        <tr><td>0</td><td>1.20 m / 15 cm / 8 cm</td><td>1.20 m / 14 cm / 9 cm</td><td>2 × 0.46 m, then 0.63 m over, resume 0.40 m</td><td class="ok">8/8 steps, no collision</td><td>432 N·m</td></tr>
-        <tr><td>1</td><td>1.60 m / 20 cm / 15 cm</td><td>1.59 m / 18 cm / 16 cm</td><td>3 × 0.44 m, then 0.71 m over, resume 0.40 m</td><td class="bad">5/9 steps, then trip</td><td>800 N·m</td></tr>
-        <tr><td>2</td><td>2.00 m / 25 cm / 22 cm</td><td>1.99 m / 23 cm / 23 cm</td><td>4 × 0.43 m, then 0.76 m over, resume 0.40 m</td><td class="ok">10/10 steps, no collision</td><td>419 N·m</td></tr>
-        <tr><td>3</td><td>1.00 m / 30 cm / 12 cm</td><td>1.00 m / 28 cm / 13 cm</td><td>2 × 0.37 m, then 0.78 m over, resume 0.40 m</td><td class="bad">2/8 steps, then trip</td><td>426 N·m</td></tr>
-        <tr><td>4</td><td>1.40 m / 10 cm / 5 cm</td><td>1.40 m / 9 cm / 6 cm</td><td>3 × 0.38 m, then 0.54 m over, resume 0.40 m</td><td class="ok">9/9 steps, no collision</td><td>415 N·m</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="clip-row" id="plan-clips">
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case0.mp4" type="video/mp4"></video><div class="body"><h3>Case 0: 8 cm box, 1.2 m ahead</h3><p>2 approach steps of 0.46 m, 0.63 m over with the leading leg, trailing leg over, regular gait resumed — 8/8 steps, no collision.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case1.mp4" type="video/mp4"></video><div class="body"><h3>Case 1: 15 cm box, 1.6 m ahead</h3><p>3 approach steps of 0.44 m, 0.71 m over with the leading leg, trailing leg over, regular gait resumed — 5/9 steps, then trip.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case2.mp4" type="video/mp4"></video><div class="body"><h3>Case 2: 22 cm box, 2.0 m ahead</h3><p>4 approach steps of 0.43 m, 0.76 m over with the leading leg, trailing leg over, regular gait resumed — 10/10 steps, no collision.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case3.mp4" type="video/mp4"></video><div class="body"><h3>Case 3: 12 cm box, 1.0 m ahead</h3><p>2 approach steps of 0.37 m, 0.78 m over with the leading leg, trailing leg over, regular gait resumed — 2/8 steps, then trip.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case4.mp4" type="video/mp4"></video><div class="body"><h3>Case 4: 5 cm box, 1.4 m ahead</h3><p>3 approach steps of 0.38 m, 0.54 m over with the leading leg, trailing leg over, regular gait resumed — 9/9 steps, no collision.</p></div></div>
-  </div>
-</section>
-
-<!-- =================== STAIRS =================== -->
-<section class="section" id="stairs">
-  <h2 class="section-title">Stairs: the gait adapts to every riser</h2>
-  <div class="grid-2">
-    <div class="card card-pad prose">
-      <p class="bn-lead">The five-link biped climbs and descends staircases whose <b>rise and run change from one stair to the next</b>. The perception layer hands the planner the next riser's height and the tread's run; the planner looks the gait up in a <b>library of periodic stair gaits</b> designed on a grid of (run, rise) for both directions, interpolates the VHC parameters (touchdown posture, tangents, Bézier interior) to the exact geometry, chains the step to the one being executed through the impact map, and re-designs it as a transition step only when the analytic checks (regularity, clearance, energy along the step, torque) fail.</p>
-      <p><b>What changes with the geometry.</b> Steeper risers are met with a more flexed landing knee, a stronger torso lean and a higher swing-foot lift; descending gaits are faster and land with a straighter knee. The library maps show the whole picture; the clips below are library gaits walking uniform staircases of eight different geometries, each for eight collision-checked steps.</p>
-      <p><b>Why it works now.</b> Two changes made climbing gaits appear where a 72-start search had found none: the phase variable is the virtual stance-leg angle (so the constraint stays regular while the stance knee extends under load), and the landing knee is allowed to flex deeply, which is how the virtual potential can fall over an upward step (<i>V</i>⁻ &lt; 0) while the impact pays it back.</p>
-      <div class="tag-row"><span class="chip">library of periodic gaits</span><span class="chip">per-stair interpolation</span><span class="chip">chained through the impact</span><span class="chip">transition re-design</span><span class="chip">executed against the true stairs</span></div>
-    </div>
-    <div>
-      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/biped5_stairs_library_up.png" alt="Maps of the stair-gait parameters over riser height and tread run, walking up" loading="lazy"><figcaption><b>Walking up.</b> Knee flexion at landing, torso lean, foot lift, step period, Floquet multiplier and peak torque over the (run, rise) grid.</figcaption></figure>
-      <figure class="fig"><img src="assets/images/projects/bipednav/biped5_stairs_library_down.png" alt="Maps of the stair-gait parameters over riser height and tread run, walking down" loading="lazy"><figcaption><b>Walking down.</b> The same maps for descending gaits.</figcaption></figure>
-    </div>
-  </div>
-  <div class="clip-row" id="stairs5-lib-clips">
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_lib_up_28_8.mp4" type="video/mp4"></video><div class="body"><h3>Up: rise 8 cm, run 28 cm</h3><p>Landing knee 49°, torso lean +29°, foot lift 39 cm, period 0.70 s, Floquet 0.41, peak torque 380 N·m; 8/8 steps.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_lib_up_28_14.mp4" type="video/mp4"></video><div class="body"><h3>Up: rise 14 cm, run 28 cm</h3><p>Landing knee 56°, torso lean +29°, foot lift 35 cm, period 0.90 s, Floquet 0.32, peak torque 380 N·m; 8/8 steps.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_lib_up_24_11.mp4" type="video/mp4"></video><div class="body"><h3>Up: rise 11 cm, run 24 cm</h3><p>Landing knee 50°, torso lean +29°, foot lift 44 cm, period 0.55 s, Floquet 0.40, peak torque 380 N·m; 8/8 steps.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_lib_up_32_20.mp4" type="video/mp4"></video><div class="body"><h3>Up: rise 20 cm, run 32 cm</h3><p>Landing knee 67°, torso lean +29°, foot lift 36 cm, period 0.96 s, Floquet 0.21, peak torque 380 N·m; 8/8 steps.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_lib_down_28_8.mp4" type="video/mp4"></video><div class="body"><h3>Down: rise 8 cm, run 28 cm</h3><p>Landing knee 26°, torso lean -6°, foot lift 45 cm, period 0.42 s, Floquet 0.08, peak torque 381 N·m; 8/8 steps.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_lib_down_32_14.mp4" type="video/mp4"></video><div class="body"><h3>Down: rise 14 cm, run 32 cm</h3><p>Landing knee 27°, torso lean -6°, foot lift 45 cm, period 0.42 s, Floquet 0.05, peak torque 381 N·m; 8/8 steps.</p></div></div>
-  </div>
-  <p class="bn-lead" id="stairs5-runs-intro" style="margin-top:22px"><b>Staircases where every stair differs.</b> Ten flights (five up, five down) with per-stair rise and run drawn around gentle, perceived, steep, growing and irregular profiles, the planner seeing noisy geometry and the walker executing the true stairs in the collision-checked hybrid simulation, one step at a time. With the transition library, <b>four of the five ascending flights walk end to end</b> (7 to 19 cm rises, including the flight whose rise grows from 5 to 19 cm); the steep flight has no verified entry for a 19 cm first stair on a 26 cm run. The descending flights walk five to nine stairs at the library's fast fixed point (0.33 s per stair) before a sparse cell of the descending library clips a nosing or the exit step fails: with point feet a descent is a controlled fall, and braking it back into the regular gait within 400 N·m takes more than one step. The table lists every run as it happened.</p>
-  <div class="table-wrap" id="stairs5-table">
-    <table class="data-table">
-      <thead><tr><th>run</th><th>stairs</th><th>rise range</th><th>run range</th><th>gaits</th><th>result</th><th>peak torque</th></tr></thead>
-      <tbody>
-        <tr><td style="text-align:left">up gentle</td><td>8</td><td>6–8 cm</td><td>32–34 cm</td><td>7 chained / 0 re-designed / 1 infeasible</td><td class="ok">all 14 steps</td><td>624 N·m</td></tr>
-        <tr><td style="text-align:left">up perceived</td><td>8</td><td>10–14 cm</td><td>27–29 cm</td><td>7 chained / 0 re-designed / 1 infeasible</td><td class="ok">all 14 steps</td><td>614 N·m</td></tr>
-        <tr><td style="text-align:left">up steep</td><td>8</td><td>14–19 cm</td><td>24–31 cm</td><td>0 chained / 0 re-designed / 1 infeasible</td><td class="bad">3/4 steps, then trip</td><td>429 N·m</td></tr>
-        <tr><td style="text-align:left">up growing</td><td>10</td><td>5–19 cm</td><td>27–33 cm</td><td>7 chained / 1 re-designed / 2 infeasible</td><td class="ok">all 16 steps</td><td>800 N·m</td></tr>
-        <tr><td style="text-align:left">up irregular</td><td>10</td><td>9–16 cm</td><td>24–34 cm</td><td>6 chained / 1 re-designed / 3 infeasible</td><td class="ok">all 16 steps</td><td>627 N·m</td></tr>
-        <tr><td style="text-align:left">down gentle</td><td>8</td><td>6–8 cm</td><td>33–35 cm</td><td>2 chained / 0 re-designed / 1 infeasible</td><td class="bad">5/6 steps, then scuff</td><td>401 N·m</td></tr>
-        <tr><td style="text-align:left">down perceived</td><td>8</td><td>9–13 cm</td><td>32–34 cm</td><td>3 chained / 0 re-designed / 3 infeasible</td><td class="bad">8/9 steps, then scuff</td><td>800 N·m</td></tr>
-        <tr><td style="text-align:left">down steep</td><td>8</td><td>12–17 cm</td><td>30–37 cm</td><td>3 chained / 0 re-designed / 4 infeasible</td><td class="bad">9/10 steps, then fell</td><td>800 N·m</td></tr>
-        <tr><td style="text-align:left">down growing</td><td>10</td><td>5–16 cm</td><td>31–37 cm</td><td>4 chained / 0 re-designed</td><td class="bad">6/7 steps, then scuff</td><td>539 N·m</td></tr>
-        <tr><td style="text-align:left">down irregular</td><td>10</td><td>8–14 cm</td><td>30–36 cm</td><td>3 chained / 0 re-designed / 4 infeasible</td><td class="bad">9/10 steps, then singular</td><td>800 N·m</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="clip-row" id="stairs5-clips">
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_up_gentle.mp4" type="video/mp4"></video><div class="body"><h3>Up gentle: 8 stairs, rises 6–8 cm</h3><p>Runs 32–34 cm, every stair different. Landing knee 40–47°, gaits 7 chained / 0 re-designed / 1 infeasible; all 14 steps, peak torque 624 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_up_perceived.mp4" type="video/mp4"></video><div class="body"><h3>Up perceived: 8 stairs, rises 10–14 cm</h3><p>Runs 27–29 cm, every stair different. Landing knee 41–57°, gaits 7 chained / 0 re-designed / 1 infeasible; all 14 steps, peak torque 614 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_up_steep.mp4" type="video/mp4"></video><div class="body"><h3>Up steep: 8 stairs, rises 14–19 cm</h3><p>Runs 24–31 cm, every stair different. Landing knee 66–66°, gaits 0 chained / 0 re-designed / 1 infeasible; 3/4 steps, then trip, peak torque 429 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_up_growing.mp4" type="video/mp4"></video><div class="body"><h3>Up growing: 10 stairs, rises 5–19 cm</h3><p>Runs 27–33 cm, every stair different. Landing knee 44–64°, gaits 7 chained / 1 re-designed / 2 infeasible; all 16 steps, peak torque 800 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_up_irregular.mp4" type="video/mp4"></video><div class="body"><h3>Up irregular: 10 stairs, rises 9–16 cm</h3><p>Runs 24–34 cm, every stair different. Landing knee 42–60°, gaits 6 chained / 1 re-designed / 3 infeasible; all 16 steps, peak torque 627 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_down_gentle.mp4" type="video/mp4"></video><div class="body"><h3>Down gentle: 8 stairs, rises 6–8 cm</h3><p>Runs 33–35 cm, every stair different. Landing knee 22–23°, gaits 2 chained / 0 re-designed / 1 infeasible; 5/6 steps, then scuff, peak torque 401 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_down_perceived.mp4" type="video/mp4"></video><div class="body"><h3>Down perceived: 8 stairs, rises 9–13 cm</h3><p>Runs 32–34 cm, every stair different. Landing knee 15–26°, gaits 3 chained / 0 re-designed / 3 infeasible; 8/9 steps, then scuff, peak torque 800 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_down_steep.mp4" type="video/mp4"></video><div class="body"><h3>Down steep: 8 stairs, rises 12–17 cm</h3><p>Runs 30–37 cm, every stair different. Landing knee 22–27°, gaits 3 chained / 0 re-designed / 4 infeasible; 9/10 steps, then fell, peak torque 800 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_down_growing.mp4" type="video/mp4"></video><div class="body"><h3>Down growing: 10 stairs, rises 5–16 cm</h3><p>Runs 31–37 cm, every stair different. Landing knee 19–25°, gaits 4 chained / 0 re-designed; 6/7 steps, then scuff, peak torque 539 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_down_irregular.mp4" type="video/mp4"></video><div class="body"><h3>Down irregular: 10 stairs, rises 8–14 cm</h3><p>Runs 30–36 cm, every stair different. Landing knee 22–26°, gaits 3 chained / 0 re-designed / 4 infeasible; 9/10 steps, then singular, peak torque 800 N·m.</p></div></div>
-  </div>
-  <div class="grid-2" id="stairs5-figs" style="margin-top:22px">
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/stairs5_run_up_growing.png" alt="Staircase run up growing: profile, foot paths and per-stair gait parameters" loading="lazy"><figcaption><b>Up growing</b>: the staircase and the swing-foot paths (top), and per stair the true and perceived geometry, the posture chosen, the swing height and timing, and the executed torque and clearance (bottom).</figcaption></figure>
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/stairs5_run_up_irregular.png" alt="Staircase run up irregular: profile, foot paths and per-stair gait parameters" loading="lazy"><figcaption><b>Up irregular</b>: the staircase and the swing-foot paths (top), and per stair the true and perceived geometry, the posture chosen, the swing height and timing, and the executed torque and clearance (bottom).</figcaption></figure>
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/stairs5_run_down_growing.png" alt="Staircase run down growing: profile, foot paths and per-stair gait parameters" loading="lazy"><figcaption><b>Down growing</b>: the staircase and the swing-foot paths (top), and per stair the true and perceived geometry, the posture chosen, the swing height and timing, and the executed torque and clearance (bottom).</figcaption></figure>
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/stairs5_run_down_irregular.png" alt="Staircase run down irregular: profile, foot paths and per-stair gait parameters" loading="lazy"><figcaption><b>Down irregular</b>: the staircase and the swing-foot paths (top), and per stair the true and perceived geometry, the posture chosen, the swing height and timing, and the executed torque and clearance (bottom).</figcaption></figure>
-  </div>
-</section>
-
-<!-- =================== MUJOCO =================== -->
-<section class="section" id="mujoco">
-  <h2 class="section-title">End to end in MuJoCo: camera in, torques out</h2>
-  <div class="grid-2">
-    <div class="card card-pad prose">
-      <p class="bn-lead">The whole pipeline runs closed-loop in a physics simulator. A planar five-link biped with the same masses and lengths walks in a 3D scene of textured staircases and crates; an <b>onboard depth camera</b> on the torso looks at the floor ahead and is read at <b>1 Hz</b>; the perceived floor levels (treads, risers, box tops, drop edges) are kept in a world model; and at every touchdown the next step is decided from that model: regular gait, an adjusted approach, a stair step, or a step-over. The VHC controller produces the four motor torques at 1 kHz. Nothing here uses the analytic impact map: the contacts, impacts and slip are MuJoCo's. Ramps are handled too: a plane fitted to the up-facing points that belong to no level gives the slope, and a small library of slope gaits (±3°, ±6°, ±10°) is chained onto and off the ramp.</p>
-      <p><b>Transitions are designed offline, not improvised.</b> Every change of family (flat → first stair, last tread → landing, flat → ramp, ramp → level) is a step in a <b>transition library</b>: a degree-8 Bézier designed from the regular gait's impact into the periodic gait's exact touchdown posture (or back), robust to ±15 % of the arrival speed, velocity-matched to the fixed point of the gait that follows, and verified by simulating the whole sequence regular → entry → three periodic steps → exit → regular before it is admitted. The optimiser that produces them runs a trust-region ladder (radius 0.2 → 0.4 → 0.8 → free) from the following gait's own curve; a plain SLSQP from a straight-line start diverges on almost every cell. Online, the planner chains the library step to the measured landing and accepts it when it is kinematically feasible and clears the energy barrier at the measured speed; a re-design happens only when that fails, and a periodic step is never replaced by a free-posture re-design (that would leave the family and break every step after it).</p>
-      <p><b>The experiments, honestly.</b> Ten flights up and ten down with random rise, run and count (every stair different), five crates of different size and distance, and one combined course were run with the same decision loop. At the realistic 50 kg and 400 N·m the closed loop in physics is not there yet: flat walking is exact, the entry step onto a ramp executes, and one crate (10 cm high, 12 cm deep) is crossed end to end; every staircase run and the other crates fall at the first family transition, where the entry step's feed-forward torque spikes and MuJoCo's soft impact hands over a different velocity than the rigid model predicts. The same planner in the collision-checked analytic simulator completes four of the five ascending flights (7 to 19 cm rises, every stair different) and descends five to nine stairs of each descending flight before a nosing is clipped or the exit fails. The tables below list every run as it happened; the clips show a selection.</p>
-      <p><b>What the physics runs revealed (and what changed).</b> The failures were traced with a replay harness that executes a verified analytic sequence in MuJoCo without perception or planning, and with a per-step comparison of the rigid impact map against the simulator's post-impact velocities. Three things the pinned-foot design model never forbade break in physics: the 50 kg stair gaits demanded a <i>negative</i> vertical ground force near touchdown (7 to 35 % of the step), so the stance foot unloaded and slid 33 cm; the crate's leading step landed its foot at 2.8 m/s and the descending gaits at 10 m/s, which a compliant contact cannot stop; and after the leading step the trailing foot rose at 0.01 m/s, so it never left the ground and the impact map (which assumes it does) was off by a factor of 2 to 17. The designer and the planner now enforce a loaded foot inside the friction cone (Fz ≥ 0.3 Mg, |Fx| ≤ 0.7 Fz), a sticking impact with a touchdown speed under 1.1 m/s and a trailing-foot lift-off of 0.15 m/s. Under these, periodic stair gaits redesign fine (0.9 s, 300 N·m) but no entry from level walking into them is feasible for a point-foot robot at this mass, and neither is a descent: the physics is telling us what the ankles are for. Reducing the mass to 20 kg changes nothing (the ratios are mass-invariant).</p>
-      <p><b>Seven-link biped with feet and actuated ankles.</b> The same machinery has been extended to a seven-link walker: feet of 14 cm toe and 6 cm heel on ankle hinges, six actuators, flat-foot landing (three impulsive constraints), the stance ankle passive in the periodic flat gait so the centre of pressure sits under the ankle. The model is verified against a symbolic derivation (5·10⁻¹³), the leg swap is exact, the impact dissipates energy (ratio 0.977), and the flat gait designed under the contact constraints walks in MuJoCo with exact 0.40 m strides.</p>
-      <p><b>With the stance ankle every stair or crate step is a fully actuated trajectory.</b> A step is a time-parametrised Bézier curve of all six joints between two landing states, tracked by computed torque: it starts at the previous step's nominal post-impact state (the measured difference is blended out over the first 30 % of the step, with the velocity part clipped because the simulator's velocities 8 ms after contact still carry impact transients), and ends in the landing state of the periodic footed gait of that stair's cell (run, rise), designed once per cell and cached. Constraints at 41 samples: motor torques, a loaded stance foot inside the friction cone, the <b>centre of pressure inside the foot</b> (−6 to +14 cm from the ankle), heel/ankle/toe clearance including a crossing test at every riser edge and the crate top, knee and torso limits; at the landing the impulse cone, the impulse moment inside the foot, a foot speed under 1.1 m/s and the trailing foot lifting off. Each step is designed in 5 to 90 s against the true geometry of <i>that</i> stair (run of the tread being left, rise being taken, height of the tread behind), so every stair of a flight can differ.</p>
-      <div class="clip-row" id="b7-strip" style="margin:10px 0">
-        <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_b7_down04.mp4" type="video/mp4"></video><div class="cap"><b>Four different stairs down</b> (drops 6–9 cm, runs 29–31 cm): entry, three stair steps, exit, every landing within 5 mm of the design.</div></div>
-        <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_b7_crate02.mp4" type="video/mp4"></video><div class="cap"><b>Crate 10 cm high, 20 cm deep</b>: the leading foot lands 5 cm past the crate, the trailing step returns to the regular gait.</div></div>
-        <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_b7_crate05.mp4" type="video/mp4"></video><div class="cap"><b>Crate 15 cm high, 20 cm deep</b>: same two-step plan, centre of pressure inside the foot throughout.</div></div>
-        <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_biped7_stairs_down_mj.mp4" type="video/mp4"></video><div class="cap"><b>The first complete staircase in physics</b>: three 10 cm stairs, 11 of 11 steps, zero slip.</div></div>
-        <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_b7_upfix10.mp4" type="video/mp4"></video><div class="cap"><b>Climbing three 10 cm stairs</b>: entry and three ascending steps land within 1 mm; the step off the top (designed at the torque and duration bounds) falls, honestly kept in.</div></div>
-      </div>
-      <p><b>Variable staircases in physics.</b> Ten flights of 3 to 5 descending stairs with random rise (5–15 cm) and run (29–38 cm), every stair different, scripted approach from four regular steps: <b><span id="b7-down-summary">7 of 10</span> flights walked end to end</b> (entry, every stair, exit, regular gait), landing errors under 5 mm, foot slip 2 mm, peak torques on the stairs 155–250 N·m. The failures are the flights with 13–14 cm drops, where no step satisfying the torque, friction and centre-of-pressure constraints exists at 400 N·m: the design reports it infeasible before the robot moves. Crates: <b><span id="b7-crate-summary">5 of 6</span> sizes crossed</b> (5–15 cm high, 15–30 cm deep); the 12 × 25 cm crate has no leading step with the centre of pressure inside the foot.</p>
-      <figure class="fig" style="margin:10px 0"><img src="assets/images/projects/bipednav/b7_stairs_down_batch.png" alt="Ten flights of different descending stairs walked by the footed biped in MuJoCo" loading="lazy"><figcaption>Hip path (coloured by time) and footholds of the ten descending flights in MuJoCo. Every stair of a flight is different; the failed flights are the ones with 13–14 cm drops.</figcaption></figure>
-      <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>flight</th><th>stairs</th><th>rise cm</th><th>run cm</th><th>result</th><th>τ<sub>max</sub> on stairs N·m</th><th>slip cm</th><th>landing err mm</th></tr></thead><tbody id="b7-down-rows">
-<tr class="ok"><td>down00</td><td>3</td><td>9–9</td><td>33–35</td><td>walked 11/11</td><td>154</td><td>0.2</td><td>5</td></tr>
-<tr class="ok"><td>down01</td><td>3</td><td>10–11</td><td>31–34</td><td>walked 11/11</td><td>249</td><td>0.2</td><td>5</td></tr>
-<tr class="bad"><td>down02</td><td>4</td><td>9–12</td><td>29–32</td><td>fell after 8 steps</td><td>800</td><td>20.4</td><td>168</td></tr>
-<tr class="bad"><td>down03</td><td>4</td><td>11–13</td><td>30–33</td><td>design infeasible</td><td>0</td><td>0.0</td><td>–</td></tr>
-<tr class="ok"><td>down04</td><td>4</td><td>6–9</td><td>29–31</td><td>walked 12/12</td><td>235</td><td>0.2</td><td>4</td></tr>
-<tr class="bad"><td>down05</td><td>5</td><td>11–14</td><td>29–34</td><td>design infeasible</td><td>0</td><td>0.0</td><td>–</td></tr>
-<tr class="ok"><td>down06</td><td>3</td><td>8–10</td><td>30–32</td><td>walked 11/11</td><td>173</td><td>0.2</td><td>4</td></tr>
-<tr class="ok"><td>down07</td><td>5</td><td>5–10</td><td>29–33</td><td>walked 13/13</td><td>195</td><td>0.2</td><td>5</td></tr>
-<tr class="ok"><td>down08</td><td>4</td><td>7–9</td><td>29–36</td><td>walked 12/12</td><td>204</td><td>0.2</td><td>1</td></tr>
-<tr class="ok"><td>down09</td><td>4</td><td>10–11</td><td>33–35</td><td>walked 12/12</td><td>158</td><td>0.2</td><td>3</td></tr>
-</tbody></table></div>
-      <figure class="fig" style="margin:10px 0"><img src="assets/images/projects/bipednav/b7_stairs_crate_batch.png" alt="Six crates of different size stepped over by the footed biped in MuJoCo" loading="lazy"><figcaption>The crate runs: the leading step lands 5 cm past the crate, the trailing step lands 40 cm further in the regular gait's posture.</figcaption></figure>
-      <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>crate</th><th>height cm</th><th>depth cm</th><th>result</th><th>τ<sub>max</sub> N·m</th><th>slip cm</th><th>landing err mm</th></tr></thead><tbody id="b7-crate-rows">
-<tr class="ok"><td>crate00</td><td>5</td><td>20</td><td>walked 9/9</td><td>340</td><td>0.1</td><td>0.1</td></tr>
-<tr class="ok"><td>crate01</td><td>8</td><td>15</td><td>walked 9/9</td><td>417</td><td>0.1</td><td>0.1</td></tr>
-<tr class="ok"><td>crate02</td><td>10</td><td>20</td><td>walked 9/9</td><td>438</td><td>0.2</td><td>0.1</td></tr>
-<tr class="ok"><td>crate03</td><td>10</td><td>30</td><td>walked 9/9</td><td>339</td><td>0.1</td><td>0.1</td></tr>
-<tr class="bad"><td>crate04</td><td>12</td><td>25</td><td>design infeasible</td><td>0</td><td>0.0</td><td>–</td></tr>
-<tr class="ok"><td>crate05</td><td>15</td><td>20</td><td>walked 9/9</td><td>281</td><td>0.1</td><td>0.2</td></tr>
-</tbody></table></div>
-      <p><b>What broke in physics and what fixed it</b> (each verified by an A/B run of the same flight). Designing the centre of pressure inside 80 % of the foot for margin made the steps slow (1.2 s) and torque-hungry, and they fell; the physical foot as the bound with steps pulled to 0.9× the cell's period (0.85 s, under 160 N·m) walked. Blending the measured post-impact velocity into the reference whipped the swing leg on the third stair (3.8 rad/s of impact transient); clipping it to 1 rad/s fixed that flight with no other change. A handover to the hybrid-zero-dynamics regular gait must arrive at 90 % of its speed or more (the basin was measured: 0.90 walks, 0.85 falls). The crate's leading step used to land 22 cm past the crate, leaving the centre of mass half a metre behind the new stance foot; landing 5 cm past it made the trailing step feasible. Edge clearance has to be a crossing test, not a band: a band flagged the landing toe two centimetres before the next riser.</p>
-      <p><b>Ascent.</b> The point-foot robot could not climb in physics at all. The footed robot's ascending cells (10 and 12 cm rises on 30 cm treads) are feasible once the lift-off requirement is relaxed to 5 cm/s (a climbing step's rigid impact cannot also throw the trailing foot up) and the swing toe is kept short of the next riser; <span id="b7-up-status">the entry from the regular gait and the three climbing steps execute in MuJoCo with exact landings, and the step off the top of the flight is the open piece: a fully actuated exit exists in the model only at the torque and duration bounds, because the climb leaves the robot at 0.47 m/s and a flat gait lands at twice that.</span></p>
-      <p><b>Perception in the loop with the footed robot.</b> The same onboard depth camera, world model and decision-at-touchdown loop drive the seven-link walker; the difference is that the stair steps are now designed online against the perceived edge distance and rise (design time on the HUD and in the trace). <span id="b7-online-status">Two runs, both walked to the end of the scene: on the three-stair flight the robot perceives the drop edges and rises from 1.5 m away, approaches with 0.35 m steps so that it stands 18 cm before the edge, takes the three perceived stairs (drops of 11.0, 9.0 and 12.0 cm, strides 0.32, 0.31 and 0.34 m, each designed in 20 to 320 s of wall time), exits and resumes the regular gait (34 steps in 30 s of simulation). On the combined course it perceives the crate, arrives with 0.34 m steps, takes the 0.50 m leading step and the trailing step, walks on, perceives the staircase, descends its three stairs and continues (50 steps in 45 s; one stair step peaked at 520 N·m, within the 800 N·m peak rating but above the 400 N·m continuous bound the designs use). The design time is real and reported: the simulation waits for it, so this is a planner that runs between steps, not a reflex.</span></p>
-      <div class="clip-row" style="margin:10px 0">
-        <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_b7on_course.mp4" type="video/mp4"></video><div class="cap"><b>Footed biped, perception in the loop, combined course</b>: crate perceived and stepped over, staircase perceived and descended, onboard camera picture-in-picture, decisions on the HUD.</div></div>
-        <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_b7on_stairs_down.mp4" type="video/mp4"></video><div class="cap"><b>Footed biped, perception in the loop, staircase</b>: three different perceived drops taken in one go, then the regular gait.</div></div>
-      </div>
-      <figure class="fig" style="margin:10px 0"><img src="assets/images/projects/bipednav/mj_traj3d_b7on_course.png" alt="3D hip trajectory and footholds of the footed biped on the combined course with perception in the loop" loading="lazy"><figcaption>The combined course with perception in the loop: hip trajectory (colour = time) and footholds over the crate and down the staircase.</figcaption></figure>
-      <pre class="cmd" id="mj7-trace" style="max-height:300px; overflow:auto"># online_b7on_course: seven-link (feet, actuated ankles) -> walking after 50 steps, 45.0 s simulated, 256 s of step design
-[  0.00 s  step  0] perceive (67 ms): levels z+0cm x0.25-2.28, z+0cm x2.81-5.57
-[  0.82 s  step  1] touchdown: step of 0.82 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 355 N·m, tracking 0.001 rad
-[  0.82 s  step  1] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[  1.00 s  step  1] perceive (32 ms): levels z+0cm x0.67-2.33, z+10cm x2.35-2.55, z+0cm x2.77-2.77 | obstacle: box 1.95 m ahead, 20 cm deep, 10 cm high
-[  1.67 s  step  2] touchdown: step of 0.85 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 315 N·m, tracking 0.016 rad
-[  1.67 s  step  2] decide: crate in 1.55 m: approach flat 0.34 m (designed, 2 s)  [2.36 s]
-[  2.00 s  step  2] perceive (33 ms): levels z+0cm x1.06-2.34, z+10cm x2.35-2.55, z+0cm x2.72-3.33 | obstacle: box 1.55 m ahead, 20 cm deep, 10 cm high
-[  2.58 s  step  3] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 197 N·m, tracking 0.021 rad
-[  2.58 s  step  3] decide: crate in 1.21 m: approach flat 0.34 m (designed, 3 s)  [2.72 s]
-[  3.00 s  step  3] perceive (36 ms): levels z-0cm x1.39-2.33, z+10cm x2.35-2.53, z-0cm x2.67-4.89 | obstacle: box 1.21 m ahead, 18 cm deep, 10 cm high
-[  3.49 s  step  4] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 93 N·m, tracking 0.027 rad
-[  3.49 s  step  4] decide: crate in 0.87 m: approach flat 0.34 m (designed, 3 s)  [2.62 s]
-[  4.00 s  step  4] perceive (28 ms): levels z+0cm x1.73-2.35, z+10cm x2.35-2.54, z+0cm x2.64-5.51 | obstacle: box 0.87 m ahead, 19 cm deep, 10 cm high
-[  4.40 s  step  5] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 225 N·m, tracking 0.048 rad
-[  4.40 s  step  5] decide: crate in 0.53 m: approach flat 0.34 m (designed, 2 s)  [2.49 s]
-[  5.00 s  step  5] perceive (28 ms): levels z+0cm x2.09-2.35, z+10cm x2.35-2.55, z+0cm x2.62-5.42 | obstacle: box 0.53 m ahead, 20 cm deep, 10 cm high
-[  5.31 s  step  6] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 93 N·m, tracking 0.048 rad
-[  5.31 s  step  6] decide: crate 10 cm high, 20 cm deep, 19 cm ahead: leading stride 0.50 m (ok), trailing (ok), 85 s  [84.77 s]
-[  6.00 s  step  6] perceive (28 ms): levels z+10cm x2.42-2.55, z+0cm x2.60-5.46
-[  6.72 s  step  7] touchdown: step of 1.41 s, stride (+0.498, -0.001) m, slip -0.0 cm, peak torque 298 N·m, tracking 0.052 rad
-[  6.72 s  step  7] decide: crate: trailing step (queued)  (queued)
-[  7.00 s  step  7] perceive (26 ms): levels z+0cm x2.92-3.98
-[  8.00 s  step  7] perceive (19 ms): levels z-0cm x3.27-5.49
-[  8.00 s  step  8] touchdown: step of 1.28 s, stride (+0.400, -0.001) m, slip 0.0 cm, peak torque 251 N·m, tracking 0.019 rad
-[  8.00 s  step  8] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[  8.89 s  step  9] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 315 N·m, tracking 0.034 rad
-[  8.89 s  step  9] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[  9.00 s  step  9] perceive (27 ms): levels z+0cm x3.72-5.55
-[  9.77 s  step 10] touchdown: step of 0.88 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 325 N·m, tracking 0.017 rad
-[  9.77 s  step 10] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 10.00 s  step 10] perceive (23 ms): levels z+0cm x4.12-5.57, z-10cm x5.75-5.92 | stairs: down first riser 1.71 m, rise -10 cm, run nan cm, 1 treads
-[ 10.66 s  step 11] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 315 N·m, tracking 0.019 rad
-[ 10.66 s  step 11] decide: stairs down in 1.31 m: approach flat 0.38 m (designed, 3 s)  [2.68 s]
-[ 11.00 s  step 11] perceive (30 ms): levels z+0cm x4.52-5.58, z-10cm x5.72-5.91, z-30cm x6.37-7.57 | stairs: down first riser 1.32 m, rise -15 cm, run 33 cm, 2 treads
-[ 11.56 s  step 12] touchdown: step of 0.91 s, stride (+0.377, -0.000) m, slip 0.0 cm, peak torque 122 N·m, tracking 0.021 rad
-[ 11.56 s  step 12] decide: stairs down in 0.94 m: approach flat 0.38 m (designed, 3 s)  [2.59 s]
-[ 12.00 s  step 12] perceive (25 ms): levels z+0cm x4.89-5.59, z-10cm x5.68-5.91, z-21cm x6.03-6.23, z-30cm x6.35-9.44 | stairs: down first riser 0.95 m, rise -10 cm, run 32 cm, 3 treads
-[ 12.47 s  step 13] touchdown: step of 0.91 s, stride (+0.380, -0.001) m, slip 0.0 cm, peak torque 80 N·m, tracking 0.071 rad
-[ 12.47 s  step 13] decide: stairs down in 0.57 m: approach regular 0.40 m  [0.00 s]
-[ 13.00 s  step 13] perceive (26 ms): levels z+0cm x5.27-5.59, z-10cm x5.64-5.92, z-21cm x5.99-6.22, z-30cm x6.30-9.78 | stairs: down first riser 0.57 m, rise -10 cm, run 31 cm, 3 treads
-[ 13.25 s  step 14] touchdown: step of 0.78 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 382 N·m, tracking 0.126 rad
-[ 13.25 s  step 14] decide: stair down: edge in 17 cm, rise -10.0 cm, stride 0.31 m (ok, tau 162 N·m, 10 s)  [10.00 s]
-[ 14.00 s  step 14] perceive (22 ms): levels z-21cm x6.02-6.23, z-30cm x6.28-11.36 | stairs: down first riser 0.81 m, rise -9 cm, run nan cm, 1 treads
-[ 14.11 s  step 15] touchdown: step of 0.86 s, stride (+0.310, -0.100) m, slip 0.0 cm, peak torque 140 N·m, tracking 0.022 rad
-[ 14.11 s  step 15] decide: stair down: edge in 19 cm, rise -11.0 cm, stride 0.33 m (ok, tau 128 N·m, 80 s)  [80.49 s]
-[ 15.00 s  step 15] perceive (27 ms): levels z-20cm x6.49-11.29
-[ 15.00 s  step 16] touchdown: step of 0.89 s, stride (+0.330, -0.110) m, slip 0.4 cm, peak torque 517 N·m, tracking 0.174 rad
-[ 15.00 s  step 16] decide: stair down: edge in 16 cm, rise -9.0 cm, stride 0.30 m (ok, tau 115 N·m, 63 s)  [63.03 s]
-[ 15.85 s  step 17] touchdown: step of 0.85 s, stride (+0.300, -0.090) m, slip 0.0 cm, peak torque 93 N·m, tracking 0.053 rad
-[ 15.85 s  step 17] decide: exit step (ok, tau 69 N·m, 2 s)  [2.24 s]
-[ 16.00 s  step 17] perceive (28 ms): levels z+0cm x6.70-11.47
-[ 16.75 s  step 18] touchdown: step of 0.90 s, stride (+0.400, -0.000) m, slip 0.0 cm, peak torque 167 N·m, tracking 0.067 rad
-[ 16.75 s  step 18] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 17.00 s  step 18] perceive (24 ms): levels z+0cm x7.02-8.62
-[ 17.56 s  step 19] touchdown: step of 0.81 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 336 N·m, tracking 0.026 rad
-[ 17.56 s  step 19] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 18.00 s  step 19] perceive (29 ms): levels z+0cm x7.43-9.07
-[ 18.40 s  step 20] touchdown: step of 0.84 s, stride (+0.400, -0.001) m, slip 0.2 cm, peak torque 370 N·m, tracking 0.020 rad
-[ 18.40 s  step 20] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 19.00 s  step 20] perceive (29 ms): levels z+0cm x7.83-11.40
-[ 19.26 s  step 21] touchdown: step of 0.86 s, stride (+0.400, -0.001) m, slip 0.2 cm, peak torque 315 N·m, tracking 0.019 rad
-[ 19.26 s  step 21] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 20.00 s  step 21] perceive (20 ms): levels z+0cm x8.49-13.24
-[ 20.14 s  step 22] touchdown: step of 0.88 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 376 N·m, tracking 0.014 rad
-[ 20.14 s  step 22] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 21.00 s  step 22] perceive (21 ms): levels z+0cm x8.99-13.48
-[ 21.03 s  step 23] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 315 N·m, tracking 0.016 rad
-[ 21.03 s  step 23] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 21.91 s  step 24] touchdown: step of 0.89 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 341 N·m, tracking 0.015 rad
-[ 21.91 s  step 24] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 22.00 s  step 24] perceive (25 ms): levels z+0cm x9.43-13.62
-[ 22.80 s  step 25] touchdown: step of 0.89 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 312 N·m, tracking 0.018 rad
-[ 22.80 s  step 25] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 23.00 s  step 25] perceive (23 ms): levels z+0cm x9.84-11.75
-[ 23.69 s  step 26] touchdown: step of 0.89 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 319 N·m, tracking 0.018 rad
-[ 23.69 s  step 26] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 24.00 s  step 26] perceive (29 ms): levels z+0cm x10.24-11.74
-[ 24.59 s  step 27] touchdown: step of 0.90 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 354 N·m, tracking 0.017 rad
-[ 24.59 s  step 27] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 25.00 s  step 27] perceive (27 ms): levels z+0cm x10.64-12.13
-[ 25.49 s  step 28] touchdown: step of 0.89 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 321 N·m, tracking 0.018 rad
-[ 25.49 s  step 28] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 26.00 s  step 28] perceive (28 ms): levels z+0cm x11.04-12.88
-[ 26.38 s  step 29] touchdown: step of 0.89 s, stride (+0.400, +0.000) m, slip 0.1 cm, peak torque 316 N·m, tracking 0.018 rad
-[ 26.38 s  step 29] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 27.00 s  step 29] perceive (27 ms): levels z+0cm x11.44-14.83
-[ 27.27 s  step 30] touchdown: step of 0.89 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 341 N·m, tracking 0.010 rad
-[ 27.27 s  step 30] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 28.00 s  step 30] perceive (22 ms): levels z+0cm x12.07-16.88
-[ 28.15 s  step 31] touchdown: step of 0.88 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 351 N·m, tracking 0.020 rad
-[ 28.15 s  step 31] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 29.00 s  step 31] perceive (29 ms): levels z+0cm x12.60-17.17
-[ 29.03 s  step 32] touchdown: step of 0.88 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 346 N·m, tracking 0.020 rad
-[ 29.03 s  step 32] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 29.92 s  step 33] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 313 N·m, tracking 0.014 rad
-[ 29.92 s  step 33] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 30.00 s  step 33] perceive (25 ms): levels z+0cm x13.05-17.26
-[ 30.81 s  step 34] touchdown: step of 0.89 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 339 N·m, tracking 0.015 rad
-[ 30.81 s  step 34] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 31.00 s  step 34] perceive (20 ms): levels z+0cm x13.45-15.41
-[ 31.69 s  step 35] touchdown: step of 0.89 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 364 N·m, tracking 0.018 rad
-[ 31.69 s  step 35] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 32.00 s  step 35] perceive (24 ms): levels z+0cm x13.85-15.34
-[ 32.59 s  step 36] touchdown: step of 0.90 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 359 N·m, tracking 0.014 rad
-[ 32.59 s  step 36] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 33.00 s  step 36] perceive (31 ms): levels z+0cm x14.25-15.74
-[ 33.48 s  step 37] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 329 N·m, tracking 0.019 rad
-[ 33.48 s  step 37] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 34.00 s  step 37] perceive (27 ms): levels z+0cm x14.65-16.54
-[ 34.37 s  step 38] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 326 N·m, tracking 0.016 rad
-[ 34.37 s  step 38] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 35.00 s  step 38] perceive (21 ms): levels z+0cm x15.05-18.87
-[ 35.26 s  step 39] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 314 N·m, tracking 0.020 rad
-[ 35.26 s  step 39] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 36.00 s  step 39] perceive (20 ms): levels z+0cm x15.70-20.52
-[ 36.14 s  step 40] touchdown: step of 0.88 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 336 N·m, tracking 0.016 rad
-[ 36.14 s  step 40] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 37.00 s  step 40] perceive (20 ms): levels z+0cm x16.22-20.80
-[ 37.03 s  step 41] touchdown: step of 0.90 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 340 N·m, tracking 0.016 rad
-[ 37.03 s  step 41] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 37.91 s  step 42] touchdown: step of 0.88 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 335 N·m, tracking 0.020 rad
-[ 37.91 s  step 42] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 38.00 s  step 42] perceive (25 ms): levels z+0cm x16.65-20.79
-[ 38.81 s  step 43] touchdown: step of 0.90 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 339 N·m, tracking 0.015 rad
-[ 38.81 s  step 43] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 39.00 s  step 43] perceive (23 ms): levels z+0cm x17.05-19.08
-[ 39.70 s  step 44] touchdown: step of 0.89 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 331 N·m, tracking 0.020 rad
-[ 39.70 s  step 44] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 40.00 s  step 44] perceive (27 ms): levels z+0cm x17.46-18.96
-[ 40.58 s  step 45] touchdown: step of 0.88 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 362 N·m, tracking 0.016 rad
-[ 40.58 s  step 45] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 41.00 s  step 45] perceive (28 ms): levels z+0cm x17.86-19.38
-[ 41.46 s  step 46] touchdown: step of 0.88 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 380 N·m, tracking 0.019 rad
-[ 41.46 s  step 46] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 42.00 s  step 46] perceive (26 ms): levels z+0cm x18.26-20.41
-[ 42.34 s  step 47] touchdown: step of 0.88 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 359 N·m, tracking 0.020 rad
-[ 42.34 s  step 47] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 43.00 s  step 47] perceive (22 ms): levels z+0cm x18.66-24.36
-[ 43.22 s  step 48] touchdown: step of 0.88 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 331 N·m, tracking 0.019 rad
-[ 43.22 s  step 48] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 44.00 s  step 48] perceive (27 ms): levels z+0cm x19.40-23.97
-[ 44.09 s  step 49] touchdown: step of 0.88 s, stride (+0.400, -0.001) m, slip 0.1 cm, peak torque 348 N·m, tracking 0.016 rad
-[ 44.09 s  step 49] decide: regular 0.40 m (flat ahead)  [0.00 s]
-[ 44.97 s  step 50] touchdown: step of 0.88 s, stride (+0.400, -0.000) m, slip 0.1 cm, peak torque 340 N·m, tracking 0.015 rad
-[ 44.97 s  step 50] decide: regular 0.40 m (flat ahead)  [0.00 s]</pre>
-      <p><b>What was checked.</b> On flat ground the simulated walker settles onto the analytic limit cycle (step period within 1 %, exact 0.40 m strides, tracking error below 4·10⁻³ rad, 0.7 cm of foot slip per step). The onboard estimates of rise, run, riser distance, box distance, depth and height are within a centimetre of the scene from a metre or more away. The runs below are the end-to-end tests: perception, planning and control in the loop, with the compute time of every decision on the HUD.</p>
-      <div class="tag-row"><span class="chip">MuJoCo 3.5</span><span class="chip">planar biped, 3D scene</span><span class="chip">depth camera 1 Hz</span><span class="chip">world model</span><span class="chip">1 kHz VHC torques</span></div>
-    </div>
-    <div class="card card-pad prose" id="mj-perception" style="grid-column: 1 / -1">
-      <h3 style="margin-top:0">The perception layer, step by step</h3>
-      <p><b>1. Depth to an organised cloud.</b> The onboard camera renders a 320 × 240 depth image at 75° field of view once a second (pitched 38° down, 0.02 m near plane; a 0.1 m near plane blanks 40 % of the floor). Every pixel is back-projected with the pinhole model into a camera-frame point, so the cloud keeps the image grid.</p>
-      <p><b>2. Normals and the up-facing mask.</b> Surface normals come from cross products over a 3-pixel neighbourhood on that grid (stride 2), rotated into the world with the camera pose from the simulator's kinematics. Points whose normal is within 15° of vertical are <i>walkable</i> candidates; the rest (risers, crate faces, walls) are kept only as geometry. A 0.7 m wide corridor along the walking direction and a 0.25 m dead zone in front of the stance foot are applied.</p>
-      <p><b>3. Floor levels.</b> The heights of the walkable points are clustered with 8 mm bins (peaks at least 3 cm apart, each holding at least 2 % of the points). For each height the <b>extent along the walk</b> is measured on the <i>raw</i> cloud within ±12 mm of that height (1st and 99th percentile), because the normal filter drops the edge pixels and would bias every front edge inward; one height that holds two surfaces (the floor in front of a crate and the floor behind it) is split at gaps larger than 15 cm. This is where a crate's dimensions come from: its <b>height</b> is the cluster height above the stance foot, its <b>depth</b> the extent of that level, its <b>distance</b> the front edge of that level. In the snapshot below the 10 cm × 18 cm crate 0.85 m ahead is read as z = +10 cm, x = 0.85–1.03 m. Treads are read the same way, a rise being the height difference of consecutive levels and a run the distance between consecutive front edges (for a descent, from the drop edge to the far edge of the lower tread, since the nosing hides its near part).</p>
-      <p><b>4. Ramps.</b> Walkable points that belong to no level are fitted by a line in the side plane; a tilt above 2.5° is a ramp, its foot and top placed where the fitted line meets the levels before and after it (the plane's first centimetre of rise is otherwise swallowed by the floor level). Levels that are really pieces of the ramp are dropped.</p>
-      <p><b>5. Semantics and the world model.</b> The level the robot stands on is the <i>ground</i>; a short raised level (under 45 cm) with the ground continuing behind it and nothing higher right behind it is a <i>crate</i>; a monotone run of levels beyond the ground is a <i>staircase</i>; a lower level whose edge is the end of the ground is a <i>drop</i>. Each tick is merged into a world model in absolute coordinates: a level seen again only grows outward (a near view is cut by the image border), its height is the count-weighted mean, ramps merge when their angles agree within 3°. Decisions are taken at touchdown from the world model, not from the last frame.</p>
-      <figure class="fig" id="mj-perception-fig"><img src="assets/images/projects/bipednav/mj_perception_steps.png" alt="Perception step by step: onboard image, depth, classified points, side view with levels and dimensions, at four positions of the course" loading="lazy"><figcaption><b>Four snapshots of the perception layer on the combined course</b> (rows): the onboard image, the depth image, the walkable points coloured by the level they were assigned to, and the side view in the stance-foot frame with every level's height and extent, the fitted ramp line and the derived crate or stair numbers.</figcaption></figure>
-      <p><b>Live trace of a run.</b> Below is the event log of the MuJoCo crate run that crossed its crate end to end, exactly as the loop printed it: one perception tick per second (with its compute time), one decision per touchdown with the measured phase velocity against the gait's fixed point, and the planner's verdict on the chained gait.</p>
+    <div class="card card-pad prose" style="margin:0">
+      <p class="subhead" style="margin-top:0">The same layer inside the simulator</p>
+      <p>On the walker the depth camera sits in the head and is read at 1 Hz. Each frame becomes an organised point cloud, normals (3 px, stride 2), an up-facing mask (15°), a walking corridor (±0.35 m), height clusters (8 mm bins), extents from the raw cloud, a ramp plane fit, and the semantics: ground, crate (a short raised level with the floor continuing behind), stairs (monotone levels), drop. The perceived levels are merged into a world model in absolute coordinates; below is the live log of one run.</p>
       <pre class="cmd" id="mj-trace" style="max-height:340px; overflow:auto"># online_box03: crate 10 cm high, 12 cm deep, 3.0 m ahead -> walking after 28 steps, 22.0 s simulated
 [  0.00 s  step  0] perceive (42 ms): levels z-0cm x0.26-2.92, z-0cm x3.43-4.54
 [  0.80 s  step  0] touchdown: phase velocity 2.77 (gait's fixed point 2.94), theta 1.001
@@ -736,56 +385,386 @@
 [ 21.69 s  step 28] decide: regular 0.40 m (chained)  [0.00 s]
 [ 22.00 s  step 28] perceive (25 ms): levels z+0cm x11.85-15.03</pre>
     </div>
-    <div id="mj-side">
-      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/mj_traj3d_course_full.png" alt="3D trajectory of the biped through the whole course" loading="lazy"><figcaption><b>The whole course in 3D.</b> Hip trajectory coloured by time and the footholds, over the crates, the flight up, the ramps and the flight down.</figcaption></figure>
-      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/mj_scene.png" alt="The MuJoCo scene with the onboard camera view" loading="lazy"><figcaption><b>The scene.</b> A planar five-link biped, a staircase with per-stair rise and run, and the onboard camera's view with the detected floor levels.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/mj_perception_steps.png" alt="One perception tick, step by step: depth → cloud → normals → up-facing mask → corridor → height clusters → extents → semantics." loading="lazy"><figcaption><b>One perception tick, step by step</b>: depth → cloud → normals → up-facing mask → corridor → height clusters → extents → semantics.</figcaption></figure>
+  </div>
+</section>
+
+
+<!-- =================== TRY IT =================== -->
+<section class="section" id="tryit">
+  <h2 class="section-title">Try it: one photo → stair or obstacle geometry</h2>
+  <p class="quote">Runs entirely in your browser: a 27 MB Depth Anything V2 network estimates depth, the BipedNav pipeline finds the treads and risers (or the floor and the first obstacle), and prints rise/run or distance/depth/height. Nothing is uploaded.</p>
+  <div class="bn-demo-grid" style="margin-top:22px">
+    <div>
+      <div class="bn-drop" id="bn-drop" role="button" tabindex="0">
+        <div class="big">Drop a staircase or obstacle photo here</div>
+        <div class="small">or click to choose one · phone photos work best when taken from standing height, looking down at the steps</div>
+        <input type="file" id="bn-file" accept="image/*" hidden>
+      </div>
+      <p style="font-family:var(--font-mono);font-size:11.5px;color:var(--ash);margin-top:12px">Stock scenes from the archived dataset (tape measurements known; camera height set automatically):</p>
+      <div class="bn-stock" id="bn-stock">
+        <img src="assets/images/projects/bipednav/samples/WE_20240608_175134-up-1-240_rgb.jpg" alt="stock scene WE 17:51" data-rise="14.15" data-run="27.1" data-camh="1.66" title="WE 17:51 — tape rise 14.2 cm, run 27.1 cm">
+        <img src="assets/images/projects/bipednav/samples/WE_20240608_182747-up-1-152_rgb.jpg" alt="stock scene WE 18:27" data-rise="19.5" data-run="25.25" data-camh="1.39" title="WE 18:27 — tape rise 19.5 cm, run 25.3 cm">
+        <img src="assets/images/projects/bipednav/samples/WI_20240608_174157-up-1-338_rgb.jpg" alt="stock scene WI 17:41" data-rise="12.0" data-run="29.55" data-camh="1.29" title="WI 17:41 — tape rise 12.0 cm, run 29.6 cm">
+        <img src="assets/images/projects/bipednav/samples/WI_20240608_174726-up-1-143_rgb.jpg" alt="stock scene WI 17:47" data-rise="12.0" data-run="29.55" data-camh="1.28" title="WI 17:47 — tape rise 12.0 cm, run 29.6 cm">
+        <img src="assets/images/projects/bipednav/samples/WI_20240608_181219-up-1-228_rgb.jpg" alt="stock scene WI 18:12" data-rise="15.0" data-run="32.1" data-camh="1.64" title="WI 18:12 — tape rise 15.0 cm, run 32.1 cm">
+      </div>
+      <div class="bn-controls">
+        <label>camera height above the nearest floor / tread [m]<input type="number" id="bn-camh" value="1.40" step="0.05" min="0.3" max="3"></label>
+        <label>horizontal field of view [°]<input type="number" id="bn-fov" value="56" step="1" min="30" max="110"></label>
+        <label>what to look for<select id="bn-mode"><option value="auto">auto</option><option value="stairs">stairs</option><option value="obstacle">obstacle</option></select></label>
+        <button class="btn btn-primary" id="bn-run" type="button">Run</button>
+      </div>
+      <div class="bn-status" id="bn-status">loading…</div>
+      <div class="bn-result" id="bn-result"></div>
+    </div>
+    <div class="bn-canvases">
+      <div><div class="lbl">photo</div><canvas id="bn-canvas-in" width="640" height="480"></canvas></div>
+      <div><div class="lbl">monocular depth (metric)</div><canvas id="bn-canvas-depth" width="640" height="480"></canvas></div>
+      <div><div class="lbl">treads · risers / floor · obstacle</div><canvas id="bn-canvas-seg" width="640" height="480"></canvas></div>
+      <div><div class="lbl">side profile + fitted lattice</div><canvas id="bn-canvas-profile" width="640" height="480"></canvas></div>
     </div>
   </div>
-  <figure class="fig" id="mj-profile"><img src="assets/images/projects/bipednav/mj_traj_side_course_full.png" alt="Side profile of the course with the hip height and footholds" loading="lazy"><figcaption><b>Side profile of the course</b>: ground, hip height (colour = time) and footholds.</figcaption></figure>
-  <div class="table-wrap" id="mj-table">
+  <p style="font-size:13px;color:var(--ash);margin-top:14px">How the scale is recovered: the network's output is inverse depth up to an affine map, so the pipeline searches the shift that makes the dominant up-facing surface planar and sets the scale so that surface lies at the camera height you enter. The stock scenes use the camera height measured by the depth camera; for your own photo, enter roughly the height of your phone above the floor (1.4–1.7 m when standing). The metric fine-tuned Metric3D v2 of the original study is more accurate than this browser-sized model; the geometry pipeline is the same.</p>
+</section>
+
+
+<!-- =================== FLAT =================== -->
+<section class="section" id="flat">
+  <h2 class="section-title">Flat ground</h2>
+  <p class="bn-lead">Three walkers, one method: a hybrid limit cycle designed as virtual holonomic constraints, verified against its return map, then walked in a collision-checked simulation and in MuJoCo.</p>
+  <div class="clip-row">
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_biped5_flat.mp4" type="video/mp4"></video><div class="body"><h3>Five-link biped, 0.40 m stride</h3><p>Point feet, four actuators. Period 0.78 s, Floquet multiplier 0.78, 53 N·m; the walker settles onto the cycle from 1.25× its speed.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_anal7_flat.mp4" type="video/mp4"></video><div class="body"><h3>Seven-link biped with feet</h3><p>Same hybrid gait with a flat stance foot and a passive stance ankle, so the centre of pressure sits under the ankle. Period 0.78 s, 61 N·m, Floquet 0.77.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_hum_flat.mp4" type="video/mp4"></video><div class="body"><h3>Humanoid in MuJoCo</h3><p>The footed walker with head, camera and arms in physics: exact 0.40 m strides, period 0.80 s, 2 mm of foot slip per step, arms swinging with the opposite leg.</p></div></div>
+  </div>
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/biped5_flat_phase.png" alt="Energy levels of the constrained dynamics with sixteen simulated steps of the five-link gait." loading="lazy"><figcaption><b>Energy levels of the constrained dynamics</b> with sixteen simulated steps of the five-link gait.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/biped5_return_map.png" alt="Return map measured over 16 steps from three initial speeds: the slope matches the analytic δ²/M⁻." loading="lazy"><figcaption><b>Return map</b> measured over 16 steps from three initial speeds: the slope matches the analytic δ²/M⁻.</figcaption></figure>
+  </div>
+</section>
+
+<!-- =================== SLOPES =================== -->
+<section class="section" id="slopes">
+  <h2 class="section-title">Slopes up and down</h2>
+  <p class="bn-lead">A slope is a rotated floor: the five-link library holds periodic gaits at ±3°, ±6° and ±10°; the footed walker has fully actuated periodic steps on ±6° ramps, entries onto a ramp whose foot is 18 cm ahead and exits onto the level.</p>
+  <div class="clip-row">
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_slope5_up6.mp4" type="video/mp4"></video><div class="body"><h3>Five-link, 6° up</h3><p>Library gait on the slope, walked in the collision-checked simulation.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_slope5_down6.mp4" type="video/mp4"></video><div class="body"><h3>Five-link, 6° down</h3><p>Descending gaits are faster and land with a straighter knee.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_slope5_up10.mp4" type="video/mp4"></video><div class="body"><h3>Five-link, 10° up</h3><p>The steepest library gait.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_slope5_down10.mp4" type="video/mp4"></video><div class="body"><h3>Five-link, 10° down</h3><p>Ten degrees down.</p></div></div>
+  </div>
+</section>
+
+<!-- =================== OBSTACLES =================== -->
+<section class="section" id="obstacles">
+  <h2 class="section-title">Obstacles: perceive, plan, step over</h2>
+  <p class="bn-lead">From one view of the floor the perception layer returns the first crate in the corridor (distance, depth, height to about 1 cm). The point-foot walker crosses it with two chained step-over gaits; the footed walker lands its leading foot 5 cm past the crate and its trailing step returns to the regular gait.</p>
+<div class="table-wrap" id="plan-table" style="margin-top:18px">
     <table class="data-table">
-      <thead><tr><th>scene</th><th>terrain</th><th>steps</th><th>decisions</th><th>perception</th><th>result</th><th>peak torque</th></tr></thead>
+      <thead><tr><th>case</th><th>true box (dist / depth / height)</th><th>perceived</th><th>plan</th><th>result</th><th>peak torque</th></tr></thead>
       <tbody>
-        <tr><td style="text-align:left">The whole course</td><td style="text-align:left;white-space:normal;min-width:220px">crate → 4 stairs up → flat → ramp −6° → two crates → ramp +6° → flat → crate → 4 stairs down</td><td>7</td><td>5 (19995 ms median, 97 s max)</td><td>6 frames, 77 ms</td><td class="bad">7 steps, 5.3 s, then fell</td><td>800 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs up #1</td><td style="text-align:left;white-space:normal;min-width:220px">6 stairs up, rises 15–18 cm, runs 31–33 cm</td><td>6</td><td>4 (8 ms median, 0 s max)</td><td>6 frames, 75 ms</td><td class="bad">6 steps, 5.8 s, then fell</td><td>92 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs up #2</td><td style="text-align:left;white-space:normal;min-width:220px">5 stairs up, rises 15–17 cm, runs 29–33 cm</td><td>10</td><td>6 (4788 ms median, 59 s max)</td><td>6 frames, 87 ms</td><td class="bad">10 steps, 5.3 s, then fell</td><td>800 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs up #3</td><td style="text-align:left;white-space:normal;min-width:220px">5 stairs up, rises 11–14 cm, runs 27–29 cm</td><td>7</td><td>4 (56 ms median, 96 s max)</td><td>6 frames, 70 ms</td><td class="bad">7 steps, 5.6 s, then fell</td><td>475 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs up #4</td><td style="text-align:left;white-space:normal;min-width:220px">5 stairs up, rises 14–17 cm, runs 29–34 cm</td><td>5</td><td>3 (48 ms median, 0 s max)</td><td>5 frames, 89 ms</td><td class="bad">5 steps, 4.9 s, then fell</td><td>123 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs up #5</td><td style="text-align:left;white-space:normal;min-width:220px">5 stairs up, rises 11–13 cm, runs 32–36 cm</td><td>6</td><td>4 (4319 ms median, 9 s max)</td><td>6 frames, 74 ms</td><td class="bad">6 steps, 5.6 s, then fell</td><td>92 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs up #6</td><td style="text-align:left;white-space:normal;min-width:220px">6 stairs up, rises 12–16 cm, runs 28–31 cm</td><td>8</td><td>5 (70 ms median, 9 s max)</td><td>7 frames, 75 ms</td><td class="bad">8 steps, 6.3 s, then fell</td><td>563 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs up #7</td><td style="text-align:left;white-space:normal;min-width:220px">6 stairs up, rises 13–15 cm, runs 26–31 cm</td><td>9</td><td>6 (19 ms median, 179 s max)</td><td>7 frames, 62 ms</td><td class="bad">9 steps, 6.5 s, then fell</td><td>800 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs up #8</td><td style="text-align:left;white-space:normal;min-width:220px">5 stairs up, rises 13–17 cm, runs 29–30 cm</td><td>8</td><td>5 (19 ms median, 8 s max)</td><td>7 frames, 68 ms</td><td class="bad">8 steps, 6.3 s, then fell</td><td>567 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs up #9</td><td style="text-align:left;white-space:normal;min-width:220px">4 stairs up, rises 14–16 cm, runs 29–33 cm</td><td>6</td><td>4 (35 ms median, 11 s max)</td><td>7 frames, 79 ms</td><td class="bad">6 steps, 6.2 s, then fell</td><td>168 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs up #10</td><td style="text-align:left;white-space:normal;min-width:220px">4 stairs up, rises 8–11 cm, runs 27–31 cm</td><td>9</td><td>7 (20 ms median, 173 s max)</td><td>8 frames, 93 ms</td><td class="bad">9 steps, 7.9 s, then fell</td><td>800 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs down #2</td><td style="text-align:left;white-space:normal;min-width:220px">5 stairs down, drops 13–14 cm, runs 30–34 cm</td><td>9</td><td>7 (8693 ms median, 207 s max)</td><td>7 frames, 84 ms</td><td class="bad">9 steps, 6.4 s, then fell</td><td>800 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs down #3</td><td style="text-align:left;white-space:normal;min-width:220px">5 stairs down, drops 9–12 cm, runs 32–33 cm</td><td>9</td><td>7 (13721 ms median, 71 s max)</td><td>6 frames, 87 ms</td><td class="bad">9 steps, 5.9 s, then fell</td><td>191 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs down #4</td><td style="text-align:left;white-space:normal;min-width:220px">4 stairs down, drops 12–14 cm, runs 33–35 cm</td><td>6</td><td>4 (125 ms median, 159 s max)</td><td>6 frames, 66 ms</td><td class="bad">6 steps, 5.2 s, then fell</td><td>800 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs down #5</td><td style="text-align:left;white-space:normal;min-width:220px">4 stairs down, drops 7–10 cm, runs 32–33 cm</td><td>8</td><td>6 (54090 ms median, 574 s max)</td><td>6 frames, 79 ms</td><td class="bad">8 steps, 5.7 s, then fell</td><td>800 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs down #6</td><td style="text-align:left;white-space:normal;min-width:220px">4 stairs down, drops 11–14 cm, runs 32–36 cm</td><td>9</td><td>7 (10136 ms median, 157 s max)</td><td>6 frames, 54 ms</td><td class="bad">9 steps, 5.2 s, then fell</td><td>800 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs down #7</td><td style="text-align:left;white-space:normal;min-width:220px">6 stairs down, drops 5–9 cm, runs 32–34 cm</td><td>8</td><td>6 (3994 ms median, 572 s max)</td><td>7 frames, 71 ms</td><td class="bad">8 steps, 6.1 s, then fell</td><td>155 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs down #8</td><td style="text-align:left;white-space:normal;min-width:220px">4 stairs down, drops 10–11 cm, runs 33–35 cm</td><td>7</td><td>6 (3488 ms median, 106 s max)</td><td>6 frames, 64 ms</td><td class="bad">7 steps, 5.2 s, then fell</td><td>800 N·m</td></tr>
-        <tr><td style="text-align:left">Stairs down #10</td><td style="text-align:left;white-space:normal;min-width:220px">5 stairs down, drops 6–11 cm, runs 32–35 cm</td><td>7</td><td>6 (19472 ms median, 100 s max)</td><td>5 frames, 48 ms</td><td class="bad">7 steps, 4.4 s, then fell</td><td>800 N·m</td></tr>
-        <tr><td style="text-align:left">Crate #1: 5 × 15 cm</td><td style="text-align:left;white-space:normal;min-width:220px">crate 5 cm high, 15 cm deep, 2.0 m ahead</td><td>6</td><td>6 (9 ms median, 40 s max)</td><td>5 frames, 42 ms</td><td class="bad">6 steps, 4.7 s, then fell</td><td>800 N·m</td></tr>
-        <tr><td style="text-align:left">Crate #2: 7 × 20 cm</td><td style="text-align:left;white-space:normal;min-width:220px">crate 7 cm high, 20 cm deep, 2.6 m ahead</td><td>5</td><td>3 (12 ms median, 9 s max)</td><td>8 frames, 48 ms</td><td class="bad">5 steps, 7.7 s, then stalled</td><td>92 N·m</td></tr>
-        <tr><td style="text-align:left">Crate #3: 9 × 25 cm</td><td style="text-align:left;white-space:normal;min-width:220px">crate 9 cm high, 25 cm deep, 2.3 m ahead</td><td>7</td><td>4 (16 ms median, 15 s max)</td><td>6 frames, 70 ms</td><td class="bad">7 steps, 5.6 s, then fell</td><td>800 N·m</td></tr>
-        <tr><td style="text-align:left">Crate #4: 10 × 12 cm</td><td style="text-align:left;white-space:normal;min-width:220px">crate 10 cm high, 12 cm deep, 3.0 m ahead</td><td>28</td><td>27 (3 ms median, 47 s max)</td><td>23 frames, 45 ms</td><td class="ok">28 steps, 22.0 s</td><td>414 N·m</td></tr>
-        <tr><td style="text-align:left">Crate #5: 10 × 30 cm</td><td style="text-align:left;white-space:normal;min-width:220px">crate 10 cm high, 30 cm deep, 2.4 m ahead</td><td>6</td><td>3 (44 ms median, 55 s max)</td><td>7 frames, 36 ms</td><td class="bad">6 steps, 6.4 s, then fell</td><td>304 N·m</td></tr>
+        <tr><td>0</td><td>1.20 m / 15 cm / 8 cm</td><td>1.20 m / 14 cm / 9 cm</td><td>2 × 0.46 m, then 0.63 m over, resume 0.40 m</td><td class="ok">8/8 steps, no collision</td><td>432 N·m</td></tr>
+        <tr><td>1</td><td>1.60 m / 20 cm / 15 cm</td><td>1.59 m / 18 cm / 16 cm</td><td>3 × 0.44 m, then 0.71 m over, resume 0.40 m</td><td class="bad">5/9 steps, then trip</td><td>800 N·m</td></tr>
+        <tr><td>2</td><td>2.00 m / 25 cm / 22 cm</td><td>1.99 m / 23 cm / 23 cm</td><td>4 × 0.43 m, then 0.76 m over, resume 0.40 m</td><td class="ok">10/10 steps, no collision</td><td>419 N·m</td></tr>
+        <tr><td>3</td><td>1.00 m / 30 cm / 12 cm</td><td>1.00 m / 28 cm / 13 cm</td><td>2 × 0.37 m, then 0.78 m over, resume 0.40 m</td><td class="bad">2/8 steps, then trip</td><td>426 N·m</td></tr>
+        <tr><td>4</td><td>1.40 m / 10 cm / 5 cm</td><td>1.40 m / 9 cm / 6 cm</td><td>3 × 0.38 m, then 0.54 m over, resume 0.40 m</td><td class="ok">9/9 steps, no collision</td><td>415 N·m</td></tr>
       </tbody>
     </table>
   </div>
-  <div class="clip-row" id="mj-clips">
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_mj_course_full.mp4" type="video/mp4"></video><div class="body"><h3>The whole course</h3><p>crate → 4 stairs up → flat → ramp −6° → two crates → ramp +6° → flat → crate → 4 stairs down. 7 steps, 5.3 s, then fell; decisions 19995 ms median; peak torque 800 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_mj_up00.mp4" type="video/mp4"></video><div class="body"><h3>Stairs up #1</h3><p>6 stairs up, rises 15–18 cm, runs 31–33 cm. 6 steps, 5.8 s, then fell; decisions 8 ms median; peak torque 92 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_mj_up01.mp4" type="video/mp4"></video><div class="body"><h3>Stairs up #2</h3><p>5 stairs up, rises 15–17 cm, runs 29–33 cm. 10 steps, 5.3 s, then fell; decisions 4788 ms median; peak torque 800 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_mj_up02.mp4" type="video/mp4"></video><div class="body"><h3>Stairs up #3</h3><p>5 stairs up, rises 11–14 cm, runs 27–29 cm. 7 steps, 5.6 s, then fell; decisions 56 ms median; peak torque 475 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_mj_down01.mp4" type="video/mp4"></video><div class="body"><h3>Stairs down #2</h3><p>5 stairs down, drops 13–14 cm, runs 30–34 cm. 9 steps, 6.4 s, then fell; decisions 8693 ms median; peak torque 800 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_mj_down02.mp4" type="video/mp4"></video><div class="body"><h3>Stairs down #3</h3><p>5 stairs down, drops 9–12 cm, runs 32–33 cm. 9 steps, 5.9 s, then fell; decisions 13721 ms median; peak torque 191 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_mj_box00.mp4" type="video/mp4"></video><div class="body"><h3>Crate #1: 5 × 15 cm</h3><p>crate 5 cm high, 15 cm deep, 2.0 m ahead. 6 steps, 4.7 s, then fell; decisions 9 ms median; peak torque 800 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_mj_box01.mp4" type="video/mp4"></video><div class="body"><h3>Crate #2: 7 × 20 cm</h3><p>crate 7 cm high, 20 cm deep, 2.6 m ahead. 5 steps, 7.7 s, then stalled; decisions 12 ms median; peak torque 92 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_mj_box02.mp4" type="video/mp4"></video><div class="body"><h3>Crate #3: 9 × 25 cm</h3><p>crate 9 cm high, 25 cm deep, 2.3 m ahead. 7 steps, 5.6 s, then fell; decisions 16 ms median; peak torque 800 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_mj_box03.mp4" type="video/mp4"></video><div class="body"><h3>Crate #4: 10 × 12 cm</h3><p>crate 10 cm high, 12 cm deep, 3.0 m ahead. 28 steps, 22.0 s; decisions 3 ms median; peak torque 414 N·m.</p></div></div>
-    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_mj_box04.mp4" type="video/mp4"></video><div class="body"><h3>Crate #5: 10 × 30 cm</h3><p>crate 10 cm high, 30 cm deep, 2.4 m ahead. 6 steps, 6.4 s, then fell; decisions 44 ms median; peak torque 304 N·m.</p></div></div>
+<div class="clip-row" id="plan-clips">
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case0.mp4" type="video/mp4"></video><div class="body"><h3>Case 0: 8 cm box, 1.2 m ahead</h3><p>2 approach steps of 0.46 m, 0.63 m over with the leading leg, trailing leg over, regular gait resumed — 8/8 steps, no collision.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case1.mp4" type="video/mp4"></video><div class="body"><h3>Case 1: 15 cm box, 1.6 m ahead</h3><p>3 approach steps of 0.44 m, 0.71 m over with the leading leg, trailing leg over, regular gait resumed — 5/9 steps, then trip.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case2.mp4" type="video/mp4"></video><div class="body"><h3>Case 2: 22 cm box, 2.0 m ahead</h3><p>4 approach steps of 0.43 m, 0.76 m over with the leading leg, trailing leg over, regular gait resumed — 10/10 steps, no collision.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case3.mp4" type="video/mp4"></video><div class="body"><h3>Case 3: 12 cm box, 1.0 m ahead</h3><p>2 approach steps of 0.37 m, 0.78 m over with the leading leg, trailing leg over, regular gait resumed — 2/8 steps, then trip.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_plan_case4.mp4" type="video/mp4"></video><div class="body"><h3>Case 4: 5 cm box, 1.4 m ahead</h3><p>3 approach steps of 0.38 m, 0.54 m over with the leading leg, trailing leg over, regular gait resumed — 9/9 steps, no collision.</p></div></div>
   </div>
+  <div class="clip-row" style="margin-top:18px">
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_anal7_crate_10x20.mp4" type="video/mp4"></video><div class="body"><h3>Footed biped, 10 × 20 cm crate</h3><p>Leading step 0.50 m over the crate, trailing step 0.40 m back into the regular gait; both fully actuated, centre of pressure inside the foot.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_hum_crate02.mp4" type="video/mp4"></video><div class="body"><h3>Humanoid in MuJoCo, 10 × 20 cm crate</h3><p>The plan executed in physics: leading foot 5 cm past the crate, then the regular gait.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_hum_crate05.mp4" type="video/mp4"></video><div class="body"><h3>Humanoid in MuJoCo, 15 × 20 cm crate</h3><p>The tallest crate crossed.</p></div></div>
+  </div>
+  <div style="overflow-x:auto;margin-top:14px"><table class="data-table"><thead><tr><th>crate</th><th>height cm</th><th>depth cm</th><th>result</th><th>τ<sub>max</sub> N·m</th><th>slip cm</th><th>landing err mm</th></tr></thead><tbody id="b7-crate-rows">
+<tr class="ok"><td>crate00</td><td>5</td><td>20</td><td>walked 9/9</td><td>149</td><td>0.3</td><td>0.2</td></tr>
+<tr class="ok"><td>crate01</td><td>8</td><td>15</td><td>walked 9/9</td><td>227</td><td>0.2</td><td>0.2</td></tr>
+<tr class="ok"><td>crate02</td><td>10</td><td>20</td><td>walked 9/9</td><td>116</td><td>0.2</td><td>0.1</td></tr>
+<tr class="bad"><td>crate03</td><td>10</td><td>30</td><td>fell after 4 steps</td><td>0</td><td>0.2</td><td>–</td></tr>
+<tr class="bad"><td>crate04</td><td>12</td><td>25</td><td>design infeasible</td><td>0</td><td>0.0</td><td>–</td></tr>
+<tr class="ok"><td>crate05</td><td>15</td><td>20</td><td>walked 9/9</td><td>151</td><td>0.3</td><td>0.3</td></tr>
+</tbody></table></div>
+    <figure class="fig"><img src="assets/images/projects/bipednav/b7_stairs_crate_batch.png" alt="Footed biped over six crates in MuJoCo: hip path (colour = time) and footholds; the 12 × 25 cm crate has no leading step with the centre of pressure inside the foot." loading="lazy"><figcaption><b>Footed biped over six crates in MuJoCo</b>: hip path (colour = time) and footholds; the 12 × 25 cm crate has no leading step with the centre of pressure inside the foot.</figcaption></figure>
+</section>
+
+<!-- =================== STAIRS =================== -->
+<section class="section" id="stairs">
+  <h2 class="section-title">Stairs up and down</h2>
+  <p class="bn-lead">The five-link library holds a periodic gait for every (run, rise) cell and interpolates between them; the footed walker takes each stair as one fully actuated step into the landing state of that stair's cell.</p>
+<div class="clip-row" id="stairs5-lib-clips">
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_lib_up_28_8.mp4" type="video/mp4"></video><div class="body"><h3>Up: rise 8 cm, run 28 cm</h3><p>Landing knee 49°, torso lean +29°, foot lift 39 cm, period 0.70 s, Floquet 0.41, peak torque 380 N·m; 8/8 steps.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_lib_up_28_14.mp4" type="video/mp4"></video><div class="body"><h3>Up: rise 14 cm, run 28 cm</h3><p>Landing knee 56°, torso lean +29°, foot lift 35 cm, period 0.90 s, Floquet 0.32, peak torque 380 N·m; 8/8 steps.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_lib_up_24_11.mp4" type="video/mp4"></video><div class="body"><h3>Up: rise 11 cm, run 24 cm</h3><p>Landing knee 50°, torso lean +29°, foot lift 44 cm, period 0.55 s, Floquet 0.40, peak torque 380 N·m; 8/8 steps.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_lib_up_32_20.mp4" type="video/mp4"></video><div class="body"><h3>Up: rise 20 cm, run 32 cm</h3><p>Landing knee 67°, torso lean +29°, foot lift 36 cm, period 0.96 s, Floquet 0.21, peak torque 380 N·m; 8/8 steps.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_lib_down_28_8.mp4" type="video/mp4"></video><div class="body"><h3>Down: rise 8 cm, run 28 cm</h3><p>Landing knee 26°, torso lean -6°, foot lift 45 cm, period 0.42 s, Floquet 0.08, peak torque 381 N·m; 8/8 steps.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_lib_down_32_14.mp4" type="video/mp4"></video><div class="body"><h3>Down: rise 14 cm, run 32 cm</h3><p>Landing knee 27°, torso lean -6°, foot lift 45 cm, period 0.42 s, Floquet 0.05, peak torque 381 N·m; 8/8 steps.</p></div></div>
+  </div>
+  <div class="clip-row" style="margin-top:18px">
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_anal7_down04.mp4" type="video/mp4"></video><div class="body"><h3>Footed biped descending, 6–9 cm drops</h3><p>Four different stairs, one step each, exit back into the regular gait.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_hum_down04.mp4" type="video/mp4"></video><div class="body"><h3>Humanoid in MuJoCo, descending</h3><p>Four different stairs down, every landing within 5 mm of the design.</p></div></div>
+  </div>
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/biped5_stairs_library_up.png" alt="Five-link library, up: landing knee, torso lean, foot lift and period over the (run, rise) grid." loading="lazy"><figcaption><b>Five-link library, up</b>: landing knee, torso lean, foot lift and period over the (run, rise) grid.</figcaption></figure>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/biped5_stairs_library_down.png" alt="Five-link library, down." loading="lazy"><figcaption><b>Five-link library, down.</b></figcaption></figure>
+  </div>
+</section>
+
+<!-- =================== VARIABLE =================== -->
+<section class="section" id="variable">
+  <h2 class="section-title">Variable heights: every stair different</h2>
+  <p class="bn-lead">Flights whose rise and run change from one stair to the next. The five-link walker re-plans its virtual constraint per stair from the perceived geometry (analytic simulation); the footed humanoid does the same in MuJoCo.</p>
+<div class="table-wrap" id="stairs5-table" style="margin-top:18px">
+    <table class="data-table">
+      <thead><tr><th>run</th><th>stairs</th><th>rise range</th><th>run range</th><th>gaits</th><th>result</th><th>peak torque</th></tr></thead>
+      <tbody>
+        <tr><td style="text-align:left">up gentle</td><td>8</td><td>6–8 cm</td><td>32–34 cm</td><td>7 chained / 0 re-designed / 1 infeasible</td><td class="ok">all 14 steps</td><td>624 N·m</td></tr>
+        <tr><td style="text-align:left">up perceived</td><td>8</td><td>10–14 cm</td><td>27–29 cm</td><td>7 chained / 0 re-designed / 1 infeasible</td><td class="ok">all 14 steps</td><td>614 N·m</td></tr>
+        <tr><td style="text-align:left">up steep</td><td>8</td><td>14–19 cm</td><td>24–31 cm</td><td>0 chained / 0 re-designed / 1 infeasible</td><td class="bad">3/4 steps, then trip</td><td>429 N·m</td></tr>
+        <tr><td style="text-align:left">up growing</td><td>10</td><td>5–19 cm</td><td>27–33 cm</td><td>7 chained / 1 re-designed / 2 infeasible</td><td class="ok">all 16 steps</td><td>800 N·m</td></tr>
+        <tr><td style="text-align:left">up irregular</td><td>10</td><td>9–16 cm</td><td>24–34 cm</td><td>6 chained / 1 re-designed / 3 infeasible</td><td class="ok">all 16 steps</td><td>627 N·m</td></tr>
+        <tr><td style="text-align:left">down gentle</td><td>8</td><td>6–8 cm</td><td>33–35 cm</td><td>2 chained / 0 re-designed / 1 infeasible</td><td class="bad">5/6 steps, then scuff</td><td>401 N·m</td></tr>
+        <tr><td style="text-align:left">down perceived</td><td>8</td><td>9–13 cm</td><td>32–34 cm</td><td>3 chained / 0 re-designed / 3 infeasible</td><td class="bad">8/9 steps, then scuff</td><td>800 N·m</td></tr>
+        <tr><td style="text-align:left">down steep</td><td>8</td><td>12–17 cm</td><td>30–37 cm</td><td>3 chained / 0 re-designed / 4 infeasible</td><td class="bad">9/10 steps, then fell</td><td>800 N·m</td></tr>
+        <tr><td style="text-align:left">down growing</td><td>10</td><td>5–16 cm</td><td>31–37 cm</td><td>4 chained / 0 re-designed</td><td class="bad">6/7 steps, then scuff</td><td>539 N·m</td></tr>
+        <tr><td style="text-align:left">down irregular</td><td>10</td><td>8–14 cm</td><td>30–36 cm</td><td>3 chained / 0 re-designed / 4 infeasible</td><td class="bad">9/10 steps, then singular</td><td>800 N·m</td></tr>
+      </tbody>
+    </table>
+  </div>
+<div class="clip-row" id="stairs5-clips">
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_up_gentle.mp4" type="video/mp4"></video><div class="body"><h3>Up gentle: 8 stairs, rises 6–8 cm</h3><p>Runs 32–34 cm, every stair different. Landing knee 40–47°, gaits 7 chained / 0 re-designed / 1 infeasible; all 14 steps, peak torque 624 N·m.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_up_perceived.mp4" type="video/mp4"></video><div class="body"><h3>Up perceived: 8 stairs, rises 10–14 cm</h3><p>Runs 27–29 cm, every stair different. Landing knee 41–57°, gaits 7 chained / 0 re-designed / 1 infeasible; all 14 steps, peak torque 614 N·m.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_up_steep.mp4" type="video/mp4"></video><div class="body"><h3>Up steep: 8 stairs, rises 14–19 cm</h3><p>Runs 24–31 cm, every stair different. Landing knee 66–66°, gaits 0 chained / 0 re-designed / 1 infeasible; 3/4 steps, then trip, peak torque 429 N·m.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_up_growing.mp4" type="video/mp4"></video><div class="body"><h3>Up growing: 10 stairs, rises 5–19 cm</h3><p>Runs 27–33 cm, every stair different. Landing knee 44–64°, gaits 7 chained / 1 re-designed / 2 infeasible; all 16 steps, peak torque 800 N·m.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_up_irregular.mp4" type="video/mp4"></video><div class="body"><h3>Up irregular: 10 stairs, rises 9–16 cm</h3><p>Runs 24–34 cm, every stair different. Landing knee 42–60°, gaits 6 chained / 1 re-designed / 3 infeasible; all 16 steps, peak torque 627 N·m.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_down_gentle.mp4" type="video/mp4"></video><div class="body"><h3>Down gentle: 8 stairs, rises 6–8 cm</h3><p>Runs 33–35 cm, every stair different. Landing knee 22–23°, gaits 2 chained / 0 re-designed / 1 infeasible; 5/6 steps, then scuff, peak torque 401 N·m.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_down_perceived.mp4" type="video/mp4"></video><div class="body"><h3>Down perceived: 8 stairs, rises 9–13 cm</h3><p>Runs 32–34 cm, every stair different. Landing knee 15–26°, gaits 3 chained / 0 re-designed / 3 infeasible; 8/9 steps, then scuff, peak torque 800 N·m.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_down_steep.mp4" type="video/mp4"></video><div class="body"><h3>Down steep: 8 stairs, rises 12–17 cm</h3><p>Runs 30–37 cm, every stair different. Landing knee 22–27°, gaits 3 chained / 0 re-designed / 4 infeasible; 9/10 steps, then fell, peak torque 800 N·m.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_down_growing.mp4" type="video/mp4"></video><div class="body"><h3>Down growing: 10 stairs, rises 5–16 cm</h3><p>Runs 31–37 cm, every stair different. Landing knee 19–25°, gaits 4 chained / 0 re-designed; 6/7 steps, then scuff, peak torque 539 N·m.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_stairs5_down_irregular.mp4" type="video/mp4"></video><div class="body"><h3>Down irregular: 10 stairs, rises 8–14 cm</h3><p>Runs 30–36 cm, every stair different. Landing knee 22–26°, gaits 3 chained / 0 re-designed / 4 infeasible; 9/10 steps, then singular, peak torque 800 N·m.</p></div></div>
+  </div>
+  <p class="bn-lead" style="margin-top:22px"><b>Footed humanoid in physics.</b> Ten flights of 3–5 descending stairs with random rise (5–15 cm) and run (29–38 cm): <span id="b7-down-summary">7 of 10</span> walked end to end, landing errors under 5 mm, foot slip 2 mm. The failures are the 13–14 cm drops, where no step satisfies the torque, friction and centre-of-pressure constraints at 400 N·m.</p>
+  <div class="clip-row">
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_hum_down07.mp4" type="video/mp4"></video><div class="body"><h3>Humanoid, five stairs down (5–10 cm)</h3><p>Every stair different; entry, five stair steps, exit, regular gait.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_hum_down09.mp4" type="video/mp4"></video><div class="body"><h3>Humanoid, four stairs down (10–11 cm)</h3><p>Runs 33–35 cm.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_hum_down01.mp4" type="video/mp4"></video><div class="body"><h3>Humanoid, three stairs down (10–11 cm)</h3><p>Runs 31–34 cm.</p></div></div>
+  </div>
+    <figure class="fig"><img src="assets/images/projects/bipednav/b7_stairs_down_batch.png" alt="The ten flights in MuJoCo: hip path (colour = time) and footholds." loading="lazy"><figcaption><b>The ten flights in MuJoCo</b>: hip path (colour = time) and footholds.</figcaption></figure>
+  <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>flight</th><th>stairs</th><th>rise cm</th><th>run cm</th><th>result</th><th>τ<sub>max</sub> on stairs N·m</th><th>slip cm</th><th>landing err mm</th></tr></thead><tbody id="b7-down-rows">
+<tr class="ok"><td>down00</td><td>3</td><td>9–9</td><td>33–35</td><td>walked 11/11</td><td>133</td><td>0.2</td><td>5</td></tr>
+<tr class="ok"><td>down01</td><td>3</td><td>10–11</td><td>31–34</td><td>walked 11/11</td><td>138</td><td>0.2</td><td>4</td></tr>
+<tr class="bad"><td>down02</td><td>4</td><td>9–12</td><td>29–32</td><td>fell after 8 steps</td><td>156</td><td>9.0</td><td>96</td></tr>
+<tr class="bad"><td>down03</td><td>4</td><td>11–13</td><td>30–33</td><td>design infeasible</td><td>0</td><td>0.0</td><td>–</td></tr>
+<tr class="ok"><td>down04</td><td>4</td><td>6–9</td><td>29–31</td><td>walked 12/12</td><td>237</td><td>0.2</td><td>4</td></tr>
+<tr class="bad"><td>down05</td><td>5</td><td>11–14</td><td>29–34</td><td>design infeasible</td><td>0</td><td>0.0</td><td>–</td></tr>
+<tr class="ok"><td>down06</td><td>3</td><td>8–10</td><td>30–32</td><td>walked 11/11</td><td>173</td><td>0.2</td><td>4</td></tr>
+<tr class="ok"><td>down07</td><td>5</td><td>5–10</td><td>29–33</td><td>walked 13/13</td><td>153</td><td>0.2</td><td>5</td></tr>
+<tr class="ok"><td>down08</td><td>4</td><td>7–9</td><td>29–36</td><td>walked 12/12</td><td>204</td><td>0.2</td><td>1</td></tr>
+<tr class="ok"><td>down09</td><td>4</td><td>10–11</td><td>33–35</td><td>walked 12/12</td><td>160</td><td>0.2</td><td>3</td></tr>
+</tbody></table></div>
+</section>
+
+<!-- =================== FOOTED =================== -->
+<section class="section" id="footed">
+  <h2 class="section-title">From five links to seven: the footed humanoid</h2>
+  <p class="bn-lead">Point feet cannot do stair transitions in physics: the pinned-foot model never forbade negative ground forces or a foot that will not lift. Feet with actuated ankles make the robot fully actuated in single support, so every stair, crate or slope step becomes a time-parametrised trajectory designed against the real geometry, with the centre of pressure kept inside the foot.</p>
+  <div class="lead-row">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/hum_portrait.jpg" alt="The humanoid in MuJoCo: feet on ankle hinges, six leg motors, trunk, neck and head with the depth camera as its eyes, two three-link arms (upper arm, forearm, hand) that swing with the opposite leg. 51 kg, 400 N·m motors." loading="lazy"><figcaption><b>The humanoid in MuJoCo</b>: feet on ankle hinges, six leg motors, trunk, neck and head with the depth camera as its eyes, two three-link arms (upper arm, forearm, hand) that swing with the opposite leg. 51 kg, 400 N·m motors.</figcaption></figure>
+    <div class="card card-pad prose" style="margin:0">
+      <p class="subhead" style="margin-top:0">What a step must satisfy</p>
+      <ul>
+        <li>Motor torques within 400 N·m; the stance foot loaded and inside the friction cone; the <b>centre of pressure between heel and toe</b> (−6 to +14 cm).</li>
+        <li>Heel, ankle and toe clear of every tread, riser edge and crate top (a crossing test at each edge); the swing toe short of the next riser when climbing.</li>
+        <li>At the landing: impulse inside the cone and inside the foot, foot speed under 1.1 m/s, the trailing foot lifting off.</li>
+        <li>Start: the previous step's nominal post-impact state, the measured difference blended out over 30 % of the step (velocity part clipped: the simulator's velocities 8 ms after contact carry impact transients).</li>
+      </ul>
+      <p class="subhead">What broke in physics, and what fixed it</p>
+      <ul>
+        <li>An 80 % centre-of-pressure margin made steps slow and torque-hungry, and they fell; the physical foot as the bound with 0.85 s steps walked.</li>
+        <li>A 3.8 rad/s impact transient blended into the reference whipped the swing leg; clipping it to 1 rad/s fixed the flight.</li>
+        <li>A handover to the hybrid gait needs ≥ 90 % of its speed (measured basin: 0.90 walks, 0.85 falls).</li>
+        <li>Landing 22 cm past a crate left the centre of mass half a metre behind the foot; 5 cm past it works.</li>
+        <li>The upper body is split into trunk, head and arms whose composite mass and centre stay at the design's torso point mass; a heavier head or arms shifted the period each step.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="clip-row" style="margin-top:18px">
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_anal7_down04.mp4" type="video/mp4"></video><div class="body"><h3>Analysis view: centre of pressure</h3><p>For a fully actuated step the top-right panel replaces the phase portrait: the centre of pressure must stay between heel and toe for the whole step.</p></div></div>
+    <div class="card clip"><video muted loop playsinline autoplay preload="metadata"><source src="assets/videos/bipednav_hum_down04.mp4" type="video/mp4"></video><div class="body"><h3>The same flight in MuJoCo</h3><p>Twelve of twelve steps, landings within 5 mm.</p></div></div>
+  </div>
+</section>
+
+<!-- =================== MUJOCO =================== -->
+<section class="section" id="mujoco">
+  <h2 class="section-title">End to end in MuJoCo: camera in, torques out</h2>
+  <p class="bn-lead">The whole loop in physics with the humanoid: the head camera is read at 1 Hz, floor levels, crates, drop edges and ramps go into a world model, and at every touchdown the next step is chosen and designed from that model. The design time is real and shown; the simulation waits for it.</p>
+  <div class="hero-clip" style="margin-top:14px"><video controls muted loop playsinline preload="metadata"><source src="assets/videos/bipednav_hum_on_course.mp4" type="video/mp4"></video></div>
+  <p class="bn-lead" id="b7-online-status" style="margin-top:10px"><b>Crate, then staircase</b>: both perceived on the way; the crate crossed with the two-step plan, the three stairs descended one designed step each, then the regular gait.</p>
+  <div class="clip-row">
+  </div>
+  <div class="grid-2" style="margin-top:22px">
+    <div class="card card-pad prose" style="margin:0"><p class="subhead" style="margin-top:0">Live trace of the combined course</p><pre class="cmd" id="mj7-trace" style="max-height:300px; overflow:auto"># online_b7on_course: seven-link (feet, actuated ankles) -> walking after 53 steps, 45.0 s simulated, 251 s of step design
+[  0.00 s  step  0] perceive (45 ms): levels z+0cm x0.34-2.29, z+0cm x2.76-5.48
+[  0.82 s  step  1] touchdown: step of 0.82 s, stride (+0.399, +0.000) m, slip 0.1 cm, peak torque 332 N·m, tracking 0.009 rad
+[  0.82 s  step  1] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[  1.00 s  step  1] perceive (30 ms): levels z+0cm x0.66-2.34, z+10cm x2.35-2.53, z+0cm x2.69-3.37 | obstacle: box 1.95 m ahead, 18 cm deep, 10 cm high
+[  1.63 s  step  2] touchdown: step of 0.81 s, stride (+0.399, -0.000) m, slip 0.2 cm, peak torque 405 N·m, tracking 0.028 rad
+[  1.63 s  step  2] decide: crate in 1.55 m: approach flat 0.34 m (designed, 5 s)  [5.14 s]
+[  2.00 s  step  2] perceive (42 ms): levels z+0cm x1.06-2.33, z+10cm x2.35-2.53, z+0cm x2.66-4.27 | obstacle: box 1.55 m ahead, 18 cm deep, 10 cm high
+[  2.54 s  step  3] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 200 N·m, tracking 0.078 rad
+[  2.54 s  step  3] decide: crate in 1.21 m: approach flat 0.34 m (designed, 5 s)  [5.10 s]
+[  3.00 s  step  3] perceive (68 ms): levels z+0cm x1.40-2.33, z+10cm x2.35-2.54, z+0cm x2.64-5.53 | obstacle: box 1.21 m ahead, 19 cm deep, 10 cm high
+[  3.45 s  step  4] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 93 N·m, tracking 0.027 rad
+[  3.45 s  step  4] decide: crate in 0.87 m: approach flat 0.34 m (designed, 4 s)  [4.49 s]
+[  4.00 s  step  4] perceive (47 ms): levels z+0cm x1.79-2.35, z+10cm x2.35-2.54, z+0cm x2.62-5.49 | obstacle: box 0.87 m ahead, 19 cm deep, 10 cm high
+[  4.36 s  step  5] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 230 N·m, tracking 0.047 rad
+[  4.36 s  step  5] decide: crate in 0.53 m: approach flat 0.34 m (designed, 4 s)  [4.29 s]
+[  5.00 s  step  5] perceive (27 ms): levels z+0cm x2.30-2.35, z+10cm x2.35-2.54, z+0cm x2.60-5.44 | obstacle: box 0.53 m ahead, 19 cm deep, 10 cm high
+[  5.27 s  step  6] touchdown: step of 0.91 s, stride (+0.340, -0.001) m, slip 0.0 cm, peak torque 93 N·m, tracking 0.047 rad
+[  5.27 s  step  6] decide: crate 10 cm high, 19 cm deep, 19 cm ahead: leading stride 0.49 m (ok), trailing (ok), 72 s  [72.35 s]
+[  6.00 s  step  6] perceive (70 ms): levels z+10cm x2.42-2.55, z+0cm x2.57-5.52
+[  6.46 s  step  7] touchdown: step of 1.19 s, stride (+0.493, -0.001) m, slip 0.0 cm, peak torque 86 N·m, tracking 0.048 rad
+[  6.46 s  step  7] decide: crate: trailing step (queued)  (queued)
+[  7.00 s  step  7] perceive (61 ms): levels z+0cm x2.92-5.42
+[  7.63 s  step  8] touchdown: step of 1.16 s, stride (+0.400, -0.001) m, slip 0.0 cm, peak torque 216 N·m, tracking 0.034 rad
+[  7.63 s  step  8] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[  8.00 s  step  8] perceive (35 ms): levels z+0cm x3.32-5.27
+[  8.52 s  step  9] touchdown: step of 0.89 s, stride (+0.399, -0.000) m, slip 0.1 cm, peak torque 342 N·m, tracking 0.014 rad
+[  8.52 s  step  9] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[  9.00 s  step  9] perceive (41 ms): levels z+0cm x3.72-5.57
+[  9.36 s  step 10] touchdown: step of 0.85 s, stride (+0.399, -0.000) m, slip 0.2 cm, peak torque 377 N·m, tracking 0.027 rad
+[  9.36 s  step 10] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 10.00 s  step 10] perceive (42 ms): levels z-0cm x4.25-5.56, z-10cm x5.70-5.92, z-30cm x6.36-11.68 | stairs: down first riser 1.71 m, rise -15 cm, run 36 cm, 2 treads
+[ 10.20 s  step 11] touchdown: step of 0.84 s, stride (+0.399, -0.001) m, slip 0.1 cm, peak torque 339 N·m, tracking 0.026 rad
+[ 10.20 s  step 11] decide: stairs down in 1.31 m: approach flat 0.38 m (designed, 4 s)  [3.97 s]
+[ 11.00 s  step 11] perceive (36 ms): levels z+0cm x4.99-5.59, z-10cm x5.69-5.90, z-21cm x6.02-6.21, z-30cm x6.33-10.80 | stairs: down first riser 1.34 m, rise -10 cm, run 31 cm, 3 treads
+[ 11.11 s  step 12] touchdown: step of 0.91 s, stride (+0.377, -0.000) m, slip 0.0 cm, peak torque 114 N·m, tracking 0.084 rad
+[ 11.11 s  step 12] decide: stairs down in 0.96 m: approach regular 0.40 m  [0.00 s]
+[ 11.89 s  step 13] touchdown: step of 0.77 s, stride (+0.399, -0.000) m, slip 0.3 cm, peak torque 382 N·m, tracking 0.145 rad
+[ 11.89 s  step 13] decide: stairs down in 0.56 m: approach flat 0.38 m (designed, 4 s)  [3.88 s]
+[ 12.00 s  step 13] perceive (34 ms): levels z+0cm x5.29-5.59, z-10cm x5.63-5.91, z-21cm x5.98-6.22, z-30cm x6.30-10.23 | stairs: down first riser 0.56 m, rise -10 cm, run 32 cm, 3 treads
+[ 12.79 s  step 14] touchdown: step of 0.91 s, stride (+0.376, -0.000) m, slip 0.0 cm, peak torque 78 N·m, tracking 0.067 rad
+[ 12.79 s  step 14] decide: stair down: edge in 18 cm, rise -10.0 cm, stride 0.32 m (ok, tau 164 N·m, 25 s)  [24.68 s]
+[ 13.00 s  step 14] perceive (23 ms): levels z-10cm x5.66-5.92, z-21cm x5.95-6.22, z-30cm x6.28-8.73 | stairs: down first riser 0.50 m, rise -10 cm, run 30 cm, 2 treads
+[ 13.64 s  step 15] touchdown: step of 0.84 s, stride (+0.320, -0.100) m, slip 0.0 cm, peak torque 103 N·m, tracking 0.091 rad
+[ 13.64 s  step 15] decide: stair down: edge in 19 cm, rise -11.0 cm, stride 0.33 m (ok, tau 92 N·m, 61 s)  [61.20 s]
+[ 14.00 s  step 15] perceive (32 ms): levels z-11cm x6.17-6.23, z-20cm x6.26-12.36 | stairs: down first riser 0.49 m, rise -9 cm, run nan cm, 1 treads
+[ 14.52 s  step 16] touchdown: step of 0.88 s, stride (+0.330, -0.111) m, slip 0.0 cm, peak torque 82 N·m, tracking 0.064 rad
+[ 14.52 s  step 16] decide: stair down: edge in 16 cm, rise -8.9 cm, stride 0.30 m (ok, tau 106 N·m, 62 s)  [62.29 s]
+[ 15.00 s  step 16] perceive (37 ms): levels z-9cm x6.53-12.37
+[ 15.37 s  step 17] touchdown: step of 0.85 s, stride (+0.300, -0.090) m, slip 0.1 cm, peak torque 103 N·m, tracking 0.029 rad
+[ 15.37 s  step 17] decide: exit step (ok, tau 69 N·m, 3 s)  [3.28 s]
+[ 16.00 s  step 17] perceive (33 ms): levels z+0cm x7.12-11.83
+[ 16.27 s  step 18] touchdown: step of 0.90 s, stride (+0.400, -0.001) m, slip 0.0 cm, peak torque 75 N·m, tracking 0.036 rad
+[ 16.27 s  step 18] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 17.00 s  step 18] perceive (39 ms): levels z+0cm x7.55-12.56
+[ 17.08 s  step 19] touchdown: step of 0.81 s, stride (+0.399, -0.000) m, slip 0.1 cm, peak torque 362 N·m, tracking 0.014 rad
+[ 17.08 s  step 19] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 17.88 s  step 20] touchdown: step of 0.80 s, stride (+0.399, +0.000) m, slip 0.2 cm, peak torque 376 N·m, tracking 0.032 rad
+[ 17.88 s  step 20] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 18.00 s  step 20] perceive (69 ms): levels z+0cm x7.82-11.55
+[ 18.68 s  step 21] touchdown: step of 0.80 s, stride (+0.399, -0.000) m, slip 0.2 cm, peak torque 415 N·m, tracking 0.025 rad
+[ 18.68 s  step 21] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 19.00 s  step 21] perceive (37 ms): levels z+0cm x8.23-10.17
+[ 19.48 s  step 22] touchdown: step of 0.79 s, stride (+0.399, +0.000) m, slip 0.2 cm, peak torque 375 N·m, tracking 0.028 rad
+[ 19.48 s  step 22] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 20.00 s  step 22] perceive (36 ms): levels z+0cm x8.62-12.08
+[ 20.27 s  step 23] touchdown: step of 0.79 s, stride (+0.399, -0.000) m, slip 0.2 cm, peak torque 338 N·m, tracking 0.027 rad
+[ 20.27 s  step 23] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 21.00 s  step 23] perceive (34 ms): levels z+0cm x9.57-14.62
+[ 21.06 s  step 24] touchdown: step of 0.79 s, stride (+0.399, +0.000) m, slip 0.2 cm, peak torque 376 N·m, tracking 0.029 rad
+[ 21.06 s  step 24] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 21.85 s  step 25] touchdown: step of 0.79 s, stride (+0.399, -0.001) m, slip 0.2 cm, peak torque 393 N·m, tracking 0.027 rad
+[ 21.85 s  step 25] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 22.00 s  step 25] perceive (35 ms): levels z+0cm x9.83-12.89
+[ 22.65 s  step 26] touchdown: step of 0.79 s, stride (+0.399, +0.000) m, slip 0.1 cm, peak torque 399 N·m, tracking 0.028 rad
+[ 22.65 s  step 26] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 23.00 s  step 26] perceive (28 ms): levels z+0cm x10.24-12.19
+[ 23.45 s  step 27] touchdown: step of 0.81 s, stride (+0.399, -0.000) m, slip 0.2 cm, peak torque 337 N·m, tracking 0.024 rad
+[ 23.45 s  step 27] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 24.00 s  step 27] perceive (41 ms): levels z+0cm x10.63-14.42
+[ 24.26 s  step 28] touchdown: step of 0.81 s, stride (+0.399, -0.000) m, slip 0.1 cm, peak torque 345 N·m, tracking 0.026 rad
+[ 24.26 s  step 28] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 25.00 s  step 28] perceive (113 ms): levels z+0cm x11.56-16.59
+[ 25.08 s  step 29] touchdown: step of 0.81 s, stride (+0.399, -0.001) m, slip 0.1 cm, peak torque 331 N·m, tracking 0.027 rad
+[ 25.08 s  step 29] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 25.88 s  step 30] touchdown: step of 0.80 s, stride (+0.399, -0.001) m, slip 0.1 cm, peak torque 384 N·m, tracking 0.031 rad
+[ 25.88 s  step 30] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 26.00 s  step 30] perceive (40 ms): levels z+0cm x11.84-15.43
+[ 26.68 s  step 31] touchdown: step of 0.80 s, stride (+0.399, -0.001) m, slip 0.2 cm, peak torque 372 N·m, tracking 0.033 rad
+[ 26.68 s  step 31] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 27.00 s  step 31] perceive (46 ms): levels z+0cm x12.24-14.18
+[ 27.47 s  step 32] touchdown: step of 0.80 s, stride (+0.399, -0.001) m, slip 0.2 cm, peak torque 364 N·m, tracking 0.033 rad
+[ 27.47 s  step 32] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 28.00 s  step 32] perceive (40 ms): levels z+0cm x12.64-16.14
+[ 28.27 s  step 33] touchdown: step of 0.80 s, stride (+0.399, -0.001) m, slip 0.2 cm, peak torque 363 N·m, tracking 0.033 rad
+[ 28.27 s  step 33] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 29.00 s  step 33] perceive (31 ms): levels z+0cm x13.57-18.63
+[ 29.07 s  step 34] touchdown: step of 0.80 s, stride (+0.399, -0.001) m, slip 0.2 cm, peak torque 367 N·m, tracking 0.033 rad
+[ 29.07 s  step 34] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 29.87 s  step 35] touchdown: step of 0.80 s, stride (+0.399, -0.000) m, slip 0.1 cm, peak torque 337 N·m, tracking 0.028 rad
+[ 29.87 s  step 35] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 30.00 s  step 35] perceive (49 ms): levels z+0cm x13.84-17.18
+[ 30.67 s  step 36] touchdown: step of 0.80 s, stride (+0.399, -0.000) m, slip 0.1 cm, peak torque 354 N·m, tracking 0.026 rad
+[ 30.67 s  step 36] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 31.00 s  step 36] perceive (51 ms): levels z+0cm x14.24-16.19
+[ 31.48 s  step 37] touchdown: step of 0.81 s, stride (+0.399, -0.000) m, slip 0.1 cm, peak torque 341 N·m, tracking 0.025 rad
+[ 31.48 s  step 37] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 32.00 s  step 37] perceive (37 ms): levels z+0cm x14.64-18.10
+[ 32.27 s  step 38] touchdown: step of 0.79 s, stride (+0.399, -0.000) m, slip 0.2 cm, peak torque 353 N·m, tracking 0.030 rad
+[ 32.27 s  step 38] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 33.00 s  step 38] perceive (37 ms): levels z+0cm x15.58-20.63
+[ 33.07 s  step 39] touchdown: step of 0.80 s, stride (+0.399, -0.000) m, slip 0.2 cm, peak torque 410 N·m, tracking 0.029 rad
+[ 33.07 s  step 39] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 33.87 s  step 40] touchdown: step of 0.80 s, stride (+0.399, -0.000) m, slip 0.1 cm, peak torque 400 N·m, tracking 0.026 rad
+[ 33.87 s  step 40] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 34.00 s  step 40] perceive (44 ms): levels z+0cm x15.84-19.21
+[ 34.67 s  step 41] touchdown: step of 0.80 s, stride (+0.399, -0.001) m, slip 0.2 cm, peak torque 388 N·m, tracking 0.024 rad
+[ 34.67 s  step 41] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 35.00 s  step 41] perceive (66 ms): levels z+0cm x16.25-18.19
+[ 35.47 s  step 42] touchdown: step of 0.81 s, stride (+0.399, -0.001) m, slip 0.1 cm, peak torque 365 N·m, tracking 0.028 rad
+[ 35.47 s  step 42] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 36.00 s  step 42] perceive (37 ms): levels z+0cm x16.65-19.92
+[ 36.28 s  step 43] touchdown: step of 0.81 s, stride (+0.399, -0.001) m, slip 0.1 cm, peak torque 367 N·m, tracking 0.027 rad
+[ 36.28 s  step 43] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 37.00 s  step 43] perceive (65 ms): levels z+0cm x17.57-22.65
+[ 37.08 s  step 44] touchdown: step of 0.80 s, stride (+0.399, +0.000) m, slip 0.1 cm, peak torque 372 N·m, tracking 0.029 rad
+[ 37.08 s  step 44] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 37.89 s  step 45] touchdown: step of 0.80 s, stride (+0.399, +0.000) m, slip 0.2 cm, peak torque 335 N·m, tracking 0.027 rad
+[ 37.89 s  step 45] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 38.00 s  step 45] perceive (51 ms): levels z+0cm x17.85-21.76
+[ 38.69 s  step 46] touchdown: step of 0.80 s, stride (+0.399, -0.000) m, slip 0.2 cm, peak torque 364 N·m, tracking 0.028 rad
+[ 38.69 s  step 46] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 39.00 s  step 46] perceive (49 ms): levels z+0cm x18.25-20.20
+[ 39.50 s  step 47] touchdown: step of 0.81 s, stride (+0.399, -0.001) m, slip 0.1 cm, peak torque 360 N·m, tracking 0.026 rad
+[ 39.50 s  step 47] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 40.00 s  step 47] perceive (111 ms): levels z+0cm x18.65-21.49
+[ 40.31 s  step 48] touchdown: step of 0.81 s, stride (+0.399, -0.000) m, slip 0.2 cm, peak torque 338 N·m, tracking 0.031 rad
+[ 40.31 s  step 48] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 41.00 s  step 48] perceive (30 ms): levels z+0cm x19.54-24.72
+[ 41.11 s  step 49] touchdown: step of 0.80 s, stride (+0.399, -0.000) m, slip 0.1 cm, peak torque 374 N·m, tracking 0.028 rad
+[ 41.11 s  step 49] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 41.90 s  step 50] touchdown: step of 0.80 s, stride (+0.399, -0.000) m, slip 0.2 cm, peak torque 360 N·m, tracking 0.028 rad
+[ 41.90 s  step 50] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 42.00 s  step 50] perceive (34 ms): levels z+0cm x19.85-24.27
+[ 42.69 s  step 51] touchdown: step of 0.79 s, stride (+0.399, -0.001) m, slip 0.2 cm, peak torque 352 N·m, tracking 0.029 rad
+[ 42.69 s  step 51] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 43.00 s  step 51] perceive (51 ms): levels z+0cm x20.25-22.20
+[ 43.48 s  step 52] touchdown: step of 0.79 s, stride (+0.399, -0.000) m, slip 0.2 cm, peak torque 387 N·m, tracking 0.030 rad
+[ 43.48 s  step 52] decide: regular 0.40 m (flat ahead)  [0.00 s]
+[ 44.00 s  step 52] perceive (35 ms): levels z+0cm x20.66-23.82
+[ 44.29 s  step 53] touchdown: step of 0.81 s, stride (+0.399, -0.000) m, slip 0.1 cm, peak torque 357 N·m, tracking 0.027 rad
+[ 44.29 s  step 53] decide: regular 0.40 m (flat ahead)  [0.00 s]</pre></div>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/mj_traj3d_b7on_course.png" alt="Hip trajectory and footholds on the combined course (colour = time)." loading="lazy"><figcaption><b>Hip trajectory and footholds</b> on the combined course (colour = time).</figcaption></figure>
+  </div>
+  <p style="font-size:13px;color:var(--ash);margin-top:14px">Earlier, the point-foot five-link walker ran the same loop: flat walking was exact and one crate was crossed, but every staircase fell at the first transition. The technical report keeps those runs and the diagnosis (negative ground forces, fast touchdowns, a trailing foot that did not lift) that led to the footed robot.</p>
 </section>
 
 <!-- =================== TWO-LINK REDUCTION =================== -->
