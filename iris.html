@@ -148,7 +148,7 @@
       <a href="iris_studio.html" target="_blank" rel="noopener">Open the studio ↗</a>
       <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener">Thesis (82 pp.)</a>
       <a href="https://crv.pubpub.org/pub/i8xqyiz0/release/1" target="_blank" rel="noopener">CRV paper</a>
-      <a href="assets/pdf/projects/iris_studio_report.pdf" target="_blank" rel="noopener">Studio report</a>
+      <a href="assets/pdf/projects/iris_studio_report.pdf" target="_blank" rel="noopener">Studio report (11 pp.)</a>
       <a href="https://github.com/thejerrycheng/IRIS" target="_blank" rel="noopener">Code</a>
       <a href="cinema_robot.html">Thesis pages (2025)</a>
     </div>
@@ -267,6 +267,32 @@
       <p>It is honest about what it is: a few thousand samples and a few hundred thousand parameters, enough to reproduce a shot it has seen and to show the failure modes the thesis met at full scale, the zero-action attractor above all. Export the dataset as JSON to train something bigger offline.</p>
     </div>
     <figure class="fig" style="margin-top:0"><img src="assets/images/projects/iris/studio_learn.jpg" alt="The record and train tab of the studio" loading="lazy"><figcaption><b>The tab:</b> dataset counter, loss curve, and the policy status while it flies.</figcaption></figure>
+  </div>
+</section>
+
+<!-- =================== EXPERIMENTS =================== -->
+<section class="section" id="experiments">
+  <h2 class="section-title">Two experiments, run in the browser</h2>
+  <p class="lead">Both of these run inside the studio itself, driven headlessly at a fixed 30 Hz step so they are repeatable: the tracking loop reads the rendered camera feed, and the policy is trained on demonstrations the studio recorded of its own presets. The numbers below are measured, not asserted.</p>
+
+  <div class="grid-2">
+    <div class="prose">
+      <h3 style="font-size:19px;margin-bottom:8px">Object tracking from the feed</h3>
+      <p>The toy car laps the desk and the wrist keeps it centred, either from its true position or from a <b>colour tracker reading the feed</b>: segment saturated red, take connected components of a 132 × 88 read-back, score them by redness rather than by size, and steer the optical axis with a proportional law applied to the camera's measured pose.</p>
+      <p>Scoring by size was the first bug: the carrot cake's brown crust covers more pixels than the car, so the arm politely tracked the cake. Chromaticity separates them cleanly (car ≈ 0.85, crust ≈ 0.65). Two attempts to lead the target with an estimated angular rate made things worse, because the rate had to be estimated from the controller's own corrections and the loop amplified them.</p>
+      <p><b>Result.</b> With ground truth the car stays within a fraction of a percent of frame centre. The tracker holds it to <b>13.4 %</b> of the frame at 28 mm and <b>15.5 %</b> at 45 mm, with residuals (what it still sees off-centre) of 9.5 % and 6.0 %, and it sees nothing in 16–18 % of frames. At 85 mm the field of view is 16°, the car leaves the frame, and a reactive tracker with no search behaviour cannot get it back: lost in <b>62 %</b> of frames.</p>
+    </div>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/iris/figs/fig_tracking.png" alt="Tracking error over time for ground truth and the pixel tracker at three focal lengths" loading="lazy"><figcaption><b>Tracking:</b> the car's offset from frame centre, the tracker's own residual, and how often it sees nothing.</figcaption></figure>
+  </div>
+
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/iris/figs/fig_policy.png" alt="Policy training curve and rollout errors" loading="lazy"><figcaption><b>The in-tab policy:</b> training and held-out loss, and how far each rollout ends from the demonstration it imitates.</figcaption></figure>
+    <div class="prose">
+      <h3 style="font-size:19px;margin-bottom:8px">Learning a shot from demonstrations</h3>
+      <p>The studio recorded <b>80 episodes</b> (every non-tracking preset on all four product sets) at 10 Hz, and trained the VisionJointPlanner-lite in the tab: five past states plus a 24 × 16 thumbnail of the feed and a goal token in, the next five joint and lens deltas out, with temporal ensembling at run time.</p>
+      <p>It learns the shape of a move and then drifts. TensorFlow.js validates on the tail of the data, so the held-out set is whole shots the model never saw: the training loss reaches 0.0025 against 0.22 held out. Where it <i>starts</i> decides everything. Rolled out from the home pose, a state no demonstration ever visits, it ends on average <b>752 mm</b> from where the demonstration ended. Started at the shot's own first pose, as a deployment would after the thesis's goal-directed start, that falls to <b>89 mm</b> and the zoom lands within a few millimetres of the right focal length. That order of magnitude is the distribution shift the thesis fixed with a goal-directed start and a stagnation detector.</p>
+      <p>It is a working data-collection and training loop at toy scale, not a result: the thesis needed 17,897 samples where this has a few thousand. Record your own, export the JSON, and train something bigger offline.</p>
+    </div>
   </div>
 </section>
 
