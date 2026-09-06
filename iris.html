@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IRIS — a cinema robot arm you can fly in your browser — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="IRIS, the Intelligent Robotic Imaging System: a 6-DOF cinema robot arm built for under $1,000, with visuomotor imitation learning. This page adds a browser studio: the real kinematic model on a desk with a Sony α7R III and a 16–150 mm servo zoom, 22 preset shots including dolly zooms and object tracking, joint and task-space control, and a policy you can train on your own demonstrations.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/iris.html">
+  <meta property="og:title" content="IRIS — a cinema robot arm you can fly in your browser">
+  <meta property="og:description" content="The thesis arm, its real kinematics, a servo zoom lens and 22 shots, live in the browser.">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/iris/iris_real_life.jpg">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <style>
+    .lead { font-size: 17px; line-height: 1.6; max-width: 74ch; }
+    .lead a, .prose a, .credits a { color: var(--hi-deep); font-weight: 600; text-decoration: none; }
+    .lead a:hover, .prose a:hover { text-decoration: underline; }
+    .hero-video { position: relative; border-radius: var(--radius); overflow: hidden; background: var(--ink); border: var(--line-w) solid var(--ink); box-shadow: var(--sh); }
+    .hero-video video { width: 100%; display: block; aspect-ratio: 16 / 9; background: var(--ink); }
+    .hero-caption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px; margin-top: 16px; }
+    .hero-caption p { font-size: 14px; color: var(--ink-soft); max-width: 66ch; }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-top: 28px; }
+    .stat-tile { padding: 14px 14px 12px; text-align: left; }
+    .stat-tile .num { font-family: var(--font-mono); font-weight: 700; font-size: 26px; letter-spacing: -0.02em; color: var(--ink); line-height: 1.05; }
+    .stat-tile .num small { font-size: 14px; font-weight: 400; color: var(--ash); margin-left: 3px; }
+    .stat-tile .lab { font-family: var(--font-comic); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--hi); margin-top: 6px; line-height: 1.2; }
+    .stat-tile .sub { font-size: 12px; color: var(--ash); margin-top: 4px; line-height: 1.35; }
+    .strip3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .panel { overflow: hidden; display: flex; flex-direction: column; }
+    .panel .media { background: var(--bone); border-bottom: var(--line-w) solid var(--ink); aspect-ratio: 4 / 3; overflow: hidden; position: relative; }
+    .panel .media img, .panel .media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .panel .body { padding: 14px 16px 16px; }
+    .panel h3 { font-size: 16px; margin-bottom: 4px; }
+    .panel p { font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
+    .panel .caption-box { margin: -26px 0 0 12px; position: relative; z-index: 2; }
+    .fig { margin: 22px 0 0; }
+    .fig img, .fig video { width: 100%; display: block; background: #fff; border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); box-shadow: var(--sh-sm); }
+    .fig figcaption { font-size: 13px; line-height: 1.5; color: var(--ash); margin-top: 10px; }
+    .fig figcaption b { color: var(--ink); font-weight: 600; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+    .grid-2 > *, .strip3 > *, .clip-grid > *, .finding, .prose { min-width: 0; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .eq { font-family: var(--font-mono); font-size: 13.5px; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 6px; padding: 10px 14px; margin: 12px 0; overflow-x: auto; white-space: normal; line-height: 1.7; box-shadow: var(--sh-xs); max-width: 100%; }
+    .prose p { font-size: 15.5px; line-height: 1.62; margin-bottom: 12px; }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose ul, .prose ol { padding-left: 20px; margin: 8px 0 12px; }
+    .prose li { font-size: 15px; line-height: 1.55; margin-bottom: 6px; }
+    .prose li::marker { color: var(--hi); }
+    .prose code, kbd { background: var(--paper); border: 1px solid rgba(21,24,32,.35); border-radius: 4px; padding: 1px 6px; font-size: 12.5px; font-family: var(--font-mono); }
+    .data-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12.5px; background: var(--panel); border: var(--line-w) solid var(--ink); box-shadow: var(--sh-sm); }
+    .data-table th, .data-table td { padding: 8px 10px; border-bottom: 1.5px dashed rgba(21,24,32,.35); text-align: right; white-space: nowrap; }
+    .data-table th:first-child, .data-table td:first-child { text-align: left; }
+    .data-table thead th { background: var(--ink); color: var(--bone); font-weight: 700; border-bottom: var(--line-w) solid var(--ink); white-space: normal; line-height: 1.25; vertical-align: bottom; }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table td.hi { color: var(--hi-deep); font-weight: 700; } .data-table td.bad { color: var(--rust); font-weight: 700; }
+    .table-wrap { overflow-x: auto; margin-top: 18px; position: relative; }
+    .scroll-hint { display: none; font-family: var(--font-comic); font-size: 11px; letter-spacing: .06em; color: var(--hi); margin-top: 6px; }
+    .finding { position: relative; padding: 22px 24px 22px 66px; }
+    .finding .no { position: absolute; left: 16px; top: 14px; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--yellow); border: var(--line-w) solid var(--ink); font-family: var(--font-comic); font-size: 20px; box-shadow: var(--sh-xs); transform: rotate(-6deg); color: #151820; }
+    .finding h3 { font-size: 19px; margin-bottom: 8px; }
+    .finding p { font-size: 15px; line-height: 1.58; color: var(--ink-soft); }
+    .clip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 18px; }
+    .clip-grid.three { grid-template-columns: repeat(3, 1fr); } .clip-grid.four { grid-template-columns: repeat(4, 1fr); }
+    .clip-grid .card { overflow: hidden; }
+    .clip-grid video, .clip-grid img { width: 100%; display: block; aspect-ratio: 16 / 9; background: #151820; object-fit: cover; }
+    .clip-grid .body { padding: 12px 16px 14px; }
+    .clip-grid h3 { font-size: 15.5px; margin-bottom: 4px; }
+    .clip-grid p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+    .clip-grid .caption-box { margin: -22px 0 0 12px; position: relative; z-index: 2; }
+    .big-clip video { width: 100%; display: block; aspect-ratio: 16 / 9; background: #151820; border: var(--line-w) solid var(--ink); border-radius: var(--radius); box-shadow: var(--sh); }
+    .photos3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
+    .photos3 img { border: 1.5px solid var(--ink); border-radius: 4px; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
+    .photos3 figcaption { font-size: 12.5px; color: var(--ash); margin-top: 6px; line-height: 1.4; }
+    .cmd { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; background: #151820; color: #F4EAD2; border-radius: 8px; padding: 14px 16px; overflow-x: auto; border: var(--line-w) solid var(--ink); box-shadow: var(--sh-sm); white-space: pre; max-width: 100%; }
+    .cmd .c { color: var(--gold); }
+    .credits { font-size: 14.5px; line-height: 1.6; color: var(--ink-soft); } .credits b { color: var(--ink); }
+    .card-pad { padding: 16px 18px; }
+    /* the embedded studio */
+    .studio-embed { position: relative; border: var(--line-w) solid var(--ink); border-radius: var(--radius); overflow: hidden; box-shadow: var(--sh); background: #0d1017; }
+    .studio-embed iframe { width: 100%; height: 720px; border: 0; display: block; }
+    .studio-embed .placeholder { position: absolute; inset: 0; display: grid; place-items: center; background: #0d1017 url('assets/images/projects/iris/studio_poster.jpg') center / cover; cursor: pointer; }
+    .studio-embed .placeholder span { font-family: var(--font-comic); font-size: 24px; letter-spacing: .06em; background: var(--pop); color: #151820; border: var(--line-w) solid #151820; border-radius: 999px; padding: 12px 26px; box-shadow: 6px 6px 0 #151820; }
+    .shot-table td:nth-child(2) { white-space: normal; min-width: 260px; }
+    .plot-note { margin: 8px 0 0; font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+    @media (max-width: 1000px) and (min-width: 821px) { .clip-grid.three, .clip-grid.four { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 820px) {
+      .strip3, .grid-3, .grid-2, .clip-grid, .clip-grid.three, .clip-grid.four { grid-template-columns: 1fr; }
+      .photos3 { grid-template-columns: 1fr 1fr; } .finding { padding-left: 24px; padding-top: 64px; } .scroll-hint { display: block; } .data-table { font-size: 11px; }
+      .studio-embed iframe { height: 560px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button type="button" class="theme-btn" aria-label="Switch between day and night" aria-pressed="false">
+      <span class="if-night"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Day</span></span>
+      <span class="if-day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="lbl">Night</span></span>
+    </button>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a><a href="publications.html">Publications</a><a href="projects.html">Projects</a><a href="cv.html">CV</a>
+</div>
+
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">Cinema robotics ◆ Mechatronics ◆ Imitation learning ◆ MEng thesis, University of Toronto ◆ CRV 2026</p>
+    <h1>IRIS</h1>
+    <p>The Intelligent Robotic Imaging System: a six-axis cinema robot arm built for under a thousand dollars, and a visuomotor policy that learned camera moves from demonstrations. This page is the studio version of the thesis: the arm's real kinematic model bolted to a desk in your browser, a Sony α7R III with a motorised 16–150 mm zoom on its wrist, twenty-two shots from a pan to a dolly zoom to object tracking, hand control in joint and task space, and a data-collection and training loop you can run yourself. Every shot was planned against the arm's joint limits, speeds and motor torques, then recorded from the same simulator.</p>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
+<!-- =================== HERO =================== -->
+<section class="section" id="demo">
+  <div class="hero-video">
+    <video controls playsinline preload="metadata" poster="assets/images/projects/iris/video_poster.jpg">
+      <source src="assets/videos/iris_showreel.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p>Showreel from the studio: the arm on the desk, the camera feed with its viewfinder, and the shots one after another. The framing you see is what the lens sees in the simulation, depth of field included.</p>
+    <div class="links">
+      <a href="iris_studio.html" target="_blank" rel="noopener">Open the studio ↗</a>
+      <a href="assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf" target="_blank" rel="noopener">Thesis (82 pp.)</a>
+      <a href="https://crv.pubpub.org/pub/i8xqyiz0/release/1" target="_blank" rel="noopener">CRV paper</a>
+      <a href="assets/pdf/projects/iris_studio_report.pdf" target="_blank" rel="noopener">Studio report</a>
+      <a href="https://github.com/thejerrycheng/IRIS" target="_blank" rel="noopener">Code</a>
+      <a href="cinema_robot.html">Thesis pages (2025)</a>
+    </div>
+  </div>
+  <div class="stat-row">
+    <div class="card stat-tile"><div class="num">6</div><div class="lab">axes</div><div class="sub">Unitree GO-M8010-6 FOC actuators, 23.7 N·m peak, timing-belt wrist; 23 printed parts, ~8.5 kg</div></div>
+    <div class="card stat-tile"><div class="num">0.7<small>m</small></div><div class="lab">reach</div><div class="sub">1.4 m sweep, 1.5 kg payload, ±5 mm repeatability, $800–1000 to build</div></div>
+    <div class="card stat-tile"><div class="num">22</div><div class="lab">preset shots</div><div class="sub">pans, dollies, orbits, top-to-side arcs, dolly zooms, rack focus, object tracking</div></div>
+    <div class="card stat-tile"><div class="num">16–150<small>mm</small></div><div class="lab">servo zoom</div><div class="sub">motorised zoom and focus rings, thin-lens depth of field on a full-frame α7R III</div></div>
+    <div class="card stat-tile"><div class="num" id="stat-tau">—</div><div class="lab">peak torque used</div><div class="sub">across every planned shot, from MuJoCo inverse dynamics with the camera payload; limit 23.7 N·m</div></div>
+    <div class="card stat-tile"><div class="num">17.9<small>k</small></div><div class="lab">training samples</div><div class="sub">the thesis policy (VisionJointPlanner): 5 frames in, 5 joint steps out; here, train your own in the tab</div></div>
+  </div>
+</section>
+
+<!-- =================== STRIP =================== -->
+<section class="section" id="strip">
+  <h2 class="section-title">In one strip</h2>
+  <div class="strip3">
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/iris/iris_real_life.jpg" alt="The IRIS arm built in black filament on a desk" loading="lazy"></div>
+      <span class="caption-box">1 · Build</span>
+      <div class="body"><h3>A cinema arm for the price of a lens</h3><p>Six FOC motors, an offset-axis layout for unobstructed sweeps, belt transmissions that move the motors toward the base, and a body that prints in 23 parts. The thesis covers the sizing, the DH table and the iterations that broke.</p></div>
+    </div>
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/iris/studio_poster.jpg" alt="The IRIS arm on a studio desk in the browser simulator" loading="lazy"></div>
+      <span class="caption-box">2 · Fly</span>
+      <div class="body"><h3>The same kinematics, on a desk, in a browser</h3><p>The MuJoCo body tree of the thesis drives the arm; a damped-least-squares solver aims the lens; every preset is a parametric camera path plus a lens track, checked by the planner before it ever plays.</p></div>
+    </div>
+    <div class="card panel">
+      <div class="media"><img src="assets/images/projects/iris/iris_il.jpg" alt="Imitation-learning pipeline of the thesis" loading="lazy"></div>
+      <span class="caption-box">3 · Learn</span>
+      <div class="body"><h3>Record, train, let it fly</h3><p>The thesis learned camera moves from 17,897 demonstration samples with a compact temporal head. The studio lets you record your own episodes at 10 Hz, train a small action-chunking policy in the tab, and hand it the controls.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== THE STUDIO =================== -->
+<section class="section" id="studio">
+  <h2 class="section-title">The studio</h2>
+  <p class="lead">Click a shot and watch both views: the desk with the arm, and the camera feed with the viewfinder (focal length, aperture, focus distance, depth of field). Drag the studio view to orbit. Switch the product set, take the sliders in the Joints tab, drag the gizmo on the camera in Task space, or pull focus in the Lens tab. Nothing is pre-rendered: the arm solves its inverse kinematics live, the lens rings are servo-slewed, and the feed is rendered through a thin-lens depth of field. <a href="iris_studio.html" target="_blank" rel="noopener">Open it full screen ↗</a> for the best experience; it needs WebGL and a laptop-class GPU.</p>
+  <div class="studio-embed" id="studio-embed">
+    <div class="placeholder" id="studio-placeholder" role="button" tabindex="0" aria-label="Load the IRIS studio"><span>▶ Load the studio</span></div>
+  </div>
+  <p class="plot-note">Keyboard: <kbd>space</kbd> play/pause, <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> studio / monitor / film views, <kbd>r</kbd> record, <kbd>h</kbd> home. The studio is heavy on the first load (a 1.7 MB arm and about 9 MB of product models); the feed's depth of field can be switched off in the Lens tab on slower machines.</p>
+</section>
+
+<!-- =================== SHOT LIBRARY =================== -->
+<section class="section" id="shots">
+  <h2 class="section-title">The shot library, recorded</h2>
+  <p class="lead">Each preset, recorded from the simulator at 30 fps: the studio view on the left, the camera feed on the right. Camera positions are the lens's entrance pupil; a look-at orientation keeps the subject on the optical axis; the zoom and focus tracks are commanded to the servos. The table under the clips is the planner's verdict for every shot.</p>
+  <div class="clip-grid three" id="shot-clips"></div>
+  <div class="table-wrap">
+    <table class="data-table shot-table" id="shot-table"><thead><tr><th>shot</th><th>what happens</th><th>duration [s]</th><th>lens [mm]</th><th>max joint speed [°/s]</th><th>peak torque [N·m]</th><th>IK residual [mm]</th><th>closest to a limit [°]</th></tr></thead><tbody></tbody></table>
+    <div class="scroll-hint">← swipe the table →</div>
+  </div>
+</section>
+
+<!-- =================== THE LENS =================== -->
+<section class="section" id="lens">
+  <h2 class="section-title">A motorised zoom, and the shots only a robot can do</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>The thesis flew an Intel RealSense. The next IRIS carries a real camera: a full-frame Sony α7R III (35.9 × 24 mm) and a 16–150 mm zoom whose <b>zoom and focus rings are driven by servos</b> on a bracket under the lens, so a shot can command focal length and focus distance as continuous tracks, slew-rate limited like any other axis. The simulator models the field of view, the barrel extension, the depth of field from the thin-lens circle of confusion, and the two effects that need the arm and the lens to move together.</p>
+      <div class="eq">field of view: 2·atan(24 / 2f) vertical &nbsp;·&nbsp; circle of confusion: c = (f/N)·|d − S|/d · f/(S − f) &nbsp;·&nbsp; dolly zoom: f(t) = f₀ · d(t)/d₀ keeps the subject the same size while the background changes</div>
+      <p><b>Dolly zoom.</b> The arm pulls the lens back along the optical axis while the zoom servo pushes in, holding the product's size in the frame; the room behind it collapses. The reverse, pushing in while zooming out, makes it rush away. The planner tracks the subject's image height along the shot: the coefficient of variation is <span id="vertigo-cv">—</span> for the dolly zooms against <span id="dolly-cv">—</span> for a plain dolly.</p>
+      <p><b>Rack focus.</b> Only the focus servo moves: near product, far product, back, with the aperture open to f/2.8 so the pull is visible. <b>Object tracking.</b> A toy car laps the desk and the wrist keeps it centred, either from the car's true position or from a pixel tracker running on the feed itself, the same loop the studio's policy tab uses to read images.</p>
+    </div>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/iris/figs/fig_lens.png" alt="Field of view, depth of field and the dolly-zoom law" loading="lazy"><figcaption><b>The lens model:</b> field of view over the zoom range, depth of field for two focus distances and apertures, and the focal length that keeps a subject's size as the lens moves.</figcaption></figure>
+  </div>
+  <figure class="fig"><img src="assets/images/projects/iris/figs/fig_dollyzoom.png" alt="Focal length, distance and subject size along the dolly zooms" loading="lazy"><figcaption><b>Size constancy:</b> along both dolly zooms the subject keeps its height in the frame while the distance halves; a plain dolly at fixed focal length doubles it.</figcaption></figure>
+</section>
+
+<!-- =================== KINEMATICS & PLANNING =================== -->
+<section class="section" id="kinematics">
+  <h2 class="section-title">From a camera path to six motors</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>The arm in the studio is the thesis's MuJoCo model, body for body: the fixed pose of each link in its parent, the hinge axis, the joint range. A forward-kinematics and Jacobian twin in Python is checked against MuJoCo to 10⁻⁹ m; the browser runs the same equations. The <b>tool frame</b> is the lens's entrance pupil, 14 cm ahead of the mount on the optical axis, so a shot's camera position means the lens, not the flange.</p>
+      <p>Each frame the solver takes the target lens pose (position and a look-at orientation with a level horizon) and runs damped least squares from the previous joint vector; when a pose is at the edge of reach it retries from eight canonical postures and keeps the closest. Joints 4 and 6 are continuous-rotation motors, so paths through ±180° are taken the short way round. A 1.5 rad/s per-joint cap keeps the motion cinematic; the whip pan is allowed 3 rad/s.</p>
+      <p>The planner samples every preset at 30 Hz, solves the IK along it and asks MuJoCo for the joint torques by inverse dynamics with the 1.5 kg camera payload. It found the shots the first drafts could not do: a low 360° orbit folds the wrist past its ±100° pitch, a straight-down top view sits on the look-at singularity, and any lens position closer than about 30 cm to the base column folds the arm onto itself. The library on this page is what survived, with the numbers in the table above.</p>
+    </div>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/iris/figs/fig_workspace.png" alt="Reachable lens positions in the vertical plane while looking at the far product" loading="lazy"><figcaption><b>Where the lens can be</b> while looking at the far product: IK convergence on a grid in the vertical plane of the desk, with four of the planned paths drawn in.</figcaption></figure>
+  </div>
+  <figure class="fig"><img src="assets/images/projects/iris/figs/fig_shots.png" alt="Joint angles, speeds and torques for four presets" loading="lazy"><figcaption><b>Four presets through the planner:</b> joint angles, speeds against the comfort cap, and inverse-dynamics torques against the motors' 23.7 N·m peak.</figcaption></figure>
+  <figure class="fig"><img src="assets/images/projects/iris/figs/fig_summary.png" alt="Per-shot maxima of joint speed, torque and limit margin" loading="lazy"><figcaption><b>Every preset:</b> maximum joint speed, peak torque and the closest approach to a joint limit.</figcaption></figure>
+  <figure class="fig" id="fig-telemetry-wrap"><img src="assets/images/projects/iris/figs/fig_telemetry.png" alt="Lens position error and aim offset while the videos were recorded" loading="lazy"><figcaption><b>What the studio executed</b> while the videos above were recorded: the lens position error of the live solver and how far the aim point sits from the frame centre.</figcaption></figure>
+</section>
+
+<!-- =================== THE THESIS =================== -->
+<section class="section" id="thesis">
+  <h2 class="section-title">The thesis, in short</h2>
+  <div class="grid-3">
+    <div class="card finding"><span class="no">1</span><h3>Design</h3><p>Four actuator families compared, torque sizing at the shoulder (25.8 N·m), elbow (10.6) and wrist (4.0), and the Unitree GO-M8010-6 chosen at $70 each. Offset-axis kinematics for full sweeps, GT2 belts to move the motors toward the base, a spherical wrist so IK splits into position and orientation. Repeatability ±5 mm, 60–100 W.</p></div>
+    <div class="card finding"><span class="no">2</span><h3>Control and simulation</h3><p>MuJoCo model with the real meshes; inverse-dynamics tracking of circles and lines with the camera's optical axis pinned on a subject (the pan, dolly and crane presets of the thesis); numerical and analytic IK; a ROS Noetic stack over RS-485 at 200 Hz with encoder calibration and a real-to-sim visualiser.</p></div>
+    <div class="card finding"><span class="no">3</span><h3>Learning</h3><p>VisionJointPlanner: a ResNet-18 feature per frame, five frames of RGB and joints and a goal point in, the next five joint states out, trained on 17,897 samples with an MSE plus continuity loss. Deployed at 30 Hz with a goal-directed start and a stagnation detector to beat the zero-action attractor; the policy generalised zero-shot across backgrounds and around obstacles.</p></div>
+  </div>
+  <div class="photos3">
+    <figure><img src="assets/images/projects/iris/iris_design.jpg" alt="CAD of the IRIS arm" loading="lazy"><figcaption>Final design: actuator placement, elbow belt, wrist differential.</figcaption></figure>
+    <figure><img src="assets/images/projects/iris/iris_system.jpg" alt="System diagram of IRIS" loading="lazy"><figcaption>The stack: actuators, RS-485, ROS, perception, policy.</figcaption></figure>
+    <figure><img src="assets/images/projects/iris/iris_path_plan.jpg" alt="Learned path plans versus expert paths" loading="lazy"><figcaption>Learned path plans against expert trajectories.</figcaption></figure>
+  </div>
+  <div class="clip-grid" style="margin-top:22px">
+    <div class="card"><video muted loop playsinline preload="metadata" controls poster="assets/images/projects/iris/iris_real_life.jpg"><source src="assets/videos/iris_teaser.mp4" type="video/mp4"></video><span class="caption-box">THE REAL ARM</span><div class="body"><h3>Thesis teaser</h3><p>The printed arm in motion.</p></div></div>
+    <div class="card"><video muted loop playsinline preload="metadata" controls><source src="assets/videos/iris_deployment.m4v" type="video/mp4"></video><span class="caption-box">DEPLOYMENT</span><div class="body"><h3>The learned policy on the robot</h3><p>Path planning around an obstacle, from the CRV paper.</p></div></div>
+  </div>
+</section>
+
+<!-- =================== LEARN =================== -->
+<section class="section" id="learn">
+  <h2 class="section-title">Collect data and train a policy in the tab</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>The Record &amp; train tab of the studio reproduces the thesis's loop at toy scale. <b>Record</b> saves an episode at 10 Hz: joint angles, focal length, focus distance and a 24 × 16 grey thumbnail of the feed, tagged with the shot and the product positions. <b>Demo every preset</b> records the whole library in one go at triple speed. <b>Train</b> fits a VisionJointPlanner-lite in TensorFlow.js: a five-frame window of states and the thumbnail through a tiny CNN, a goal token, a 256-wide MLP, and the next five joint and lens deltas out (action chunking); training takes seconds. <b>Run</b> hands the policy the arm with ACT-style temporal ensembling over the chunks, until it finishes or stalls.</p>
+      <p>It is honest about what it is: a few thousand samples and a few hundred thousand parameters, enough to reproduce a shot it has seen and to show the failure modes the thesis met at full scale, the zero-action attractor above all. Export the dataset as JSON to train something bigger offline.</p>
+    </div>
+    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/iris/studio_learn.jpg" alt="The record and train tab of the studio" loading="lazy"><figcaption><b>The tab:</b> dataset counter, loss curve, and the policy status while it flies.</figcaption></figure>
+  </div>
+</section>
+
+<!-- =================== REPRODUCE =================== -->
+<section class="section" id="reproduce">
+  <h2 class="section-title">Reproduce</h2>
+  <div class="grid-2">
+    <div class="prose">
+<pre class="cmd"><span class="c"># IRIS_studio/experiments</span>
+python -m pytest -q tests          <span class="c"># FK, Jacobian vs MuJoCo; look-at IK</span>
+python plan_shots.py               <span class="c"># every preset -> out/shots_plan.json + site copy</span>
+node record_videos.js              <span class="c"># drive iris_studio.html headless (GPU), 30 fps -> mp4 + telemetry</span>
+python make_figures.py             <span class="c"># docs/figures/*.pdf, site PNGs, numbers</span>
+cd ../docs && make                 <span class="c"># iris_studio.pdf</span></pre>
+      <p>The spec that both sides read is <code>assets/data/iris_studio.json</code>: the desk, the product sets, the car's track and the 22 shots. The Python package <code>irisstudio</code> (kinematics, shots) and the browser modules <code>assets/js/iris/{kin,lens,shots,scene,dof,policy,app}.js</code> implement the same rules, so what the planner validates is what the studio plays.</p>
+    </div>
+    <div class="prose">
+      <p><b>Assets.</b> Arm links: the thesis's STL meshes, decimated to 1.7 MB. Products: CC0 models from Poly Haven (apple, bananas, lemon, lime, kiwi, avocado, pomegranate, pears, two cakes, wine bottles, a vase, a succulent, two watches) plus procedural props (a takeaway coffee cup, a perfume bottle, a lipstick, a cream jar, the toy car). Camera and lens are procedural, to scale.</p>
+      <p><b>Not modelled.</b> Motor dynamics and belt compliance (the arm follows the planned joints under a speed cap), self-collision, the real lens's breathing and minimum-focus curve, and the camera's exposure. The report lists the limitations.</p>
+      <p><a href="assets/pdf/projects/iris_studio_report.pdf" target="_blank" rel="noopener">Studio report (PDF)</a>: kinematics and the tool frame, the IK, the lens model, the planner's tables, the executed telemetry.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="credits">
+  <h2 class="section-title">Credits</h2>
+  <div class="card card-pad credits">
+    <p><b>IRIS: Intelligent Robotic Imaging System.</b> Jerry (Qilong) Cheng, MEng thesis, University of Toronto, 2025; the CRV 2026 paper covers the learned path planning. The browser studio, the servo-zoom camera model, the shot library, the planner and the report on this page are new work (September 2026) on top of the thesis code. Product models are CC0 from <a href="https://polyhaven.com" target="_blank" rel="noopener">Poly Haven</a>; three.js renders the scene; TensorFlow.js trains the tab policy.</p>
+  </div>
+</section>
+
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+<script type="module">
+  /* the shot library: clips + the planner's table from assets/data/iris_shots_plan.json and the spec */
+  const [spec, plan] = await Promise.all([fetch('assets/data/iris_studio.json').then(r => r.json()), fetch('assets/data/iris_shots_plan.json').then(r => r.json()).catch(() => null)]);
+  const grid = document.getElementById('shot-clips'); const tb = document.querySelector('#shot-table tbody');
+  const summ = plan ? Object.fromEntries(plan.summary.map(s => [s.id, s])) : {};
+  for (const s of spec.shots) {
+    const lens = typeof s.lens.f === 'number' ? `${s.lens.f} mm` : Array.isArray(s.lens.f) ? `${s.lens.f[0]}→${s.lens.f[1]} mm` : 'dolly zoom';
+    grid.insertAdjacentHTML('beforeend', `<div class="card"><video muted loop playsinline preload="none" controls poster="assets/images/projects/iris/clips/${s.id}.jpg"><source src="assets/videos/iris_${s.id}.mp4" type="video/mp4"></video><span class="caption-box">${s.group.toUpperCase()}</span><div class="body"><h3>${s.name}</h3><p>${s.blurb || ''} <a href="iris_studio.html?shot=${s.id}" target="_blank" rel="noopener">Try it ↗</a></p></div></div>`);
+    const m = summ[s.id];
+    tb.insertAdjacentHTML('beforeend', `<tr><td>${s.name}</td><td>${s.blurb || ''}</td><td>${s.duration}</td><td>${lens}</td><td class="${m && m.over_speed ? 'bad' : ''}">${m ? m.vmax_deg_s.toFixed(0) : '—'}</td><td class="${m && m.tau_max_nm > 23.7 ? 'bad' : ''}">${m ? m.tau_max_nm.toFixed(1) : '—'}</td><td>${m ? m.pos_err_max_mm.toFixed(2) : '—'}</td><td>${m ? m.limit_margin_deg.toFixed(1) : '—'}</td></tr>`);
+  }
+  if (plan) { const tau = Math.max(...plan.summary.map(s => s.tau_max_nm)); document.getElementById('stat-tau').innerHTML = `${tau.toFixed(1)}<small>N·m</small>`; const cv = (id) => { const m = summ[id]; return m ? (100 * m.size_frac_cv).toFixed(1) + ' %' : '—'; }; document.getElementById('vertigo-cv').textContent = cv('vertigo_out') + ' / ' + cv('vertigo_in'); document.getElementById('dolly-cv').textContent = cv('dolly_in'); }
+  /* lazy studio embed */
+  const ph = document.getElementById('studio-placeholder'); const load = () => { const f = document.createElement('iframe'); f.src = 'iris_studio.html?embed=1'; f.allow = 'fullscreen'; f.title = 'IRIS studio'; document.getElementById('studio-embed').appendChild(f); ph.remove(); };
+  ph.addEventListener('click', load); ph.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') load(); });
+  const io = new IntersectionObserver((es) => es.forEach(e => { const v = e.target; if (e.isIntersecting) v.play().catch(() => {}); else v.pause(); }), { threshold: 0.25 });
+  document.querySelectorAll('.clip-grid video').forEach(v => io.observe(v));
+</script>
+</body>
+</html>

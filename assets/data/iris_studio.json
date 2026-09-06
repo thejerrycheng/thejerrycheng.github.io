@@ -1,0 +1,1057 @@
+{
+ "frame": "MuJoCo base frame: arm base on the desk top at the origin, x toward the products, z up",
+ "desk": {
+  "x": [
+   -0.35,
+   1.15
+  ],
+  "y": [
+   -0.45,
+   0.45
+  ],
+  "top_z": 0.0,
+  "thickness": 0.04,
+  "height": 0.75
+ },
+ "near": [
+  0.4,
+  0.0
+ ],
+ "far": [
+  0.74,
+  0.0
+ ],
+ "products": [
+  {
+   "id": "apple",
+   "label": "apple",
+   "asset": "assets/models/iris/products/food_apple_01.glb",
+   "procedural": null,
+   "height": 0.085,
+   "centre_z": 0.043,
+   "scale": 1.0
+  },
+  {
+   "id": "bananas",
+   "label": "bananas",
+   "asset": "assets/models/iris/products/bananas.glb",
+   "procedural": null,
+   "height": 0.098,
+   "centre_z": 0.049,
+   "scale": 0.55
+  },
+  {
+   "id": "lemon",
+   "label": "lemon",
+   "asset": "assets/models/iris/products/lemon.glb",
+   "procedural": null,
+   "height": 0.095,
+   "centre_z": 0.048,
+   "scale": 1.0
+  },
+  {
+   "id": "lime",
+   "label": "lime",
+   "asset": "assets/models/iris/products/food_lime_01.glb",
+   "procedural": null,
+   "height": 0.075,
+   "centre_z": 0.037,
+   "scale": 1.0
+  },
+  {
+   "id": "kiwi",
+   "label": "kiwi",
+   "asset": "assets/models/iris/products/food_kiwi_01.glb",
+   "procedural": null,
+   "height": 0.09,
+   "centre_z": 0.045,
+   "scale": 1.0
+  },
+  {
+   "id": "avocado",
+   "label": "avocado",
+   "asset": "assets/models/iris/products/food_avocado_01.glb",
+   "procedural": null,
+   "height": 0.143,
+   "centre_z": 0.071,
+   "scale": 1.0
+  },
+  {
+   "id": "pomegranate",
+   "label": "pomegranate",
+   "asset": "assets/models/iris/products/food_pomegranate_01.glb",
+   "procedural": null,
+   "height": 0.115,
+   "centre_z": 0.058,
+   "scale": 1.0
+  },
+  {
+   "id": "pears",
+   "label": "Asian pears",
+   "asset": "assets/models/iris/products/food_pears_asian_01.glb",
+   "procedural": null,
+   "height": 0.071,
+   "centre_z": 0.035,
+   "scale": 1.0
+  },
+  {
+   "id": "carrot_cake",
+   "label": "carrot cake",
+   "asset": "assets/models/iris/products/carrot_cake.glb",
+   "procedural": null,
+   "height": 0.098,
+   "centre_z": 0.049,
+   "scale": 1.0
+  },
+  {
+   "id": "choc_cake",
+   "label": "strawberry chocolate cake",
+   "asset": "assets/models/iris/products/strawberry_chocolate_cake.glb",
+   "procedural": null,
+   "height": 0.079,
+   "centre_z": 0.04,
+   "scale": 1.0
+  },
+  {
+   "id": "wine",
+   "label": "wine bottles",
+   "asset": "assets/models/iris/products/wine_bottles_01.glb",
+   "procedural": null,
+   "height": 0.265,
+   "centre_z": 0.132,
+   "scale": 0.8
+  },
+  {
+   "id": "vase",
+   "label": "ceramic vase",
+   "asset": "assets/models/iris/products/ceramic_vase_02.glb",
+   "procedural": null,
+   "height": 0.309,
+   "centre_z": 0.12,
+   "scale": 1.0
+  },
+  {
+   "id": "plant",
+   "label": "succulent",
+   "asset": "assets/models/iris/products/potted_plant_04.glb",
+   "procedural": null,
+   "height": 0.214,
+   "centre_z": 0.107,
+   "scale": 0.8
+  },
+  {
+   "id": "wrist_watch",
+   "label": "digital wrist watch",
+   "asset": "assets/models/iris/products/digital_wrist_watch.glb",
+   "procedural": null,
+   "height": 0.008,
+   "centre_z": 0.004,
+   "scale": 1.0
+  },
+  {
+   "id": "pocket_watch",
+   "label": "pocket watch",
+   "asset": "assets/models/iris/products/pocket_watch.glb",
+   "procedural": null,
+   "height": 0.076,
+   "centre_z": 0.038,
+   "scale": 1.0
+  },
+  {
+   "id": "coffee_cup",
+   "label": "takeaway coffee cup",
+   "asset": null,
+   "procedural": "coffee_cup",
+   "height": 0.125,
+   "centre_z": 0.065,
+   "scale": 1.0
+  },
+  {
+   "id": "perfume",
+   "label": "perfume bottle",
+   "asset": null,
+   "procedural": "perfume",
+   "height": 0.11,
+   "centre_z": 0.055,
+   "scale": 1.0
+  },
+  {
+   "id": "lipstick",
+   "label": "lipstick",
+   "asset": null,
+   "procedural": "lipstick",
+   "height": 0.075,
+   "centre_z": 0.035,
+   "scale": 1.0
+  },
+  {
+   "id": "cream_jar",
+   "label": "cream jar",
+   "asset": null,
+   "procedural": "cream_jar",
+   "height": 0.055,
+   "centre_z": 0.028,
+   "scale": 1.0
+  },
+  {
+   "id": "toy_car",
+   "label": "toy car (moving)",
+   "asset": null,
+   "procedural": "toy_car",
+   "height": 0.05,
+   "centre_z": 0.03,
+   "scale": 1.0
+  }
+ ],
+ "sets": {
+  "cafe": {
+   "label": "Caf\u00e9",
+   "near": "coffee_cup",
+   "far": "carrot_cake",
+   "extras": [
+    [
+     "lemon",
+     0.58,
+     -0.22,
+     0
+    ],
+    [
+     "pocket_watch",
+     0.62,
+     0.17,
+     20
+    ]
+   ]
+  },
+  "fruit": {
+   "label": "Fruit",
+   "near": "apple",
+   "far": "pears",
+   "extras": [
+    [
+     "bananas",
+     0.64,
+     0.22,
+     30
+    ],
+    [
+     "kiwi",
+     0.55,
+     -0.18,
+     0
+    ],
+    [
+     "lime",
+     0.7,
+     -0.16,
+     0
+    ],
+    [
+     "avocado",
+     0.8,
+     0.16,
+     0
+    ],
+    [
+     "pomegranate",
+     0.58,
+     0.31,
+     0
+    ]
+   ]
+  },
+  "cosmetics": {
+   "label": "Cosmetics",
+   "near": "perfume",
+   "far": "wrist_watch",
+   "extras": [
+    [
+     "lipstick",
+     0.56,
+     -0.15,
+     0
+    ],
+    [
+     "cream_jar",
+     0.58,
+     0.15,
+     0
+    ],
+    [
+     "vase",
+     0.92,
+     -0.3,
+     0
+    ],
+    [
+     "plant",
+     0.9,
+     0.28,
+     0
+    ]
+   ]
+  },
+  "still_life": {
+   "label": "Still life",
+   "near": "vase",
+   "far": "choc_cake",
+   "extras": [
+    [
+     "wine",
+     0.94,
+     0.18,
+     20
+    ],
+    [
+     "plant",
+     0.68,
+     -0.28,
+     0
+    ],
+    [
+     "lime",
+     0.58,
+     0.2,
+     0
+    ]
+   ]
+  }
+ },
+ "default_set": "cafe",
+ "car": {
+  "centre": [
+   0.64,
+   0.0
+  ],
+  "radius": 0.18,
+  "lap_s": 12.0,
+  "a0_deg": 200
+ },
+ "home_q_deg": [
+  0,
+  -20,
+  -100,
+  0,
+  40,
+  0
+ ],
+ "camera": {
+  "body": "Sony \u03b17R III",
+  "sensor_mm": [
+   35.9,
+   24.0
+  ],
+  "lens": "16\u2013150 mm servo zoom",
+  "f_range": [
+   16,
+   150
+  ],
+  "mfd_m": 0.2,
+  "zoom_rate_mm_s": 60,
+  "focus_rate_m_s": 4.0
+ },
+ "limits": {
+  "joint_speed_rad_s": 1.5,
+  "torque_nm": 23.7
+ },
+ "shots": [
+  {
+   "id": "pan",
+   "name": "Pan",
+   "group": "basics",
+   "duration": 5,
+   "ease": "smooth",
+   "path": {
+    "type": "static",
+    "at": [
+     0.42,
+     0.0,
+     0.2
+    ]
+   },
+   "aim": {
+    "type": "ypr",
+    "yaw": [
+     -28,
+     28
+    ],
+    "pitch": [
+     -12,
+     -12
+    ],
+    "roll": [
+     0,
+     0
+    ]
+   },
+   "lens": {
+    "f": 28,
+    "focus": 0.45,
+    "N": 5.6
+   },
+   "blurb": "The camera stays put and swings left to right: the wrist does the work."
+  },
+  {
+   "id": "tilt",
+   "name": "Tilt",
+   "group": "basics",
+   "duration": 5,
+   "ease": "smooth",
+   "path": {
+    "type": "static",
+    "at": [
+     0.42,
+     0.0,
+     0.24
+    ]
+   },
+   "aim": {
+    "type": "ypr",
+    "yaw": [
+     0,
+     0
+    ],
+    "pitch": [
+     -38,
+     6
+    ],
+    "roll": [
+     0,
+     0
+    ]
+   },
+   "lens": {
+    "f": 28,
+    "focus": 0.45,
+    "N": 5.6
+   },
+   "blurb": "Nose down to the desk, then up to the horizon."
+  },
+  {
+   "id": "roll",
+   "name": "Dutch roll",
+   "group": "basics",
+   "duration": 5,
+   "ease": "smooth",
+   "path": {
+    "type": "static",
+    "at": [
+     0.38,
+     0.0,
+     0.2
+    ]
+   },
+   "aim": {
+    "type": "lookat",
+    "subject": "far",
+    "roll": [
+     -25,
+     25
+    ]
+   },
+   "lens": {
+    "f": 40,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "Rolling about the optical axis while holding the subject."
+  },
+  {
+   "id": "zoom_in",
+   "name": "Zoom in",
+   "group": "lens",
+   "duration": 6,
+   "ease": "smooth",
+   "path": {
+    "type": "static",
+    "at": [
+     0.34,
+     0.02,
+     0.2
+    ]
+   },
+   "aim": {
+    "type": "lookat",
+    "subject": "far"
+   },
+   "lens": {
+    "f": [
+     24,
+     110
+    ],
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "Only the zoom servo moves: 24 to 110 mm."
+  },
+  {
+   "id": "zoom_out",
+   "name": "Zoom out",
+   "group": "lens",
+   "duration": 6,
+   "ease": "smooth",
+   "path": {
+    "type": "static",
+    "at": [
+     0.34,
+     0.02,
+     0.2
+    ]
+   },
+   "aim": {
+    "type": "lookat",
+    "subject": "far"
+   },
+   "lens": {
+    "f": [
+     110,
+     24
+    ],
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "From a tight frame back to the whole desk."
+  },
+  {
+   "id": "dolly_in",
+   "name": "Dolly in",
+   "group": "moves",
+   "duration": 6,
+   "ease": "smooth",
+   "path": {
+    "type": "line",
+    "from": [
+     0.36,
+     0.0,
+     0.19
+    ],
+    "to": [
+     0.46,
+     0.0,
+     0.12
+    ]
+   },
+   "aim": {
+    "type": "lookat",
+    "subject": "far"
+   },
+   "lens": {
+    "f": 35,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "Push the camera toward the product on its optical axis."
+  },
+  {
+   "id": "dolly_out",
+   "name": "Dolly out",
+   "group": "moves",
+   "duration": 6,
+   "ease": "smooth",
+   "path": {
+    "type": "line",
+    "from": [
+     0.46,
+     0.0,
+     0.12
+    ],
+    "to": [
+     0.36,
+     0.0,
+     0.19
+    ]
+   },
+   "aim": {
+    "type": "lookat",
+    "subject": "far"
+   },
+   "lens": {
+    "f": 35,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "Pull back and let the scene open up."
+  },
+  {
+   "id": "truck",
+   "name": "Truck (lateral)",
+   "group": "moves",
+   "duration": 6,
+   "ease": "smooth",
+   "path": {
+    "type": "line",
+    "from": [
+     0.46,
+     -0.24,
+     0.17
+    ],
+    "to": [
+     0.46,
+     0.24,
+     0.17
+    ]
+   },
+   "aim": {
+    "type": "lookat",
+    "subject": "far"
+   },
+   "lens": {
+    "f": 35,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "The thesis's 'pan' preset: a lateral move that keeps looking at the subject."
+  },
+  {
+   "id": "pedestal",
+   "name": "Pedestal (crane)",
+   "group": "moves",
+   "duration": 6,
+   "ease": "smooth",
+   "path": {
+    "type": "line",
+    "from": [
+     0.46,
+     0.0,
+     0.1
+    ],
+    "to": [
+     0.46,
+     0.0,
+     0.42
+    ]
+   },
+   "aim": {
+    "type": "lookat",
+    "subject": "far"
+   },
+   "lens": {
+    "f": 35,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "The thesis's 'crane' preset: straight up, eyes on the product."
+  },
+  {
+   "id": "orbit_90",
+   "name": "Orbit 90\u00b0",
+   "group": "orbits",
+   "duration": 8,
+   "ease": "smooth",
+   "path": {
+    "type": "orbit",
+    "subject": "near",
+    "radius": 0.14,
+    "height": 0.32,
+    "a": [
+     -45,
+     45
+    ]
+   },
+   "aim": {
+    "type": "lookat",
+    "subject": "near"
+   },
+   "lens": {
+    "f": 35,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "A quarter turn around the hero from above; at desk height the wrist cannot look back toward the base."
+  },
+  {
+   "id": "orbit_180",
+   "name": "Orbit 180\u00b0",
+   "group": "orbits",
+   "duration": 14,
+   "ease": "smooth",
+   "path": {
+    "type": "orbit",
+    "subject": "near",
+    "radius": 0.14,
+    "height": 0.32,
+    "a": [
+     -90,
+     90
+    ]
+   },
+   "aim": {
+    "type": "lookat",
+    "subject": "near"
+   },
+   "lens": {
+    "f": 35,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "Half a turn: from one side of the desk to the other."
+  },
+  {
+   "id": "turntable_360",
+   "name": "Turntable 360\u00b0",
+   "group": "orbits",
+   "duration": 14,
+   "ease": "linear",
+   "path": {
+    "type": "static",
+    "at": [
+     0.28,
+     -0.14,
+     0.3
+    ]
+   },
+   "aim": {
+    "type": "lookat",
+    "subject": "near"
+   },
+   "lens": {
+    "f": 45,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "A full orbit of the arm is out of reach (the lens sits 14 cm ahead of the wrist), so the product turns on a motorised turntable while the camera holds a three-quarter view: the standard product-shot setup.",
+   "turntable": true
+  },
+  {
+   "id": "top_to_side",
+   "name": "Top view to side view",
+   "group": "orbits",
+   "duration": 8,
+   "ease": "smooth",
+   "path": {
+    "type": "varc",
+    "subject": "near",
+    "radius": 0.26,
+    "elevation": [
+     60,
+     12
+    ],
+    "azimuth": 60
+   },
+   "aim": {
+    "type": "lookat",
+    "subject": "near"
+   },
+   "lens": {
+    "f": 30,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "Start looking straight down, swing to a low side view."
+  },
+  {
+   "id": "crane_reveal",
+   "name": "Crane reveal",
+   "group": "combos",
+   "duration": 7,
+   "ease": "smooth",
+   "path": {
+    "type": "line",
+    "from": [
+     0.42,
+     0.0,
+     0.4
+    ],
+    "to": [
+     0.52,
+     0.0,
+     0.14
+    ]
+   },
+   "aim": {
+    "type": "lookat_moving",
+    "from": [
+     0.57,
+     0.0,
+     0.0
+    ],
+    "to": "far"
+   },
+   "lens": {
+    "f": 28,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "Descend from above the desk and settle on the product."
+  },
+  {
+   "id": "vertigo_out",
+   "name": "Dolly zoom (out + zoom in)",
+   "group": "lens",
+   "duration": 8,
+   "ease": "smooth",
+   "path": {
+    "type": "line",
+    "from": [
+     0.46,
+     0.0,
+     0.12
+    ],
+    "to": [
+     0.36,
+     0.0,
+     0.19
+    ]
+   },
+   "aim": {
+    "type": "lookat",
+    "subject": "far"
+   },
+   "lens": {
+    "f": "dollyzoom",
+    "f0": 70,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "The Vertigo effect: the arm pulls back while the zoom servo pushes in, so the product keeps its size and the background collapses."
+  },
+  {
+   "id": "vertigo_in",
+   "name": "Dolly zoom (in + zoom out)",
+   "group": "lens",
+   "duration": 8,
+   "ease": "smooth",
+   "path": {
+    "type": "line",
+    "from": [
+     0.36,
+     0.0,
+     0.19
+    ],
+    "to": [
+     0.46,
+     0.0,
+     0.12
+    ]
+   },
+   "aim": {
+    "type": "lookat",
+    "subject": "far"
+   },
+   "lens": {
+    "f": "dollyzoom",
+    "f0": 95,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "The reverse: push in while zooming out; the background rushes away."
+  },
+  {
+   "id": "rack_focus",
+   "name": "Rack focus",
+   "group": "lens",
+   "duration": 8,
+   "ease": "smooth",
+   "path": {
+    "type": "static",
+    "at": [
+     0.34,
+     0.06,
+     0.17
+    ]
+   },
+   "aim": {
+    "type": "lookat",
+    "point": [
+     0.56,
+     0.0,
+     0.05
+    ]
+   },
+   "lens": {
+    "f": 55,
+    "focus": {
+     "type": "rack",
+     "seq": [
+      "near",
+      "far",
+      "near"
+     ],
+     "hold": 0.22
+    },
+    "N": 2.8
+   },
+   "blurb": "Only the focus servo moves: near product, far product, back."
+  },
+  {
+   "id": "track_car",
+   "name": "Object tracking",
+   "group": "tracking",
+   "duration": 12,
+   "ease": "linear",
+   "path": {
+    "type": "static",
+    "at": [
+     0.26,
+     0.0,
+     0.4
+    ]
+   },
+   "aim": {
+    "type": "track",
+    "subject": "car"
+   },
+   "lens": {
+    "f": 45,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "A toy car laps the desk; the wrist keeps it centred (ground truth here, a pixel tracker in the studio)."
+  },
+  {
+   "id": "follow_car",
+   "name": "Follow the car",
+   "group": "tracking",
+   "duration": 12,
+   "ease": "linear",
+   "path": {
+    "type": "line",
+    "from": [
+     0.28,
+     -0.1,
+     0.36
+    ],
+    "to": [
+     0.28,
+     0.1,
+     0.36
+    ]
+   },
+   "aim": {
+    "type": "track",
+    "subject": "car"
+   },
+   "lens": {
+    "f": 40,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "Truck sideways with the car while tracking it."
+  },
+  {
+   "id": "reveal_low",
+   "name": "Low reveal",
+   "group": "combos",
+   "duration": 6,
+   "ease": "smooth",
+   "path": {
+    "type": "line",
+    "from": [
+     0.3,
+     -0.14,
+     0.1
+    ],
+    "to": [
+     0.4,
+     -0.04,
+     0.18
+    ]
+   },
+   "aim": {
+    "type": "lookat_moving",
+    "from": [
+     0.57,
+     -0.05,
+     0.02
+    ],
+    "to": "near"
+   },
+   "lens": {
+    "f": 24,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "Rise from the desk surface and tilt up onto the hero."
+  },
+  {
+   "id": "whip_pan",
+   "name": "Whip pan",
+   "group": "combos",
+   "duration": 3.5,
+   "ease": "expo",
+   "path": {
+    "type": "static",
+    "at": [
+     0.4,
+     0.0,
+     0.2
+    ]
+   },
+   "aim": {
+    "type": "lookat_moving",
+    "from": "extra0",
+    "to": "far"
+   },
+   "lens": {
+    "f": 35,
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "A fast snap from one product to another.",
+   "vmax": 3.0
+  },
+  {
+   "id": "arc_zoom",
+   "name": "Arc + zoom",
+   "group": "combos",
+   "duration": 12,
+   "ease": "smooth",
+   "path": {
+    "type": "orbit",
+    "subject": "near",
+    "radius": 0.16,
+    "height": 0.28,
+    "a": [
+     -50,
+     50
+    ]
+   },
+   "aim": {
+    "type": "lookat",
+    "subject": "near"
+   },
+   "lens": {
+    "f": [
+     30,
+     60
+    ],
+    "focus": "auto",
+    "N": 4
+   },
+   "blurb": "An orbit with a slow push of the zoom."
+  },
+  {
+   "id": "hero_push",
+   "name": "Hero push-in",
+   "group": "combos",
+   "duration": 6,
+   "ease": "smooth",
+   "path": {
+    "type": "line",
+    "from": [
+     0.3,
+     0.12,
+     0.22
+    ],
+    "to": [
+     0.42,
+     0.03,
+     0.13
+    ]
+   },
+   "aim": {
+    "type": "lookat",
+    "subject": "near"
+   },
+   "lens": {
+    "f": [
+     40,
+     60
+    ],
+    "focus": "auto",
+    "N": 2.8
+   },
+   "blurb": "Diagonal push toward the hero with a shallow depth of field."
+  }
+ ]
+}
