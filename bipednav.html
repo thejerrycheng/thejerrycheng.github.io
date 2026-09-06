@@ -457,6 +457,97 @@
       <p><b>What was checked.</b> On flat ground the simulated walker settles onto the analytic limit cycle (step period within 1 %, exact 0.40 m strides, tracking error below 4·10⁻³ rad, 0.7 cm of foot slip per step). The onboard estimates of rise, run, riser distance, box distance, depth and height are within a centimetre of the scene from a metre or more away. The runs below are the end-to-end tests: perception, planning and control in the loop, with the compute time of every decision on the HUD.</p>
       <div class="tag-row"><span class="chip">MuJoCo 3.5</span><span class="chip">planar biped, 3D scene</span><span class="chip">depth camera 1 Hz</span><span class="chip">world model</span><span class="chip">1 kHz VHC torques</span></div>
     </div>
+    <div class="card card-pad prose" id="mj-perception" style="grid-column: 1 / -1">
+      <h3 style="margin-top:0">The perception layer, step by step</h3>
+      <p><b>1. Depth to an organised cloud.</b> The onboard camera renders a 320 × 240 depth image at 75° field of view once a second (pitched 38° down, 0.02 m near plane; a 0.1 m near plane blanks 40 % of the floor). Every pixel is back-projected with the pinhole model into a camera-frame point, so the cloud keeps the image grid.</p>
+      <p><b>2. Normals and the up-facing mask.</b> Surface normals come from cross products over a 3-pixel neighbourhood on that grid (stride 2), rotated into the world with the camera pose from the simulator's kinematics. Points whose normal is within 15° of vertical are <i>walkable</i> candidates; the rest (risers, crate faces, walls) are kept only as geometry. A 0.7 m wide corridor along the walking direction and a 0.25 m dead zone in front of the stance foot are applied.</p>
+      <p><b>3. Floor levels.</b> The heights of the walkable points are clustered with 8 mm bins (peaks at least 3 cm apart, each holding at least 2 % of the points). For each height the <b>extent along the walk</b> is measured on the <i>raw</i> cloud within ±12 mm of that height (1st and 99th percentile), because the normal filter drops the edge pixels and would bias every front edge inward; one height that holds two surfaces (the floor in front of a crate and the floor behind it) is split at gaps larger than 15 cm. This is where a crate's dimensions come from: its <b>height</b> is the cluster height above the stance foot, its <b>depth</b> the extent of that level, its <b>distance</b> the front edge of that level. In the snapshot below the 10 cm × 18 cm crate 0.85 m ahead is read as z = +10 cm, x = 0.85–1.03 m. Treads are read the same way, a rise being the height difference of consecutive levels and a run the distance between consecutive front edges (for a descent, from the drop edge to the far edge of the lower tread, since the nosing hides its near part).</p>
+      <p><b>4. Ramps.</b> Walkable points that belong to no level are fitted by a line in the side plane; a tilt above 2.5° is a ramp, its foot and top placed where the fitted line meets the levels before and after it (the plane's first centimetre of rise is otherwise swallowed by the floor level). Levels that are really pieces of the ramp are dropped.</p>
+      <p><b>5. Semantics and the world model.</b> The level the robot stands on is the <i>ground</i>; a short raised level (under 45 cm) with the ground continuing behind it and nothing higher right behind it is a <i>crate</i>; a monotone run of levels beyond the ground is a <i>staircase</i>; a lower level whose edge is the end of the ground is a <i>drop</i>. Each tick is merged into a world model in absolute coordinates: a level seen again only grows outward (a near view is cut by the image border), its height is the count-weighted mean, ramps merge when their angles agree within 3°. Decisions are taken at touchdown from the world model, not from the last frame.</p>
+      <figure class="fig" id="mj-perception-fig"><img src="assets/images/projects/bipednav/mj_perception_steps.png" alt="Perception step by step: onboard image, depth, classified points, side view with levels and dimensions, at four positions of the course" loading="lazy"><figcaption><b>Four snapshots of the perception layer on the combined course</b> (rows): the onboard image, the depth image, the walkable points coloured by the level they were assigned to, and the side view in the stance-foot frame with every level's height and extent, the fitted ramp line and the derived crate or stair numbers.</figcaption></figure>
+      <p><b>Live trace of a run.</b> Below is the event log of the MuJoCo crate run that crossed its crate end to end, exactly as the loop printed it: one perception tick per second (with its compute time), one decision per touchdown with the measured phase velocity against the gait's fixed point, and the planner's verdict on the chained gait.</p>
+      <pre class="cmd" id="mj-trace" style="max-height:340px; overflow:auto"># online_box03: crate 10 cm high, 12 cm deep, 3.0 m ahead -> walking after 28 steps, 22.0 s simulated
+[  0.00 s  step  0] perceive (42 ms): levels z-0cm x0.26-2.92, z-0cm x3.43-4.54
+[  0.80 s  step  0] touchdown: phase velocity 2.77 (gait's fixed point 2.94), theta 1.001
+[  0.80 s  step  1] decide: regular 0.40 m (chained)  [0.03 s]
+[  1.00 s  step  1] perceive (46 ms): levels z+0cm x0.67-2.94, z+0cm x3.37-4.04
+[  1.60 s  step  1] touchdown: phase velocity 2.77 (gait's fixed point 2.78), theta 1.002
+[  1.60 s  step  2] decide: regular 0.40 m (chained)  [0.00 s]
+[  2.00 s  step  2] perceive (29 ms): levels z+0cm x1.08-2.96, z+0cm x3.33-4.40
+[  2.40 s  step  2] touchdown: phase velocity 2.80 (gait's fixed point 2.78), theta 1.002
+[  2.40 s  step  3] decide: regular 0.40 m (chained)  [0.00 s]
+[  3.00 s  step  3] perceive (50 ms): levels z+0cm x1.49-2.99, z+0cm x3.27-5.02
+[  3.19 s  step  3] touchdown: phase velocity 2.80 (gait's fixed point 2.80), theta 1.003
+[  3.19 s  step  4] decide: regular 0.40 m (chained)  [0.00 s]
+[  3.98 s  step  4] touchdown: phase velocity 2.80 (gait's fixed point 2.80), theta 1.002
+[  3.98 s  step  5] decide: regular 0.40 m (chained)  [0.00 s]
+[  4.00 s  step  5] perceive (74 ms): levels z+0cm x2.29-3.00, z+0cm x3.23-6.29
+[  4.77 s  step  5] touchdown: phase velocity 2.77 (gait's fixed point 2.80), theta 1.001
+[  4.77 s  step  6] decide: regular 0.40 m (chained)  [0.00 s]
+[  5.00 s  step  6] perceive (45 ms): levels z+0cm x2.70-3.00, z+10cm x3.00-3.11, z+0cm x3.18-5.95 | stairs: up first riser 0.55 m, rise +10 cm, run nan cm, 1 treads
+[  5.55 s  step  6] touchdown: phase velocity 2.78 (gait's fixed point 2.77), theta 1.002
+[  5.55 s  step  7] step-over plan: mode LT, leading step 0.57 m, library check failed -> transition re-designed, energy margins [0.13, 7.12]
+[  5.55 s  step  7] decide: leading leg over the box: 0.57 m step (transition redesigned)  [47.45 s]
+[  6.00 s  step  7] perceive (48 ms): levels z+0cm x3.15-8.87
+[  6.45 s  step  7] touchdown: phase velocity 3.47, theta 1.011
+[  6.45 s  step  8] decide: trailing leg over the box (ends in the regular gait)  (queued)
+[  7.00 s  step  8] perceive (39 ms): levels z+0cm x3.70-6.90
+[  7.09 s  step  8] touchdown: phase velocity 2.73 (gait's fixed point 1.85), theta 1.003
+[  7.09 s  step  9] decide: regular 0.40 m (chained)  [0.00 s]
+[  7.82 s  step  9] touchdown: phase velocity 2.84 (gait's fixed point 2.71), theta 1.001
+[  7.82 s  step 10] decide: regular 0.40 m (chained)  [0.00 s]
+[  8.00 s  step 10] perceive (71 ms): levels z+0cm x4.51-7.75
+[  8.57 s  step 10] touchdown: phase velocity 2.85 (gait's fixed point 2.78), theta 1.002
+[  8.57 s  step 11] decide: regular 0.40 m (chained)  [0.00 s]
+[  9.00 s  step 11] perceive (28 ms): levels z+0cm x4.92-8.14
+[  9.32 s  step 11] touchdown: phase velocity 2.83 (gait's fixed point 2.79), theta 1.001
+[  9.32 s  step 12] decide: regular 0.40 m (chained)  [0.00 s]
+[ 10.00 s  step 12] perceive (65 ms): levels z+0cm x5.33-9.01
+[ 10.08 s  step 12] touchdown: phase velocity 2.83 (gait's fixed point 2.79), theta 1.002
+[ 10.08 s  step 13] decide: regular 0.40 m (chained)  [0.00 s]
+[ 10.84 s  step 13] touchdown: phase velocity 2.82 (gait's fixed point 2.79), theta 1.001
+[ 10.84 s  step 14] decide: regular 0.40 m (chained)  [0.00 s]
+[ 11.00 s  step 14] perceive (23 ms): levels z+0cm x6.14-9.42
+[ 11.61 s  step 14] touchdown: phase velocity 2.82 (gait's fixed point 2.79), theta 1.001
+[ 11.61 s  step 15] decide: regular 0.40 m (chained)  [0.00 s]
+[ 12.00 s  step 15] perceive (38 ms): levels z+0cm x6.55-9.74
+[ 12.38 s  step 15] touchdown: phase velocity 2.82 (gait's fixed point 2.79), theta 1.002
+[ 12.38 s  step 16] decide: regular 0.40 m (chained)  [0.00 s]
+[ 13.00 s  step 16] perceive (31 ms): levels z+0cm x6.96-10.40
+[ 13.15 s  step 16] touchdown: phase velocity 2.82 (gait's fixed point 2.80), theta 1.002
+[ 13.15 s  step 17] decide: regular 0.40 m (chained)  [0.02 s]
+[ 13.92 s  step 17] touchdown: phase velocity 2.81 (gait's fixed point 2.79), theta 1.001
+[ 13.92 s  step 18] decide: regular 0.40 m (chained)  [0.00 s]
+[ 14.00 s  step 18] perceive (61 ms): levels z+0cm x7.77-11.26
+[ 14.69 s  step 18] touchdown: phase velocity 2.81 (gait's fixed point 2.79), theta 1.001
+[ 14.69 s  step 19] decide: regular 0.40 m (chained)  [0.00 s]
+[ 15.00 s  step 19] perceive (60 ms): levels z+0cm x8.18-11.36
+[ 15.47 s  step 19] touchdown: phase velocity 2.82 (gait's fixed point 2.79), theta 1.002
+[ 15.47 s  step 20] decide: regular 0.40 m (chained)  [0.00 s]
+[ 16.00 s  step 20] perceive (25 ms): levels z+0cm x8.59-11.89
+[ 16.25 s  step 20] touchdown: phase velocity 2.79 (gait's fixed point 2.80), theta 1.001
+[ 16.25 s  step 21] decide: regular 0.40 m (chained)  [0.00 s]
+[ 17.00 s  step 21] perceive (48 ms): levels z+0cm x9.00-13.04
+[ 17.02 s  step 21] touchdown: phase velocity 2.79 (gait's fixed point 2.77), theta 1.002
+[ 17.02 s  step 22] decide: regular 0.40 m (chained)  [0.00 s]
+[ 17.80 s  step 22] touchdown: phase velocity 2.79 (gait's fixed point 2.78), theta 1.002
+[ 17.80 s  step 23] decide: regular 0.40 m (chained)  [0.00 s]
+[ 18.00 s  step 23] perceive (53 ms): levels z+0cm x9.82-13.04
+[ 18.58 s  step 23] touchdown: phase velocity 2.79 (gait's fixed point 2.78), theta 1.001
+[ 18.58 s  step 24] decide: regular 0.40 m (chained)  [0.00 s]
+[ 19.00 s  step 24] perceive (42 ms): levels z+0cm x10.22-13.42
+[ 19.35 s  step 24] touchdown: phase velocity 2.79 (gait's fixed point 2.78), theta 1.001
+[ 19.35 s  step 25] decide: regular 0.40 m (chained)  [0.00 s]
+[ 20.00 s  step 25] perceive (35 ms): levels z+0cm x10.63-14.11
+[ 20.13 s  step 25] touchdown: phase velocity 2.80 (gait's fixed point 2.77), theta 1.002
+[ 20.13 s  step 26] decide: regular 0.40 m (chained)  [0.00 s]
+[ 20.91 s  step 26] touchdown: phase velocity 2.78 (gait's fixed point 2.78), theta 1.000
+[ 20.91 s  step 27] decide: regular 0.40 m (chained)  [0.00 s]
+[ 21.00 s  step 27] perceive (48 ms): levels z+0cm x11.44-14.88
+[ 21.69 s  step 27] touchdown: phase velocity 2.79 (gait's fixed point 2.77), theta 1.001
+[ 21.69 s  step 28] decide: regular 0.40 m (chained)  [0.00 s]
+[ 22.00 s  step 28] perceive (25 ms): levels z+0cm x11.85-15.03</pre>
+    </div>
     <div id="mj-side">
       <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/mj_traj3d_course_full.png" alt="3D trajectory of the biped through the whole course" loading="lazy"><figcaption><b>The whole course in 3D.</b> Hip trajectory coloured by time and the footholds, over the crates, the flight up, the ramps and the flight down.</figcaption></figure>
       <figure class="fig" style="margin-top:0"><img src="assets/images/projects/bipednav/mj_scene.png" alt="The MuJoCo scene with the onboard camera view" loading="lazy"><figcaption><b>The scene.</b> A planar five-link biped, a staircase with per-stair rise and run, and the onboard camera's view with the detected floor levels.</figcaption></figure>
