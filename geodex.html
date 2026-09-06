@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="assets/css/project-page.css">
   <script>document.documentElement.classList.add('js');</script>
   <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <script type="importmap">{"imports": {"three": "./assets/js/vendor/three.module.min.js"}}</script>
   <style>
     /* page-local: the retargeting playground */
     #gd-canvas { width: 100%; height: 420px; display: block; border: var(--line-w) solid var(--ink);
@@ -46,6 +47,46 @@
     .gd-terms .why { display: block; color: var(--ash); font-size: 12px; }
     .gd-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px; align-items: start; margin-top: 14px; }
     @media (max-width: 900px) { .gd-grid { grid-template-columns: 1fr; } #gd-canvas { height: 340px; } }
+    /* ---- side-by-side 3-D playground ---- */
+    .gd3-views { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .gd3-views figure { margin: 0; }
+    .gd3-views canvas { display: block; width: 100%; height: 400px; border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); background: #151820; cursor: grab; touch-action: none; box-shadow: var(--sh-xs); }
+    .gd3-views canvas:active { cursor: grabbing; }
+    .gd3-views figcaption { font-family: var(--font-comic); letter-spacing: .05em; font-size: 14px; margin-top: 6px; color: var(--ink); }
+    .gd3-views figcaption small { font-family: var(--font-body); letter-spacing: 0; color: var(--ash); font-size: 12px; margin-left: 6px; }
+    .gd3-grid { display: grid; grid-template-columns: 1.55fr 1fr; gap: 16px; align-items: start; margin-top: 14px; }
+    .gd3-sliders { display: grid; grid-template-columns: 1fr; gap: 6px; margin-top: 8px; }
+    .gd3-sliders label { display: grid; grid-template-columns: 150px 1fr 54px; align-items: center; gap: 8px; font-size: 12.5px; }
+    .gd3-sliders label b { font-family: var(--font-mono); font-weight: 700; color: var(--hi); font-size: 12px; }
+    .gd3-sliders input[type="range"] { width: 100%; accent-color: var(--hi); }
+    .gd3-sliders .v { font-family: var(--font-mono); font-size: 11.5px; color: var(--ash); text-align: right; }
+    .gd3-sliders .why { grid-column: 1 / -1; color: var(--ash); font-size: 11.5px; margin: -4px 0 4px 0; }
+    .gd3-fingers { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 6px; }
+    .gd3-fingers label { display: flex; flex-direction: column; font-size: 11px; font-family: var(--font-comic); letter-spacing: .04em; }
+    .gd3-fingers input { width: 100%; accent-color: var(--hi); }
+    .gd3-fingers .v { font-family: var(--font-mono); font-size: 10.5px; color: var(--ash); }
+    #gd3-spark { width: 100%; height: 110px; display: block; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--panel); margin-top: 10px; }
+    .gd-count { font-size: 18px; margin: 22px 0 8px; }
+    .gd-count small { font-family: var(--font-mono); font-size: 12px; color: var(--ash); font-weight: 400; margin-left: 8px; }
+    .clip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 12px; }
+    .clip-grid.three { grid-template-columns: repeat(3, 1fr); }
+    .clip-grid .card { overflow: hidden; }
+    .clip-grid video { width: 100%; display: block; aspect-ratio: 16 / 9; background: #151820; object-fit: cover; }
+    .clip-grid .body { padding: 10px 14px 12px; }
+    .clip-grid h3 { font-size: 15px; margin-bottom: 4px; }
+    .clip-grid p { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+    .clip-grid p i { display: inline-block; width: 11px; height: 11px; border-radius: 50%; border: 1px solid rgba(0,0,0,.35); vertical-align: -1px; margin-right: 1px; }
+    .clip-grid .caption-box { display: inline-block; }
+    .place-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 14px; margin-top: 12px; align-items: start; }
+    #gd-map { width: 100%; aspect-ratio: 1 / 1.1; display: block; border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); box-shadow: var(--sh-xs); cursor: crosshair; touch-action: manipulation; }
+    #gd-place-video { width: 100%; display: block; aspect-ratio: 16 / 9; background: #151820; border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); box-shadow: var(--sh-xs); }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-top: 14px; }
+    .stat-tile { padding: 14px 14px 12px; }
+    .stat-tile .num { font-family: var(--font-mono); font-weight: 700; font-size: 26px; color: var(--ink); line-height: 1.05; }
+    .stat-tile .num small { font-size: 14px; font-weight: 400; color: var(--ash); margin-left: 3px; }
+    .stat-tile .lab { font-family: var(--font-comic); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--hi); margin-top: 6px; }
+    .stat-tile .sub { font-size: 12px; color: var(--ash); margin-top: 4px; line-height: 1.35; }
+    @media (max-width: 900px) { .gd3-views, .gd3-grid, .place-grid, .clip-grid, .clip-grid.three { grid-template-columns: 1fr; } .gd3-views canvas { height: 300px; } }
   </style>
 </head>
 <body>
@@ -97,6 +138,8 @@
       <a href="assets/pdf/projects/GeoDEX_DS_GA_3001_Course_Project_Final_Report.pdf" target="_blank" rel="noopener">Report (PDF)</a>
       <a href="https://github.com/thejerrycheng/GeoDEX" target="_blank" rel="noopener">Code</a>
       <a href="#playground">Try the retargeting</a>
+      <a href="#runs">The runs</a>
+      <a href="#disturb">Disturbances</a>
     </div>
   </div>
 
@@ -104,8 +147,8 @@
     <div class="card stat-tile"><div class="num">23<small>DoF</small></div><div class="lab">Whole body</div><div class="sub">6-DoF xArm Lite 6 + 1-DoF wrist + 16-DoF ORCA hand</div></div>
     <div class="card stat-tile"><div class="num">2</div><div class="lab">RGB-D views</div><div class="sub">Wrist-mounted egocentric + fixed overhead</div></div>
     <div class="card stat-tile"><div class="num">60</div><div class="lab">Action chunk</div><div class="sub">2.0 s at 30 Hz, one sub-task long</div></div>
-    <div class="card stat-tile"><div class="num">96<small>%</small></div><div class="lab">SR-1</div><div class="sub">Single fruit, 50 rollouts</div></div>
-    <div class="card stat-tile"><div class="num">+66<small>pp</small></div><div class="lab">SR-2 gain</div><div class="sub">From State Bottlenecking alone</div></div>
+    <div class="card stat-tile"><div class="num">96<small>%</small></div><div class="lab">SR-1, reported</div><div class="sub">Single fruit, 50 rollouts (the report's number; <a href="#runs">my re-run</a> gets 50 %)</div></div>
+    <div class="card stat-tile"><div class="num">+66<small>pp</small></div><div class="lab">SR-2 gain, reported</div><div class="sub">From State Bottlenecking alone</div></div>
     <div class="card stat-tile"><div class="num">2.2<small>mm</small></div><div class="lab">Pinch error</div><div class="sub">Re-measured on the recorded hand data</div></div>
   </div>
 </section>
@@ -134,32 +177,92 @@
 
 <!-- =================== PLAYGROUND =================== -->
 <section class="section" id="playground">
-  <h2 class="section-title">Switch the terms off yourself</h2>
-  <p class="lead">Below is the real thing: the ORCA hand's kinematics exported straight from the MuJoCo model, the released cost function, and 9 seconds of a real recorded Vision Pro hand trajectory. Turn a term off and watch what it was holding together. The solver here is coordinate descent rather than SLSQP because that is what runs at frame rate in a browser — on the same data it lands within 0.5° and 0.3 mm of the offline result.</p>
+  <h2 class="section-title">Tune the retargeting yourself</h2>
+  <p class="lead">Left: the operator's hand as the Apple Vision Pro recorded it, 21 landmarks in the palm frame, nine seconds of a real pinch-and-release sequence. Right: the ORCA hand, its real MuJoCo meshes posed by the exported kinematics, tracking that hand through the released cost function, solved live in your browser. Every term of the cost is a slider; fingertips share a colour on both hands so you can see which one is off and by how much.</p>
 
   <div class="card scene-block">
-    <span class="caption-box">The playground</span>
-    <div class="gd-grid">
+    <span class="caption-box">INTERACTIVE 3-D · OPERATOR AND ROBOT, SIDE BY SIDE</span>
+    <div class="gd3-grid">
       <div>
-        <canvas id="gd-canvas" aria-label="ORCA hand tracking a recorded human hand"></canvas>
-        <canvas id="gd-spark" aria-label="Thumb-index distance over time"></canvas>
+        <div class="gd3-views">
+          <figure><canvas id="gd3-human" aria-label="the operator's recorded hand in three dimensions"></canvas><figcaption>OPERATOR <small>Vision Pro landmarks, palm frame</small></figcaption></figure>
+          <figure><canvas id="gd3-robot" aria-label="the ORCA hand posed by the retargeting solver"></canvas><figcaption>ORCA HAND <small>16 joints, the real meshes</small></figcaption></figure>
+        </div>
+        <canvas id="gd3-spark" aria-label="thumb-index distance over time, operator and robot"></canvas>
+        <div class="gd-out" id="gd3-out" style="margin-top:10px">loading the hand model…</div>
       </div>
       <div class="demo-controls">
-        <div class="gd-out" id="gd-out">loading the hand model…</div>
-        <div class="gd-terms">
-          <label><input type="checkbox" id="gd-rel" checked><span><b>γ<sub>rel</sub> = 100</b> pairwise thumb–fingertip distances <span class="why">Off: pinches stop closing. This is the paper's contribution.</span></span></label>
-          <label><input type="checkbox" id="gd-cos" checked><span><b>γ<sub>cos</sub> = 50</b> keypoint cosine similarity <span class="why">Off: pinch gets sharper, whole-hand posture drifts.</span></span></label>
-          <label><input type="checkbox" id="gd-smooth" checked><span><b>γ<sub>smooth</sub> = 0.5</b> temporal coherence <span class="why">Off: the solver jitters between equivalent poses.</span></span></label>
-          <label><input type="checkbox" id="gd-pos"><span><b>γ<sub>pos</sub> = 400</b> naive absolute fingertip L2 <span class="why">On (with the others off): joint-to-joint style retargeting.</span></span></label>
-          <label><input type="checkbox" id="gd-ghost" checked><span>Show the operator's hand <span class="why">Dashed skeleton behind the robot.</span></span></label>
+        <div class="gd3-sliders">
+          <label><span><b>γ<sub>rel</sub></b> thumb–fingertip distances</span><input type="range" id="gd3-rel" min="0" max="300" step="5" value="100"><span class="v" id="gd3-rel-v">100</span><span class="why">The paper's term: pairwise thumb-to-fingertip vectors, ×5 when the operator pinches. Zero it and pinches stop closing.</span></label>
+          <label><span><b>γ<sub>cos</sub></b> keypoint cosine similarity</span><input type="range" id="gd3-cos" min="0" max="150" step="5" value="50"><span class="v" id="gd3-cos-v">50</span><span class="why">Whole-hand posture. Zero it and the pinch sharpens while the rest of the hand drifts.</span></label>
+          <label><span><b>γ<sub>smooth</sub></b> temporal coherence</span><input type="range" id="gd3-smooth" min="0" max="2" step="0.05" value="0.5"><span class="v" id="gd3-smooth-v">0.5</span><span class="why">Penalises jumps between frames; without it the solver jitters between equivalent poses.</span></label>
+          <label><span><b>γ<sub>pos</sub></b> absolute fingertip L2</span><input type="range" id="gd3-pos" min="0" max="800" step="10" value="0"><span class="v" id="gd3-pos-v">0</span><span class="why">The naive joint-to-joint style. Turn it up with the others down to see why it was replaced.</span></label>
+          <label><span><b>pinch gate</b></span><input type="range" id="gd3-gate" min="10" max="90" step="1" value="39"><span class="v" id="gd3-gate-v">39 mm</span><span class="why">Operator thumb–index distance below which the ×5 boost fires.</span></label>
         </div>
-        <label style="margin-top:6px">Playback <span id="gd-speed-v">1×</span><input type="range" id="gd-speed" min="0.25" max="3" step="0.25" value="1"></label>
-        <label style="margin-top:2px">Scrub<input type="range" id="gd-scrub" min="0" max="133" step="1" value="0"></label>
-        <div class="demo-buttons">
-          <button class="btn btn-primary" id="gd-play" type="button">Pause</button>
-          <button class="btn" id="gd-reset" type="button">Reset terms</button>
+        <p class="plot-note" style="margin-top:8px"><b>Finger size factors</b>, human to robot (the calibration the pipeline applies to each finger's landmarks):</p>
+        <div class="gd3-fingers">
+          <label style="color:#E4442A">thumb<input type="range" class="gd3-scale" min="0.8" max="1.8" step="0.01" value="1.35"><span class="v">1.35</span></label>
+          <label style="color:#D9A13F">index<input type="range" class="gd3-scale" min="0.8" max="1.8" step="0.01" value="1.2"><span class="v">1.20</span></label>
+          <label style="color:#3fbf5a">middle<input type="range" class="gd3-scale" min="0.8" max="1.8" step="0.01" value="1.15"><span class="v">1.15</span></label>
+          <label style="color:#2a78d6">ring<input type="range" class="gd3-scale" min="0.8" max="1.8" step="0.01" value="1.2"><span class="v">1.20</span></label>
+          <label style="color:#8e6bd1">pinky<input type="range" class="gd3-scale" min="0.8" max="1.8" step="0.01" value="1.4"><span class="v">1.40</span></label>
         </div>
-        <p class="plot-note">Drag the hand to orbit it. The dashed red line is the thumb–index pair, the one the ×5 boost fires on.</p>
+        <div class="demo-buttons" style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px">
+          <button class="btn btn-primary" id="gd3-play" type="button">Pause</button>
+          <button class="btn" data-preset="paper" type="button">The paper's weights</button>
+          <button class="btn" data-preset="nopinch" type="button">No pinch term</button>
+          <button class="btn" data-preset="joint" type="button">Joint-to-joint</button>
+          <button class="btn" data-preset="cosonly" type="button">Cosine only</button>
+          <button class="btn" id="gd3-resetview" type="button">Reset view</button>
+        </div>
+        <label style="margin-top:10px; display:block">Playback <span id="gd3-speed-v" class="v">1×</span><input type="range" id="gd3-speed" min="0.25" max="3" step="0.25" value="1" style="width:100%"></label>
+        <label style="margin-top:4px; display:block">Scrub<input type="range" id="gd3-scrub" min="0" max="133" step="1" value="0" style="width:100%"></label>
+        <label style="margin-top:8px; display:flex; gap:6px; align-items:center; font-size:13px"><input type="checkbox" id="gd3-link" checked> orbit both views together</label>
+        <p class="plot-note">Drag either view to orbit. The solver is coordinate descent on the released cost with the hand's real joint limits; the offline harness uses SLSQP on the same objective, so the numbers differ by solver, not by cost.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== MORE RUNS =================== -->
+<section class="section" id="runs">
+  <h2 class="section-title">More runs: one to five fruits</h2>
+  <p class="lead">The released checkpoint (the sequential ACT model, joint-space actions from the wrist and overhead RGB-D cameras) rolled out on the xArm Lite 6 with the ORCA hand in the MuJoCo scene, with one to five fruits dropped at random inside the training spawn zone. Fifty-two episodes, one seed per episode, nothing cherry-picked out of the tally. <b>These are my numbers, not the report's</b> — the report quotes 96 % on a single fruit over 50 rollouts, and re-running the checkpoint here, in the multi-fruit scene and with the fruit required to come to rest on the plate, I get half that on one fruit and much less as fruits are added. The clips are the successes and, where there were none, the runs that got furthest; clips longer than 19 seconds are sped up.</p>
+  <div class="stat-row">
+    <div class="card stat-tile"><div class="num">38<small>/152</small></div><div class="lab">fruits placed</div><div class="sub">over 52 episodes with one to five fruits on the table</div></div>
+    <div class="card stat-tile"><div class="num">50<small>%</small></div><div class="lab">one fruit cleared</div><div class="sub">6 of 12 episodes, 6.4 s on average when it worked</div></div>
+    <div class="card stat-tile"><div class="num">31<small>/52</small></div><div class="lab">got at least one</div><div class="sub">12 episodes never closed on a fruit at all; 9 lifted one and never let go over the plate</div></div>
+    <div class="card stat-tile"><div class="num">14.0<small>s</small></div><div class="lab">to the first fruit</div><div class="sub">3.2–94 s across the 31 episodes that placed one</div></div>
+  </div>
+  <div id="gd-runs-gallery"><p class="plot-note">Loading the recorded runs…</p></div>
+  <div class="card finding" style="margin-top:18px"><span class="no">!</span><h3>The failure is the second fruit, not the first</h3><p>One fruit on the table: half the episodes end with it on the plate. Two: one in ten. Three or more: none of the thirty episodes cleared the table, though they placed 26 individual fruits between them. The break is <i>after the first success</i>. I logged the hand and every fruit at 10 Hz: in the 25 multi-fruit episodes that placed something, the palm afterwards sits a median 14 cm from the nearest remaining fruit and comes within 4 cm of one — it does go back and engage the next fruit, and 24 of the 70 remaining fruits get visibly nudged. But only 15 of those 70 (21 %) are ever lifted clear of the table again, and only 7 (10 %) reach the plate. It approaches and paws at the next fruit without closing on it. That is the freezing the report describes and treats with the sequential sub-task encoding, and it is not fixed here — a single fruit just hides it.</p></div>
+</section>
+
+<!-- =================== DISTURBANCES =================== -->
+<section class="section" id="disturb">
+  <h2 class="section-title">Disturbances: take the fruit away mid-grasp</h2>
+  <p class="lead">Right after the hand lifts a fruit, something happens to it: it is knocked out sideways, taken out of the hand and put back elsewhere on the table, pressed down while held, or removed for good. The policy never saw any of this in training and it has no memory beyond its observation window, so this is a fair test of whether the visuomotor loop is closing on what is actually in front of it. Twenty-four attempts, fifteen of which got far enough to have a grasp to disturb (one of those took away the only fruit on the table, so there was nothing left to recover with). Of the fourteen real tests, three still finished the task, and the two clean re-grasps came back within about a second. Every disturbed run is below, recovery or not.</p>
+  <div class="stat-row" id="gd-disturb-stats"></div>
+  <div id="gd-disturb-gallery"><p class="plot-note">Loading the disturbance runs…</p></div>
+</section>
+
+<!-- =================== PLACE THE FRUITS =================== -->
+<section class="section" id="place">
+  <h2 class="section-title">Place the fruits yourself</h2>
+  <p class="lead">The policy is a 40-million-parameter transformer over two RGB-D cameras; it does not run in a browser. What runs here is the library of recorded episodes: drop fruits on the map of the table and the page finds the recorded episode whose starting layout is closest to yours, shows that layout over your own, and plays what the policy did. Click a fruit again to remove it.</p>
+  <div class="card scene-block">
+    <span class="caption-box">INTERACTIVE · NEAREST RECORDED EPISODE</span>
+    <div class="place-grid">
+      <div>
+        <canvas id="gd-map" aria-label="top-down map of the table: click to place fruits"></canvas>
+        <div class="demo-buttons" style="margin-top:10px; display:flex; gap:8px">
+          <button class="btn btn-primary" id="gd-place-random" type="button">Random layout</button>
+          <button class="btn" id="gd-place-clear" type="button">Clear</button>
+        </div>
+      </div>
+      <div>
+        <video id="gd-place-video" controls muted loop playsinline preload="metadata" hidden></video>
+        <p class="plot-note" id="gd-place-out" style="margin-top:10px">Drop one to five fruits on the table.</p>
       </div>
     </div>
   </div>
@@ -288,6 +391,15 @@ python scripts/tools/export_demo_data.py         <span class="c"># what the play
 
 <script src="assets/js/site.js"></script>
 <script src="assets/js/geodex_retarget.js"></script>
-<script src="assets/js/geodex_demo.js"></script>
+<script type="module">
+  import { initPlayground3D } from './assets/js/geodex_playground3d.js';
+  import { initRuns } from './assets/js/geodex_runs.js';
+  const q = (id) => document.getElementById(id);
+  initPlayground3D({ canvasHuman: q('gd3-human'), canvasRobot: q('gd3-robot'), spark: q('gd3-spark'), out: q('gd3-out'), rel: q('gd3-rel'), cos: q('gd3-cos'), smooth: q('gd3-smooth'), pos: q('gd3-pos'), gate: q('gd3-gate'),
+    relOut: q('gd3-rel-v'), cosOut: q('gd3-cos-v'), smoothOut: q('gd3-smooth-v'), posOut: q('gd3-pos-v'), gateOut: q('gd3-gate-v'),
+    scale: [...document.querySelectorAll('.gd3-scale')], scaleOut: [...document.querySelectorAll('.gd3-fingers .v')], play: q('gd3-play'), speed: q('gd3-speed'), speedOut: q('gd3-speed-v'), scrub: q('gd3-scrub'), link: q('gd3-link'), resetView: q('gd3-resetview'),
+    presetButtons: [...document.querySelectorAll('[data-preset]')] }).catch(e => { q('gd3-out').textContent = 'The 3-D playground could not start: ' + e.message; console.error(e); });
+  initRuns({ fruitsGallery: q('gd-runs-gallery'), distGallery: q('gd-disturb-gallery'), distStats: q('gd-disturb-stats'), map: q('gd-map'), placeOut: q('gd-place-out'), placeVideo: q('gd-place-video'), placeClear: q('gd-place-clear'), placeRandom: q('gd-place-random'), perCount: 3 }).catch(e => { q('gd-runs-gallery').innerHTML = '<p class="plot-note">The recorded runs are not available: ' + e.message + '</p>'; console.error(e); });
+</script>
 </body>
 </html>
