@@ -33,7 +33,7 @@
     maxSteps: 4500,
     targetZ: 1.0,
     maxLateral: 150, maxSpeed: 100,
-    okLateral: 10, okSpeed: 3, okTiltW: 0.10,   // 1 - |q_w|
+    okLateral: 10, okSpeed: 3, okTiltDeg: 15,   // angle from vertical
     // Touchdown height depends on tilt.  Bisecting the resting height of the
     // MuJoCo mesh over a range of tilts gives
     //     z_contact = 1.000 + 0.2475 * tilt[deg]      (R^2 > 0.999)
@@ -151,7 +151,13 @@
     alt() { return this.p[2] - this.P.targetZ; }
     lateral() { return Math.hypot(this.p[0], this.p[1]); }
     speed() { return Math.hypot(this.v[0], this.v[1], this.v[2]); }
-    tiltDeg() { return 2 * Math.acos(Math.min(1, Math.abs(this.q[0]))) * 180 / Math.PI; }
+    /* Angle between the body axis and vertical.  NOT 2 acos|q_w|, which also
+       counts rotation about the vehicle's own axis — unactuated here, and
+       harmless. */
+    tiltDeg() {
+      const R = qmat(this.q);
+      return Math.acos(Math.max(-1, Math.min(1, R[8]))) * 180 / Math.PI;
+    }
     contactHeight() { return this.P.contactZ + this.P.contactSlope * this.tiltDeg(); }
 
     /** Continuous-time derivative for a given state, used by RK4. */
@@ -220,11 +226,11 @@
       const P = this.P;
       if (this.lateral() > P.maxLateral) { this.done = true; this.outcome = 'drift'; }
       else if (this.speed() > P.maxSpeed) { this.done = true; this.outcome = 'overspeed'; }
-      else if (Math.abs(this.q[0]) < 0.5) { this.done = true; this.outcome = 'tumble'; }
+      else if (this.tiltDeg() > 90) { this.done = true; this.outcome = 'tumble'; }
       else if (this.p[2] <= this.contactHeight()) {
         this.done = true;
         const ok = this.speed() < P.okSpeed
-                && (1 - Math.abs(this.q[0])) < P.okTiltW
+                && this.tiltDeg() < P.okTiltDeg
                 && this.lateral() < P.okLateral;
         this.outcome = ok ? 'success' : 'hard';
         this.p[2] = this.contactHeight();
@@ -249,7 +255,7 @@
 
   // ---- the cascaded 3-D PD from scripts/tools/pd3d.py ------------------------
   const PD = {
-    kd_xy: 0.95, kd_z: 0.90, t_lag: 3.0, v_lat_max: 11.0,
+    kd_xy: 0.95, kd_z: 0.90, t_lag: 3.0, v_lat_max: 16.0,
     a_up_frac: 0.55, flare: 6.0, vz_max: 26.0, touch_vz: 1.2, lat_hold: 110.0,
     kp_att: 1.1, kd_att: 2.41, tilt_max_deg: 35.0,
     // Lateral authority is set by the tilt cap, not by TWR: near hover the
@@ -258,9 +264,9 @@
     // Measured on the MuJoCo model: the centre of mass touches down at
     // z = 1.00 + 0.2475 * tilt[deg], because the vehicle is 100 m long with a
     // ~17 m fin radius. Any tilt above 4 (alt - 1.5) degrees is a fin strike.
-    contact_slope: 4.0, contact_z0: 1.5,
+    contact_slope: 2.0, contact_z0: 2.0,
     thrust_floor: 1.0,
-    gate_alt: 25.0, gate_lateral: 4.0, gate_hspeed: 0.8, gate_tilt_deg: 8.0
+    gate_alt: 55.0, gate_lateral: 8.0, gate_hspeed: 0.8, gate_tilt_deg: 8.0
   };
 
   function pd3d(r, gains) {
