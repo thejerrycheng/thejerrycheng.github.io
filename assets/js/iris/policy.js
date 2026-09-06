@@ -55,7 +55,9 @@ export class Policy {
   async train(samples, epochs = 60, onEpoch = null) {
     const tf = window.tf; if (!samples.X.length) throw new Error('no samples');
     if (!this.model || this.model.inputs[0].shape[1] !== samples.X[0].length) this.build(samples.X[0].length);
-    const xs = tf.tensor2d(samples.X), im = tf.tensor4d(samples.I.map(a => Array.from(a, v => v / 255)), [samples.I.length, IMG_H, IMG_W, 1]), ys = tf.tensor2d(samples.Y);
+    const flat = new Float32Array(samples.I.length * IMG_H * IMG_W);
+    samples.I.forEach((a, i) => { for (let k = 0; k < a.length; k++) flat[i * IMG_H * IMG_W + k] = a[k] / 255; });
+    const xs = tf.tensor2d(samples.X), im = tf.tensor4d(flat, [samples.I.length, IMG_H, IMG_W, 1]), ys = tf.tensor2d(samples.Y);
     this.losses = [];
     await this.model.fit([xs, im], ys, { epochs, batchSize: 64, shuffle: true, validationSplit: 0.1, callbacks: { onEpochEnd: async (ep, logs) => { this.losses.push([logs.loss, logs.val_loss]); if (onEpoch) onEpoch(ep, logs); await tf.nextFrame(); } } });
     xs.dispose(); im.dispose(); ys.dispose();
@@ -63,7 +65,8 @@ export class Policy {
   /** Predict the next FUT deltas for a history of frames (length >= HIST) and a goal vector. */
   predict(histFrames, goal, img) {
     const tf = window.tf; const hist = []; for (const f of histFrames.slice(-HIST)) hist.push(...stateVec(f));
-    const out = tf.tidy(() => this.model.predict([tf.tensor2d([hist.concat(goal)]), tf.tensor4d([Array.from(img, v => v / 255)], [1, IMG_H, IMG_W, 1])]).dataSync());
+    const flat = Float32Array.from(img, (v) => v / 255);
+    const out = tf.tidy(() => this.model.predict([tf.tensor2d([hist.concat(goal)]), tf.tensor4d(flat, [1, IMG_H, IMG_W, 1])]).dataSync());
     const chunks = []; for (let k = 0; k < FUT; k++) { const o = out.slice(k * 8, k * 8 + 8); chunks.push({ dq: o.slice(0, 6).map(v => v / 10), df: o[6] * 15, dlogS: o[7] / 4 }); }
     return chunks;
   }

@@ -39,7 +39,15 @@ export function evalAim(aim, pos, tau, ctx) {
 export function evalLens(lens, pos, target, tau, ctx, shot) {
   const d = V3.norm(V3.sub(target, pos));
   let f;
-  if (lens.f === 'dollyzoom') { if (ctx.d0 === undefined) { const p0 = evalPath(shot.path, 0, ctx); const a0 = evalAim(shot.aim, p0, 0, ctx); ctx.d0 = V3.norm(V3.sub(a0.target, p0)); } f = lens.f0 * d / ctx.d0; }
+  if (lens.f === 'dollyzoom') {
+    /* Size constancy for a body of finite radius r: a sphere/cylinder of radius r at distance d
+       subtends a half-width r / sqrt(d^2 - r^2) (its silhouette is the tangent, not its centre plane),
+       so holding f * r / sqrt(d^2 - r^2) fixed keeps the *silhouette* the same size, not just a point
+       at the subject distance. r = 0 collapses to the textbook law f = f0 d / d0. */
+    if (ctx.d0 === undefined) { const p0 = evalPath(shot.path, 0, ctx); const a0 = evalAim(shot.aim, p0, 0, ctx); ctx.d0 = V3.norm(V3.sub(a0.target, p0)); }
+    const r = lens.radius || 0, g = (x) => Math.sqrt(Math.max(x * x - r * r, 1e-6));
+    f = lens.f0 * g(d) / g(ctx.d0);
+  }
   else if (Array.isArray(lens.f)) f = lerp(lens.f[0], lens.f[1], tau);
   else f = lens.f;
   let S;

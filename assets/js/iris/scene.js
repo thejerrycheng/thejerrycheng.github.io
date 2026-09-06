@@ -88,10 +88,14 @@ export function buildRig() {
   /* the zoom lens: fixed rear barrel, the extending front barrel, the two servo-driven rings and their motors */
   const lens = new THREE.Group(); lens.position.set(0.0, 0.0, 0.1); rig.add(lens);
   const rear = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.034, 0.05, 48), black); rear.rotation.x = Math.PI / 2; rear.position.z = 0.025; lens.add(rear);
-  const zoomRing = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 0.016, 48), rubber); zoomRing.rotation.x = Math.PI / 2; zoomRing.position.z = 0.018; lens.add(zoomRing);
+  const zoomRing = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 0.016, 40, 1, false), rubber); zoomRing.rotation.x = Math.PI / 2; zoomRing.position.z = 0.018; lens.add(zoomRing);
   const zoomGear = new THREE.Mesh(new THREE.CylinderGeometry(0.0405, 0.0405, 0.01, 60), mat(0x2f3136, { roughness: 0.5, metalness: 0.5 })); zoomGear.rotation.x = Math.PI / 2; zoomGear.position.z = 0.018; lens.add(zoomGear);
-  const focusRing = new THREE.Mesh(new THREE.CylinderGeometry(0.037, 0.037, 0.014, 48), rubber); focusRing.rotation.x = Math.PI / 2; focusRing.position.z = 0.042; lens.add(focusRing);
+  const focusRing = new THREE.Mesh(new THREE.CylinderGeometry(0.037, 0.037, 0.014, 40, 1, false), rubber); focusRing.rotation.x = Math.PI / 2; focusRing.position.z = 0.042; lens.add(focusRing);
   const focusGear = new THREE.Mesh(new THREE.CylinderGeometry(0.0395, 0.0395, 0.009, 60), mat(0x2f3136, { roughness: 0.5, metalness: 0.5 })); focusGear.rotation.x = Math.PI / 2; focusGear.position.z = 0.042; lens.add(focusGear);
+  for (const [ring, r0] of [[zoomRing, 0.0385], [focusRing, 0.0375]]) {
+    const mark = new THREE.Mesh(new THREE.BoxGeometry(0.003, 0.004, 0.012), new THREE.MeshStandardMaterial({ color: 0xd8d4c8, roughness: 0.5 }));
+    mark.position.set(r0, 0, 0); mark.rotation.x = Math.PI / 2; ring.add(mark);            /* index mark, rides with the ring */
+  }
   const ext = new THREE.Group(); ext.position.z = 0.05; lens.add(ext);
   const front = new THREE.Mesh(new THREE.CylinderGeometry(0.031, 0.033, 0.04, 48), black); front.rotation.x = Math.PI / 2; front.position.z = 0.02; ext.add(front);
   const hood = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.034, 0.012, 48, 1, true), new THREE.MeshStandardMaterial({ color: 0x121214, roughness: 0.6, side: THREE.DoubleSide })); hood.rotation.x = Math.PI / 2; hood.position.z = 0.044; ext.add(hood);
@@ -188,8 +192,11 @@ export class Studio {
   /* ---- per-frame ---- */
   update(dt) {
     this.lens.update(dt); const u = this.rig.userData; const ext = this.lens.extension; u.ext.position.z = 0.05 + ext;
-    u.zoomRing.rotation.z = u.zoomGear.rotation.z = (this.lens.f - LENS.fmin) / (LENS.fmax - LENS.fmin) * 1.6; u.focusRing.rotation.z = u.focusGear.rotation.z = Math.log(this.lens.S / LENS.mfd) * 0.9;
-    u.zoomServo.userData.pinion.rotation.y = -u.zoomRing.rotation.z * 5; u.focusServo.userData.pinion.rotation.y = -u.focusRing.rotation.z * 5;
+    /* the rings roll about the barrel: their geometry axis is local +y, so after the rotation.x = pi/2
+       that lays them along the optical axis, the spin is rotation.y (Euler XYZ applies it first) */
+    u.zoomRing.rotation.y = u.zoomGear.rotation.y = (this.lens.f - LENS.fmin) / (LENS.fmax - LENS.fmin) * 2.4;
+    u.focusRing.rotation.y = u.focusGear.rotation.y = Math.log(this.lens.S / LENS.mfd) * 1.2;
+    u.zoomServo.userData.pinion.rotation.y = -u.zoomRing.rotation.y * 5; u.focusServo.userData.pinion.rotation.y = -u.focusRing.rotation.y * 5;
     this.feedCam.fov = fovV(this.lens.f); this.feedCam.updateProjectionMatrix();
     this.controls.update();
   }
@@ -229,10 +236,11 @@ export class Studio {
   /** Project a world point into the feed image: returns [u, v] in [0,1] (v down) and whether it is in front of the camera. */
   projectToFeed(p) { const v = new THREE.Vector3(p[0], p[1], p[2]).project(this.feedCam); return { u: (v.x + 1) / 2, v: (1 - v.y) / 2, inFront: v.z < 1 && v.z > -1 }; }
   /** Read the feed's pixels (downsampled) for the pixel tracker. */
-  readFeed(w = 64, h = 43) {
+  readFeed(w = 132, h = 88) {
     if (!this._pick) { this._pick = new THREE.WebGLRenderTarget(w, h); this._pickBuf = new Uint8Array(w * h * 4); this._pickCam = this.feedCam.clone(); }
-    const r = this.renderer; this._pickCam.copy(this.feedCam); this._pickCam.aspect = w / h; this._pickCam.updateProjectionMatrix();
-    this.rig.getWorldPosition(this._pickCam.position); this.feedCam.getWorldQuaternion(this._pickCam.quaternion); this._pickCam.matrixWorldNeedsUpdate = true;
+    const r = this.renderer; this._pickCam.fov = this.feedCam.fov; this._pickCam.aspect = this.feedCam.aspect; this._pickCam.near = this.feedCam.near; this._pickCam.far = this.feedCam.far; this._pickCam.updateProjectionMatrix();
+    this.feedCam.getWorldPosition(this._pickCam.position); this.feedCam.getWorldQuaternion(this._pickCam.quaternion);   /* the lens, not the mount */
+    this._pickCam.updateMatrixWorld(true);
     const prev = r.getRenderTarget(); const rigVis = this.rig.visible; this.rig.visible = false; const gv = this.gizmoHelper.visible; this.gizmoHelper.visible = false; r.setRenderTarget(this._pick); r.render(this.scene, this._pickCam); r.readRenderTargetPixels(this._pick, 0, 0, w, h, this._pickBuf); r.setRenderTarget(prev); this.rig.visible = rigVis; this.gizmoHelper.visible = gv;
     return { data: this._pickBuf, w, h };
   }

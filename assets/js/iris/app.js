@@ -52,9 +52,9 @@ export class App {
     $('btn-af').addEventListener('click', () => { const d = this.subjectDistance(); this.lens.focus.set(d); this.manualLens = true; });
     $('dof-toggle').addEventListener('change', () => { this.studio.dofEnabled = $('dof-toggle').checked; });
     /* transport */
-    $('btn-play').addEventListener('click', () => this.togglePlay()); $('btn-restart').addEventListener('click', () => { this.tShot = 0; this.playing = true; this.updateTransport(); });
+    $('btn-play').addEventListener('click', () => this.togglePlay()); $('btn-restart').addEventListener('click', () => { this.tShot = 0; this.playing = true; this._settling = true; this._settleFrames = 0; this._settleWait = 0; this.trailPts = []; this.studio.setTrail(null); this.updateTransport(); });
     $('loop-toggle').addEventListener('change', () => { this.loop = $('loop-toggle').checked; }); $('speed-select').addEventListener('change', () => { this.speed = +$('speed-select').value; });
-    $('scrub').addEventListener('input', () => { if (this.shot) { this.tShot = +$('scrub').value / 1000 * this.shot.duration; this.playing = false; this.updateTransport(); } });
+    $('scrub').addEventListener('input', () => { if (this.shot) { this._settling = false; this.tShot = +$('scrub').value / 1000 * this.shot.duration; this.playing = false; this.updateTransport(); } });
     $('tracking-mode').addEventListener('change', () => { this.trackingMode = $('tracking-mode').value; this.gaze = null; });
     /* views */
     document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => this.setView(b.dataset.view)));
@@ -83,18 +83,31 @@ export class App {
     this.shot = shot; this.tShot = 0; this.ctx.d0 = undefined; this.gaze = null; this.manualLens = false; this.trailPts = []; this.studio.setTrail(null);
     document.querySelectorAll('.shot-btn').forEach(b => b.classList.toggle('on', b.dataset.id === id));
     $('shot-title').textContent = shot.name; $('shot-blurb').textContent = shot.blurb || ''; $('tracking-row').hidden = shot.aim.type !== 'track';
-    this.setMode('shots'); this.playing = !!play; this.updateTransport(); this.studio.setTurntable(0);
+    this.setMode('shots'); this.playing = !!play; this._settling = true; this._settleFrames = 0; this._settleWait = 0; this.updateTransport(); this.studio.setTurntable(0);
     if (this.recEvery && play) this.startRecord();
     this.carRunning = shot.aim.type === 'track';
     if (!this.carRunning) this.studio.updateCar(0);
   }
   togglePlay() { if (this.mode !== 'shots') this.setMode('shots'); this.playing = !this.playing; this.updateTransport(); }
-  updateTransport() { $('btn-play').textContent = this.playing ? '❚❚ Pause' : '▶ Play'; if (this.shot) { $('scrub').value = Math.round(this.tShot / this.shot.duration * 1000); $('time-label').textContent = `${fmt(this.tShot, 1)} / ${this.shot.duration.toFixed(1)} s`; } }
+  updateTransport() { $('btn-play').textContent = this.playing ? '❚❚ Pause' : '▶ Play'; if (this.shot) { $('scrub').value = Math.round(this.tShot / this.shot.duration * 1000); $('time-label').textContent = this._settling ? 'moving to the start…' : `${fmt(this.tShot, 1)} / ${this.shot.duration.toFixed(1)} s`; } }
   subjectDistance() { const p = this.studio.eePose().pos; const t = this.shot && this.shot.aim.subject && this.shot.aim.type !== 'track' ? this.ctx.subject(this.shot.aim.subject) : (this.shot && this.shot.aim.type === 'track' ? this.ctx.car(this.time) : this.ctx.subject('far')); return V3.norm(V3.sub(t, p)); }
   /** One shot frame: evaluate the preset, solve IK, move the servos. */
+  /** True while the arm is still travelling to the shot's first pose (nothing is recorded yet). */
+  get settling() { return !!this._settling; }
+  settleCheck() {
+    const dq = this.arm.wrapDelta(this.qTarget.map((t, i) => t - this.studio.q[i]));
+    const worst = Math.max(...dq.map(Math.abs));
+    const lens = Math.abs(this.lens.f - this.lens.zoom.target) + Math.abs(this.lens.S - this.lens.focus.target) * 10;
+    return worst < 0.004 && lens < 0.5;     /* 0.23 deg on every joint, and the servos have arrived */
+  }
   stepShot(dt) {
     const shot = this.shot; if (!shot) return;
-    if (this.playing) { this.tShot += dt * this.speed; if (this.tShot >= shot.duration) { if (this.loop) { this.tShot = 0; this.trailPts = []; this.ctx.d0 = undefined; if (this.recorder.recording && this.recEvery) { this.stopRecord(); this.startRecord(); } } else { this.tShot = shot.duration; this.playing = false; if (this.recorder.recording) this.stopRecord(); } } }
+    if (this._settling) {
+      this.tShot = 0;
+      if (this.settleCheck() && ++this._settleFrames > 3) { this._settling = false; this._settleFrames = 0; }
+      else if (++this._settleWait > 900) { this._settling = false; }      /* never hang: 30 s at 30 Hz */
+    }
+    if (this.playing && !this._settling) { this.tShot += dt * this.speed; if (this.tShot >= shot.duration) { if (this.loop) { this.tShot = 0; this.trailPts = []; this.ctx.d0 = undefined; if (this.recorder.recording && this.recEvery) { this.stopRecord(); this.startRecord(); } } else { this.tShot = shot.duration; this.playing = false; if (this.recorder.recording) this.stopRecord(); } } }
     if (this.carRunning) this.studio.updateCar(this.tShot);
     if (shot.turntable) this.studio.setTurntable(2 * Math.PI * EASE[shot.ease || 'linear'](this.tShot / shot.duration));
     this.ctx.t = this.tShot;
@@ -106,16 +119,61 @@ export class App {
     this.aimTarget = target; this.shotEval = e;
     if (this.playing && (this.frame % 3 === 0)) { this.trailPts.push(this.studio.eePose().pos); if (this.trailPts.length > 400) this.trailPts.shift(); if (this.frame % 9 === 0) this.studio.setTrail(this.trailPts); }
   }
-  /** Pixel tracker: find the red car in the feed and steer the gaze (yaw/pitch of the optical axis) to centre it. */
+  /** Pixel tracker: find the car in the feed and steer the optical axis to centre it.
+      The correction is applied to the camera's *actual* orientation (from the current joints),
+      not to the accumulated command, so the loop cannot wind up while the joints catch up. */
   visionAim(pos) {
-    if (!this.gaze) { const t = this.ctx.car(this.tShot); const d = V3.unit(V3.sub(t, pos)); this.gaze = { yaw: Math.atan2(d[1], d[0]), pitch: Math.asin(d[2]) }; this.trackErr = null; }
-    if (this.frame % 2 === 0) {
-      const f = this.studio.readFeed(64, 43); let sx = 0, sy = 0, n = 0;
-      for (let y = 0; y < f.h; y++) for (let x = 0; x < f.w; x++) { const i = (y * f.w + x) * 4; const r = f.data[i], g = f.data[i + 1], b = f.data[i + 2]; if (r > 90 && r > 1.7 * g && r > 1.7 * b) { sx += x; sy += y; n++; } }
-      if (n >= 3) { const u = sx / n / f.w, v = 1 - sy / n / f.h; this.trackErr = { u: u - 0.5, v: v - 0.5, n }; const kx = fovH(this.lens.f) * D2R, ky = fovV(this.lens.f) * D2R; this.gaze.yaw -= this.trackErr.u * kx * 0.6; this.gaze.pitch -= this.trackErr.v * ky * 0.6; }
-      else this.trackErr = { u: 0, v: 0, n: 0 };
+    const T = this.arm.fk(this.studio.q); const fwd = [T[0][2], T[1][2], T[2][2]];
+    let yaw = Math.atan2(fwd[1], fwd[0]), pitch = Math.asin(Math.max(-1, Math.min(1, fwd[2])));
+    if (!this.gaze) { const t = this.ctx.car(this.tShot); const d = V3.unit(V3.sub(t, pos)); this.gaze = { yaw: Math.atan2(d[1], d[0]), pitch: Math.asin(d[2]) }; this.trackErr = null; this.lastGood = null; this.gazeRate = null; return { R: yawPitchRoll(this.gaze.yaw, this.gaze.pitch, 0, pos), target: V3.add(pos, V3.scale(V3.unit(V3.sub(this.ctx.car(this.tShot), pos)), 0.5)) }; }
+    if (true) {
+      /* Segment the car: gate on chromaticity (r / (r+g+b)) and the red-green gap, which a warm-lit
+         wooden desk fails, then keep the largest connected component so the carrot cake's brown
+         crust cannot drag the centroid. The blob is the red chassis, a little below the car's centre. */
+      const f = this.studio.readFeed(); const W = f.w, H = f.h, m = this._mask || (this._mask = new Uint8Array(W * H));
+      m.fill(0); let count = 0;
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        const i = (y * W + x) * 4; const r = f.data[i], g = f.data[i + 1], bl = f.data[i + 2]; const sum = r + g + bl;
+        if (sum > 40 && r / sum > 0.66 && r - Math.max(g, bl) > 35) { m[y * W + x] = 1; count++; }   /* a permissive gate; the component score below does the discriminating */
+      }
+      let best = null;
+      if (count) {
+        const seen = this._seen || (this._seen = new Uint8Array(W * H)); seen.fill(0);
+        const stack = this._stack || (this._stack = new Int32Array(W * H));
+        for (let p0 = 0; p0 < W * H; p0++) {
+          if (!m[p0] || seen[p0]) continue;
+          let top = 0; stack[top++] = p0; seen[p0] = 1; let n2 = 0, sx2 = 0, sy2 = 0, x0 = W, x1 = -1, y0 = H, y1 = -1, red = 0;
+          while (top) {
+            const p1 = stack[--top]; const x = p1 % W, y = (p1 - x) / W; n2++; sx2 += x; sy2 += y;
+            const j = p1 * 4; red += f.data[j] / Math.max(f.data[j] + f.data[j + 1] + f.data[j + 2], 1);
+            if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+            if (x > 0 && m[p1 - 1] && !seen[p1 - 1]) { seen[p1 - 1] = 1; stack[top++] = p1 - 1; }
+            if (x < W - 1 && m[p1 + 1] && !seen[p1 + 1]) { seen[p1 + 1] = 1; stack[top++] = p1 + 1; }
+            if (y > 0 && m[p1 - W] && !seen[p1 - W]) { seen[p1 - W] = 1; stack[top++] = p1 - W; }
+            if (y < H - 1 && m[p1 + W] && !seen[p1 + W]) { seen[p1 + W] = 1; stack[top++] = p1 + W; }
+          }
+          /* score a component by how red it is, not by how big: the car is a saturated red
+             (r / (r+g+b) ~ 0.85) while the cake's brown crust only reaches 0.65 but covers more pixels */
+          const chroma = red / n2; const score = n2 < 3 ? 0 : n2 * Math.pow(Math.max(0, chroma - 0.6), 2);
+          if (score > 0 && (!best || score > best.score)) best = { score, chroma, n: n2, x: (x0 + x1) / 2, y: (y0 + y1) / 2, cx: sx2 / n2, cy: sy2 / n2, edge: x0 === 0 || y0 === 0 || x1 === W - 1 || y1 === H - 1 };
+        }
+      }
+      if (best && best.n >= 3) {
+        const u = best.x / W - 0.5, v = (1 - best.y / H) - 0.5;          /* bounding-box centre; readback rows are bottom-up */
+        this.trackErr = { u, v, n: best.n, edge: best.edge };
+        /* image offset -> angle: tan(a) = 2 * du * tan(fov / 2) */
+        const aYaw = Math.atan(2 * u * Math.tan(fovH(this.lens.f) * D2R / 2));
+        const aPit = Math.atan(2 * v * Math.tan(fovV(this.lens.f) * D2R / 2));
+        /* a blob touching the frame border is only partly visible: its centre is biased outward, so
+           follow it gently instead of chasing the fragment out of frame */
+        const k = best.edge ? 0.3 : 1.0;
+        this.gaze = { yaw: yaw - k * aYaw, pitch: Math.max(-1.4, Math.min(1.4, pitch - k * aPit)) };
+      } else {
+        this.trackErr = { u: 0, v: 0, n: 0 };            /* lost: hold the last command (a reactive tracker cannot search) */
+      }
     }
-    const R = yawPitchRoll(this.gaze.yaw, this.gaze.pitch, 0, pos); const fwd = [R[0][2], R[1][2], R[2][2]]; return { R, target: V3.add(pos, V3.scale(fwd, 0.5)) };
+    const R = yawPitchRoll(this.gaze.yaw, this.gaze.pitch, 0, pos); const f2 = [R[0][2], R[1][2], R[2][2]];
+    return { R, target: V3.add(pos, V3.scale(f2, 0.5)) };
   }
   /* ------------------------------------------------------------ task space */
   solveHandle() {
@@ -137,8 +195,8 @@ export class App {
   stopRecord() { const ep = this.recorder.stop(); this.updateDatasetUI(); return ep; }
   toggleRecord() { if (this.recorder.recording) this.stopRecord(); else { if (this.mode === 'shots' && !this.playing) { this.tShot = 0; this.playing = true; this.updateTransport(); } this.startRecord(); } }
   recordFrame(dt) {
-    if (!this.recorder.recording) return; this.recAccum += dt; if (this.recAccum < 0.1) return; this.recAccum -= 0.1;
-    const img = thumbnail(this.studio.readFeed(64, 43)); this.recorder.push({ t: this.tShot, q: this.studio.q.map(v => +v.toFixed(5)), f: +this.lens.f.toFixed(2), S: +this.lens.S.toFixed(4), img: Array.from(img) });
+    if (!this.recorder.recording || this._settling) return; this.recAccum += dt; if (this.recAccum < 0.1) return; this.recAccum -= 0.1;
+    const img = thumbnail(this.studio.readFeed()); this.recorder.push({ t: this.tShot, q: this.studio.q.map(v => +v.toFixed(5)), f: +this.lens.f.toFixed(2), S: +this.lens.S.toFixed(4), img: Array.from(img) });
     if (this.recorder.current.frames.length % 10 === 0) this.updateDatasetUI();
   }
   updateDatasetUI() { const r = this.recorder; $('btn-rec').textContent = r.recording ? '■ Stop recording' : '● Record this shot'; $('btn-rec').classList.toggle('rec', r.recording); $('dataset-stats').innerHTML = `<b>${r.episodes.length}</b> episodes · <b>${r.nFrames}</b> frames${r.recording ? ` · recording ${r.current.frames.length} frames…` : ''}<br><span class="dim">${[...new Set(r.episodes.map(e => e.meta.shotId))].join(', ') || 'no demonstrations yet'}</span>`; }
@@ -162,7 +220,7 @@ export class App {
   }
   runPolicy() {
     if (!this.policy.model || !this.shot) return; this.setMode('policy'); this.ensembler.reset();
-    this.policyRun = { hist: [], t: 0, acc: 0, goal: goalVector(this.spec.shots.findIndex(s => s.id === this.shot.id), this.spec.shots.length, this.ctx.subject('near'), this.ctx.subject('far')), duration: this.shot.duration * 1.3, still: 0 };
+    this.policyRun = { hist: [], t: 0, acc: 0, goal: goalVector(this.spec.shots.findIndex(s => s.id === this.shot.id), this.spec.shots.length, this.ctx.subject('near'), this.ctx.subject('far')), duration: this.shot.duration, still: 0 };   /* the same length as a demonstration */
     this.trailPts = []; this.studio.setTrail(null); this.carRunning = this.shot.aim.type === 'track'; $('policy-status').textContent = 'running…';
   }
   stopPolicy() { if (this.policyRun) { this.policyRun = null; $('policy-status').textContent = 'stopped'; } }
@@ -171,7 +229,7 @@ export class App {
     if (P.acc < 0.1) return; P.acc -= 0.1;
     const frame = { q: this.studio.q.slice(), f: this.lens.f, S: this.lens.S }; P.hist.push(frame); if (P.hist.length > HIST) P.hist.shift();
     if (P.hist.length < HIST) return;
-    const img = thumbnail(this.studio.readFeed(64, 43)); const chunks = this.policy.predict(P.hist, P.goal, img); this.ensembler.push(chunks); const a = this.ensembler.action(); if (!a) return;
+    const img = thumbnail(this.studio.readFeed()); const chunks = this.policy.predict(P.hist, P.goal, img); this.ensembler.push(chunks); const a = this.ensembler.action(); if (!a) return;
     const qn = this.arm.clamp(this.studio.q.map((v, i) => v + a.dq[i])); this.qTarget = qn; this.lens.zoom.set(this.lens.f + a.df); this.lens.focus.set(Math.exp(Math.log(this.lens.S) + a.dlogS));
     const mv = Math.hypot(...a.dq); P.still = mv < 0.002 ? P.still + 0.1 : 0; $('policy-status').textContent = `t ${fmt(P.t, 1)} s · |Δq| ${mv.toExponential(1)} rad/step · f ${fmt(this.lens.f, 0)} mm`;
     if (P.t > P.duration || P.still > 2.5) { $('policy-status').textContent += ' · finished'; this.policyRun = null; }
@@ -202,7 +260,7 @@ export class App {
     $('lens-f').value = L.f; $('lens-focus').value = Math.log(L.S); $('lens-n').value = L.N; $('lens-f-val').textContent = fmt(L.f, 0) + ' mm'; $('lens-focus-val').textContent = (L.S > 20 ? '∞' : fmt(L.S, 2) + ' m'); $('lens-n-val').textContent = 'f/' + fmt(L.N, 1);
     /* the reticle on the aim target */
     const ret = $('vf-reticle'); if (this.aimTarget && this.mode !== 'joints') { const p = this.studio.projectToFeed(this.aimTarget); ret.hidden = !p.inFront; ret.style.left = (p.u * 100) + '%'; ret.style.top = (p.v * 100) + '%'; } else ret.hidden = true;
-    const te = $('vf-track'); if (this.trackErr && this.shot && this.shot.aim.type === 'track' && this.trackingMode === 'vision') { te.hidden = false; te.textContent = this.trackErr.n ? `tracker: ${this.trackErr.n} px · err (${fmt(this.trackErr.u * 100, 0)}, ${fmt(this.trackErr.v * 100, 0)}) %` : 'tracker: target lost'; } else te.hidden = true;
+    const te = $('vf-track'); if (this.trackErr && this.shot && this.shot.aim.type === 'track' && this.trackingMode === 'vision') { te.hidden = false; te.textContent = this.trackErr.n ? `tracker: ${this.trackErr.n} px${this.trackErr.edge ? ' (at the frame edge)' : ''} · err (${fmt(this.trackErr.u * 100, 0)}, ${fmt(this.trackErr.v * 100, 0)}) %` : 'tracker: target lost'; } else te.hidden = true;
     if (this.shot && this.mode === 'shots') this.updateTransport();
   }
   tcode() { const t = this.mode === 'shots' ? this.tShot : this.time; const s = Math.floor(t), f = Math.floor((t - s) * 30); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}:${String(f).padStart(2, '0')}`; }
