@@ -197,12 +197,21 @@
       "alts": [
         "AeroHaptix UAV teleoperation"
       ],
-      "video": "assets/videos/aerohaptix_tease.mp4",
+      "video": "assets/videos/aerohaptix_thumb.mp4",
       "fit": "cover",
       "links": [
         {
+          "label": "Website",
+          "href": "aerohaptix.html",
+          "internal": true
+        },
+        {
           "label": "Paper",
           "href": "https://arxiv.org/abs/2407.12105"
+        },
+        {
+          "label": "IEEE",
+          "href": "https://ieeexplore.ieee.org/document/10916921"
         },
         {
           "label": "Code",
@@ -213,12 +222,11 @@
           "href": "https://www.youtube.com/watch?v=ezIZrVmYYpI&list=PL5hrJ0xlpQr9NXqQIKAuI2mUovgFscNgk&index=2"
         },
         {
-          "label": "Website",
-          "href": "haptic_toolkit.html",
-          "internal": true
+          "label": "Report",
+          "href": "assets/pdf/projects/aerohaptix_report.pdf"
         }
       ],
-      "desc": "Introduces a wearable vibrotactile system integrated with UAV teleoperation, leveraging control barrier functions for safe human-drone interaction."
+      "desc": "A wearable suit with 32 vibration units renders obstacle directions on the upper body while a drone is teleoperated; a multi-obstacle control barrier function (MultiCBF) decides which unit vibrates and how hard. Fewer collisions and less input disagreement than no feedback in a 12-participant AirSim study."
     },
     {
       "id": "bipednav",
