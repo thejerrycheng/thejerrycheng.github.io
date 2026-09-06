@@ -43,7 +43,6 @@
         }
       ],
       "desc": "A <em>Science Robotics</em> review tracing humanoid locomotion control through three eras &mdash; classical model-based control, learning-based control, and emerging foundation- and world-model approaches &mdash; and what each assumes about models, data, and the tasks a humanoid is expected to do. My illustration page adds an interactive timeline of the eras, an animated version of the unified view, and a balance lab where a capture-point controller, a step MPC and a PPO policy take the same shoves.",
-      "video": "assets/videos/locomotion_thumb.mp4",
       "venue_short": "Science Robotics"
     },
     {
@@ -379,14 +378,10 @@
       "year": 2022,
       "href": "https://nanolithography.spiedigitallibrary.org/conference-proceedings-of-spie/12253/122530A/Generative-design-for-self-balancing-unicycle-robot-in-additive-manufacturing/10.1117/12.2639454.short",
       "images": [
-        "assets/images/publications/unicycle.jpg",
-        "assets/images/projects/unicycle/tease_poster.jpg",
-        "assets/images/projects/unicycle/figs/fig_topopt_parts.png"
+        "assets/images/publications/unicycle.jpg"
       ],
       "alts": [
-        "The generative unicycle: reaction wheel on top, lattice brackets, drive wheel below",
-        "Teaser frame: the two chassis side by side",
-        "The three brackets after topology optimisation"
+        "Generative design for a unicycle robot"
       ],
       "fit": "contain",
       "links": [
@@ -409,8 +404,8 @@
         }
       ],
       "desc": "Generative design (Fusion 360) of a 3-D-printed chassis for a self-balancing unicycle robot: seven brackets carved by topology optimisation, a lighter body with a higher centre of mass, and a Simulink comparison of the generative and conventional chassis under the same PID controllers. Re-run on the website with an interactive twin.",
-      "video": "assets/videos/unicycle_thumb.mp4",
-      "venue_short": "SPIE ACAIB"
+      "venue_short": "SPIE ACAIB",
+      "video": "assets/videos/unicycle_prototype.mp4"
     }
   ],
   "projects": [
@@ -451,12 +446,12 @@
       "year": 2026,
       "tag": "Robot learning",
       "images": [
-        "assets/images/projects/geodex/hero_poster.jpg"
+        "assets/images/projects/geodex/geodex.jpg"
       ],
       "alts": [
-        "The 23-DoF xArm and ORCA hand placing a fruit on a plate in MuJoCo"
+        "GeoDEX dexterous manipulation"
       ],
-      "video": "assets/videos/geodex_hero.mp4",
+      "video": "assets/videos/robust_test_get_a_grip.mp4",
       "fit": "cover",
       "links": [
         {
@@ -481,12 +476,12 @@
       "year": 2025,
       "tag": "Reinforcement learning",
       "images": [
-        "assets/images/projects/tintin/environment.jpg"
+        "assets/images/projects/rocket/overview.jpg"
       ],
       "alts": [
-        "The TINTIN lunar lander on the target pad in the RocketGym MuJoCo environment"
+        "TINTIN lunar landing RL"
       ],
-      "video": "assets/videos/tintin_touchdown.mp4",
+      "video": "assets/videos/1mill_step.mp4",
       "fit": "cover",
       "links": [
         {
@@ -552,12 +547,12 @@
       "year": 2024,
       "tag": "Reinforcement learning",
       "images": [
-        "assets/images/projects/clearnet/bins.png"
+        "assets/images/projects/rl/sac.png"
       ],
       "alts": [
-        "Survival, drift and Q-table coverage for the released and corrected bin limits"
+        "CLEAR-Net cart-pole reinforcement learning"
       ],
-      "video": "assets/videos/clearnet_demo.mp4",
+      "video": "assets/videos/RL_demo.mp4",
       "fit": "contain",
       "links": [
         {
@@ -617,24 +612,34 @@
     },
     {
       "id": "aero-localization",
-      "title": "Localization for Aerospace Vehicles (IMU + Stereo)",
+      "title": "Batch and Sliding-Window Localization for Aerospace Vehicles",
       "year": 2023,
       "tag": "State estimation",
       "images": [
-        "assets/images/projects/localization_barfoot/localization.jpg"
+        "assets/images/projects/localization/trajectory.png"
       ],
       "alts": [
-        "Aerospace vehicle localization"
+        "Ground truth, dead reckoning and two estimates among landmarks"
       ],
-      "video": "assets/videos/state_estimation_teaser.mp4",
+      "video": "assets/videos/localization_lost_woods.mp4",
       "fit": "contain",
       "links": [
         {
+          "label": "Website",
+          "href": "localization.html",
+          "internal": true
+        },
+        {
           "label": "PDF",
           "href": "assets/pdf/projects/AER1513_assignment_3-3.pdf"
+        },
+        {
+          "label": "Code",
+          "href": "https://github.com/thejerrycheng/localization-batch-estimation"
         }
       ],
-      "desc": "Batch Gauss-Newton fusion with EKF; compared batch vs sliding-window estimators for trajectory accuracy."
+      "desc": "Maximum-a-posteriori estimation over every pose at once, on SE(3), with a stereo camera and an IMU — and the sliding window that approximates it. A four-seed re-run found batch is both more accurate <em>and</em> cheaper than a wide window over a whole trajectory, and that a window looks over-confident only when its noise model is wrong. Drag the window size in the page and watch the estimate move.",
+      "short": "Where am I? Batch vs sliding window"
     },
     {
       "id": "mobile-robot",

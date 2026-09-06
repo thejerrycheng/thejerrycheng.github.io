@@ -71,7 +71,7 @@
     </div>
 
     <div class="pub card card-hover" id="geodex">
-      <div class="pub-thumb"><img src="assets/images/projects/geodex/hero_poster.jpg" alt="The 23-DoF xArm and ORCA hand placing a fruit on a plate in MuJoCo" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/projects/geodex/hero_poster.jpg" data-src="assets/videos/geodex_hero.mp4"></video></div></div>
+      <div class="pub-thumb"><img src="assets/images/projects/geodex/geodex.jpg" alt="GeoDEX dexterous manipulation" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/projects/geodex/geodex.jpg" data-src="assets/videos/robust_test_get_a_grip.mp4"></video></div></div>
       <div class="pub-meta">
         <span class="papertitle">GeoDEX: A Geometric ACT Policy for Contact-Rich Dexterous Manipulation</span><span class="proj-year">2026</span>
         <p class="proj-body">Apple Vision Pro demonstrations retargeted onto a 23-DoF xArm + ORCA hand by a bifurcated SE(3) optimisation, then cloned by a chunked transformer with a grasp-weighted loss. State Bottlenecking — a mandatory home pose between sub-tasks — takes two-object clearing from 22&nbsp;% to 88&nbsp;%. The page lets you switch each term of the retargeting cost off and watch the pinch geometry come apart.</p>
@@ -80,7 +80,7 @@
     </div>
 
     <div class="pub card card-hover" id="tintin">
-      <div class="pub-thumb"><img src="assets/images/projects/tintin/environment.jpg" alt="The TINTIN lunar lander on the target pad in the RocketGym MuJoCo environment" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/projects/tintin/environment.jpg" data-src="assets/videos/tintin_touchdown.mp4"></video></div></div>
+      <div class="pub-thumb"><img src="assets/images/projects/rocket/overview.jpg" alt="TINTIN lunar landing RL" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/projects/rocket/overview.jpg" data-src="assets/videos/1mill_step.mp4"></video></div></div>
       <div class="pub-meta">
         <span class="papertitle">TINTIN: Reinforcement Learning for Lunar Rocket Landing</span><span class="proj-year">2025</span>
         <p class="proj-body">6-DoF variable-mass lunar lander in MuJoCo with a 2-DoF gimbaled engine. A SAC policy learns guidance and control as one map; a cascaded PD baseline, re-run for 500 descents, lands 70.2&nbsp;% of the time and comes apart above 50&nbsp;m/s entry speed. The page lets you fly the lander and re-run the Monte&nbsp;Carlo in your browser.</p>
@@ -98,7 +98,7 @@
     </div>
 
     <div class="pub card card-hover" id="clear-net">
-      <div class="pub-thumb"><img src="assets/images/projects/clearnet/bins.png" alt="Survival, drift and Q-table coverage for the released and corrected bin limits" loading="lazy" decoding="async" class="fit-contain"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/projects/clearnet/bins.png" data-src="assets/videos/clearnet_demo.mp4"></video></div></div>
+      <div class="pub-thumb"><img src="assets/images/projects/rl/sac.png" alt="CLEAR-Net cart-pole reinforcement learning" loading="lazy" decoding="async" class="fit-contain"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/projects/rl/sac.png" data-src="assets/videos/RL_demo.mp4"></video></div></div>
       <div class="pub-meta">
         <span class="papertitle">CLEAR-Net: Cart-Pole Reinforcement Learning under Sensor Noise</span><span class="proj-year">2024</span>
         <p class="proj-body">Tabular Q-learning, DQN, PPO and SAC on a cart-pole whose every observation is corrupted by Gaussian noise. A five-seed re-run found the released bin limits collapse cart position into two of eight bins and double the drift, that survival peaks at &sigma;&nbsp;=&nbsp;0.1 rather than at zero noise, and that a coarse grid beats a fine one fifteen-fold at a fixed budget. The whole tabular experiment runs live in the page.</p>
@@ -116,11 +116,11 @@
     </div>
 
     <div class="pub card card-hover" id="aero-localization">
-      <div class="pub-thumb"><img src="assets/images/projects/localization_barfoot/localization.jpg" alt="Aerospace vehicle localization" loading="lazy" decoding="async" class="fit-contain"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/projects/localization_barfoot/localization.jpg" data-src="assets/videos/state_estimation_teaser.mp4"></video></div></div>
+      <div class="pub-thumb"><img src="assets/images/projects/localization/trajectory.png" alt="Ground truth, dead reckoning and two estimates among landmarks" loading="lazy" decoding="async" class="fit-contain"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/projects/localization/trajectory.png" data-src="assets/videos/localization_lost_woods.mp4"></video></div></div>
       <div class="pub-meta">
-        <span class="papertitle">Localization for Aerospace Vehicles (IMU + Stereo)</span><span class="proj-year">2023</span>
-        <p class="proj-body">Batch Gauss-Newton fusion with EKF; compared batch vs sliding-window estimators for trajectory accuracy.</p>
-        <div class="links"><a href="assets/pdf/projects/AER1513_assignment_3-3.pdf" target="_blank" rel="noopener">PDF</a></div>
+        <span class="papertitle">Batch and Sliding-Window Localization for Aerospace Vehicles</span><span class="proj-year">2023</span>
+        <p class="proj-body">Maximum-a-posteriori estimation over every pose at once, on SE(3), with a stereo camera and an IMU — and the sliding window that approximates it. A four-seed re-run found batch is both more accurate <em>and</em> cheaper than a wide window over a whole trajectory, and that a window looks over-confident only when its noise model is wrong. Drag the window size in the page and watch the estimate move.</p>
+        <div class="links"><a href="localization.html">Website</a><a href="assets/pdf/projects/AER1513_assignment_3-3.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/localization-batch-estimation" target="_blank" rel="noopener">Code</a></div>
       </div>
     </div>
 
