@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLEAR-Net — balancing a cart-pole through the noise — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="CLEAR-Net: Q-learning, DQN, PPO and SAC on a cart-pole with noisy observations. Train a Q-table live in your browser, turn the observation noise up, and see three results the poster did not: the released bin limits double the cart drift, a little noise helps, and a coarser grid beats a finer one.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/clearnet.html">
+  <meta property="og:title" content="CLEAR-Net — train a cart-pole in your browser">
+  <meta property="og:description" content="Reinforcement learning under sensor noise, with the whole experiment runnable in the page.">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/clearnet/poster.jpg">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <link rel="stylesheet" href="assets/css/project-page.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <style>
+    #cn-canvas { width: 100%; height: 280px; display: block; border: var(--line-w) solid var(--ink);
+                 border-radius: var(--radius-sm); background: var(--panel); box-shadow: var(--sh-xs); }
+    #cn-curve { width: 100%; height: 210px; display: block; border: 1.5px solid var(--ink);
+                border-radius: 6px; background: var(--panel); margin-top: 12px; }
+    .cn-out { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.8; background: var(--paper);
+              border: 1.5px solid var(--ink); border-radius: 6px; padding: 10px 12px; }
+    .cn-out b { color: var(--hi-deep); }
+    .cn-warn { color: var(--hi); }
+    .cn-last { font-family: var(--font-mono); font-size: 12px; color: var(--ash); margin-top: 8px; min-height: 1.2em; }
+    .cn-video { max-width: 300px; margin: 0 auto; }
+    .cn-video video { width: 100%; display: block; border: var(--line-w) solid var(--ink);
+                      border-radius: var(--radius-sm); box-shadow: var(--sh-sm); background: #000; }
+    @media (max-width: 900px) { #cn-canvas { height: 230px; } }
+  </style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button type="button" class="theme-btn" aria-label="Switch between day and night" aria-pressed="false">
+      <span class="if-night"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Day</span></span>
+      <span class="if-day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="lbl">Night</span></span>
+    </button>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+  <a href="cv.html">CV</a>
+</div>
+
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">Reinforcement learning ◆ Noisy observations ◆ ECE 1508 ◆ University of Toronto ◆ 2024</p>
+    <h1>CLEAR-Net</h1>
+    <p>Cart-pole Learning with Enhanced Adaptive Reinforcement Network. The classic balancing problem, except the agent never sees the true state — every observation arrives with Gaussian noise on it. Tabular Q-learning, DQN, PPO and SAC, compared under that noise. The whole tabular experiment runs in this page: press a button and watch a Q-table learn in a quarter of a second.</p>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
+<section class="section" id="demo">
+  <div class="stat-row" style="margin-top:0">
+    <div class="card stat-tile"><div class="num">4<small>D</small></div><div class="lab">State</div><div class="sub">x, ẋ, θ, θ̇ — all of it noisy</div></div>
+    <div class="card stat-tile"><div class="num">18,432</div><div class="lab">Q-table entries</div><div class="sub">8×12×8×12 bins × 2 actions</div></div>
+    <div class="card stat-tile"><div class="num">±12<small>°</small></div><div class="lab">Pole limit</div><div class="sub">Cart limited to ±2.4 m</div></div>
+    <div class="card stat-tile"><div class="num">2.5<small>×</small></div><div class="lab">Drift, halved</div><div class="sub">From one line of bin limits</div></div>
+    <div class="card stat-tile"><div class="num">0.1</div><div class="lab">Best noise</div><div class="sub">A little noise beats none</div></div>
+    <div class="card stat-tile"><div class="num">15<small>×</small></div><div class="lab">Coarse beats fine</div><div class="sub">310 steps vs 20, same budget</div></div>
+  </div>
+</section>
+
+<!-- =================== THE SANDBOX =================== -->
+<section class="section" id="sandbox">
+  <h2 class="section-title">Train one yourself</h2>
+  <p class="lead">Everything below is the real experiment: Gymnasium's CartPole-v1 dynamics, the project's noise wrapper, and its tabular Q-learning, all running in your browser. Three thousand episodes take about a quarter of a second, so you can turn a knob and see the answer immediately instead of reading about it.</p>
+
+  <div class="card scene-block">
+    <span class="caption-box">The sandbox</span>
+    <div class="demo-grid">
+      <div class="demo-scene">
+        <canvas id="cn-canvas" aria-label="Cart-pole"></canvas>
+        <div class="cn-last" id="cn-last"></div>
+        <div class="keycaps" id="cn-keys" hidden><kbd>←</kbd><kbd>→</kbd> push the cart — you get one impulse per 20 ms, and no more information than the agent does.</div>
+        <canvas id="cn-curve" aria-label="Learning curve"></canvas>
+      </div>
+      <div class="demo-controls">
+        <div class="cn-out" id="cn-out"></div>
+        <label style="margin-top:12px">Controller
+          <select id="cn-mode">
+            <option value="agent">The Q-table you trained</option>
+            <option value="manual">You, with the arrow keys</option>
+            <option value="random">Random</option>
+          </select>
+        </label>
+        <label>Observation noise σ <span id="cn-noise-v">0.1</span><input type="range" id="cn-noise" min="0" max="0.5" step="0.05" value="0.1"></label>
+        <label>Discretisation
+          <select id="cn-bins">
+            <option value="4,6,4,6">4×6×4×6 — 1,152 entries</option>
+            <option value="6,8,6,8">6×8×6×8 — 4,608 entries</option>
+            <option value="8,12,8,12" selected>8×12×8×12 — 18,432 (the poster's)</option>
+            <option value="12,16,12,16">12×16×12×16 — 73,728 entries</option>
+          </select>
+        </label>
+        <label>Cart-position bin limits
+          <select id="cn-limits">
+            <option value="fixed" selected>(−2.4, 2.4) — corrected</option>
+            <option value="released">(−2.4, 24.) — as released</option>
+          </select>
+        </label>
+        <label>Training episodes <span id="cn-episodes-v">3000</span><input type="range" id="cn-episodes" min="500" max="8000" step="500" value="3000"></label>
+        <label>Playback <span id="cn-speed-v">1×</span><input type="range" id="cn-speed" min="0.25" max="4" step="0.25" value="1"></label>
+        <div class="demo-buttons">
+          <button class="btn btn-primary" id="cn-train" type="button">Train a Q-table</button>
+          <button class="btn" id="cn-go" type="button">Run</button>
+        </div>
+        <p class="plot-note">When the noise is above zero the dashed pole is <em>what the agent sees</em>; the solid one is where it actually is. Try balancing it yourself at σ = 0.3.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== FINDINGS =================== -->
+<section class="section" id="findings">
+  <h2 class="section-title">Three things the poster does not say</h2>
+  <p class="lead">The original study compared Q-learning, DQN, PPO and SAC and concluded that PPO and SAC are the stable ones. Re-running the tabular half of it — five seeds, three thousand episodes each, everything in <code>scripts/tools/run_clearnet.py</code> — turned up three results that change how you would set the thing up.</p>
+
+  <div class="card finding" style="margin-top:24px">
+    <div class="no">1</div>
+    <h3>One line of bin limits doubles the drift</h3>
+    <p>The released <code>QLearning.py</code> discretises cart position over <code>(-2.4, 24.)</code>. Almost certainly a typo for <code>(-2.4, 2.4)</code> — and it matters, because reachable positions then occupy 18 % of that range, so with 8 bins <b>every legal cart position falls in bin 0 or 1</b> and the other six are never visited.</p>
+    <p>The surprise is what it costs. Survival barely moves: <b>153.9 ± 11.3</b> steps as released against <b>169.1 ± 34.1</b> corrected, well inside the seed spread. But the mean distance of the cart from centre goes from <b>0.484 m to 0.197 m</b> — cut by two and a half times. The poster reports that "the agent still suffered from drifting during testing" and attributes it to the reward function not asking the cart to stay centred. A good part of it is that the agent could not <em>see</em> where the cart was.</p>
+  </div>
+
+  <figure class="fig">
+    <img src="assets/images/projects/clearnet/bins.png" alt="Survival, drift and states visited for the released and corrected bin limits" class="pad">
+    <figcaption><b>Five seeds, 3,000 episodes each.</b> Survival is unchanged; drift is halved; and the corrected limits reach 448 distinct Q-table states against 349, which is the mechanism.</figcaption>
+  </figure>
+
+  <div class="card finding" style="margin-top:26px">
+    <div class="no">2</div>
+    <h3>A little noise beats no noise</h3>
+    <p>Survival <em>peaks</em> at σ = 0.1 — <b>203.9 ± 49.9</b> steps against <b>169.1 ± 34.1</b> with a perfectly clean observation — and then falls off a cliff: 57 steps at σ = 0.2, 30 at 0.3, 18 at 0.5. Mild observation noise behaves like exploration and like a smoothing prior over neighbouring bins, which is exactly what a sparse tabular value function wants. Past about σ = 0.15 the noise is larger than a bin and the discretisation stops meaning anything.</p>
+    <p>The poster's version of this is that "models trained with higher noise performed better under similar noise conditions but worse when the noise level was reduced". That is true, and there is also an optimum, and it is close to the bottom of the range they swept.</p>
+  </div>
+
+  <figure class="fig">
+    <img src="assets/images/projects/clearnet/noise.png" alt="Survival and drift against observation noise" class="pad">
+    <figcaption><b>Balance and drift against σ.</b> The drift panel is flattering at high noise for a bad reason: at σ = 0.5 an episode lasts eighteen steps, so the cart has not had time to go anywhere. Read it together with the panel on the left.</figcaption>
+  </figure>
+
+  <div class="card finding" style="margin-top:26px">
+    <div class="no">3</div>
+    <h3>The coarse grid wins, by a lot</h3>
+    <p>The poster picks 8×12×8×12 "for its fast convergence and stability". Sweeping the grid at a fixed budget of 3,000 episodes says something sharper: <b>4×6×4×6 survives 310 steps and 16×20×16×20 survives 20</b>, a fifteen-fold difference, and the poster's choice sits in the middle at 204.</p>
+    <p>This is the curse of dimensionality doing exactly what it says on the tin. A 16×20×16×20 table has 204,800 entries; three thousand episodes of a few hundred steps is on the order of half a million transitions, so most entries are visited once or never. The finer grid is not worse in the limit — it is worse at this budget, and the budget is the thing you actually have.</p>
+  </div>
+
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0">
+      <img src="assets/images/projects/clearnet/binsize.png" alt="Survival against bins per dimension" class="pad">
+      <figcaption><b>Fewer bins, better policy — at this budget.</b> Five seeds at σ = 0.1.</figcaption>
+    </figure>
+    <figure class="fig" style="margin-top:0">
+      <img src="assets/images/projects/clearnet/curves.png" alt="Learning curves at four noise levels" class="pad">
+      <figcaption><b>Learning curves.</b> σ = 0.1 tracks and then beats the noiseless run; σ = 0.3 and 0.5 never leave the floor.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- =================== METHOD =================== -->
+<section class="section" id="method">
+  <h2 class="section-title">The setup</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>The environment is Gymnasium's CartPole-v1: a cart on a rail with an inverted pendulum on it, one binary action — push left or push right with a constant 10 N — and a reward of +1 for every step the pole stays up. The episode ends when the pole passes 12° or the cart passes 2.4 m, or at 500 steps.</p>
+      <p>What makes it a study rather than a tutorial is the observation wrapper. Every component of the state is corrupted before the agent sees it:</p>
+      <div class="eq">o<sub>t</sub> = s<sub>t</sub> + <span class="m">N</span>(0, σ) ⊙ [2 m, 0.5 m/s, 2°, 0.5°/s]</div>
+      <p>so σ scales a per-component range rather than being an absolute standard deviation — σ = 0.5 puts about a metre of noise on the cart position, which is nearly half the track.</p>
+      <p>Four controllers were compared. <b>Tabular Q-learning</b> quantises the four continuous states into bins and keeps one value per bin-action pair. <b>DQN</b> replaces the table with a network plus a target copy and a replay buffer, and converges far faster but suffers catastrophic forgetting. <b>PPO</b> keeps its updates inside a trust region and is the most stable over long training. <b>SAC</b> converges fastest of all — the entropy term removes the ε-decay schedule entirely — and needs an action-space wrapper to work on this discrete problem at all.</p>
+      <p>The reward was reshaped from the plain +1: reward the cart for staying near the middle and the pole for staying upright, and penalise heavily if the episode ends before 500 steps. That is the change the poster credits for fixing the drift — see finding 1 for the part it does not.</p>
+    </div>
+    <div>
+      <div class="cn-video">
+        <video controls playsinline preload="metadata" poster="assets/images/projects/clearnet/poster.jpg">
+          <source src="assets/videos/clearnet_demo.mp4" type="video/mp4">
+        </video>
+      </div>
+      <p class="plot-note" style="margin-top:10px">The original demo reel: Q-learning holding up under σ = 0.1, then the same controller as the training noise is raised, then the deep methods.</p>
+      <div class="table-wrap">
+        <table class="data-table compact">
+          <thead><tr><th>Method</th><th>Converges</th><th>Stability</th></tr></thead>
+          <tbody>
+            <tr><td>Tabular Q-learning</td><td>slowest</td><td>curse of dimensionality</td></tr>
+            <tr><td>DQN</td><td>fast</td><td class="bad">catastrophic forgetting</td></tr>
+            <tr><td>PPO</td><td>medium</td><td class="ok">most stable</td></tr>
+            <tr><td>SAC</td><td class="ok">fastest</td><td class="ok">stable</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== REPRODUCE =================== -->
+<section class="section" id="reproduce">
+  <h2 class="section-title">Reproduce it</h2>
+  <div class="cmd"><span class="c"># NumPy and matplotlib only — the tabular study runs in about two minutes</span>
+git clone https://github.com/thejerrycheng/RL_project
+cd RL_project
+python scripts/tools/run_clearnet.py --seeds 5      <span class="c"># all four figures + results JSON</span>
+
+<span class="c"># the original deep-RL training scripts</span>
+python DQN.py --noise_std 0.1
+python PPO.py
+python SAC.py</div>
+  <p class="plot-note" style="margin-top:14px">The sandbox above runs <code>assets/js/clearnet_cartpole.js</code>, the same dynamics, noise model and Q-learning update as <code>scripts/tools/cartpole.py</code>. Single runs are noisy — the numbers quoted in the findings are five-seed means, and the sandbox trains one seed at a time, so expect to see the spread.</p>
+</section>
+
+<section class="section" id="credits">
+  <h2 class="section-title">Credits</h2>
+  <div class="card card-pad credits">
+    <p><b>ECE 1508: Reinforcement Learning</b> (Summer 2024) at the University of Toronto, joint work with <b>Aravind Narayanan</b> — equal contribution. The environment is Gymnasium's CartPole-v1.</p>
+    <p style="margin-top:8px">The four controllers, the noise wrapper and the demo reel are from the course project. The five-seed re-run, the three findings above and the browser sandbox were built afterwards, on the released code.</p>
+    <div class="links" style="margin-top:12px">
+      <a href="assets/pdf/projects/ECE1508_Project_Poster.pdf" target="_blank" rel="noopener">Poster</a>
+      <a href="assets/pdf/projects/ECE1508__Project_Progress_Report.pdf" target="_blank" rel="noopener">Report</a>
+      <a href="https://github.com/thejerrycheng/RL_project" target="_blank" rel="noopener">Code</a>
+      <a href="projects.html">All projects</a>
+    </div>
+  </div>
+</section>
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+<script src="assets/js/clearnet_cartpole.js"></script>
+<script src="assets/js/clearnet_demo.js"></script>
+</body>
+</html>
