@@ -29,12 +29,12 @@
           "href": "https://www.science.org/doi/10.1126/scirobotics.aed3973"
         },
         {
-          "label": "DOI",
-          "href": "https://doi.org/10.1126/scirobotics.aed3973"
+          "label": "Code",
+          "href": "https://github.com/purdue-tracelab/Humanoid-Locomotion-Survey"
         },
         {
-          "label": "Repo",
-          "href": "https://github.com/purdue-tracelab/Humanoid-Locomotion-Survey"
+          "label": "Science Robotics",
+          "href": "https://doi.org/10.1126/scirobotics.aed3973"
         }
       ],
       "desc": "A <em>Science Robotics</em> review tracing humanoid locomotion control through three eras &mdash; classical model-based control, learning-based control, and emerging foundation- and world-model approaches &mdash; and what each assumes about models, data, and the tasks a humanoid is expected to do."
@@ -56,17 +56,17 @@
       "fit": "cover",
       "links": [
         {
+          "label": "Website",
+          "href": "cinema_robot.html",
+          "internal": true
+        },
+        {
           "label": "Paper",
           "href": "https://crv.pubpub.org/pub/i8xqyiz0/release/1"
         },
         {
           "label": "Code",
           "href": "https://github.com/thejerrycheng/IRIS"
-        },
-        {
-          "label": "Website",
-          "href": "cinema_robot.html",
-          "internal": true
         }
       ],
       "desc": "IRIS is a low-cost 3D-printed 6-DOF cinema robot that uses goal-conditioned transformer-based imitation learning to autonomously generate smooth, object-aware camera motion."
@@ -98,12 +98,8 @@
           "href": "https://arxiv.org/abs/2507.23045"
         },
         {
-          "label": "Code (original, Julia)",
+          "label": "Code",
           "href": "https://github.com/utiasSTARS/certifiable-rwhe-calibration"
-        },
-        {
-          "label": "Report",
-          "href": "assets/pdf/projects/rwhe_calibration_report.pdf"
         }
       ],
       "desc": "Generalized robot-world and hand-eye calibration (many sensors, many targets, unknown monocular scale) solved to certified global optimality by a semidefinite relaxation over the rotations. Re-implemented in Python in 2026: the paper's simulation studies, and the real 8-camera / 16-tag rig data solved with a duality gap of 1e-8, recovering the paper's 2.5 % tag-scale finding.",
@@ -128,6 +124,11 @@
       "fit": "contain",
       "links": [
         {
+          "label": "Website",
+          "href": "cinema_robot.html",
+          "internal": true
+        },
+        {
           "label": "Paper",
           "href": "assets/pdf/projects/MEng_Project_Thesis_Final-13.pdf"
         },
@@ -138,11 +139,6 @@
         {
           "label": "Video",
           "href": "https://www.youtube.com/watch?v=tUJCzzHMhkU&list=PL5hrJ0xlpQr8OD-3luKAu9CUlmj_8L284&index=6"
-        },
-        {
-          "label": "Website",
-          "href": "cinema_robot.html",
-          "internal": true
         }
       ],
       "desc": "Low-cost, fully 3D-printed 6-DoF cinema robot arm (IRIS) with FOC actuators, differential wrist, and a vision-conditioned imitation-learning stack in ROS.",
@@ -165,6 +161,11 @@
       "fit": "cover",
       "links": [
         {
+          "label": "Website",
+          "href": "haptic_toolkit.html",
+          "internal": true
+        },
+        {
           "label": "Paper",
           "href": "https://arxiv.org/abs/2409.17420"
         },
@@ -175,11 +176,6 @@
         {
           "label": "Video",
           "href": "https://www.youtube.com/watch?v=uVssIDGKS-U&list=PL5hrJ0xlpQr9NXqQIKAuI2mUovgFscNgk"
-        },
-        {
-          "label": "Website",
-          "href": "haptic_toolkit.html",
-          "internal": true
         }
       ],
       "desc": "An open-source toolkit enabling rapid design and deployment of large-scale vibrotactile feedback systems for spatialized haptic interactions."
@@ -210,10 +206,6 @@
           "href": "https://arxiv.org/abs/2407.12105"
         },
         {
-          "label": "IEEE",
-          "href": "https://ieeexplore.ieee.org/document/10916921"
-        },
-        {
           "label": "Code",
           "href": "https://github.com/huangbj16/DroneSimulation"
         },
@@ -222,8 +214,8 @@
           "href": "https://www.youtube.com/watch?v=ezIZrVmYYpI&list=PL5hrJ0xlpQr9NXqQIKAuI2mUovgFscNgk&index=2"
         },
         {
-          "label": "Report",
-          "href": "assets/pdf/projects/aerohaptix_report.pdf"
+          "label": "IEEE",
+          "href": "https://ieeexplore.ieee.org/document/10916921"
         }
       ],
       "desc": "A wearable suit with 32 vibration units renders obstacle directions on the upper body while a drone is teleoperated; a multi-obstacle control barrier function (MultiCBF) decides which unit vibrates and how hard. Fewer collisions and less input disagreement than no feedback in a 12-participant AirSim study."
@@ -252,16 +244,16 @@
           "internal": true
         },
         {
-          "label": "Poster",
-          "href": "assets/pdf/projects/mono_est_poster.pdf"
-        },
-        {
           "label": "Paper",
-          "href": "https://www.researchgate.net/publication/382269581_Monocular_depth_estimation_of_human-robot_walking_environments_using_deep_learning"
+          "href": "assets/pdf/projects/mono_est_poster.pdf"
         },
         {
           "label": "Code",
           "href": "https://github.com/thejerrycheng/BipedNav"
+        },
+        {
+          "label": "ResearchGate",
+          "href": "https://www.researchgate.net/publication/382269581_Monocular_depth_estimation_of_human-robot_walking_environments_using_deep_learning"
         }
       ],
       "desc": "Metric3D v2 fine-tuned on 16,780 RGB-D stair images recovers stair rise and run from a single image (1.7 cm / 2.5 cm mean error on the archived scenes). BipedNav feeds that geometry to a five-link biped walking by virtual holonomic constraints; the page has an in-browser demo that runs the pipeline on your own photo."
@@ -293,16 +285,12 @@
           "href": "https://arxiv.org/abs/2302.00660"
         },
         {
-          "label": "Video",
-          "href": "https://www.youtube.com/watch?v=hfXdG6j3sjE"
-        },
-        {
           "label": "Code",
           "href": "https://github.com/thejerrycheng/radar-radar-calibration"
         },
         {
-          "label": "Report",
-          "href": "assets/pdf/projects/radar_radar_calibration_report.pdf"
+          "label": "Video",
+          "href": "https://www.youtube.com/watch?v=hfXdG6j3sjE"
         }
       ],
       "desc": "Two Doppler radars on one vehicle calibrate each other from their own ego-velocities: the yaw and the translation axis are identifiable without targets or overlapping views. Re-implemented in Python and re-run in 2026: simulation sweep inside the paper's 2°/3° envelope, and the Endeavour bus pairs reproduced to 0.01 rad, with the weakly identifiable short-baseline pair called out.",
@@ -336,12 +324,8 @@
           "href": "https://arxiv.org/abs/2211.01871"
         },
         {
-          "label": "IEEE T-RO",
+          "label": "IEEE",
           "href": "https://ieeexplore.ieee.org/abstract/document/10256219"
-        },
-        {
-          "label": "Report",
-          "href": "assets/pdf/projects/radar_camera_calibration_report.pdf"
         }
       ],
       "desc": "Targetless spatiotemporal calibration of a 3D radar and a monocular camera: radar ego-velocity and scaled camera poses fused on a continuous-time B-spline trajectory to estimate the extrinsics, the scale and the time offset. Re-implemented in Python in 2026 with the paper's simulation studies, an identifiability check, and the radar front end run on the original handheld-rig recordings.",
@@ -378,19 +362,38 @@
       "year": 2022,
       "href": "https://nanolithography.spiedigitallibrary.org/conference-proceedings-of-spie/12253/122530A/Generative-design-for-self-balancing-unicycle-robot-in-additive-manufacturing/10.1117/12.2639454.short",
       "images": [
-        "assets/images/publications/unicycle.jpg"
+        "assets/images/publications/unicycle.jpg",
+        "assets/images/projects/unicycle/tease_poster.jpg",
+        "assets/images/projects/unicycle/figs/fig_topopt_parts.png"
       ],
       "alts": [
-        "Generative design for a unicycle robot"
+        "The generative unicycle: reaction wheel on top, lattice brackets, drive wheel below",
+        "Teaser frame: the two chassis side by side",
+        "The three brackets after topology optimisation"
       ],
       "fit": "contain",
       "links": [
         {
+          "label": "Website",
+          "href": "unicycle.html",
+          "internal": true
+        },
+        {
           "label": "Paper",
+          "href": "assets/pdf/papers/unicycle.pdf"
+        },
+        {
+          "label": "Video",
+          "href": "assets/videos/unicycle_explainer.mp4"
+        },
+        {
+          "label": "SPIE",
           "href": "https://nanolithography.spiedigitallibrary.org/conference-proceedings-of-spie/12253/122530A/Generative-design-for-self-balancing-unicycle-robot-in-additive-manufacturing/10.1117/12.2639454.short"
         }
       ],
-      "desc": "Applies generative design and additive manufacturing techniques to develop a self-balancing unicycle robot prototype."
+      "desc": "Generative design (Fusion 360) of a 3-D-printed chassis for a self-balancing unicycle robot: seven brackets carved by topology optimisation, a lighter body with a higher centre of mass, and a Simulink comparison of the generative and conventional chassis under the same PID controllers. Re-run on the website with an interactive twin.",
+      "video": "assets/videos/unicycle_thumb.mp4",
+      "venue_short": "SPIE ACAIB"
     }
   ],
   "projects": [
@@ -448,33 +451,42 @@
     },
     {
       "id": "tintin",
-      "title": "TINTIN: RL-Based Lunar Rocket Landing",
+      "title": "TINTIN: Reinforcement Learning for Lunar Rocket Landing",
       "year": 2025,
       "tag": "Reinforcement learning",
       "images": [
-        "assets/images/projects/rocket/overview.jpg"
+        "assets/images/projects/tintin/environment.jpg"
       ],
       "alts": [
-        "TINTIN lunar landing RL"
+        "The TINTIN lunar lander on the target pad in the RocketGym MuJoCo environment"
       ],
-      "video": "assets/videos/1mill_step.mp4",
+      "video": "assets/videos/tintin_touchdown.mp4",
       "fit": "cover",
       "links": [
         {
+          "label": "Website",
+          "href": "tintin.html",
+          "internal": true
+        },
+        {
           "label": "PDF",
           "href": "assets/pdf/projects/Space_Robot_Course_Project_2_Report-3.pdf"
+        },
+        {
+          "label": "Code",
+          "href": "https://github.com/thejerrycheng/space_robot_mujoco"
         },
         {
           "label": "Video",
           "href": "https://youtube.com/shorts/YfmAeDVPjt4?feature=share"
         },
         {
-          "label": "Website",
-          "href": "tintin.html",
-          "internal": true
+          "label": "Modelling report",
+          "href": "assets/pdf/projects/Space_Robot_Course_Project_1-6.pdf"
         }
       ],
-      "desc": "6-DoF variable-mass lander in MuJoCo with 2-DoF gimbaled thrust; PID baseline vs PPO policy; pose-targeted touchdown and fuel-efficiency metrics."
+      "desc": "6-DoF variable-mass lunar lander in MuJoCo with a 2-DoF gimbaled engine. A SAC policy learns guidance and control as one map; a cascaded PD baseline, re-run for 500 descents, lands 70.2&nbsp;% of the time and comes apart above 50&nbsp;m/s entry speed. The page lets you fly the lander and re-run the Monte&nbsp;Carlo in your browser.",
+      "short": "TINTIN: fly the lunar lander yourself"
     },
     {
       "id": "mono-depth",

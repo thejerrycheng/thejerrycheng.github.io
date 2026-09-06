@@ -1,1785 +1,370 @@
 <!DOCTYPE html>
-<html lang="en" style="scroll-behavior: smooth;">
+<html lang="en" data-theme="night">
 <head>
-<meta charset="UTF-8">
-<title>Project Title — Apple Style Template</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Staatliches&display=swap" rel="stylesheet">
-
-
-<style>
-:root {
-  --accent: #FF9500;      /* Apple Blue (a more common primary color) */
-  --text: #1D1D1F;        /* Near-Black for main text */
-  --sub: #6E6E73;         /* Dark Gray for secondary text (sub) */
-  --page-bg: #faf8f2;     /* Light Gray background color */
-  --light: #FFFFFF;       /* Inner section background remains white */
-  --mid: #D2D2D7;
-  --border: #E8E8ED;      /* Very light border/separator */
-  --max: 1100px;          /* WIDER CONTENT AREA */
-  --white-text: #FFFFFF;  /* For text over images/dark backgrounds */
-  
-  /* ADDED: Consolidated large radius variable for main section boxes */
-  --large-radius: 32px; 
-}
-
-/* ----------------------------- */
-/* Global           */
-/* ----------------------------- */
-body {
-  margin: 0;
-  background: var(--page-bg); /* Use new background variable */
-  color: var(--text);
-  font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  
-  /* --- MODIFIED: LOCK HORIZONTAL SCROLLING --- */
-  overflow-x: hidden;
-}
-
-h1 {
-  font-size: 80px;
-  font-weight: 700;
-  letter-spacing: -0.6px;
-  margin: 0 0 12px 0;
-}
-
-h2 {
-  font-size: 34px;
-  font-weight: 600;
-  letter-spacing: -0.3px;
-  margin: 0 0 20px 0;
-  color: var(--text);
-}
-
-p {
-  font-size: 18px;
-  line-height: 1.6;
-  color: var(--sub);
-}
-
-/* Helper Class for light text over dark image */
-.text-on-dark h1, .text-on-dark h2, .text-on-dark p, .text-on-dark .hero-subtitle, .text-on-dark .hero-meta {
-  color: var(--white-text);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-}
-.text-on-dark .btn-ghost {
-    background: rgba(255, 255, 255, 0.2);
-    color: var(--white-text);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-}
-.text-on-dark .btn-ghost:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-
-/* ---------------------------------- */
-/* APPLE NAV BAR             */
-/* ---------------------------------- */
-
-#navbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: rgba(255,255,255,0.82);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-  z-index: 9999;
-  transition: transform 0.35s ease, opacity 0.35s ease;
-}
-
-#navbar.hide {
-  transform: translateY(-100%);
-  opacity: 0;
-}
-
-.nav-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 14px 20px;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-}
-
-.nav-title {
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  color: var(--text);
-}
-
-.desktop-nav {
-  display: flex;
-  gap: 40px;
-  justify-self: center;
-}
-
-.desktop-nav a {
-  position: relative;
-  text-decoration: none;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--sub);
-  letter-spacing: 0.02em;
-  padding-bottom: 4px;
-  transition: color 0.2s ease;
-}
-
-.desktop-nav a::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  height: 2px;
-  width: 0%;
-  background: var(--text);
-  transition: width 0.25s ease, left 0.25s ease;
-}
-
-.desktop-nav a:hover {
-  color: var(--text);
-}
-
-.desktop-nav a:hover::after {
-  width: 100%;
-  left: 0;
-}
-
-.desktop-nav a.active {
-  color: var(--text);
-}
-
-.desktop-nav a.active::after {
-  width: 100%;
-  left: 0;
-}
-
-.burger {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 24px;
-  font-weight: 600;
-  cursor: pointer;
-  color: var(--text);
-  padding: 8px;
-  line-height: 1;
-  margin-left: auto;
-  justify-self: end;
-}
-
-@media (max-width: 750px) {
-  .desktop-nav {
-    display: none;
-  }
-  .nav-inner {
-    grid-template-columns: 1fr auto;
-  }
-  .burger {
-    display: block;
-  }
-}
-
-.mobile-menu {
-  display: none;
-  flex-direction: column;
-  gap: 22px;
-  padding: 24px;
-  background: rgba(255,255,255,0.96);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-}
-
-.mobile-menu a {
-  text-decoration: none;
-  font-size: 18px;
-  color: var(--text);
-  font-weight: 500;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 10px;
-}
-.mobile-menu a:last-child {
-  border-bottom: none;
-}
-
-/* ----------------------------- */
-/* HERO (Full Height) */
-/* ----------------------------- */
-.hero {
-  height: 100vh; /* Keep 100vh for Hero */
-  padding: 0; 
-  text-align: center;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-/* Hero Media as Background Container */
-.hero-media {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: 1;
-}
-
-.hero-image-container {
-    width: 100%;
-    height: 100%;
-    padding: 0;
-}
-
-.hero-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 0;
-  border: none;
-  box-shadow: none;
-  opacity: 0.85;
-}
-
-/* Text overlay container */
-.hero-inner {
-  position: relative;
-  z-index: 2;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 20px; 
-}
-
-/* Make sure parallax still works on the image */
-.hero-image-container img {
-  will-change: transform;
-  transition: transform 0.2s ease-out;
-}
-
-/* Button styles remain the same */
-.btn {
-  padding: 11px 22px;
-  border-radius: 999px;
-  font-size: 15px;
-  font-weight: 500;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.btn-primary {
-  background: var(--accent);
-  color: #fff;
-}
-
-.btn-primary:hover {
-  background: #de8100;
-}
-
-.btn-ghost {
-  background: rgba(0,0,0,0.04);
-  color: var(--text);
-  border: 1px solid rgba(0,0,0,0.08);
-}
-
-.btn-ghost:hover {
-  background: rgba(0,0,0,0.08);
-}
-
-
-/* ----------------------------- */
-/* HORIZONTAL SLIDER (FEATURES) */
-/* ----------------------------- */
-
-/* Container for Title Alignment and button positioning */
-.carousel-section {
-  padding: 80px 0;
-  background: var(--page-bg);
-  position: relative;
-  min-height: auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.carousel-title-inner {
-    max-width: var(--max);
-    margin: 0 auto;
-    padding: 0 20px 40px 20px;
-    position: relative; /* Set context for absolute buttons */
-}
-
-/* --- UNIVERSAL SLIDER BUTTONS (REFINED POSITIONING) --- */
-
-/* Slider controls container for scroll bar and buttons */
-.slider-controls-wrapper {
-    position: relative;
-    max-width: var(--max); 
-    margin: 0 auto;
-    padding: 30px 20px 60px 20px; /* Added vertical padding to make space for buttons/track */
-}
-
-/* Slider buttons position */
-.slider-btn,
-.assembly-btn {
-    position: absolute;
-    /* Aligned to the bottom right of .slider-controls-wrapper */
-    top: auto; 
-    transform: none;
-    
-    background: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    cursor: pointer;
-    font-size: 26px;
-    line-height: 36px;
-    text-align: center;
-    z-index: 20;
-    transition: 0.2s;
-    backdrop-filter: blur(6px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
-}
-.slider-btn:hover,
-.assembly-btn:hover {
-  background: var(--light);
-}
-
-.slider-btn.disabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-/* Button positioning RELATIVE to the .slider-controls-wrapper (Bottom right) */
-.prev { 
-    right: 86px; 
-    bottom: 0px; /* Position at the bottom of the wrapper */
-} 
-.next { 
-    right: 36px; 
-    bottom: 0px; /* Position at the bottom of the wrapper */
-}
-
-
-/* --- SLIDER TRACK (FULL-BLEED) --- */
-.feature-slider {
-  display: flex;
-  gap: 24px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 10px 20px 30px;
-  scrollbar-width: none;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-}
-.feature-slider::-webkit-scrollbar {
-  display: none;
-}
-
-
-/* --- SLIDER CARDS (FEATURE) --- */
-.feature-card {
-  flex: 0 0 calc( (100% - 2 * 24px) / 2.2); 
-  scroll-snap-align: start;
-  background: var(--light);
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  overflow: hidden;
-  min-height: 360px;
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-}
-.feature-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-bottom: 1px solid var(--border);
-}
-.feature-card-text {
-    padding: 24px;
-}
-.feature-card-text h3 {
-    margin: 0 0 8px 0;
-    font-size: 22px;
-}
-.feature-card-text p {
-    font-size: 16px;
-    margin: 0;
-}
-
-
-/* --- Dots & Scroll Bar (Used for Feature Slider) --- */
-.slider-dots {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 16px;
-}
-.slider-dots div {
-  width: 10px;
-  height: 10px;
-  background: #ccc;
-  border-radius: 50%;
-  transition: 0.2s;
-}
-.slider-dots .active {
-  background: var(--accent);
-  transform: scale(1.25);
-}
-
-.slider-scroll-track {
-  width: 100%;
-  height: 4px;
-  background: #e5e5e7;
-  border-radius: 4px;
-  margin-top: 0; /* Aligned to top of wrapper */
-  margin-bottom: 25px; /* Added margin to push buttons down/make space */
-  overflow: hidden;
-}
-.slider-scroll-bar {
-  height: 100%;
-  width: 0%;
-  background: var(--accent);
-  transition: width 0.2s ease-out;
-}
-
-
-/* --- RESPONSIVE BREAKPOINTS --- */
-@media (max-width: 1200px) {
-  .feature-card { flex: 0 0 calc( (100% - 1 * 24px) / 2); } 
-}
-@media (max-width: 900px) {
-  .feature-card { flex: 0 0 calc( (100% - 1 * 24px) / 1.5); }
-}
-@media (max-width: 600px) {
-  .feature-slider {
-    padding: 10px 20px 30px;
-    margin-left: 0;
-    width: 100%;
-  }
-  .feature-card { flex: 0 0 calc(100% - 40px); }
-  .feature-card img { height: 150px; }
-  .slider-btn,
-  .assembly-btn { display: none; }
-  .slider-controls-wrapper {
-      padding-bottom: 20px; /* Reset padding for mobile where buttons are hidden */
-  }
-}
-
-/* ----------------------------- */
-/* SECTION (Content-Sized) */
-/* ----------------------------- */
-.section {
-  max-width: var(--max);
-  margin: 0 auto;
-  padding: 80px 20px; /* INCREASED VERTICAL PADDING */
-  background: var(--page-bg);
-  border-radius: 0;
-  margin-bottom: 0;
-  box-shadow: none;
-  min-height: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-.section-box {
-  background: var(--light);
-  /* MODIFIED: Use the variable for a smooth, large radius */
-  border-radius: var(--large-radius);
-  padding: 70px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.03), 0 0 0 1px var(--border);
-  position: relative;
-}
-
-.section:first-of-type {
-  margin-top: 0;
-}
-
-
-/* ----------------------------- */
-/* RESULTS SECTION NAV BAR (FINAL FLOATING STYLES) */
-/* ----------------------------- */
-
-/* Container for all dynamic results content */
-.results-content-area {
-    /* Push content down to avoid overlap with fixed nav bar */
-    padding-bottom: 100px; 
-    position: relative;
-    z-index: 1; /* Above the content, but below the fixed bar */
-}
-
-/* Fixed nav bar visible only when results section is in view (controlled by JS) */
-#resultsFloatingNav {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9000;
-    opacity: 0;
-    transition: opacity 0.3s ease, visibility 0.3s;
-    visibility: hidden;
-}
-
-#resultsFloatingNav.show {
-    opacity: 1;
-    visibility: visible;
-}
-
-.results-nav {
-    /* Aesthetics: Light, rounded, translucent pill */
-    max-width: fit-content;
-    margin: 0 auto;
-    width: auto;
-    
-    background: rgba(255, 255, 255, 0.85); /* Translucent White/Light */
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(0, 0, 0, 0.08); /* Subtle dark border */
-    border-radius: 999px;
-    
-    padding: 6px 8px; 
-    display: flex;
-    justify-content: space-around;
-    gap: 6px;
-    
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-}
-
-.results-nav button {
-    background: none;
-    border: none;
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--text); /* Dark text on light bar */
-    padding: 8px 16px;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-}
-
-.results-nav button:hover {
-    background: rgba(0, 0, 0, 0.04); /* Subtle gray hover */
-}
-
-.results-nav button.active {
-    background: var(--accent); /* Accent color for active item */
-    color: var(--white-text); 
-    font-weight: 600;
-}
-
-/* Content container for dynamic results */
-.results-content-area {
-    min-height: auto;
-}
-.result-item {
-    opacity: 0;
-    position: absolute;
-    width: auto;
-    height: auto;
-    transition: opacity 0.4s ease;
-    pointer-events: none;
-}
-
-.result-item.active {
-    opacity: 1;
-    pointer-events: auto;
-    position: static;
-}
-.result-item .section-row {
-    align-items: center;
-}
-.result-item .section-media {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.result-item .section-media img,
-.result-item .section-media video {
-    max-height: 80%;
-    width: auto;
-    object-fit: contain;
-    border: none;
-    box-shadow: none;
-}
-
-@media (max-width: 800px) {
-    #resultsFloatingNav {
-        bottom: 10px;
-        width: 90%;
-    }
-    .results-nav {
-        width: 100%;
-        max-width: none;
-    }
-    .results-nav button {
-        padding: 8px 10px;
-        flex-grow: 1;
-        font-size: 14px;
-    }
-}
-/* END OF RESULTS NAV BAR STYLES */
-
-
-/* ----------------------------- */
-/* METHODS SECTION (Content-Sized) */
-/* ----------------------------- */
-
-.methods-full-bleed {
-    background: var(--page-bg);
-    padding: 80px 0;
-    margin-bottom: 0;
-    min-height: auto;
-    display: flex;
-    flex-direction: column;
-}
-
-.methods-inner {
-    max-width: var(--max);
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.methods-header {
-    margin-bottom: 50px;
-}
-.methods-header h2, .methods-header p {
-    color: var(--text);
-}
-.methods-header h2 {
-    font-size: 40px;
-}
-
-.assembly-viewer {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    gap: 40px;
-    position: relative;
-    padding: 40px;
-    background: var(--light);
-    /* MODIFIED: Use the variable for a smooth, large radius */
-    border-radius: var(--large-radius);
-    min-height: 700px;
-    border: 1px solid var(--border);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-}
-
-/* Sidebar for controls */
-.assembly-controls {
-    display: flex;
-    flex-direction: column;
-    padding-top: 10px; 
-    border-right: 1px solid var(--border);
-}
-
-.assembly-title {
-    color: var(--text);
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 20px;
-}
-
-/* Button Container (Replaces single button for the accordion structure) */
-.assembly-accordion-item {
-    border-bottom: 1px solid var(--border);
-}
-
-.assembly-button {
-    background: none;
-    border: none;
-    text-align: left;
-    padding: 15px 0;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: 500;
-    color: var(--text);
-    width: 100%;
-    display: flex;
-    align-items: center;
-    transition: color 0.2s;
-}
-
-.assembly-button:hover {
-    color: var(--accent);
-}
-
-.assembly-button.active .assembly-button-label {
-    font-weight: 600;
-    color: var(--accent);
-}
-
-.assembly-button-icon {
-    margin-right: 15px;
-    color: var(--sub);
-    font-size: 20px;
-    transition: transform 0.3s ease, color 0.2s;
-    transform: rotate(0deg); 
-}
-
-.assembly-button.active .assembly-button-icon {
-    transform: rotate(45deg);
-    color: var(--accent);
-}
-
-/* Detail Description (Accordion Content) */
-.assembly-description {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
-}
-
-.assembly-description.active {
-    max-height: 200px; 
-    padding-bottom: 20px;
-}
-
-.assembly-description p {
-    font-size: 16px;
-    color: var(--sub);
-    line-height: 1.4;
-    margin: 0;
-    padding-left: 35px;
-}
-
-
-/* Detail View (Image) */
-.assembly-detail-view {
-    position: relative;
-    padding: 0 20px;
-    overflow: hidden;
-}
-
-/* Image/Visual Container */
-.assembly-visual {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.assembly-visual img {
-    max-width: 90%;
-    max-height: 90%;
-    object-fit: contain;
-    transition: opacity 0.4s ease;
-    opacity: 0;
-    position: absolute;
-    border-radius: 12px;
-}
-.assembly-visual img.active {
-    opacity: 1;
-}
-
-/* Mobile responsive for methods section */
-@media (max-width: 900px) {
-    .assembly-viewer {
-        grid-template-columns: 1fr;
-        min-height: 800px;
-        padding: 20px;
-        flex-direction: column-reverse; 
-    }
-    .assembly-controls {
-        order: 2;
-        border-right: none;
-        padding-top: 20px;
-        border-top: 1px solid var(--border);
-    }
-    .assembly-visual {
-        order: 1;
-        position: relative;
-        height: 400px;
-        transform: none;
-        left: 0;
-        top: 0;
-        margin-bottom: 20px;
-    }
-    .assembly-visual img {
-        max-width: 100%;
-        max-height: 100%;
-    }
-}
-
-
-/* Existing Styles ... */
-.card-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    margin-top: 24px;
-}
-/* Card for introduction contributions */
-.intro-card {
-    background: var(--light);
-    border-radius: 18px;
-    padding: 24px;
-    cursor: pointer;
-    border: 1px solid var(--border);
-    transition: background 0.2s, transform 0.2s;
-    text-align: left;
-}
-.intro-card:hover {
-    background: #E0E0E0;
-}
-.intro-card h3 {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--text);
-    margin-top: 0;
-}
-.intro-card p {
-    font-size: 16px;
-    color: var(--sub);
-    margin-bottom: 0;
-}
-@media (max-width: 600px) {
-    .card-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.section-row {
-  display: grid;
-  grid-template-columns: minmax(0,1.1fr) minmax(0,1fr);
-  gap: 40px;
-  align-items: center;
-}
-
-.section-media img,
-.section-media video {
-  width: 100%;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-.section-tag {
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: var(--accent);
-  margin-bottom: 12px;
-  font-weight: 600;
-}
-
-/* MOBILE STACK */
-@media (max-width: 800px) {
-  .section {
-    padding: 50px 20px;
-    min-height: auto;
-  }
-  .section-box {
-    padding: 50px 20px; /* ADDED HORIZONTAL PADDING for content */
-    /* Kept border-radius: 0; for mobile full-width feel */
-    border-radius: 0;
-    box-shadow: none;
-  }
-  
-  .section-row {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-}
-
-/* SCROLL ANIMATION STYLES */
-.animate-on-scroll {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1), 
-                transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
-    will-change: opacity, transform;
-}
-.animate-on-scroll.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* MODAL / POPUP STYLES */
-.modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(4px);
-    z-index: 10000;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-}
-/* Ensure the modal is visible when 'show' class is present */
-.modal-backdrop.show {
-    opacity: 1;
-    pointer-events: auto;
-    display: block; 
-}
-
-.modal-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 500px;
-    width: 90%;
-    background: var(--light);
-    padding: 30px;
-    border-radius: 18px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    animation: bounceIn 0.3s cubic-bezier(0.2, 0.5, 0.1, 1.2);
-}
-
-.modal-content h3 {
-    font-size: 28px;
-    margin-top: 0;
-    margin-bottom: 10px;
-}
-
-.modal-content p {
-    font-size: 16px;
-    color: var(--sub);
-    line-height: 1.5;
-}
-
-.modal-close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: var(--sub);
-}
-
-@keyframes bounceIn {
-  from { opacity: 0; transform: translate(-50%, -45%) scale(0.95); }
-  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-}
-
-/* ----------------------------- */
-/* CONCLUSION SECTION STYLING (REVISED) */
-/* ----------------------------- */
-.conclusion-revised {
-    padding: 100px 20px; /* More vertical padding for center focus */
-    text-align: center; /* Center all text elements */
-}
-
-.conclusion-content-inner {
-    max-width: 700px; /* Confine text width */
-    margin: 0 auto;
-}
-
-/* Ensure headings/paragraphs in the revised conclusion remain readable */
-.conclusion-revised h2 {
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.conclusion-revised p {
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-}
-/* Resetting margin for the last paragraph if it has a blank line after it */
-.conclusion-revised p:last-of-type {
-    margin-bottom: 0;
-}
-
-
-/* FOOTER    */
-footer {
-  /* Aligned center via `text-align: center;` is removed here to allow individual div alignment */
-  font-size: 14px;
-  color: #86868b;
-  /* Increased top padding for better separation from content */
-  padding: 80px 0 50px 0; /* Removed horizontal padding from FOOTER itself */
-}
-
-/* Style for individual footer lines */
-footer > div {
-    max-width: var(--max);
-    margin: 0 auto;
-    padding: 0 20px; /* ADDED HORIZONTAL PADDING HERE */
-    line-height: 1.8;
-}
-
-/* MODIFIED FOOTER STYLES */
-footer a {
-    color: var(--accent);
-    text-decoration: none;
-}
-footer a:hover {
-    text-decoration: underline;
-}
-
-.art-deco-text {
-    font-family: 'Staatliches', sans-serif;
-    font-size: 16px;
-    letter-spacing: 0.15em;
-    font-weight: 400; /* Staatliches is display font, usually 400 */
-    color: var(--text); /* Make it stand out slightly */
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TINTIN — flying a lunar lander, by hand and by policy — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="TINTIN: a 6-DoF variable-mass lunar lander in MuJoCo with 2-DoF gimbaled thrust. Fly the lander yourself in the browser, run the PD baseline Monte Carlo live, and read the SAC results, failure analysis and reproducible experiment harness.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/tintin.html">
+  <meta property="og:title" content="TINTIN — fly the lunar lander yourself">
+  <meta property="og:description" content="A 5,000-tonne gimbaled lander, a PD baseline you can re-run in your browser, and a SAC policy that learns guidance and control in one map.">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/tintin/hero_poster.jpg">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <link rel="stylesheet" href="assets/css/project-page.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <style>
+    /* page-local: the lander sandbox */
+    #tt-canvas { width: 100%; height: 460px; display: block; border: var(--line-w) solid var(--ink);
+                 border-radius: var(--radius-sm); background: #0B0E16; box-shadow: var(--sh-xs); touch-action: none; }
+    #tt-mc-canvas { width: 100%; height: 300px; display: block; border: 1.5px solid var(--ink);
+                    border-radius: 6px; background: var(--panel); }
+    .tt-hud { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.75; background: var(--paper);
+              border: 1.5px solid var(--ink); border-radius: 6px; padding: 10px 12px; }
+    .tt-hud b { color: var(--hi-deep); }
+    .tt-ok { border-color: var(--green, #2E9E5B); box-shadow: inset 3px 0 0 var(--green, #2E9E5B); }
+    .tt-bad { border-color: var(--hi); box-shadow: inset 3px 0 0 var(--hi); }
+    .tt-rate { font-family: var(--font-comic); font-size: 19px; letter-spacing: .03em; margin-bottom: 8px; }
+    .tt-rate b { color: var(--hi); font-size: 26px; }
+    .tt-mc-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 16px; align-items: start; margin-top: 14px; }
+    @media (max-width: 900px) { .tt-mc-grid { grid-template-columns: 1fr; } #tt-canvas { height: 380px; } }
+  </style>
 </head>
 <body>
 
-<header id="navbar">
+<nav class="nav" role="navigation" aria-label="Primary">
   <div class="nav-inner">
-
-    <div class="nav-title">TINTIN Rocket Landing</div>
-
-    <nav class="desktop-nav">
-      <a href="#intro" data-section="intro">Intro</a>
-      <a href="#methods" data-section="methods">Methods</a>
-      <a href="#features" data-section="features">Experiments</a>
-      <a href="#results">Results</a>
-      <a href="#conclusion">Conclusion</a>
-    </nav>
-
-    <button id="burgerBtn" class="burger">
-        <svg fill="currentColor" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 3h18M1 10h18M1 17h18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-        </svg>
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button type="button" class="theme-btn" aria-label="Switch between day and night" aria-pressed="false">
+      <span class="if-night"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Day</span></span>
+      <span class="if-day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="lbl">Night</span></span>
     </button>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
   </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+  <a href="cv.html">CV</a>
+</div>
 
-  <div id="mobileMenu" class="mobile-menu">
-    <a href="#intro">Intro</a>
-    <a href="#methods">Methods</a>
-    <a href="#features">Experiments</a>
-    <a href="#results">Results</a>
-    <a href="#conclusion">Conclusion</a>
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">Reinforcement learning ◆ Guidance &amp; control ◆ MuJoCo ◆ NYU ROB-GY 7863 ◆ 2025</p>
+    <h1>TINTIN</h1>
+    <p>Thrust-Integrated Neural Touchdown. A 5,000-tonne lunar lander with one gimbaled engine has to fall 500 m, flip, kill 500 m of downrange offset and set down inside an 80 m circle — with the vehicle losing mass the whole way. Below you can fly it yourself, hand it to the report's PD autopilot, re-run the Monte Carlo in your own browser, and read what the learned SAC policy did instead.</p>
   </div>
 </header>
+<div class="deco-band" aria-hidden="true"></div>
 
-
-<section class="hero text-on-dark"> 
-    <div class="hero-media">
-        <div class="hero-image-container"> 
-            <img src="rocket/overview.png" alt="Project overview" class="hero-image">
-        </div>
+<!-- =================== HERO =================== -->
+<section class="section" id="demo">
+  <div class="hero-video">
+    <video controls playsinline preload="metadata" poster="assets/images/projects/tintin/hero_poster.jpg">
+      <source src="assets/videos/tintin_hero.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p>The full descent in MuJoCo: entry, the flip that turns the engine into the velocity vector, and the terminal burn onto the green pad. The vehicle is the rocket from <em>The Adventures of Tintin</em>; the terrain is imported lunar mesh.</p>
+    <div class="links">
+      <a href="assets/pdf/projects/Space_Robot_Course_Project_2_Report-3.pdf" target="_blank" rel="noopener">Report (PDF)</a>
+      <a href="assets/pdf/projects/Space_Robot_Course_Project_1-6.pdf" target="_blank" rel="noopener">Modelling report</a>
+      <a href="https://github.com/thejerrycheng/space_robot_mujoco" target="_blank" rel="noopener">Code</a>
+      <a href="https://youtube.com/shorts/YfmAeDVPjt4?feature=share" target="_blank" rel="noopener">Video</a>
     </div>
-    
-    <div class="hero-inner">
-        <h1>TINTIN</h1>
-        <p class="hero-subtitle">
-            Thrust-Integrated Neural Touchdown with Reinforcement Learning and INertial Navigation
-        </p>
-        <p class="hero-meta">
-            Jerry Cheng, Juncheng Zhou
-        </p>
+  </div>
 
-        <div class="hero-buttons">
-            <a class="btn btn-primary" href="https://youtube.com/shorts/YfmAeDVPjt4?si=pZd7dcdc81X9Rznq" target="_blank">Watch Video</a>
-            <a class="btn btn-ghost" href="assets/pdf/projects/Space_Robot_Course_Project_2_Report-3.pdf" target="_blank">Read Paper</a>
-        </div>
-    </div>
+  <div class="stat-row">
+    <div class="card stat-tile"><div class="num">6<small>DoF</small></div><div class="lab">Variable-mass body</div><div class="sub">Position, velocity, quaternion, rate, mass, inertia</div></div>
+    <div class="card stat-tile"><div class="num">2.43<small>×10⁷ N</small></div><div class="lab">Max thrust</div><div class="sub">TWR 3 on the Moon, gimbal ±30°</div></div>
+    <div class="card stat-tile"><div class="num">400<small>s</small></div><div class="lab">Specific impulse</div><div class="sub">4,500 t of propellant, 90 % of the wet mass</div></div>
+    <div class="card stat-tile"><div class="num">±80<small>m</small></div><div class="lab">Landing box</div><div class="sub">Tilt ≤ 15°, |v<sub>z</sub>| ≤ 20 m/s</div></div>
+    <div class="card stat-tile"><div class="num">70.2<small>%</small></div><div class="lab">PD baseline</div><div class="sub">500 descents, re-run for this page</div></div>
+    <div class="card stat-tile"><div class="num">10<small>M</small></div><div class="lab">SAC steps</div><div class="sub">16 parallel envs, 1 h 34 m on an M1 Max</div></div>
+  </div>
 </section>
 
-<section id="intro" class="section animate-on-scroll">
-  <div class="section-box">
-    <div class="section-row">
-        <div>
-          <div class="section-tag">Introduction</div>
-          <h2>Core Contributions</h2>
-          <p>
-            We present a Deep Reinforcement Learning (DRL) approach for Integrated Guidance and Control (IGC) of a variable-mass 6-DoF lunar lander. The method replaces traditional trajectory-planning and control loops.
-          </p>
-
-          <div class="card-grid">
-            <div class="intro-card" data-modal-target="modal-c1">
-                <h3>RocketGym Simulator</h3>
-                <p>A high-fidelity 6-DoF MuJoCo environment modeling variable-mass rigid-body dynamics and thrust-attitude coupling.</p>
-            </div>
-            <div class="intro-card" data-modal-target="modal-c2">
-                <h3>DRL-Based IGC Policy</h3>
-                <p>A policy trained with curriculum learning and domain randomization for robustness across a deployment ellipse.</p>
-            </div>
-            <div class="intro-card" data-modal-target="modal-c3">
-                <h3>Robust Soft Landings</h3>
-                <p>Achieves high Monte Carlo success rates and quasi-fuel-optimal performance.</p>
-            </div>
-            <!-- <div><p>The policy uses Soft Actor-Critic (SAC) to map full-state observations directly to thrust and gimbal commands.</p></div> -->
-          </div>
-        </div>
-        <div class="section-media">
-          <img src="rocket/notations.png" alt="Intro visual">
-        </div>
+<!-- =================== THE TASK =================== -->
+<section class="section" id="task">
+  <h2 class="section-title">The task</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>Powered descent is usually split into three boxes: navigation estimates the state, guidance plans a trajectory, and a tracking controller flies it. The split is convenient and it is also where the problem hides — on a vehicle whose mass drops by 90 % during the burn, the tracking controller is chasing a plan made for a different vehicle.</p>
+      <p>TINTIN removes the split. One policy sees the state and emits throttle and two gimbal angles. That is <em>Integrated Guidance and Control</em>: what trajectory to fly and how to actuate are learned as one map.</p>
+      <p>The state, action and dynamics are the same in the report, in the MuJoCo environment, in the Python harness that made the plots below, and in the sandbox you are about to fly:</p>
+      <div class="eq">s<sub>t</sub> = [ <span class="m">p</span>, <span class="m">v</span>, <span class="m">q</span>, <span class="m">ω</span>, m, I ] ∈ ℝ<sup>17</sup> &nbsp;&nbsp; u<sub>t</sub> = [ T, θ<sub>p</sub>, θ<sub>y</sub> ]</div>
+      <div class="eq">ṁ = −T / (I<sub>sp</sub> g<sub>0</sub>) &nbsp;&nbsp;&nbsp; I(t) = I<sub>0</sub> · m(t)/m<sub>0</sub> &nbsp;&nbsp;&nbsp; T = T<sub>max</sub> (u<sub>T</sub>+1)/2</div>
+      <p>Mass depletion is not decoration. Burning 4,500 t out of 5,000 t changes both the acceleration a given throttle buys and the inertia a given gimbal angle has to rotate — the plant changes underneath the controller.</p>
+    </div>
+    <div>
+      <figure class="fig" style="margin-top:0">
+        <img src="assets/images/projects/tintin/environment.jpg" alt="The RocketGym MuJoCo environment: lander, lunar terrain and the green target pad">
+        <figcaption><b>RocketGym.</b> The MuJoCo environment: a 100 m body, a 2-DoF gimbaled engine 30 m below the centre of mass, lunar gravity at 1.62 m/s², and a fixed target at the origin.</figcaption>
+      </figure>
+      <div class="ledger">
+        <div class="card"><h4 class="known">Given</h4><ul><li>Full state (fully observable MDP)</li><li>Lunar gravity, engine limits</li><li>Target at (0, 0, 0)</li></ul></div>
+        <div class="card"><h4 class="unknown">Commanded</h4><ul><li>Throttle T ∈ [0, T<sub>max</sub>]</li><li>Gimbal pitch θ<sub>p</sub> ∈ ±30°</li><li>Gimbal yaw θ<sub>y</sub> ∈ ±30°</li></ul></div>
+        <div class="card"><h4 class="truth">Ends when</h4><ul><li>Touchdown (CoM &lt; 55 m)</li><li>|x| &gt; 700 m, ‖v‖ &gt; 200 m/s</li><li>Tilt &gt; 100°, or 2000 steps</li></ul></div>
+      </div>
     </div>
   </div>
 </section>
 
-<section id="methods" class="methods-full-bleed animate-on-scroll">
-    <div class="methods-inner">
-        <div class="methods-header">
-            <div class="section-tag">Methodology Breakdown</div>
-            <h2>System Overview and Architecture.</h2>
-            <p>
-                The lunar rocket-landing pipeline comprises three main phases: Entry, Flip and Altitude Capture, and Terminal Landing Burn             </p>
-            
+<!-- =================== FLY IT =================== -->
+<section class="section" id="fly">
+  <h2 class="section-title">Fly it yourself</h2>
+  <p class="lead">Everything below runs in your browser on the planar (x, z, θ) slice of RocketGym, with the parameters of Table I of the report — the same equations as <code>scripts/tools/rocketgym_planar.py</code> in the repo. Take the controls, or hand them to the report's PD autopilot and watch what a fixed-gain controller does with a 500 m offset.</p>
+
+  <div class="card scene-block">
+    <span class="caption-box">The sandbox</span>
+    <div class="demo-grid">
+      <div class="demo-scene">
+        <canvas id="tt-canvas" aria-label="Lunar lander sandbox"></canvas>
+        <div class="keycaps" id="tt-keys" hidden>
+          <kbd>↑</kbd>/<kbd>W</kbd> throttle up &nbsp; <kbd>↓</kbd>/<kbd>S</kbd> throttle down &nbsp;
+          <kbd>←</kbd><kbd>→</kbd> gimbal &nbsp;— the gimbal torques the body, so steering is <em>indirect</em>: tip first, translate later.
         </div>
-
-        <div class="assembly-viewer">
-            
-            <div class="assembly-controls">
-                
-                <div class="assembly-accordion-item">
-                    <button class="assembly-button active" data-assembly-id="component-a">
-                        <span class="assembly-button-icon">+</span>
-                        <span class="assembly-button-label">Task Formulation</span>
-                    </button>
-                    <div id="desc-component-a" class="assembly-description active">
-                        <p>The problem is modeled as a continuous-control Markov Decision Process (MDP) with a control objective of minimum-fuel landing while stabilizing position, attitude, and vertical descent toward the designated target.</p>
-                    </div>
-                </div>
-
-                <div class="assembly-accordion-item">
-                    <button class="assembly-button" data-assembly-id="component-b">
-                      <span class="assembly-button-icon">+</span>
-                      <span class="assembly-button-label">SAC Policy and State/Action</span>
-                    </button>
-                    <div id="desc-component-b" class="assembly-description">
-                      <p>The Deep Reinforcement Learning algorithm used is Soft Actor-Critic (SAC). The raw observation includes the full translational and rotational state $o_{t}=[p,v,q,\omega,m]\in\mathbb{R}^{14}$. The action vector is the commanded thrust and gimbal angles: $a_{t}=[T,\theta_{p},\theta_{y}]$.</p>
-                    </div>
-                </div>
-
-                <div class="assembly-accordion-item">
-                    <button class="assembly-button" data-assembly-id="component-c">
-                        <span class="assembly-button-icon">+</span>
-                        <span class="assembly-button-label">Reward Shaping</span>
-                    </button>
-                    <div id="desc-component-c" class="assembly-description">
-                        <p>Reward shaping balances dense and sparse rewards to optimize training speed. Shaping terms encourage minimizing attitude tilt ($15 \cos(\theta)$), reducing vertical descent, decreasing lateral distance, and shortening flight duration. Successful soft landings receive a terminal bonus of $1000+5(\frac{m_{fuel}}{m_{0}})$.</p>
-                    </div>
-                </div>
-                
-                <div class="assembly-accordion-item">
-                    <button class="assembly-button" data-assembly-id="component-d">
-                        <span class="assembly-button-icon">+</span>
-                        <span class="assembly-button-label">Curriculum and Randomization</span>
-                    </button>
-                    <div id="desc-component-d" class="assembly-description">
-                        <p>Curriculum learning progressively tightens success criteria once the policy achieves an 80% success rate at each level. Domain randomization improves robustness by varying initial conditions like pose, velocity, and mass.</p>
-                    </div>
-                </div>
-
-            </div>
-            
-            <div class="assembly-detail-view">
-                
-                <div class="assembly-visual">
-                    <img id="visual-component-a" src="assets/methods_visual_1.jpg" alt="Phase 1: Data Acquisition Visual" class="active">
-                    <img id="visual-component-b" src="assets/methods_visual_2.jpg" alt="Component B: Core Model Visual" class="">
-                    <img id="visual-component-c" src="assets/methods_visual_3.jpg" alt="Phase 3: Post-processing Visual" class="">
-                    <img id="visual-component-d" src="assets/methods_visual_4.jpg" alt="Component D: Feedback Loop Visual" class="">
-                </div>
-            </div>
+        <div class="demo-result" id="tt-verdict" style="margin-top:12px" hidden></div>
+      </div>
+      <div class="demo-controls">
+        <div class="tt-hud" id="tt-hud"></div>
+        <label style="margin-top:12px">Pilot
+          <select id="tt-mode">
+            <option value="auto">PD autopilot (the report's baseline)</option>
+            <option value="manual">You, with the arrow keys</option>
+          </select>
+        </label>
+        <div class="demo-cols">
+          <label>Thrust/weight <span id="tt-twr-v">3</span><input type="range" id="tt-twr" min="1.4" max="6" step="0.2" value="3"></label>
+          <label>Gravity m/s² <span id="tt-grav-v">1.62</span><input type="range" id="tt-grav" min="0.5" max="9.81" step="0.01" value="1.62"></label>
+          <label>Start altitude m <span id="tt-z0-v">500</span><input type="range" id="tt-z0" min="200" max="700" step="10" value="500"></label>
+          <label>Start offset m <span id="tt-x0-v">500</span><input type="range" id="tt-x0" min="-200" max="900" step="10" value="500"></label>
+          <label>Glideslope gain <span id="tt-glide-v">0.065</span><input type="range" id="tt-glide" min="0.02" max="0.16" step="0.005" value="0.065"></label>
+          <label>Sim speed <span id="tt-speed-v">4×</span><input type="range" id="tt-speed" min="1" max="12" step="1" value="4"></label>
         </div>
+        <div class="demo-buttons">
+          <button class="btn btn-primary" id="tt-go" type="button">Launch</button>
+          <button class="btn" id="tt-reset" type="button">Reset</button>
+        </div>
+        <p class="plot-note">Turn gravity up to Earth's 9.81 and the same autopilot stops landing — TWR 3 on the Moon is TWR 0.5 on Earth.</p>
+      </div>
     </div>
-</section>
+  </div>
 
-
-<section id="features" class="carousel-section animate-on-scroll">
-    <div class="carousel-title-inner">
-        <div class="section-tag">Key Features</div>
-        <h2>DRL Algorithm Performance Comparison.</h2>
-        <p>
-            We compared SAC against DQN and PPO to identify the best algorithm for the complex 6-DoF lander dynamics. SAC demonstrated the fastest convergence and most consistent results.
-        </p>
+  <div class="card scene-block" style="margin-top:22px">
+    <span class="caption-box">Run the experiment</span>
+    <div class="scene-head">
+      <h3>200 descents, right now, in your browser</h3>
+      <p>Each descent starts somewhere in the report's deployment ellipse — downrange 500 ± 20 m, altitude 500 ± 50 m, entry speed up to 50 m/s, small initial tilt — and is flown by the PD baseline with the sliders you set above. Green trajectories land inside the box; red ones do not.</p>
     </div>
-    
-    <div id="featureSliderTrack" class="feature-slider animate-on-scroll">
-            
-        <div class="feature-card">
-            <img src="assets/feature_placeholder_1.jpg" alt="SAC Episode Reward Training Graph" class="card-image">
-            <div class="feature-card-text">
-                <h3>SAC Performance</h3>
-                <p>SAC achieved the highest success rate and converged fastest to the optimal solution. Episode Reward and Fuel Remaining stabilized quickly.</p>
-            </div>
-        </div>
-        
-        <div class="feature-card">
-            <img src="assets/feature_placeholder_2.jpg" alt="PPO Episode Reward Training Graph" class="card-image">
-            <div class="feature-card-text">
-                <h3>PPO Performance</h3>
-                <p>PPO converged to stable behavior after over 10 million total timesteps but resulted in suboptimal thrusting.</p>
-            </div>
-        </div>
-        
-        <div class="feature-card">
-            <img src="assets/feature_placeholder_3.jpg" alt="DQN Episode Reward Training Graph" class="card-image">
-            <div class="feature-card-text">
-                <h3>DQN Reliability</h3>
-                <p>DQN failed to produce a reliable 6-DoF controller, likely due to coarse action discretization (27 discrete actions).</p>
-            </div>
-        </div>
-        
-        <!-- <div class="feature-card">
-            <img src="assets/feature_placeholder_4.jpg" alt="DRL vs PID comparison" class="card-image">
-            <div class="feature-card-text">
-                <h3>RL vs. Classical PID</h3>
-                <p>SAC produces smooth, coordinated 6-DoF trajectories, while the fixed-gain PID controller exhibits overshoot and instability due to mass depletion.</p>
-            </div>
-        </div>
-
-        <div class="feature-card">
-            <img src="assets/feature_placeholder_5.jpg" alt="Monte Carlo Trajectory Analysis" class="card-image">
-            <div class="feature-card-text">
-                <h3>Monte Carlo Robustness</h3>
-                <p>Policy robustness was evaluated over 100 randomized initial conditions, demonstrating consistent approach geometry and near-vertical glideslope convergence.</p>
-            </div>
-        </div> -->
-        
+    <button class="btn btn-primary" id="tt-mc-run" type="button">Fly 200 descents</button>
+    <div class="tt-mc-grid">
+      <div><canvas id="tt-mc-canvas" aria-label="Monte Carlo trajectory bundle"></canvas></div>
+      <div id="tt-mc-out"><p class="plot-note">Press the button. The bundle also draws itself behind the sandbox above, so you can fly through your own statistics.</p></div>
     </div>
-    
-    <div class="slider-controls-wrapper">
-        <div id="featurePrevBtn" class="slider-btn prev">❮</div>
-        <div id="featureNextBtn" class="slider-btn next">❯</div>
-
-        <div class="slider-scroll-track">
-            <div id="featureScrollBar" class="slider-scroll-bar"></div>
-        </div>
-    </div>
-</section>
-
-<section id="results" class="section animate-on-scroll">
-  <div class="section-box">
-    
-    <div class="results-content-area">
-        <div id="result-item-1" class="result-item active">
-            <div class="section-row">
-                <div>
-                    <div class="section-tag">Performance Metric A</div>
-                    <h2>Achieved Robust Soft Landings</h2>
-                    <p>
-                        The resulting SAC policy achieved robust soft landings across wide variations in initial pose, velocity, and mass. The Monte Carlo failure analysis identified the primary sources of failure.
-                    </p>
-                    <p>
-                        * 43% of episodes terminate due to excessive tilt.
-                        * 27% terminate due to lateral drift.
-                        * 19% terminate due to high terminal velocity.
-                    </p>
-                </div>
-                <div class="section-media">
-                    <img src="assets/results_visual_1.jpg" alt="Monte Carlo landing trajectories analysis plot">
-                </div>
-            </div>
-        </div>
-
-        <div id="result-item-2" class="result-item">
-            <div class="section-row">
-                <div>
-                    <div class="section-tag">Key Insight</div>
-                    <h2>Global Guidance is Strong, Terminal Stability is Weak</h2>
-                    <p>
-                        The SAC policy reliably handles the global descent and flip maneuvers. However, failures are dominated by limited terminal stability, suggesting difficulties with late-phase attitude stabilization.
-                    </p>
-                    <p>
-                        Success is defined as touchdown within 80 m of target, tilt $\le 15^{\circ}$, and vertical speed between 0 and 20 m/s.
-                    </p>
-                </div>
-                <div class="section-media">
-                    <img src="assets/results_visual_2.jpg" alt="SAC single episode rollout analysis plot">
-                </div>
-            </div>
-        </div>
-
-        <div id="result-item-3" class="result-item">
-            <div class="section-row">
-                <div>
-                    <div class="section-tag">Efficiency & Fidelity</div>
-                    <h2>Variable-Mass, 6-DoF IGC Solution</h2>
-                    <p>
-                        TINTIN presents a deep reinforcement learning approach for Integrated Guidance and Control (IGC) of a variable-mass 6-DoF lunar lander. The system is trained on a high-fidelity MuJoCo simulator modeling mass depletion and thrust-attitude coupling.
-                    </p>
-                    <p>
-                        The rocket is modeled as a 100 m vehicle with a dry mass of $5.00\times10^{5}$ kg, and the engine offset is 30 m below the CoM.
-                    </p>
-                </div>
-                <div class="section-media">
-                    <img src="assets/results_visual_3.jpg" alt="Rocket coordinate frames and CoM illustration">
-                </div>
-            </div>
-        </div>
-    </div>
-    
   </div>
 </section>
 
-<div id="resultsFloatingNav">
-    <div class="results-nav">
-        <button class="results-nav-button active" data-target="result-item-1">Robustness</button>
-        <button class="results-nav-button" data-target="result-item-2">Stability</button>
-        <button class="results-nav-button" data-target="result-item-3">Modeling</button>
-    </div>
-</div>
+<!-- =================== PD BASELINE =================== -->
+<section class="section" id="baseline">
+  <h2 class="section-title">What a classical controller gets you</h2>
+  <p class="lead">The report's baseline is a cascaded PD: an outer loop turns position and velocity error into a desired acceleration vector, that vector becomes a thrust magnitude and a desired tilt, and an inner loop drives the gimbal to hold that tilt. To put a number on it I re-ran it — 500 descents from the deployment ellipse, one seed, everything in <code>scripts/tools/run_pid_baseline.py</code>.</p>
 
-<section id="conclusion" class="section conclusion-revised animate-on-scroll">
-    <div class="conclusion-content-inner">
-        <div class="section-tag">Conclusion</div>
-        <h2>What this enables next</h2>
-        <p>
-            We demonstrated a DRL-based Integrated Guidance and Control (IGC) system for 6-DoF planetary powered descent, validating the concept for aerospace guidance and control. The SAC policy successfully learned to regulate the coupled translational and rotational dynamics of the single-gimbaled lander.
-        </p>
-        <p>
-            Despite strong global guidance behavior, the dominant failures arise in the terminal phase. Future work will focus on integrating physics-model priors and residual RL to improve terminal stability, training robustness, and increase touchdown reliability.
-        </p>
+  <div class="eq">a<sub>x</sub><sup>des</sup> = k<sub>p,x</sub>(0 − x) + k<sub>d,x</sub>(0 − v<sub>x</sub>) &nbsp;&nbsp;&nbsp; a<sub>z</sub><sup>des</sup> = k<sub>d,z</sub>(v<sub>z</sub><sup>ref</sup>(h) − v<sub>z</sub>), &nbsp; v<sub>z</sub><sup>ref</sup> = −clip(0.065 h, 1, 40)</div>
+  <div class="eq">T<sub>des</sub> = m ‖[a<sub>x</sub><sup>des</sup>, a<sub>z</sub><sup>des</sup> + g]‖ &nbsp;&nbsp;&nbsp; φ<sub>des</sub> = atan2(a<sub>x</sub><sup>des</sup>, a<sub>z</sub><sup>des</sup> + g) &nbsp;&nbsp;&nbsp; θ<sub>g</sub> = −asin( α<sup>des</sup> I(m) / (T L<sub>gimbal</sub>) )</div>
+
+  <figure class="fig">
+    <img src="assets/images/projects/tintin/pid_bundle.png" alt="Monte Carlo trajectory bundle for the PD baseline and the touchdown scatter" class="pad">
+    <figcaption><b>500 descents, 70.2 % inside the box.</b> Left: 120 recorded trajectories. Every one of them makes the same shape — tip over hard to translate downrange, then stand the vehicle back up for the terminal burn. Right: the touchdown state of the ones that reached the pad; the shaded strip is the ±80 m success box and the dashed line is the 15° tilt limit.</figcaption>
+  </figure>
+
+  <div class="grid-2" style="margin-top:22px">
+    <figure class="fig" style="margin-top:0">
+      <img src="assets/images/projects/tintin/pid_failures.png" alt="Outcome breakdown and touchdown histograms" class="pad">
+      <figcaption><b>Where the other 29.8 % goes.</b> Almost all of it is the vehicle leaving the ±700 m box or running the 2000-step clock out. Only 1.2 % actually tips over. When it lands, it lands well: median offset 6.5 m, median tilt 0.9°, touchdown at 1.0 m/s.</figcaption>
+    </figure>
+    <div>
+      <div class="table-wrap" style="margin-top:0">
+        <table class="data-table">
+          <thead><tr><th>PD baseline, 500 descents</th><th>median</th><th>p95</th><th>worst</th></tr></thead>
+          <tbody>
+            <tr><td>Touchdown offset [m]</td><td class="hi">6.5</td><td>28.7</td><td>51.8</td></tr>
+            <tr><td>Touchdown tilt [deg]</td><td class="hi">0.89</td><td>8.96</td><td>14.1</td></tr>
+            <tr><td>Touchdown |v<sub>z</sub>| [m/s]</td><td class="hi">1.00</td><td>1.01</td><td>1.04</td></tr>
+            <tr><td>Propellant used [% of load]</td><td class="hi">3.80</td><td>4.79</td><td>5.53</td></tr>
+            <tr><td>Flight time [s]</td><td class="hi">68.5</td><td>93.4</td><td>99.4</td></tr>
+          </tbody>
+        </table>
+        <p class="scroll-hint">← swipe the table →</p>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table compact">
+          <thead><tr><th>Outcome</th><th>runs</th><th>share</th></tr></thead>
+          <tbody>
+            <tr><td>landed in the box</td><td class="ok">351</td><td class="ok">70.2 %</td></tr>
+            <tr><td>drifted out of ±700 m</td><td>89</td><td>17.8 %</td></tr>
+            <tr><td>2000-step timeout</td><td>54</td><td>10.8 %</td></tr>
+            <tr><td>tipped past 15°</td><td>6</td><td>1.2 %</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:26px">
+    <figure class="fig" style="margin-top:0">
+      <img src="assets/images/projects/tintin/pid_gains.png" alt="Success rate over the lateral gain grid" class="pad">
+      <figcaption><b>The gains have to be right, and the window is narrow.</b> Success rate over the lateral gain grid, 60 descents per cell. The usable region is a thin diagonal ridge: raise k<sub>p,x</sub> without raising k<sub>d,x</sub> and the vehicle tips into the ground; raise k<sub>d,x</sub> alone and it never gets downrange in time.</figcaption>
+    </figure>
+    <figure class="fig" style="margin-top:0">
+      <img src="assets/images/projects/tintin/pid_envelope.png" alt="Success rate over the deployment envelope" class="pad">
+      <figcaption><b>Entry speed, not downrange, is what kills it.</b> Success rate as the entry condition moves, 32 entry directions per cell, one fixed set of gains. Downrange offset barely matters — 100 m and 650 m are within a few points of each other. Entry speed does: 100 % at rest, ~70 % at 30 m/s, ~50 % at 40 m/s, and <b>0 %</b> by 65 m/s. The deployment ellipse the policy trains on samples up to 50 m/s, which is exactly where the fixed-gain baseline is already coming apart.</figcaption>
+    </figure>
+  </div>
+
+  <figure class="fig">
+    <img src="assets/images/projects/tintin/pid_episode.png" alt="One successful and one failed PD descent, state by state" class="pad">
+    <figcaption><b>One good descent and one bad one.</b> Top row: the successful shape — tilt goes to −30° for thirty seconds to kill 500 m of downrange, snaps back through +20° to brake, then settles. Bottom row: an entry with the velocity pointing the wrong way; the outer loop asks for more lateral authority than ±30° of tilt can buy and the vehicle leaves the box before the descent even starts.</figcaption>
+  </figure>
+
+  <div class="card finding" style="margin-top:26px">
+    <div class="no">!</div>
+    <h3>The propellant is not the problem</h3>
+    <p>I expected mass depletion to be what breaks the fixed-gain controller, so I swept the propellant fraction from 30 % to 95 % of the wet mass. The success rate did not move — because the PD burns only <b>3.8 %</b> of the load on a nominal descent, it never gets near the dry mass, and the plant it is tuned for is the plant it flies. Mass depletion is a real problem for this vehicle, but not one a 70 s lunar descent at TWR 3 exposes.</p>
+    <p>What does break it is the shape of the feasible set. A fixed gain pair defines one basin; the report's deployment ellipse is wider than that basin, and the entry conditions on its edge are exactly the ones the learned policy is trained to cover.</p>
+  </div>
 </section>
 
+<!-- =================== SAC =================== -->
+<section class="section" id="learning">
+  <h2 class="section-title">Learning it instead</h2>
+  <p class="lead">The alternative is to stop designing the loop and let one network map the state to throttle and both gimbal angles. Three algorithms went in under an identical environment and reward — SAC, PPO and DQN over a discretised 3×3×3 action table — and only one came out with a controller.</p>
 
-<footer>
-  <div style="text-align: left;">© 2025 Your Name — Project Template</div>
-    <br>
-  <div class="art-deco-text" style="text-align: right;">Designed in New York City with love <br> — in a tiny studio apartment.</div>
-  <br>
-  <div style="text-align: center;">If you want to use my template here, please <a href="[LINK_TO_TEMPLATE_REPO/SITE]" target="_blank">cite me</a>.</div>
-  <br><br><br>
+  <div class="grid-2">
+    <div class="prose">
+      <p>The observation exploits the symmetry of the problem: approaching from any azimuth is the same problem, so the translational state collapses to lateral distance r = √(x²+y²) and altitude z. That drops the effective dimensionality without giving up any 6-DoF fidelity.</p>
+      <p>Three things made it train:</p>
+      <ul>
+        <li><b>Attitude-gated shaping.</b> The approach and descent terms only pay out once the vehicle is roughly upright. Without the gate the policy learns to dive at the target head-first — it is a shorter path and the distance term does not care which way up you arrive.</li>
+        <li><b>Curriculum.</b> The success box starts generous and tightens once the policy clears 80 % at the current level. Landing radius, descent speed and tilt all shrink together.</li>
+        <li><b>Domain randomisation.</b> Every episode resamples pose, velocity, tilt, yaw and mass over the whole deployment ellipse, so the policy never gets to specialise on one entry.</li>
+      </ul>
+      <div class="table-wrap">
+        <table class="data-table compact">
+          <thead><tr><th>SAC</th><th>value</th></tr></thead>
+          <tbody>
+            <tr><td>Policy network</td><td>[256, 256] MLP</td></tr>
+            <tr><td>Learning rate</td><td>3×10⁻⁴</td></tr>
+            <tr><td>Batch / buffer</td><td>256 / 10⁶</td></tr>
+            <tr><td>γ / τ</td><td>0.95 / 0.005</td></tr>
+            <tr><td>Entropy coefficient</td><td>auto</td></tr>
+            <tr><td>Parallel envs</td><td>16</td></tr>
+            <tr><td>Steps · wall clock</td><td class="hi">5 M · 1 h 34 m (M1 Max)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <figure class="fig" style="margin-top:0">
+      <img src="assets/images/projects/tintin/sac_training.png" alt="SAC training curves: episode reward, episode length and fuel remaining over 10M steps">
+      <figcaption><b>SAC training.</b> Return settles inside the first million steps and stays there; episode length collapses from 1,700 to ~850 as the policy stops dithering; the propellant left at touchdown climbs and holds, which is the fuel term of the reward doing its job. PPO needed more than 10 M steps and still sat on a suboptimal thrust pattern, with catastrophic forgetting early on. DQN never produced a usable controller — the 3×3×3 action grid is too coarse for a gimbal.</figcaption>
+    </figure>
+  </div>
+
+  <div class="clip-grid" style="margin-top:26px">
+    <div class="card">
+      <video autoplay loop muted playsinline preload="metadata"><source src="assets/videos/tintin_sac_rollout.mp4" type="video/mp4"></video>
+      <div class="body"><h3>One learned descent</h3><p>The SAC policy after a million steps: a single smooth glideslope, no flailing, engine off well before the pad.</p></div>
+    </div>
+    <div class="card">
+      <video autoplay loop muted playsinline preload="metadata"><source src="assets/videos/tintin_monte_carlo.mp4" type="video/mp4"></video>
+      <div class="body"><h3>100 at once</h3><p>The Monte Carlo evaluation: 100 randomised entries flown simultaneously. The bundle converges to a common near-vertical glideslope before touchdown.</p></div>
+    </div>
+  </div>
+
+  <div class="clip-grid" style="margin-top:18px">
+    <div class="card">
+      <video autoplay loop muted playsinline preload="metadata"><source src="assets/videos/tintin_flip.mp4" type="video/mp4"></video>
+      <div class="body"><h3>The flip</h3><p>Phase 2: attitude capture. The engine has to end up pointing into the velocity vector before the terminal burn can start.</p></div>
+    </div>
+    <div class="card">
+      <video autoplay loop muted playsinline preload="metadata"><source src="assets/videos/tintin_touchdown.mp4" type="video/mp4"></video>
+      <div class="body"><h3>The terminal burn</h3><p>Phase 3. This is where both controllers spend their failures — the last hundred metres, with the least authority and the least time.</p></div>
+    </div>
+  </div>
+
+  <div class="card finding" style="margin-top:26px">
+    <div class="no">1</div>
+    <h3>Global guidance is the easy half</h3>
+    <p>Across 100 randomised entries the learned policy produces a consistent approach geometry and a near-vertical glideslope. The failures are not navigation failures — <b>43 %</b> terminate on excessive tilt, <b>27 %</b> on lateral drift, <b>19 %</b> on terminal velocity and <b>11 %</b> on timeout. Every one of those is a last-phase failure.</p>
+    <p>The same thing shows up in my PD re-run from the opposite direction: when the baseline lands it lands to 6.5 m and 0.9°, and when it fails it fails on the way in, not on the pad. Terminal attitude stabilisation under a shrinking mass and a shrinking time budget is the hard part of this problem, and neither a fixed-gain loop nor a single end-to-end policy solves it cleanly.</p>
+  </div>
+</section>
+
+<!-- =================== REPRODUCE =================== -->
+<section class="section" id="reproduce">
+  <h2 class="section-title">Reproduce it</h2>
+  <p class="lead">Every number and figure on this page regenerates from scratch with fixed seeds. The harness is NumPy-only; the MuJoCo environment and the SAC training script live alongside it.</p>
+  <div class="cmd"><span class="c"># the browser sandbox, the plots and the tables all come from this one model</span>
+git clone https://github.com/thejerrycheng/space_robot_mujoco
+cd space_robot_mujoco
+
+<span class="c"># 500 PD descents + all five figures, vector PDF into docs/figures/</span>
+python scripts/tools/run_pid_baseline.py --trials 500
+
+<span class="c"># the full 6-DoF MuJoCo environment and the SAC training run</span>
+python train_gym_sac.py --num-envs 16 --total-steps 5000000
+python test_gym_sac.py --model models/gym_sac_UPRIGHT_4/best_model</div>
+  <p class="plot-note" style="margin-top:14px">The browser model in <code>assets/js/tintin_lander.js</code> is a line-by-line transliteration of <code>scripts/tools/rocketgym_planar.py</code>; the two agree to within Monte Carlo noise (70.2 % vs 69.5 % over 500 and 200 descents respectively).</p>
+</section>
+
+<!-- =================== CREDITS =================== -->
+<section class="section" id="credits">
+  <h2 class="section-title">Credits</h2>
+  <div class="card card-pad credits">
+    <p>TINTIN was the Project 2 of <b>ROB-GY 7863</b> at NYU, taught by <b>Prof. Benjamin Rivière</b>. Joint work with <b>Juncheng Zhou</b> — equal contribution. The vehicle geometry is adapted from the rocket in <em>The Adventures of Tintin</em>; the lunar terrain is an imported Unreal Engine asset.</p>
+    <p style="margin-top:8px">The MuJoCo environment, the SAC/PPO/DQN training, the report and its figures are from the course project. The planar re-implementation, the 500-descent PD study, the gain and envelope sweeps, and the browser sandbox on this page were built afterwards for this write-up.</p>
+    <div class="links" style="margin-top:12px">
+      <a href="assets/pdf/projects/Space_Robot_Course_Project_2_Report-3.pdf" target="_blank" rel="noopener">Final report</a>
+      <a href="assets/pdf/projects/Space_Robot_Course_Project_1-6.pdf" target="_blank" rel="noopener">Modelling report</a>
+      <a href="https://github.com/thejerrycheng/space_robot_mujoco" target="_blank" rel="noopener">Code</a>
+      <a href="projects.html">All projects</a>
+    </div>
+  </div>
+</section>
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
 </footer>
 
-
-<div id="modalBackdrop" class="modal-backdrop">
-    <div id="modalContent" class="modal-content">
-        <button id="modalCloseBtn" class="modal-close">&times;</button>
-        <h3 id="modalTitle">Modal Title Placeholder</h3>
-        <p id="modalBody">This is the detailed information for the contribution card you clicked. This content is dynamic and should be loaded based on the card's data.</p>
-    </div>
-</div>
-
-
-<script>
-// Find global elements
-const heroImage = document.querySelector(".hero-image-container img");
-const navbar = document.getElementById("navbar");
-const burger = document.getElementById("burgerBtn");
-const mobileMenu = document.getElementById("mobileMenu");
-const sections = document.querySelectorAll("section");
-const menuLinks = document.querySelectorAll(".desktop-nav a");
-
-// Modal elements
-const modalBackdrop = document.getElementById('modalBackdrop');
-const modalContent = document.getElementById('modalContent');
-const modalCloseBtn = document.getElementById('modalCloseBtn');
-const introCards = document.querySelectorAll('.intro-card');
-const modalTitle = document.getElementById('modalTitle');
-const modalBody = document.getElementById('modalBody');
-
-// Slider elements
-const sliderTrack = document.getElementById('featureSliderTrack');
-const prevBtn = document.getElementById('featurePrevBtn');
-const nextBtn = document.getElementById('featureNextBtn');
-const scrollBar = document.getElementById('featureScrollBar');
-
-// Methods Section Elements
-const assemblyButtons = document.querySelectorAll('.assembly-button');
-const assemblyVisuals = document.querySelectorAll('.assembly-visual img');
-const assemblyAccordionItems = document.querySelectorAll('.assembly-accordion-item');
-
-// Results Section Elements
-const resultsNavButtons = document.querySelectorAll('.results-nav-button');
-const resultItems = document.querySelectorAll('.result-item');
-const resultsSection = document.getElementById('results');
-const resultsFloatingNav = document.getElementById('resultsFloatingNav');
-
-
-/* -------------------------------------------------------
-   E) RESULTS INTERACTION (FINAL)
---------------------------------------------------------- */
-function updateResultsViewer(targetId) {
-    // 1. Update Buttons State
-    resultsNavButtons.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.getAttribute('data-target') === targetId) {
-            btn.classList.add('active');
-        }
-    });
-
-    // 2. Update Content Visibility and Layout
-    resultItems.forEach(item => {
-        // Set up for fade transition
-        item.style.position = 'absolute';
-        item.style.opacity = 0;
-        item.style.pointerEvents = 'none';
-
-        if (item.id === targetId) {
-            item.style.position = 'static'; // Take up space
-            item.style.opacity = 1;
-            item.style.pointerEvents = 'auto';
-        }
-    });
-}
-
-// Attach event listeners for the results nav bar
-resultsNavButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const targetId = button.getAttribute('data-target');
-        updateResultsViewer(targetId);
-    });
-});
-
-// --- Results Floating Bar Visibility Observer ---
-const resultsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        // We only show the floating bar if the RESULTS section is highly visible
-        if (entry.isIntersecting) {
-            resultsFloatingNav.classList.add('show');
-        } else {
-            resultsFloatingNav.classList.remove('show');
-        }
-    });
-}, {
-    root: null,
-    // MODIFIED: This ensures the floating bar disappears early as the user scrolls past the Results section.
-    threshold: 0.0, 
-    rootMargin: '0% 0% -15% 0%' 
-});
-
-if (resultsSection) {
-    resultsObserver.observe(resultsSection);
-}
-
-// Initialize viewer
-document.addEventListener('DOMContentLoaded', () => {
-    const activeResultId = document.querySelector('.results-nav-button.active')?.getAttribute('data-target');
-    if (activeResultId) {
-        updateResultsViewer(activeResultId);
-    }
-});
-
-
-/* -------------------------------------------------------
-   A) METHODS ACCORDION INTERACTION
---------------------------------------------------------- */
-/* (Keeping the existing Method Accordion JS logic) */
-const assemblyDetails = {
-    'component-a': {
-        description: "This phase is responsible for collecting inputs from the environment (sensor data, user input, etc.) and normalizing it. Key processes include noise reduction, feature scaling, and conversion to a common input format for the core model.",
-        image_id: 'visual-component-a'
-    },
-    'component-b': {
-        description: "This is the primary computational unit, utilizing a [mention algorithm type, e.g., deep neural network, state machine] to process the pre-processed data and make decisions or predictions. Its architecture is optimized for [mention a metric, e.g., low latency or high accuracy].",
-        image_id: 'visual-component-b'
-    },
-    'component-c': {
-        description: "The system converts the model's raw output into a usable format, such as a control signal, a visual render, or a prediction score. This includes error checking and interface formatting for the end-user.",
-        image_id: 'visual-component-c'
-    },
-    'component-d': {
-        description: "An optional, asynchronous module that gathers real-world results or user feedback to continuously improve the Core Model via online learning or scheduled retraining cycles, ensuring long-term robustness.",
-        image_id: 'visual-component-d'
-    }
-};
-
-function updateAssemblyViewer(assemblyId) {
-    const details = assemblyDetails[assemblyId];
-    if (!details) return;
-
-    assemblyAccordionItems.forEach(item => {
-        const button = item.querySelector('.assembly-button');
-        const description = item.querySelector('.assembly-description');
-        const isActive = button.getAttribute('data-assembly-id') === assemblyId;
-
-        if (isActive) {
-            button.classList.add('active');
-            description.classList.add('active');
-            description.style.maxHeight = description.scrollHeight + 20 + "px"; 
-        } else {
-            button.classList.remove('active');
-            description.classList.remove('active');
-            description.style.maxHeight = null;
-        }
-    });
-
-    assemblyVisuals.forEach(img => {
-        img.classList.remove('active');
-        if (img.id === details.image_id) {
-            img.classList.add('active');
-        }
-    });
-}
-
-// Attach event listeners for the assembly accordion buttons
-assemblyAccordionItems.forEach(item => {
-    const button = item.querySelector('.assembly-button');
-    button.addEventListener('click', (e) => {
-        e.preventDefault();
-        const assemblyId = button.getAttribute('data-assembly-id');
-        
-        if (button.classList.contains('active')) {
-            assemblyAccordionItems.forEach(i => {
-                i.querySelector('.assembly-button').classList.remove('active');
-                i.querySelector('.assembly-description').classList.remove('active');
-                i.querySelector('.assembly-description').style.maxHeight = null;
-            });
-            updateAssemblyViewer(assemblyAccordionItems[0].querySelector('.assembly-button').getAttribute('data-assembly-id'));
-            
-        } else {
-            updateAssemblyViewer(assemblyId);
-        }
-    });
-});
-
-// Initialize viewer with the first item on load
-if (assemblyAccordionItems.length > 0) {
-    const initialId = assemblyAccordionItems[0].querySelector('.assembly-button').getAttribute('data-assembly-id');
-    updateAssemblyViewer(initialId);
-}
-
-
-/* -------------------------------------------------------
-   B) SLIDER FUNCTIONALITY
---------------------------------------------------------- */
-/* (Keeping the existing Slider JS logic) */
-function updateSliderControls() {
-    if (!sliderTrack || !scrollBar) return;
-    
-    const scrollLeft = sliderTrack.scrollLeft;
-    const scrollWidth = sliderTrack.scrollWidth;
-    const clientWidth = sliderTrack.clientWidth;
-
-    prevBtn.classList.toggle('disabled', scrollLeft < 1);
-    nextBtn.classList.toggle('disabled', scrollLeft + clientWidth >= scrollWidth - 1);
-
-    const scrollPercentage = (scrollLeft / (scrollWidth - clientWidth)) * 100;
-    scrollBar.style.width = scrollPercentage + '%';
-}
-
-function scrollToNextCard(direction) {
-    if (!sliderTrack) return;
-
-    const cards = sliderTrack.querySelectorAll('.feature-card');
-    if (cards.length === 0) return;
-
-    const currentScroll = sliderTrack.scrollLeft;
-    let targetScroll = 0;
-    const trackPadding = 20;
-
-    let currentCardIndex = 0;
-    for (let i = 0; i < cards.length; i++) {
-        const cardPos = cards[i].offsetLeft - trackPadding;
-        if (cardPos <= currentScroll + 1) {
-            currentCardIndex = i;
-        } else {
-            break;
-        }
-    }
-
-    if (direction === 'next') {
-        if (currentCardIndex + 1 < cards.length) {
-            targetScroll = cards[currentCardIndex + 1].offsetLeft - trackPadding;
-        } else {
-            // Scroll to end if near the last card
-            targetScroll = sliderTrack.scrollWidth - sliderTrack.clientWidth;
-        }
-
-    } else if (direction === 'prev') {
-        if (currentCardIndex > 0) {
-            targetScroll = cards[currentCardIndex - 1].offsetLeft - trackPadding;
-        } else {
-            targetScroll = 0;
-        }
-    }
-
-    sliderTrack.scrollTo({
-        left: targetScroll,
-        behavior: 'smooth'
-    });
-}
-
-// Attach event listeners
-if (sliderTrack && prevBtn && nextBtn) {
-    sliderTrack.addEventListener('scroll', updateSliderControls);
-    prevBtn.addEventListener('click', () => scrollToNextCard('prev'));
-    nextBtn.addEventListener('click', () => scrollToNextCard('next'));
-    // Initial call might need a slight delay to ensure content dimensions are calculated
-    setTimeout(updateSliderControls, 100); 
-}
-
-
-/* -------------------------------------------------------
-   C) MODAL FUNCTIONALITY
---------------------------------------------------------- */
-
-const contributionDetails = {
-    'modal-c1': {
-        title: 'Novel Architecture Details',
-        body: 'We introduced a hybrid convolution-attention architecture that reduces redundant computations by $75\\%$ compared to pure transformer models, resulting in the $10\\times$ speed increase. This is crucial for deployment on edge devices.'
-    },
-    'modal-c2': {
-        title: 'Adaptive Loss Function Details',
-        body: 'The new loss function employs a dynamic weighting mechanism that shifts focus from easy samples to hard, noisy samples, particularly effective in real-world sensor data. This yielded the $15\\%$ accuracy improvement.'
-    },
-    'modal-c3': {
-        title: 'Hardware Acceleration Details',
-        body: 'We developed custom CUDA/Metal kernels for the inference stage, bypassing standard framework overheads. This allows the system to run on modern mobile GPUs with minimal battery impact, a major step toward practical product integration.'
-    }
-};
-
-function openModal(cardDataTarget) {
-    const details = contributionDetails[cardDataTarget];
-    if (!details) return;
-
-    modalTitle.textContent = details.title;
-    modalBody.innerHTML = details.body;
-
-    modalBackdrop.classList.add('show');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeModal() {
-    modalBackdrop.classList.remove('show');
-    document.body.style.overflow = '';
-}
-
-introCards.forEach(card => {
-    card.addEventListener('click', () => {
-        const targetId = card.getAttribute('data-modal-target');
-        openModal(targetId);
-    });
-});
-
-modalCloseBtn.addEventListener('click', closeModal);
-
-modalBackdrop.addEventListener('click', (e) => {
-    if (e.target === modalBackdrop) {
-        closeModal();
-    }
-});
-
-
-/* -------------------------------------------------------
-   D) GENERAL UTILITIES
---------------------------------------------------------- */
-
-/* 1) SMOOTH SCROLL-TO-SECTION (Apple easing) */
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener("click", function (e) {
-    e.preventDefault();
-    const targetID = this.getAttribute("href").substring(1);
-    const target = document.getElementById(targetID);
-    
-    if (target) {
-      window.scroll({
-        top: target.offsetTop,
-        behavior: "smooth"
-      });
-      mobileMenu.style.display = "none";
-    }
-  });
-});
-
-
-/* 2) APPLE PARALLAX HERO (Vision Pro style) */
-if (heroImage) {
-    window.addEventListener("scroll", () => {
-        const scroll = window.scrollY;
-        const translateY = scroll * 0.12; 
-
-        heroImage.style.transform = `translateY(${translateY}px) scale(1.1)`;
-        heroImage.style.transition = "transform 0.05s linear";
-    });
-}
-
-
-/* 3) NAV BAR HIDE/SHOW ON SCROLL */
-let lastY = window.scrollY;
-
-window.addEventListener("scroll", () => {
-  if (window.scrollY < 50) {
-    navbar.classList.remove("hide");
-    return;
-  }
-
-  if (window.scrollY > lastY) {
-    navbar.classList.add("hide");
-  } else {
-    navbar.classList.remove("hide");
-  }
-
-  lastY = window.scrollY;
-  mobileMenu.style.display = "none";
-});
-
-
-/* 4) BURGER MENU LOGIC */
-burger.addEventListener("click", (e) => {
-  e.stopPropagation();
-  mobileMenu.style.display =
-    mobileMenu.style.display === "flex" ? "none" : "flex";
-});
-
-document.addEventListener("click", (e) => {
-    if (!burger.contains(e.target) && !mobileMenu.contains(e.target)) {
-        mobileMenu.style.display = "none";
-    }
-});
-
-
-/* 5) SECTION HIGHLIGHT ON SCROLL (Apple macOS style) */
-function highlightNav() {
-  let current = "";
-  const highlightOffset = 180;
-
-  sections.forEach((section) => {
-    const rect = section.getBoundingClientRect();
-
-    if (rect.top <= highlightOffset) {
-        current = section.getAttribute("id");
-    }
-  });
-
-  menuLinks.forEach((link) => {
-    link.classList.remove("active");
-    if (link.dataset.section === current) link.classList.add("active");
-  });
-}
-
-window.addEventListener("scroll", highlightNav);
-highlightNav();
-
-
-/* 6) SCROLL-TRIGGERED FADE-IN ANIMATION */
-function setupScrollAnimations() {
-    const animatedElements = document.querySelectorAll('.animate-on-scroll');
-
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px 0px -10% 0px', 
-        threshold: 0.0 
-    };
-
-    const observerCallback = (entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    animatedElements.forEach(element => {
-        observer.observe(element);
-    });
-}
-
-document.addEventListener('DOMContentLoaded', setupScrollAnimations);
-
-
-</script>
-
+<script src="assets/js/site.js"></script>
+<script src="assets/js/tintin_lander.js"></script>
+<script src="assets/js/tintin_demo.js"></script>
 </body>
 </html>
