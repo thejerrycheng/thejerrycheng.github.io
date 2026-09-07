@@ -1,5 +1,8 @@
 (()=>{'use strict';
 const P=window.M2Paper,$=id=>document.getElementById(id);
+const theme=$('project-theme');
+function themeLabel(){const dark=document.documentElement.dataset.theme==='night';theme.textContent=dark?'Light appearance':'Dark appearance';theme.setAttribute('aria-pressed',String(dark));theme.setAttribute('aria-label',dark?'Switch to light appearance':'Switch to dark appearance');}
+theme.onclick=()=>{const next=document.documentElement.dataset.theme==='night'?'day':'night';document.documentElement.dataset.theme=next;try{localStorage.setItem('m2-theme',next);}catch(e){}themeLabel();};themeLabel();
 const C={object:'#ff9500',mabel:'#376fb4',milo:'#2b9d99',plan:'#8054b3',gray:'#8993a1'};
 const names={m2_living_room:'Living room',m2_bedroom:'Bedroom',m2_restaurant:'Dining room',m2_loading_dock:'Loading dock',m2_warehouse_crate:'Warehouse',m2_gallery_panel:'Gallery',m2_workshop_beam:'Workshop',m2_office_table:'Office',m2_apartment_doorway:'Apartment',m2_flat_arena:'Arena'};
 const objects=['Couch','Wardrobe','Dining table','Crate','Beam'];
