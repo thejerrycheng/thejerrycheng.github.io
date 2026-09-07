@@ -1,179 +1,184 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="night">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>IRIS Studio — fly the cinema robot in your browser</title>
-<meta name="description" content="The IRIS cinema robot arm on a studio desk, in your browser: 22 preset shots, joint and task-space control, a Sony α7R III with a 16–150 mm servo zoom, dolly zooms, object tracking, and a policy you can train on your own demonstrations.">
-<meta name="theme-color" content="#151820">
+<title>IRIS Studio — direct a camera robot in your browser</title>
+<meta name="description" content="Place the camera, mark your stops, press play. A cinema robot arm with a Sony α7R III and a 16–150 mm servo zoom, on a studio desk, in your browser.">
+<meta name="theme-color" content="#0b0b0d">
 <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/gotham.css">
+<link rel="stylesheet" href="assets/css/iris-studio.css">
 <script type="importmap">{"imports": {"three": "./assets/js/vendor/three.module.min.js"}}</script>
-<style>
-  html, body { height: 100%; overflow: hidden; background: #0d1017; }
-  body { color: var(--cream, #F4EAD2); font-family: var(--font-body, Jost, sans-serif); }
-  .top { height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-bottom: 2px solid var(--gold, #D9A13F); background: #151820; }
-  .top .brand { font-family: var(--font-display, Limelight); font-size: 22px; color: #F4EAD2; text-decoration: none; letter-spacing: .02em; }
-  .top .brand b { color: var(--gold, #D9A13F); }
-  .top .chip { font-family: var(--font-comic, Bangers); font-size: 15px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold, #D9A13F); }
-  .top .links a { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #a9adb8; text-decoration: none; margin-left: 16px; }
-  .top .links a:hover { color: var(--gold, #D9A13F); }
-  .app { position: relative; height: calc(100% - 52px); display: grid; grid-template-columns: 1fr 360px; grid-template-rows: 1fr auto; gap: 0; }
-  #studio-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; touch-action: none; }
-  .stage { position: relative; z-index: 1; pointer-events: none; display: grid; gap: 10px; padding: 10px; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; min-height: 0; }
-  body[data-view="studio"] .stage { grid-template-columns: 1fr 380px; grid-template-rows: 1fr; }
-  body[data-view="studio"] #view-feed { align-self: start; aspect-ratio: 3 / 2; }
-  body[data-view="monitor"] .stage { grid-template-columns: 380px 1fr; }
-  body[data-view="monitor"] #view-main { order: 0; align-self: start; aspect-ratio: 3 / 2; }
-  body[data-view="monitor"] #view-feed { order: 1; }
-  body[data-view="film"] .stage { grid-template-columns: 1fr 1fr; }
-  .view { position: relative; min-height: 120px; border: 2px solid var(--gold, #D9A13F); border-radius: 10px; overflow: hidden; pointer-events: none; }
-  #view-main { border-color: rgba(217,161,63,.45); }
-  .view .tag { position: absolute; left: 10px; top: 8px; font-family: var(--font-comic, Bangers); font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold, #D9A13F); text-shadow: 0 1px 0 #000; }
-  .hud { position: absolute; left: 10px; bottom: 8px; font-family: var(--font-mono); font-size: 11.5px; color: #dfe3ea; text-shadow: 0 1px 0 #000; line-height: 1.5; }
-  .hud .bad { color: #ff7a5c; }
-  /* viewfinder */
-  .vf { position: absolute; inset: 0; font-family: var(--font-mono); font-size: 12px; color: #f2f2f2; text-shadow: 0 1px 1px #000; }
-  .vf .grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.18) 1px, transparent 1px); background-size: 33.333% 33.333%; opacity: .8; }
-  .vf .corner { position: absolute; width: 22px; height: 22px; border: 2px solid rgba(255,255,255,.75); }
-  .vf .c1 { left: 10px; top: 10px; border-right: 0; border-bottom: 0; } .vf .c2 { right: 10px; top: 10px; border-left: 0; border-bottom: 0; } .vf .c3 { left: 10px; bottom: 10px; border-right: 0; border-top: 0; } .vf .c4 { right: 10px; bottom: 10px; border-left: 0; border-top: 0; }
-  .vf .row { position: absolute; left: 40px; right: 40px; display: flex; justify-content: space-between; gap: 12px; }
-  .vf .row.top { top: 12px; } .vf .row.bottom { bottom: 12px; }
-  .vf .rec { display: inline-flex; align-items: center; gap: 6px; } .vf .rec::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #444; }
-  .vf .rec.on::before { background: #ff2a1a; box-shadow: 0 0 8px #ff2a1a; animation: blink 1s steps(2) infinite; } @keyframes blink { 50% { opacity: .3; } }
-  #vf-reticle { position: absolute; width: 28px; height: 28px; margin: -14px 0 0 -14px; border: 1.5px solid #FFCE0A; border-radius: 3px; } #vf-reticle::before, #vf-reticle::after { content: ""; position: absolute; background: #FFCE0A; } #vf-reticle::before { left: 50%; top: -6px; width: 1px; height: 6px; } #vf-reticle::after { top: 50%; left: -6px; height: 1px; width: 6px; }
-  #vf-track { position: absolute; left: 50%; bottom: 34px; transform: translateX(-50%); background: rgba(21,24,32,.7); padding: 2px 8px; border-radius: 4px; color: #FFCE0A; }
-  /* panel */
-  .panel { z-index: 2; background: #151820; border-left: 2px solid var(--gold, #D9A13F); display: flex; flex-direction: column; min-height: 0; }
-  .tabs { display: flex; flex-wrap: wrap; border-bottom: 1px solid rgba(217,161,63,.35); }
-  .tab { flex: 1 1 auto; background: none; border: 0; color: #a9adb8; font-family: var(--font-comic, Bangers); font-size: 14px; letter-spacing: .1em; text-transform: uppercase; padding: 10px 6px; cursor: pointer; border-bottom: 3px solid transparent; }
-  .tab.on { color: var(--pop, #FFCE0A); border-bottom-color: var(--pop, #FFCE0A); }
-  .pane { overflow: auto; padding: 12px 14px; flex: 1 1 auto; min-height: 0; font-size: 13.5px; line-height: 1.45; }
-  .pane h3 { font-family: var(--font-comic, Bangers); font-size: 16px; letter-spacing: .08em; color: var(--gold, #D9A13F); margin: 8px 0 6px; }
-  .pane p, .pane label { color: #cfd3dc; } .dim { color: #8f95a3; }
-  .shot-group-title { font-family: var(--font-comic, Bangers); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold, #D9A13F); margin: 10px 0 4px; }
-  .shot-btn { display: flex; justify-content: space-between; align-items: baseline; width: 100%; text-align: left; background: #1c2130; color: #F4EAD2; border: 1.5px solid rgba(217,161,63,.35); border-radius: 8px; padding: 7px 10px; margin: 4px 0; cursor: pointer; font-family: inherit; font-size: 13.5px; transition: transform .12s ease, background .12s ease; }
-  .shot-btn:hover { background: #242b3d; transform: translate(-1px,-1px); } .shot-btn.on { background: var(--hi, #E4442A); border-color: #E4442A; color: #fff; }
-  .shot-btn .shot-meta { font-family: var(--font-mono); font-size: 10.5px; opacity: .75; }
-  .btn { font-family: var(--font-comic, Bangers); font-size: 15px; letter-spacing: .08em; text-transform: uppercase; padding: 8px 14px; border-radius: 8px; border: 2px solid #151820; background: var(--bone, #F4EAD2); color: #151820; cursor: pointer; box-shadow: 4px 4px 0 rgba(0,0,0,.6); transition: transform .12s ease, box-shadow .12s ease; }
-  .btn:hover { transform: translate(-1px,-1px); box-shadow: 6px 6px 0 rgba(0,0,0,.6); } .btn:disabled { opacity: .45; cursor: default; }
-  .btn-primary { background: var(--pop, #FFCE0A); } .btn-rec { background: #F4EAD2; } .btn-rec.rec { background: #ff2a1a; color: #fff; }
-  .btn-sm { font-size: 12.5px; padding: 6px 10px; }
-  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
-  select, input[type="number"] { font: inherit; font-size: 13px; background: #1c2130; color: #F4EAD2; border: 1.5px solid rgba(217,161,63,.45); border-radius: 6px; padding: 4px 8px; }
-  input[type="range"] { accent-color: var(--hi, #E4442A); width: 100%; }
-  .jrow { display: grid; grid-template-columns: 30px 1fr 52px; gap: 8px; align-items: center; margin: 5px 0; } .jname { font-family: var(--font-comic, Bangers); color: var(--gold, #D9A13F); letter-spacing: .06em; } .jval { font-family: var(--font-mono); font-size: 12px; text-align: right; }
-  .lrow { display: grid; grid-template-columns: 70px 1fr 64px; gap: 8px; align-items: center; margin: 6px 0; } .lrow span:first-child { color: #cfd3dc; } .lrow .v { font-family: var(--font-mono); font-size: 12px; text-align: right; }
-  .jog { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 8px 0; } .jog button { background: #1c2130; color: #F4EAD2; border: 1.5px solid rgba(217,161,63,.45); border-radius: 8px; padding: 8px 4px; font-family: var(--font-comic, Bangers); font-size: 13px; letter-spacing: .06em; cursor: pointer; } .jog button:active { background: var(--hi, #E4442A); }
-  .jog .lbl { grid-column: 1 / -1; font-family: var(--font-mono); font-size: 11px; color: #8f95a3; margin-top: 4px; }
-  .transport { grid-column: 1 / 2; z-index: 2; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 8px 12px; background: #151820; border-top: 2px solid var(--gold, #D9A13F); font-size: 13px; }
-  .transport input[type="range"] { flex: 1 1 200px; min-width: 120px; }
-  .transport .mono { font-family: var(--font-mono); font-size: 12px; color: #cfd3dc; }
-  .views button { background: none; border: 1.5px solid rgba(217,161,63,.45); color: #cfd3dc; border-radius: 6px; padding: 3px 8px; font-family: var(--font-comic, Bangers); letter-spacing: .06em; cursor: pointer; } .views button.on { background: var(--gold, #D9A13F); color: #151820; }
-  #loss-canvas { width: 100%; height: 120px; display: block; border: 1px solid rgba(217,161,63,.45); border-radius: 6px; background: #151820; }
-  #status { font-family: var(--font-mono); font-size: 11px; color: var(--gold, #D9A13F); }
-  kbd { font-family: var(--font-mono); background: #1c2130; border: 1px solid rgba(217,161,63,.45); border-radius: 4px; padding: 0 5px; font-size: 11.5px; }
-  .stat { font-family: var(--font-mono); font-size: 12px; color: #dfe3ea; background: #1c2130; border-radius: 6px; padding: 8px 10px; margin: 6px 0; }
-  @media (max-width: 900px) { .app { grid-template-columns: 1fr; grid-template-rows: 1fr auto 40vh; } .panel { border-left: 0; border-top: 2px solid var(--gold); grid-row: 3; } .transport { grid-row: 2; } .stage, body[data-view="studio"] .stage, body[data-view="monitor"] .stage { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; } body[data-view="studio"] #view-feed, body[data-view="monitor"] #view-main { aspect-ratio: auto; } }
-  html.embed .top { display: none; } html.embed .app { height: 100%; }
-  /* capture / film layout: the two views only, the feed larger */
-  body[data-view="film"].capture .panel, body[data-view="film"].capture .transport { display: none; }
-  body[data-view="film"].capture .app { grid-template-columns: 1fr; grid-template-rows: 1fr; }
-  body[data-view="film"].capture .stage { grid-template-columns: 2fr 3fr; padding: 12px; gap: 12px; }
-  body[data-view="film"].capture #view-feed { align-self: center; aspect-ratio: 3 / 2; }
-  body[data-view="film"].capture #view-main { align-self: center; aspect-ratio: 4 / 3; }
-</style>
 </head>
-<body data-view="studio" data-mode="shots">
-<div class="top">
-  <a class="brand" href="iris.html"><b>IRIS</b> Studio</a>
-  <span class="chip">the cinema robot arm · in your browser</span>
-  <span class="links"><span id="status">loading…</span><a href="iris.html">Project page ↗</a><a href="index.html">Jerry Cheng</a></span>
-</div>
+<body data-view="studio">
+
 <div class="app">
-  <canvas id="studio-canvas"></canvas>
+
+  <!-- ───────────────────────────── top bar ───────────────────────────── -->
+  <div class="topbar">
+    <a class="brand" href="iris.html"><span class="mark">◉</span> IRIS Studio</a>
+    <input class="shotname" id="shot-name" value="Loading…" aria-label="Shot name">
+    <span id="shot-note" style="color:var(--text-3);font-size:12px"></span>
+    <span class="spacer"></span>
+    <button class="btn" id="btn-presets">Shots</button>
+    <button class="btn ghost" id="btn-teach">Teach it</button>
+    <div class="seg" role="tablist">
+      <button data-view="studio" class="on">Set</button>
+      <button data-view="monitor">Picture</button>
+      <button data-view="film">Both</button>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────── stage ───────────────────────────── -->
   <div class="stage">
-    <div class="view" id="view-main"><span class="tag">Studio · drag to orbit, wheel to zoom</span><div class="hud"><div id="hud-ee">—</div><div id="hud-ik">—</div></div></div>
-    <div class="view" id="view-feed">
-      <div class="vf">
-        <div class="grid"></div><span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
-        <div class="row top"><span class="rec" id="vf-rec">REC <span id="vf-tc">00:00:00</span></span><span>α7R III · 3:2 · 1/50 · ISO 400</span></div>
-        <div class="row bottom"><span id="vf-f">35 mm</span><span id="vf-n">f/4</span><span>focus <span id="vf-s">0.50 m</span></span><span>DoF <span id="vf-dof">—</span></span><span>FOV <span id="vf-fov">—</span></span></div>
-        <div id="vf-reticle" hidden></div><div id="vf-track" hidden></div>
+
+    <!-- left panel -->
+    <aside class="side">
+      <section class="card">
+        <h3>The camera</h3>
+        <div class="row"><span class="k">Body</span><span class="v">Sony α7R III</span></div>
+        <div class="row"><span class="k">Sensor</span><span class="v">Full frame · 42 MP</span></div>
+        <div class="row"><span class="k">Lens</span><span class="v">16–150 mm zoom</span></div>
+        <div class="row"><span class="k">Sensitivity</span><span class="v" id="v-iso">ISO 400</span></div>
+        <p class="hint">The zoom and focus rings are turned by two small servos on the lens, so the camera can zoom and refocus mid-move.</p>
+      </section>
+
+      <section class="card">
+        <h3>The look</h3>
+        <label class="slider"><span class="lab"><span>Zoom</span><span id="v-zoom">35 mm</span></span>
+          <input type="range" id="s-zoom" min="16" max="150" step="0.5" value="35"></label>
+        <label class="slider"><span class="lab"><span>Blur behind the subject</span><span id="v-blur">Soft</span></span>
+          <input type="range" id="s-blur" min="2.8" max="22" step="0.1" value="4"></label>
+        <div class="row"><span class="k">Focus</span><span class="v" id="v-focus">0.50 m</span></div>
+        <div class="row"><span class="k">Find it for me</span><span class="switch" id="sw-af"></span></div>
+        <label class="slider"><input type="range" id="s-focus" min="-1.6" max="3" step="0.01" value="-0.69"></label>
+        <p class="hint"><span id="v-focus-src">following the shot</span></p>
+        <p class="hint"><span id="v-sharp">—</span></p>
+        <p class="hint"><span id="v-fov">—</span> · <span id="v-blur-n">f/4</span> · tap the picture to focus there</p>
+      </section>
+
+      <section class="card">
+        <h3>The move</h3>
+        <label class="slider"><span class="lab"><span>How long</span><span id="dur-val">6.0 s</span></span>
+          <input type="range" id="dur" min="2" max="20" step="0.5" value="6"></label>
+        <label class="slider"><span class="lab"><span>How gentle</span><span>ease</span></span>
+          <input type="range" id="s-smooth" min="0" max="1" step="0.01" value="0.85"></label>
+        <p class="hint">Gentle eases in and out of every stop. Flat keeps a constant pace, which suits a slow reveal.</p>
+      </section>
+
+      <section class="card">
+        <h3>The set</h3>
+        <div class="row"><span class="k">Products</span><select class="sel" id="set-select"></select></div>
+        <div class="row"><span class="k">Show the path</span><span class="switch" id="sw-path"></span></div>
+        <div class="row"><span class="k">Show the stops</span><span class="switch" id="sw-frames"></span></div>
+        <div class="row"><span class="k">Show what it sees</span><span class="switch" id="sw-beam"></span></div>
+        <div class="row"><span class="k">Real lens blur</span><span class="switch" id="sw-blur"></span></div>
+      </section>
+
+      <section class="card">
+        <h3>The rig</h3>
+        <div class="row"><span class="k">Arm</span><span class="pill"><i class="dot"></i><span id="rig-state">Starting…</span></span></div>
+        <div class="row"><span class="k">Motors</span><span class="pill" id="rig-motors"><i class="dot"></i>All six motors healthy</span></div>
+        <div class="row"><span class="k">Reach</span><span class="pill" id="rig-reach"><i class="dot"></i>Every position reachable</span></div>
+        <div class="row"><span class="k">Link</span><span class="pill"><i class="dot"></i>Connected · 200 Hz</span></div>
+        <p class="hint">If a stop turns red the arm cannot get there. Drag it closer to the desk and it will clear.</p>
+      </section>
+    </aside>
+
+    <!-- the set, drawn by WebGL; the two rectangles below define the two pictures -->
+    <div class="viewport">
+      <canvas id="studio-canvas"></canvas>
+      <div id="view-main" style="position:absolute;inset:0;pointer-events:none"></div>
+      <div class="monitor" id="monitor">
+        <div id="view-feed" style="position:absolute;inset:0"></div>
+        <div class="mon-overlay">
+          <div class="thirds"></div>
+          <div class="bar t"><span class="rec-dot" id="m-rec"></span><span id="m-tc">00:00:00</span><span class="sp"></span><span id="m-iso">ISO 400</span></div>
+          <div class="bar b"><span id="m-zoom">35 mm</span><span id="m-blur">f/4</span><span class="sp"></span><span id="m-focus">0.50 m</span></div>
+          <div id="af-box" hidden></div>
+        </div>
       </div>
+      <div class="hud-hint">Drag the ball to place the camera · click a floating frame to open that stop · space to play</div>
+      <div class="toast" id="toast"></div>
     </div>
   </div>
-  <div class="panel">
-    <div class="tabs"><button class="tab on" data-tab="shots">Shots</button><button class="tab" data-tab="joints">Joints</button><button class="tab" data-tab="task">Task space</button><button class="tab" data-tab="lens">Lens</button><button class="tab" data-tab="learn">Record &amp; train</button><button class="tab" data-tab="help">Help</button></div>
-    <div class="pane" data-pane="shots">
-      <div class="row"><label>product set <select id="set-select"></select></label></div>
-      <h3 id="shot-title">—</h3><p id="shot-blurb" class="dim"></p>
-      <div class="row" id="tracking-row" hidden><label>tracking <select id="tracking-mode"><option value="gt">ground truth (look-at)</option><option value="vision">pixel tracker on the feed</option></select></label></div>
-      <div id="shot-list"></div>
-    </div>
-    <div class="pane" data-pane="joints" hidden>
-      <h3>Joint space</h3><p class="dim">Six Unitree GO-M8010-6 joints. Drag a slider; the arm follows instantly. Limits are the MuJoCo model's.</p>
-      <div id="joint-sliders"></div>
-      <div class="row"><button class="btn btn-sm" id="btn-home">Home pose</button></div>
-    </div>
-    <div class="pane" data-pane="task" hidden>
-      <h3>Task space</h3><p class="dim">Drag the gizmo on the camera mount; the arm solves the inverse kinematics live (damped least squares, look-at orientation).</p>
-      <div class="row"><label>gizmo <select id="gizmo-mode"><option value="translate">move</option><option value="rotate">rotate</option></select></label><label>aim <select id="aim-mode"><option value="lookat">look at the far product</option><option value="lookat-near">look at the hero</option><option value="free">free (rotate the gizmo)</option></select></label></div>
-      <div class="jog">
-        <button data-jog="dolly" data-amt="0.01">Dolly in</button><button data-jog="pedestal" data-amt="0.01">Up</button><button data-jog="dolly" data-amt="-0.01">Dolly out</button>
-        <button data-jog="truck" data-amt="-0.01">Truck ←</button><button data-jog="pedestal" data-amt="-0.01">Down</button><button data-jog="truck" data-amt="0.01">Truck →</button>
-        <span class="lbl">camera-relative jog · hold to repeat</span>
-        <button data-jog="pan" data-amt="0.02">Pan ←</button><button data-jog="tilt" data-amt="0.02">Tilt ↑</button><button data-jog="pan" data-amt="-0.02">Pan →</button>
-        <button data-jog="roll" data-amt="-0.02">Roll ↺</button><button data-jog="tilt" data-amt="-0.02">Tilt ↓</button><button data-jog="roll" data-amt="0.02">Roll ↻</button>
+
+  <!-- ───────────────────────────── timeline ───────────────────────────── -->
+  <div class="timeline">
+    <div class="tl-head">
+      <button class="btn primary" id="btn-play"><b>▶</b> Play</button>
+      <button class="icon-btn" id="btn-start" title="Back to the beginning">⏮</button>
+      <span class="tl-time"><b id="t-now">0.0</b> / <span id="t-total">6.0</span> s</span>
+      <span class="tl-time" id="tl-state">Preset shot</span>
+      <span class="spacer" style="flex:1"></span>
+      <div class="seg">
+        <button data-tool="move" class="on">Move</button>
+        <button data-tool="aim">Aim</button>
       </div>
     </div>
-    <div class="pane" data-pane="lens" hidden>
-      <h3>16–150 mm servo zoom</h3><p class="dim">Two servos drive the zoom and focus rings (60 mm/s and 4 m/s slew). Presets command them; take over here.</p>
-      <div class="lrow"><span>focal</span><input type="range" id="lens-f" min="16" max="150" step="0.5" value="35"><span class="v" id="lens-f-val">35 mm</span></div>
-      <div class="lrow"><span>focus</span><input type="range" id="lens-focus" min="-1.61" max="3.0" step="0.01" value="-0.69"><span class="v" id="lens-focus-val">0.50 m</span></div>
-      <div class="lrow"><span>aperture</span><input type="range" id="lens-n" min="2.8" max="22" step="0.1" value="4"><span class="v" id="lens-n-val">f/4</span></div>
-      <div class="row"><button class="btn btn-sm" id="btn-af">AF on the subject</button><label><input type="checkbox" id="dof-toggle" checked> depth of field</label></div>
-      <p class="dim">Full-frame 35.9 × 24 mm sensor. Depth of field from the thin-lens circle of confusion (0.03 mm acceptable): open up to f/2.8 for a product shot, stop down for the dolly zoom's deep focus.</p>
+
+    <div class="tl-track" id="tl-track">
+      <div class="tl-inner" id="tl-inner">
+        <div class="tl-ruler" id="tl-ruler"></div>
+        <div id="tl-keys"></div>
+        <div class="tl-play" id="tl-play" style="left:0%"></div>
+      </div>
     </div>
-    <div class="pane" data-pane="learn" hidden>
-      <h3>1 · Collect demonstrations</h3>
-      <p class="dim">Every recorded frame holds the joints, zoom, focus and a 24 × 16 thumbnail of the feed at 10 Hz, like the thesis's rosbag episodes.</p>
-      <div class="row"><button class="btn btn-rec" id="btn-rec">● Record this shot</button><label><input type="checkbox" id="rec-every"> record every play</label></div>
-      <div class="row"><button class="btn btn-sm" id="btn-demo-all">Demo every preset (3×)</button><button class="btn btn-sm" id="btn-export">Export JSON</button><label class="btn btn-sm">Import<input type="file" id="file-import" accept="application/json" hidden></label><button class="btn btn-sm" id="btn-clear">Clear</button></div>
-      <div class="stat" id="dataset-stats">0 episodes · 0 frames</div>
-      <h3>2 · Train a VisionJointPlanner-lite</h3>
-      <p class="dim">A 5-frame window of states + the feed thumbnail + a goal token → the next 5 joint/lens deltas (action chunking, temporal ensembling at run time). TensorFlow.js in this tab, seconds to train.</p>
-      <div class="row"><label>epochs <input type="number" id="epochs" value="60" min="5" max="500" style="width:70px"></label><button class="btn btn-primary btn-sm" id="btn-train">Train</button></div>
-      <canvas id="loss-canvas"></canvas>
-      <div class="stat" id="train-log">untrained</div>
-      <h3>3 · Let the policy fly a shot</h3>
-      <div class="row"><button class="btn btn-sm" id="btn-run-policy" disabled>Run the policy</button><button class="btn btn-sm" id="btn-stop-policy">Stop</button></div>
-      <div class="stat" id="policy-status">—</div>
+
+    <div class="tl-foot">
+      <div class="grp">
+        <button class="btn" id="btn-addkey">＋ Add a stop</button>
+        <button class="btn ghost" id="btn-delkey">Remove</button>
+        <button class="btn ghost" id="btn-look">Stand behind the camera</button>
+        <button class="btn ghost" id="btn-reset" hidden>Back to the preset</button>
+      </div>
+      <span class="tl-time" id="tl-count">5 stops</span>
+      <span class="spacer" style="flex:1"></span>
+      <div class="grp"><label for="speed">Pace</label><input type="range" class="mini" id="speed" min="0.25" max="3" step="0.25" value="1"><span class="tl-time" id="speed-val">1.0×</span></div>
+      <div class="grp"><label>Loop</label><span class="switch" id="sw-loop"></span></div>
     </div>
-    <div class="pane" data-pane="help" hidden>
-      <h3>How to use it</h3>
-      <p><b>Shots</b>: click a preset; it plays and loops. <kbd>space</kbd> pauses, the scrubber seeks. <b>Joints</b>: sliders. <b>Task space</b>: drag the yellow gizmo on the camera, or use the jog buttons. <b>Lens</b>: focal length, focus, aperture. <b>Record &amp; train</b>: collect demos, train, run.</p>
-      <p><b>Views</b>: <kbd>1</kbd> studio, <kbd>2</kbd> monitor, <kbd>3</kbd> film. <kbd>r</kbd> record, <kbd>h</kbd> home.</p>
-      <p class="dim">Kinematics: the MuJoCo model of the thesis (six hinge joints, the same body tree). Camera: Sony α7R III body, 16–150 mm servo zoom, thin-lens depth of field. Products: CC0 models from Poly Haven and procedural props. Nothing here is a physics simulation: the arm follows the planned joint path with a 1.5 rad/s per-joint cap.</p>
-    </div>
-  </div>
-  <div class="transport">
-    <button class="btn btn-sm btn-primary" id="btn-play">▶ Play</button><button class="btn btn-sm" id="btn-restart">↺</button>
-    <input type="range" id="scrub" min="0" max="1000" value="0"><span class="mono" id="time-label">0.0 / 0.0 s</span>
-    <label><input type="checkbox" id="loop-toggle" checked> loop</label>
-    <label>speed <select id="speed-select"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="3">3×</option></select></label>
-    <span class="views">view <button data-view="studio" class="on">studio</button><button data-view="monitor">monitor</button><button data-view="film">film</button></span>
   </div>
 </div>
+
+<!-- ───────────────────────────── drawer ───────────────────────────── -->
+<div class="drawer" id="drawer" hidden>
+  <div class="sheet">
+    <header><h2 id="drawer-title">Pick a shot</h2><span class="spacer" style="flex:1"></span><button class="icon-btn" data-close>✕</button></header>
+    <div class="body">
+      <div class="dpane" data-dpane="presets"><div id="preset-grid"></div></div>
+      <div class="dpane" data-dpane="teach" hidden>
+        <div class="teach">
+          <p>The robot can learn a move by watching itself do it. Record a few takes, let it study them, then hand it the camera.</p>
+          <div class="step"><span class="num">1</span><div><h5>Record some takes</h5>
+            <p>Each take stores what the camera saw and where the arm was, ten times a second.</p>
+            <div class="acts"><button class="btn" id="btn-rec">Record this take</button><button class="btn ghost" id="btn-demo-all">Record every shot for me</button></div>
+            <p id="dataset-stats" style="margin-top:8px"><b>0</b> takes · <b>0</b> moments captured</p></div></div>
+          <div class="step"><span class="num">2</span><div><h5>Let it study</h5>
+            <p>A small network learns to predict the next few moments of the move from the picture alone.</p>
+            <div class="acts"><label>Passes <select class="sel" id="epochs"><option>40</option><option selected>80</option><option>150</option></select></label>
+              <button class="btn primary" id="btn-train" disabled>Learn from these takes</button></div>
+            <p id="train-log"></p></div></div>
+          <div class="step"><span class="num">3</span><div><h5>Hand it the camera</h5>
+            <p>It flies the shot on its own, from the picture, with no preset to follow.</p>
+            <div class="acts"><button class="btn" id="btn-run-policy" disabled>Let it try</button>
+              <button class="btn ghost" id="btn-export">Save my takes</button>
+              <label class="btn ghost">Load takes<input type="file" id="file-import" accept="application/json" hidden></label></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="module">
-  import { App } from './assets/js/iris/app.js';
+  import { StudioApp } from './assets/js/iris/studio_app.js';
   const params = new URLSearchParams(location.search);
   if (params.has('embed')) document.documentElement.classList.add('embed');
   if (params.has('capture')) document.body.classList.add('capture');
-  const [spec, model] = await Promise.all([fetch('assets/data/iris_studio.json').then(r => r.json()), fetch('assets/data/iris_model.json').then(r => r.json())]);
-  const app = new App(spec, model, { capture: params.has('capture') });
+  const [spec, model] = await Promise.all([
+    fetch('assets/data/iris_studio.json').then(r => r.json()),
+    fetch('assets/data/iris_model.json').then(r => r.json())
+  ]);
+  const app = new StudioApp(spec, model, { capture: params.has('capture') });
   if (params.get('view')) app.setView(params.get('view'));
   if (params.get('set')) { document.getElementById('set-select').value = params.get('set'); document.getElementById('set-select').dispatchEvent(new Event('change')); }
   app.studio.ready.then(() => { if (params.get('shot')) app.selectShot(params.get('shot'), !params.has('capture')); window.IRIS_READY = true; });

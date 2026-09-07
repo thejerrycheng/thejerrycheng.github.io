@@ -9,17 +9,17 @@
    -0.45,
    0.45
   ],
-  "top_z": 0.0,
+  "top_z": 0,
   "thickness": 0.04,
   "height": 0.75
  },
  "near": [
   0.4,
-  0.0
+  0
  ],
  "far": [
   0.74,
-  0.0
+  0
  ],
  "products": [
   {
@@ -29,7 +29,7 @@
    "procedural": null,
    "height": 0.085,
    "centre_z": 0.043,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "bananas",
@@ -47,7 +47,7 @@
    "procedural": null,
    "height": 0.095,
    "centre_z": 0.048,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "lime",
@@ -56,7 +56,7 @@
    "procedural": null,
    "height": 0.075,
    "centre_z": 0.037,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "kiwi",
@@ -65,7 +65,7 @@
    "procedural": null,
    "height": 0.09,
    "centre_z": 0.045,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "avocado",
@@ -74,7 +74,7 @@
    "procedural": null,
    "height": 0.143,
    "centre_z": 0.071,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "pomegranate",
@@ -83,7 +83,7 @@
    "procedural": null,
    "height": 0.115,
    "centre_z": 0.058,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "pears",
@@ -92,7 +92,7 @@
    "procedural": null,
    "height": 0.071,
    "centre_z": 0.035,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "carrot_cake",
@@ -101,7 +101,7 @@
    "procedural": null,
    "height": 0.098,
    "centre_z": 0.049,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "choc_cake",
@@ -110,7 +110,7 @@
    "procedural": null,
    "height": 0.079,
    "centre_z": 0.04,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "wine",
@@ -128,7 +128,7 @@
    "procedural": null,
    "height": 0.309,
    "centre_z": 0.12,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "plant",
@@ -146,7 +146,7 @@
    "procedural": null,
    "height": 0.008,
    "centre_z": 0.004,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "pocket_watch",
@@ -155,7 +155,7 @@
    "procedural": null,
    "height": 0.076,
    "centre_z": 0.038,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "coffee_cup",
@@ -164,7 +164,7 @@
    "procedural": "coffee_cup",
    "height": 0.125,
    "centre_z": 0.065,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "perfume",
@@ -173,7 +173,7 @@
    "procedural": "perfume",
    "height": 0.11,
    "centre_z": 0.055,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "lipstick",
@@ -182,7 +182,7 @@
    "procedural": "lipstick",
    "height": 0.075,
    "centre_z": 0.035,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "cream_jar",
@@ -191,7 +191,7 @@
    "procedural": "cream_jar",
    "height": 0.055,
    "centre_z": 0.028,
-   "scale": 1.0
+   "scale": 1
   },
   {
    "id": "toy_car",
@@ -200,7 +200,7 @@
    "procedural": "toy_car",
    "height": 0.05,
    "centre_z": 0.03,
-   "scale": 1.0
+   "scale": 1
   }
  ],
  "sets": {
@@ -320,11 +320,11 @@
  "default_set": "cafe",
  "car": {
   "centre": [
-   0.64,
-   0.0
+   0.58,
+   -0.25
   ],
-  "radius": 0.18,
-  "lap_s": 12.0,
+  "radius": 0.16,
+  "lap_s": 12,
   "a0_deg": 200
  },
  "home_q_deg": [
@@ -339,7 +339,7 @@
   "body": "Sony \u03b17R III",
   "sensor_mm": [
    35.9,
-   24.0
+   24
   ],
   "lens": "16\u2013150 mm servo zoom",
   "f_range": [
@@ -348,7 +348,7 @@
   ],
   "mfd_m": 0.2,
   "zoom_rate_mm_s": 60,
-  "focus_rate_m_s": 4.0
+  "focus_rate_m_s": 4
  },
  "limits": {
   "joint_speed_rad_s": 1.5,
@@ -365,7 +365,7 @@
     "type": "static",
     "at": [
      0.42,
-     0.0,
+     0,
      0.2
     ]
    },
@@ -376,8 +376,8 @@
      28
     ],
     "pitch": [
-     -12,
-     -12
+     -25.26,
+     -25.26
     ],
     "roll": [
      0,
@@ -385,7 +385,7 @@
     ]
    },
    "lens": {
-    "f": 28,
+    "f": 30.1,
     "focus": 0.45,
     "N": 5.6
    },
@@ -400,9 +400,9 @@
    "path": {
     "type": "static",
     "at": [
-     0.42,
-     0.0,
-     0.24
+     0.411,
+     0,
+     0.224
     ]
    },
    "aim": {
@@ -412,8 +412,8 @@
      0
     ],
     "pitch": [
-     -38,
-     6
+     -44.01,
+     -12.01
     ],
     "roll": [
      0,
@@ -421,7 +421,7 @@
     ]
    },
    "lens": {
-    "f": 28,
+    "f": 30.1,
     "focus": 0.45,
     "N": 5.6
    },
@@ -437,7 +437,7 @@
     "type": "static",
     "at": [
      0.38,
-     0.0,
+     0,
      0.2
     ]
    },
@@ -450,7 +450,7 @@
     ]
    },
    "lens": {
-    "f": 40,
+    "f": 34.2,
     "focus": "auto",
     "N": 4
    },
@@ -476,8 +476,8 @@
    },
    "lens": {
     "f": [
-     24,
-     110
+     17.5,
+     80.3
     ],
     "focus": "auto",
     "N": 4
@@ -504,8 +504,8 @@
    },
    "lens": {
     "f": [
-     110,
-     24
+     80.3,
+     17.5
     ],
     "focus": "auto",
     "N": 4
@@ -522,13 +522,13 @@
     "type": "line",
     "from": [
      0.36,
-     0.0,
+     0,
      0.19
     ],
     "to": [
-     0.46,
-     0.0,
-     0.12
+     0.485,
+     0,
+     0.1846
     ]
    },
    "aim": {
@@ -536,7 +536,7 @@
     "subject": "far"
    },
    "lens": {
-    "f": 35,
+    "f": 30.3,
     "focus": "auto",
     "N": 4
    },
@@ -551,13 +551,13 @@
    "path": {
     "type": "line",
     "from": [
-     0.46,
-     0.0,
-     0.12
+     0.485,
+     0,
+     0.1846
     ],
     "to": [
      0.36,
-     0.0,
+     0,
      0.19
     ]
    },
@@ -566,7 +566,7 @@
     "subject": "far"
    },
    "lens": {
-    "f": 35,
+    "f": 30.3,
     "focus": "auto",
     "N": 4
    },
@@ -581,14 +581,14 @@
    "path": {
     "type": "line",
     "from": [
-     0.46,
-     -0.24,
-     0.17
+     0.4631,
+     -0.2374,
+     0.1817
     ],
     "to": [
-     0.46,
-     0.24,
-     0.17
+     0.4631,
+     0.2374,
+     0.1817
     ]
    },
    "aim": {
@@ -596,7 +596,7 @@
     "subject": "far"
    },
    "lens": {
-    "f": 35,
+    "f": 26.9,
     "focus": "auto",
     "N": 4
    },
@@ -611,14 +611,14 @@
    "path": {
     "type": "line",
     "from": [
-     0.46,
-     0.0,
-     0.1
+     0.4887,
+     0,
+     0.1826
     ],
     "to": [
-     0.46,
-     0.0,
-     0.42
+     0.3296,
+     0,
+     0.2672
     ]
    },
    "aim": {
@@ -626,7 +626,7 @@
     "subject": "far"
    },
    "lens": {
-    "f": 35,
+    "f": 32.8,
     "focus": "auto",
     "N": 4
    },
@@ -640,9 +640,9 @@
    "ease": "smooth",
    "path": {
     "type": "orbit",
-    "subject": "near",
-    "radius": 0.14,
-    "height": 0.32,
+    "subject": "far",
+    "radius": 0.26,
+    "height": 0.35,
     "a": [
      -45,
      45
@@ -650,10 +650,10 @@
    },
    "aim": {
     "type": "lookat",
-    "subject": "near"
+    "subject": "far"
    },
    "lens": {
-    "f": 35,
+    "f": 34.9,
     "focus": "auto",
     "N": 4
    },
@@ -661,30 +661,30 @@
   },
   {
    "id": "orbit_180",
-   "name": "Orbit 180\u00b0",
+   "name": "Orbit 100\u00b0",
    "group": "orbits",
    "duration": 14,
    "ease": "smooth",
    "path": {
     "type": "orbit",
-    "subject": "near",
-    "radius": 0.14,
-    "height": 0.32,
+    "subject": "far",
+    "radius": 0.32,
+    "height": 0.35,
     "a": [
-     -90,
-     90
+     -50,
+     50
     ]
    },
    "aim": {
     "type": "lookat",
-    "subject": "near"
+    "subject": "far"
    },
    "lens": {
-    "f": 35,
+    "f": 38.4,
     "focus": "auto",
     "N": 4
    },
-   "blurb": "Half a turn: from one side of the desk to the other."
+   "blurb": "A 100\u00b0 turn around the hero \u2014 as far as the wrist can carry the camera before it runs out of twist."
   },
   {
    "id": "turntable_360",
@@ -695,9 +695,9 @@
    "path": {
     "type": "static",
     "at": [
-     0.28,
-     -0.14,
-     0.3
+     0.2173,
+     -0.2131,
+     0.1672
     ]
    },
    "aim": {
@@ -705,7 +705,7 @@
     "subject": "near"
    },
    "lens": {
-    "f": 45,
+    "f": 27.8,
     "focus": "auto",
     "N": 4
    },
@@ -721,9 +721,9 @@
    "path": {
     "type": "varc",
     "subject": "near",
-    "radius": 0.26,
+    "radius": 0.28,
     "elevation": [
-     60,
+     52,
      12
     ],
     "azimuth": 60
@@ -733,7 +733,7 @@
     "subject": "near"
    },
    "lens": {
-    "f": 30,
+    "f": 26.0,
     "focus": "auto",
     "N": 4
    },
@@ -749,26 +749,26 @@
     "type": "line",
     "from": [
      0.42,
-     0.0,
+     0,
      0.4
     ],
     "to": [
-     0.52,
-     0.0,
-     0.14
+     0.5,
+     0,
+     0.165
     ]
    },
    "aim": {
     "type": "lookat_moving",
     "from": [
      0.57,
-     0.0,
-     0.0
+     0,
+     0
     ],
     "to": "far"
    },
    "lens": {
-    "f": 28,
+    "f": 24.5,
     "focus": "auto",
     "N": 4
    },
@@ -783,14 +783,14 @@
    "path": {
     "type": "line",
     "from": [
-     0.488,
-     0.0,
-     0.1129
+     0.5104,
+     0,
+     0.1711
     ],
     "to": [
-     0.3329,
-     0.0,
-     0.1522
+     0.3691,
+     0,
+     0.2462
     ]
    },
    "aim": {
@@ -799,9 +799,9 @@
    },
    "lens": {
     "f": "dollyzoom",
-    "f0": 24.3,
+    "f0": 22.78,
     "focus": "auto",
-    "N": 16.0,
+    "N": 16,
     "radius": 0.1127
    },
    "blurb": "The Vertigo effect: the arm pulls back while the zoom servo pushes in, so the product keeps its size and the background collapses."
@@ -815,14 +815,14 @@
    "path": {
     "type": "line",
     "from": [
-     0.3329,
-     0.0,
-     0.1522
+     0.3691,
+     0,
+     0.2462
     ],
     "to": [
-     0.488,
-     0.0,
-     0.1129
+     0.5104,
+     0,
+     0.1711
     ]
    },
    "aim": {
@@ -831,9 +831,9 @@
    },
    "lens": {
     "f": "dollyzoom",
-    "f0": 41.9,
+    "f0": 36.8,
     "focus": "auto",
-    "N": 16.0,
+    "N": 16,
     "radius": 0.1127
    },
    "blurb": "The reverse: push in while zooming out; the background rushes away."
@@ -847,21 +847,21 @@
    "path": {
     "type": "static",
     "at": [
-     0.34,
-     0.06,
-     0.17
+     0.2001,
+     0.1547,
+     0.2562
     ]
    },
    "aim": {
     "type": "lookat",
     "point": [
      0.56,
-     0.0,
+     0,
      0.05
     ]
    },
    "lens": {
-    "f": 55,
+    "f": 43.7,
     "focus": {
      "type": "rack",
      "seq": [
@@ -884,9 +884,9 @@
    "path": {
     "type": "static",
     "at": [
-     0.26,
-     0.0,
-     0.4
+     0.129,
+     0.1544,
+     0.1772
     ]
    },
    "aim": {
@@ -894,7 +894,7 @@
     "subject": "car"
    },
    "lens": {
-    "f": 45,
+    "f": 44.9,
     "focus": "auto",
     "N": 4
    },
@@ -924,7 +924,7 @@
     "subject": "car"
    },
    "lens": {
-    "f": 40,
+    "f": 40.1,
     "focus": "auto",
     "N": 4
    },
@@ -940,13 +940,13 @@
     "type": "line",
     "from": [
      0.3,
-     -0.14,
+     -0.19,
      0.1
     ],
     "to": [
      0.4,
-     -0.04,
-     0.18
+     -0.09,
+     0.185
     ]
    },
    "aim": {
@@ -956,14 +956,14 @@
      -0.05,
      0.02
     ],
-    "to": "near"
+    "to": "far"
    },
    "lens": {
-    "f": 24,
+    "f": 22,
     "focus": "auto",
     "N": 4
    },
-   "blurb": "Rise from the desk surface and tilt up onto the hero."
+   "blurb": "Starts low and close to the desk, then lifts to reveal the hero behind."
   },
   {
    "id": "whip_pan",
@@ -974,9 +974,9 @@
    "path": {
     "type": "static",
     "at": [
-     0.4,
-     0.0,
-     0.2
+     0.3995,
+     0.0002,
+     0.1989
     ]
    },
    "aim": {
@@ -985,12 +985,12 @@
     "to": "far"
    },
    "lens": {
-    "f": 35,
+    "f": 21.4,
     "focus": "auto",
     "N": 4
    },
    "blurb": "A fast snap from one product to another.",
-   "vmax": 3.0
+   "vmax": 3
   },
   {
    "id": "arc_zoom",
@@ -1000,9 +1000,9 @@
    "ease": "smooth",
    "path": {
     "type": "orbit",
-    "subject": "near",
-    "radius": 0.16,
-    "height": 0.28,
+    "subject": "far",
+    "radius": 0.29,
+    "height": 0.35,
     "a": [
      -50,
      50
@@ -1010,12 +1010,12 @@
    },
    "aim": {
     "type": "lookat",
-    "subject": "near"
+    "subject": "far"
    },
    "lens": {
     "f": [
-     30,
-     60
+     25.9,
+     51.7
     ],
     "focus": "auto",
     "N": 4
@@ -1031,14 +1031,14 @@
    "path": {
     "type": "line",
     "from": [
-     0.3,
-     0.12,
-     0.22
+     -0.0399,
+     0.1976,
+     0.1675
     ],
     "to": [
-     0.42,
-     0.03,
-     0.13
+     0.3842,
+     0.2097,
+     0.2178
     ]
    },
    "aim": {
@@ -1047,8 +1047,8 @@
    },
    "lens": {
     "f": [
-     40,
-     60
+     25.1,
+     37.7
     ],
     "focus": "auto",
     "N": 2.8

@@ -28,14 +28,14 @@ export const PROPS = {
   coffee_cup() {
     const g = new THREE.Group();
     const pts = []; for (let i = 0; i <= 12; i++) { const t = i / 12; pts.push(new THREE.Vector2(0.031 + 0.011 * t, 0.11 * t)); }
-    const cup = new THREE.Mesh(new THREE.LatheGeometry(pts, 48), mat(0xf3efe6, { roughness: 0.85 })); cup.rotation.x = Math.PI / 2; g.add(cup);
-    const bottom = new THREE.Mesh(new THREE.CircleGeometry(0.031, 48), mat(0xf3efe6)); bottom.position.z = 0.001; g.add(bottom);
+    const cup = new THREE.Mesh(new THREE.LatheGeometry(pts, 48), mat(0xd9d5cc, { roughness: 0.92 })); cup.rotation.x = Math.PI / 2; g.add(cup);
+    const bottom = new THREE.Mesh(new THREE.CircleGeometry(0.031, 48), mat(0xd9d5cc)); bottom.position.z = 0.001; g.add(bottom);
     const sleevePts = []; for (let i = 0; i <= 4; i++) { const t = i / 4; sleevePts.push(new THREE.Vector2(0.0355 + 0.0043 * t + 0.0015, 0.035 + 0.045 * t)); }
     const sleeve = new THREE.Mesh(new THREE.LatheGeometry(sleevePts, 48), mat(0x9c7a4d, { roughness: 0.95 })); sleeve.rotation.x = Math.PI / 2; g.add(sleeve);
     const logo = new THREE.Mesh(new THREE.RingGeometry(0.008, 0.0125, 32), mat(0x1c6b3b, { roughness: 0.8, side: THREE.DoubleSide })); logo.position.set(0.0415, 0, 0.058); logo.rotation.y = Math.PI / 2; g.add(logo);
     const logo2 = new THREE.Mesh(new THREE.CircleGeometry(0.004, 24), mat(0x1c6b3b, { side: THREE.DoubleSide })); logo2.position.copy(logo.position); logo2.rotation.y = Math.PI / 2; g.add(logo2);
-    const lid = new THREE.Mesh(new THREE.CylinderGeometry(0.046, 0.044, 0.012, 48), mat(0xf7f7f4, { roughness: 0.5 })); lid.rotation.x = Math.PI / 2; lid.position.z = 0.116; g.add(lid);
-    const dome = new THREE.Mesh(new THREE.SphereGeometry(0.02, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), mat(0xf7f7f4, { roughness: 0.5 })); dome.rotation.x = Math.PI / 2; dome.position.z = 0.122; dome.scale.set(1, 1, 0.4); g.add(dome);
+    const lid = new THREE.Mesh(new THREE.CylinderGeometry(0.046, 0.044, 0.012, 48), mat(0xcfcfca, { roughness: 0.72 })); lid.rotation.x = Math.PI / 2; lid.position.z = 0.116; g.add(lid);
+    const dome = new THREE.Mesh(new THREE.SphereGeometry(0.02, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), mat(0xcfcfca, { roughness: 0.72 })); dome.rotation.x = Math.PI / 2; dome.position.z = 0.122; dome.scale.set(1, 1, 0.4); g.add(dome);
     return g;
   },
   perfume() {
@@ -73,41 +73,166 @@ export const PROPS = {
   },
 };
 
-/* ------------------------------------------------------------------ the camera rig on the mount */
+/* ------------------------------------------------------------------ the camera rig on the mount
+   Built to the manufacturers' published dimensions, because no redistributable mesh of this camera
+   exists: Sony alpha-7R III body 126.9 x 95.6 x 73.7 mm with an E mount (46.1 mm throat, 18 mm flange
+   distance); a cine-style servo zoom with 0.8-module gear rings; and two Feetech HLS3915M bus servos
+   (34 x 20 x 23 mm, 36 g, aluminium case, dual 25T output shafts, 14.2 kg-cm at 12 V, TTL serial bus)
+   on 15 mm rods, which is how a follow-focus motor is actually mounted.
+   Frame: +z is the optical axis, -y is up, +x is the image's right (so the grip is at +x).         */
+function roundedRect(w, h, r) {
+  const s = new THREE.Shape();
+  s.moveTo(-w / 2 + r, -h / 2);
+  s.lineTo(w / 2 - r, -h / 2); s.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r);
+  s.lineTo(w / 2, h / 2 - r); s.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2);
+  s.lineTo(-w / 2 + r, h / 2); s.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r);
+  s.lineTo(-w / 2, -h / 2 + r); s.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2);
+  return s;
+}
+/** A rounded slab extruded along z, centred on (0,0,z0 + depth/2). */
+function slab(w, h, d, r, material, bevel = 0.0025) {
+  const g = new THREE.ExtrudeGeometry(roundedRect(w, h, r), { depth: d - 2 * bevel, bevelEnabled: true, bevelSize: bevel, bevelThickness: bevel, bevelSegments: 3, curveSegments: 12 });
+  g.translate(0, 0, bevel);
+  return new THREE.Mesh(g, material);
+}
+/** A knurled dial: a cylinder with fine ribs, axis along y (camera up). */
+function dial(r, hgt, mat, ribs = 28) {
+  const g = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(r, r, hgt, 36), mat); g.add(body);
+  const rib = new THREE.BoxGeometry(0.0014, hgt * 0.8, 0.0022);
+  for (let i = 0; i < ribs; i++) { const m = new THREE.Mesh(rib, mat); const a = (i / ribs) * Math.PI * 2; m.position.set(Math.cos(a) * r, 0, Math.sin(a) * r); m.rotation.y = -a; g.add(m); }
+  return g;
+}
+/** A 0.8-module cine gear ring (the pitch a follow-focus motor drives), axis along z. */
+function gearRing(radius, width, teeth, mat) {
+  const g = new THREE.Group();
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, width, 48), mat); core.rotation.x = Math.PI / 2; g.add(core);
+  const tooth = new THREE.BoxGeometry(0.0011, width, 0.0016);
+  for (let i = 0; i < teeth; i++) { const m = new THREE.Mesh(tooth, mat); const a = (i / teeth) * Math.PI * 2; m.position.set(Math.cos(a) * (radius + 0.0006), Math.sin(a) * (radius + 0.0006), 0); m.rotation.z = a; m.rotation.x = Math.PI / 2; g.add(m); }
+  return g;
+}
 export function buildRig() {
-  const rig = new THREE.Group();   /* mount frame: +z = optical axis, -y = up */
-  const black = mat(0x121214, { roughness: 0.55, metalness: 0.2 }), rubber = mat(0x1a1a1c, { roughness: 0.95 }), silver = mat(0xc9ccd2, { roughness: 0.35, metalness: 0.8 });
-  const plate = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.07, 0.008), mat(0x2a2c30, { metalness: 0.6, roughness: 0.4 })); plate.position.z = 0.032; rig.add(plate);
-  const body = new THREE.Mesh(new THREE.BoxGeometry(0.127, 0.096, 0.062), black); body.position.set(0.0, -0.006, 0.067); rig.add(body);
-  const grip = new THREE.Mesh(new THREE.BoxGeometry(0.036, 0.09, 0.03), rubber); grip.position.set(-0.07, -0.003, 0.104); rig.add(grip);
-  const evf = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.026, 0.05), black); evf.position.set(-0.01, -0.06, 0.06); rig.add(evf);
-  const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.006, 0.02), silver); shoe.position.set(-0.01, -0.075, 0.06); rig.add(shoe);
-  const screen = new THREE.Mesh(new THREE.PlaneGeometry(0.075, 0.05), new THREE.MeshBasicMaterial({ color: 0x0b0d10 })); screen.position.set(0.004, -0.004, 0.0355); screen.rotation.y = Math.PI; rig.add(screen);
-  const badge = new THREE.Mesh(new THREE.PlaneGeometry(0.03, 0.008), new THREE.MeshBasicMaterial({ map: labelTexture('α7R III', '#eee', '#121214', 40, 256, 64) })); badge.position.set(0.024, -0.03, 0.0355); badge.rotation.y = Math.PI; rig.add(badge);
-  const throat = new THREE.Mesh(new THREE.CylinderGeometry(0.023, 0.023, 0.004, 40), silver); throat.rotation.x = Math.PI / 2; throat.position.set(0.0, 0.0, 0.1); rig.add(throat);
-  /* the zoom lens: fixed rear barrel, the extending front barrel, the two servo-driven rings and their motors */
-  const lens = new THREE.Group(); lens.position.set(0.0, 0.0, 0.1); rig.add(lens);
-  const rear = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.034, 0.05, 48), black); rear.rotation.x = Math.PI / 2; rear.position.z = 0.025; lens.add(rear);
-  const zoomRing = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 0.016, 40, 1, false), rubber); zoomRing.rotation.x = Math.PI / 2; zoomRing.position.z = 0.018; lens.add(zoomRing);
-  const zoomGear = new THREE.Mesh(new THREE.CylinderGeometry(0.0405, 0.0405, 0.01, 60), mat(0x2f3136, { roughness: 0.5, metalness: 0.5 })); zoomGear.rotation.x = Math.PI / 2; zoomGear.position.z = 0.018; lens.add(zoomGear);
-  const focusRing = new THREE.Mesh(new THREE.CylinderGeometry(0.037, 0.037, 0.014, 40, 1, false), rubber); focusRing.rotation.x = Math.PI / 2; focusRing.position.z = 0.042; lens.add(focusRing);
-  const focusGear = new THREE.Mesh(new THREE.CylinderGeometry(0.0395, 0.0395, 0.009, 60), mat(0x2f3136, { roughness: 0.5, metalness: 0.5 })); focusGear.rotation.x = Math.PI / 2; focusGear.position.z = 0.042; lens.add(focusGear);
-  for (const [ring, r0] of [[zoomRing, 0.0385], [focusRing, 0.0375]]) {
-    const mark = new THREE.Mesh(new THREE.BoxGeometry(0.003, 0.004, 0.012), new THREE.MeshStandardMaterial({ color: 0xd8d4c8, roughness: 0.5 }));
-    mark.position.set(r0, 0, 0); mark.rotation.x = Math.PI / 2; ring.add(mark);            /* index mark, rides with the ring */
+  const rig = new THREE.Group();
+  const mag = new THREE.MeshStandardMaterial({ color: 0x131418, roughness: 0.68, metalness: 0.15, envMapIntensity: 0.35 });   /* magnesium shell, painted matte black */
+  const black = new THREE.MeshStandardMaterial({ color: 0x0e0f12, roughness: 0.72, metalness: 0.15, envMapIntensity: 0.3 });
+  const rubber = new THREE.MeshStandardMaterial({ color: 0x121214, roughness: 0.96, metalness: 0.0 });
+  const dialMat = new THREE.MeshStandardMaterial({ color: 0x1d1f24, roughness: 0.45, metalness: 0.6, envMapIntensity: 0.5 });
+  const steel = new THREE.MeshStandardMaterial({ color: 0x9aa0a8, roughness: 0.3, metalness: 0.9, envMapIntensity: 0.7 });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xc9a227, roughness: 0.3, metalness: 1.0 });
+  const alu = new THREE.MeshStandardMaterial({ color: 0x24272c, roughness: 0.4, metalness: 0.8, envMapIntensity: 0.5 });   /* anodised aluminium servo case */
+  const W = 0.1269, H = 0.0956;                                                                          /* published body width and height */
+  const Z0 = 0.030, SLAB = 0.049;                                                                        /* rear face, and the slab's depth without the grip */
+
+  /* ---- quick-release plate and tripod socket under the body ---- */
+  const plate = slab(0.070, 0.050, 0.008, 0.004, new THREE.MeshStandardMaterial({ color: 0x1a1c20, roughness: 0.45, metalness: 0.55, envMapIntensity: 0.45 }));
+  plate.rotation.x = Math.PI / 2; plate.position.set(0, H / 2 + 0.004, Z0 + 0.030); rig.add(plate);
+
+  /* ---- body ---- */
+  const body = slab(W, H, SLAB, 0.009, mag); body.position.z = Z0; rig.add(body);
+  /* the front shoulder that carries the mount, slightly proud of the slab */
+  const front = slab(0.086, H - 0.004, 0.012, 0.010, mag); front.position.z = Z0 + SLAB; rig.add(front);
+  /* grip: a rounded lobe on the +x side that swells forward */
+  const grip = slab(0.036, H - 0.010, 0.030, 0.012, mag); grip.position.set(W / 2 - 0.020, 0.002, Z0 + SLAB); rig.add(grip);
+  const gripSkin = slab(0.031, H - 0.020, 0.028, 0.012, rubber); gripSkin.position.set(W / 2 - 0.019, 0.002, Z0 + SLAB + 0.001); rig.add(gripSkin);
+  const thumb = slab(0.020, 0.030, 0.010, 0.006, rubber); thumb.position.set(W / 2 - 0.030, -0.020, Z0 - 0.008); rig.add(thumb);
+
+  /* ---- top plate (camera up is -y) ---- */
+  const evf = slab(0.040, 0.020, 0.040, 0.006, mag); evf.position.set(-0.008, -H / 2 - 0.008, Z0 + 0.014); rig.add(evf);
+  const eyecup = new THREE.Mesh(new THREE.BoxGeometry(0.034, 0.024, 0.010), rubber); eyecup.position.set(-0.008, -H / 2 - 0.007, Z0 - 0.004); rig.add(eyecup);
+  const shoeBase = new THREE.Mesh(new THREE.BoxGeometry(0.024, 0.004, 0.020), black); shoeBase.position.set(-0.008, -H / 2 - 0.020, Z0 + 0.016); rig.add(shoeBase);
+  for (const sx of [-1, 1]) { const rail = new THREE.Mesh(new THREE.BoxGeometry(0.003, 0.003, 0.020), steel); rail.position.set(-0.008 + sx * 0.0115, -H / 2 - 0.021, Z0 + 0.016); rig.add(rail); }
+  const modeDial = dial(0.0145, 0.010, dialMat); modeDial.position.set(-0.040, -H / 2 - 0.004, Z0 + 0.020); rig.add(modeDial);
+  const compDial = dial(0.0145, 0.009, dialMat); compDial.position.set(0.032, -H / 2 - 0.004, Z0 + 0.012); rig.add(compDial);
+  const driveDial = dial(0.0125, 0.008, dialMat); driveDial.position.set(0.049, -H / 2 - 0.004, Z0 + 0.030); rig.add(driveDial);
+  const shutter = new THREE.Mesh(new THREE.CylinderGeometry(0.0055, 0.0055, 0.004, 20), steel); shutter.position.set(W / 2 - 0.026, -H / 2 - 0.004, Z0 + 0.056); shutter.rotation.z = 0.12; rig.add(shutter);
+  const frontDial = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.006, 24), dialMat); frontDial.rotation.z = Math.PI / 2; frontDial.position.set(W / 2 - 0.018, -H / 2 + 0.006, Z0 + 0.066); rig.add(frontDial);
+  for (let i = 0; i < 2; i++) { const b = new THREE.Mesh(new THREE.CylinderGeometry(0.0035, 0.0035, 0.0025, 16), black); b.position.set(0.010 + i * 0.011, -H / 2 - 0.003, Z0 + 0.030); rig.add(b); }
+
+  /* ---- rear: screen, viewfinder controls ---- */
+  const screenFrame = slab(0.072, 0.052, 0.004, 0.003, black); screenFrame.position.set(-0.014, 0.008, Z0 - 0.004); rig.add(screenFrame);
+  const screen = new THREE.Mesh(new THREE.PlaneGeometry(0.066, 0.046), new THREE.MeshStandardMaterial({ color: 0x0a0c10, roughness: 0.18, metalness: 0.1 }));
+  screen.position.set(-0.014, 0.008, Z0 - 0.0045); screen.rotation.y = Math.PI; rig.add(screen);
+  const rearDial = new THREE.Mesh(new THREE.TorusGeometry(0.011, 0.0035, 10, 28), dialMat); rearDial.position.set(0.040, 0.014, Z0 - 0.002); rig.add(rearDial);
+  const joystick = new THREE.Mesh(new THREE.CylinderGeometry(0.003, 0.004, 0.005, 12), black); joystick.rotation.x = Math.PI / 2; joystick.position.set(0.040, -0.012, Z0 - 0.003); rig.add(joystick);
+
+  /* ---- E mount: 46.1 mm throat, ten gold contacts, index dot ---- */
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.0305, 0.0035, 12, 48), steel); ring.position.z = Z0 + SLAB + 0.013; rig.add(ring);
+  const throat = new THREE.Mesh(new THREE.CylinderGeometry(0.0231, 0.0231, 0.014, 40, 1, true), new THREE.MeshStandardMaterial({ color: 0x0a0a0c, roughness: 0.8, side: THREE.DoubleSide }));
+  throat.rotation.x = Math.PI / 2; throat.position.z = Z0 + SLAB + 0.008; rig.add(throat);
+  for (let i = 0; i < 10; i++) { const c = new THREE.Mesh(new THREE.BoxGeometry(0.0018, 0.0015, 0.004), gold); const a = -0.55 + i * 0.12; c.position.set(Math.sin(a) * 0.0215, Math.cos(a) * 0.0215, Z0 + SLAB + 0.010); c.rotation.z = -a; rig.add(c); }
+  const indexDot = new THREE.Mesh(new THREE.CircleGeometry(0.0022, 16), new THREE.MeshStandardMaterial({ color: 0xe8e8e8, roughness: 0.4 }));
+  indexDot.position.set(0, -0.036, Z0 + SLAB + 0.0122); rig.add(indexDot);
+  const release = new THREE.Mesh(new THREE.CylinderGeometry(0.0045, 0.0045, 0.003, 16), black); release.rotation.x = Math.PI / 2; release.position.set(-0.040, 0.004, Z0 + SLAB + 0.012); rig.add(release);
+
+  /* ---- badges ---- */
+  const badge = (text, w, h, px) => new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: labelTexture(text, '#c8cad0', '#131418', px, 256, 64), transparent: false }));
+  const sony = badge('SONY', 0.030, 0.0075, 34); sony.position.set(-0.030, -H / 2 - 0.0005, Z0 + 0.040); sony.rotation.x = Math.PI / 2; rig.add(sony);
+  const model = badge('a7R III', 0.024, 0.006, 30); model.position.set(0.030, 0.030, Z0 - 0.0042); model.rotation.y = Math.PI; rig.add(model);
+
+  /* ---- the servo zoom lens ---- */
+  const lens = new THREE.Group(); lens.position.z = Z0 + SLAB + 0.013; rig.add(lens);
+  const rear = new THREE.Mesh(new THREE.CylinderGeometry(0.0345, 0.0325, 0.030, 48), black); rear.rotation.x = Math.PI / 2; rear.position.z = 0.015; lens.add(rear);
+  const zoomRing = new THREE.Mesh(new THREE.CylinderGeometry(0.0385, 0.0385, 0.020, 40), rubber); zoomRing.rotation.x = Math.PI / 2; zoomRing.position.z = 0.040; lens.add(zoomRing);
+  const zoomGear = gearRing(0.0405, 0.008, 64, dialMat); zoomGear.position.z = 0.040; lens.add(zoomGear);
+  const mid = new THREE.Mesh(new THREE.CylinderGeometry(0.0375, 0.0375, 0.014, 48), black); mid.rotation.x = Math.PI / 2; mid.position.z = 0.057; lens.add(mid);
+  const focusRing = new THREE.Mesh(new THREE.CylinderGeometry(0.0375, 0.0375, 0.018, 40), rubber); focusRing.rotation.x = Math.PI / 2; focusRing.position.z = 0.073; lens.add(focusRing);
+  const focusGear = gearRing(0.0395, 0.008, 62, dialMat); focusGear.position.z = 0.073; lens.add(focusGear);
+  /* an index mark on each ring so the roll is legible */
+  for (const [ring2, r0] of [[zoomRing, 0.0387], [focusRing, 0.0377]]) {
+    const mark = new THREE.Mesh(new THREE.BoxGeometry(0.0025, 0.004, 0.013), new THREE.MeshStandardMaterial({ color: 0xdad6ca, roughness: 0.45 }));
+    mark.position.set(r0, 0, 0); mark.rotation.x = Math.PI / 2; ring2.add(mark);
   }
-  const ext = new THREE.Group(); ext.position.z = 0.05; lens.add(ext);
-  const front = new THREE.Mesh(new THREE.CylinderGeometry(0.031, 0.033, 0.04, 48), black); front.rotation.x = Math.PI / 2; front.position.z = 0.02; ext.add(front);
-  const hood = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.034, 0.012, 48, 1, true), new THREE.MeshStandardMaterial({ color: 0x121214, roughness: 0.6, side: THREE.DoubleSide })); hood.rotation.x = Math.PI / 2; hood.position.z = 0.044; ext.add(hood);
-  const glass = new THREE.Mesh(new THREE.CircleGeometry(0.026, 48), new THREE.MeshPhysicalMaterial({ color: 0x1b2a3a, roughness: 0.05, metalness: 0.2, clearcoat: 1, clearcoatRoughness: 0.05 })); glass.position.z = 0.0401; ext.add(glass);
-  const scale = new THREE.Mesh(new THREE.PlaneGeometry(0.05, 0.007), new THREE.MeshBasicMaterial({ map: labelTexture('16 · 24 · 35 · 50 · 70 · 100 · 150', '#ddd', '#121214', 26, 512, 64) })); scale.position.set(0, -0.0345, 0.03); scale.rotation.x = Math.PI / 2; scale.rotation.z = Math.PI; rear.add(scale);
-  /* servos: a zoom motor and a focus motor on a bracket under the lens (the next IRIS drives the rings precisely) */
-  const bracket = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.006, 0.075), mat(0x2a2c30, { metalness: 0.6, roughness: 0.4 })); bracket.position.set(0.0, 0.056, 0.03); lens.add(bracket);
-  const servo = (z) => { const g = new THREE.Group(); const m = new THREE.Mesh(new THREE.BoxGeometry(0.024, 0.024, 0.014), mat(0x2b2b30, { roughness: 0.5, metalness: 0.6 })); g.add(m); const pinion = new THREE.Mesh(new THREE.CylinderGeometry(0.0075, 0.0075, 0.016, 24), mat(0x9aa0aa, { metalness: 0.8, roughness: 0.35 })); pinion.rotation.x = Math.PI / 2; pinion.position.set(0, -0.012, 0); g.add(pinion); g.position.set(0, 0.062, z); g.userData.pinion = pinion; return g; };
-  const zoomServo = servo(0.018), focusServo = servo(0.042); lens.add(zoomServo, focusServo);
-  const cable = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0.07, 0.03), new THREE.Vector3(0, 0.08, 0.0), new THREE.Vector3(-0.02, 0.06, -0.06)]), 16, 0.0015, 6), mat(0x222222)); lens.add(cable);
-  /* the three.js camera on the optical axis: looks down -z with +y up, so rotate pi about x to match the mount */
-  const cam = new THREE.PerspectiveCamera(fovV(35), 3 / 2, 0.03, 30); cam.position.set(0.0, 0.0, 0.14);   /* = kin.TOOL_OFFSET */ cam.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI); rig.add(cam);
+  const scale = new THREE.Mesh(new THREE.PlaneGeometry(0.055, 0.008), new THREE.MeshBasicMaterial({ map: labelTexture('16  24  35  50  70  100  150', '#cfcfcf', '#0e0f12', 26, 512, 64) }));
+  scale.position.set(0, -0.0346, 0.057); scale.rotation.x = -Math.PI / 2; scale.rotation.z = Math.PI; lens.add(scale);
+  const ext = new THREE.Group(); ext.position.z = 0.084; lens.add(ext);
+  const frontBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.0345, 0.0365, 0.030, 48), black); frontBarrel.rotation.x = Math.PI / 2; frontBarrel.position.z = 0.015; ext.add(frontBarrel);
+  const filterRing = new THREE.Mesh(new THREE.CylinderGeometry(0.0355, 0.0345, 0.008, 48), dialMat); filterRing.rotation.x = Math.PI / 2; filterRing.position.z = 0.033; ext.add(filterRing);
+  const hood = new THREE.Mesh(new THREE.CylinderGeometry(0.0405, 0.0355, 0.024, 48, 1, true), new THREE.MeshStandardMaterial({ color: 0x141418, roughness: 0.75, side: THREE.DoubleSide }));
+  hood.rotation.x = Math.PI / 2; hood.position.z = 0.048; ext.add(hood);
+  const glass = new THREE.Mesh(new THREE.CircleGeometry(0.0315, 48), new THREE.MeshPhysicalMaterial({ color: 0x121d2e, roughness: 0.04, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.03, reflectivity: 0.6 }));
+  glass.position.z = 0.036; ext.add(glass);
+  const innerBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.0318, 0.0318, 0.02, 40, 1, true), new THREE.MeshStandardMaterial({ color: 0x08080a, roughness: 0.95, side: THREE.BackSide }));
+  innerBarrel.rotation.x = Math.PI / 2; innerBarrel.position.z = 0.026; ext.add(innerBarrel);
+
+  /* ---- 15 mm rod baseplate under the lens ---- */
+  const rods = new THREE.Group(); rig.add(rods);
+  const base = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.010, 0.040), alu); base.position.set(0, H / 2 - 0.004, Z0 + SLAB + 0.010); rods.add(base);
+  for (const sx of [-1, 1]) {
+    const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.0075, 0.0075, 0.115, 20), steel);
+    rod.rotation.x = Math.PI / 2; rod.position.set(sx * 0.030, H / 2 - 0.012, Z0 + SLAB + 0.060); rods.add(rod);
+  }
+
+  /* ---- two Feetech HLS3915M bus servos (34 x 20 x 23 mm) on the rods ---- */
+  const servo = (label) => {
+    const g = new THREE.Group();
+    const shell = slab(0.020, 0.023, 0.026, 0.002, alu); shell.rotation.y = Math.PI / 2; shell.position.z = 0; g.add(shell);   /* aluminium mid-case, 34 mm long overall */
+    const cap = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.023, 0.020), black); cap.position.x = -0.017; g.add(cap);         /* moulded end caps */
+    const cap2 = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.023, 0.020), black); cap2.position.x = 0.017; g.add(cap2);
+    const boss = new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.007, 0.004, 20), black); boss.rotation.z = Math.PI / 2; boss.position.x = 0.019; g.add(boss);
+    const spline = new THREE.Mesh(new THREE.CylinderGeometry(0.0025, 0.0025, 0.006, 25), steel); spline.rotation.z = Math.PI / 2; spline.position.x = 0.023; g.add(spline);   /* 25T, OD 4.95 mm */
+    const idler = new THREE.Mesh(new THREE.CylinderGeometry(0.002, 0.002, 0.004, 12), steel); idler.rotation.z = Math.PI / 2; idler.position.x = -0.021; g.add(idler);        /* the dual shaft's rear stub */
+    const pinion = gearRing(0.0075, 0.008, 14, dialMat); pinion.rotation.y = Math.PI / 2; pinion.position.x = 0.026; g.add(pinion);
+    for (const s2 of [-1, 1]) { const jst = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.006, 0.008), new THREE.MeshStandardMaterial({ color: 0xe8e8e8, roughness: 0.6 })); jst.position.set(-0.019, 0.006, s2 * 0.008); g.add(jst); }
+    const lbl = new THREE.Mesh(new THREE.PlaneGeometry(0.024, 0.007), new THREE.MeshBasicMaterial({ map: labelTexture(label, '#dcdcdc', '#24272c', 26, 256, 64) }));
+    lbl.position.set(0, -0.0116, 0); lbl.rotation.x = Math.PI / 2; g.add(lbl);
+    const clamp = new THREE.Mesh(new THREE.BoxGeometry(0.014, 0.026, 0.014), alu); clamp.position.set(0, 0.020, 0); g.add(clamp);
+    g.userData.pinion = pinion; return g;
+  };
+  const zoomServo = servo('HLS3915M'), focusServo = servo('HLS3915M');
+  zoomServo.position.set(-0.052, H / 2 - 0.020, Z0 + SLAB + 0.053); zoomServo.rotation.z = 0;      /* pinion meshes with the zoom ring */
+  focusServo.position.set(-0.052, H / 2 - 0.020, Z0 + SLAB + 0.086);                               /* and with the focus ring */
+  rig.add(zoomServo, focusServo);
+  const wire = (from, to) => {
+    const curve = new THREE.CatmullRomCurve3([from, from.clone().add(new THREE.Vector3(-0.012, 0.010, 0)), to.clone().add(new THREE.Vector3(-0.012, 0.010, 0)), to]);
+    return new THREE.Mesh(new THREE.TubeGeometry(curve, 24, 0.0016, 6, false), new THREE.MeshStandardMaterial({ color: 0x1a1a1c, roughness: 0.7 }));
+  };
+  rig.add(wire(new THREE.Vector3(-0.071, H / 2 - 0.014, Z0 + SLAB + 0.045), new THREE.Vector3(-0.071, H / 2 - 0.014, Z0 + SLAB + 0.078)));
+  rig.add(wire(new THREE.Vector3(-0.071, H / 2 - 0.014, Z0 + SLAB + 0.045), new THREE.Vector3(-0.030, H / 2 + 0.002, Z0 + 0.020)));
+
+  /* the three.js camera on the optical axis: it looks down -z with +y up, so rotate pi about x */
+  const cam = new THREE.PerspectiveCamera(fovV(35), 3 / 2, 0.03, 30);
+  cam.position.set(0, 0, 0.14);                       /* = kin.TOOL_OFFSET, the entrance pupil */
+  cam.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI); rig.add(cam);
   rig.userData = { cam, lens, ext, zoomRing, focusRing, zoomGear, focusGear, zoomServo, focusServo };
   return rig;
 }
@@ -118,9 +243,9 @@ export class Studio {
     this.canvas = canvas; this.spec = spec; this.arm = new Arm(model); this.lens = new Lens(); this.opts = opts;
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: !!opts.capture });
     this.renderer.setPixelRatio(opts.capture ? 1 : Math.min(window.devicePixelRatio || 1, 2)); this.renderer.shadowMap.enabled = true; this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping; this.renderer.toneMappingExposure = 0.9; this.renderer.setClearColor(0x0d1017, 1);
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping; this.renderer.toneMappingExposure = 0.64; this.renderer.setClearColor(0x0d1017, 1);
     this.scene = new THREE.Scene(); this.scene.background = new THREE.Color(0x151820);
-    const pmrem = new THREE.PMREMGenerator(this.renderer); this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; this.scene.environmentIntensity = 0.5;
+    const pmrem = new THREE.PMREMGenerator(this.renderer); this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; this.scene.environmentIntensity = 0.45;
     this.camera = new THREE.PerspectiveCamera(42, 1, 0.02, 60); this.camera.up.copy(Z_UP); this.camera.position.set(-0.75, -1.15, 0.85);
     this.controls = new OrbitControls(this.camera, canvas); this.controls.target.set(0.4, 0, 0.12); this.controls.enableDamping = true; this.controls.dampingFactor = 0.08; this.controls.maxPolarAngle = Math.PI * 0.52; this.controls.minDistance = 0.25; this.controls.maxDistance = 6;
     this.q = this.arm.home.slice(); this.t = 0; this.carT = 0; this.products = new THREE.Group(); this.scene.add(this.products); this.setId = null; this.viewport = { main: null, feed: null };
@@ -129,36 +254,66 @@ export class Studio {
     this.armReady = this.loadArm(); this.ready = Promise.all([this.armReady, this.loadSet(spec.default_set)]);
     /* the end-effector target gizmo */
     this.handle = new THREE.Object3D(); this.scene.add(this.handle);
-    this.gizmo = new TransformControls(this.camera, canvas); this.gizmo.setSize(0.7); this.gizmo.attach(this.handle); this.gizmo.enabled = false; this.gizmoHelper = this.gizmo.getHelper ? this.gizmo.getHelper() : this.gizmo; this.gizmoHelper.visible = false; this.scene.add(this.gizmoHelper);
+    this.gizmo = new TransformControls(this.camera, canvas); this.gizmo.setSize(0.55); this.gizmo.attach(this.handle); this.gizmo.enabled = false; this.gizmoHelper = this.gizmo.getHelper ? this.gizmo.getHelper() : this.gizmo; this.gizmoHelper.visible = false; this.scene.add(this.gizmoHelper);
     this.gizmo.addEventListener('dragging-changed', (e) => { this.controls.enabled = !e.value; });
     this.trail = null;
     new ResizeObserver(() => this.resize()).observe(canvas); this.resize();
   }
-  /* ---- static studio: floor, desk, backdrop, lights ---- */
+  /* ---- the set: floor, desk, a cyclorama well clear of the arm, and studio lights ---- */
   buildStudio() {
     const s = this.scene, d = this.spec.desk;
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), mat(0x2a2d33, { roughness: 0.9 })); floor.position.z = -d.height; floor.receiveShadow = true; s.add(floor);
-    const wood = mat(0x7a5c3e, { roughness: 0.75 }); const top = new THREE.Mesh(new THREE.BoxGeometry(d.x[1] - d.x[0], d.y[1] - d.y[0], d.thickness), wood); top.position.set((d.x[0] + d.x[1]) / 2, 0, -d.thickness / 2); top.receiveShadow = true; top.castShadow = true; s.add(top);
-    const edge = new THREE.LineSegments(new THREE.EdgesGeometry(top.geometry), new THREE.LineBasicMaterial({ color: 0x5a4430 })); edge.position.copy(top.position); s.add(edge);
-    const legMat = mat(0x3a3c40, { metalness: 0.5, roughness: 0.5 });
-    for (const [x, y] of [[d.x[0] + 0.06, d.y[0] + 0.06], [d.x[1] - 0.06, d.y[0] + 0.06], [d.x[0] + 0.06, d.y[1] - 0.06], [d.x[1] - 0.06, d.y[1] - 0.06]]) { const leg = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.05, d.height - d.thickness), legMat); leg.position.set(x, y, -(d.height + d.thickness) / 2); leg.castShadow = true; s.add(leg); }
-    /* the base clamp: a plate under the arm base */
-    const clamp = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.095, 0.012, 48), mat(0x1f2126, { metalness: 0.5, roughness: 0.5 })); clamp.rotation.x = Math.PI / 2; clamp.position.z = 0.006; clamp.castShadow = true; s.add(clamp);
-    /* cyclorama backdrop: a wall behind the desk with a curved fillet to the floor */
-    const cyc = mat(0xb9b4a8, { roughness: 1 }); const wall = new THREE.Mesh(new THREE.PlaneGeometry(6, 3), cyc); wall.position.set(2.0, 0, 0.45); wall.rotation.y = -Math.PI / 2; wall.receiveShadow = true; s.add(wall);
-    const fillet = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 6, 32, 1, true, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xb9b4a8, roughness: 1, side: THREE.BackSide })); fillet.rotation.z = Math.PI / 2; fillet.rotation.y = 0; fillet.position.set(2.0 - 0.6, 0, -d.height + 0.6); s.add(fillet);
-    const side = new THREE.Mesh(new THREE.PlaneGeometry(6, 3), mat(0x3a3f4a, { roughness: 1 })); side.position.set(0, 2.2, 0.45); side.rotation.x = Math.PI / 2; s.add(side);
-    /* lights: a soft key through a softbox, a fill, a rim, and a little ambient */
-    s.add(new THREE.HemisphereLight(0xfff4e6, 0x2b3040, 0.35));
-    const key = new THREE.SpotLight(0xfff0dc, 38, 6, 0.75, 0.6, 1.2); key.position.set(0.9, -1.0, 1.1); key.target.position.set(0.5, 0, 0.05); key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -0.0004; key.shadow.radius = 4; s.add(key, key.target);
-    const fill = new THREE.SpotLight(0xdfe8ff, 16, 6, 0.9, 0.9, 1.2); fill.position.set(0.2, 1.1, 0.8); fill.target.position.set(0.5, 0, 0.05); s.add(fill, fill.target);
-    const rim = new THREE.SpotLight(0xffffff, 30, 6, 0.6, 0.7, 1.2); rim.position.set(1.5, 0.5, 1.0); rim.target.position.set(0.5, 0, 0.1); s.add(rim, rim.target);
-    const softbox = (light, w, h) => { const g = new THREE.Group(); const box = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.25), mat(0x222222, { roughness: 0.9 })); g.add(box); const face = new THREE.Mesh(new THREE.PlaneGeometry(w * 0.92, h * 0.92), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xfff4e0, emissiveIntensity: 2.5 })); face.position.z = 0.126; g.add(face); g.position.copy(light.position); g.lookAt(light.target.position); const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, light.position.z + d.height, 12), legMat); stand.rotation.x = Math.PI / 2; stand.position.set(light.position.x, light.position.y, (light.position.z - d.height) / 2); s.add(stand); return g; };
-    s.add(softbox(key, 0.6, 0.45), softbox(fill, 0.45, 0.35));
-    /* the car's track: a thin ring on the desk */
-    const c = this.spec.car; const track = new THREE.Mesh(new THREE.RingGeometry(c.radius - 0.012, c.radius + 0.012, 96), mat(0x4b4f58, { roughness: 0.9 })); track.position.set(c.centre[0], c.centre[1], 0.0006); s.add(track);
-    this.car = PROPS.toy_car(); this.car.castShadow = true; this.car.traverse(o => { if (o.isMesh) o.castShadow = true; }); s.add(this.car); this.updateCar(0);
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(24, 24), mat(0x1b1d21, { roughness: 0.95 })); floor.position.z = -d.height; floor.receiveShadow = true; s.add(floor);
+    const wood = mat(0x6a5a4a, { roughness: 0.78 });
+    const top = new THREE.Mesh(new THREE.BoxGeometry(d.x[1] - d.x[0], d.y[1] - d.y[0], d.thickness), wood);
+    top.position.set((d.x[0] + d.x[1]) / 2, 0, -d.thickness / 2); top.receiveShadow = true; top.castShadow = true; s.add(top);
+    const legMat = mat(0x2c2e33, { metalness: 0.55, roughness: 0.45 });
+    for (const [x, y] of [[d.x[0] + 0.06, d.y[0] + 0.06], [d.x[1] - 0.06, d.y[0] + 0.06], [d.x[0] + 0.06, d.y[1] - 0.06], [d.x[1] - 0.06, d.y[1] - 0.06]]) {
+      const leg = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.05, d.height - d.thickness), legMat); leg.position.set(x, y, -(d.height + d.thickness) / 2); leg.castShadow = true; s.add(leg);
+    }
+    /* the base clamp under the arm */
+    const clamp = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.095, 0.012, 48), mat(0x1a1c20, { metalness: 0.5, roughness: 0.5 }));
+    clamp.rotation.x = Math.PI / 2; clamp.position.z = 0.006; clamp.castShadow = true; s.add(clamp);
+
+    /* Cyclorama: one cylinder wrapping the whole set, 3.4 m out — far outside the arm's 0.7 m
+       reach — with a coved skirt into the floor. A single surface has no corners, so no hard
+       vertical seam can ever appear behind a product. */
+    const CYC_R = 3.4, CYC_C = [0.45, 0], cycCol = 0x9d9a94;
+    const cycMat = new THREE.MeshStandardMaterial({ color: cycCol, roughness: 1.0, metalness: 0.0, side: THREE.BackSide });
+    const wall = new THREE.Mesh(new THREE.CylinderGeometry(CYC_R, CYC_R, 6, 96, 1, true), cycMat);
+    wall.rotation.x = Math.PI / 2; wall.position.set(CYC_C[0], CYC_C[1], -d.height + 2.6); wall.receiveShadow = true; s.add(wall);
+    const cove = new THREE.Mesh(new THREE.CylinderGeometry(CYC_R, CYC_R - 0.85, 0.85, 96, 1, true), cycMat);
+    cove.rotation.x = Math.PI / 2; cove.position.set(CYC_C[0], CYC_C[1], -d.height + 0.425); cove.receiveShadow = true; s.add(cove);
+    const cycFloor = new THREE.Mesh(new THREE.CircleGeometry(CYC_R - 0.84, 96), new THREE.MeshStandardMaterial({ color: cycCol, roughness: 1.0 }));
+    cycFloor.position.set(CYC_C[0], CYC_C[1], -d.height + 0.002); cycFloor.receiveShadow = true; s.add(cycFloor);
+
+    /* Lights: a big soft key through a scrim, a broad fill, a rim, and a low ambient.
+       Softer and dimmer than a hard spot, so black anodised parts stay black. */
+    s.add(new THREE.HemisphereLight(0xfaf7f2, 0x24262c, 0.34));
+    const key = new THREE.SpotLight(0xfff6f0, 12, 8, 0.9, 0.9, 1.4);
+    key.position.set(1.05, -1.15, 1.25); key.target.position.set(0.55, 0, 0.06);
+    key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -0.0004; key.shadow.radius = 8; key.shadow.camera.near = 0.4; key.shadow.camera.far = 6; s.add(key, key.target);
+    const fill = new THREE.SpotLight(0xeef3ff, 5.5, 8, 0.98, 0.98, 1.4); fill.position.set(0.1, 1.3, 0.95); fill.target.position.set(0.55, 0, 0.06); s.add(fill, fill.target);
+    const rim = new THREE.SpotLight(0xffffff, 6.5, 8, 0.75, 0.85, 1.4); rim.position.set(1.8, 0.7, 1.15); rim.target.position.set(0.5, 0, 0.12); s.add(rim, rim.target);
+    const bounce = new THREE.DirectionalLight(0xf3ece0, 0.25); bounce.position.set(-1.2, 0.2, 0.4); s.add(bounce);
+    const softbox = (light, w, h) => {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.22), mat(0x1d1f23, { roughness: 0.9 })));
+      const face = new THREE.Mesh(new THREE.PlaneGeometry(w * 0.94, h * 0.94), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xfff3e4, emissiveIntensity: 1.6 }));
+      face.position.z = 0.112; g.add(face);
+      g.position.copy(light.position); g.lookAt(light.target.position);
+      const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, light.position.z + d.height, 12), legMat);
+      stand.rotation.x = Math.PI / 2; stand.position.set(light.position.x, light.position.y, (light.position.z - d.height) / 2); s.add(stand);
+      return g;
+    };
+    s.add(softbox(key, 0.75, 0.55), softbox(fill, 0.6, 0.45));
+
+    /* the toy car's track */
+    const c = this.spec.car;
+    const track = new THREE.Mesh(new THREE.RingGeometry(c.radius - 0.012, c.radius + 0.012, 96), mat(0x3f434b, { roughness: 0.9 }));
+    track.position.set(c.centre[0], c.centre[1], 0.0006); s.add(track);
+    this.car = PROPS.toy_car(); this.car.traverse(o => { if (o.isMesh) o.castShadow = true; }); s.add(this.car); this.updateCar(0);
   }
+
   /* ---- the arm from the MuJoCo tree + decimated link meshes ---- */
   async loadArm() {
     const g = await loadGLB('assets/models/iris/iris_links.glb'); const meshes = {}; g.scene.updateMatrixWorld(true);
@@ -223,10 +378,15 @@ export class Studio {
     const fr = this.feedRect();
     if (fr && fr.w > 8) {
       const gv = this.gizmoHelper.visible; this.gizmoHelper.visible = false; if (this.trail) this.trail.visible = false; this.rig.visible = false;
+      /* the path and the floating frames are director's furniture: the lens must never see them
+         (a static shot puts its own key frames a few centimetres in front of the glass) */
+      const kg = this.keyGroup ? this.keyGroup.visible : false, pv = this.pathLine ? this.pathLine.visible : false;
+      if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false;
       this.feedCam.aspect = fr.w / fr.h; this.feedCam.updateProjectionMatrix();
       r.setViewport(fr.x * pr, fr.y * pr, fr.w * pr, fr.h * pr); r.setScissor(fr.x * pr, fr.y * pr, fr.w * pr, fr.h * pr);
       this.dof.render(r, this.scene, this.feedCam, this.lens, this.dofEnabled && !this.feedNoDof);
       this.rig.visible = true; this.gizmoHelper.visible = gv; if (this.trail) this.trail.visible = true;
+      if (this.keyGroup) this.keyGroup.visible = kg; if (this.pathLine) this.pathLine.visible = pv;
     }
     r.setScissorTest(false);
   }
@@ -241,7 +401,11 @@ export class Studio {
     const r = this.renderer; this._pickCam.fov = this.feedCam.fov; this._pickCam.aspect = this.feedCam.aspect; this._pickCam.near = this.feedCam.near; this._pickCam.far = this.feedCam.far; this._pickCam.updateProjectionMatrix();
     this.feedCam.getWorldPosition(this._pickCam.position); this.feedCam.getWorldQuaternion(this._pickCam.quaternion);   /* the lens, not the mount */
     this._pickCam.updateMatrixWorld(true);
-    const prev = r.getRenderTarget(); const rigVis = this.rig.visible; this.rig.visible = false; const gv = this.gizmoHelper.visible; this.gizmoHelper.visible = false; r.setRenderTarget(this._pick); r.render(this.scene, this._pickCam); r.readRenderTargetPixels(this._pick, 0, 0, w, h, this._pickBuf); r.setRenderTarget(prev); this.rig.visible = rigVis; this.gizmoHelper.visible = gv;
+    const prev = r.getRenderTarget(); const rigVis = this.rig.visible; this.rig.visible = false; const gv = this.gizmoHelper.visible; this.gizmoHelper.visible = false;
+    const kg = this.keyGroup ? this.keyGroup.visible : false, pv = this.pathLine ? this.pathLine.visible : false, tv = this.trail ? this.trail.visible : false;
+    if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false; if (this.trail) this.trail.visible = false;
+    r.setRenderTarget(this._pick); r.render(this.scene, this._pickCam); r.readRenderTargetPixels(this._pick, 0, 0, w, h, this._pickBuf); r.setRenderTarget(prev);
+    this.rig.visible = rigVis; this.gizmoHelper.visible = gv; if (this.keyGroup) this.keyGroup.visible = kg; if (this.pathLine) this.pathLine.visible = pv; if (this.trail) this.trail.visible = tv;
     return { data: this._pickBuf, w, h };
   }
   /** Draw a polyline trail of end-effector positions. */
@@ -251,6 +415,184 @@ export class Studio {
     const g = new THREE.BufferGeometry().setFromPoints(points.map(p => new THREE.Vector3(...p)));
     this.trail = new THREE.Line(g, new THREE.LineBasicMaterial({ color: 0xffce0a, transparent: true, opacity: 0.85 })); this.scene.add(this.trail);
   }
+  /* ================= timeline visualisation in the 3-D view ================= */
+
+  /** Draw the camera's path as a soft tube through the sampled points. */
+  setPath(points, colour = 0x0a84ff) {
+    if (this.pathLine) { this.scene.remove(this.pathLine); this.pathLine.geometry.dispose(); this.pathLine = null; }
+    if (!points || points.length < 2) return;
+    const pts = points.map(p => new THREE.Vector3(...p));
+    const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal', 0.4);
+    const geo = new THREE.TubeGeometry(curve, Math.min(400, pts.length * 3), 0.0035, 8, false);
+    this.pathLine = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: colour, transparent: true, opacity: 0.75 }));
+    this.pathLine.renderOrder = 3; this.scene.add(this.pathLine);
+  }
+
+  /** A frame preview at every key: a wire frustum plus a plane showing what the camera would see. */
+  setKeyMarkers(keys, opts = {}) {
+    if (!this.keyGroup) { this.keyGroup = new THREE.Group(); this.scene.add(this.keyGroup); this.keyMeshes = []; }
+    for (const m of this.keyMeshes) { m.group.traverse(o => { if (o.geometry) o.geometry.dispose(); }); this.keyGroup.remove(m.group); }
+    this.keyMeshes = [];
+    const size = opts.size ?? 0.075;
+    for (const k of keys) {
+      const g = new THREE.Group();
+      const R = k.R; const q = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().set(R[0][0], R[0][1], R[0][2], 0, R[1][0], R[1][1], R[1][2], 0, R[2][0], R[2][1], R[2][2], 0, 0, 0, 0, 1));
+      g.position.set(...k.pos); g.quaternion.copy(q);
+      const h = size * Math.tan(fovV(k.f) * Math.PI / 360) / Math.tan(fovV(35) * Math.PI / 360);
+      const w = h * 1.5;
+      const pts = [[0, 0, 0], [-w, -h, size], [w, -h, size], [w, h, size], [-w, h, size]];
+      const idx = [0, 1, 0, 2, 0, 3, 0, 4, 1, 2, 2, 3, 3, 4, 4, 1];
+      const pos = []; for (const i of idx) pos.push(...pts[i]);
+      const wire = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)),
+        new THREE.LineBasicMaterial({ color: 0x0a84ff, transparent: true, opacity: 0.9 }));
+      g.add(wire);
+      const screen = new THREE.Mesh(new THREE.PlaneGeometry(2 * w, 2 * h), new THREE.MeshBasicMaterial({ color: 0x11141a, toneMapped: false, side: THREE.DoubleSide }));
+      screen.position.z = size; screen.rotation.y = Math.PI;      /* the frame sits at the far end, facing back down the axis */
+      g.add(screen);
+      const hit = new THREE.Mesh(new THREE.SphereGeometry(0.016, 16, 12), new THREE.MeshBasicMaterial({ color: 0x0a84ff, transparent: true, opacity: 0.85 }));
+      g.add(hit);
+      this.keyGroup.add(g);
+      this.keyMeshes.push({ id: k.id, group: g, screen, wire, hit });
+    }
+    return this.keyMeshes;
+  }
+  /** Render what the camera sees at a key and paste it onto that key's floating frame. */
+  renderKeyThumbnail(key, marker) {
+    const w = 128, h = 86;
+    const px = this.keyImage(key, w, h);                 /* bottom-up RGBA, the same read-back the strip uses */
+    let tex = marker.ownTex;
+    if (!tex || tex.image.width !== w) { tex = marker.ownTex = new THREE.DataTexture(new Uint8Array(px), w, h, THREE.RGBAFormat); tex.colorSpace = THREE.SRGBColorSpace; tex.flipY = false; }
+    else tex.image.data.set(px);
+    tex.needsUpdate = true;
+    marker.screen.material.map = tex; marker.screen.material.color.set(0xffffff); marker.screen.material.needsUpdate = true;
+    return tex;
+  }
+  /** Pixels of what the camera would see at a key, for the strip of stops (bottom-up RGBA). */
+  keyImage(key, w = 96, h = 64) {
+    if (!this._kiRT || this._kiRT.width !== w) { if (this._kiRT) this._kiRT.dispose(); this._kiRT = new THREE.WebGLRenderTarget(w, h); this._kiRT.texture.colorSpace = THREE.SRGBColorSpace; this._kiBuf = new Uint8Array(w * h * 4); this._kiCam = new THREE.PerspectiveCamera(50, w / h, 0.03, 30); }
+    const cam = this._kiCam; cam.fov = fovV(key.f); cam.aspect = w / h; cam.updateProjectionMatrix();
+    cam.position.set(...key.pos);
+    const R = key.R; const m = new THREE.Matrix4().set(R[0][0], R[0][1], R[0][2], 0, R[1][0], R[1][1], R[1][2], 0, R[2][0], R[2][1], R[2][2], 0, 0, 0, 0, 1);
+    cam.quaternion.setFromRotationMatrix(m).multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI));
+    cam.updateMatrixWorld(true);
+    const r = this.renderer, prev = r.getRenderTarget(), st = r.getScissorTest();
+    const vis = [this.rig.visible, this.keyGroup ? this.keyGroup.visible : false, this.pathLine ? this.pathLine.visible : false, this.gizmoHelper.visible, this.trail ? this.trail.visible : false];
+    this.rig.visible = false; if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false; this.gizmoHelper.visible = false; if (this.trail) this.trail.visible = false;
+    r.setScissorTest(false); r.setRenderTarget(this._kiRT); r.setViewport(0, 0, w, h); r.clear(); r.render(this.scene, cam);
+    r.readRenderTargetPixels(this._kiRT, 0, 0, w, h, this._kiBuf);
+    r.setRenderTarget(prev); r.setScissorTest(st);
+    this.rig.visible = vis[0]; if (this.keyGroup) this.keyGroup.visible = vis[1]; if (this.pathLine) this.pathLine.visible = vis[2]; this.gizmoHelper.visible = vis[3]; if (this.trail) this.trail.visible = vis[4];
+    return this._kiBuf;
+  }
+  /** Highlight one key marker. */
+  highlightKey(id) { for (const m of this.keyMeshes || []) { const on = m.id === id; m.wire.material.color.set(on ? 0xffd60a : 0x0a84ff); m.hit.material.color.set(on ? 0xffd60a : 0x0a84ff); m.group.scale.setScalar(on ? 1.15 : 1); } }
+  /** Ray-pick a key marker from a normalised pointer position. */
+  pickKey(nx, ny) {
+    if (!this.keyMeshes || !this.keyMeshes.length) return null;
+    const ray = this._ray || (this._ray = new THREE.Raycaster());
+    ray.setFromCamera({ x: nx, y: ny }, this.camera);
+    const hits = ray.intersectObjects(this.keyMeshes.map(m => m.group), true);
+    if (!hits.length) return null;
+    for (const m of this.keyMeshes) { let found = false; m.group.traverse(o => { if (o === hits[0].object) found = true; }); if (found) return m.id; }
+    return null;
+  }
+
+  /** The live camera's frustum, drawn in the studio view. */
+  setFrustumVisible(on) {
+    if (!this.frustum) {
+      const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(16 * 3), 3));
+      this.frustum = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: 0xffd60a, transparent: true, opacity: 0.55 }));
+      this.frustum.frustumCulled = false; this.rig.add(this.frustum);
+    }
+    this.frustum.visible = !!on;
+  }
+  /** A screen floating at the focus distance showing exactly what the lens sees. */
+  setProjectedFeedVisible(on) {
+    if (!this.projScreen) {
+      const geo = new THREE.PlaneGeometry(1, 1);
+      this.projScreen = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: this.dof.rt.texture, toneMapped: false, side: THREE.DoubleSide, transparent: true, opacity: 0.96 }));
+      this.projScreen.rotation.y = Math.PI; this.rig.add(this.projScreen);
+      this.projEdge = new THREE.LineSegments(new THREE.EdgesGeometry(geo), new THREE.LineBasicMaterial({ color: 0xffd60a })); this.projScreen.add(this.projEdge);
+    }
+    this.projScreen.visible = !!on;
+  }
+  updateProjection(distance) {
+    const d = Math.max(0.12, Math.min(1.6, distance));
+    if (this.frustum && this.frustum.visible) {
+      const h = d * Math.tan(fovV(this.lens.f) * Math.PI / 360), w = h * (this.feedCam.aspect || 1.5);
+      const c = [[0, 0, 0], [-w, -h, d], [w, -h, d], [w, h, d], [-w, h, d]];
+      const idx = [0, 1, 0, 2, 0, 3, 0, 4, 1, 2, 2, 3, 3, 4, 4, 1]; const arr = this.frustum.geometry.attributes.position.array;
+      idx.forEach((i, k) => { arr[k * 3] = c[i][0]; arr[k * 3 + 1] = c[i][1]; arr[k * 3 + 2] = c[i][2]; });
+      this.frustum.geometry.attributes.position.needsUpdate = true;
+    }
+    if (this.projScreen && this.projScreen.visible) {
+      const h = 2 * d * Math.tan(fovV(this.lens.f) * Math.PI / 360), w = h * (this.feedCam.aspect || 1.5);
+      this.projScreen.scale.set(w, h, 1); this.projScreen.position.set(0, 0, d);
+    }
+  }
+  /** Sharpness of the feed inside a centred box, for contrast-detect autofocus (variance of the Laplacian). */
+  sharpness(boxFrac = 0.34) {
+    const f = this.readFeed(); const W = f.w, H = f.h;
+    const x0 = Math.floor(W * (0.5 - boxFrac / 2)), x1 = Math.ceil(W * (0.5 + boxFrac / 2));
+    const y0 = Math.floor(H * (0.5 - boxFrac / 2)), y1 = Math.ceil(H * (0.5 + boxFrac / 2));
+    let sum = 0, sum2 = 0, n = 0;
+    const lum = (x, y) => { const i = (y * W + x) * 4; return 0.299 * f.data[i] + 0.587 * f.data[i + 1] + 0.114 * f.data[i + 2]; };
+    for (let y = y0 + 1; y < y1 - 1; y++) for (let x = x0 + 1; x < x1 - 1; x++) {
+      const l = 4 * lum(x, y) - lum(x - 1, y) - lum(x + 1, y) - lum(x, y - 1) - lum(x, y + 1);
+      sum += l; sum2 += l * l; n++;
+    }
+    if (!n) return 0;
+    const mean = sum / n; return Math.max(0, sum2 / n - mean * mean);
+  }
+
+  /** ---------------------------------------------------------------------
+      Depth from the camera's own view.  The scene is re-rendered from the lens
+      with a depth material into a small RGBA target; unpacking that gives
+      gl_FragCoord.z, and the perspective relation
+
+          z_view = 2 n f / (f + n - (2 z_ndc - 1)(f - n))
+
+      turns it into metres.  Sampling a patch and taking the median rejects the
+      background showing between a subject's edges, which is what makes a naive
+      centre-pixel reading rack focus to the back wall.  Returns metres or null.
+      --------------------------------------------------------------------- */
+  depthAt(u = 0.5, v = 0.5, boxFrac = 0.13) {
+    const W = 96, H = 64;
+    if (!this._depthRT) {
+      this._depthRT = new THREE.WebGLRenderTarget(W, H, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter });
+      this._depthBuf = new Uint8Array(W * H * 4);
+      this._depthMat = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking });
+      this._depthCam = new THREE.PerspectiveCamera(50, 1.5, 0.03, 30);
+      this._depthVals = [];
+    }
+    const r = this.renderer, cam = this._depthCam;
+    cam.fov = this.feedCam.fov; cam.aspect = this.feedCam.aspect || 1.5; cam.near = this.feedCam.near; cam.far = this.feedCam.far; cam.updateProjectionMatrix();
+    this.feedCam.getWorldPosition(cam.position); this.feedCam.getWorldQuaternion(cam.quaternion); cam.updateMatrixWorld(true);
+    const prevRT = r.getRenderTarget(), st = r.getScissorTest(), rigVis = this.rig.visible, gv = this.gizmoHelper.visible;
+    const kg = this.keyGroup ? this.keyGroup.visible : false, pl = this.pathLine ? this.pathLine.visible : false;
+    this.rig.visible = false; this.gizmoHelper.visible = false; if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false;
+    this.scene.overrideMaterial = this._depthMat;
+    r.setScissorTest(false); r.setRenderTarget(this._depthRT); r.setViewport(0, 0, W, H); r.clear(); r.render(this.scene, cam);
+    r.readRenderTargetPixels(this._depthRT, 0, 0, W, H, this._depthBuf);
+    this.scene.overrideMaterial = null;
+    r.setRenderTarget(prevRT); r.setScissorTest(st);
+    this.rig.visible = rigVis; this.gizmoHelper.visible = gv; if (this.keyGroup) this.keyGroup.visible = kg; if (this.pathLine) this.pathLine.visible = pl;
+    /* the read-back is bottom-up, the caller's v is top-down */
+    const cx = Math.round(u * W), cy = Math.round((1 - v) * H);
+    const rad = Math.max(1, Math.round(boxFrac * W / 2));
+    const n = cam.near, fq = cam.far, vals = this._depthVals; vals.length = 0;
+    for (let y = Math.max(0, cy - rad); y <= Math.min(H - 1, cy + rad); y++)
+      for (let x = Math.max(0, cx - rad); x <= Math.min(W - 1, cx + rad); x++) {
+        const i = (y * W + x) * 4, b = this._depthBuf;
+        const z = (b[i] * 16711680 + b[i + 1] * 65280 + b[i + 2] * 255 + b[i + 3]) / 4294967295;   /* unpack RGBA -> [0,1] */
+        if (z >= 0.999999) continue;                                                              /* the clear value: nothing there */
+        vals.push(2 * n * fq / (fq + n - (2 * z - 1) * (fq - n)));
+      }
+    if (vals.length < 4) return null;
+    vals.sort((a, b) => a - b);
+    return vals[Math.floor(vals.length * 0.35)];      /* lean to the near side: the subject, not the gap around it */
+  }
+
   /** Position the gizmo handle at the current end-effector pose. */
   syncHandle() { const T = this.arm.fk(this.q); this.handle.position.set(T[0][3], T[1][3], T[2][3]); const m = new THREE.Matrix4().set(T[0][0], T[0][1], T[0][2], 0, T[1][0], T[1][1], T[1][2], 0, T[2][0], T[2][1], T[2][2], 0, 0, 0, 0, 1); this.handle.quaternion.setFromRotationMatrix(m); }
   handlePose() { const p = this.handle.position, m = new THREE.Matrix4().makeRotationFromQuaternion(this.handle.quaternion), e = m.elements; return { pos: [p.x, p.y, p.z], R: [[e[0], e[4], e[8]], [e[1], e[5], e[9]], [e[2], e[6], e[10]]] }; }
