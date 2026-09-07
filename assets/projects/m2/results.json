@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-07T20:32:35.424652+00:00",
+  "updated": "2026-09-07T20:34:01.837253+00:00",
   "motions": [
     {
       "name": "Living room",
@@ -652689,9 +652689,181 @@
           ]
         }
       ]
+    },
+    {
+      "id": "deployment_v148_v36_motion14",
+      "complete": true,
+      "unintended_contact_guard": true,
+      "fault_progress_m": 0.15,
+      "transport": {
+        "completed": 14,
+        "expected": 14,
+        "successes": 0
+      },
+      "safe_wait": {
+        "completed": 0,
+        "expected": 0,
+        "successes": 0
+      },
+      "rows": [
+        {
+          "scenario": "nominal",
+          "motion": "forward",
+          "seed": 284000,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "forward",
+          "seed": 284001,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "backward",
+          "seed": 284002,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unintended_payload_robot_contact"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "backward",
+          "seed": 284003,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "left",
+          "seed": 284004,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "left",
+          "seed": 284005,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "robot_self_penetration"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "right",
+          "seed": 284006,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "right",
+          "seed": 284007,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "yaw_left",
+          "seed": 284008,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "yaw_left",
+          "seed": 284009,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "yaw_right",
+          "seed": 284010,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "yaw_right",
+          "seed": 284011,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "mixed",
+          "seed": 284012,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "mixed",
+          "seed": 284013,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "robot_self_penetration"
+          ]
+        }
+      ]
     }
   ],
-  "recovery_validation_note": "Recovery validation correction: a force audit found 47.58 N of couch/chassis contact in a nominal trial accepted by the historical guard. Those recovery scores do not establish collision-free grasping. V31 and V32 enforce a 1 N non-hand-contact limit, but each frozen actor completes 0/12 transport, 0/4 safe waits and 0/4 early-release tasks. V33 refines the policy on states visited by a teacher/student mixture; V34 adds a grasp-loss event penalty during PPO. The 90% recovery target remains unmet.",
+  "recovery_validation_note": "The 90% recovery target remains unmet. Historical recovery scores omitted unintended couch/chassis contact; a force audit measured 47.58 N in an accepted trial. New runtimes reject non-hand robot contact above 1 N. The frozen table below keeps transport, early-release and safe-wait outcomes separate. Teacher demonstrations, imitation loss and PPO training success are not independent acceptance.",
   "baseline": {
     "successes": 46,
     "trials": 48,
