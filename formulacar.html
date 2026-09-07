@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A 4:1 planetary gearbox for an electric formula car — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="A custom 4:1 planetary gearbox for the UofT Formula electric car: what it buys in wheelbase, which tooth counts can actually be built, and two arithmetic slips in the vibration chapter. Spin the gear set yourself.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/formulacar.html">
+  <meta property="og:title" content="Four times the torque, and 176 mm of wheelbase back">
+  <meta property="og:description" content="A 4:1 planetary gearbox for an electric formula car, re-checked against its own numbers.">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/fsae/poster.jpg">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <link rel="stylesheet" href="assets/css/project-page.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <style>
+    #pg-canvas { width: 100%; display: block; border: var(--line-w) solid var(--ink);
+                 border-radius: var(--radius-sm); background: var(--paper); box-shadow: var(--sh-xs); }
+    .lb-note { font-family: var(--font-mono); font-size: 12px; line-height: 1.7; background: var(--paper);
+               border: 1.5px solid var(--ink); border-radius: 6px; padding: 10px 12px; }
+    .lb-note b { color: var(--hi-deep); }
+    .lb-note ul { margin: 6px 0 0; padding-left: 18px; }
+    .lb-note li { margin: 3px 0; }
+    .cube-buttons { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                    gap: 8px; margin: 0 0 14px; }
+    .cube-buttons .btn { display: block; text-align: left; padding: 9px 11px 8px; font-size: 13px; line-height: 1.2; }
+    .cube-buttons .btn small { display: block; margin-top: 2px; font-family: var(--font-mono); font-size: 10px;
+                               font-weight: 400; letter-spacing: 0; opacity: .7; text-transform: none; }
+    .pg-checks { display: grid; gap: 6px; margin-top: 12px; }
+    .pg-chip { font-family: var(--font-mono); font-size: 11px; padding: 6px 10px 5px; border-radius: 5px;
+               border: 1.5px solid var(--ink); display: flex; justify-content: space-between; gap: 10px; }
+    .pg-chip b { font-weight: 700; }
+    .pg-chip.is-ok { background: rgba(46,158,91,0.14); }
+    .pg-chip.is-ok b { color: #1B6B3C; }
+    .pg-chip.is-bad { background: rgba(192,57,43,0.16); border-color: #C0392B; }
+    .pg-chip.is-bad b { color: #C0392B; }
+    .mz-nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 12px 0; }
+    .mz-num { background: var(--paper); border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm);
+              box-shadow: var(--sh-xs); padding: 8px 4px 6px; text-align: center; }
+    .mz-num span { display: block; font-family: var(--font-mono); font-size: 9px; letter-spacing: .08em;
+                   text-transform: uppercase; color: var(--ink-soft); }
+    .mz-num b { display: block; font-family: var(--font-display); font-size: 21px; color: var(--hi-deep); line-height: 1.2; }
+    .mz-num b small { font-size: 11px; }
+    .vid-portrait { max-width: 330px; margin: 0; }
+    .vid-portrait video { width: 100%; display: block; border: var(--line-w) solid var(--ink);
+                          border-radius: var(--radius-sm); box-shadow: var(--sh-sm); background: #000; }
+    .photos-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-top: 22px; }
+    .photos-row figure { margin: 0; }
+    .photos-row img { width: 100%; display: block; border: var(--line-w) solid var(--ink);
+                      border-radius: var(--radius-sm); box-shadow: var(--sh-xs); background: #fff; }
+    .photos-row figcaption { font-size: 12.5px; color: var(--ash); margin-top: 8px; line-height: 1.5; }
+    .photos-row figcaption b { color: var(--ink); }
+    .prose ul { margin: 10px 0; padding-left: 20px; }
+    .prose li { margin: 5px 0; }
+  </style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button type="button" class="theme-btn" aria-label="Switch between day and night" aria-pressed="false">
+      <span class="if-night"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Day</span></span>
+      <span class="if-day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="lbl">Night</span></span>
+    </button>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+  <a href="cv.html">CV</a>
+</div>
+
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">Capstone ◆ Mechanical design ◆ University of Toronto ◆ 2022</p>
+    <h1>Four times the torque, and 176 mm of wheelbase back</h1>
+    <p>When the Formula racing team went electric, they kept the combustion car's drivetrain: one chain, one pair of sprockets, all the speed reduction in one step. That step sets a minimum distance between the motor and the differential, and that distance is wheelbase the car cannot afford in a tight corner. This is the 4:1 planetary gearbox designed to take the reduction off the chain — and a re-check of the report's own numbers, which holds up on the geometry and turns up two arithmetic slips in the vibration analysis.</p>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
+<section class="section" id="demo">
+  <div class="grid-2">
+    <figure class="vid-portrait">
+      <video controls playsinline preload="metadata" poster="assets/images/projects/fsae/poster.jpg">
+        <source src="assets/videos/fsae_prototype.mp4" type="video/mp4">
+      </video>
+    </figure>
+    <div>
+      <p class="lead" style="margin-top:0">The full-scale printed prototype turning under hand. The metal build did not happen — pandemic disruption and a 5,000&nbsp;CAD bill of materials against a 1,000&nbsp;CAD budget — so the design was proven on a printed assembly with every real machine element in it: bearings, seals, O-rings, fasteners and oil.</p>
+      <div class="links">
+        <a href="assets/pdf/projects/Capstone_Project-2.pdf" target="_blank" rel="noopener">Design specification (PDF)</a>
+        <a href="https://github.com/thejerrycheng/fsae-planetary-gearbox" target="_blank" rel="noopener">Code</a>
+        <a href="https://www.youtube.com/watch?v=lSZsrUMRv3I&list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV&index=2" target="_blank" rel="noopener">Video</a>
+        <a href="#sandbox">Spin the gear set</a>
+      </div>
+      <div class="mz-nums" style="margin-top:20px">
+        <div class="mz-num"><span>Ratio</span><b>4:1</b></div>
+        <div class="mz-num"><span>Mass</span><b>15.4<small>kg</small></b></div>
+        <div class="mz-num"><span>Span saved</span><b>176<small>mm</small></b></div>
+        <div class="mz-num"><span>Endurance</span><b>−4<small>s</small></b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== WHY A GEARBOX =================== -->
+<section class="section" id="why">
+  <h2 class="section-title">The number the report never computes</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>The project's justification is one sentence, repeated in the executive summary and the introduction: the chain-and-sprocket reduction <em>"increases the wheelbase due to the minimum center to center distance required between the sprockets"</em>, and that hurts the car in tight corners. It is the reason the gearbox exists. It is also never turned into a number, anywhere in seventy-five pages.</p>
+      <p>It is a short calculation. A roller-chain sprocket's pitch diameter is set by the chain pitch and the tooth count:</p>
+      <div class="eq">d = p ⁄ sin(180° ⁄ z)</div>
+      <p>and the chain's wrap on the smaller sprocket, for a centre distance C, is</p>
+      <div class="eq">θ = 180° − 2·arcsin[ (d<sub>big</sub> − d<sub>small</sub>) ⁄ 2C ]</div>
+      <p>Chain drives want at least <b>120°</b> of wrap on the small sprocket — below that too few teeth carry the load and the chain starts to climb. With the 520 chain the team already runs (15.875&nbsp;mm pitch) and an 18-tooth driver, that criterion gives:</p>
+      <ul>
+        <li><b>All 4:1 on the chain</b> — 18 → 72 teeth, so 91.4&nbsp;mm → 363.9&nbsp;mm pitch diameters. Centres must be at least <b>273&nbsp;mm</b>.</li>
+        <li><b>4:1 in the gearbox, 18 → 20 on the chain</b> — 91.4 → 101.5&nbsp;mm. The wrap criterion is satisfied at almost any spacing; what binds instead is that the sprockets must not overlap, at <b>96&nbsp;mm</b>.</li>
+      </ul>
+      <p>So the gearbox buys <b>176&nbsp;mm — a 65&nbsp;% cut</b> in how far apart the motor and differential have to sit. That is the project's whole case, and it is worth stating out loud: on a car whose wheelbase is around 1,550&nbsp;mm, this is roughly 11&nbsp;% of it, recovered from a component that fits behind the motor rather than beside it.</p>
+      <p>It also explains a choice that looks odd in the final specification. The gearbox misses its stated volume envelope — 224&nbsp;mm across a 190.5&nbsp;mm limit — while coming in <em>under</em> total volume, 6.4 litres against 10.1. A planetary is a disc, and the envelope was drawn for something long and thin. The design did not shrink to fit the box; it changed shape, and the shape is the point.</p>
+    </div>
+    <div>
+      <figure class="fig" style="margin-top:0">
+        <img src="assets/images/projects/fsae/assembly.jpg" alt="Render of the motor, planetary gearbox, chain and differential sprocket.">
+        <figcaption>Power flows motor → sun gear → four planets → carrier → 18-tooth sprocket → chain → differential. Keeping a short chain on the end is deliberate: the final drive stays adjustable by swapping sprockets, without touching the gearbox.</figcaption>
+      </figure>
+      <figure class="fig">
+        <img src="assets/images/projects/fsae/dimensions.jpg" alt="Dimensioned view of the drivetrain: 270 mm, 224 mm, 220 mm and 414 mm overall.">
+        <figcaption>The assembled drivetrain envelope from the report. The 414&nbsp;mm is the whole motor-gearbox-chain run; the gearbox itself is 126.6&nbsp;mm of that length.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- =================== SANDBOX =================== -->
+<section class="section" id="sandbox">
+  <h2 class="section-title">Spin the gear set</h2>
+  <p class="lead">Sun in, ring held, carrier out — the configuration that gives the highest ratio of the four a planetary set can be wired for. Change the teeth and everything moves at once: the ring count is forced by the coaxial condition, the ratio follows, and so does the gear-mesh frequency that the vibration analysis turns on. The four presets are the report's own shortlist, and two of them cannot be built.</p>
+
+  <div class="card scene-block">
+    <span class="caption-box">Planetary set, ring held</span>
+    <div class="demo-grid">
+      <div class="demo-scene">
+        <canvas id="pg-canvas" aria-label="Animated planetary gear set"></canvas>
+        <p class="plot-note">Yellow is the sun (input); the four grey wheels are the planets, carried around on the arms; the outer ring is held stationary and reacts the torque into the housing.</p>
+      </div>
+      <div class="demo-controls">
+        <div class="cube-buttons" id="pg-presets"></div>
+        <label>Sun teeth <span id="pg-sun-v">30</span><input type="range" id="pg-sun" min="13" max="45" step="1" value="30"></label>
+        <label>Planet teeth <span id="pg-planet-v">30</span><input type="range" id="pg-planet" min="13" max="55" step="1" value="30"></label>
+        <label>Planets <span id="pg-n-v">4</span><input type="range" id="pg-n" min="3" max="6" step="1" value="4"></label>
+        <label>Motor speed <span id="pg-rpm-v">3300</span> rpm<input type="range" id="pg-rpm" min="0" max="3300" step="50" value="3300"></label>
+
+        <div class="mz-nums">
+          <div class="mz-num"><span>Ring teeth</span><b id="pg-ring">90</b></div>
+          <div class="mz-num"><span>Ratio</span><b id="pg-ratio">4.00</b></div>
+          <div class="mz-num"><span>Ring ⌀</span><b id="pg-dia">180</b></div>
+          <div class="mz-num"><span>Mesh</span><b id="pg-mesh">1238</b></div>
+        </div>
+        <div class="pg-checks" id="pg-checks"></div>
+        <div class="lb-note" id="pg-camp" style="margin-top:12px"></div>
+        <div class="demo-buttons"><button class="btn" id="pg-run" type="button">Pause</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== TOOTH COUNTS =================== -->
+<section class="section" id="teeth">
+  <h2 class="section-title">Two of the four could not have been built</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>A planetary set has to satisfy three conditions before anything else about it matters. The report states the first and uses it:</p>
+      <div class="eq"><b>Coaxial:</b> z<sub>ring</sub> = z<sub>sun</sub> + 2·z<sub>planet</sub></div>
+      <p>which just says the planets have to reach from the sun to the ring. The other two are equally standard and do not appear:</p>
+      <div class="eq"><b>Assembly:</b> (z<sub>sun</sub> + z<sub>ring</sub>) ⁄ n must be a whole number</div>
+      <div class="eq"><b>Neighbour:</b> d<sub>a,planet</sub> &lt; 2a·sin(180° ⁄ n)</div>
+      <p>The assembly condition is the interesting one. Planets can only be placed where a tooth of the sun and a tooth of the ring line up simultaneously; if <em>n</em> equally spaced positions are wanted, the tooth counts have to divide accordingly. Fail it and the set is still a valid gear train — but the planets have to be unequally spaced, which reintroduces exactly the rotating imbalance the last chapter of the report spends fourteen pages worrying about.</p>
+      <p>Applying it to the report's shortlist of four candidate tooth sets, with the four planets the design settled on:</p>
+      <div class="table-wrap">
+        <table class="data-table compact">
+          <thead><tr><th>Ring</th><th>Sun</th><th>Planet</th><th>Ratio</th><th>Coaxial</th><th>Assembly ÷ 4</th></tr></thead>
+          <tbody>
+            <tr><td><b>90</b></td><td><b>30</b></td><td><b>30</b></td><td>4.00</td><td>✓</td><td>✓ &nbsp;120/4 = 30</td></tr>
+            <tr><td>100</td><td>30</td><td>35</td><td>4.33</td><td>✓</td><td><b>✗ &nbsp;130/4 = 32.5</b></td></tr>
+            <tr><td>120</td><td>40</td><td>40</td><td>4.00</td><td>✓</td><td>✓ &nbsp;160/4 = 40</td></tr>
+            <tr><td>120</td><td>30</td><td>45</td><td>5.00</td><td>✓</td><td><b>✗ &nbsp;150/4 = 37.5</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Half the shortlist is infeasible for four equally spaced planets. The design that shipped is one of the two that work, so nothing was built wrong — but it was chosen from a field of two, not four, and for a reason ("smaller footprint") that only distinguishes it from one real alternative.</p>
+      <p>And footprint alone does not point at 90/30/30. Searching every tooth combination between 13 and 60 teeth that satisfies all three conditions <em>and</em> lands in the client's 3–5 ratio window gives <b>712</b> valid sets; the smallest ring among them is 78&nbsp;mm in pitch diameter against the chosen 180&nbsp;mm. Those small sets are not free — few-tooth pinions carry less at the root and a 13-tooth 20° spur is right at the undercut limit — which is the honest answer, and a better one than footprint: the design is sized by tooth strength, and the footprint follows.</p>
+    </div>
+    <div>
+      <figure class="fig" style="margin-top:0">
+        <img src="assets/images/projects/fsae/iterations.jpg" alt="Three exploded views showing the design iterations of the gearbox.">
+        <figcaption>Three iterations. Planets went from three to four (lower tooth load, higher safety factor); the single carrier became a double carrier so the planet pins are supported at both ends; the four-piece housing became two, which alone took <b>3.2&nbsp;kg</b> out and increased the surface available for air cooling.</figcaption>
+      </figure>
+      <div class="photos-row" style="margin-top:20px">
+        <figure>
+          <img src="assets/images/projects/fsae/gear_lightened.jpg" alt="Gear with six drilled holes and a machined indent on the face.">
+          <figcaption><b>Mass, taken back out.</b> ISO 6336 is deliberately conservative; against a 350-hour season the team judged it overbuilt and cut six 7.5&nbsp;mm holes and a 10&nbsp;mm face indent into each gear. Peak stress rose to 379&nbsp;MPa against an allowable 780, and 22.8&nbsp;g came off each of the five gears.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/images/projects/fsae/housing.jpg" alt="Webbed aluminium outer housing.">
+          <figcaption><b>The same trick on the housing.</b> FEA put only 9.2&nbsp;MPa around the eight bolt holes against 276&nbsp;MPa yield, so the material between them was removed: 1.6&nbsp;kg → 1.1&nbsp;kg, and more surface for convection.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== VIBRATION =================== -->
+<section class="section" id="vibration">
+  <h2 class="section-title">Two slips in the vibration chapter</h2>
+  <p class="lead">The report closes its longest analysis with a clean conclusion: <em>"both the system natural frequency and the individual component frequency is not in the range of forced vibration frequencies."</em> That conclusion rests on two numbers, and both of them are off — one by a factor of 2π, the other unexplained. Corrected, the design still probably works, but the margin is not the one the report reports.</p>
+
+  <figure class="fig">
+    <img src="assets/images/projects/fsae/fsae_gearbox.png" alt="Three panels: chain wrap against centre distance, a Campbell diagram, and points gained against pace.">
+    <figcaption><b>The three checks, from the report's own numbers.</b> <b>(a)</b> Chain wrap against centre distance for both layouts, with the 120° criterion. <b>(b)</b> Campbell diagram: excitation orders against the reported modal frequencies over the motor's speed range; the red dot is the second mesh harmonic meeting the output carrier's first mode at 3,139&nbsp;rpm, inside the operating range. The reported 9,165&nbsp;Hz system mode is off the top of the axis. <b>(c)</b> The lap-time gains converted into competition points by the FSAE 2021 formulas. Regenerate all three with <code>scripts/tools/fsae_gearbox.py</code>.</figcaption>
+  </figure>
+
+  <div class="card finding" style="margin-top:26px">
+    <div class="no">1</div>
+    <h3>The gear-mesh frequency is 1,237.5 Hz, not 1,550</h3>
+    <p>The report gives the mesh frequency as f<sub>mesh</sub> = f<sub>input</sub> × (input teeth ÷ output teeth) and reports 1,550&nbsp;Hz at the motor's 3,300&nbsp;rpm. That formula is for a fixed-axis pair, and even taken literally it gives 55 × 30/90 = <b>18.3&nbsp;Hz</b> — so the 1,550 does not come from it.</p>
+    <p>In a planetary set with the ring held, teeth engage at the rate the carrier sweeps them past:</p>
+    <div class="eq">f<sub>mesh</sub> = z<sub>ring</sub> · f<sub>carrier</sub> = 90 × (55 ⁄ 4) = <b>1,237.5 Hz</b></div>
+    <p>and the sun-planet mesh agrees, z<sub>sun</sub>(f<sub>sun</sub> − f<sub>carrier</sub>) = 30 × 41.25 = 1,237.5&nbsp;Hz, as it must. The reported figure is 25&nbsp;% high.</p>
+  </div>
+
+  <div class="card finding" style="margin-top:22px">
+    <div class="no">2</div>
+    <h3>The system's natural frequency is ≈1,480 Hz, not 9,165 — the units are rad/s</h3>
+    <p>The lumped model is a mass on an axial spring: k = EA/L with the gearbox's 14.55&nbsp;kg on a 1.26 × 10⁻⁴&nbsp;m² contact of 0.02&nbsp;m length in 4140 steel. With E = 190–210&nbsp;GPa that gives k = <b>1.20–1.32&nbsp;GN/m</b>, not the 0.50&nbsp;GN/m the text states — and then</p>
+    <div class="eq">ω<sub>n</sub> = √(k ⁄ m) = 9,070 – 9,536 <b>rad/s</b> &nbsp;=&nbsp; 1,444 – 1,518 Hz</div>
+    <p>The report's own 9,165.15 is exactly this quantity, and it is correct — in radians per second. Labelled as hertz it is <b>2π times too large</b>, which is what puts the system mode comfortably above everything else and produces the clean conclusion.</p>
+    <p>Corrected, the picture is tighter than comfortable. The mesh frequency at redline is <b>1,238&nbsp;Hz against a 1,481&nbsp;Hz system mode — 84&nbsp;% of it</b>. The fundamental never quite crosses, so on the report's own terms the conclusion survives; but an 18&nbsp;% separation is inside what rotating-machinery practice would want verified rather than assumed, it moves with every stiffness assumption in that paragraph — including the one that is misquoted — and, as the next finding shows, the fundamental is not the only thing exciting the structure.</p>
+  </div>
+
+  <div class="card finding" style="margin-top:22px">
+    <div class="no">3</div>
+    <h3>The harmonics were never plotted, and the second one crosses</h3>
+    <p>Gear mesh is not a sinusoid — a tooth engaging is closer to an impulse train, so the excitation has energy at 2×, 3× and beyond the mesh frequency, falling off with order. The report compares the fundamental against the modal frequencies and stops.</p>
+    <p>Drawing the orders as lines against motor speed — a Campbell diagram, panel (b) — the fundamental does stay clear of everything. The harmonics do not. Against the corrected system mode and the lowest reported mode of each part, there are <b>five crossings below the redline</b>:</p>
+    <ul>
+      <li><b>2× mesh</b> meets the system mode (1,481&nbsp;Hz) at <b>1,974&nbsp;rpm</b>, and the output carrier's first mode (2,354&nbsp;Hz) at <b>3,139&nbsp;rpm</b></li>
+      <li><b>3× mesh</b> meets the system mode at <b>1,316&nbsp;rpm</b>, the output carrier at <b>2,093&nbsp;rpm</b>, and the input shaft's first mode (3,014&nbsp;Hz) at <b>2,679&nbsp;rpm</b></li>
+    </ul>
+    <p>All five are inside the operating range, and 3,139&nbsp;rpm is 95&nbsp;% of redline — where an endurance run spends much of its time on the straights. The output carrier is also the one part the report separately identifies as carrying an unbalanced mass, from its keyway indent.</p>
+    <p>None of this says the gearbox fails. Higher harmonics carry much less energy, the FEA modes were computed with idealised constraints, and real damping is not in the model. It says the question is open where the report closes it, and that the dyno test the conclusion already recommends should be looking for these two speeds specifically.</p>
+  </div>
+</section>
+
+<!-- =================== POINTS =================== -->
+<section class="section" id="points">
+  <h2 class="section-title">Four seconds, in the currency that counts</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>The project is justified on competition points. The introduction says so directly — statics are 325 of 1,000 and the team does well at them; dynamics are 675 and the team wants more of them. The lap simulation then produces four numbers and stops at seconds:</p>
+      <div class="table-wrap">
+        <table class="data-table compact">
+          <thead><tr><th>Event</th><th>3.0 final drive</th><th>4.0</th><th>Quicker by</th></tr></thead>
+          <tbody>
+            <tr><td>Acceleration</td><td>5.56 s</td><td>5.55 s</td><td>0.18 %</td></tr>
+            <tr><td>Skidpad</td><td>5.45 s</td><td>5.42 s</td><td>0.55 %</td></tr>
+            <tr><td>Autocross</td><td>57.75 s</td><td>56.00 s</td><td>3.03 %</td></tr>
+            <tr><td>Endurance</td><td>151 s</td><td>147 s</td><td>2.65 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Seconds are not the objective; points are, and the FSAE rulebook the report cites as its reference [1] gives the conversion exactly. Every dynamic event scores on a ratio to the fastest car in the field:</p>
+      <div class="eq">Score = A · [ (T<sub>max</sub>/T<sub>yours</sub>) − 1 ] ⁄ [ (T<sub>max</sub>/T<sub>min</sub>) − 1 ] + floor</div>
+      <p>with T<sub>min</sub> the quickest time anyone set, T<sub>max</sub> a fixed multiple of it (150&nbsp;% for acceleration, 125&nbsp;% skidpad, 145&nbsp;% autocross and endurance), and skidpad squaring both ratios. A is 95.5, 71.5, 118.5 and 250 respectively.</p>
+      <p>Because the formula depends only on <em>ratios</em> of times, the conversion needs no absolute lap count and no knowledge of the track — a percentage improvement is all it takes. The answer is <b>29 to 35 points of the 575 on offer</b> in those four events, across the whole plausible range of where the car sits in the field.</p>
+      <p>For scale, that is roughly the gap between finishing tenth and finishing fifth at a typical competition, from one component. It is also, on its own terms, a good return on 5,000&nbsp;CAD.</p>
+    </div>
+    <div>
+      <div class="card finding" style="margin-top:0">
+        <div class="no">4</div>
+        <h3>A second is worth more the closer you already are</h3>
+        <p>The score is linear in T<sub>max</sub>/T<sub>yours</sub>, so the points gained per second scale as 1/T<sub>yours</sub><sup>2</sup>. The same 4-second endurance gain is worth <b>35 points to a car 3&nbsp;% off the leader's pace and 29 points to one 24&nbsp;% off</b> — a fifth less, for identical hardware.</p>
+        <p>This runs against the intuition that an upgrade helps a slow car most, and it has a practical consequence for a student team: the drivetrain is worth building <em>after</em> the car is basically quick, not as a way of becoming quick. Below 45&nbsp;% off the pace the endurance score collapses to its 25-point floor and the gearbox is worth nothing at all.</p>
+        <p style="margin-bottom:0">The endurance event carries this on its own — 19 of the ~31 points at a mid-field pace — because it has the largest point pool (275) and the second-largest time gain. Acceleration, despite being the event a torque increase sounds like it should win, contributes <b>half a point</b>: the run is traction-limited off the line, so a taller ratio changes almost nothing.</p>
+      </div>
+      <figure class="fig">
+        <img src="assets/images/projects/fsae/chain.jpg" alt="Render of the output carrier driving the chain and the differential sprocket.">
+        <figcaption>The 18:20 chain that survives on the output. Keeping it is what makes the final drive tunable per track — the gearbox fixes 4.0, the sprockets trim around it.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- =================== AS BUILT =================== -->
+<section class="section" id="built">
+  <h2 class="section-title">What was actually delivered</h2>
+  <div class="grid-2">
+    <div>
+      <div class="table-wrap" style="margin-top:0">
+        <table class="data-table">
+          <thead><tr><th>Objective</th><th>Target</th><th>Achieved</th></tr></thead>
+          <tbody>
+            <tr><td>Mass</td><td>≤ 20 kg</td><td>15.4 kg</td></tr>
+            <tr><td>Gear ratio</td><td>3 – 5</td><td>4.0 (plus a tunable chain)</td></tr>
+            <tr><td>Assembly time</td><td>≤ 2 h</td><td>1 h</td></tr>
+            <tr><td>Service life</td><td>≥ 350 h</td><td>1,000 h</td></tr>
+            <tr><td>Safety factor</td><td>1.2</td><td>2.5 root, 1.4 flank</td></tr>
+            <tr><td>Efficiency</td><td>≥ 90 %</td><td>91 % (estimated, not measured)</td></tr>
+            <tr><td>Volume envelope</td><td>127 × 190.5 × 419 mm</td><td>126.6 × 224 × 224 mm — <b>over on one axis</b>, 37 % under on volume</td></tr>
+            <tr><td>Operating temperature</td><td>−29 to 57 °C</td><td>−23 to 40 °C — <b>narrower than required</b></td></tr>
+            <tr><td>Cost</td><td>≤ 1,000 CAD</td><td><b>5,000 CAD</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="plot-note" style="margin-top:12px">Six of nine met, one changed shape rather than shrinking, and two missed — the temperature range by a little and the budget by 5×. The cost overrun is the one that decided the outcome: it is why the metal gearbox was never cut.</p>
+    </div>
+    <div class="prose">
+      <h3>Everything except the metal</h3>
+      <p>The plan was a machined gearbox on the 2023 car, bench-tested against the motor on a dyno. What happened instead was a full-scale printed assembly containing every real machine element — the selected bearings, the oil seals, the O-rings, the critical fasteners, and oil.</p>
+      <p>It is a better fallback than it sounds, because most of what was uncertain is geometric. The prototype confirmed the ratio directly, by counting output rotation against one input turn. It confirmed the assembly sequence and the tolerance stack-up, and timed the assembly at an hour. It confirmed the seals held oil — with one honest exception, a slight trickle at the bottom on standing, which the report attributes to the O-ring groove design. And it showed the difference lubrication makes to breakaway torque, by hand, which is not a measurement but is the right instinct.</p>
+      <p>What a printed prototype cannot answer is everything this page has been about: the efficiency is still an estimate, the 1,602&nbsp;W cooling load is still a calculation, and the two resonance crossings above are still on paper. The report's own closing recommendation is dyno testing, and that remains exactly right — with, now, two specific speeds to watch.</p>
+    </div>
+  </div>
+
+  <div class="photos-row" style="margin-top:24px">
+    <figure>
+      <img src="assets/images/projects/fsae/prototype.jpg" alt="The printed gearbox from the side with a ruler for scale.">
+      <figcaption><b>Full scale.</b> The white housing and blue carrier are printed; the bearings, seals, O-rings and fasteners are the parts specified for the metal build.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/images/projects/fsae/prototype_2.jpg" alt="The printed gearbox seen from the output end.">
+      <figcaption><b>Output end.</b> The carrier's four arms take the planet pins at both ends — the change that halved the pin bending stress in the second iteration.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/images/projects/fsae/prototype_open.jpg" alt="The gearbox opened, showing the ring gear teeth and the planets.">
+      <figcaption><b>Opened.</b> Ninety internal teeth on the ring, four planets of thirty. The cutout in the housing was there to check the oil seal by pouring lubricant in and watching for leaks.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/images/projects/fsae/render.jpg" alt="CAD render of the motor, gearbox and chain drive together.">
+      <figcaption><b>As intended.</b> The EMRAX 228 on the left, the gearbox in the middle, the chain taking the drive out to the Drexler differential.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section" id="credits">
+  <h2 class="section-title">Credits</h2>
+  <div class="card card-pad credits">
+    <p><b>MIE Capstone, University of Toronto, 2022</b> — FSAE 1: Electric Motor Gearbox Design, for the University of Toronto Formula Racing Team. <b>Qilong (Jerry) Cheng</b>, <b>Tejvir Binepal</b>, <b>Rupin Kothari</b> and <b>Syed Nahyan Ahmed</b>, supervised by <b>Prof. Tony Sinclair</b>. The gearbox design, the KISSsoft and ANSYS analyses, the OptimumLap study and the printed prototype are the team's capstone work.</p>
+    <p style="margin-top:8px">The chain-wrap calculation, the feasibility sweep over tooth counts, the Campbell diagram, the points conversion and the browser gear set on this page were written afterwards, from the report's stated quantities and the FSAE 2021 rulebook it cites. They are a re-check of the design specification, not part of the original submission, and where they disagree with it the disagreement is stated above rather than quietly corrected.</p>
+    <div class="links" style="margin-top:12px">
+      <a href="assets/pdf/projects/Capstone_Project-2.pdf" target="_blank" rel="noopener">Design specification</a>
+      <a href="https://github.com/thejerrycheng/fsae-planetary-gearbox" target="_blank" rel="noopener">Code</a>
+      <a href="https://www.youtube.com/watch?v=lSZsrUMRv3I&list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV&index=2" target="_blank" rel="noopener">Video</a>
+      <a href="projects.html">All projects</a>
+    </div>
+  </div>
+</section>
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+<script src="assets/js/planetary.js"></script>
+<script src="assets/js/planetary_ui.js"></script>
+</body>
+</html>

@@ -746,7 +746,7 @@
     },
     {
       "id": "formula",
-      "title": "Electric Formula Racing Car Drive-train",
+      "title": "A 4:1 Planetary Gearbox for an Electric Formula Car",
       "year": 2022,
       "tag": "Mechanical design",
       "images": [
@@ -755,19 +755,29 @@
       "alts": [
         "Formula racing car drivetrain"
       ],
-      "video": "assets/videos/gearbox.mp4",
+      "video": "assets/videos/fsae_card.mp4",
       "fit": "cover",
       "links": [
         {
+          "label": "Website",
+          "href": "formulacar.html",
+          "internal": true
+        },
+        {
           "label": "PDF",
           "href": "assets/pdf/projects/Capstone_Project-2.pdf"
+        },
+        {
+          "label": "Code",
+          "href": "https://github.com/thejerrycheng/fsae-planetary-gearbox"
         },
         {
           "label": "Video",
           "href": "https://www.youtube.com/watch?v=lSZsrUMRv3I&list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV&index=2"
         }
       ],
-      "desc": "Planetary gearbox quadrupling torque at &gt;90% efficiency; kinematics, stress, thermal, and vibration analyses."
+      "desc": "Custom 4:1 planetary reduction for the UofT Formula team's first electric car, quadrupling torque at an estimated 91&nbsp;% efficiency. Re-checking the design against its own numbers: the gearbox cuts the motor-to-differential span from 273&nbsp;mm to 96&nbsp;mm, two of the four shortlisted tooth sets cannot take four equally spaced planets, and a rad/s-labelled-Hz slip put the system's natural frequency 2&pi; too high. Spin the gear set on the page.",
+      "short": "Four times the torque, 176 mm of wheelbase back"
     }
   ]
 }
