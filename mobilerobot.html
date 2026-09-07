@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Four ultrasonics and a rotation — the MIE444 maze robot — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="A maze robot that localizes with four ultrasonics and no compass, by reading its tile as a 4-bit wall code and rotating it. Drive it yourself and watch the candidate set collapse.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/mobilerobot.html">
+  <meta property="og:title" content="Four ultrasonics and a rotation">
+  <meta property="og:description" content="Localizing in a maze with no compass: a 4-bit wall code, a bit rotation, and a candidate set you can watch collapse.">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/mie444/poster.jpg">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <link rel="stylesheet" href="assets/css/project-page.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <style>
+    #mz-canvas { width: 100%; display: block; border: var(--line-w) solid var(--ink);
+                 border-radius: var(--radius-sm); background: var(--paper); box-shadow: var(--sh-xs); }
+    .lb-note { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.75;
+               background: var(--paper); border: 1.5px solid var(--ink); border-radius: 6px; padding: 10px 12px; }
+    .lb-note b { color: var(--hi-deep); }
+    .lb-note.is-done { background: rgba(46,158,91,0.12); border-color: #1B6B3C; }
+    .lb-note.is-done b { color: #1B6B3C; }
+    .mz-read { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 12px 0 8px; }
+    .mz-chip { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase;
+               text-align: center; padding: 6px 2px 5px; border: 1.5px solid var(--ink);
+               border-radius: 5px; background: var(--panel); color: var(--ink-soft); }
+    .mz-chip b { display: block; font-size: 12px; letter-spacing: 0; margin-top: 2px; color: var(--ink); }
+    .mz-chip.is-wall { background: var(--ink); color: rgba(244,234,210,0.7); }
+    .mz-chip.is-wall b { color: var(--pop); }
+    .mz-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-width: 250px; margin: 10px 0 10px; }
+    .mz-pad .btn { padding: 9px 4px 8px; font-size: 12px; }
+    .mz-pad .btn:disabled { opacity: .3; cursor: not-allowed; transform: none; box-shadow: var(--sh-xs); }
+    .mz-nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 12px 0; }
+    .mz-num { background: var(--paper); border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm);
+              box-shadow: var(--sh-xs); padding: 8px 4px 6px; text-align: center; }
+    .mz-num span { display: block; font-family: var(--font-mono); font-size: 9px; letter-spacing: .08em;
+                   text-transform: uppercase; color: var(--ink-soft); }
+    .mz-num b { display: block; font-family: var(--font-display); font-size: 22px; color: var(--hi-deep); line-height: 1.2; }
+    .mz-num b small { font-size: 12px; }
+    .mz-toggles { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; margin-top: 8px; }
+    .mz-toggles label { display: flex; align-items: center; gap: 6px; margin: 0; }
+    .vid-portrait { max-width: 330px; margin: 0; }
+    .vid-portrait video { width: 100%; display: block; border: var(--line-w) solid var(--ink);
+                          border-radius: var(--radius-sm); box-shadow: var(--sh-sm); background: #000; }
+    .photos-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-top: 22px; }
+    .photos-row figure { margin: 0; }
+    .photos-row img { width: 100%; display: block; border: var(--line-w) solid var(--ink);
+                      border-radius: var(--radius-sm); box-shadow: var(--sh-xs); background: #fff; }
+    .photos-row figcaption { font-size: 12.5px; color: var(--ash); margin-top: 8px; line-height: 1.5; }
+    .photos-row figcaption b { color: var(--ink); }
+  </style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button type="button" class="theme-btn" aria-label="Switch between day and night" aria-pressed="false">
+      <span class="if-night"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Day</span></span>
+      <span class="if-day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="lbl">Night</span></span>
+    </button>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+  <a href="cv.html">CV</a>
+</div>
+
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">Mechatronics ◆ MIE444 ◆ University of Toronto ◆ 2022</p>
+    <h1>Four ultrasonics and a rotation</h1>
+    <p>A 170&nbsp;mm robot has to find itself in an eight-by-four maze it has never seen from the inside, fetch a wooden block, and deliver it — in five minutes, with no camera, no odometry it trusts, and, at first, no compass. It solves this by reading the four walls around it as a four-bit number and rotating that number until it matches the map. Below you can drop it somewhere at random and watch every place it might be disappear, one move at a time.</p>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
+<section class="section" id="demo">
+  <div class="grid-2">
+    <figure class="vid-portrait">
+      <video controls playsinline preload="metadata" poster="assets/images/projects/mie444/poster.jpg">
+        <source src="assets/videos/mie444_run.mp4" type="video/mp4">
+      </video>
+    </figure>
+    <div>
+      <p class="lead" style="margin-top:0">The real thing, in the Myhal Centre maze: gripper down, block ahead, wooden walls at twelve inches on a side. It ran the maze in <b>three minutes on its first trial</b> at the second milestone, without a practice run.</p>
+      <div class="links">
+        <a href="assets/pdf/projects/MIE444 - Group 1 - Final Report.pdf" target="_blank" rel="noopener">Report (PDF)</a>
+        <a href="https://github.com/thejerrycheng/mie444-maze-localization" target="_blank" rel="noopener">Code</a>
+        <a href="#sandbox">Try the localizer</a>
+      </div>
+      <div class="mz-nums" style="margin-top:20px">
+        <div class="mz-num"><span>Ultrasonics</span><b>4</b></div>
+        <div class="mz-num"><span>Bits per tile</span><b>4</b></div>
+        <div class="mz-num"><span>Free tiles</span><b>24</b></div>
+        <div class="mz-num"><span>Diameter</span><b>170<small>mm</small></b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== SANDBOX =================== -->
+<section class="section" id="sandbox">
+  <h2 class="section-title">Find yourself</h2>
+  <p class="lead">The robot has been put down somewhere in the maze, facing some direction, and it does not know either. All it can read is whether there is a wall in front of it, behind it, and to each side — the four ultrasonics, and nothing else. Every tile shaded below is a tile it could still be on; every arrow is a heading still consistent with everything it has seen. Drive it one tile and watch them go.</p>
+
+  <div class="card scene-block">
+    <span class="caption-box">The maze, and everywhere it might be</span>
+    <div class="demo-grid">
+      <div class="demo-scene">
+        <canvas id="mz-canvas" aria-label="Maze with candidate robot positions"></canvas>
+        <p class="plot-note">Small grey numbers are each tile's own wall code, for reference — the robot cannot see them. Hatched tiles are blocked. Arrow keys drive.</p>
+      </div>
+      <div class="demo-controls">
+        <div class="lb-note" id="mz-status"></div>
+        <div class="mz-read" id="mz-read"></div>
+        <p class="plot-note" style="margin-top:-4px">Reading <b id="mz-code">0</b> — binary <code id="mz-bits">0000</code>, in the robot's own frame.</p>
+
+        <div class="mz-pad">
+          <span></span>
+          <button class="btn mz-drive" id="mz-go-0" data-dir="0" type="button">▲ fwd</button>
+          <span></span>
+          <button class="btn mz-drive" id="mz-go-1" data-dir="1" type="button">◀ left</button>
+          <button class="btn mz-drive" id="mz-go-2" data-dir="2" type="button">▼ back</button>
+          <button class="btn mz-drive" id="mz-go-3" data-dir="3" type="button">▶ right</button>
+        </div>
+        <p class="plot-note" style="margin-top:-6px">The highlighted key is the move that cuts the candidate set fastest.</p>
+
+        <div class="mz-nums">
+          <div class="mz-num"><span>Candidates</span><b id="mz-count">0</b></div>
+          <div class="mz-num"><span>Tiles</span><b id="mz-tiles">0</b></div>
+          <div class="mz-num"><span>Moves</span><b id="mz-moves">0</b></div>
+          <div class="mz-num"><span>Of</span><b>96</b></div>
+        </div>
+
+        <div class="demo-buttons">
+          <button class="btn btn-primary" id="mz-auto" type="button">Let it localize</button>
+          <button class="btn" id="mz-drop" type="button">Drop me somewhere else</button>
+        </div>
+        <div class="mz-toggles">
+          <label><input type="checkbox" id="mz-imu"> Trust the IMU (heading known)</label>
+          <label><input type="checkbox" id="mz-hide"> Hide the true robot</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== THE IDEA =================== -->
+<section class="section" id="idea">
+  <h2 class="section-title">A tile is four bits, and a turn is a bit rotation</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>The maze is a grid of 12-inch tiles. What the robot can measure about the tile it is standing on is exactly four booleans — wall or no wall, on each side — so a tile is a number from 0 to 15. The map of the whole maze is 32 such numbers, hardcoded.</p>
+      <p>The design decision that makes the rest work is the <em>order</em> of those four bits. They are assigned going around the tile — north, west, south, east — rather than in any arbitrary order:</p>
+      <div class="eq">code = 1·[N closed] + 2·[W closed] + 4·[S closed] + 8·[E closed]</div>
+      <p>Because the bits go around the tile, turning the robot 90° is a <b>cyclic rotation of the four bits</b>. A robot facing an unknown direction does not have to enumerate four different geometries; it reads one number, and the four hypotheses are that number rotated 0, 1, 2 or 3 places. In MATLAB that is one call to <code>bitror</code>. The whole orientation problem collapses into a rotate instruction.</p>
+      <p>Localization is then a set intersection, and nothing more. Start with all 96 states — 24 free tiles × 4 headings. Keep the ones whose rotated code matches the reading. Drive one tile, push every surviving candidate along the same body-relative move, drop the ones that would have hit a wall, and intersect with the new reading. Repeat until one survives.</p>
+      <p>What makes this a real problem rather than a formality is how <em>little</em> a four-bit reading tells you.</p>
+    </div>
+    <div>
+      <figure class="fig" style="margin-top:0">
+        <img class="pad" src="assets/images/projects/mie444/maze_map.png" alt="The maze as a 4 by 8 grid of decimal wall codes, with blocked tiles marked 15.">
+        <figcaption>The map the robot carries, from Figure 2.2-1 of the report: 4 rows × 8 columns, each tile written as its decimal wall code, 15 meaning blocked. The 2 × 2 block at the top left is the loading zone; the tiles marked B are the four drop-off zones. Every number on this page was computed from this map, transcribed into <code>assets/data/mie444_maze.json</code>.</figcaption>
+      </figure>
+      <div class="table-wrap" style="margin-top:20px">
+        <table class="data-table compact">
+          <thead><tr><th>Rotation class</th><th>Looks like</th><th>Tiles</th></tr></thead>
+          <tbody>
+            <tr><td>{0}</td><td>open on all four sides</td><td>1</td></tr>
+            <tr><td>{1, 2, 4, 8}</td><td>one wall</td><td>4</td></tr>
+            <tr><td>{3, 6, 12, 9}</td><td>a corner</td><td>6</td></tr>
+            <tr><td>{5, 10}</td><td>a corridor</td><td>9</td></tr>
+            <tr><td>{7, 14, 13, 11}</td><td>a dead end</td><td>4</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="plot-note">Sixteen codes, but they fall into six classes under rotation — and one of those, 15, only ever marks a blocked tile. So a robot that does not know which way it is facing has an alphabet of <b>five symbols</b> for 24 tiles. Nine of those tiles are corridors, and a corridor looks identical from both ends.</p>
+    </div>
+  </div>
+
+  <div class="card finding" style="margin-top:26px">
+    <div class="no">1</div>
+    <h3>The one tile you can identify is the one that tells you nothing</h3>
+    <p>The report singles out the four-way intersection — the only tile in the maze with code <b>0</b> — as the one place a single reading pins you down. That is true of the <em>tile</em>: code 0 appears exactly once on the map, so reading 0 means you are standing on it.</p>
+    <p>But code 0 is also the one code that is unchanged by rotation. Standing there, all four headings remain consistent, and a robot that knows where it is but not which way it faces cannot take a single step of its route. Sweeping all 96 states, <b>no</b> state is resolved by one reading: the smallest candidate set after a first look is <b>4</b>, the largest is <b>18</b>, and the average is <b>9.8</b>. The intersection is not the middle of the algorithm, it is the whole of it.</p>
+    <p style="margin-bottom:0">(On the printed map that intersection sits at row 2, column 6; the report's text calls it (1,&nbsp;6), which does not match its own worked example two paragraphs later — that one, "a code 10 above a code 12", lands correctly at row 3, column 6.)</p>
+  </div>
+</section>
+
+<!-- =================== THE MEASUREMENT =================== -->
+<section class="section" id="measured">
+  <h2 class="section-title">What the compass was worth</h2>
+  <div class="prose" style="max-width:76ch">
+    <p>Halfway through the project the team changed their minds about the IMU. The original design refused to trust it — a magnetometer indoors, near motors, is not a compass — so the robot had to recover its heading from ultrasonics alone. Later they found that disabling the magnetometer and calibrating the gyro at power-up gave better than ±30°, which is enough to pick out an orthogonal direction, and they let the algorithm use it. The report's claim is that this took localization <em>"from up to 3 moves down to at most a single 1-tile movement"</em>.</p>
+    <p>That claim is checkable, and the map is small enough to check it exhaustively rather than by sampling. <code>scripts/tools/mie444_localize.py</code> runs the belief-set localizer from every one of the 96 possible start states, under three move-selection rules and both knowledge settings.</p>
+  </div>
+
+  <figure class="fig">
+    <img src="assets/images/projects/mie444/mie444_localization.png" alt="Three panels: a map of how many states survive one reading, cumulative distributions of moves to localize, and mean moves by policy.">
+    <figcaption><b>Every start state, exhaustively.</b> <b>(a)</b> The worst case at each tile: how many of the 96 states still fit after a single reading. Corridors are the dark tiles — 18 candidates each. <b>(b)</b> Fraction of starts resolved within a given number of one-tile moves; blue is heading known, red unknown. <b>(c)</b> Mean ± sd across all starts. Random-walk figures are averaged over 400 trials per start; the greedy rule is deterministic.</figcaption>
+  </figure>
+
+  <div class="table-wrap" style="margin-top:22px">
+    <table class="data-table">
+      <thead><tr><th>Move rule</th><th>Heading</th><th>Mean moves</th><th>Worst case</th><th>Done in ≤ 1 move</th></tr></thead>
+      <tbody>
+        <tr><td>Random</td><td>unknown</td><td>3.11</td><td>never resolved</td><td>40 %</td></tr>
+        <tr><td>Prefer straight, no reversal</td><td>unknown</td><td>2.00</td><td>4</td><td>39 %</td></tr>
+        <tr><td>Greedy (minimise expected candidates)</td><td>unknown</td><td>1.84</td><td>4</td><td>47 %</td></tr>
+        <tr><td>Random</td><td><b>known</b></td><td>0.84</td><td>never resolved</td><td>92 %</td></tr>
+        <tr><td>Prefer straight, no reversal</td><td><b>known</b></td><td>0.75</td><td>2</td><td>92 %</td></tr>
+        <tr><td>Greedy (minimise expected candidates)</td><td><b>known</b></td><td><b>0.67</b></td><td><b>1</b></td><td><b>100 %</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card finding" style="margin-top:26px">
+    <div class="no">2</div>
+    <h3>The report's claim holds exactly, and it is the strongest form of it</h3>
+    <p>With the heading known and a sensible choice of which way to drive, <b>every one of the 96 start states resolves in at most one move</b>, mean 0.67 — which is precisely "at most a single 1-tile movement", not approximately. Without the heading, the same rule needs <b>1.84 moves on average and up to 4</b> in the worst case. The report remembered "up to 3"; on this map it is 4, from the corridor tiles.</p>
+    <p>So the IMU was worth about <b>1.2 tile-moves per localization</b>, and it removed the tail entirely. In a five-minute run where the robot re-localizes whenever its wall reading disagrees with its believed position, that tail is the part that costs you the contest — not the average.</p>
+  </div>
+
+  <div class="card finding" style="margin-top:22px">
+    <div class="no">3</div>
+    <h3>The team was right that the path rule barely matters — but only once you have the compass</h3>
+    <p>The report says the scheme for choosing which way to drive is "a predefined scheme … but the impact is very small even compared to a random choice". Measured: with the heading known, informed choice beats a random walk by <b>0.17 moves</b> (0.67 vs 0.84) — negligible, exactly as claimed.</p>
+    <p>Without the heading it is not negligible at all: <b>1.84 versus 3.11</b>, a 41 % saving, and a random walk fails to resolve some starts within a dozen moves while the informed rule never exceeds four. The instinct was right for the robot they ended up shipping and wrong for the one they started with. It is a good illustration of how a sensor decision quietly changes which <em>software</em> decisions matter.</p>
+  </div>
+</section>
+
+<!-- =================== DRIVING STRAIGHT =================== -->
+<section class="section" id="driving">
+  <h2 class="section-title">Assume it never drives straight</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>All of the above assumes the robot can move exactly one tile and end up square in the next one. It cannot, and the report's stated design principle is unusually blunt about it: <em>distrust the physical robot and increase trust as needed</em>. Assume the motors desync, assume friction is asymmetric, assume nothing is straight.</p>
+      <p>The team considered closing a PID loop on heading and rejected it as too complex for the schedule. What they built instead is geometric and open-loop-per-step: a tile crossing is broken into <b>three-inch increments</b>, and each increment corrects one error.</p>
+      <p><b>Before</b> each increment, the side ultrasonics give the distance to the reference wall — the <em>shorter</em> of the two readings, because ultrasonic error grows with range, or both together in a corridor. Comparing that to the ideal centre-lane distance gives a lateral offset, and the robot turns by θ, drives the increment diagonally, and turns back by −θ, so it arrives forward by the step and sideways by the correction.</p>
+      <p><b>After</b> the increment, it measures the side distance again. If the heading error α were zero, the lateral offset would now be zero. It is not, and the discrepancy is exactly what α produces — so α is recovered from the residual and corrected by rotating.</p>
+      <div class="eq">lateral error fixed <em>before</em> the step · heading error fixed <em>after</em> it — each increment leaves the robot straighter than it found it</div>
+      <p>It is a dead-reckoning-free controller: nothing accumulates, because every three inches the walls tell it the truth again. The report's own summary is that the robot "perfectly travels without hitting any object", and the measured outcome — a clean maze run on the first attempt at milestone two — supports it.</p>
+      <p>The failure mode is where the reference disappears. Around some corners, and in the middle of the run between (1,&nbsp;4) and (2,&nbsp;4), the guiding wall <em>switches sides</em> mid-step, and wall-following faithfully follows it around the corner. The fix is not a better controller: it is a hardcoded list of positions where wall-following is switched off for part of a movement. Which means the geometry module depends on the localization module, while localization depends on the robot being able to drive straight — a circular dependency the report calls out explicitly as the thing that made integration delicate.</p>
+    </div>
+    <div>
+      <figure class="fig" style="margin-top:0">
+        <img class="pad" src="assets/images/projects/mie444/route.png" alt="The maze with an arrow in each tile pointing toward the next tile on the route to the bottom-right drop-off.">
+        <figcaption>Navigation, once localized, is a lookup table: one arrow per tile giving the <em>next</em> tile on the way to a given drop-off. The robot never holds a route, only its current cell and the next step — so a mid-run re-localization costs nothing to recover from. Figure 2.2-2 of the report.</figcaption>
+      </figure>
+      <div class="card finding" style="margin-top:22px">
+        <div class="no">4</div>
+        <h3>Two identical sensors, same surface, different answers</h3>
+        <p>Block detection was meant to be a difference of two forward ultrasonics — one low, one high. Off-normal, an ultrasonic reads sensibly to about <b>30°</b> and then goes chaotic, and the team knew that. Their assumption was that two sensors looking at the <em>same</em> surface, at the same range and the same angle, would at least be chaotic <em>together</em> — so a disagreement would mean one of them had found the block.</p>
+        <p>They did not. Measuring the same wall at the same angle, the two sensors returned drastically different values, and the whole differencing scheme fell over. The gripper was finished late enough that this only surfaced at the competition, and the recovery was a brute-force sweep: drive a fixed search pattern through the loading zone until the downward-facing sensor sees the block underneath the gripper.</p>
+        <p style="margin-bottom:0">The clean lesson is in the report's own recommendation — a time-of-flight sensor instead, which does not have an angle-of-incidence failure mode in the first place. The sharper one is about what a shared failure mode <em>is</em>: correlated noise is a property of the noise, not of the geometry, and two parts from the same bin are not two samples of the same random variable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== HARDWARE =================== -->
+<section class="section" id="hardware">
+  <h2 class="section-title">Three robots in one semester</h2>
+  <div class="prose" style="max-width:76ch">
+    <p>The software above was written and tested in a MATLAB simulator for weeks before any of it ran on hardware, which is why it is so suspicious of the hardware. That turned out to be the correct posture, because the first robot did not survive its first competition.</p>
+  </div>
+
+  <div class="photos-row">
+    <figure>
+      <img src="assets/images/projects/mie444/cad_initial.jpg" alt="CAD render of the first robot: a compact blue stack with the battery as a structural member.">
+      <figcaption><b>Design one.</b> Compact, 205 mm across, each layer supported by the one below — the battery pack is a structural member. Assembly was impossible in the intended order and the wiring became unreachable once the battery was in.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/images/projects/mie444/built_initial.jpg" alt="Photograph of the first robot, wires everywhere.">
+      <figcaption><b>As built.</b> Wires that would not seat in the breadboard were held with superglue, which conducts once it warms. Hours before the first milestone it shorted 12 V to ground and took out both motor drivers and most of the ultrasonics.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/images/projects/mie444/cad_final.jpg" alt="CAD render of the redesigned robot: taller, modular, wiring on the top deck.">
+      <figcaption><b>Design two.</b> Taller instead of wider, assembled deck by deck, all wiring moved to the top layer. Diameter <b>205 → 170 mm</b>, and in a maze of 12-inch tiles those 35 mm were the single biggest competitive advantage the team had.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/images/projects/arduino/robot.jpg" alt="Photograph of the final robot on a bench next to a laptop.">
+      <figcaption><b>And as built.</b> Ultrasonics on all four faces of the sensor tower, IMU on top, Arduino Mega and one breadboard on the upper deck, gripper folded under the nose. Every wire reachable without taking anything apart — which was the entire point of the redesign.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/images/projects/mie444/gripper.jpg" alt="Photograph of the rack-and-pinion gripper.">
+      <figcaption><b>The gripper, second attempt.</b> Two 3D-printed four-bar linkages on M3 screws rather than bearings: friction, backlash, and parts that worked loose. Replaced by a rack and pinion driven straight off the servo — fewer parts, same torque, and it retracts inside the body so it costs no diameter.</figcaption>
+    </figure>
+  </div>
+
+  <div class="grid-2" style="margin-top:26px">
+    <div class="prose">
+      <h3>The electronics ceiling was pin count, not compute</h3>
+      <p>The first build put every ultrasonic on a <em>shared</em> echo pin to save I/O on an Arduino Uno. Sharing serialised the readings and let the echoes interfere; a diode per pin did not fix it. The Uno also had no room for the MOSFETs the speakers and high-voltage LEDs needed, each of which costs another digital pin.</p>
+      <p>The fix was to stop economising: an Arduino Mega, one trigger and one echo pin per sensor, and the decorative outputs deleted. The wiring then fitted on a single breadboard and needed no further modification for the rest of the project. It is the same ceiling the LED cube ran into — I/O and interrupt budget, not clock speed.</p>
+      <h3>Two halves that barely know about each other</h3>
+      <p>The Arduino is deliberately stupid. It accepts primitives over Bluetooth — <em>read the left ultrasonic</em>, <em>turn this many degrees</em> — and answers when done. Everything above that lives in MATLAB on a laptop: wall-following, localization, navigation, block handling.</p>
+      <p>The payoff is that the simulator speaks the same primitives, so the same MATLAB runs in simulation and on the robot with nothing swapped. That is why weeks of untested code worked on contact with hardware, and it is the same sim-and-real-share-the-logic split I have used on every project since.</p>
+    </div>
+    <div>
+      <div class="table-wrap" style="margin-top:0">
+        <table class="data-table compact">
+          <thead><tr><th>Built</th><th>Changed, and why</th></tr></thead>
+          <tbody>
+            <tr><td>205 mm diameter</td><td>→ 170 mm; clearance in a 12-inch maze</td></tr>
+            <tr><td>Battery as structure</td><td>→ modular decks; assembly and access</td></tr>
+            <tr><td>Superglued wiring</td><td>→ properly seated; the glue conducts hot</td></tr>
+            <tr><td>Arduino Uno</td><td>→ Mega; pins, not speed</td></tr>
+            <tr><td>Shared ultrasonic echo pin</td><td>→ one trig/echo each; interference</td></tr>
+            <tr><td>Four-bar linkage gripper</td><td>→ rack and pinion; rigidity, part count</td></tr>
+            <tr><td>Ultrasonic block sensing</td><td>→ recommended time-of-flight (VL6180)</td></tr>
+            <tr><td>Distrust the IMU</td><td>→ trust it, gyro-only; worth 1.2 moves</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card finding" style="margin-top:22px">
+        <div class="no">!</div>
+        <h3>How it actually went</h3>
+        <p><b>Milestone one:</b> not attempted. The short happened hours before the slot; the team submitted the working simulation instead.</p>
+        <p><b>Milestone two:</b> the redesigned robot completed the maze on its <b>first trial in three minutes</b>, faster than expected, helped by a starting tile it could localize within.</p>
+        <p><b>Milestone three:</b> the gripper snapped minutes before the first trial and was epoxied back together. The block was picked up successfully — better than expected, given the block-finding code had never run in the physical maze — then dropped after leaving the loading zone because the servos jittered. The robot carried on to the drop-off anyway. On the second trial, a change made for clearance (raise the gripper before turning) backfired and it set the gripper down <em>onto</em> the block; once that was moved aside it picked up and delivered in about four minutes with no further intervention.</p>
+        <p style="margin-bottom:0">The report's own conclusion is a scheduling one, and it is the right one: every failure above traces to hardware arriving too late to test the software against.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="credits">
+  <h2 class="section-title">Credits</h2>
+  <div class="card card-pad credits">
+    <p><b>MIE444: Mechatronics Principles</b> at the University of Toronto, December 2022. Group 1: <b>Karim Mansour</b>, <b>Max Mizrahi</b>, <b>Jesse Chudnow</b> and <b>Qilong Cheng</b>. The robot, the MATLAB control stack, the Arduino firmware and both mechanical designs are the team's course project.</p>
+    <p style="margin-top:8px">The belief-set localizer on this page, the exhaustive sweep behind the figure and the table, and the browser sandbox were written afterwards, from the report's description of the algorithm and its printed map. They are a re-implementation for analysis, not the code that ran on the robot — the original MATLAB and Arduino sources are not in my possession.</p>
+    <div class="links" style="margin-top:12px">
+      <a href="assets/pdf/projects/MIE444 - Group 1 - Final Report.pdf" target="_blank" rel="noopener">Report</a>
+      <a href="https://github.com/thejerrycheng/mie444-maze-localization" target="_blank" rel="noopener">Code</a>
+      <a href="projects.html">All projects</a>
+    </div>
+  </div>
+</section>
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+<script src="assets/js/maze444.js"></script>
+<script src="assets/js/maze444_ui.js"></script>
+</body>
+</html>

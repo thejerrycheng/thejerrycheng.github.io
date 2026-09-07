@@ -644,8 +644,8 @@
     },
     {
       "id": "mobile-robot",
-      "title": "Mobile Robot Mechatronics Design Project",
-      "year": 2023,
+      "title": "Maze Localization with Four Ultrasonics and No Compass",
+      "year": 2022,
       "tag": "Mechatronics",
       "images": [
         "assets/images/projects/arduino/robot.jpg"
@@ -653,15 +653,25 @@
       "alts": [
         "Arduino mobile robot"
       ],
-      "video": "assets/videos/arduino_mobile_robot.mp4",
+      "video": "assets/videos/mie444_card.mp4",
       "fit": "cover",
       "links": [
         {
+          "label": "Website",
+          "href": "mobilerobot.html",
+          "internal": true
+        },
+        {
           "label": "PDF",
           "href": "assets/pdf/projects/MIE444 - Group 1 - Final Report.pdf"
+        },
+        {
+          "label": "Code",
+          "href": "https://github.com/thejerrycheng/mie444-maze-localization"
         }
       ],
-      "desc": "<em>MATLAB, SolidWorks</em> — Designed a 3D-printed Arduino-based mobile robot in Fusion 360; implemented localization and obstacle-avoidance for maze navigation in MATLAB; commanded the robot via Bluetooth."
+      "desc": "A 170&nbsp;mm robot finds itself in an 8&nbsp;&times;&nbsp;4 maze using four ultrasonics and nothing else: a tile is four bits of wall, and because the bits run around the tile, turning 90&deg; is a bit rotation. Localization becomes a set intersection over 24 tiles &times; 4 headings. Swept exhaustively, no single reading ever localizes it &mdash; but with the gyro trusted, <em>every</em> start resolves in one tile-move. Drive it on the page and watch the candidates disappear.",
+      "short": "Four ultrasonics, no compass, one bit rotation"
     },
     {
       "id": "led-cube",
