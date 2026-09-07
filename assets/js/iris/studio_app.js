@@ -52,7 +52,7 @@ export class StudioApp {
     this.buildUI(); this.bindPointer(); this.bindKeys();
     if (this.capture) {                       /* a recorded clip shows the shot, not the director's furniture */
       this.showPath = false; this.showFrames = false; this.showBeam = false;
-      this.studio.gizmo.enabled = false; this.studio.gizmoHelper.visible = false;
+      this.showGizmo(false);
       /* frame the rig in the half of the picture the monitor leaves free */
       this.studio.camera.position.set(-0.46, -1.08, 0.74);
       this.studio.controls.target.set(0.30, 0.02, 0.16); this.studio.controls.update();
@@ -230,7 +230,15 @@ export class StudioApp {
   setTool(t) {
     this.tool = t; document.querySelectorAll('[data-tool]').forEach(b => b.classList.toggle('on', b.dataset.tool === t));
     this.studio.gizmo.setMode(t === 'aim' ? 'rotate' : 'translate');
-    this.studio.gizmo.enabled = true;
+    this.showGizmo(true);
+  }
+  /** The ball and its arrows are for the operator. A recorded clip must never contain them, so every
+      place that turns them on goes through here rather than setting the flags itself. */
+  showGizmo(on) {
+    const v = !!on && !this.capture;
+    this.studio.gizmo.enabled = v;
+    this.studio.gizmoHelper.visible = v;
+    if (this.studio.ball) this.studio.ball.visible = v;
   }
 
   /* ============================================================ shots */
@@ -271,7 +279,7 @@ export class StudioApp {
   gizmoOnKey() {
     const k = this.key; if (!k) return;
     this.studio.setHandlePose(k.pos, k.R);
-    this.studio.gizmo.enabled = true; this.studio.gizmoHelper.visible = true;
+    this.showGizmo(true);
   }
   addKeyHere() {
     if (!this.tl) return;
