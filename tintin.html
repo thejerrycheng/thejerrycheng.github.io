@@ -51,6 +51,20 @@
     .tt-rate b { color: var(--hi); font-size: 26px; }
     .tt-mc-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 16px; align-items: start; margin-top: 14px; }
     @media (max-width: 900px) { .tt-mc-grid { grid-template-columns: 1fr; } #tt-canvas { height: 380px; } #t3-canvas { height: 400px; } }
+    /* page-local: the landing gallery */
+    #tt-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 18px; }
+    #tt-filters .btn { text-transform: lowercase; font-size: 12.5px; padding: 5px 12px; }
+    #tt-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 16px; }
+    .land-card { margin: 0; border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); overflow: hidden;
+                 background: var(--panel); box-shadow: var(--sh-xs); }
+    .land-card video { width: 100%; display: block; aspect-ratio: 16 / 9; background: #0B0E16; object-fit: cover; }
+    .land-card figcaption { padding: 9px 12px 11px; font-size: 12.5px; line-height: 1.5; }
+    .land-card figcaption b { font-family: var(--font-comic); letter-spacing: .04em; font-size: 14px; display: block; }
+    .land-card figcaption span { display: block; color: var(--ash); font-size: 11.5px; }
+    .land-card .land-num { font-family: var(--font-mono); color: var(--ink-soft); font-size: 11px; margin-top: 3px; }
+    @media (max-width: 620px) { #tt-gallery { grid-template-columns: 1fr; } }
+    ul.tight { margin: 0; padding-left: 20px; }
+    ul.tight li { margin: 7px 0; line-height: 1.55; font-size: 14px; }
   </style>
 </head>
 <body>
@@ -85,7 +99,7 @@
   <div class="wrap">
     <p class="kicker">Reinforcement learning ◆ Guidance &amp; control ◆ MuJoCo ◆ NYU ROB-GY 7863 ◆ 2025</p>
     <h1>TINTIN</h1>
-    <p>Thrust-Integrated Neural Touchdown. A 5,000-tonne lunar lander with one gimbaled engine, 100 m long, losing a fifth of its mass on the way down. It has to fall two hundred metres, kill seventy metres of downrange offset and set down inside a ten-metre circle. Below you can fly it yourself in full 6-DoF, hand it to a cascaded 3-D controller, or hand it to a SAC policy at any point in its training — and re-run the Monte Carlo in your own browser.</p>
+    <p>Thrust-Integrated Neural Touchdown: a 5,000-tonne lunar lander, 100 m long, one gimbaled engine. Landings below — then fly it yourself.</p>
   </div>
 </header>
 <div class="deco-band" aria-hidden="true"></div>
@@ -93,12 +107,12 @@
 <!-- =================== HERO =================== -->
 <section class="section" id="demo">
   <div class="hero-video">
-    <video controls playsinline preload="metadata" poster="assets/images/projects/tintin/hero_poster.jpg">
-      <source src="assets/videos/tintin_hero.mp4" type="video/mp4">
+    <video controls autoplay muted loop playsinline preload="metadata" poster="assets/images/projects/tintin/reel_poster.jpg">
+      <source src="assets/videos/tintin_reel.mp4" type="video/mp4">
     </video>
   </div>
   <div class="hero-caption">
-    <p>The descent in MuJoCo: entry, the attitude capture that turns the engine into the velocity vector, and the terminal burn onto the pad. The vehicle is the rocket from <em>The Adventures of Tintin</em>, at 5,000 tonnes and 100 m; the terrain is an imported lunar mesh.</p>
+    <p>Six touchdowns, cut together. The vehicle is the rocket from <em>The Adventures of Tintin</em>, at 5,000 t and 100 m; every arrival below is a real descent flown in MuJoCo.</p>
     <div class="links">
       <a href="assets/pdf/projects/Space_Robot_Course_Project_2_Report-3.pdf" target="_blank" rel="noopener">Report (PDF)</a>
       <a href="assets/pdf/projects/Space_Robot_Course_Project_1-6.pdf" target="_blank" rel="noopener">Modelling report</a>
@@ -117,28 +131,29 @@
   </div>
 </section>
 
+<!-- =================== LANDINGS =================== -->
+<section class="section" id="landings">
+  <h2 class="section-title">Landings</h2>
+  <p class="lead">Every clip is one real MuJoCo descent of the 5,000-tonne vehicle that ended on the pad — no scripted trajectories, live telemetry in the corner, playback speed in the top right. Clips that share a starting condition are the same descent from a different camera. Filter by controller or by camera.</p>
+  <div id="tt-filters"></div>
+  <div id="tt-gallery"><p class="plot-note">Loading the landings…</p></div>
+  <p class="plot-note" style="margin-top:14px">How many attempts each of these took, straight from the render log: <b>30 m hover</b> 2 landings in 2 tries, <b>45 m</b> 2 in 3, <b>6–10 m downrange</b> 2 in 9, <b>4° of entry tilt</b> 2 in 2 — and <b>1 m/s of entry speed</b> 1 in 24. Altitude and offset are cheap; arriving with velocity is not. One rung further up the ladder nothing lands at all, and <a href="#why">that is the interesting part</a>.</p>
+</section>
+
 <!-- =================== THE TASK =================== -->
 <section class="section" id="task">
   <h2 class="section-title">The task</h2>
-  <div class="grid-2">
-    <div class="prose">
-      <p>Powered descent is usually split into three boxes: navigation estimates the state, guidance plans a trajectory, and a tracking controller flies it. The split is convenient and it is also where the problem hides — on a vehicle whose mass drops by 90 % during the burn, the tracking controller is chasing a plan made for a different vehicle.</p>
-      <p>TINTIN removes the split. One policy sees the state and emits throttle and two gimbal angles. That is <em>Integrated Guidance and Control</em>: what trajectory to fly and how to actuate are learned as one map.</p>
-      <p>The state, action and dynamics are the same in the report, in the MuJoCo environment, in the Python harness that made the plots below, and in the sandbox you are about to fly:</p>
-      <div class="eq">s<sub>t</sub> = [ <span class="m">p</span>, <span class="m">v</span>, <span class="m">q</span>, <span class="m">ω</span>, m, I ] &nbsp;&nbsp; u<sub>t</sub> = [ T, θ<sub>p</sub>, θ<sub>y</sub> ] ∈ [−1, 1]<sup>3</sup></div>
-      <div class="eq">ṁ = −T / (I<sub>sp</sub> g<sub>0</sub>) &nbsp;&nbsp;&nbsp; I(t) = I<sub>0</sub> · m(t)/m<sub>0</sub> &nbsp;&nbsp;&nbsp; T = T<sub>max</sub>(u<sub>T</sub>+1)/2, &nbsp; θ<sub>y,p</sub> = 30° u<sub>y,p</sub></div>
-      <p>Mass depletion is not decoration. Burning 4,500 t out of 5,000 t changes both the acceleration a given throttle buys and the inertia a given gimbal angle has to rotate — the plant changes underneath the controller.</p>
-    </div>
-    <div>
-      <figure class="fig" style="margin-top:0">
-        <img src="assets/images/projects/tintin/environment.jpg" alt="The RocketGym MuJoCo environment: lander, lunar terrain and the green target pad">
-        <figcaption><b>RocketGym.</b> The MuJoCo environment: a 100 m body with a 17 m fin radius, a 2-DoF gimbaled engine 30 m below the centre of mass, an inertia tensor of diag(1.2×10⁹, 1.2×10⁹, 3.0×10⁷) kg·m² that scales with the mass burnt off, lunar gravity at 1.62 m/s², and a fixed pad at the origin.</figcaption>
-      </figure>
-      <div class="ledger">
-        <div class="card"><h4 class="known">Given</h4><ul><li>Position, velocity, attitude, rate</li><li>Propellant and mass fraction</li><li>Noisy, in 17 numbers</li></ul></div>
-        <div class="card"><h4 class="unknown">Commanded</h4><ul><li>Throttle T ∈ [0, 25 MN]</li><li>Gimbal pitch θ<sub>p</sub> ∈ ±30°</li><li>Gimbal yaw θ<sub>y</sub> ∈ ±30°</li></ul></div>
-        <div class="card"><h4 class="truth">Ends when</h4><ul><li>The mesh touches the pad</li><li>Offset &gt; 150 m, ‖v‖ &gt; 100 m/s</li><li>Tilt &gt; 120°, or 45 seconds</li></ul></div>
-      </div>
+  <p class="lead">One policy sees the state and emits throttle and two gimbal angles — guidance and control as a single map. Burning 4,500 t of 5,000 t changes the plant underneath the controller as it flies.</p>
+  <div class="eq">s<sub>t</sub> = [ <span class="m">p</span>, <span class="m">v</span>, <span class="m">q</span>, <span class="m">ω</span>, m, I ] &nbsp;&nbsp; u<sub>t</sub> = [ T, θ<sub>p</sub>, θ<sub>y</sub> ] ∈ [−1, 1]<sup>3</sup> &nbsp;&nbsp; ṁ = −T / (I<sub>sp</sub> g<sub>0</sub>) &nbsp;&nbsp; I(t) = I<sub>0</sub> · m(t)/m<sub>0</sub></div>
+  <div class="grid-2" style="margin-top:18px">
+    <figure class="fig" style="margin-top:0">
+      <img src="assets/images/projects/tintin/environment.jpg" alt="The RocketGym MuJoCo environment: lander, lunar terrain and the green target pad">
+      <figcaption><b>RocketGym.</b> 100 m body, 17 m fin radius, engine 30 m below the centre of mass, inertia diag(1.2×10⁹, 1.2×10⁹, 3.0×10⁷) kg·m² scaling with the mass burnt off, lunar gravity, a fixed pad at the origin.</figcaption>
+    </figure>
+    <div class="ledger">
+      <div class="card"><h4 class="known">Given</h4><ul><li>Position, velocity, attitude, rate</li><li>Propellant and mass fraction</li><li>Noisy, in 17 numbers</li></ul></div>
+      <div class="card"><h4 class="unknown">Commanded</h4><ul><li>Throttle T ∈ [0, 25 MN]</li><li>Gimbal pitch θ<sub>p</sub> ∈ ±30°</li><li>Gimbal yaw θ<sub>y</sub> ∈ ±30°</li></ul></div>
+      <div class="card"><h4 class="truth">Ends when</h4><ul><li>The mesh touches the pad</li><li>Offset &gt; 150 m, ‖v‖ &gt; 100 m/s</li><li>Tilt &gt; 120°, or 45 seconds</li></ul></div>
     </div>
   </div>
 </section>
@@ -146,7 +161,7 @@
 <!-- =================== FLY IT =================== -->
 <section class="section" id="fly">
   <h2 class="section-title">Fly it yourself</h2>
-  <p class="lead">This is the actual vehicle: 5,000 tonnes dry, 1,000 tonnes of propellant, one 25 MN engine on a ±30° gimbal 30 m below the centre of mass, lunar gravity, six degrees of freedom. The model in your browser is a transliteration of the MuJoCo one — same inertia tensor, same RK4 at 100 Hz, same second-order gimbal servos — and it tracks MuJoCo to under <b>1.3 m</b> over a full 45-second descent. Take the controls, hand them to the 3-D PD baseline, or hand them to the trained SAC policy at any point in its training.</p>
+  <p class="lead">The same vehicle in your browser — 5,000 t, one 25 MN engine on a ±30° gimbal 30 m below the centre of mass — tracking MuJoCo to <b>1.3 m</b> over a 45 s descent. Fly it, or hand it to the PD or to any SAC checkpoint.</p>
 
   <div class="card scene-block">
     <span class="caption-box">The sandbox</span>
@@ -190,7 +205,7 @@
           <button class="btn btn-primary" id="t3-go" type="button">Launch</button>
           <button class="btn" id="t3-reset" type="button">Reset</button>
         </div>
-        <p class="plot-note">Drag the scene to orbit, scroll to zoom. The plots below stream live as it flies. <b>Vehicle randomisation</b> resamples dry mass ±20 %, propellant load ±35 %, specific impulse ±12 %, engine authority ±20 %, gimbal gain ±15 %, a permanent gimbal misalignment up to 2.5° and a small initial body rate — the same envelope the policy trained against. The last two are the ones that matter: see findings 5 and 6. Push it past 1 and you are asking for a vehicle it never saw.</p>
+        <p class="plot-note">Drag to orbit, scroll to zoom. <b>Vehicle randomisation</b> resamples mass, propellant, I<sub>sp</sub>, engine, gimbal gain, a gimbal misalignment up to 2.5° and a small body rate — the envelope the policy trained against. The last two are the ones that matter (<a href="#why">why</a>).</p>
       </div>
     </div>
   </div>
@@ -199,7 +214,7 @@
     <span class="caption-box">Telemetry</span>
     <div class="scene-head">
       <h3>What the vehicle is doing, as it does it</h3>
-      <p>Altitude against downrange, speed against descent rate, tilt against gimbal deflection, throttle against propellant. Watch the tilt trace during a big lateral correction: the vehicle leans over, translates, and has to stand back up before it can touch down, and the gimbal trace shows how much authority that costs.</p>
+      <p>Altitude against downrange, speed against descent rate, tilt against gimbal, throttle against propellant — live as it flies.</p>
     </div>
     <div class="t3-plots">
       <canvas id="t3-plot-alt" aria-label="Altitude and downrange"></canvas>
@@ -213,7 +228,7 @@
     <span class="caption-box">Run the experiment</span>
     <div class="scene-head">
       <h3>100 descents, right now, with whichever pilot you picked</h3>
-      <p>Every descent resamples the entry state and the vehicle from the sliders above. Green trajectories land inside the box — within 10 m of the pad, under 3 m/s, under 25° of tilt; red ones do not. The bundle is drawn into the scene above so you can fly through your own statistics.</p>
+      <p>Green lands inside the box — 10 m, 3 m/s, 25°; red does not. The bundle is drawn into the scene above.</p>
     </div>
     <button class="btn btn-primary" id="t3-mc" type="button">Fly 100 descents</button>
     <div id="t3-mc-out" style="margin-top:14px"><p class="plot-note">Press the button.</p></div>
@@ -221,85 +236,60 @@
 </section>
 
 <!-- =================== PD BASELINE =================== -->
-<section class="section" id="baseline">
-  <h2 class="section-title">Flying it with a classical controller</h2>
-  <p class="lead">Before any learning, the vehicle needs a baseline, and the baseline has to fly the same thing the policy does — the real MuJoCo body, in three dimensions, with the gimbal and the mass loss. <code>scripts/tools/pd3d.py</code> is a cascaded controller: an outer loop turns position and velocity error into a desired thrust vector, and an inner loop drives the two gimbal angles to point the vehicle along it. Building it turned up four things about this vehicle that a textbook cascade gets wrong.</p>
+<section class="section" id="why">
+  <h2 class="section-title">Why it stops there</h2>
+  <p class="lead">The clips above are hover starts. One rung up the ladder — 60 m, 10 m of offset — both controllers land 0 % of the time. Building the 3-D PD (<code>scripts/tools/pd3d.py</code>) turned up why, and the last two are the ones worth reading.</p>
 
-  <div class="eq">a<sub>lat</sub> = k<sub>d</sub>(v<sub>ref</sub>(d) − v<sub>xy</sub>) &nbsp;&nbsp; v<sub>z</sub><sup>ref</sup> = −√(2 a<sub>up</sub> (h − h<sub>flare</sub>)) &nbsp;&nbsp; f<sub>des</sub> = m(a<sub>des</sub> + g e<sub>z</sub>)</div>
-  <div class="eq">e = [0,0,1] × R<sup>T</sup> û<sub>des</sub> &nbsp;&nbsp; τ<sub>des</sub> = I(m)(k<sub>p</sub>e − k<sub>d</sub>ω) &nbsp;&nbsp; θ<sub>p</sub> = asin(−τ<sub>y</sub> / L T), &nbsp; θ<sub>y</sub> = asin(−τ<sub>x</sub> / L T cos θ<sub>p</sub>)</div>
-
-  <div class="grid-2" style="margin-top:24px">
-    <div class="card finding">
-      <div class="no">1</div>
-      <h3>You cannot tilt a 100-metre rocket near the ground</h3>
-      <p>Bisecting the resting height of the MuJoCo mesh over a range of tilts gives a straight line: the centre of mass touches down at <b>z = 1.00 + 0.2475 × tilt[°]</b>, R² &gt; 0.999. The vehicle is 100 m long with a ~17 m fin radius, so at 20° of tilt a fin hits the ground with the centre of mass still <b>6 m</b> up.</p>
-      <p>That makes the attitude and altitude channels physically coupled, and a cascade that treats them as independent flies a textbook approach straight into the pad at 16° and 4 m/s — which is exactly what the first version did, every time. The fix is a tilt cap that is a function of altitude: <b>θ ≤ 4 (h − 1.5) degrees</b>.</p>
-    </div>
-    <div class="card finding">
-      <div class="no">2</div>
-      <h3>You cannot steer while falling</h3>
-      <p>Lateral acceleration is <b>(a<sub>z</sub> + g) tan θ</b>. If the vertical channel throttles back to a near-free-fall descent then a<sub>z</sub> + g → 0, and the gimbal buys essentially no lateral authority at any tilt at all. The controller was commanding 35° of tilt and getting 0.2 m/s² out of it.</p>
-      <p>Holding at least hover thrust while there is still downrange to kill costs propellant and fixes it. It is the single change that took the easy case from 10 % to 70 %.</p>
-    </div>
-    <div class="card finding">
-      <div class="no">3</div>
-      <h3>The authority is the tilt cap, not the thrust-to-weight</h3>
-      <p>TWR 3 suggests 3·g·sin(35°) = 2.8 m/s² of lateral acceleration. The real number during an approach is <b>g·tan(35°) = 1.13 m/s²</b>, because the vertical channel is only asking for about hover thrust and the tilt merely redirects it. Sizing the guidance for 2.0 m/s² instead of 1.1 made the vehicle command approach speeds it could not arrest, and it flew through the pad in a limit cycle it never left.</p>
-    </div>
-    <div class="card finding">
-      <div class="no">4</div>
-      <h3>Braking laterally means reversing the whole vehicle</h3>
-      <p>There is no lateral thruster: to stop translating, the entire 5,000-tonne body has to tilt the other way, which takes about <b>3 seconds</b> during which the deceleration is zero. So the approach speed has to satisfy <b>d = v²/2a + v·t<sub>lag</sub></b>, not the textbook v = √(2ad). At 10 m of remaining offset that is 2.7 m/s instead of 4.7 — and the difference between those two numbers is the difference between landing and skidding past the pad.</p>
-    </div>
+  <div class="card card-pad">
+    <ul class="tight">
+      <li><b>You cannot tilt a 100 m rocket near the ground.</b> Touchdown height is <b>z = 1.00 + 0.2475 × tilt[°]</b> (R² &gt; 0.999): at 20° a fin hits with the centre of mass 6 m up. Tilt has to be capped by altitude, θ ≤ 4(h − 1.5)°.</li>
+      <li><b>You cannot steer while falling.</b> a<sub>lat</sub> = (a<sub>z</sub> + g)·tan θ, so a near-free-fall descent buys no lateral authority at any tilt. Holding hover thrust while there is downrange left took the easy case 10 % → 70 %.</li>
+      <li><b>The authority is the tilt cap, not the thrust-to-weight.</b> g·tan(35°) = 1.13 m/s², not 3g·sin(35°) = 2.8. Sizing for 2.0 flew the vehicle through the pad in a limit cycle.</li>
+      <li><b>Braking laterally reverses the whole vehicle</b> — about 3 s at zero deceleration — so the approach speed obeys d = v²/2a + v·t<sub>lag</sub>, not v = √(2ad).</li>
+    </ul>
   </div>
 
-  <figure class="fig">
-    <img src="assets/images/projects/tintin/baseline.png" alt="Outcome breakdown for the 3-D PD baseline in MuJoCo" class="pad">
-    <figcaption><b>The 3-D PD baseline on the moderate envelope</b> — 80 m up, 20 m downrange, 3 m/s of entry speed, 10° of initial tilt, 100 descents with the vehicle randomised. Every one of them reaches the ground; none of them lands. That is the honest headline, and the next two figures are why.</figcaption>
-  </figure>
-
-  <div class="card finding" style="margin-top:26px">
+  <div class="card finding" style="margin-top:22px">
     <div class="no">5</div>
     <h3>Two parameters break it, and neither is the one you would guess</h3>
-    <p>Randomising the vehicle one parameter at a time on a 60 m descent <em>straight down</em> — no offset, no entry speed, no initial tilt — separates the causes cleanly. Mass ±20 %, thrust ±20 %, gimbal gain ±15 % and the whole sensor-noise budget each leave the controller at <b>10/10</b>, touching down dead level. Two things take it to <b>0/10</b> on their own:</p>
-    <ul>
-      <li>a persistent <b>gimbal misalignment of ±2.5°</b> — median touchdown tilt 36.1°;</li>
-      <li>an <b>initial body rate of ±0.04 rad/s</b> — median touchdown tilt 36.5°.</li>
-    </ul>
-    <p>Both are attitude disturbances, and both are small. The controller is not being beaten by a hard vehicle; it is being beaten by a torque it cannot cancel.</p>
+    <p>One parameter randomised at a time, 60 m straight down, ten descents each: mass ±20 %, thrust ±20 %, gimbal gain ±15 % and the whole sensor-noise budget each leave it at <b>10/10</b>. A persistent <b>2.5° gimbal misalignment</b> takes it to <b>0/10</b> (median touchdown tilt 36.1°), and so does an initial body rate of <b>0.04 rad/s</b> (36.5°). Both are attitude disturbances, and both are tiny.</p>
   </div>
 
   <figure class="fig">
     <img src="assets/images/projects/tintin/ablation.png" alt="Success rate and touchdown tilt with one parameter randomised at a time" class="pad">
-    <figcaption><b>One parameter at a time, ten descents each.</b> Everything to do with the vehicle's mass, thrust or sensing is harmless. Everything to do with attitude is fatal.</figcaption>
+    <figcaption><b>One parameter at a time, ten descents each.</b> Mass, thrust and sensing are harmless; anything that torques the vehicle is fatal.</figcaption>
   </figure>
 
-  <div class="card finding" style="margin-top:26px">
+  <div class="card finding" style="margin-top:22px">
     <div class="no">6</div>
     <h3>The gimbal is only as strong as the thrust it deflects</h3>
-    <p>Here is the mechanism, and it is the sharpest thing this project taught me. The torque a gimbal produces is <b>τ = L · T · sin θ<sub>g</sub></b> — proportional to the thrust. An efficient descent wants the throttle <em>low</em>; at 8 % throttle the gimbal has 8 % of its nominal authority, and the attitude loop that was comfortably overdamped at hover is now demanding three times the torque available.</p>
-    <p>So it saturates. It slams to ±30°, overshoots, saturates the other way, and the vehicle settles into a limit cycle: tilt sawtooths between 0° and 33° with a period of about eight seconds while the altitude stalls around 35 m and the propellant drains. It never falls over and it never lands.</p>
-    <p>The obvious fix does not work either. Holding a thrust floor so the gimbal always has authority slows the descent enough that the vehicle runs the 45-second clock out instead — 10/10 landings become 1/10. The two requirements are in direct conflict: <em>attitude authority wants thrust, and an efficient descent wants none</em>. Resolving that needs the two channels planned together rather than cascaded, which is exactly the argument for integrated guidance and control that the whole project is about.</p>
+    <p>Gimbal torque is <b>τ = L·T·sin θ<sub>g</sub></b>, proportional to thrust. An efficient descent wants the throttle <em>low</em> — at 8 % throttle the attitude loop has 8 % of its authority and demands three times the torque available. It saturates at ±30°, overshoots, saturates the other way, and the vehicle limit-cycles: tilt sawtoothing 0–33° every eight seconds with the descent stalled at 35 m. Holding a thrust floor fixes the attitude and runs the 45 s clock out instead: 10/10 landings become 1/10. <em>Attitude authority wants thrust; an efficient descent wants none</em> — which is the argument for integrated guidance and control the project is about.</p>
   </div>
 
   <figure class="fig">
     <img src="assets/images/projects/tintin/limitcycle.png" alt="Tilt, altitude, throttle and gimbal command over a failed descent" class="pad">
-    <figcaption><b>The limit cycle, one descent.</b> Top: tilt against altitude — five full oscillations, every one crossing the 15° landing limit, with the descent stalled from about 12 s. Bottom: the gimbal command hits <b>100 % saturation</b> on every cycle while the throttle sits near 40 %. A 2.5° misalignment is doing this.</figcaption>
+    <figcaption><b>The limit cycle, one descent.</b> Five oscillations, every one past the 15° landing limit, the gimbal command at <b>100 % saturation</b> on each cycle with the throttle near 40 %. A 2.5° misalignment is doing this.</figcaption>
+  </figure>
+
+  <figure class="fig">
+    <img src="assets/images/projects/tintin/baseline.png" alt="Outcome breakdown for the 3-D PD baseline in MuJoCo" class="pad">
+    <figcaption><b>The 3-D PD on the moderate envelope</b> — 80 m up, 20 m downrange, 3 m/s entry, 10° tilt, 100 randomised descents. All of them reach the ground; none of them lands.</figcaption>
   </figure>
 </section>
 
 <!-- =================== SAC =================== -->
 <section class="section" id="learning">
   <h2 class="section-title">Learning it instead</h2>
-  <p class="lead">The alternative is to stop designing the cascade and let one network map the state to throttle and both gimbal angles. SAC, on the same MuJoCo environment, with the initial-condition curriculum <em>and</em> a randomised vehicle every episode: dry mass ±20 %, propellant load ±35 %, specific impulse ±12 %, engine authority ±20 %, gimbal gain ±15 %, a permanent gimbal misalignment up to 2.5° per axis, a small initial body rate, and noise on the position, velocity and attitude the policy sees.</p>
+  <p class="lead">SAC on the same MuJoCo vehicle, randomised every episode: dry mass ±20 %, propellant ±35 %, I<sub>sp</sub> ±12 %, engine ±20 %, gimbal gain ±15 %, a permanent gimbal misalignment up to 2.5°, an initial body rate, and noise on what the policy sees. 1.5 M steps, 10 parallel envs.</p>
 
   <div class="grid-2">
-    <div class="prose">
-      <h3 style="font-size:19px;margin-bottom:8px">Three things had to be fixed before it learned anything</h3>
-      <p><b>Hovering paid better than landing.</b> The first reward gave a +0.3 per-step "alive" bonus on top of a +4 upright term. Over a 4,500-step limit that made hovering to the time limit worth about <b>19,000</b> against <b>8,300</b> for a successful landing, and SAC duly learned to hover — success peaked at 20 % around 50 k steps and decayed to 6 % by 250 k. Every shaping term is now a penalty, so the only way to score is to finish, and to finish quickly.</p>
-      <p><b>Crashing tidily paid too.</b> The partial credit for a hard landing was <code>−300 + 250q</code> with q ∈ [0, 3], so a crash that arrived near the pad, roughly upright, scored <b>+450</b>. Now it is <code>−400 + 300(q/3)</code> — still graded, always negative.</p>
-      <p><b>The update-to-data ratio was 0.025.</b> With ten environments and <code>train_freq=32</code>, SB3 collects 320 environment steps per training call; with <code>gradient_steps=8</code> that is one gradient step per forty samples. SAC had managed roughly six thousand gradient steps by 250 k environment steps. Raising it to 80 changed the whole curve.</p>
-      <p>None of these are exotic. All three are invisible unless you watch the training curve and ask why a sample-efficient algorithm is not being sample-efficient.</p>
+    <div class="card card-pad">
+      <div class="rule">Three bugs that cost real time <b>→</b></div>
+      <ul class="tight" style="margin-top:10px">
+        <li><b>Hovering paid better than landing.</b> A +0.3 alive bonus and +4 upright made a timeout worth ~19,000 against ~8,300 for landing; success peaked at 20 % and decayed to 6 %. Every shaping term is a penalty now.</li>
+        <li><b>Crashing tidily paid too.</b> −300 + 250q scored +450 for a neat crash. Now −400 + 300(q/3): graded, always negative.</li>
+        <li><b>The update-to-data ratio was 0.025.</b> <code>train_freq</code> is per-env — 10 envs × 32 is 320 samples per call, and 8 gradient steps against that is one per forty samples. 80 changed the whole curve.</li>
+      </ul>
     </div>
     <div>
       <div class="table-wrap" style="margin-top:0">
@@ -317,56 +307,27 @@
           </tbody>
         </table>
       </div>
-      <div class="table-wrap">
-        <table class="data-table compact">
-          <thead><tr><th>Randomised every episode</th><th>range</th></tr></thead>
-          <tbody>
-            <tr><td>Dry mass</td><td>±20 %</td></tr>
-            <tr><td>Propellant load</td><td>±35 %</td></tr>
-            <tr><td>Specific impulse</td><td>±12 %</td></tr>
-            <tr><td>Engine authority</td><td>±20 %</td></tr>
-            <tr><td>Gimbal gain</td><td>±15 %</td></tr>
-            <tr><td>Gimbal misalignment</td><td class="hi">±2.5° per axis</td></tr>
-            <tr><td>Initial body rate</td><td class="hi">±0.04 rad/s</td></tr>
-            <tr><td>Position / velocity noise</td><td>0.6 m / 0.20 m/s</td></tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </div>
 
-  <h3 class="plot-title" style="margin-top:30px;font-size:20px">Watching it learn</h3>
-  <p class="lead">Checkpoints at 1 k, 5 k, 20 k, 50 k, 100 k, 200 k, 350 k, 500 k, 750 k, 1 M and 1.5 M environment steps, each evaluated over the same fixed envelope with the same seeds. You can fly any of them in the sandbox above.</p>
+  <div class="card finding" style="margin-top:24px">
+    <div class="no">7</div>
+    <h3>It learns to arrive, not to land</h3>
+    <p>Median arrival speed falls from <b>16.3 m/s at 1 k steps to 5.3 m/s by 50 k</b>, median touchdown offset from <b>78.9 m to 18.7 m</b>, and success on the curriculum's own conditions peaked at <b>47.5 % near 750 k</b>. On the fixed held-out envelope it lands <b>0 %</b> at every checkpoint — so does the PD. 1.5 M steps under this much randomisation is not enough; the report used 5 M on an easier box.</p>
+  </div>
 
   <figure class="fig">
     <img src="assets/images/projects/tintin/progress.png" alt="Success rate, touchdown offset and arrival speed against training steps" class="pad">
-    <figcaption><b>Progress against the baseline.</b> The dashed line is the 3-D PD controller, on exactly the same episodes. The middle and right panels are medians over <em>all</em> episodes rather than only the successful ones, so a policy that never lands still gets a score — which matters here, because on this envelope neither controller lands.</figcaption>
+    <figcaption><b>Progress against the baseline.</b> Dashed line is the 3-D PD on the same episodes. Medians are over all episodes, not just successes.</figcaption>
   </figure>
-
-  <div class="card finding" style="margin-top:26px">
-    <div class="no">7</div>
-    <h3>It learns to arrive, not to land</h3>
-    <p>The policy makes real, monotonic progress on the thing that is easy to measure. Median arrival speed falls from <b>16.3 m/s at 1 k steps to 5.3 m/s by 50 k</b>, and median touchdown offset from <b>78.9 m to 18.7 m</b>. During training, success on the curriculum's own conditions peaked at <b>47.5 % around 750 k steps</b>, and the curriculum advanced twice — the initial-condition envelope genuinely widened underneath it.</p>
-    <p>On the fixed held-out envelope it lands <b>0 %</b> of the time, at every checkpoint. So does the PD. On a pure hover start the PD manages 80 % and the policy 40 %; one rung up — 60 m instead of 30, with 10 m of offset — both go to zero.</p>
-    <p>I would rather show that than dress it up. The honest reading is that 1.5 M steps is not enough for this task under this much randomisation: the original report used <b>5 M</b> on an easier success box, and the two disturbances that defeat the hand-designed controller — a persistent gimbal misalignment and an initial body rate — are exactly the ones a policy has to learn to integrate against, which is the slowest thing for it to learn.</p>
-  </div>
-
   <figure class="fig">
     <img src="assets/images/projects/tintin/ladder.png" alt="Success rate of both controllers up a difficulty ladder" class="pad">
-    <figcaption><b>Where both controllers stop.</b> A hover start is 30 m up with no offset; "easy" is 60 m with 10 m of offset, 1 m/s of entry speed and 5° of tilt. The cliff between them is the whole result, and finding 6 above is the reason for it.</figcaption>
+    <figcaption><b>Where both controllers stop.</b> Hover start: PD 80 %, policy 40 %. One rung up — 60 m with 10 m of offset — both go to zero.</figcaption>
   </figure>
-
   <figure class="fig">
     <img src="assets/images/projects/tintin/bundle.png" alt="Trajectory bundles for the PD baseline and the trained policy" class="pad">
-    <figcaption><b>What the two controllers actually do.</b> Left and middle: altitude against remaining downrange, for the baseline and the final policy on the same entries. Right: the ground tracks, with the ±10 m landing box. The policy's bundle is tighter and more consistent than the baseline's — it has learned a coherent approach — and still does not close the last few metres.</figcaption>
+    <figcaption><b>What the two actually do.</b> Altitude against remaining downrange for the baseline and the final policy, and the ground tracks with the ±10 m box. The policy's bundle is the tighter one — and still does not close the last few metres.</figcaption>
   </figure>
-
-  <div class="card card-pad" style="margin-top:24px">
-    <div class="rule">What I would do next <b>→</b></div>
-    <div class="prose" style="margin-top:10px">
-      <p>Three things, in the order I would try them. <b>Train longer</b> — the curve had not flattened, and 5 M steps is what the original report needed on an easier box. <b>Give the policy the disturbance it has to reject</b>: with a persistent gimbal bias and no way to observe it, the policy has to integrate a torque error out of a 17-number observation, which is asking a memoryless MLP to be an integrator — a short observation history, or an explicit integral term in the state, would make it a much easier function to learn. And <b>relax the success box</b> to something a competent controller can hit from a real entry, then tighten it with the curriculum; a 10 m circle at 3 m/s and 15° for a 100 m vehicle with 1.1 m/s² of lateral authority may simply be past what this vehicle can do from 80 m in 45 seconds, and I have not proved either way.</p>
-    </div>
-  </div>
 </section>
 
 <!-- =================== REPRODUCE =================== -->
@@ -390,7 +351,7 @@ python scripts/tools/eval_progress.py --run sac_dr --episodes 120
 
 <span class="c"># cross-check the browser model against MuJoCo</span>
 python scripts/tools/validate_js_model.py /tmp/mj_ref.json</div>
-  <p class="plot-note" style="margin-top:14px">The browser model in <code>assets/js/tintin3d.js</code> is a transliteration of the MuJoCo vehicle: same inertia tensor, same RK4 at 100 Hz, the same second-order gimbal servos (fitted from a 0.3 rad step response: ω<sub>n</sub> = 54.5 rad/s, ζ = 0.30), and the same measured tilt-dependent contact height. Replaying an identical action sequence through both, the two trajectories stay within <b>1.29 m</b> over a full 45-second descent — under 0.5 % of path length — and the attitudes within 2.9×10⁻⁴ in |q<sub>w</sub>|. Modelling the gimbal servo rather than treating it as instantaneous is worth a factor of seven in that number. The outcome distributions agree less tightly, within roughly 15 percentage points, because a landing is decided in the last metre.</p>
+  <p class="plot-note" style="margin-top:14px">The browser model in <code>assets/js/tintin3d.js</code> is a transliteration of the MuJoCo vehicle — same inertia, same RK4 at 100 Hz, the same second-order gimbal servos (ω<sub>n</sub> = 54.5 rad/s, ζ = 0.30) and the measured tilt-dependent contact height. Replaying identical actions through both, the trajectories stay within <b>1.29 m</b> over 45 s. Landing clips: <code>scripts/tools/render_landings.py</code>.</p>
 </section>
 
 <!-- =================== CREDITS =================== -->
@@ -422,5 +383,10 @@ python scripts/tools/validate_js_model.py /tmp/mj_ref.json</div>
 <script src="assets/js/site.js"></script>
 <script src="assets/js/tintin3d.js"></script>
 <script src="assets/js/tintin3d_demo.js"></script>
+<script type="module">
+  import { initLandings } from './assets/js/tintin_landings.js';
+  initLandings({ gallery: document.getElementById('tt-gallery'), filters: document.getElementById('tt-filters') })
+    .catch(e => { document.getElementById('tt-gallery').innerHTML = '<p class="plot-note">The landing clips are not available: ' + e.message + '</p>'; console.error(e); });
+</script>
 </body>
 </html>
