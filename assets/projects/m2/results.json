@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-07T21:25:26.310796+00:00",
+  "updated": "2026-09-07T21:33:15.882058+00:00",
   "motions": [
     {
       "name": "Living room",
@@ -581498,6 +581498,747 @@
           "teacher_fraction": 1.0,
           "objective": "transport",
           "mission_success": true
+        },
+        {
+          "episode": 30,
+          "steps": 1119,
+          "return": 107.22757674838891,
+          "success": true,
+          "reward_components": {
+            "grasp_progress": -0.03896116302873291,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 19.856264817990727,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 44.07494028941085,
+            "goal_pose_progress": 0.0,
+            "stable_goal": 15.999999999999748,
+            "unsupported_travel": -0.14922022051102904,
+            "slip": -0.16617480078717123,
+            "load": -0.039829085626162414,
+            "tilt": -0.06971975079164204,
+            "upright_torso": -8.48939719973501e-07,
+            "action_rate": -0.0017224893282594272,
+            "time": -2.2379999999998645,
+            "success": 30.0,
+            "failure": 0.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 14.820741585595012,
+            "max_slip_m": 0.005286695808411971,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 9.331861971654359,
+            "peak_orientation_error_rad": 0.0594259861646637,
+            "first_full_support_s": 7.62,
+            "pre_support_max_xy_m": 0.0027462173281537963,
+            "max_unsupported_segment_travel_m": 0.0027462173281537963,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.03842716711349419,
+            "goal_error_se3": [
+              -0.00039932986683333116,
+              3.105570518752154e-05,
+              0.00014568412203125325,
+              0.00023708255608571941,
+              0.0005815054940681002,
+              0.00035449036476167426
+            ]
+          },
+          "teacher_fraction": 1.0,
+          "objective": "transport",
+          "mission_success": true
+        },
+        {
+          "episode": 31,
+          "steps": 1070,
+          "return": 92.96289876341896,
+          "success": true,
+          "reward_components": {
+            "grasp_progress": -0.03577875054810573,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 19.88124229644823,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 29.64620483418878,
+            "goal_pose_progress": 0.0,
+            "stable_goal": 15.999999999999748,
+            "unsupported_travel": -0.15920509842834968,
+            "slip": -0.14961937974935668,
+            "load": -0.029874286108339875,
+            "tilt": -0.048389182059298944,
+            "upright_torso": -3.59388843097308e-07,
+            "action_rate": -0.0016813109356540918,
+            "time": -2.1399999999998753,
+            "success": 30.0,
+            "failure": 0.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 13.658853872434738,
+            "max_slip_m": 0.005029093729617404,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 9.023657768931717,
+            "peak_orientation_error_rad": 0.05847050460301872,
+            "first_full_support_s": 8.04,
+            "pre_support_max_xy_m": 0.002601351062775648,
+            "max_unsupported_segment_travel_m": 0.002601351062775648,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.03271028037383177,
+            "goal_error_se3": [
+              -5.269070482699645e-05,
+              1.956598064700027e-05,
+              -0.00012033716167092479,
+              5.719006143059381e-05,
+              0.000601249299832237,
+              -0.00014759684147387962
+            ]
+          },
+          "teacher_fraction": 1.0,
+          "objective": "transport",
+          "mission_success": true
+        },
+        {
+          "episode": 32,
+          "steps": 3000,
+          "return": 0.7670618510336289,
+          "success": true,
+          "reward_components": {
+            "grasp_progress": -0.1971299529073918,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 9.39792332480241,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": -1.1650799211840503,
+            "goal_pose_progress": 0.0,
+            "stable_goal": 0.0,
+            "unsupported_travel": -0.6002392678005425,
+            "slip": -0.5520127665031542,
+            "load": -0.04158687117630659,
+            "tilt": -0.07421275633962776,
+            "upright_torso": -3.0669542428584444e-06,
+            "action_rate": -0.0005968709034057966,
+            "time": -6.000000000000338,
+            "success": 0.0,
+            "failure": 0.0
+          },
+          "recovery": {
+            "fault_armed": true,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 16.792492135356504,
+            "max_slip_m": 0.02094159140736208,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 25.023735550987737,
+            "peak_orientation_error_rad": 0.017993644426278384,
+            "first_full_support_s": null,
+            "pre_support_max_xy_m": 0.0032568399435970387,
+            "max_unsupported_segment_travel_m": 0.0032568399435970387,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.0023333333333333335,
+            "goal_error_se3": [
+              -0.2808098439161604,
+              -0.21421422379531316,
+              0.10088629686208084,
+              0.017768437427804012,
+              -0.0016118892801518087,
+              -0.14840698348237913
+            ]
+          },
+          "teacher_fraction": 1.0,
+          "objective": "safe_wait",
+          "mission_success": false
+        },
+        {
+          "episode": 33,
+          "steps": 871,
+          "return": 113.99183906304992,
+          "success": true,
+          "reward_components": {
+            "grasp_progress": -0.053186077235356996,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 19.82061528653731,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 50.2458374150566,
+            "goal_pose_progress": 0.0,
+            "stable_goal": 15.999999999999748,
+            "unsupported_travel": -0.047791364939045206,
+            "slip": -0.16168574326517884,
+            "load": -0.03806365928282885,
+            "tilt": -0.030089282741840313,
+            "upright_torso": -7.233873350173295e-07,
+            "action_rate": -0.0017967876922925575,
+            "time": -1.741999999999919,
+            "success": 30.0,
+            "failure": 0.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 17.100806803800356,
+            "max_slip_m": 0.00644035885754739,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 13.88537277587825,
+            "peak_orientation_error_rad": 0.0372970386526482,
+            "first_full_support_s": 0.8,
+            "pre_support_max_xy_m": 0.0016133291305150993,
+            "max_unsupported_segment_travel_m": 0.0015660387946242324,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.05281285878300804,
+            "goal_error_se3": [
+              5.551217808735798e-06,
+              -3.141580370902286e-05,
+              -1.54221861858872e-05,
+              -4.482796303515772e-05,
+              0.000505912542534585,
+              -0.00010642368858823426
+            ]
+          },
+          "teacher_fraction": 1.0,
+          "objective": "transport",
+          "mission_success": true
+        },
+        {
+          "episode": 34,
+          "steps": 797,
+          "return": 106.9796688266463,
+          "success": true,
+          "reward_components": {
+            "grasp_progress": -0.03664969464116176,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 19.870519960390357,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 42.99775346531723,
+            "goal_pose_progress": 0.0,
+            "stable_goal": 15.999999999999748,
+            "unsupported_travel": -0.0537248367556603,
+            "slip": -0.13009065750651397,
+            "load": -0.0323043912001948,
+            "tilt": -0.0395999089869333,
+            "upright_torso": -5.077071105650929e-07,
+            "action_rate": -0.002234602263881622,
+            "time": -1.5939999999999352,
+            "success": 30.0,
+            "failure": 0.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 16.11097130018512,
+            "max_slip_m": 0.005834675209481588,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 10.683016094167991,
+            "peak_orientation_error_rad": 0.050081228538242005,
+            "first_full_support_s": 1.38,
+            "pre_support_max_xy_m": 0.0016288732900029753,
+            "max_unsupported_segment_travel_m": 0.001572964909515033,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.07026348808030113,
+            "goal_error_se3": [
+              -1.4940030663601611e-05,
+              -0.00013262400060645718,
+              8.86211910177126e-05,
+              0.00017763378849123995,
+              0.00045323787191554454,
+              -0.00035660161732054837
+            ]
+          },
+          "teacher_fraction": 1.0,
+          "objective": "transport",
+          "mission_success": true
+        },
+        {
+          "episode": 35,
+          "steps": 1234,
+          "return": 98.63108134497475,
+          "success": true,
+          "reward_components": {
+            "grasp_progress": -0.028002432875159328,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 19.894648788344902,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 35.77616596798532,
+            "goal_pose_progress": 0.0,
+            "stable_goal": 15.999999999999748,
+            "unsupported_travel": -0.31727514131427603,
+            "slip": -0.17744262318008489,
+            "load": -0.027080301803313132,
+            "tilt": -0.019325237760550562,
+            "upright_torso": -2.3848827060499846e-07,
+            "action_rate": -0.0026074359337043816,
+            "time": -2.467999999999839,
+            "success": 30.0,
+            "failure": 0.0
+          },
+          "recovery": {
+            "fault_armed": true,
+            "fault_started_s": 9.34,
+            "fault_robot": "mabel",
+            "regrasped_s": 10.64,
+            "max_unsupported_travel_m": 0.006381512860064851,
+            "peak_load_n": 15.716709739149996,
+            "max_slip_m": 0.00551210224802753,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 10.548189722678018,
+            "peak_orientation_error_rad": 0.027290237385308055,
+            "first_full_support_s": 8.28,
+            "pre_support_max_xy_m": 0.0026404982047923925,
+            "max_unsupported_segment_travel_m": 0.006518148547285046,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": 1.0,
+            "supporter_observed_s": 1.3,
+            "post_regrasp_progress_m": 0.35841106054999333,
+            "actuator_saturation_fraction": 0.05348460291734198,
+            "goal_error_se3": [
+              -0.00019080899237933213,
+              -6.103575421995133e-05,
+              4.312080234447624e-05,
+              3.12006703961105e-05,
+              -0.0009671265382261882,
+              -0.00031847899137120325
+            ]
+          },
+          "teacher_fraction": 1.0,
+          "objective": "transport",
+          "mission_success": true
+        },
+        {
+          "episode": 36,
+          "steps": 840,
+          "return": 87.77515088379215,
+          "success": true,
+          "reward_components": {
+            "grasp_progress": -0.05147205825612827,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 19.83914740513033,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 24.104959105090963,
+            "goal_pose_progress": 0.0,
+            "stable_goal": 15.999999999999748,
+            "unsupported_travel": -0.22204151295644192,
+            "slip": -0.14691650366491413,
+            "load": -0.01822819174517993,
+            "tilt": -0.04792807257696242,
+            "upright_torso": -1.8515134977664891e-07,
+            "action_rate": -0.002369102078063863,
+            "time": -1.6799999999999258,
+            "success": 30.0,
+            "failure": 0.0
+          },
+          "recovery": {
+            "fault_armed": true,
+            "fault_started_s": 3.7,
+            "fault_robot": "mabel",
+            "regrasped_s": 4.52,
+            "max_unsupported_travel_m": 0.005687869600260821,
+            "peak_load_n": 15.738249641030224,
+            "max_slip_m": 0.005934973287869014,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 10.364313725145083,
+            "peak_orientation_error_rad": 0.0849603172104018,
+            "first_full_support_s": 2.62,
+            "pre_support_max_xy_m": 0.002396314501749406,
+            "max_unsupported_segment_travel_m": 0.005650730570731868,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": 1.0,
+            "supporter_observed_s": 0.8200000000000001,
+            "post_regrasp_progress_m": 0.23856196959546777,
+            "actuator_saturation_fraction": 0.02857142857142857,
+            "goal_error_se3": [
+              0.00011468760797918309,
+              -0.0002338304603848873,
+              7.799688805909533e-05,
+              0.00014964167325825123,
+              0.0007074889268694485,
+              -4.1278362237933856e-05
+            ]
+          },
+          "teacher_fraction": 1.0,
+          "objective": "transport",
+          "mission_success": true
+        },
+        {
+          "episode": 37,
+          "steps": 870,
+          "return": 102.62689830878105,
+          "success": true,
+          "reward_components": {
+            "grasp_progress": -0.04383835215868389,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 19.843094918007488,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 38.870841524522106,
+            "goal_pose_progress": 0.0,
+            "stable_goal": 15.999999999999748,
+            "unsupported_travel": -0.08687668828829996,
+            "slip": -0.14032115873695,
+            "load": -0.04070801771194496,
+            "tilt": -0.0335669563617485,
+            "upright_torso": -1.031752027707899e-06,
+            "action_rate": -0.0017259287386949796,
+            "time": -1.7399999999999192,
+            "success": 30.0,
+            "failure": 0.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 18.212159150797966,
+            "max_slip_m": 0.006918917900451675,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 12.940983748524593,
+            "peak_orientation_error_rad": 0.0442508474602026,
+            "first_full_support_s": 2.48,
+            "pre_support_max_xy_m": 0.0022840005044775153,
+            "max_unsupported_segment_travel_m": 0.00223886623931683,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.06321839080459771,
+            "goal_error_se3": [
+              0.0002460234230798747,
+              -0.00019598021703465252,
+              -5.1985629807460576e-05,
+              -0.00010306489979504112,
+              -0.0010652971687878262,
+              -0.0005231108389951214
+            ]
+          },
+          "teacher_fraction": 1.0,
+          "objective": "transport",
+          "mission_success": true
+        },
+        {
+          "episode": 38,
+          "steps": 1028,
+          "return": 100.96380811479243,
+          "success": true,
+          "reward_components": {
+            "grasp_progress": -0.03408849655625377,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 19.881387143139396,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 37.62119548242015,
+            "goal_pose_progress": 0.0,
+            "stable_goal": 15.999999999999748,
+            "unsupported_travel": -0.25138638868159446,
+            "slip": -0.16132970956634315,
+            "load": -0.025554095281394972,
+            "tilt": -0.007613131708619358,
+            "upright_torso": -2.3482395558794924e-07,
+            "action_rate": -0.0028024541488176884,
+            "time": -2.0559999999998846,
+            "success": 30.0,
+            "failure": 0.0
+          },
+          "recovery": {
+            "fault_armed": true,
+            "fault_started_s": 5.22,
+            "fault_robot": "mabel",
+            "regrasped_s": 6.4,
+            "max_unsupported_travel_m": 0.0053980946433024105,
+            "peak_load_n": 15.481390439147422,
+            "max_slip_m": 0.005214231604938728,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 10.142186345306994,
+            "peak_orientation_error_rad": 0.02655861896597174,
+            "first_full_support_s": 4.16,
+            "pre_support_max_xy_m": 0.002647326088636998,
+            "max_unsupported_segment_travel_m": 0.005375726970967991,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": 1.0,
+            "supporter_observed_s": 1.18,
+            "post_regrasp_progress_m": 0.3755824838794195,
+            "actuator_saturation_fraction": 0.05933852140077821,
+            "goal_error_se3": [
+              0.00010561618237037163,
+              -0.00030171544741039447,
+              3.0397178020336035e-05,
+              0.00011376441326283731,
+              -0.0002101262853309377,
+              -0.0003031914125523934
+            ]
+          },
+          "teacher_fraction": 1.0,
+          "objective": "transport",
+          "mission_success": true
+        },
+        {
+          "episode": 39,
+          "steps": 1166,
+          "return": 106.84015961131841,
+          "success": true,
+          "reward_components": {
+            "grasp_progress": -0.034294893325724336,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 19.85056645535778,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 43.77161066741138,
+            "goal_pose_progress": 0.0,
+            "stable_goal": 15.999999999999748,
+            "unsupported_travel": -0.1600288653614868,
+            "slip": -0.17032306439695366,
+            "load": -0.043660148241422954,
+            "tilt": -0.039950542815653495,
+            "upright_torso": -8.748149429238676e-07,
+            "action_rate": -0.001759122494688082,
+            "time": -2.331999999999854,
+            "success": 30.0,
+            "failure": 0.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 16.337768387236256,
+            "max_slip_m": 0.006337109856346677,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 13.042181625000495,
+            "peak_orientation_error_rad": 0.040880757384855394,
+            "first_full_support_s": 7.4,
+            "pre_support_max_xy_m": 0.002485783270462468,
+            "max_unsupported_segment_travel_m": 0.002463932657555017,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.045454545454545456,
+            "goal_error_se3": [
+              0.00011455098785753681,
+              -0.00015179909335322206,
+              2.815204395800741e-05,
+              0.00015799433459747744,
+              -0.0006250358979255127,
+              0.0005125239312309952
+            ]
+          },
+          "teacher_fraction": 1.0,
+          "objective": "transport",
+          "mission_success": true
+        },
+        {
+          "episode": 40,
+          "steps": 3000,
+          "return": 2.27127713194704,
+          "success": true,
+          "reward_components": {
+            "grasp_progress": -0.17164611239223296,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 9.768227072402384,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": -0.46310330995367494,
+            "goal_pose_progress": 0.0,
+            "stable_goal": 0.0,
+            "unsupported_travel": -0.3967707315989025,
+            "slip": -0.3531143150226259,
+            "load": -0.036710137513721985,
+            "tilt": -0.07509178477792283,
+            "upright_torso": -5.65293857308368e-07,
+            "action_rate": -0.0005129839024255037,
+            "time": -6.000000000000338,
+            "success": 0.0,
+            "failure": 0.0
+          },
+          "recovery": {
+            "fault_armed": true,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 12.238855506851106,
+            "max_slip_m": 0.011705638589892995,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 11.820011948083328,
+            "peak_orientation_error_rad": 0.018208076760069237,
+            "first_full_support_s": null,
+            "pre_support_max_xy_m": 0.0073206641254562905,
+            "max_unsupported_segment_travel_m": 0.0073206641254562905,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.0023333333333333335,
+            "goal_error_se3": [
+              0.16854216134505612,
+              0.1541785256185009,
+              0.07130720008916897,
+              -0.017615115673728053,
+              -0.002376617980987079,
+              0.23834903670411114
+            ]
+          },
+          "teacher_fraction": 1.0,
+          "objective": "safe_wait",
+          "mission_success": false
+        },
+        {
+          "episode": 41,
+          "steps": 922,
+          "return": 94.5051821535808,
+          "success": true,
+          "reward_components": {
+            "grasp_progress": -0.035549784253032374,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 19.87985103536028,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 30.869130922329205,
+            "goal_pose_progress": 0.0,
+            "stable_goal": 16.039999999999747,
+            "unsupported_travel": -0.22651468918518858,
+            "slip": -0.1529252810313711,
+            "load": -0.017154766505369633,
+            "tilt": -0.005566661723142687,
+            "upright_torso": -2.0910357052812064e-07,
+            "action_rate": -0.002088412307086172,
+            "time": -1.8439999999999077,
+            "success": 30.0,
+            "failure": 0.0
+          },
+          "recovery": {
+            "fault_armed": true,
+            "fault_started_s": 4.18,
+            "fault_robot": "milo",
+            "regrasped_s": 4.82,
+            "max_unsupported_travel_m": 0.005164396452589686,
+            "peak_load_n": 16.053239110106812,
+            "max_slip_m": 0.005928179175631926,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 10.409291001845396,
+            "peak_orientation_error_rad": 0.02667268528869782,
+            "first_full_support_s": 3.1,
+            "pre_support_max_xy_m": 0.0026122056582646162,
+            "max_unsupported_segment_travel_m": 0.005113455527276775,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": 1.0,
+            "supporter_observed_s": 0.64,
+            "post_regrasp_progress_m": 0.3052661541418836,
+            "actuator_saturation_fraction": 0.04772234273318872,
+            "goal_error_se3": [
+              0.00025193935612763396,
+              0.00026746077491192344,
+              0.0001305655000812811,
+              -4.7065287655635874e-05,
+              -4.8318831556033586e-05,
+              -1.6774186344374307e-05
+            ]
+          },
+          "teacher_fraction": 1.0,
+          "objective": "transport",
+          "mission_success": true
+        },
+        {
+          "episode": 42,
+          "steps": 816,
+          "return": 97.99491526926235,
+          "success": true,
+          "reward_components": {
+            "grasp_progress": -0.03606797789374096,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 19.889005980583146,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 34.142115247225576,
+            "goal_pose_progress": 0.0,
+            "stable_goal": 15.999999999999748,
+            "unsupported_travel": -0.20749167969501264,
+            "slip": -0.13722663156852452,
+            "load": -0.0178516864226592,
+            "tilt": -0.003230725520749274,
+            "upright_torso": -1.6045257770447843e-07,
+            "action_rate": -0.0023370969931399365,
+            "time": -1.631999999999931,
+            "success": 30.0,
+            "failure": 0.0
+          },
+          "recovery": {
+            "fault_armed": true,
+            "fault_started_s": 1.76,
+            "fault_robot": "milo",
+            "regrasped_s": 2.96,
+            "max_unsupported_travel_m": 0.005258953043684154,
+            "peak_load_n": 16.998498997475703,
+            "max_slip_m": 0.005100459392896655,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 10.983414214711972,
+            "peak_orientation_error_rad": 0.02244781799302811,
+            "first_full_support_s": 0.72,
+            "pre_support_max_xy_m": 0.0011739594688935998,
+            "max_unsupported_segment_travel_m": 0.005248391362801965,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": 1.0,
+            "supporter_observed_s": 1.2,
+            "post_regrasp_progress_m": 0.3296230379785679,
+            "actuator_saturation_fraction": 0.13480392156862744,
+            "goal_error_se3": [
+              -0.00015735812332573484,
+              -2.9148761927944022e-05,
+              2.0563826747976854e-05,
+              5.8115225413779603e-05,
+              0.00038414959499049516,
+              -0.00018710656237272454
+            ]
+          },
+          "teacher_fraction": 1.0,
+          "objective": "transport",
+          "mission_success": true
         }
       ],
       "imitation": [],
@@ -664713,6 +665454,478 @@
       ]
     },
     {
+      "id": "deployment_v153_v39_full32",
+      "complete": true,
+      "unintended_contact_guard": true,
+      "fault_progress_m": 0.15,
+      "transport": {
+        "completed": 24,
+        "expected": 24,
+        "successes": 1
+      },
+      "safe_wait": {
+        "completed": 8,
+        "expected": 8,
+        "successes": 0
+      },
+      "rows": [
+        {
+          "scenario": "nominal",
+          "motion": "configured",
+          "seed": 295000,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "configured",
+          "seed": 295001,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "configured",
+          "seed": 295002,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "robot_self_penetration"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "configured",
+          "seed": 295003,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "delayed_mabel",
+          "motion": "configured",
+          "seed": 295004,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unintended_payload_robot_contact"
+          ]
+        },
+        {
+          "scenario": "delayed_mabel",
+          "motion": "configured",
+          "seed": 295005,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "delayed_mabel",
+          "motion": "configured",
+          "seed": 295006,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "delayed_mabel",
+          "motion": "configured",
+          "seed": 295007,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "delayed_milo",
+          "motion": "configured",
+          "seed": 295008,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "delayed_milo",
+          "motion": "configured",
+          "seed": 295009,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unintended_payload_robot_contact"
+          ]
+        },
+        {
+          "scenario": "delayed_milo",
+          "motion": "configured",
+          "seed": 295010,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "delayed_milo",
+          "motion": "configured",
+          "seed": 295011,
+          "success": true,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": []
+        },
+        {
+          "scenario": "loss_mabel",
+          "motion": "configured",
+          "seed": 295012,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "loss_mabel",
+          "motion": "configured",
+          "seed": 295013,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "loss_mabel",
+          "motion": "configured",
+          "seed": 295014,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "loss_mabel",
+          "motion": "configured",
+          "seed": 295015,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "loss_milo",
+          "motion": "configured",
+          "seed": 295016,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "loss_milo",
+          "motion": "configured",
+          "seed": 295017,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "loss_milo",
+          "motion": "configured",
+          "seed": 295018,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "loss_milo",
+          "motion": "configured",
+          "seed": 295019,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "never_mabel",
+          "motion": "configured",
+          "seed": 295020,
+          "success": false,
+          "objective": "safe_wait",
+          "safe_wait_success": false,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "never_mabel",
+          "motion": "configured",
+          "seed": 295021,
+          "success": false,
+          "objective": "safe_wait",
+          "safe_wait_success": false,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "never_mabel",
+          "motion": "configured",
+          "seed": 295022,
+          "success": false,
+          "objective": "safe_wait",
+          "safe_wait_success": false,
+          "terminations": [
+            "unintended_payload_robot_contact"
+          ]
+        },
+        {
+          "scenario": "never_mabel",
+          "motion": "configured",
+          "seed": 295023,
+          "success": false,
+          "objective": "safe_wait",
+          "safe_wait_success": false,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "never_milo",
+          "motion": "configured",
+          "seed": 295024,
+          "success": false,
+          "objective": "safe_wait",
+          "safe_wait_success": false,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "never_milo",
+          "motion": "configured",
+          "seed": 295025,
+          "success": false,
+          "objective": "safe_wait",
+          "safe_wait_success": false,
+          "terminations": [
+            "robot_self_penetration"
+          ]
+        },
+        {
+          "scenario": "never_milo",
+          "motion": "configured",
+          "seed": 295026,
+          "success": false,
+          "objective": "safe_wait",
+          "safe_wait_success": false,
+          "terminations": [
+            "robot_self_penetration"
+          ]
+        },
+        {
+          "scenario": "never_milo",
+          "motion": "configured",
+          "seed": 295027,
+          "success": false,
+          "objective": "safe_wait",
+          "safe_wait_success": false,
+          "terminations": [
+            "unintended_payload_robot_contact"
+          ]
+        },
+        {
+          "scenario": "stale_pose",
+          "motion": "configured",
+          "seed": 295028,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "stale_pose",
+          "motion": "configured",
+          "seed": 295029,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "stale_pose",
+          "motion": "configured",
+          "seed": 295030,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "stale_pose",
+          "motion": "configured",
+          "seed": 295031,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deployment_v154_v39_early8",
+      "complete": true,
+      "unintended_contact_guard": true,
+      "fault_progress_m": 0.045,
+      "transport": {
+        "completed": 8,
+        "expected": 8,
+        "successes": 1
+      },
+      "safe_wait": {
+        "completed": 0,
+        "expected": 0,
+        "successes": 0
+      },
+      "rows": [
+        {
+          "scenario": "loss_mabel",
+          "motion": "configured",
+          "seed": 296000,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "loss_mabel",
+          "motion": "configured",
+          "seed": 296001,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "loss_mabel",
+          "motion": "configured",
+          "seed": 296002,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "loss_mabel",
+          "motion": "configured",
+          "seed": 296003,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "loss_milo",
+          "motion": "configured",
+          "seed": 296004,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "loss_milo",
+          "motion": "configured",
+          "seed": 296005,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unintended_payload_robot_contact"
+          ]
+        },
+        {
+          "scenario": "loss_milo",
+          "motion": "configured",
+          "seed": 296006,
+          "success": true,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": []
+        },
+        {
+          "scenario": "loss_milo",
+          "motion": "configured",
+          "seed": 296007,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unintended_payload_robot_contact"
+          ]
+        }
+      ]
+    },
+    {
       "id": "deployment_v156_v40_full32",
       "complete": true,
       "unintended_contact_guard": true,
@@ -665179,6 +666392,178 @@
           "scenario": "loss_milo",
           "motion": "configured",
           "seed": 300007,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deployment_v158_v40_motion14",
+      "complete": true,
+      "unintended_contact_guard": true,
+      "fault_progress_m": 0.15,
+      "transport": {
+        "completed": 14,
+        "expected": 14,
+        "successes": 0
+      },
+      "safe_wait": {
+        "completed": 0,
+        "expected": 0,
+        "successes": 0
+      },
+      "rows": [
+        {
+          "scenario": "nominal",
+          "motion": "forward",
+          "seed": 301000,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "forward",
+          "seed": 301001,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "backward",
+          "seed": 301002,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "backward",
+          "seed": 301003,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "left",
+          "seed": 301004,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "left",
+          "seed": 301005,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "right",
+          "seed": 301006,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "right",
+          "seed": 301007,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "yaw_left",
+          "seed": 301008,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "yaw_left",
+          "seed": 301009,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "yaw_right",
+          "seed": 301010,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "yaw_right",
+          "seed": 301011,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "time_limit"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "mixed",
+          "seed": 301012,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "mixed",
+          "seed": 301013,
           "success": false,
           "objective": "transport",
           "safe_wait_success": null,
