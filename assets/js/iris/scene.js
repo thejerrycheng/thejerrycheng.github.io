@@ -358,11 +358,18 @@ export class Studio {
   /* ---- per-frame ---- */
   update(dt) {
     this.lens.update(dt); const u = this.rig.userData; const ext = this.lens.extension; u.ext.position.z = 0.05 + ext;
-    /* the rings roll about the barrel: their geometry axis is local +y, so after the rotation.x = pi/2
-       that lays them along the optical axis, the spin is rotation.y (Euler XYZ applies it first) */
-    u.zoomRing.rotation.y = u.zoomGear.rotation.y = (this.lens.f - LENS.fmin) / (LENS.fmax - LENS.fmin) * 2.4;
-    u.focusRing.rotation.y = u.focusGear.rotation.y = Math.log(this.lens.S / LENS.mfd) * 1.2;
-    u.zoomServo.userData.pinion.rotation.y = -u.zoomRing.rotation.y * 5; u.focusServo.userData.pinion.rotation.y = -u.focusRing.rotation.y * 5;
+    /* Every one of these has to roll about the barrel, and they do NOT all share a frame.
+       - the rubber rings are Meshes whose CylinderGeometry axis is local +y, laid along the optical
+         axis by rotation.x = pi/2, so their own spin is rotation.y (Euler XYZ applies y before x);
+       - the gear rings come from gearRing(), a Group whose teeth are laid out in its xy plane about
+         +z, so their spin is rotation.z. Driving those on .y yaws the gear instead of rolling it;
+       - the servo pinions are the same gearRing Group, mounted across the barrel by rotation.y = pi/2,
+         so they also spin on .z — driving .y would additionally throw away the mount angle. */
+    const zoomRoll = (this.lens.f - LENS.fmin) / (LENS.fmax - LENS.fmin) * 2.4;
+    const focusRoll = Math.log(this.lens.S / LENS.mfd) * 1.2;
+    u.zoomRing.rotation.y = zoomRoll; u.zoomGear.rotation.z = zoomRoll;
+    u.focusRing.rotation.y = focusRoll; u.focusGear.rotation.z = focusRoll;
+    u.zoomServo.userData.pinion.rotation.z = -zoomRoll * 5; u.focusServo.userData.pinion.rotation.z = -focusRoll * 5;
     this.feedCam.fov = fovV(this.lens.f); this.feedCam.updateProjectionMatrix();
     this.controls.update();
   }
@@ -608,5 +615,11 @@ export class Studio {
 
   /** Position the gizmo handle at the current end-effector pose. */
   syncHandle() { const T = this.arm.fk(this.q); this.handle.position.set(T[0][3], T[1][3], T[2][3]); const m = new THREE.Matrix4().set(T[0][0], T[0][1], T[0][2], 0, T[1][0], T[1][1], T[1][2], 0, T[2][0], T[2][1], T[2][2], 0, 0, 0, 0, 1); this.handle.quaternion.setFromRotationMatrix(m); }
+  /** Put the gizmo handle on an arbitrary pose (a key), rather than on the arm's own end effector. */
+  setHandlePose(pos, R) {
+    this.handle.position.set(pos[0], pos[1], pos[2]);
+    const m = new THREE.Matrix4().set(R[0][0], R[0][1], R[0][2], 0, R[1][0], R[1][1], R[1][2], 0, R[2][0], R[2][1], R[2][2], 0, 0, 0, 0, 1);
+    this.handle.quaternion.setFromRotationMatrix(m);
+  }
   handlePose() { const p = this.handle.position, m = new THREE.Matrix4().makeRotationFromQuaternion(this.handle.quaternion), e = m.elements; return { pos: [p.x, p.y, p.z], R: [[e[0], e[4], e[8]], [e[1], e[5], e[9]], [e[2], e[6], e[10]]] }; }
 }

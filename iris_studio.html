@@ -95,12 +95,78 @@
           <div class="thirds"></div>
           <div class="bar t"><span class="rec-dot" id="m-rec"></span><span id="m-tc">00:00:00</span><span class="sp"></span><span id="m-iso">ISO 400</span></div>
           <div class="bar b"><span id="m-zoom">35 mm</span><span id="m-blur">f/4</span><span class="sp"></span><span id="m-focus">0.50 m</span></div>
-          <div id="af-box" hidden></div>
+            <div id="af-box" hidden></div>
         </div>
       </div>
-      <div class="hud-hint">Drag the ball to place the camera · click a floating frame to open that stop · space to play</div>
+      <!-- the camera's own controls, docked under the picture it makes -->
+      <div class="mon-ctl" id="mon-ctl">
+        <div class="mc-head"><b>This camera</b><span id="mc-target">the whole shot</span></div>
+        <div class="mc-pads">
+          <div class="mc-pad" aria-label="Move the camera">
+            <span class="mc-lab">Move</span>
+            <button data-jog="pedestal" data-amt="1" title="Up">↑</button>
+            <button data-jog="dolly" data-amt="1" title="Push in">⤒</button>
+            <button data-jog="pedestal" data-amt="-1" title="Down">↓</button>
+            <button data-jog="truck" data-amt="-1" title="Left">←</button>
+            <button data-jog="dolly" data-amt="-1" title="Pull back">⤓</button>
+            <button data-jog="truck" data-amt="1" title="Right">→</button>
+          </div>
+          <div class="mc-pad" aria-label="Turn the camera">
+            <span class="mc-lab">Turn</span>
+            <button data-jog="tilt" data-amt="1" title="Tilt up">⤴</button>
+            <button data-jog="roll" data-amt="-1" title="Roll anticlockwise">↺</button>
+            <button data-jog="roll" data-amt="1" title="Roll clockwise">↻</button>
+            <button data-jog="pan" data-amt="1" title="Pan left">⟲</button>
+            <button data-jog="tilt" data-amt="-1" title="Tilt down">⤵</button>
+            <button data-jog="pan" data-amt="-1" title="Pan right">⟳</button>
+          </div>
+        </div>
+        <label class="mc-step"><span>Step</span><input type="range" id="mc-step" min="0.25" max="4" step="0.25" value="1"><span id="mc-step-v">1.0 cm · 1.0°</span></label>
+        <label class="mc-slider"><span class="lab"><span>Zoom</span><span id="mc-zoom-v">35 mm</span></span>
+          <input type="range" id="mc-zoom" min="16" max="150" step="0.5" value="35"></label>
+        <label class="mc-slider"><span class="lab"><span>Focus</span><span id="mc-focus-v">0.50 m</span></span>
+          <input type="range" id="mc-focus" min="-1.6" max="3" step="0.01" value="-0.69"></label>
+        <label class="mc-slider"><span class="lab"><span>Aperture</span><span id="mc-ap-v">f/4</span></span>
+          <input type="range" id="mc-ap" min="2.8" max="22" step="0.1" value="4"></label>
+        <p class="mc-note">These move the stop you have selected. With nothing selected they move the camera itself.</p>
+      </div>
+      <div class="hud-hint">Drag a stop to move it · click a floating frame to select it · space to play</div>
       <div class="toast" id="toast"></div>
     </div>
+
+    <!-- right panel: the controls a roboticist wants, next to the ones a filmmaker wants -->
+    <aside class="side right" id="side-right">
+      <section class="card">
+        <h3>Camera moves</h3>
+        <p class="hint" id="shot-blurb">—</p>
+        <div class="row" id="tracking-row" hidden><span class="k">Follow with</span>
+          <select class="sel" id="tracking-mode"><option value="gt">where it really is</option><option value="vision">the picture alone</option></select></div>
+        <div id="shot-list"></div>
+      </section>
+
+      <section class="card">
+        <h3>Task space</h3>
+        <div class="row"><span class="k">Gizmo</span>
+          <select class="sel" id="gizmo-mode"><option value="translate">move</option><option value="rotate">turn</option></select></div>
+        <div class="row"><span class="k">Aim</span>
+          <select class="sel" id="aim-mode"><option value="lookat">at the far product</option><option value="lookat-near">at the hero</option><option value="free">free</option></select></div>
+        <div class="jogpad">
+          <button data-jog="dolly" data-amt="1">Push in</button><button data-jog="pedestal" data-amt="1">Up</button><button data-jog="dolly" data-amt="-1">Pull back</button>
+          <button data-jog="truck" data-amt="-1">Left</button><button data-jog="pedestal" data-amt="-1">Down</button><button data-jog="truck" data-amt="1">Right</button>
+          <button data-jog="pan" data-amt="1">Pan ←</button><button data-jog="tilt" data-amt="1">Tilt ↑</button><button data-jog="pan" data-amt="-1">Pan →</button>
+          <button data-jog="roll" data-amt="-1">Roll ↺</button><button data-jog="tilt" data-amt="-1">Tilt ↓</button><button data-jog="roll" data-amt="1">Roll ↻</button>
+        </div>
+        <div class="row"><span class="k">Lens at</span><span class="v mono" id="hud-ee">—</span></div>
+        <div class="row"><span class="k">Solver</span><span class="v mono" id="hud-ik">—</span></div>
+      </section>
+
+      <section class="card">
+        <h3>Joint space</h3>
+        <p class="hint">Six Unitree GO-M8010-6 joints, at the model's own limits.</p>
+        <div id="joint-sliders"></div>
+        <div class="row"><span class="k">Pose</span><button class="btn ghost" id="btn-home">Home</button></div>
+      </section>
+    </aside>
   </div>
 
   <!-- ───────────────────────────── timeline ───────────────────────────── -->
@@ -125,10 +191,19 @@
       </div>
     </div>
 
+    <!-- speed ramp: one point per stop, straight lines between them, 1.0 is the shot's own pace -->
+    <div class="tl-speed" id="tl-speed-wrap">
+      <span class="sp-title">Speed</span>
+      <canvas id="tl-speed"></canvas>
+      <span class="sp-hint" id="sp-hint">drag a point · double-click to reset</span>
+    </div>
+
     <div class="tl-foot">
       <div class="grp">
         <button class="btn" id="btn-addkey">＋ Add a stop</button>
         <button class="btn ghost" id="btn-delkey">Remove</button>
+        <button class="btn ghost" id="btn-cut" title="Split the move here, without changing the picture">✂ Cut here</button>
+        <button class="btn ghost" id="btn-label">Name this stop</button>
         <button class="btn ghost" id="btn-look">Stand behind the camera</button>
         <button class="btn ghost" id="btn-reset" hidden>Back to the preset</button>
       </div>

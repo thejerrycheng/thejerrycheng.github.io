@@ -13,14 +13,17 @@ import { V3, R3, lookAtRotation, smoothstep } from './kin.js';
 let nextId = 1;
 
 export class Key {
-  constructor({ t = 0, pos = [0.4, 0, 0.2], look = [0.4, 0, 0.05], roll = 0, f = 35, S = null, N = 4, hold = 0, name = '' } = {}) {
+  constructor({ t = 0, pos = [0.4, 0, 0.2], look = [0.4, 0, 0.05], roll = 0, f = 35, S = null, N = 4, hold = 0, name = '', speed = 1, label = '' } = {}) {
     this.id = nextId++; this.t = t; this.pos = pos.slice(); this.look = look.slice(); this.roll = roll;
     this.f = f; this.S = S; this.N = N; this.hold = hold; this.name = name;
+    /* speed is a local rate multiplier at this stop; between stops it ramps linearly, which is what a
+       speed ramp is: the clock runs at speedAt(t) rather than at 1, so a move can slow into a beat. */
+    this.speed = speed; this.label = label;
   }
   get R() { return lookAtRotation(this.pos, this.look); }
   get distance() { return V3.norm(V3.sub(this.look, this.pos)); }
   clone() { const k = new Key(this); k.id = nextId++; return k; }
-  toJSON() { return { t: this.t, pos: this.pos, look: this.look, roll: this.roll, f: this.f, S: this.S, N: this.N, hold: this.hold, name: this.name }; }
+  toJSON() { return { t: this.t, pos: this.pos, look: this.look, roll: this.roll, f: this.f, S: this.S, N: this.N, hold: this.hold, name: this.name, speed: this.speed, label: this.label }; }
 }
 
 /** Catmull-Rom through p0..p3 at u, with a tension that keeps it from overshooting. */
@@ -46,6 +49,22 @@ export class Timeline {
   remove(id) { const i = this.keys.findIndex(k => k.id === id); if (i >= 0 && this.keys.length > 1) { this.keys.splice(i, 1); this.changed(); } }
   move(id, t) { const k = this.keys.find(k => k.id === id); if (k) { k.t = Math.max(0, t); this.sort(); this.changed(); } }
   index(id) { return this.keys.findIndex(k => k.id === id); }
+  /** The rate the clock runs at time t: linear between the stops' own speeds. */
+  speedAt(t) {
+    const K = this.keys; if (!K.length) return 1;
+    if (t <= K[0].t) return K[0].speed || 1;
+    if (t >= K[K.length - 1].t) return K[K.length - 1].speed || 1;
+    let i = 0; while (i < K.length - 2 && t > K[i + 1].t) i++;
+    const a = K[i], b = K[i + 1], u = (t - a.t) / Math.max(1e-4, b.t - a.t);
+    return (a.speed || 1) + ((b.speed || 1) - (a.speed || 1)) * u;
+  }
+  /** Split the move at time t: a new stop with exactly the state the shot already has there, so the
+      picture does not change — it just becomes two segments that can be retimed independently. */
+  splitAt(t, state) {
+    const s = state || this.sample(t); if (!s) return null;
+    const k = new Key({ t, pos: s.pos, look: s.look, roll: s.roll, f: s.f, S: s.S, N: s.N, speed: this.speedAt(t) });
+    return this.add(k);
+  }
   /** Re-time so the whole shot lasts `d` seconds, keeping the spacing. */
   setDuration(d) { const old = this.duration; if (old <= 0) return; const s = d / old; for (const k of this.keys) k.t *= s; this.changed(); }
 

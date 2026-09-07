@@ -26,6 +26,8 @@ const blurWord = (N) => N <= 3.2 ? 'Very soft' : N <= 5 ? 'Soft' : N <= 9 ? 'Som
 const mm = (f) => Math.round(f) + ' mm';
 const metres = (d) => d > 20 ? 'far away' : fmt(d, 2) + ' m';
 
+const SPEED_MIN = 0.25, SPEED_MAX = 3;
+
 export class StudioApp {
   constructor(spec, model, opts = {}) {
     this.spec = spec; this.opts = opts; this.capture = !!opts.capture;
@@ -114,6 +116,8 @@ export class StudioApp {
     /* ---- timeline ---- */
     $('btn-addkey').addEventListener('click', () => this.addKeyHere());
     $('btn-delkey').addEventListener('click', () => this.deleteKey());
+    $('btn-cut').addEventListener('click', () => this.cutHere());
+    $('btn-label').addEventListener('click', () => this.labelKey());
     $('btn-look').addEventListener('click', () => this.toggleFirstPerson());
     $('btn-reset').addEventListener('click', () => this.selectShot(this.shot.id, false));
     this.bindTrack();
@@ -128,7 +132,87 @@ export class StudioApp {
     $('btn-export').addEventListener('click', () => this.exportDataset());
     $('file-import').addEventListener('change', (e) => this.importDataset(e.target.files[0]));
 
+    this.buildRightPanel();
+    this.buildCameraControls();
+    this.bindSpeedGraph();
     this.setView('studio'); this.setTool('move');
+  }
+
+  /* ============================================================ the right panel
+     The presets live here as a plain list rather than behind a drawer, next to the two control modes
+     the arm actually has: task space (drag or jog the lens where you want it, the solver finds the
+     joints) and joint space (drive the six motors directly). */
+  buildRightPanel() {
+    const groups = {}; for (const sh of this.spec.shots) (groups[sh.group] = groups[sh.group] || []).push(sh);
+    const names = { basics: 'The basics', moves: 'Camera moves', orbits: 'Around the subject', lens: 'Lens moves', tracking: 'Follow something', combos: 'Put together' };
+    $('shot-list').innerHTML = Object.entries(groups).map(([g, list]) =>
+      `<div class="sgroup">${names[g] || g}</div>` +
+      list.map(sh => `<button data-id="${sh.id}">${sh.name}</button>`).join('')).join('');
+    $('shot-list').addEventListener('click', (e) => { const b = e.target.closest('button[data-id]'); if (b) this.selectShot(b.dataset.id, true); });
+
+    $('gizmo-mode').addEventListener('change', () => this.setTool($('gizmo-mode').value === 'rotate' ? 'aim' : 'move'));
+    $('aim-mode').addEventListener('change', () => { this.aimHold = $('aim-mode').value; });
+    this.aimHold = 'lookat';
+    $('tracking-mode').addEventListener('change', () => { this.trackingMode = $('tracking-mode').value; this.gaze = null; });
+
+    $('joint-sliders').innerHTML = this.arm.names.map((n, i) =>
+      `<label class="jrow"><span class="jname">J${i + 1}</span>` +
+      `<input type="range" class="jslider" data-i="${i}" min="${(this.arm.lo[i] * 180 / Math.PI).toFixed(0)}" max="${(this.arm.hi[i] * 180 / Math.PI).toFixed(0)}" step="0.5" value="${(this.arm.home[i] * 180 / Math.PI).toFixed(1)}">` +
+      `<span class="jval" id="jval-${i}">${fmt(this.arm.home[i] * 180 / Math.PI, 0)}°</span></label>`).join('');
+    $('joint-sliders').addEventListener('input', (e) => {
+      if (!e.target.classList.contains('jslider')) return;
+      this.playing = false;                                   /* driving a joint is a manual override */
+      const q = this.studio.q.slice(); q[+e.target.dataset.i] = +e.target.value * Math.PI / 180;
+      this.qTarget = q; this.studio.setQ(q); this.studio.syncHandle(); this.selKey = null; this.studio.highlightKey(null);
+    });
+    $('btn-home').addEventListener('click', () => { this.playing = false; this.selKey = null; this.qTarget = this.arm.home.slice(); });
+
+    for (const b of document.querySelectorAll('[data-jog]')) {
+      const fire = () => this.jog(b.dataset.jog, +b.dataset.amt * this.jogStep(b.dataset.jog));
+      b.addEventListener('click', fire);
+      b.addEventListener('pointerdown', () => { this._jogT = setTimeout(() => { this._jogI = setInterval(fire, 70); }, 380); });
+      for (const ev of ['pointerup', 'pointerleave', 'pointercancel'])
+        b.addEventListener(ev, () => { clearTimeout(this._jogT); clearInterval(this._jogI); });
+    }
+  }
+  jogStep(kind) {
+    const s = this._mcStep || 1;                              /* 1 unit = 1 cm of travel, 1 degree of turn */
+    return (kind === 'pan' || kind === 'tilt' || kind === 'roll') ? s * Math.PI / 180 : s * 0.01;
+  }
+  /** Nudge the camera in its own frame. With a stop selected the stop moves; otherwise the arm does. */
+  jog(kind, amt) {
+    const k = this.editingKey() ? this.key : null;
+    const base = k ? { pos: k.pos.slice(), R: k.R } : (() => { const T = this.arm.fk(this.studio.q); return { pos: [T[0][3], T[1][3], T[2][3]], R: [[T[0][0], T[0][1], T[0][2]], [T[1][0], T[1][1], T[1][2]], [T[2][0], T[2][1], T[2][2]]] }; })();
+    const R = base.R, fwd = [R[0][2], R[1][2], R[2][2]], right = [R[0][0], R[1][0], R[2][0]], up = [-R[0][1], -R[1][1], -R[2][1]];
+    let pos = base.pos, Rn = R;
+    if (kind === 'dolly') pos = V3.add(pos, V3.scale(fwd, amt));
+    else if (kind === 'truck') pos = V3.add(pos, V3.scale(right, amt));
+    else if (kind === 'pedestal') pos = V3.add(pos, V3.scale(up, amt));
+    else { const axis = kind === 'pan' ? [0, 0, 1] : kind === 'tilt' ? right : fwd; Rn = R3.mul(R3.axisAngle(axis, amt), R); }
+    if (k) {
+      this.toTimeline();
+      const d = V3.norm(V3.sub(k.look, k.pos));
+      k.pos = pos; k.look = V3.add(pos, V3.scale([Rn[0][2], Rn[1][2], Rn[2][2]], d));
+      this.gizmoOnKey(); this.scheduleThumb(k); this.renderTimeline(); this.refreshScene();
+    } else {
+      const r = this.arm.ikMulti(pos, { R: Rn }, this.studio.q); if (r.ok) this.qTarget = r.q; this.ikInfo = r; this.studio.syncHandle();
+    }
+  }
+
+  /* ============================================================ the camera's controls, by the monitor */
+  buildCameraControls() {
+    this._mcStep = 1;
+    $('mc-step').addEventListener('input', () => {
+      this._mcStep = +$('mc-step').value;
+      $('mc-step-v').textContent = `${fmt(this._mcStep, 1)} cm · ${fmt(this._mcStep, 1)}°`;
+    });
+    const lensSlider = (id, apply) => $(id).addEventListener('input', () => apply(+$(id).value));
+    lensSlider('mc-zoom', (v) => { this.manualLens = true; this.lens.zoom.set(v); this.touchKey('f', v); $('s-zoom').value = v; });
+    lensSlider('mc-ap', (v) => { this.manualLens = true; this.lens.N = v; this.touchKey('N', v); $('s-blur').value = v; });
+    lensSlider('mc-focus', (v) => {
+      this.manualLens = true; this.af = false; this.syncSwitch('sw-af', false);
+      this.lens.focus.set(Math.exp(v)); this.touchKey('S', Math.exp(v)); $('s-focus').value = v;
+    });
   }
   bindSlider(id, fn) { const el = $(id); el.addEventListener('input', () => fn(+el.value)); }
   bindSwitch(id, initial, fn) { const el = $(id); el.classList.toggle('on', initial); el.addEventListener('click', () => { const on = !el.classList.contains('on'); el.classList.toggle('on', on); fn(on); }); }
@@ -157,6 +241,9 @@ export class StudioApp {
     this.tl = Timeline.fromShot(shot, this.ctx, evalShot, shot.duration > 7 ? 6 : 5);
     this.tl.name = shot.name; this.selKey = this.tl.keys[0].id;
     $('shot-name').value = shot.name; $('shot-note').textContent = shot.blurb || '';
+    const blurb = $('shot-blurb'); if (blurb) blurb.textContent = shot.blurb || '';
+    document.querySelectorAll('#shot-list button').forEach(b => b.classList.toggle('on', b.dataset.id === id));
+    const trow = $('tracking-row'); if (trow) trow.hidden = shot.aim.type !== 'track';
     $('dur').value = shot.duration; $('dur-val').textContent = fmt(shot.duration, 1) + ' s';
     $('s-smooth').value = this.tl.smoothness;
     this.mode = 'shots'; this.playing = !!play; this._settling = true; this._settleFrames = 0; this._settleWait = 0;
@@ -171,10 +258,20 @@ export class StudioApp {
 
   /* ---- keys ---- */
   get key() { return this.tl ? this.tl.keys.find(k => k.id === this.selKey) : null; }
-  selectKey(id, fly = true) {
+  /** Select a stop. The viewer's own camera never moves for this — the user's viewpoint is theirs.
+      The gizmo goes to the stop instead, so the stop itself is what you drag. */
+  selectKey(id) {
     this.selKey = id; const k = this.key; if (!k) return;
     this.playing = false; this.t = k.t; this.studio.highlightKey(id); this.renderTimeline(); this.updateTransport();
-    if (this.firstPerson) this.flyToKey(k, true); else if (fly) this.flyToKey(k, false);
+    this.gizmoOnKey();
+    if (this.firstPerson) this.flyToKey(k, true);
+  }
+  /** True while the gizmo is parked on a selected stop rather than on the arm's end effector. */
+  editingKey() { return !!(this.key && !this.playing); }
+  gizmoOnKey() {
+    const k = this.key; if (!k) return;
+    this.studio.setHandlePose(k.pos, k.R);
+    this.studio.gizmo.enabled = true; this.studio.gizmoHelper.visible = true;
   }
   addKeyHere() {
     if (!this.tl) return;
@@ -188,6 +285,72 @@ export class StudioApp {
     this.toTimeline(); this.tl.remove(this.selKey); this.selKey = this.tl.keys[0].id;
     this.renderTimeline(); this.refreshScene(); this.toast('Stop removed');
   }
+  /** Split the move at the playhead. The new stop holds exactly the state the shot already has there,
+      so the picture does not change — the move simply becomes two segments you can retime apart. */
+  cutHere() {
+    if (!this.tl) return;
+    this.toTimeline();
+    const k = this.tl.splitAt(this.t, this.tl.sample(this.t));
+    if (!k) return;
+    this.selKey = k.id; this.renderTimeline(); this.refreshScene(); this.scheduleThumb(k);
+    this.toast('Cut — the move is now two segments');
+  }
+  /** Name a stop, the way you would label a marker in an edit. */
+  labelKey() {
+    const k = this.key; if (!k) { this.toast('Select a stop first'); return; }
+    const name = window.prompt('Name this stop', k.label || '');
+    if (name === null) return;
+    this.toTimeline(); k.label = name.trim(); this.renderTimeline();
+  }
+  /* ---- the speed ramp: one point per stop, straight lines between, dragged vertically ---- */
+  bindSpeedGraph() {
+    const cv = $('tl-speed'); if (!cv) return;
+    const at = (ev) => { const r = cv.getBoundingClientRect(); return { x: (ev.clientX - r.left) / r.width, y: (ev.clientY - r.top) / r.height }; };
+    const nearest = (x) => {
+      if (!this.tl) return null; const d = this.duration; let best = null, bd = 1e9;
+      for (const k of this.tl.keys) { const dx = Math.abs(k.t / d - x); if (dx < bd) { bd = dx; best = k; } }
+      return bd < 0.06 ? best : null;
+    };
+    let drag = null;
+    cv.addEventListener('pointerdown', (ev) => {
+      const { x, y } = at(ev); drag = nearest(x); if (!drag) return;
+      cv.setPointerCapture(ev.pointerId); this.selectKey(drag.id); this.setSpeedFrom(drag, y);
+    });
+    cv.addEventListener('pointermove', (ev) => { if (!drag) return; this.setSpeedFrom(drag, at(ev).y); });
+    const end = () => { drag = null; };
+    cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+    cv.addEventListener('dblclick', (ev) => { const k = nearest(at(ev).x); if (k) { this.toTimeline(); k.speed = 1; this.drawSpeedGraph(); } });
+    new ResizeObserver(() => this.drawSpeedGraph()).observe(cv);
+  }
+  setSpeedFrom(k, y) {
+    this.toTimeline();
+    k.speed = clamp(SPEED_MAX - (SPEED_MAX - SPEED_MIN) * clamp(y, 0, 1), SPEED_MIN, SPEED_MAX);
+    this.drawSpeedGraph(); $('sp-hint').textContent = `stop ${this.tl.index(k.id) + 1} at ${fmt(k.speed, 2)}×`;
+  }
+  drawSpeedGraph() {
+    const cv = $('tl-speed'); if (!cv || !this.tl) return;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const w = cv.clientWidth || 600, h = cv.clientHeight || 54;
+    if (cv.width !== Math.round(w * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+    const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+    const d = this.duration;
+    const X = (t) => (t / d) * w, Y = (v) => (SPEED_MAX - v) / (SPEED_MAX - SPEED_MIN) * h;
+    g.strokeStyle = 'rgba(255,255,255,.16)'; g.lineWidth = 1;                      /* the 1x line */
+    g.beginPath(); g.moveTo(0, Y(1)); g.lineTo(w, Y(1)); g.stroke();
+    g.fillStyle = 'rgba(255,255,255,.35)'; g.font = '9px ui-monospace, monospace';
+    g.fillText('1.0×', 4, Y(1) - 3);
+    const keys = this.tl.keys;
+    g.strokeStyle = '#0a84ff'; g.lineWidth = 2; g.beginPath();
+    keys.forEach((k, i) => { const x = X(k.t), y = Y(k.speed || 1); i ? g.lineTo(x, y) : g.moveTo(x, y); });
+    g.stroke();
+    keys.forEach((k) => {
+      const x = X(k.t), y = Y(k.speed || 1); const on = k.id === this.selKey;
+      g.fillStyle = on ? '#ffd60a' : '#0a84ff'; g.beginPath(); g.arc(x, y, on ? 5 : 4, 0, 2 * Math.PI); g.fill();
+    });
+    g.strokeStyle = 'rgba(255,214,10,.8)'; g.lineWidth = 1.5;                      /* the playhead */
+    g.beginPath(); g.moveTo(X(this.t), 0); g.lineTo(X(this.t), h); g.stroke();
+  }
+
   /** Called while the ball is dragged: move the selected stop with it. */
   onHandleDragged() {
     const h = this.studio.handlePose();
@@ -229,14 +392,14 @@ export class StudioApp {
     const timeAt = (ev) => { const r = inner.getBoundingClientRect(); return clamp((ev.clientX - r.left) / r.width, 0, 1) * this.duration; };
     track.addEventListener('pointerdown', (ev) => {
       const chip = ev.target.closest('.tl-key');
-      if (chip) { dragKey = +chip.dataset.id; this.selectKey(dragKey, false); track.setPointerCapture(ev.pointerId); this._dragged = false; }
+      if (chip) { dragKey = +chip.dataset.id; this.selectKey(dragKey); track.setPointerCapture(ev.pointerId); this._dragged = false; }
       else { this.playing = false; this.t = timeAt(ev); this.updateTransport(); }
     });
     track.addEventListener('pointermove', (ev) => {
       if (dragKey == null) return; this._dragged = true;
       this.toTimeline(); this.tl.move(dragKey, timeAt(ev)); this.t = timeAt(ev); this.renderTimeline(); this.refreshScene();
     });
-    const up = (ev) => { if (dragKey != null && !this._dragged) this.selectKey(dragKey, true); dragKey = null; };
+    const up = (ev) => { if (dragKey != null && !this._dragged) this.selectKey(dragKey); dragKey = null; };
     track.addEventListener('pointerup', up); track.addEventListener('pointercancel', up);
   }
   renderTimeline() {
@@ -247,10 +410,11 @@ export class StudioApp {
     $('tl-ruler').innerHTML = ruler.join('');
     $('tl-keys').innerHTML = keys.map((k, i) => `
       <div class="tl-key${k.id === this.selKey ? ' sel' : ''}" data-id="${k.id}" style="left:${(k.t / d * 100).toFixed(2)}%">
-        <canvas width="96" height="64" data-thumb="${k.id}"></canvas><span class="n">${i + 1}</span></div>`).join('');
+        <canvas width="96" height="64" data-thumb="${k.id}"></canvas><span class="n">${i + 1}</span>${k.label ? `<span class="kname">${k.label}</span>` : ''}</div>`).join('');
     this.thumbQueue = keys.slice();
     $('btn-delkey').disabled = keys.length <= 2;
     $('tl-count').textContent = `${keys.length} stops`;
+    this.drawSpeedGraph();
   }
   scheduleThumb(k) { (this.thumbQueue = this.thumbQueue || []).push(k); }
   /** Paint one pending stop thumbnail per frame, so a long shot never stalls the view. */
@@ -290,7 +454,9 @@ export class StudioApp {
       else if (++this._settleWait > 900) this._settling = false;
     }
     if (this.playing && !this._settling) {
-      this.t += dt * this.speed * (this.playMode === 'timeline' ? this.tl.speed : 1);
+      /* the speed ramp: the clock runs at the rate the graph asks for at this moment */
+      const ramp = this.playMode === 'timeline' ? this.tl.speed * this.tl.speedAt(this.t) : 1;
+      this.t += dt * this.speed * ramp;
       if (this.t >= D) {
         if (this.loop) { this.t = 0; this.trailPts = []; this.ctx.d0 = undefined; if (this.recorder.recording && this.recEvery) { this.stopRecord(); this.startRecord(); } }
         else { this.t = D; this.playing = false; if (this.recorder.recording) this.stopRecord(); }
@@ -457,7 +623,7 @@ export class StudioApp {
     if (this.mode === 'policy') this.stepPolicy(dt); else this.stepShot(dt);
     const vmax = (this.shot && this.shot.vmax && this.playMode === 'preset') ? this.shot.vmax : this.arm.vmax;
     this.studio.setQ(this.arm.track(this.studio.q, this.qTarget, dt, vmax));
-    if (!this.studio.gizmo.dragging) this.studio.syncHandle();
+    if (!this.studio.gizmo.dragging) { if (this.editingKey()) this.gizmoOnKey(); else this.studio.syncHandle(); }
     this.studio.update(dt);
     this.stepFocus(dt);
     if (this.showBeam) this.studio.updateProjection(this.subjectDist);
@@ -496,6 +662,22 @@ export class StudioApp {
       box.style.left = `calc(${(this.afPoint.u * 100).toFixed(1)}% - ${s}px)`; box.style.top = `calc(${(this.afPoint.v * 100).toFixed(1)}% - ${s}px)`;
       box.style.width = box.style.height = (2 * s) + 'px'; box.classList.toggle('locked', this.afLocked);
     } else box.hidden = true;
+    /* the right panel: where the lens is, whether the solver got there, and the six joints */
+    const ee = this.studio.eePose();
+    $('hud-ee').textContent = `${fmt(ee.pos[0], 3)}  ${fmt(ee.pos[1], 3)}  ${fmt(ee.pos[2], 3)} m`;
+    $('hud-ik').textContent = ok ? `solved · ${fmt((this.ikInfo.posErr || 0) * 1000, 1)} mm` : `out of reach · ${fmt((this.ikInfo.posErr || 0) * 1000, 0)} mm`;
+    $('hud-ik').classList.toggle('bad', !ok);
+    this.studio.q.forEach((v, i) => {
+      const lab = $('jval-' + i); if (lab) lab.textContent = fmt(v * 180 / Math.PI, 0) + '°';
+      const sl = document.querySelector(`.jslider[data-i="${i}"]`); if (sl && document.activeElement !== sl) sl.value = v * 180 / Math.PI;
+    });
+    /* the camera's own controls mirror the lens, unless a slider is being dragged */
+    if (document.activeElement !== $('mc-zoom')) $('mc-zoom').value = L.f;
+    if (document.activeElement !== $('mc-ap')) $('mc-ap').value = L.N;
+    if (document.activeElement !== $('mc-focus')) $('mc-focus').value = Math.log(L.S);
+    $('mc-zoom-v').textContent = mm(L.f); $('mc-ap-v').textContent = 'f/' + fmt(L.N, 1); $('mc-focus-v').textContent = metres(L.S);
+    const selK = this.key;
+    $('mc-target').textContent = this.editingKey() && selK ? `stop ${this.tl.index(selK.id) + 1}${selK.label ? ' · ' + selK.label : ''}` : 'the whole shot';
     /* the playhead */
     const D = this.duration;
     $('tl-play').style.left = (clamp(this.t / D, 0, 1) * 100).toFixed(2) + '%';
@@ -526,7 +708,7 @@ export class StudioApp {
       if (this.studio.gizmo.dragging) return;
       const r = cv.getBoundingClientRect();
       const id = this.studio.pickKey(((ev.clientX - r.left) / r.width) * 2 - 1, -(((ev.clientY - r.top) / r.height) * 2 - 1));
-      if (id != null) this.selectKey(id, true);
+      if (id != null) this.selectKey(id);
     });
   }
   bindKeys() {
