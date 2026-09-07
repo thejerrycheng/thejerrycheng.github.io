@@ -81,6 +81,9 @@ export async function makeOrcaHand(scene, kin, manifestUrl) {
   const matStruct = new THREE.MeshStandardMaterial({ color: 0xe9e2cf, roughness: 0.55, metalness: 0.05 });
   const matPad = new THREE.MeshStandardMaterial({ color: 0x2b2f3a, roughness: 0.9 });
   const matPalm = new THREE.MeshStandardMaterial({ color: 0xd9d2bd, roughness: 0.6 });
+  // the actuator tower the hand is mounted on: darker, so it reads as the base
+  const matTower = new THREE.MeshStandardMaterial({ color: 0x8d94a3, roughness: 0.7, metalness: 0.15 });
+  const matFor = (k) => k === 'pad' ? matPad : k === 'palm' ? matPalm : k === 'tower' ? matTower : matStruct;
   const groups = kin.bodies.map((b) => {
     const g = new THREE.Group(); scene.add(g);
     for (const part of (man.bodies[b.name] || [])) {
@@ -88,7 +91,7 @@ export async function makeOrcaHand(scene, kin, manifestUrl) {
       geom.setAttribute('position', new THREE.BufferAttribute(P.subarray(part.v0 * 3, (part.v0 + part.nv) * 3), 3));
       const idx = new Uint32Array(part.ni); for (let i = 0; i < part.ni; i++) idx[i] = I[part.i0 + i] - part.v0; geom.setIndex(new THREE.BufferAttribute(idx, 1));
       geom.computeVertexNormals();
-      const m = new THREE.Mesh(geom, part.kind === 'pad' ? matPad : part.kind === 'palm' ? matPalm : matStruct); m.castShadow = true; m.receiveShadow = true; g.add(m);
+      const m = new THREE.Mesh(geom, matFor(part.kind)); m.castShadow = true; m.receiveShadow = true; g.add(m);
     }
     return g;
   });

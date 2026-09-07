@@ -66,7 +66,20 @@
       for (let i = 0; i < K.bodies.length; i++) {
         const b = K.bodies[i];
         let R = this.bodyR[i], p = b.pos.slice();
-        if (b.joint) R = mm(R, axisAngleMat(b.joint.axis, q[b.joint.q]));
+        if (b.joint) {
+          // MuJoCo turns a hinge by (qpos - qpos0): body_pos/body_quat describe the
+          // body at the model's reference pose, and several ORCA joints have a
+          // non-zero one.
+          const Rj = axisAngleMat(b.joint.axis, q[b.joint.q] - (b.joint.ref || 0));
+          // MuJoCo turns the hinge about `axis` through `pos` in the body's OWN
+          // frame, so unless the joint sits at the body origin the body picks up
+          // jp - Rj*jp of translation too. Five of the ORCA hand's joints -- every
+          // finger's abduction -- sit 20-30 mm out, so dropping this term swings
+          // each fingertip by that lever arm.
+          const jp = b.joint.pos;
+          p = add(p, mv(R, sub(jp, mv(Rj, jp))));
+          R = mm(R, Rj);
+        }
         if (b.parent < 0) { pos[i] = p; rot[i] = R; }
         else { pos[i] = add(pos[b.parent], mv(rot[b.parent], p)); rot[i] = mm(rot[b.parent], R); }
       }

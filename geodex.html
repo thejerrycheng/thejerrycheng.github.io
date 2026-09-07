@@ -201,11 +201,11 @@
         </div>
         <p class="plot-note" style="margin-top:8px"><b>Finger size factors</b>, human to robot (the calibration the pipeline applies to each finger's landmarks):</p>
         <div class="gd3-fingers">
-          <label style="color:#E4442A">thumb<input type="range" class="gd3-scale" min="0.8" max="1.8" step="0.01" value="1.35"><span class="v">1.35</span></label>
-          <label style="color:#D9A13F">index<input type="range" class="gd3-scale" min="0.8" max="1.8" step="0.01" value="1.2"><span class="v">1.20</span></label>
-          <label style="color:#3fbf5a">middle<input type="range" class="gd3-scale" min="0.8" max="1.8" step="0.01" value="1.15"><span class="v">1.15</span></label>
-          <label style="color:#2a78d6">ring<input type="range" class="gd3-scale" min="0.8" max="1.8" step="0.01" value="1.2"><span class="v">1.20</span></label>
-          <label style="color:#8e6bd1">pinky<input type="range" class="gd3-scale" min="0.8" max="1.8" step="0.01" value="1.4"><span class="v">1.40</span></label>
+          <label style="color:#E4442A">thumb<input type="range" class="gd3-scale" min="0.4" max="1.6" step="0.01" value="0.79"><span class="v">0.79</span></label>
+          <label style="color:#D9A13F">index<input type="range" class="gd3-scale" min="0.4" max="1.6" step="0.01" value="0.76"><span class="v">0.76</span></label>
+          <label style="color:#3fbf5a">middle<input type="range" class="gd3-scale" min="0.4" max="1.6" step="0.01" value="0.79"><span class="v">0.79</span></label>
+          <label style="color:#2a78d6">ring<input type="range" class="gd3-scale" min="0.4" max="1.6" step="0.01" value="0.79"><span class="v">0.79</span></label>
+          <label style="color:#8e6bd1">pinky<input type="range" class="gd3-scale" min="0.4" max="1.6" step="0.01" value="0.87"><span class="v">0.87</span></label>
         </div>
         <div class="demo-buttons" style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px">
           <button class="btn btn-primary" id="gd3-play" type="button">Pause</button>
@@ -276,18 +276,18 @@
 
   <figure class="fig">
     <img src="assets/images/projects/geodex/retarget_ablation.png" alt="Ablation of the retargeting cost terms: direction error, pinch error and solve time" class="pad">
-    <figcaption><b>268 recorded frames, five cost configurations.</b> Absolute fingertip position is deliberately not the objective — human and ORCA link lengths differ by 20–40 % — so the metrics are the scale-free ones the cost actually claims: the angle between the robot and operator fingertip vectors in the palm frame, and the error in the thumb–index gap.</figcaption>
+    <figcaption><b>268 recorded frames, five cost configurations, on the ORCA hand.</b> Absolute fingertip position is deliberately not the objective — the ORCA hand's fingers reach 76–87 % as far from the palm as this operator's do, measured — so the metrics are the scale-free ones the cost actually claims: the angle between the robot and operator fingertip vectors in the palm frame, and the error in the thumb–index gap.</figcaption>
   </figure>
 
   <div class="table-wrap">
     <table class="data-table">
       <thead><tr><th>Cost configuration</th><th>fingertip direction [deg]</th><th>keypoint cos sim</th><th>pinch error, all frames [mm]</th><th>pinch error while pinching [mm]</th><th>aperture error [mm]</th><th>solve [ms]</th></tr></thead>
       <tbody>
-        <tr><td><b>full</b> (released)</td><td class="hi">4.66</td><td class="hi">0.989</td><td class="hi">7.10</td><td class="hi">2.24</td><td>13.5</td><td>20.5</td></tr>
-        <tr><td>no pairwise (γ<sub>rel</sub>=0)</td><td>3.67</td><td>0.989</td><td class="bad">14.07</td><td class="bad">11.47</td><td>19.7</td><td>12.5</td></tr>
-        <tr><td>no cosine (γ<sub>cos</sub>=0)</td><td class="bad">17.58</td><td class="bad">0.958</td><td>3.92</td><td class="ok">1.02</td><td class="ok">8.3</td><td>19.3</td></tr>
-        <tr><td>no smoothness</td><td>4.37</td><td>0.990</td><td>6.79</td><td>1.81</td><td>12.6</td><td>20.6</td></tr>
-        <tr><td>naive keypoint L2</td><td class="ok">2.70</td><td>0.988</td><td>10.87</td><td class="bad">9.82</td><td>15.1</td><td>17.6</td></tr>
+        <tr><td><b>full</b> (released)</td><td>18.94</td><td class="hi">0.871</td><td class="hi">13.54</td><td class="hi">11.30</td><td class="hi">14.6</td><td>10.3</td></tr>
+        <tr><td>no pairwise (γ<sub>rel</sub>=0)</td><td>13.27</td><td>0.881</td><td class="bad">25.13</td><td class="bad">42.20</td><td class="bad">19.1</td><td class="ok">5.5</td></tr>
+        <tr><td>no cosine (γ<sub>cos</sub>=0)</td><td class="bad">40.36</td><td class="bad">0.765</td><td>13.89</td><td class="ok">4.24</td><td>16.8</td><td>9.2</td></tr>
+        <tr><td>no smoothness</td><td>18.37</td><td>0.873</td><td>13.28</td><td>9.06</td><td>15.2</td><td>13.6</td></tr>
+        <tr><td>naive keypoint L2</td><td class="ok">11.77</td><td>0.878</td><td class="bad">25.58</td><td class="bad">47.40</td><td class="bad">21.5</td><td>9.1</td></tr>
       </tbody>
     </table>
     <p class="scroll-hint">← swipe the table →</p>
@@ -302,15 +302,24 @@
     <div class="card finding">
       <div class="no">1</div>
       <h3>The pairwise term is worth 5× on pinches</h3>
-      <p>Dropping γ<sub>rel</sub> takes the thumb–index gap error from <b>2.2 mm to 11.5 mm</b> on the frames where the operator is actually pinching, and from 7.1 mm to 14.1 mm overall. Naive absolute-keypoint retargeting is barely better at 9.8 mm, despite having the <em>best</em> fingertip direction of any configuration — which is the point. Getting each fingertip pointing the right way says nothing about whether the fingers can meet.</p>
+      <p>Dropping γ<sub>rel</sub> takes the thumb–index gap error from <b>11.3 mm to 42.2 mm</b> on the frames where the operator is actually pinching — nearly four times worse — and from 13.5 mm to 25.1 mm overall. Naive absolute-keypoint retargeting is worse still at <b>47.4 mm</b>, despite having the <em>best</em> fingertip direction of any configuration, 11.8° against the full cost's 18.9°. That is the whole point: getting each fingertip pointing the right way says nothing about whether the fingers can meet.</p>
     </div>
     <div class="card finding">
       <div class="no">2</div>
       <h3>The cosine and pairwise terms fight</h3>
-      <p>This one I did not expect. Removing the cosine term makes pinch tracking <em>better</em> — 1.0 mm instead of 2.2 mm, and the hand aperture error drops from 13.5 mm to 8.3 mm — while fingertip direction error nearly quadruples, from 4.7° to 17.6°. The two terms are optimising different things over the same 20 joints, and γ<sub>cos</sub> = 50 vs γ<sub>rel</sub> = 100 is the compromise. A pinch-gated cosine weight, mirroring the boost that already exists on the pairwise term, would probably get both.</p>
+      <p>This one I did not expect. Removing the cosine term makes pinch tracking <em>better</em> — <b>4.2 mm instead of 11.3 mm</b> while pinching — at the cost of more than doubling the fingertip direction error, 18.9° to 40.4°, and dropping keypoint cosine similarity from 0.871 to 0.765. The two terms are optimising different things over the same 16 joints, and γ<sub>cos</sub> = 50 against γ<sub>rel</sub> = 100 is the compromise between them. A pinch-gated cosine weight, mirroring the boost that already exists on the pairwise term, would probably get both.</p>
     </div>
   </div>
-  <p class="plot-note">Solve times here (13–21 ms median) are slower than the 2–4 ms the report quotes, because this harness runs SLSQP with Python-side MuJoCo forward kinematics per cost evaluation rather than the tuned in-process planner loop. The ratios between configurations are the comparable quantity, not the absolute times.</p>
+  <p class="plot-note">Solve times here (5–14 ms median) are slower than the 2–4 ms the report quotes, because this harness runs SLSQP with Python-side MuJoCo forward kinematics per cost evaluation rather than the tuned in-process planner loop. The ratios between configurations are the comparable quantity, not the absolute times. The solver is fully converged: raising the iteration cap from 5 to 40 changes the direction error by less than 0.01°.</p>
+
+  <div class="card finding" style="margin-top:22px">
+    <div class="no">!</div>
+    <h3>These numbers replace an earlier set that was measured on the wrong hand</h3>
+    <p>Until September 2026 this section, and the 3-D playground above it, were built from <code>teleop/xml/hand_camera_scene.xml</code> — a <b>Kyber hand</b> that happens to live in the same repository, with 20 joints and its own link lengths. Everything downstream inherited it: the meshes, the forward kinematics, the joint limits, and every number in the table. The hand on this page was not the hand in the robot.</p>
+    <p>Re-exported from the model the project actually runs, <code>ORCA/combined_lite6_orca/task2_scene.xml</code> — 16 joints, bodies <code>left_palm</code>, <code>left_thumb_mp…dp</code>, <code>left_index_mp…ip</code> — the qualitative conclusions survive intact: the pairwise term is what makes pinching work, the cosine term is what holds posture, and the two trade against each other. The magnitudes do not. Fingertip direction error is <b>18.9° rather than 4.7°</b>, because the real ORCA finger has three joints and no distal one, so it simply cannot point where a human fingertip points.</p>
+    <p>The per-finger size factors were wrong in the same way, and for the same reason: they were <b>1.15–1.40</b>, implying a robot hand <em>larger</em> than the operator's. Measured against the ORCA model they are <b>0.76–0.87</b> — it is smaller. Correcting them halved the overall pinch error, from 30.0 mm to 13.5 mm, before any of the comparisons above were made.</p>
+    <p style="margin-bottom:0">Loading the right model then exposed a second bug that the wrong one had been hiding. MuJoCo turns a hinge by <b>qpos − qpos0</b>: <code>body_pos</code> and <code>body_quat</code> describe the body at the model's <em>reference</em> pose, not at zero. The browser's forward kinematics rotated by qpos alone, which is correct only when every reference angle is zero — as it happened to be on the Kyber hand. On the ORCA hand the thumb abduction reference is −0.733 rad, index −0.40, pinky +0.523, so those fingers were posed wrong by up to <b>93 mm</b> at the fingertip while the middle finger, whose three reference angles are all zero, was pixel-perfect. Exporting the reference angle and subtracting it brings the browser's kinematics to <b>agreement with MuJoCo to 0.00000 mm</b> at every keypoint. The offline ablation was never affected — it calls MuJoCo directly.</p>
+  </div>
 </section>
 
 <!-- =================== POLICY =================== -->
