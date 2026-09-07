@@ -174,16 +174,25 @@
   function makeProblem(o) {
     const T = o.T || 140, dt = 0.1, seed = o.seed || 1;
     const rng = mulberry32(seed);
-    const sv = o.sigmaV != null ? o.sigmaV : 0.06;
-    const sw = o.sigmaW != null ? o.sigmaW : 0.02;
+    const sv = o.sigmaV != null ? o.sigmaV : 0.25;
+    const sw = o.sigmaW != null ? o.sigmaW : 0.08;
     const spx = o.sigmaPx != null ? o.sigmaPx : 1.2;
     const p = { T, dt, sv, sw, spx, maxRange: o.maxRange || 12, cosFov: Math.cos(35*Math.PI/180) };
 
     p.varpi = []; p.Ttrue = [I4()];
     for (let k = 0; k < T; k++) {
       const t = k * dt;
-      const v = [1.2, 0.15*Math.sin(0.5*t), 0.20*Math.sin(0.3*t),
-                 0.10*Math.sin(0.7*t), 0.12*Math.sin(0.4*t), 0.35*Math.sin(0.22*t)];
+      // A climbing, banking helix rather than a near-planar S: the body-frame
+      // twist carries a steady +z so the path actually leaves the ground plane,
+      // and roll/pitch rates large enough that all six degrees of freedom are
+      // exercised. A flat trajectory makes an SE(3) estimator look like an
+      // SE(2) one.
+      // A helix: a steady yaw rate so the path wraps rather than merely bending,
+      // a steady climb so it leaves the ground plane, and roll/pitch oscillation
+      // so the orientation is doing something too. An oscillating yaw gives a
+      // flat "C" that looks planar from every angle.
+      const v = [1.25, 0.18*Math.sin(0.5*t), 0.42 + 0.24*Math.sin(0.31*t),
+                 0.18*Math.sin(0.7*t), 0.24*Math.sin(0.43*t), 0.55 + 0.22*Math.sin(0.22*t)];
       p.varpi.push(v);
       p.Ttrue.push(mul4(expSE3(v.map((x) => x*dt)), p.Ttrue[k]));
     }
@@ -195,9 +204,11 @@
     p.land = [];
     const nl = o.nLand || 40;
     for (let j = 0; j < nl; j++) {
+      // spread wide in the ground plane but keep the vertical band close to the
+      // path, so the scene reads as a landscape rather than a cube of confetti
       p.land.push([lo[0]-6 + rng()*(hi[0]-lo[0]+12),
                    lo[1]-6 + rng()*(hi[1]-lo[1]+12),
-                   lo[2]-6 + rng()*(hi[2]-lo[2]+12)]);
+                   lo[2]-1.5 + rng()*(hi[2]-lo[2]+4.5)]);
     }
     p.varpiMeas = p.varpi.map((v) => v.map((x, i) => x + gauss(rng)*(i < 3 ? sv : sw)));
 

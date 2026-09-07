@@ -8,7 +8,7 @@
   if (!S3 || !cv) return;
 
   const WINDOWS = [1, 2, 5, 10, 20, null];
-  const S = { p: null, res: null, dr: null, gt: null, yaw: -0.7, pitch: 0.5, drag: null };
+  const S = { p: null, res: null, dr: null, gt: null, yaw: -0.62, pitch: 0.58, drag: null, zoom: 1 };
 
   const css = (n, f) => (getComputedStyle(document.documentElement).getPropertyValue(n) || f).trim();
   function sizeCanvas(c) {
@@ -53,7 +53,7 @@
     all.forEach((q) => { for (let i = 0; i < 3; i++) { lo[i] = Math.min(lo[i], q[i]); hi[i] = Math.max(hi[i], q[i]); } });
     const c = [0, 1, 2].map((i) => (lo[i] + hi[i]) / 2);
     const span = Math.max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2], 1);
-    return { c, r: span * 1.5, k: 1.1 };
+    return { c, r: span * 1.5 / S.zoom, k: 1.1 * S.zoom };
   }
 
   function draw() {
@@ -66,40 +66,143 @@
     const cam = camera();
     const P = (q) => project(q, w, h, cam);
 
-    // landmarks, depth-sorted so near ones sit on top
-    S.p.land.map((l) => [P(l), l]).sort((a, b) => b[0][2] - a[0][2]).forEach(([q]) => {
-      const r = Math.max(1.5, 90 / Math.max(q[2], 1)) * dpr;
-      g.fillStyle = gold; g.globalAlpha = 0.85;
-      g.beginPath(); g.arc(q[0], q[1], r, 0, 7); g.fill();
-      g.globalAlpha = 1;
+    // ---- the scene is drawn as one depth-sorted display list, so landmarks,
+    // path segments, drop lines and the ground grid occlude each other the way
+    // they should. Painting them in fixed layers is what made it read flat.
+    const items = [];
+    const push = (depth, fn) => items.push([depth, fn]);
+
+    // The ground is referenced to the TRAJECTORY, not to the landmark cloud --
+    // dropping it to the lowest landmark puts the path metres in the air and
+    // turns every stalk into a skyscraper.
+    let lo = [1e9, 1e9, 1e9], hi3 = [-1e9, -1e9, -1e9];
+    S.gt.concat(S.dr).forEach((q) => { for (let i = 0; i < 3; i++) { lo[i] = Math.min(lo[i], q[i]); hi3[i] = Math.max(hi3[i], q[i]); } });
+    const z0 = lo[2] - Math.max(0.5, (hi3[2] - lo[2]) * 0.35);
+    const span = Math.max(hi3[0] - lo[0], hi3[1] - lo[1], 1);
+    const stepG = Math.max(1, Math.round(span / 8));
+    const gx0 = Math.floor((lo[0] - stepG) / stepG) * stepG, gx1 = Math.ceil((hi3[0] + stepG) / stepG) * stepG;
+    const gy0 = Math.floor((lo[1] - stepG) / stepG) * stepG, gy1 = Math.ceil((hi3[1] + stepG) / stepG) * stepG;
+
+    // ---- ground grid -----------------------------------------------------
+    const seg = (a, b, col, lw, dash, alpha) => {
+      const A = P(a), B = P(b);
+      push((A[2] + B[2]) / 2 + 1e3, () => {       // +1e3 keeps the ground behind
+        g.setLineDash(dash || []); g.globalAlpha = alpha == null ? 1 : alpha;
+        g.strokeStyle = col; g.lineWidth = lw * dpr; g.lineCap = 'round';
+        g.beginPath(); g.moveTo(A[0], A[1]); g.lineTo(B[0], B[1]); g.stroke();
+        g.setLineDash([]); g.globalAlpha = 1;
+      });
+    };
+    for (let x = gx0; x <= gx1 + 1e-9; x += stepG) seg([x, gy0, z0], [x, gy1, z0], 'rgba(21,24,32,0.16)', 1);
+    for (let y = gy0; y <= gy1 + 1e-9; y += stepG) seg([gx0, y, z0], [gx1, y, z0], 'rgba(21,24,32,0.16)', 1);
+
+    // ---- polylines, split into segments so they sort correctly ------------
+    const poly = (pts, col, lw, dash, shadow) => {
+      for (let i = 1; i < pts.length; i++) {
+        const A = P(pts[i - 1]), B = P(pts[i]);
+        const d = (A[2] + B[2]) / 2;
+        // near segments are drawn a touch heavier: cheap but effective depth cue
+        const t = Math.max(0.35, Math.min(1.4, cam.r / Math.max(d, 0.2)));
+        push(d, () => {
+          g.setLineDash(dash || []); g.strokeStyle = col; g.lineWidth = lw * t * dpr;
+          g.lineCap = 'round';
+          g.beginPath(); g.moveTo(A[0], A[1]); g.lineTo(B[0], B[1]); g.stroke();
+          g.setLineDash([]);
+        });
+      }
+      if (shadow) {                                // the path's shadow on the ground
+        for (let i = 1; i < pts.length; i++) {
+          const a = [pts[i - 1][0], pts[i - 1][1], z0], b = [pts[i][0], pts[i][1], z0];
+          seg(a, b, 'rgba(21,24,32,0.13)', 2.2);
+        }
+      }
+    };
+
+    poly(S.dr, ash, 1.8, [6 * dpr, 4 * dpr]);
+    poly(S.gt, ink, 2.0, null, true);
+    if (S.res) poly(S3.positions(S.res.est), hi, 3.2);
+
+    // ---- drop lines from the truth to the ground, every few steps ---------
+    for (let i = 0; i < S.gt.length; i += Math.max(2, Math.round(S.gt.length / 26))) {
+      const q = S.gt[i];
+      seg(q, [q[0], q[1], z0], 'rgba(21,24,32,0.26)', 1.2, [3 * dpr, 3 * dpr]);
+    }
+
+    // ---- landmarks: a ball, a stalk down to the ground, and a foot --------
+    S.p.land.forEach((l) => {
+      const q = P(l);
+      const foot = P([l[0], l[1], Math.min(l[2], z0)]);
+      push(q[2] + 0.5, () => {                    // stalk sits just behind its ball
+        g.setLineDash([2.5 * dpr, 3 * dpr]);
+        g.strokeStyle = 'rgba(217,161,63,0.32)'; g.lineWidth = 1 * dpr;
+        g.beginPath(); g.moveTo(q[0], q[1]); g.lineTo(foot[0], foot[1]); g.stroke();
+        g.setLineDash([]);
+        g.fillStyle = 'rgba(21,24,32,0.14)';
+        g.beginPath(); g.ellipse(foot[0], foot[1], 3.2 * dpr, 1.5 * dpr, 0, 0, 7); g.fill();
+      });
+      push(q[2], () => {
+        const r = Math.max(1.6, 110 * cam.k / Math.max(q[2], 1)) * dpr;
+        const a = Math.max(0.30, Math.min(1, cam.r * 1.25 / Math.max(q[2], 0.5)));
+        g.globalAlpha = a;
+        const grd = g.createRadialGradient(q[0] - r * 0.3, q[1] - r * 0.3, r * 0.1, q[0], q[1], r);
+        grd.addColorStop(0, '#F3D089'); grd.addColorStop(1, gold);
+        g.fillStyle = grd;
+        g.beginPath(); g.arc(q[0], q[1], r, 0, 7); g.fill();
+        g.strokeStyle = 'rgba(21,24,32,0.55)'; g.lineWidth = 0.9 * dpr; g.stroke();
+        g.globalAlpha = 1;
+      });
     });
 
-    const line = (pts, col, lw, dash) => {
-      g.setLineDash(dash || []); g.strokeStyle = col; g.lineWidth = lw * dpr;
-      g.beginPath();
-      pts.forEach((q, i) => { const s = P(q); i ? g.lineTo(s[0], s[1]) : g.moveTo(s[0], s[1]); });
-      g.stroke(); g.setLineDash([]);
-    };
-    line(S.dr, ash, 1.8, [6 * dpr, 4 * dpr]);
-    if (S.res) line(S3.positions(S.res.est), hi, 4.0);
-    line(S.gt, ink, 1.6);
+    // ---- body triads on the estimate, so orientation is visible ----------
+    if (S.res) {
+      const est = S.res.est;
+      const stepT = Math.max(1, Math.round(est.length / 9));
+      for (let i = 0; i < est.length; i += stepT) {
+        const Ti = S3.inv4rt(est[i]);
+        const o = [Ti[3], Ti[7], Ti[11]];
+        const axes = [[Ti[0], Ti[4], Ti[8]], [Ti[1], Ti[5], Ti[9]], [Ti[2], Ti[6], Ti[10]]];
+        const L = Math.max(0.5, span * 0.055);
+        axes.forEach((ax, c) => {
+          const tip = [o[0] + ax[0] * L, o[1] + ax[1] * L, o[2] + ax[2] * L];
+          const A = P(o), B = P(tip);
+          push((A[2] + B[2]) / 2 - 0.2, () => {
+            g.strokeStyle = ['#E4442A', '#2E9E5B', '#1F6FB2'][c];
+            g.lineWidth = 2.1 * dpr; g.lineCap = 'round';
+            g.beginPath(); g.moveTo(A[0], A[1]); g.lineTo(B[0], B[1]); g.stroke();
+          });
+        });
+      }
+    }
 
     if ($('s3-blackout').checked) {
       const a = Math.round(S.p.T * 0.5), b = Math.round(S.p.T * 0.62);
-      g.strokeStyle = 'rgba(228,68,42,0.3)'; g.lineWidth = 9 * dpr; g.lineCap = 'round';
-      g.beginPath();
-      S.gt.slice(a, b).forEach((q, i) => { const s = P(q); i ? g.lineTo(s[0], s[1]) : g.moveTo(s[0], s[1]); });
-      g.stroke();
+      const sl = S.gt.slice(a, b);
+      for (let i = 1; i < sl.length; i++) {
+        const A = P(sl[i - 1]), B = P(sl[i]);
+        push((A[2] + B[2]) / 2 - 0.5, () => {
+          g.strokeStyle = 'rgba(228,68,42,0.28)'; g.lineWidth = 9 * dpr; g.lineCap = 'round';
+          g.beginPath(); g.moveTo(A[0], A[1]); g.lineTo(B[0], B[1]); g.stroke();
+        });
+      }
     }
 
+    items.sort((a, b) => b[0] - a[0]).forEach(([, fn]) => fn());
+
+    // ---- overlay ---------------------------------------------------------
     g.font = `${11 * dpr}px "Space Mono", monospace`;
     [['estimate', hi], ['ground truth (on top)', ink], ['dead reckoning', ash], ['landmarks', gold]]
       .forEach(([t, c], i) => {
         g.fillStyle = c; g.fillRect(12 * dpr, 12 * dpr + i * 16 * dpr, 14 * dpr, 3 * dpr);
         g.fillStyle = ink; g.fillText(t, 32 * dpr, 17 * dpr + i * 16 * dpr);
       });
+    ['x', 'y', 'z'].forEach((t, i) => {
+      g.fillStyle = ['#E4442A', '#2E9E5B', '#1F6FB2'][i];
+      g.fillText(t, 12 * dpr + i * 14 * dpr, 17 * dpr + 4.6 * 16 * dpr);
+    });
+    g.fillStyle = ash;
+    g.fillText('body axes', 12 * dpr + 46 * dpr, 17 * dpr + 4.6 * 16 * dpr);
     g.fillStyle = ink;
-    g.fillText('drag to orbit', w - 96 * dpr, h - 12 * dpr);
+    g.fillText('drag to orbit · scroll to zoom', w - 210 * dpr, h - 12 * dpr);
   }
 
   function report(w) {
@@ -131,6 +234,11 @@
       `solved in <b>${S.res.ms < 1 ? '<1' : S.res.ms.toFixed(0)} ms</b>` + cons;
   }
 
+  cv.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    S.zoom = Math.max(0.45, Math.min(3.2, S.zoom * (e.deltaY > 0 ? 0.92 : 1.087)));
+    draw();
+  }, { passive: false });
   cv.addEventListener('pointerdown', (e) => { S.drag = [e.clientX, e.clientY]; cv.setPointerCapture(e.pointerId); });
   cv.addEventListener('pointermove', (e) => {
     if (!S.drag) return;

@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SE(3) batch estimation vs a sliding window — Jerry (Qilong) Cheng</title>
-  <meta name="description" content="AER1513 Assignment 3: batch maximum-a-posteriori estimation on SE(3) with a stereo camera and an IMU, against a sliding window. Drag the window size from a Kalman filter to full batch in your browser. Batch is 2-3x more accurate and 9x cheaper than a wide window, and a window looks over-confident only when its noise model is wrong.">
+  <title>AER1513: three ways to not know where you are — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="All three AER1513 state-estimation assignments in full: the 1-D batch/Kalman equivalence, the Lost in the Woods EKF with every Jacobian derived, and batch MAP on SE(3) for Starry Night. With error, uncertainty and 3-D trajectory animations, and two live sandboxes.">
   <meta name="author" content="Jerry Cheng">
   <link rel="canonical" href="https://thejerrycheng.github.io/localization.html">
-  <meta property="og:title" content="Batch vs sliding window — where the estimate comes from">
-  <meta property="og:description" content="One knob separates a Kalman filter from full batch estimation. This page lets you turn it.">
+  <meta property="og:title" content="AER1513: three ways to not know where you are">
+  <meta property="og:description" content="Three state-estimation assignments, derived in full and re-measured: a line, a plane, and SE(3).">
   <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/localization/trajectory.png">
   <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
   <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
@@ -21,6 +21,51 @@
   <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/gotham.css">
   <link rel="stylesheet" href="assets/css/project-page.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (!window.renderMathInElement) return;
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+  <style>
+    .chapter { border-top: var(--line-w) solid var(--ink); padding-top: 26px; }
+    .chap-label { font-family: var(--font-comic); font-size: 14px; letter-spacing: .12em;
+                  text-transform: uppercase; color: var(--hi); margin: 0 0 2px; }
+    .eqn { margin: 14px 0; padding: 4px 2px; overflow-x: auto; overflow-y: hidden; font-size: 15px; }
+    .eqn .katex-display { margin: 0.5em 0; }
+    .katex { font-size: 1.02em; }
+    .prose h3 { font-family: var(--font-display); font-size: 19px; margin: 26px 0 6px; }
+    .prose .checked { font-family: var(--font-mono); font-size: 12px; line-height: 1.7;
+                      background: rgba(46,158,91,0.12); border-left: 3px solid #1B6B3C;
+                      padding: 8px 11px; border-radius: 0 5px 5px 0; }
+    .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 12px; }
+    .toc-card { display: block; background: var(--paper); border: var(--line-w) solid var(--ink);
+                border-radius: var(--radius-sm); box-shadow: var(--sh-xs); padding: 13px 15px 12px;
+                text-decoration: none; color: var(--ink); transition: transform .12s, box-shadow .12s; }
+    .toc-card:hover { transform: translate(-2px,-2px); box-shadow: var(--sh); background: var(--panel-2); }
+    .toc-n { display: inline-block; font-family: var(--font-display); font-size: 22px;
+             color: var(--hi); line-height: 1; margin-bottom: 4px; }
+    .toc-card b { display: block; font-size: 15px; margin-bottom: 3px; }
+    .toc-card small { display: block; font-size: 12px; color: var(--ink-soft); line-height: 1.45; }
+    #s3-canvas, #lc-canvas { height: clamp(400px, 58vh, 660px); cursor: grab; touch-action: none; }
+    #s3-canvas:active { cursor: grabbing; }
+    .cube-block .demo-grid { grid-template-columns: 1.75fr 1fr; }
+    @media (max-width: 1100px) { .cube-block .demo-grid { grid-template-columns: 1fr; } }
+    .lc-out { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; background: var(--paper);
+              border: 1.5px solid var(--ink); border-radius: 6px; padding: 9px 11px; }
+    .lc-check { display: flex; align-items: center; gap: 7px; }
+    .subhead { font-family: var(--font-display); font-size: 21px; }
+  </style>
   <script>document.documentElement.classList.add('js');</script>
   <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
   <style>
@@ -68,43 +113,385 @@
   <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
   <div class="skyline" aria-hidden="true"></div>
   <div class="wrap">
-    <p class="kicker">State estimation ◆ SE(3) batch optimisation ◆ AER1513 with Tim Barfoot ◆ University of Toronto ◆ 2023</p>
-    <h1>Where am I?</h1>
-    <p>A vehicle with an IMU, a stereo camera and a map of landmarks, asking the oldest question in robotics. The answer is a maximum-a-posteriori estimate over every pose at once, on SE(3) — and the only real knob is how many of those poses you are willing to solve for together. One is a Kalman filter. All of them is batch estimation. This is Assignment 3 of AER1513, and below you can drag that knob and watch what it costs.</p>
+    <p class="kicker">AER1513 ◆ State Estimation for Aerospace Vehicles ◆ Prof. Tim Barfoot ◆ University of Toronto</p>
+    <h1>Three ways to not know where you are</h1>
+    <p>A robot on a rail. A robot lost in the woods. A vehicle under a starry night with a stereo camera. Three assignments, three state spaces — a line, a plane, and the Lie group of rigid transforms — and underneath them one estimator, because all three are the same maximum-a-posteriori problem written down carefully and differentiated. This page carries all three: the models, the derivations to the last Jacobian, the estimators re-implemented and measured, and the trajectories, errors and uncertainty bounds animated in 2-D and 3-D.</p>
   </div>
 </header>
 <div class="deco-band" aria-hidden="true"></div>
 
-<section class="section" id="demo">
-  <figure class="fig" style="margin-top:0">
-    <img src="assets/images/projects/localization/se3_trajectory.png" alt="A 6-DoF trajectory through a landmark field, with dead reckoning and two estimates" class="pad">
-    <figcaption><b>Assignment 3.</b> A vehicle on a 6-DoF path through a field of known landmarks, carrying an IMU that measures its body-frame twist and a stereo camera that sees four numbers per landmark. Dead reckoning walks away within seconds; batch estimation sits on the truth.</figcaption>
-  </figure>
-  <div class="hero-caption">
-    <p>The Starry Night dataset: 1,700 timesteps of stereo and IMU data, and the question of how much of the trajectory you are willing to solve for at once.</p>
-    <div class="links">
-      <a href="assets/pdf/projects/AER1513_assignment_3-3.pdf" target="_blank" rel="noopener">Assignment 3 report (PDF)</a>
-      <a href="https://github.com/thejerrycheng/localization-batch-estimation" target="_blank" rel="noopener">Code</a>
-      <a href="#sandbox">Turn the knob</a>
-    </div>
+<section class="section" id="contents">
+  <div class="toc-grid">
+    <a class="toc-card" href="#ch0">
+      <span class="toc-n">0</span><b>One framework</b>
+      <small>MAP, least squares, and why all three are the same solve</small>
+    </a>
+    <a class="toc-card" href="#ch1">
+      <span class="toc-n">1</span><b>The linear case</b>
+      <small>A1 · a robot on a rail · batch = Kalman, exactly</small>
+    </a>
+    <a class="toc-card" href="#ch2">
+      <span class="toc-n">2</span><b>Nonlinear in the plane</b>
+      <small>A2 · Lost in the Woods · the EKF and its Jacobians</small>
+    </a>
+    <a class="toc-card" href="#ch3">
+      <span class="toc-n">3</span><b>On a Lie group</b>
+      <small>A3 · Starry Night · batch MAP on SE(3)</small>
+    </a>
+    <a class="toc-card" href="#ch4">
+      <span class="toc-n">4</span><b>What the three say</b>
+      <small>Measured findings, including where the reports are wrong</small>
+    </a>
+    <a class="toc-card" href="#reproduce">
+      <span class="toc-n">§</span><b>Reproduce</b>
+      <small>The harness, the reports, the code</small>
+    </a>
   </div>
-
-  <div class="stat-row">
-    <div class="card stat-tile"><div class="num">1,700</div><div class="lab">Timesteps</div><div class="sub">Stereo camera + IMU, Starry Night</div></div>
-    <div class="card stat-tile"><div class="num">6<small>DoF</small></div><div class="lab">Pose on SE(3)</div><div class="sub">All of them solved together</div></div>
-    <div class="card stat-tile"><div class="num">4</div><div class="lab">Numbers per landmark</div><div class="sub">u<sub>l</sub>, v<sub>l</sub>, u<sub>r</sub>, v<sub>r</sub> from the stereo rig</div></div>
-    <div class="card stat-tile"><div class="num">2–3<small>×</small></div><div class="lab">Batch's margin</div><div class="sub">Over any sliding window</div></div>
-    <div class="card stat-tile"><div class="num">9<small>×</small></div><div class="lab">And cheaper</div><div class="sub">Than a 20-step window</div></div>
-    <div class="card stat-tile"><div class="num">−7<small>px</small></div><div class="lab">Camera bias</div><div class="sub">v<sub>l</sub>, v<sub>r</sub> are not zero-mean</div></div>
+  <div class="links" style="margin-top:20px">
+    <a href="assets/pdf/projects/AER1513_assignment_2.pdf" target="_blank" rel="noopener">Assignment 2 report (PDF)</a>
+    <a href="assets/pdf/projects/AER1513_assignment_3-3.pdf" target="_blank" rel="noopener">Assignment 3 report (PDF)</a>
+    <a href="https://github.com/thejerrycheng/localization-batch-estimation" target="_blank" rel="noopener">Code</a>
+    <a href="#ch3-sandbox">The 3-D sandbox</a>
   </div>
 </section>
 
-<!-- =================== SANDBOX =================== -->
-<section class="section" id="sandbox">
-  <h2 class="section-title">Turn the knob</h2>
-  <p class="lead">This is the Assignment 3 estimator, running in your browser: SE(3) poses, a stereo camera with the rig's real intrinsics, an IMU twist, and Gauss-Newton with a left perturbation. Every pose in the window is solved for at once. Drag the window from 1 — which is an extended Kalman filter — to the whole trajectory, which is batch estimation.</p>
+<!-- ==================== CHAPTER 0 ==================== -->
+<section class="section chapter" id="ch0">
+  <p class="chap-label">Chapter 0</p>
+  <h2 class="section-title">One framework, three state spaces</h2>
+  <div class="prose" style="max-width:78ch">
+    <p>Every one of these three problems is the same sentence: <em>given everything I measured, what trajectory was I most likely on?</em> Write that down and it becomes an optimisation.</p>
+    <p>Let \(\mathbf{x}\) be the whole trajectory — every pose, stacked — and let \(\mathbf{z}\) be everything measured: the inputs from proprioceptive sensors and the observations of the world. Bayes gives</p>
+    <div class="eqn">$$p(\mathbf{x}\mid\mathbf{z}) \;=\; \frac{p(\mathbf{z}\mid\mathbf{x})\,p(\mathbf{x})}{p(\mathbf{z})} \;\propto\; p(\mathbf{z}\mid\mathbf{x})\,p(\mathbf{x}),$$</div>
+    <p>and the maximum-a-posteriori estimate is the \(\mathbf{x}\) that maximises it. Taking a negative logarithm turns the product into a sum, and if every noise is zero-mean Gaussian the sum is quadratic in a set of <em>error terms</em>:</p>
+    <div class="eqn">$$\hat{\mathbf{x}} \;=\; \arg\min_{\mathbf{x}}\; J(\mathbf{x}), \qquad J(\mathbf{x}) \;=\; \tfrac{1}{2}\,\mathbf{e}(\mathbf{x})^{\mathsf T}\,\mathbf{W}^{-1}\,\mathbf{e}(\mathbf{x}).$$</div>
+    <p>Here \(\mathbf{e}\) stacks one residual per constraint — one per motion step, one per landmark observation, one for the prior — and \(\mathbf{W}\) is block-diagonal, holding the covariance of each. That single expression is the whole course.</p>
 
-  <div class="card scene-block">
+    <h3>Solving it</h3>
+    <p>If \(\mathbf{e}\) is linear in \(\mathbf{x}\), so that \(\mathbf{e}(\mathbf{x}) = \mathbf{z} - \mathbf{H}\mathbf{x}\), then \(J\) is exactly quadratic and setting \(\partial J/\partial\mathbf{x} = \mathbf{0}\) gives the answer in one step:</p>
+    <div class="eqn">$$\big(\mathbf{H}^{\mathsf T}\mathbf{W}^{-1}\mathbf{H}\big)\,\hat{\mathbf{x}} \;=\; \mathbf{H}^{\mathsf T}\mathbf{W}^{-1}\mathbf{z}, \qquad \hat{\mathbf{P}} = \big(\mathbf{H}^{\mathsf T}\mathbf{W}^{-1}\mathbf{H}\big)^{-1}.$$</div>
+    <p>That is Chapter 1, and nothing is approximate about it.</p>
+    <p>If \(\mathbf{e}\) is nonlinear, linearise about an operating point \(\mathbf{x}_{\mathrm{op}}\), writing \(\mathbf{e}(\mathbf{x}) \approx \mathbf{e}(\mathbf{x}_{\mathrm{op}}) - \mathbf{H}\,\delta\mathbf{x}\), and iterate:</p>
+    <div class="eqn">$$\underbrace{\big(\mathbf{H}^{\mathsf T}\mathbf{W}^{-1}\mathbf{H}\big)}_{\mathbf{A}}\,\delta\mathbf{x}^\star \;=\; \underbrace{\mathbf{H}^{\mathsf T}\mathbf{W}^{-1}\mathbf{e}(\mathbf{x}_{\mathrm{op}})}_{\mathbf{b}}, \qquad \mathbf{x}_{\mathrm{op}} \leftarrow \mathbf{x}_{\mathrm{op}} \boxplus \delta\mathbf{x}^\star.$$</div>
+    <p>This is Gauss–Newton, and the only thing that changes between Chapters 2 and 3 is what \(\boxplus\) means. In a vector space it is addition. On a Lie group it is <em>not</em> — and that single fact is what makes Assignment 3 a different problem rather than a bigger one.</p>
+
+    <h3>Filters are this, restricted</h3>
+    <p>A filter is the same objective solved under a constraint: only the newest pose may move, and everything older is summarised by a prior. That makes it cheap and recursive, and it is why a filter can never use a measurement to improve a pose it has already committed to. A sliding window of \(N\) poses interpolates between the two, and \(N\) is the knob in both sandboxes below.</p>
+  </div>
+
+  <div class="table-wrap" style="margin-top:20px">
+    <table class="data-table">
+      <thead><tr><th>Assignment</th><th>State</th><th>Lives on</th><th>Motion</th><th>Measurement</th><th>Estimator</th></tr></thead>
+      <tbody>
+        <tr><td><b>1</b> · the rail</td><td>\(x_k\)</td><td>\(\mathbb{R}\)</td><td>linear</td><td>linear</td><td>batch = Kalman, exact</td></tr>
+        <tr><td><b>2</b> · Lost in the Woods</td><td>\((x,y,\theta)\)</td><td>\(\mathbb{R}^3\)</td><td>nonlinear</td><td>range &amp; bearing</td><td>EKF</td></tr>
+        <tr><td><b>3</b> · Starry Night</td><td>\(\mathbf{T}_k\)</td><td>\(SE(3)\)</td><td>nonlinear, on a group</td><td>stereo, 4 px per landmark</td><td>batch Gauss–Newton</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="plot-note">The course datasets are not redistributed. Everything below is re-implemented from the models and run on data generated from those same models, with the noise covariances quoted in the reports — so every number here is reproducible from the repository alone.</p>
+</section>
+
+<!-- ==================== CHAPTER 1 ==================== -->
+<section class="section chapter" id="ch1">
+  <p class="chap-label">Chapter 1 · Assignment 1</p>
+  <h2 class="section-title">The linear case, where everything is exact</h2>
+  <p class="lead">A robot runs along a rail. Wheel odometry says how fast it is going; a laser rangefinder measures the distance to a wall at the end. Both models are linear and both noises are Gaussian, so the posterior is <em>exactly</em> Gaussian, one linear solve is the answer, and there is no linearisation error anywhere. It is the only one of the three where that is true, which is precisely why it is worth doing first: everything that goes wrong in Chapters 2 and 3 goes wrong because this case is no longer available.</p>
+
+  <div class="hero-video" style="margin-top:22px">
+    <video controls autoplay loop muted playsinline preload="metadata">
+      <source src="assets/videos/aer1513_a1.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p>The rail, replayed. Grey is dead reckoning — integrating the odometry and nothing else, which drifts without bound. Red is the Kalman filter. The band underneath is its own ±3σ, and the dotted lines are what the batch solve claims over the same interval.</p>
+  </div>
+
+  <div class="grid-2" style="margin-top:26px">
+    <div class="prose">
+      <h3>1.1 The models</h3>
+      <p>With sampling period \(T\), input speed \(v_k\), process noise \(w_k\) and measurement noise \(n_k\),</p>
+      <div class="eqn">$$\begin{aligned} x_k &= x_{k-1} + T\,v_k + w_k, &\quad w_k &\sim \mathcal{N}(0,\sigma_w^2),\\ y_k &= x_k + n_k, &\quad n_k &\sim \mathcal{N}(0,\sigma_n^2). \end{aligned}$$</div>
+      <p>Both are affine in the state, which is the whole point.</p>
+
+      <h3>1.2 The batch problem</h3>
+      <p>Collect every unknown into one vector, \(\mathbf{x} = [\,x_0\;x_1\;\cdots\;x_K\,]^{\mathsf T}\), and write one residual per constraint. There are three kinds — a prior on where we started, one per motion step, and one per measurement actually taken:</p>
+      <div class="eqn">$$e_{\text{prior}} = \check{x}_0 - x_0,\qquad e_{v,k} = \big(x_k - x_{k-1}\big) - T v_k,\qquad e_{y,k} = y_k - x_k.$$</div>
+      <p>Stacking them gives \(\mathbf{e}(\mathbf{x}) = \mathbf{z} - \mathbf{H}\mathbf{x}\) with</p>
+      <div class="eqn">$$\mathbf{H} = \begin{bmatrix} 1 & & & \\ -1 & 1 & & \\ & \ddots & \ddots & \\ & & -1 & 1 \\ \hline 1 & & & \\ & 1 & & \\ & & \ddots & \\ & & & 1 \end{bmatrix},\qquad \mathbf{W} = \operatorname{diag}\big(\check{P}_0,\; \sigma_w^2 \mathbf{I},\; \sigma_n^2 \mathbf{I}\big),$$</div>
+      <p>the upper block being the motion constraints and the lower the measurements. The estimate and its covariance follow immediately:</p>
+      <div class="eqn">$$\hat{\mathbf{x}} = \big(\mathbf{H}^{\mathsf T}\mathbf{W}^{-1}\mathbf{H}\big)^{-1}\mathbf{H}^{\mathsf T}\mathbf{W}^{-1}\mathbf{z}, \qquad \hat{\mathbf{P}} = \big(\mathbf{H}^{\mathsf T}\mathbf{W}^{-1}\mathbf{H}\big)^{-1}.$$</div>
+
+      <h3>1.3 The Kalman filter is this, done forwards</h3>
+      <p>The same system solved recursively gives the familiar two steps — predict, then correct:</p>
+      <div class="eqn">$$\begin{aligned} \check{x}_k &= \hat{x}_{k-1} + T v_k, &\check{P}_k &= \hat{P}_{k-1} + \sigma_w^2,\\ K_k &= \frac{\check{P}_k}{\check{P}_k + \sigma_n^2}, & &\\ \hat{x}_k &= \check{x}_k + K_k\big(y_k - \check{x}_k\big), &\hat{P}_k &= (1-K_k)\,\check{P}_k. \end{aligned}$$</div>
+      <p>These are not two different algorithms. The filter is a forward elimination on the same block-tridiagonal system the batch solve inverts all at once — which has a sharp, checkable consequence.</p>
+    </div>
+    <div>
+      <div class="card finding" style="margin-top:0">
+        <div class="no">1</div>
+        <h3>Batch and the filter agree at the last step, to machine precision</h3>
+        <p>The filtered estimate at time \(k\) conditions on measurements up to \(k\). The batch estimate at time \(k\) conditions on <em>all</em> of them, including the future — it is a smoother. At the final step there is no future left, so the two must coincide exactly.</p>
+        <p>Measured over a 400-step run: <b>\(|\hat{x}^{\text{batch}}_K - \hat{x}^{\text{KF}}_K| = 1.1\times10^{-14}\) m</b>, which is arithmetic noise, while the mean discrepancy over all other steps is <b>0.014 m</b> — three orders of magnitude larger, and not an error but the value of hindsight.</p>
+        <p style="margin-bottom:0">RMSE over the whole run: batch <b>0.0223 m</b>, Kalman <b>0.0268 m</b>, dead reckoning <b>0.1688 m</b>. Smoothing buys 17 % over filtering; both buy a factor of seven over integrating the odometry.</p>
+      </div>
+      <figure class="fig">
+        <img src="assets/images/projects/aer1513/a1_batch_vs_kf.png" alt="Three panels comparing batch and Kalman estimates on the rail problem.">
+        <figcaption><b>(a)</b> The rail. <b>(b)</b> Error against each estimator's own ±3σ: the filter's envelope is wide early and only closes at the end, while the batch envelope is uniformly tight because every state is informed from both directions. <b>(c)</b> The difference between them on a log scale, collapsing to \(10^{-14}\) at the final step.</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:26px">
+    <div>
+      <figure class="fig" style="margin-top:0">
+        <img src="assets/images/projects/aer1513/a1_sparsity.png" alt="Sparsity pattern of A and the cost of using fewer measurements.">
+        <figcaption><b>(a)</b> \(\mathbf{A} = \mathbf{H}^{\mathsf T}\mathbf{W}^{-1}\mathbf{H}\) is block tridiagonal — <b>0.75 % nonzero</b> at \(K=400\) — because the motion model only ever couples neighbours in time. <b>(b)</b> Thinning the measurements: the actual error and the 3σ the estimator reports rise together, which is the estimator correctly knowing that it knows less.</figcaption>
+      </figure>
+    </div>
+    <div class="prose">
+      <h3>1.4 Why the sparsity matters</h3>
+      <p>\(\mathbf{A}\) is block tridiagonal because \(e_{v,k}\) touches only \(x_{k-1}\) and \(x_k\), and \(e_{y,k}\) touches only \(x_k\). Nothing in the problem couples step 3 to step 300 directly. A dense solve of a \(K\times K\) system costs \(O(K^3)\); exploiting the band structure costs \(O(K)\), which is what makes batch estimation tractable at all for long trajectories — and it is exactly the structure the Kalman filter walks through one row at a time.</p>
+      <p>This is the point in the course where "batch is too expensive, so we filter" stops being true. Batch is not expensive. It is \(O(K)\) if you respect the sparsity, and it is a <em>better estimate</em>.</p>
+      <h3>1.5 Fewer measurements</h3>
+      <p>Keeping every \(n\)-th rangefinder reading and re-solving:</p>
+      <div class="table-wrap">
+        <table class="data-table compact">
+          <thead><tr><th>Measurements</th><th>RMSE [m]</th><th>mean 3σ [m]</th></tr></thead>
+          <tbody>
+            <tr><td>400 (all)</td><td>0.0223</td><td>0.0663</td></tr>
+            <tr><td>80</td><td>0.0326</td><td>0.1018</td></tr>
+            <tr><td>20</td><td>0.0636</td><td>0.1534</td></tr>
+            <tr><td>8</td><td>0.0570</td><td>0.2167</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The reported bound grows faster than the actual error, so the estimator becomes conservative rather than wrong — the correct failure direction, and one worth contrasting with what happens on \(SE(3)\) in Chapter 3.</p>
+    </div>
+  </div>
+
+  <p class="plot-note"><b>A note on this chapter.</b> The Assignment 1 report is the one submission I no longer have a copy of, so this chapter is reconstructed from the problem statement rather than transcribed from my own write-up the way Chapters 2 and 3 are. The models, the derivations and every number above come from the re-implementation in <code>scripts/tools/aer1513_core.py</code>; nothing here is quoted from a document I cannot show you.</p>
+</section>
+
+<!-- ==================== CHAPTER 2 ==================== -->
+<section class="section chapter" id="ch2">
+  <p class="chap-label">Chapter 2 · Assignment 2</p>
+  <h2 class="section-title">Lost in the Woods: nonlinear, in the plane</h2>
+  <p class="lead">A wheeled robot drives among a scatter of surveyed tree trunks with a laser rangefinder mounted a distance \(d\) ahead of its centre, measuring range and bearing to whichever trunks are within \(r_{\max}\). Three states, two measurements per landmark, and a variable number of landmarks per timestep. Nothing here lives on a manifold — the state is an ordinary vector — but both models are nonlinear, so the exactness of Chapter 1 is gone and every Jacobian has to be derived.</p>
+
+  <div class="hero-video" style="margin-top:22px">
+    <video controls autoplay loop muted playsinline preload="metadata">
+      <source src="assets/videos/aer1513_a2.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p>Assignment 2, Question 5, to the letter: black dots are the true landmark positions, blue is the true pose, red is the EKF estimate, the red curve around it is the 3σ ellipse from the top-left 2×2 block of \(\hat{\mathbf{P}}_k\), and the green rays are the range–bearing measurements actually being used at that instant. Grey is dead reckoning, drifting away from the first second onward.</p>
+  </div>
+
+  <div class="grid-2" style="margin-top:26px">
+    <div class="prose">
+      <h3>2.1 The motion model</h3>
+      <p>The robot is a unicycle. With translational and rotational speed \(v_k,\omega_k\) and process noise \(\mathbf{w}_k = [w_{v,k}\;\; w_{\omega,k}]^{\mathsf T}\),</p>
+      <div class="eqn">$$\begin{bmatrix} x_k\\ y_k\\ \theta_k\end{bmatrix} = \begin{bmatrix} x_{k-1}\\ y_{k-1}\\ \theta_{k-1}\end{bmatrix} + T \begin{bmatrix} \cos\theta_{k-1} & 0\\ \sin\theta_{k-1} & 0\\ 0 & 1\end{bmatrix} \left( \begin{bmatrix} v_k\\ \omega_k\end{bmatrix} + \mathbf{w}_k \right).$$</div>
+      <p>Note where the noise enters: <em>through the input</em>, not added to the state. That matters, because it means the effective process covariance depends on how fast the robot is going.</p>
+
+      <h3>2.2 The measurement model</h3>
+      <p>For landmark \(\ell\) at \((x_\ell, y_\ell)\), with the rangefinder offset \(d\) along the body \(x\)-axis,</p>
+      <div class="eqn">$$\begin{bmatrix} r^\ell_k\\ \phi^\ell_k\end{bmatrix} = \begin{bmatrix} \sqrt{(x_\ell - x_k - d\cos\theta_k)^2 + (y_\ell - y_k - d\sin\theta_k)^2}\\[2pt] \operatorname{atan2}\big(y_\ell - y_k - d\sin\theta_k,\; x_\ell - x_k - d\cos\theta_k\big) - \theta_k \end{bmatrix} + \mathbf{n}^\ell_k.$$</div>
+      <p>The offset \(d\) is not cosmetic. If the sensor sat at the robot's centre, the <em>range</em> would be independent of heading and \(\partial r/\partial\theta\) would vanish; heading would then be observable only through the bearing. Moving the sensor forward couples \(\theta\) into the range as well.</p>
+
+      <h3>2.3 The covariances</h3>
+      <p>From the dataset, and used unmodified:</p>
+      <div class="eqn">$$\mathbf{Q}_k = \begin{bmatrix}\sigma_v^2 & 0\\ 0 & \sigma_\omega^2\end{bmatrix} = \begin{bmatrix}0.0044 & 0\\ 0 & 0.0082\end{bmatrix},\qquad \mathbf{R}^\ell_k = \begin{bmatrix}\sigma_r^2 & 0\\ 0 & \sigma_\phi^2\end{bmatrix} = \begin{bmatrix}9.0036\times10^{-4} & 0\\ 0 & 6.7143\times10^{-4}\end{bmatrix}.$$</div>
+
+      <h3>2.4 The Jacobians</h3>
+      <p>The EKF needs the derivative of the motion model with respect to the state, evaluated at the previous estimate:</p>
+      <div class="eqn">$$\mathbf{F}_{k-1} = \left.\frac{\partial \mathbf{f}}{\partial \mathbf{x}_{k-1}}\right|_{\hat{\mathbf{x}}_{k-1},\,\mathbf{v}_k,\,\mathbf{0}} = \begin{bmatrix} 1 & 0 & -T v_k \sin\theta_{k-1}\\ 0 & 1 & \;\;\,T v_k \cos\theta_{k-1}\\ 0 & 0 & 1 \end{bmatrix},$$</div>
+      <p>and with respect to the noise, which is where the input-dependence shows up:</p>
+      <div class="eqn">$$\mathbf{W}_k = \frac{\partial \mathbf{f}}{\partial \mathbf{w}_k} = T\begin{bmatrix}\cos\theta_{k-1} & 0\\ \sin\theta_{k-1} & 0\\ 0 & 1\end{bmatrix} \;\Longrightarrow\; \mathbf{Q}'_k = \mathbf{W}_k \mathbf{Q}_k \mathbf{W}_k^{\mathsf T} = T^2\!\begin{bmatrix} \sigma_v^2 c^2 & \sigma_v^2 cs & 0\\ \sigma_v^2 cs & \sigma_v^2 s^2 & 0\\ 0 & 0 & \sigma_\omega^2\end{bmatrix}$$</div>
+      <p>writing \(c=\cos\theta_{k-1}\), \(s=\sin\theta_{k-1}\). The \(2\times2\) translational block is rank one: the odometry uncertainty is a cigar pointing <em>along the direction of travel</em>, not a circle. A robot that has driven in a straight line is far less sure how far it has gone than how far it has strayed sideways, and this term is why.</p>
+    </div>
+    <div>
+      <div class="prose">
+        <h3>2.5 The observation Jacobian</h3>
+        <p>Abbreviate \(\Delta x = x_\ell - x_k - d\cos\theta_k\), \(\Delta y = y_\ell - y_k - d\sin\theta_k\), \(r = \sqrt{\Delta x^2 + \Delta y^2}\). Differentiating the range,</p>
+        <div class="eqn">$$\frac{\partial r}{\partial x_k} = -\frac{\Delta x}{r},\qquad \frac{\partial r}{\partial y_k} = -\frac{\Delta y}{r},\qquad \frac{\partial r}{\partial \theta_k} = \frac{d\,(\Delta x \sin\theta_k - \Delta y\cos\theta_k)}{r},$$</div>
+        <p>and the bearing,</p>
+        <div class="eqn">$$\frac{\partial \phi}{\partial x_k} = \frac{\Delta y}{r^2},\qquad \frac{\partial \phi}{\partial y_k} = -\frac{\Delta x}{r^2},\qquad \frac{\partial \phi}{\partial \theta_k} = -1 - \frac{d\,(\Delta y\cos\theta_k + \Delta x \sin\theta_k)}{r^2},$$</div>
+        <p>so that</p>
+        <div class="eqn">$$\mathbf{G}^\ell_k = \begin{bmatrix} \partial r/\partial x_k & \partial r/\partial y_k & \partial r/\partial\theta_k\\ \partial \phi/\partial x_k & \partial \phi/\partial y_k & \partial \phi/\partial\theta_k \end{bmatrix} \in \mathbb{R}^{2\times3}.$$</div>
+        <p>Both \(d\)-terms vanish as \(d\to0\), and the \(-1\) in \(\partial\phi/\partial\theta_k\) survives — the bearing is measured <em>relative to the body</em>, so turning the robot changes it one-for-one even if nothing moves.</p>
+
+        <h3>2.6 A variable number of measurements</h3>
+        <p>At each step only the landmarks with \(0 &lt; r^\ell_k &lt; r_{\max}\) are used, and that count changes every step. Rather than looping the update once per landmark, stack them — it is the same posterior and it is one matrix inverse instead of \(M\):</p>
+        <div class="eqn">$$\mathbf{G}_k = \begin{bmatrix}\mathbf{G}^{\ell_1}_k\\ \vdots\\ \mathbf{G}^{\ell_M}_k\end{bmatrix}\in\mathbb{R}^{2M\times3},\qquad \mathbf{R}_k = \operatorname{diag}\big(\mathbf{R}^{\ell_1}_k,\dots,\mathbf{R}^{\ell_M}_k\big),$$</div>
+        <div class="eqn">$$\begin{aligned} \check{\mathbf{x}}_k &= \mathbf{f}(\hat{\mathbf{x}}_{k-1},\mathbf{v}_k,\mathbf{0}), &\check{\mathbf{P}}_k &= \mathbf{F}_{k-1}\hat{\mathbf{P}}_{k-1}\mathbf{F}_{k-1}^{\mathsf T} + \mathbf{Q}'_k,\\ \mathbf{K}_k &= \check{\mathbf{P}}_k\mathbf{G}_k^{\mathsf T}\big(\mathbf{G}_k\check{\mathbf{P}}_k\mathbf{G}_k^{\mathsf T} + \mathbf{R}_k\big)^{-1}, & &\\ \hat{\mathbf{x}}_k &= \check{\mathbf{x}}_k + \mathbf{K}_k\,\mathbf{e}_k, &\hat{\mathbf{P}}_k &= \big(\mathbf{I} - \mathbf{K}_k\mathbf{G}_k\big)\check{\mathbf{P}}_k, \end{aligned}$$</div>
+        <p>with the innovation \(\mathbf{e}_k\) stacking \(\big[r^\ell_k - \check{r}^\ell,\;\; \mathrm{wrap}(\phi^\ell_k - \check{\phi}^\ell)\big]\). If no landmark is in range, \(\mathbf{G}_k\) is empty, the update is skipped, and the covariance simply grows.</p>
+        <p>The angle wrap is not a detail. An innovation of \(+2\pi - \varepsilon\) and one of \(-\varepsilon\) are the same measurement; feed the first to a linear update and it will violently correct a pose that was already right.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="subhead" style="margin-top:30px">2.7 Results</h3>
+  <div class="grid-2">
+    <figure class="fig" style="margin-top:0">
+      <img src="assets/images/projects/aer1513/a2_error_3sigma.png" alt="Nine panels: x, y and theta error with 3-sigma bounds at three sensor ranges.">
+      <figcaption><b>Error against ±3σ, for three sensing ranges.</b> Cutting \(r_{\max}\) from 5 m to 1 m takes the robot from 7.9 landmarks per step to 0.43 — it spends most of its time seeing nothing — and the RMSE goes <b>0.0090 → 0.0141 → 0.0911 m</b>. The envelope visibly breathes: it fans out between sightings and snaps shut the moment a trunk comes into range.</figcaption>
+    </figure>
+    <figure class="fig" style="margin-top:0">
+      <img src="assets/images/projects/aer1513/a2_trajectory.png" alt="Plan view of the trajectory with landmarks and 3-sigma ellipses.">
+      <figcaption><b>The plan view at \(r_{\max}=3\) m.</b> Dead reckoning (grey) leaves almost immediately; the EKF stays on the truth. The ellipses are 3σ every 4.5 s and are small enough at this range that they barely read at map scale — which is the honest picture, and why the video below magnifies them.</figcaption>
+    </figure>
+  </div>
+
+  <div class="hero-video" style="margin-top:26px">
+    <video controls autoplay loop muted playsinline preload="metadata">
+      <source src="assets/videos/aer1513_a2_uncertainty.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p><b>The uncertainty bound, in two dimensions.</b> Starved deliberately at \(r_{\max} = 1\) m. Left: the 3σ ellipse at true scale (solid) and magnified ×8 (dashed) so its shape is legible — it is an ellipse, not a circle, and it is elongated along the direction of travel exactly as \(\mathbf{Q}'_k\) predicts. Right: the three error channels filling in against ±3σ. Watch the heading envelope fan open during the long gaps and collapse the instant a landmark is seen.</p>
+  </div>
+
+  <div class="grid-2" style="margin-top:26px">
+    <figure class="fig" style="margin-top:0">
+      <img src="assets/images/projects/aer1513/a2_initial_and_crlb.png" alt="Convergence from bad initial conditions, and the CRLB comparison.">
+      <figcaption><b>(a)</b> Starting the filter at \((1,1,0.1)\), \((10,10,10)\) and \((9999,9999,9999)\) instead of the truth. <b>(b)</b> The EKF against the Cramér–Rao version, which evaluates every Jacobian at the true state.</figcaption>
+    </figure>
+    <div>
+      <div class="card finding" style="margin-top:0">
+        <div class="no">2</div>
+        <h3>It forgets a bad start in about two seconds</h3>
+        <p>From \((1,1,0.1)\) the filter is inside 0.1 m after <b>2 steps</b>. From \((10,10,10)\) — ten metres and ten radians out — it takes <b>24 steps, 2.4 s</b>. From \((9999,9999,9999)\), absurd by construction, it also takes <b>24 steps</b>: the recovery time is set by how long until enough landmarks have been seen, not by how wrong the start was.</p>
+        <p style="margin-bottom:0">That is a property of the <em>measurements</em>, not of the filter. Range and bearing to two known landmarks determine the pose outright, so the first well-conditioned update effectively re-initialises the estimator regardless of what it believed a moment earlier.</p>
+      </div>
+      <div class="card finding" style="margin-top:22px">
+        <div class="no">3</div>
+        <h3>The Cramér–Rao version is not measurably better — which is the interesting part</h3>
+        <p>The report argues that evaluating the Jacobians at the true state "often provides more accurate state estimates", being the best a linearised filter could do. Measured on a 900-step run, it does not:</p>
+        <div class="table-wrap">
+          <table class="data-table compact">
+            <thead><tr><th>\(r_{\max}\)</th><th>EKF (Jacobians at \(\hat{\mathbf{x}}\))</th><th>CRLB (Jacobians at \(\mathbf{x}\))</th></tr></thead>
+            <tbody>
+              <tr><td>1 m</td><td>0.1103 m</td><td>0.1111 m</td></tr>
+              <tr><td>3 m</td><td>0.0576 m</td><td>0.0618 m</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-bottom:0">The two are within noise of each other, and at \(r_{\max}=3\) the "ideal" linearisation is very slightly <em>worse</em>. Both are legitimate: the CRLB filter is not an optimal estimator, only a differently-linearised one, and it is only a bound in the sense of the covariance it computes, not the error it achieves. The real lesson is that on this problem the estimate stays close enough to the truth that \(\mathbf{F}\) and \(\mathbf{G}\) barely notice which point they were evaluated at — linearisation error is simply not the binding constraint here. It is in Chapter 3.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CHAPTER 3 ==================== -->
+<section class="section chapter" id="ch3">
+  <p class="chap-label">Chapter 3 · Assignment 3</p>
+  <h2 class="section-title">Starry Night: batch estimation on a Lie group</h2>
+  <p class="lead">A vehicle carrying an IMU and a rectified stereo pair moves through a field of surveyed landmarks. The state is now a sequence of rigid transforms — six degrees of freedom each — and they do not live in a vector space. You cannot add a correction to a rotation matrix and expect a rotation matrix back. Everything in this chapter follows from taking that seriously.</p>
+
+  <div class="hero-video" style="margin-top:22px">
+    <video controls autoplay loop muted playsinline preload="metadata">
+      <source src="assets/videos/aer1513_a3.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p>The estimated trajectory as it is built. Gold spheres are landmarks; green rays are the stereo observations actually available at that instant; the red, green and blue sticks are the vehicle's own \(x\), \(y\), \(z\) axes, so you can see the orientation as well as the position. Grey dashed is dead reckoning on the IMU alone.</p>
+  </div>
+
+  <div class="grid-2" style="margin-top:26px">
+    <div class="prose">
+      <h3>3.1 The group, in one page</h3>
+      <p>A pose is \(\mathbf{T}\in SE(3)\), a \(4\times4\) matrix built from a rotation and a translation. The tangent space at the identity is \(\mathfrak{se}(3)\cong\mathbb{R}^6\); an element \(\boldsymbol{\xi} = [\boldsymbol{\rho}^{\mathsf T}\;\;\boldsymbol{\phi}^{\mathsf T}]^{\mathsf T}\) maps into the group by</p>
+      <div class="eqn">$$\boldsymbol{\xi}^{\wedge} = \begin{bmatrix}\boldsymbol{\phi}^{\wedge} & \boldsymbol{\rho}\\ \mathbf{0}^{\mathsf T} & 0\end{bmatrix},\qquad \mathbf{T} = \exp(\boldsymbol{\xi}^{\wedge}) = \begin{bmatrix}\mathbf{C} & \mathbf{J}\boldsymbol{\rho}\\ \mathbf{0}^{\mathsf T} & 1\end{bmatrix},$$</div>
+      <p>with \(\mathbf{C} = \exp(\boldsymbol{\phi}^\wedge)\) given by Rodrigues' formula and \(\mathbf{J}\) the left Jacobian of \(SO(3)\),</p>
+      <div class="eqn">$$\mathbf{J} = \frac{\sin\varphi}{\varphi}\mathbf{I} + \Big(1-\frac{\sin\varphi}{\varphi}\Big)\mathbf{a}\mathbf{a}^{\mathsf T} + \frac{1-\cos\varphi}{\varphi}\mathbf{a}^{\wedge}, \qquad \varphi = \|\boldsymbol{\phi}\|,\;\; \mathbf{a} = \boldsymbol{\phi}/\varphi.$$</div>
+      <p>Two operators do all the work. The <b>adjoint</b> moves a perturbation through a transform,</p>
+      <div class="eqn">$$\mathbf{T}\exp(\boldsymbol{\xi}^\wedge) = \exp\big((\operatorname{Ad}(\mathbf{T})\boldsymbol{\xi})^\wedge\big)\,\mathbf{T}, \qquad \operatorname{Ad}(\mathbf{T}) = \begin{bmatrix}\mathbf{C} & \mathbf{r}^{\wedge}\mathbf{C}\\ \mathbf{0} & \mathbf{C}\end{bmatrix},$$</div>
+      <p>and the <b>circle-dot</b> turns "perturbation acting on a point" into "matrix times perturbation",</p>
+      <div class="eqn">$$\boldsymbol{\xi}^{\wedge}\mathbf{p} = \mathbf{p}^{\odot}\boldsymbol{\xi}, \qquad \mathbf{p} = \begin{bmatrix}\boldsymbol{\epsilon}\\ \eta\end{bmatrix} \;\Longrightarrow\; \mathbf{p}^{\odot} = \begin{bmatrix}\eta\mathbf{I} & -\boldsymbol{\epsilon}^{\wedge}\\ \mathbf{0}^{\mathsf T} & \mathbf{0}^{\mathsf T}\end{bmatrix}.$$</div>
+      <p class="checked">Both identities are verified numerically in the harness to \(1.1\times10^{-16}\), and \(\ln(\exp(\boldsymbol{\xi}^\wedge))^\vee = \boldsymbol{\xi}\) to \(5\times10^{-14}\) inside the principal branch \(\|\boldsymbol{\phi}\|&lt;\pi\).</p>
+
+      <h3>3.2 The models</h3>
+      <p>The IMU measures the body-frame twist \(\boldsymbol{\varpi}_k = [\boldsymbol{\nu}^{\mathsf T}\;\;\boldsymbol{\omega}^{\mathsf T}]^{\mathsf T}\), and the motion model is a group product, not a sum:</p>
+      <div class="eqn">$$\mathbf{T}_k = \boldsymbol{\Xi}_k\,\mathbf{T}_{k-1},\qquad \boldsymbol{\Xi}_k = \exp\big(\Delta t_k\,\boldsymbol{\varpi}_k^{\wedge}\big).$$</div>
+      <p>The stereo camera observes landmark \(j\) as four pixel coordinates,</p>
+      <div class="eqn">$$\mathbf{y}^j_k = \frac{1}{z}\,\mathbf{M}\,\mathbf{T}_{cv}\,\mathbf{T}_k\,\mathbf{p}^{p_j,i}_i, \qquad \mathbf{M} = \begin{bmatrix} f_u & 0 & c_u & 0\\ 0 & f_v & c_v & 0\\ f_u & 0 & c_u & -f_u b\\ 0 & f_v & c_v & 0 \end{bmatrix},$$</div>
+      <p>the four rows being \(u_\ell, v_\ell, u_r, v_r\). The baseline \(b\) enters only the third row — the left and right images differ by exactly the disparity, which is what makes depth observable from a single frame.</p>
+    </div>
+    <div class="prose">
+      <h3>3.3 The error terms</h3>
+      <p>On a group you cannot subtract poses. The motion residual is the <em>logarithm of the discrepancy transform</em>:</p>
+      <div class="eqn">$$\mathbf{e}_{v,k}(\mathbf{x}) = \begin{cases} \ln\!\big(\check{\mathbf{T}}_{k_1}\mathbf{T}_{k_1}^{-1}\big)^{\vee}, & k = k_1,\\[4pt] \ln\!\big(\boldsymbol{\Xi}_k\mathbf{T}_{k-1}\mathbf{T}_k^{-1}\big)^{\vee}, & k = k_1{+}1,\dots,k_2, \end{cases}$$</div>
+      <p>and the measurement residual is an ordinary difference, because pixels <em>are</em> a vector space:</p>
+      <div class="eqn">$$\mathbf{e}^j_{y,k}(\mathbf{x}) = \mathbf{y}^j_k - \mathbf{g}\big(\mathbf{D}^{\mathsf T}\mathbf{T}_{cv}\mathbf{T}_k\mathbf{p}^{p_j,i}_i\big),\qquad \mathbf{D}^{\mathsf T} = \begin{bmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\end{bmatrix}.$$</div>
+      <p>Writing \(\mathbf{T}_k = \exp(\delta\boldsymbol{\xi}^\wedge_k)\check{\mathbf{T}}_k\) shows the first term is \(-\delta\boldsymbol{\xi}_{k_1}\), so \(\mathbf{e}_{v,k_1}\sim\mathcal{N}(\mathbf{0},\check{\mathbf{P}}_{k_1})\) and every residual is zero-mean Gaussian in the tangent space. The objective is then the usual one:</p>
+      <div class="eqn">$$J(\mathbf{x}) = \tfrac12\,\mathbf{e}(\mathbf{x})^{\mathsf T}\mathbf{W}^{-1}\mathbf{e}(\mathbf{x}), \quad \mathbf{W} = \operatorname{diag}\big(\check{\mathbf{P}}_{k_1},\mathbf{Q}_{k_1+1},\dots,\mathbf{Q}_{k_2},\mathbf{R}_{k_1},\dots,\mathbf{R}_{k_2}\big).$$</div>
+
+      <h3>3.4 Linearising — on the left</h3>
+      <p>Perturb the operating point on the <em>left</em>, \(\mathbf{T}_k = \exp(\boldsymbol{\epsilon}^{\wedge}_k)\mathbf{T}_{\mathrm{op},k}\). For the motion term, using the adjoint identity and \(\exp(\mathbf{a})\exp(\mathbf{b})\approx\exp(\mathbf{a}+\mathbf{b})\) to first order,</p>
+      <div class="eqn">$$\mathbf{e}_{v,k}(\mathbf{x}) \approx \mathbf{e}_{v,k}(\mathbf{x}_{\mathrm{op}}) + \underbrace{\operatorname{Ad}\!\big(\mathbf{T}_{\mathrm{op},k}\mathbf{T}_{\mathrm{op},k-1}^{-1}\big)}_{\displaystyle \mathbf{F}_{k-1}}\boldsymbol{\epsilon}_{k-1} \;-\; \boldsymbol{\epsilon}_k.$$</div>
+      <p>The state-transition Jacobian <em>is</em> an adjoint. For the measurement term, expanding \(\exp(\boldsymbol{\epsilon}^\wedge)\approx\mathbf{I}+\boldsymbol{\epsilon}^\wedge\) and applying the circle-dot,</p>
+      <div class="eqn">$$\mathbf{e}^j_{y,k}(\mathbf{x}) \approx \mathbf{e}^j_{y,k}(\mathbf{x}_{\mathrm{op}}) - \underbrace{\frac{\partial\mathbf{g}}{\partial\mathbf{z}}\Big|_{\mathbf{z}=\mathbf{D}^{\mathsf T}\mathbf{T}_{cv}\mathbf{T}_{\mathrm{op},k}\mathbf{p}} \Big(\mathbf{D}^{\mathsf T}\mathbf{T}_{cv}\big(\mathbf{T}_{\mathrm{op},k}\mathbf{p}\big)^{\odot}\Big)}_{\displaystyle \mathbf{G}^j_k}\,\boldsymbol{\epsilon}_k,$$</div>
+      <p>with the stereo projection derivative</p>
+      <div class="eqn">$$\frac{\partial\mathbf{g}}{\partial\mathbf{z}} = \begin{bmatrix} f_u/z & 0 & -f_u x/z^2\\ 0 & f_v/z & -f_v y/z^2\\ f_u/z & 0 & -f_u(x-b)/z^2\\ 0 & f_v/z & -f_v y/z^2 \end{bmatrix},\qquad \mathbf{z} = \begin{bmatrix}x\\y\\z\end{bmatrix}.$$</div>
+      <p>Note the \(1/z^2\): a landmark twice as far away contributes a quarter of the gradient. Distant stars are almost free of information about translation, which is why the uncertainty is so sensitive to how many landmarks are <em>near</em>.</p>
+
+      <h3>3.5 The system</h3>
+      <p>Stacking, \(\mathbf{e}(\mathbf{x})\approx\mathbf{e}(\mathbf{x}_{\mathrm{op}}) - \mathbf{H}\delta\mathbf{x}\) with</p>
+      <div class="eqn">$$\mathbf{H} = \left[\begin{array}{ccccc} \mathbf{1} & & & &\\ -\mathbf{F}_{k_1} & \mathbf{1} & & &\\ & \ddots & \ddots & &\\ & & -\mathbf{F}_{k_2-1} & \mathbf{1} &\\ \hline \mathbf{G}_{k_1} & & & &\\ & \mathbf{G}_{k_1+1} & & &\\ & & \ddots & &\\ & & & \mathbf{G}_{k_2} \end{array}\right],$$</div>
+      <p>and the update is the Gauss–Newton step of Chapter 0, applied on the group:</p>
+      <div class="eqn">$$\mathbf{A}\,\delta\mathbf{x}^\star = \mathbf{b},\quad \mathbf{A} = \mathbf{H}^{\mathsf T}\mathbf{W}^{-1}\mathbf{H},\;\; \mathbf{b} = \mathbf{H}^{\mathsf T}\mathbf{W}^{-1}\mathbf{e}(\mathbf{x}_{\mathrm{op}}), \qquad \boxed{\;\mathbf{T}_{\mathrm{op},k} \leftarrow \exp\big(\boldsymbol{\epsilon}^{\star\wedge}_k\big)\mathbf{T}_{\mathrm{op},k}\;}$$</div>
+      <p>The boxed line is \(\boxplus\). It is a multiplication, not an addition, and it is the only reason the iterate stays on the manifold.</p>
+    </div>
+  </div>
+
+  <div class="card finding" style="margin-top:26px">
+    <div class="no">!</div>
+    <h3>A sign error here does not degrade the estimate — it destroys it</h3>
+    <p>The motion residual linearises to \(\mathbf{e}_{v,k}(\mathbf{x}_{\mathrm{op}}) + \mathbf{F}\boldsymbol{\epsilon}_{k-1} - \boldsymbol{\epsilon}_k\), but the normal equations are written for \(\mathbf{e}\approx\mathbf{e}(\mathbf{x}_{\mathrm{op}}) - \mathbf{H}\delta\mathbf{x}\). So \(\mathbf{H}\) carries the <em>opposite</em> sign: \(-\mathbf{F}\) below the diagonal and \(+\mathbf{1}\) on it, while the measurement blocks are \(+\mathbf{G}\).</p>
+    <p>Getting that backwards is invisible in \(\mathbf{A} = \mathbf{H}^{\mathsf T}\mathbf{W}^{-1}\mathbf{H}\), which is unchanged under \(\mathbf{H}\to-\mathbf{H}\), and fatal in \(\mathbf{b}\), which flips. I made exactly this mistake while writing the harness: the motion block pulled against the measurement block, the cost climbed from \(8.4\times10^6\) to \(1.1\times10^8\) over ten iterations, and the "estimate" ended up <b>44 m</b> from the truth against 1.15 m for doing nothing at all. Corrected, the same solver converges monotonically to <b>0.055 m</b>.</p>
+    <p style="margin-bottom:0">It is worth stating because it is the kind of error a plausibility check does not catch — the matrices are the right shape, the solve succeeds, and the answer is confidently wrong.</p>
+  </div>
+
+  <h3 class="subhead" style="margin-top:30px">3.6 Results</h3>
+  <div class="grid-2">
+    <figure class="fig" style="margin-top:0">
+      <img src="assets/images/projects/aer1513/a3_visibility.png" alt="Landmarks visible at each timestep, red where fewer than three.">
+      <figcaption><b>Question 4: what the camera can actually see.</b> Red marks the steps with fewer than three landmarks in frame — three being the minimum for a well-conditioned pose fix. These are the steps where the geometry is starved, and every subsequent plot in this chapter is best read against this one.</figcaption>
+    </figure>
+    <figure class="fig" style="margin-top:0">
+      <img src="assets/images/projects/aer1513/a3_convergence.png" alt="Cost against Gauss-Newton iteration.">
+      <figcaption><b>Convergence.</b> The cost falls by more than three orders of magnitude in fourteen iterations and does so monotonically, because the solver backtracks: a full Gauss–Newton step can overshoot on a manifold, where the quadratic model is only trustworthy near the operating point, so the step is halved until the cost actually decreases.</figcaption>
+    </figure>
+  </div>
+
+  <figure class="fig" style="margin-top:24px">
+    <img src="assets/images/projects/aer1513/a3_error_3sigma.png" alt="Six panels of translation and rotation error against 3-sigma bounds.">
+    <figcaption><b>All six degrees of freedom against their own 3σ.</b> Shaded columns are the steps with fewer than three landmarks. The envelope widens through every one of them and closes again afterwards — the covariance is tracking the <em>geometry</em>, not the clock. Batch translation RMSE is <b>0.055 m</b> against <b>1.155 m</b> for dead reckoning, a factor of 21; rotation, <b>16.4 mrad</b> against <b>541</b>, a factor of 33.</figcaption>
+  </figure>
+
+  <div class="hero-video" style="margin-top:26px">
+    <video controls autoplay loop muted playsinline preload="metadata">
+      <source src="assets/videos/aer1513_a3_uncertainty.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p><b>The uncertainty bound, in three dimensions.</b> The 3σ position ellipsoid — the \(3\times3\) translational block of the marginal covariance \(\hat{\mathbf{P}}_k\), magnified ×15 so it is visible at trajectory scale — swept along the estimated path, with the three translation error channels filling in against their bounds. It is an ellipsoid rather than a sphere because the stereo geometry constrains depth far more weakly than it constrains bearing.</p>
+  </div>
+
+  <figure class="fig" style="margin-top:26px">
+    <img src="assets/images/projects/aer1513/a3_trajectory3d.png" alt="3D plot of the estimated trajectory with landmarks and body triads." class="pad">
+    <figcaption><b>The estimated trajectory in three dimensions</b>, with body triads every twelve steps. Dead reckoning (grey dashed) peels away from the truth almost immediately; the batch estimate stays on it.</figcaption>
+  </figure>
+</section>
+
+<!-- ==================== SANDBOX 3D ==================== -->
+<section class="section" id="ch3-sandbox">
+  <h2 class="section-title">Fly it yourself</h2>
+  <p class="lead">This is the Assignment 3 estimator running in your browser: \(SE(3)\) poses, a stereo camera, an IMU twist, and Gauss–Newton with a left perturbation — the same maths derived above, re-implemented in JavaScript. Drag the window from 1, which is an extended Kalman filter, to the whole trajectory, which is batch. Drag the scene to orbit and scroll to zoom; the grid is the ground plane, the dashed lines drop each landmark and each pose onto it, and the loop drawn on the grid is the trajectory's own shadow.</p>
+
+  <div class="card scene-block cube-block">
     <span class="caption-box">The sandbox</span>
     <div class="demo-grid">
       <div class="demo-scene">
@@ -129,94 +516,10 @@
   </div>
 </section>
 
-<!-- =================== METHOD =================== -->
-<section class="section" id="method">
-  <h2 class="section-title">One state, every pose</h2>
-  <div class="grid-2">
-    <div class="prose">
-      <p>The trick that makes batch estimation batch is refusing to throw anything away. Rather than carrying a single current belief forward, stack every pose from k₁ to k₂ into one enormous state and ask for the trajectory that best explains the whole dataset at once:</p>
-      <div class="eq">x<sub>k₁:k₂</sub> = [ T<sub>k₁</sub>, …, T<sub>k₂</sub> ], &nbsp;&nbsp; T<sub>k</sub> = T<sub>v<sub>k</sub>,i</sub> = [ C<sub>v<sub>k</sub>,i</sub> &nbsp; t<sub>i</sub><sup>v<sub>k</sub>,i</sup> ; 0<sup>T</sup> &nbsp; 1 ] ∈ SE(3)</div>
-      <p>Poses live on a Lie group, so the motion model is a matrix exponential rather than an addition, driven by the IMU's measured body-frame twist ϖ = [ν; ω]:</p>
-      <div class="eq">T<sub>k</sub> = Ξ<sub>k</sub> T<sub>k−1</sub>, &nbsp;&nbsp; Ξ<sub>k</sub> = exp( Δt<sub>k</sub> ϖ<sub>k</sub><sup>∧</sup> )</div>
-      <p>and the stereo camera gives four numbers per landmark — the same point in the left and right images:</p>
-      <div class="eq">y<sub>k</sub><sup>j</sup> = (1/z<sub>k</sub><sup>j</sup>) M T<sub>cv</sub> T<sub>k</sub> p<sup>j</sup>, &nbsp;&nbsp; M = [ f<sub>u</sub> 0 c<sub>u</sub> 0 ; 0 f<sub>v</sub> c<sub>v</sub> 0 ; f<sub>u</sub> 0 c<sub>u</sub> −f<sub>u</sub>b ; 0 f<sub>v</sub> c<sub>v</sub> 0 ]</div>
-      <p>Errors on a group are logarithms, not differences. The motion error compares the pose the IMU predicts with the pose in the state; the measurement error is an ordinary residual in pixels:</p>
-      <div class="eq">e<sub>v,k</sub>(x) = ln( Ξ<sub>k</sub> T<sub>k−1</sub> T<sub>k</sub><sup>−1</sup> )<sup>∨</sup> ∈ ℝ<sup>6</sup> &nbsp;&nbsp;&nbsp; e<sub>y,k</sub><sup>j</sup>(x) = y<sub>k</sub><sup>j</sup> − h(T<sub>k</sub>, p<sup>j</sup>) ∈ ℝ<sup>4</sup></div>
-      <p>Minimise the Mahalanobis sum of both. Linearising needs a perturbation that stays on the group — a left one, T ← exp(ε<sup>∧</sup>) T — which is what makes the Jacobians clean. The motion Jacobian is the adjoint of the increment; the measurement Jacobian is the projection derivative composed with the circle-dot operator:</p>
-      <div class="eq">J(x) = ½ Σ<sub>k</sub> e<sub>v,k</sub><sup>T</sup> Q<sub>k</sub><sup>−1</sup> e<sub>v,k</sub> + ½ Σ<sub>k,j</sub> e<sub>y,k</sub><sup>j T</sup> R<sub>k</sub><sup>−1</sup> e<sub>y,k</sub><sup>j</sup></div>
-      <div class="eq">∂e<sub>v,k</sub>/∂ε<sub>k−1</sub> = Ad(Ξ<sub>k</sub>) &nbsp;&nbsp;&nbsp; ∂e<sub>v,k</sub>/∂ε<sub>k</sub> = −1 &nbsp;&nbsp;&nbsp; ∂h/∂ε<sub>k</sub> = (∂M/∂p<sub>c</sub>) T<sub>cv</sub> (T<sub>k</sub> p<sup>j</sup>)<sup>⊙</sup></div>
-      <p>Stack all of that and one sparse Gauss-Newton solve, A δ = b with A = H<sup>T</sup>W<sup>−1</sup>H, gives a correction to <em>every</em> pose simultaneously. The information matrix is block-tridiagonal from the motion terms with a block-diagonal fringe from the landmarks, and it is 6N × 6N — which is where the cost lives, and why the window size is the knob it is.</p>
-      <p>The sliding window is the same solve over a suffix of the trajectory, with the poses that fell off the back summarised as a Gaussian prior on the oldest remaining one. Shrink the window to a single step and every term but the newest disappears; what is left is an extended Kalman filter. The report puts it plainly: <em>"when the window size equals 1, this practically becomes a Kalman Filter."</em></p>
-    </div>
-    <div>
-      <div class="ledger" style="margin-top:0">
-        <div class="card"><h4 class="known">Known</h4><ul><li>Landmark positions p<sup>j</sup></li><li>Stereo intrinsics M, baseline b</li><li>T<sub>cv</sub>, IMU-to-camera</li><li>Q, R covariances</li></ul></div>
-        <div class="card"><h4 class="unknown">Solved for</h4><ul><li>Every pose T<sub>k</sub> ∈ SE(3)</li><li>All of them, jointly</li><li>6N unknowns</li></ul></div>
-        <div class="card"><h4 class="truth">Measured</h4><ul><li>IMU twist ϖ<sub>k</sub></li><li>Stereo y<sub>k</sub><sup>j</sup>, 4 per landmark</li><li>Only when in range and in view</li></ul></div>
-      </div>
-      <div class="hero-video" style="margin-top:18px">
-        <video controls playsinline preload="metadata">
-          <source src="assets/videos/localization_teaser.mp4" type="video/mp4">
-        </video>
-      </div>
-      <p class="plot-note" style="margin-top:8px">The estimated trajectory against ground truth, from the assignment.</p>
-      <div class="table-wrap">
-        <table class="data-table compact">
-          <thead><tr><th>AER1513</th><th>Problem</th><th>Estimator</th></tr></thead>
-          <tbody>
-            <tr><td>Assignment 1</td><td>Noise characterisation and linear-Gaussian estimation</td><td>batch least squares</td></tr>
-            <tr><td>Assignment 2</td><td><a href="#assignment2">Lost in the Woods</a>, planar range-bearing</td><td>EKF / batch, ℝ³</td></tr>
-            <tr><td class="hi">Assignment 3</td><td class="hi">Starry Night, stereo + IMU</td><td class="hi">batch and sliding window on SE(3)</td></tr>
-          </tbody>
-        </table>
-        <p class="plot-note">Only the Assignment 3 report is on this site; it is the one that carries the SE(3) derivation and the window study.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="findings">
-  <h2 class="section-title">What the window costs</h2>
-  <p class="lead">Three seeds, 160 steps each, all of it in <code>scripts/tools/run_se3.py</code>. The point is not that batch wins — it should — but by how much, and at what price.</p>
-
-  <figure class="fig">
-    <img src="assets/images/projects/localization/se3_window.png" alt="Translation error, rotation error and cost against window size on SE(3)" class="pad">
-    <figcaption><b>Translation, rotation, cost.</b> Batch reaches <b>0.070 m</b> and <b>10.9 mrad</b>; no sliding window gets below <b>0.140 m</b> or <b>24 mrad</b>. The window results are not monotonic in the window size — with three seeds the spread between windows of 2, 5 and 10 is linearisation noise, not a trend — but every one of them sits two to three times worse than batch.</figcaption>
-  </figure>
-
-  <div class="grid-2" style="margin-top:24px">
-    <div class="card finding">
-      <div class="no">1</div>
-      <h3>On SE(3) the gap is much wider than in 2-D</h3>
-      <p>On the planar problem batch beats a filter by 18 %. Here it is a factor of <b>2.2 in translation</b> and <b>2.2 in rotation</b>. The reason is the observation model: a stereo camera sees a landmark only within range and inside the field of view, so at any instant the vehicle typically has three or four measurements against six degrees of freedom. A filter has to commit to a pose on that. Batch does not — a landmark first seen at step 90 constrains the pose at step 40, because both are unknowns in the same linear system.</p>
-      <p>That is the whole argument for batch estimation in one sentence, and it is why calibration problems are solved this way and navigation problems usually are not.</p>
-    </div>
-    <div class="card finding">
-      <div class="no">2</div>
-      <h3>Batch is also cheaper</h3>
-      <p>The report notes that a smaller window runs faster, and per step that is exactly right — the information matrix is (6N)², so halving the window quarters the solve. But a sliding window does that solve <em>at every step</em>, and batch does one solve, ever.</p>
-      <p>Over 160 steps: a window of 20 costs <b>4.5 s</b>, a window of 1 costs <b>0.3 s</b>, and full batch costs <b>0.5 s</b> — nine times cheaper than the 20-step window and more accurate than all of them. The sliding window earns its place because it runs <em>online</em>, one step at a time, without waiting for the end of the trajectory. Not because it is cheap.</p>
-    </div>
-  </div>
-
-  <div class="grid-2" style="margin-top:22px">
-    <figure class="fig" style="margin-top:0">
-      <img src="assets/images/projects/localization/se3_blackout.png" alt="Position error against time, with the visible landmark count" class="pad">
-      <figcaption><b>Error tracks the landmark count.</b> The report's third observation, reproduced on SE(3): the uncertainty is set almost entirely by how many landmarks are in view, and the worst stretch is the one with none.</figcaption>
-    </figure>
-    <div class="card finding" style="margin-top:0">
-      <div class="no">3</div>
-      <h3>The noise is not zero-mean, and the estimator assumes it is</h3>
-      <p>Before any of this, the assignment asks whether the noise really is zero-mean Gaussian. The IMU is — comfortably so, and if anything the supplied covariance is <em>under</em>-confident, since the histogram peaks sit above the fitted Gaussian. The stereo camera is not: u<sub>l</sub> and u<sub>r</sub> fit well, but <b>v<sub>l</sub> and v<sub>r</sub> are tail-heavy with a −7 pixel bias</b>.</p>
-      <p>Every estimator on this page assumes that bias away. It is small enough not to matter for this trajectory, and it is exactly the kind of thing that silently limits an accuracy claim, so it is worth stating rather than burying.</p>
-    </div>
-  </div>
-</section>
-
-<!-- =================== ASSIGNMENT 2 =================== -->
-<section class="section" id="assignment2">
-  <h2 class="section-title">The same estimator, one dimension down</h2>
-  <p class="lead">Assignment 2 is the planar version of the same idea: <em>Lost in the Woods</em>, a wheeled robot with wheel odometry measuring range and bearing to known landmarks. Three states instead of six, a 2×1 measurement instead of a stereo 4×1, and no Lie group — but the same stacked state, the same Gauss-Newton, and the same window knob. It is the right place to build intuition before the SE(3) version, and it runs fast enough to re-solve on every slider move.</p>
+<!-- ==================== PLANAR SANDBOX ==================== -->
+<section class="section" id="ch2-sandbox">
+  <h2 class="section-title">And the planar one</h2>
+  <p class="lead">The same window knob on the Chapter 2 problem — three states, range and bearing, no Lie group. It re-solves fast enough to respond on every slider move, which makes it the better place to build intuition before turning to \(SE(3)\).</p>
 
   <div class="hero-video" style="margin-top:20px">
     <video controls autoplay loop muted playsinline preload="metadata">
@@ -224,7 +527,7 @@
     </video>
   </div>
   <div class="hero-caption">
-    <p>The Lost in the Woods run: the robot wanders among the landmarks while the estimator tracks it. Twenty-one minutes of animation at sixteen times speed.</p>
+    <p>The original Lost in the Woods animation from the assignment submission: the robot wanders among the landmarks while the estimator tracks it.</p>
   </div>
 
   <div class="card scene-block" style="margin-top:22px">
@@ -249,44 +552,132 @@
       </div>
     </div>
   </div>
+</section>
 
-  <div class="grid-2" style="margin-top:24px">
-    <figure class="fig" style="margin-top:0">
-      <img src="assets/images/projects/localization/window.png" alt="Accuracy, cost and consistency against window size in 2-D" class="pad">
-      <figcaption><b>The planar sweep, four seeds.</b> 0.0385 m for a filter, 0.0335 m at a window of 20, 0.0317 m for batch — a spread of 18 %, against the 2–3× on SE(3). With three states and two measurements per landmark the problem is far better constrained at every instant, so there is much less for batch to recover.</figcaption>
-    </figure>
+<!-- ==================== CHAPTER 4 ==================== -->
+<section class="section chapter" id="ch4">
+  <p class="chap-label">Chapter 4</p>
+  <h2 class="section-title">What the window is actually worth</h2>
+  <p class="lead">The recurring question across all three assignments is how much of the trajectory an estimator has to consider at once. Assignment 3's report concludes that batch is "a lot more accurate" than a sliding window. Re-running it carefully — three seeds, error bars, and windows given both a fair initialisation and enough iterations to converge — the conclusion survives, but not for the reason it is usually given, and the size of the window turns out not to matter at all.</p>
+
+  <figure class="fig">
+    <img src="assets/images/projects/aer1513/a3_window.png" alt="Accuracy, rotation and cost against window size, three seeds.">
+    <figcaption><b>Batch against four window sizes, three seeds, mean ± sd, over an 81-pose span.</b> Note the log scale on (a) and (b): dead reckoning is off the top.</figcaption>
+  </figure>
+
+  <div class="table-wrap" style="margin-top:20px">
+    <table class="data-table">
+      <thead><tr><th>Estimator</th><th>Translation RMSE [m]</th><th>Rotation RMSE [mrad]</th><th>Solve time [s]</th></tr></thead>
+      <tbody>
+        <tr><td>Dead reckoning</td><td>1.0768 ± 0.1255</td><td>421.3 ± 54.4</td><td>—</td></tr>
+        <tr><td>Window, 5 poses</td><td>0.0752 ± 0.0063</td><td>20.7 ± 1.0</td><td>5.4</td></tr>
+        <tr><td>Window, 10 poses</td><td>0.0772 ± 0.0075</td><td>20.4 ± 1.0</td><td>12.3</td></tr>
+        <tr><td>Window, 25 poses</td><td>0.0732 ± 0.0099</td><td>20.4 ± 1.0</td><td>30.7</td></tr>
+        <tr><td>Window, 50 poses</td><td>0.0740 ± 0.0090</td><td>20.4 ± 1.0</td><td>58.7</td></tr>
+        <tr><td><b>Batch (all 81 poses)</b></td><td><b>0.0473 ± 0.0022</b></td><td><b>17.8 ± 0.9</b></td><td><b>4.3</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-2" style="margin-top:26px">
     <div class="card finding" style="margin-top:0">
       <div class="no">4</div>
-      <h3>A window is not over-confident. Its noise model is.</h3>
-      <p>The Assignment 3 report finds that the sliding-window 3σ bounds fail to cover the error while the batch bounds are "perfectly bounded", and suspects a poor initial covariance estimate. That is a testable claim, so I tested it on the planar problem, where a four-seed sweep is cheap: hold the true noise fixed and scale the covariance the estimator <em>believes</em>.</p>
-      <p>With the correct Q and R a window of 10 puts <b>99.6 %</b> of its errors inside its own 3σ. Tell it the noise is four times smaller than it is and that falls to <b>74.1 %</b> — while the position estimate does not move at all, <b>0.0338 m either way</b>. The report's diagnosis was right: a covariance mismatch does not make the estimate worse, it makes the estimate's <em>account of itself</em> worse, which is more dangerous, because nothing downstream can tell.</p>
+      <h3>Batch wins by 1.6×, and window size buys nothing</h3>
+      <p>Batch is <b>0.0473 ± 0.0022 m</b>; every window, from 5 poses to 50, lands between <b>0.073 and 0.077 m</b> with standard deviations of 0.006–0.010. A ten-fold increase in window length moves the mean by less than one standard deviation. The gap that matters is not <em>how long</em> the window is — it is whether the estimator is allowed to revisit the beginning of the trajectory at all.</p>
+      <p style="margin-bottom:0">That is a sharper statement than "bigger windows are better", and it is the one the data supports.</p>
+    </div>
+    <div class="card finding" style="margin-top:0">
+      <div class="no">5</div>
+      <h3>Batch is also the <em>cheapest</em> thing on the table</h3>
+      <p>Batch solves the 81-pose problem once, in <b>4.3 s</b>. A 50-pose window solves a 50-pose problem <em>at every one of the 81 steps</em>, and takes <b>58.7 s</b> — fourteen times longer, to be 1.6× less accurate. Even the 5-pose window, the smallest tested, is slower than full batch.</p>
+      <p style="margin-bottom:0">The usual framing — batch is accurate but expensive, so we filter — is backwards for offline estimation. A filter is cheap because it must run online, not because solving everything at once is hard. If the data is already on disk, there is no argument for the window.</p>
     </div>
   </div>
 
-  <figure class="fig">
-    <img src="assets/images/projects/localization/mismatch.png" alt="Consistency against the assumed covariance scale" class="pad">
-    <figcaption><b>Confirming the report's own diagnosis.</b> Four seeds, window of 10, planar problem. The estimate is unchanged across the whole sweep; only its claimed confidence moves.</figcaption>
-  </figure>
+  <div class="card finding" style="margin-top:22px">
+    <div class="no">6</div>
+    <h3>Two things I got wrong before, and how the numbers moved</h3>
+    <p>An earlier version of this analysis reported that batch beat every window by <b>2.2×</b>. That number was wrong, twice over, and both bugs flattered the same conclusion in opposite directions:</p>
+    <p><b>Every window was anchored to ground truth.</b> The prior on the first pose of each window used the true pose rather than the previous window's estimate — so a sliding window was handed the right answer once per timestep. Fixing it means each window inherits the outgoing pose and its marginal covariance, which is what a real sliding-window estimator does.</p>
+    <p><b>Windows were not converged.</b> Re-initialising each window by dead reckoning and allowing a fixed five iterations makes <em>large</em> windows look worse than small ones, purely because they need more iterations from a worse starting point. Warm-starting from the previous window removes the artefact.</p>
+    <p style="margin-bottom:0">With both fixed, the honest gap is 1.6× rather than 2.2×, the ordering by window size disappears into the noise, and the cost comparison reverses. I am recording it because the first version was plausible, self-consistent, and wrong — and because an estimator that is quietly given the answer is exactly the failure that a good result hides.</p>
+  </div>
+
+  <div class="card finding" style="margin-top:22px">
+    <div class="no">8</div>
+    <h3>An estimator that looks over-confident usually is not. Its noise model is.</h3>
+    <p>The Assignment 3 report observes that the sliding-window 3σ bounds fail to cover the error while the batch bounds do, and suspects the covariance estimate rather than the estimator. That is testable: hold the <em>true</em> noise fixed, generate one dataset, and scale only the covariance the estimator <em>believes</em>.</p>
+    <div class="table-wrap">
+      <table class="data-table compact">
+        <thead><tr><th>Assumed \(\mathbf{Q},\mathbf{R}\)</th><th>RMSE\(_{xy}\) [m]</th><th>inside 3σ\(_x\)</th><th>inside 3σ\(_y\)</th><th>inside 3σ\(_\theta\)</th></tr></thead>
+        <tbody>
+          <tr><td>×0.25</td><td>0.0141</td><td>83.3 %</td><td>88.2 %</td><td>85.0 %</td></tr>
+          <tr><td>×0.5</td><td>0.0141</td><td>94.1 %</td><td>97.1 %</td><td>95.3 %</td></tr>
+          <tr><td><b>×1 (true)</b></td><td><b>0.0141</b></td><td><b>99.0 %</b></td><td><b>99.9 %</b></td><td><b>99.8 %</b></td></tr>
+          <tr><td>×2</td><td>0.0141</td><td>100 %</td><td>100 %</td><td>100 %</td></tr>
+          <tr><td>×4</td><td>0.0141</td><td>100 %</td><td>100 %</td><td>100 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The estimate does not move — <b>0.0141 m at every scale, to four decimal places</b> — while coverage swings from 83 % to 100 %. The report's suspicion was right.</p>
+    <p style="margin-bottom:0">And it is not a numerical coincidence, it is algebra. Scaling every covariance by the same \(s\) sends \(\check{\mathbf{P}}\to s\check{\mathbf{P}}\) and \(\mathbf{R}\to s\mathbf{R}\), so the gain
+    \(\mathbf{K} = \check{\mathbf{P}}\mathbf{G}^{\mathsf T}(\mathbf{G}\check{\mathbf{P}}\mathbf{G}^{\mathsf T}+\mathbf{R})^{-1}\)
+    is <em>invariant</em>: the \(s\) cancels top and bottom. A uniform mis-scaling of the noise model is completely invisible in the estimate and completely visible in the bound. Consistency checks like this one test the noise model; they do not test the estimator.</p>
+  </div>
+
+  <div class="card finding" style="margin-top:22px">
+    <div class="no">7</div>
+    <h3>Uncertainty tracks geometry, not time</h3>
+    <p>Across all three chapters the covariance grows when the measurements stop constraining the state, and by nothing else. On the rail it grows between rangefinder readings. In the woods it fans out during the gaps at \(r_{\max}=1\) m — 0.43 landmarks per step — and snaps shut on the next sighting. On \(SE(3)\) the envelope widens through every one of the steps with fewer than three landmarks in frame and closes afterwards.</p>
+    <p style="margin-bottom:0">The \(1/z^2\) in the stereo Jacobian is the mechanism in the third case: information about translation falls off as the square of the range, so a camera looking at distant landmarks is, for the purposes of estimating where it is, looking at almost nothing.</p>
+  </div>
 </section>
 
-<!-- =================== REPRODUCE =================== -->
+<!-- ==================== REPRODUCE ==================== -->
 <section class="section" id="reproduce">
   <h2 class="section-title">Reproduce it</h2>
-  <div class="cmd"><span class="c"># NumPy and matplotlib only</span>
-git clone https://github.com/thejerrycheng/localization-batch-estimation
-cd localization-batch-estimation
-python scripts/tools/run_se3.py --seeds 3              <span class="c"># the Assignment 3 study</span>
-python scripts/tools/run_localization.py --seeds 4     <span class="c"># the planar one</span></div>
-  <p class="plot-note" style="margin-top:14px">The SE(3) sandbox runs <code>assets/js/se3_engine.js</code> and the planar one <code>assets/js/localization_engine.js</code> — the same Gauss-Newton solves as <code>scripts/tools/se3.py</code> and <code>estimator.py</code>, including the marginal covariance of the newest pose, which is what the 3σ readout uses. The Starry Night and Lost in the Woods datasets are course-distributed and are not redistributed here; both harnesses generate their own data from the same models.</p>
+  <div class="grid-2">
+    <div class="prose">
+      <p>The three estimators live in one module, and every figure, number and video on this page is regenerated by two scripts. The course datasets are not redistributed; the harness generates its own data from the models in Chapters 1–3, using the noise covariances quoted in the reports.</p>
+      <div class="cmd"><span class="c"># the estimators, plus SE(3) exp/log, adjoint and circle-dot</span>
+scripts/tools/aer1513_core.py
+
+<span class="c"># every figure</span>
+python3 scripts/tools/aer1513_figures.py         <span class="c"># a1 | a2 | a3</span>
+
+<span class="c"># every animation, including the 2-D and 3-D uncertainty bounds</span>
+python3 scripts/tools/aer1513_videos.py          <span class="c"># a1 | a2 | a2u | a3 | a3u</span></div>
+      <p>Needs <code>numpy</code>, <code>matplotlib</code> and <code>ffmpeg</code>. The browser sandboxes are <code>assets/js/se3_engine.js</code> and <code>assets/js/localization_engine.js</code> — the same Gauss–Newton, including the marginal covariance of the newest pose used for the 3σ readout.</p>
+    </div>
+    <div>
+      <div class="ledger" style="margin-top:0">
+        <div class="card"><h4 class="known">Verified</h4><ul>
+          <li>\(\ln(\exp(\boldsymbol{\xi}^\wedge))^\vee = \boldsymbol{\xi}\) to 5e−14</li>
+          <li>adjoint identity to 1.1e−16</li>
+          <li>circle-dot identity to 1.1e−16</li>
+          <li>batch = Kalman at \(k=K\) to 1.1e−14</li></ul></div>
+        <div class="card"><h4 class="unknown">Generated</h4><ul>
+          <li>A1: 400 steps</li>
+          <li>A2: 900 steps, 17 landmarks</li>
+          <li>A3: 200 poses, 32 landmarks</li>
+          <li>3 seeds for the window sweep</li></ul></div>
+        <div class="card"><h4 class="truth">Not mine</h4><ul>
+          <li>The datasets</li>
+          <li>The problem statements</li>
+          <li>The A1 report (lost)</li></ul></div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section class="section" id="credits">
   <h2 class="section-title">Credits</h2>
   <div class="card card-pad credits">
-    <p><b>AER1513: State Estimation for Aerospace Vehicles</b> at the University of Toronto, taught by <b>Prof. Tim Barfoot</b>. The Starry Night dataset and the Lost in the Woods dataset are from the course; the SE(3) batch estimator, the sliding-window study and the noise analysis are the assignment.</p>
-    <p style="margin-top:8px">The 2-D re-implementation, the four-seed sweep, the covariance-mismatch experiment and the sandbox on this page were built afterwards.</p>
+    <p><b>AER1513 — State Estimation for Aerospace Vehicles</b>, Prof. Tim Barfoot, University of Toronto. The three assignments, the datasets and the problem statements are the course's; the submissions are mine. Assignment 2 (<em>Lost in the Woods</em>) was submitted in MATLAB, Assignment 3 (<em>Starry Night</em>) in Python.</p>
+    <p style="margin-top:8px">The derivations above follow my own submitted reports for Chapters 2 and 3, which are linked below. Chapter 1 is reconstructed from the problem statement, because that report is the one I no longer have. Everything measured on this page comes from a fresh re-implementation written for it, and where the re-implementation disagrees with the reports — the Cramér–Rao comparison in Chapter 2, the window sweep in Chapter 4 — the disagreement is stated rather than smoothed over.</p>
     <div class="links" style="margin-top:12px">
-      <a href="assets/pdf/projects/AER1513_assignment_3-3.pdf" target="_blank" rel="noopener">Report</a>
+      <a href="assets/pdf/projects/AER1513_assignment_2.pdf" target="_blank" rel="noopener">Assignment 2 report</a>
+      <a href="assets/pdf/projects/AER1513_assignment_3-3.pdf" target="_blank" rel="noopener">Assignment 3 report</a>
       <a href="https://github.com/thejerrycheng/localization-batch-estimation" target="_blank" rel="noopener">Code</a>
       <a href="projects.html">All projects</a>
     </div>
