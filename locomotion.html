@@ -158,6 +158,10 @@
     .pl-link { font-family: var(--font-comic); font-size: 12px; letter-spacing: .05em; color: var(--hi-deep); text-decoration: none; white-space: nowrap; }
     .pl-link:hover { text-decoration: underline; }
     .pl-link.weak, a.weak { color: var(--ash); font-weight: 400; }
+    .pl-note { display: block; font-size: 11.5px; line-height: 1.4; color: var(--hi-deep); margin-top: 3px; }
+    .pl-links { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .pl-link.pre, a.pre { display: block; font-family: var(--font-mono); font-size: 10.5px; color: var(--ash); text-decoration: none; letter-spacing: 0; }
+    .pl-link.pre:hover, a.pre:hover { color: var(--hi-deep); text-decoration: underline; }
     .pl-empty { font-size: 14px; color: var(--ash); margin: 10px 0 0; }
 
     /* ---------------- shifts ---------------- */
@@ -173,6 +177,14 @@
     details.sub.after > summary { color: var(--hi); }
     details.sub .hint { font-family: var(--font-body, Jost, sans-serif); font-size: 12px; letter-spacing: 0; color: var(--ash); margin-left: 6px; }
     .shift-card .rule { font-size: 11.5px; color: var(--ash); line-height: 1.45; margin: 10px 0 0; border-top: 1px dashed rgba(21,24,32,.2); padding-top: 8px; }
+
+    table.models td { vertical-align: top; }
+    table.models tr.mrow td { border-bottom: 1.5px dashed rgba(21,24,32,.35); }
+    table.models tr.mpapers td { background: var(--paper); padding: 4px 14px 14px; }
+    table.models tr.mpapers .paper-list { max-height: 420px; }
+    .mexp { font-family: var(--font-comic); font-size: 13px; letter-spacing: .04em; padding: 5px 11px; border: 1.5px solid var(--ink); border-radius: 999px; background: var(--panel); color: var(--hi-deep); cursor: pointer; white-space: nowrap; }
+    .mexp:hover { background: var(--hi); color: #FFF9F0; border-color: var(--hi); }
+    table.models tr.mpapers .rule { font-size: 11.5px; color: var(--ash); margin: 8px 0 0; font-family: var(--font-body, Jost, sans-serif); }
 
     /* ---------------- the library ---------------- */
     .lib-controls { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 16px; }
@@ -270,6 +282,13 @@
 <section class="section" id="how">
   <h2 class="section-title">How this page is built</h2>
   <p class="lead">Every list here comes from the manuscript itself. The reference list is parsed in full, and each paper is placed by <b>the section of the survey that cites it</b> — the authors' own placement, not my opinion of where it belongs. On top of that, each paper is tagged by subject from its title, which is what the filters and the search use. Papers appear in more than one place when the survey cites them in more than one place.</p>
+  <div class="card card-pad prose" id="verification" style="margin-top:18px">
+    <h3>How the links and the categories were checked</h3>
+    <p><b>Placement.</b> A paper's method family is decided by which section of the survey cites it, read straight out of the manuscript. All 280 references are cited somewhere in the body, so none is stranded. The manuscript writes no citation ranges and numbers no equations, so the scan can neither miss a citation written as a range nor mistake an equation number for one; line-level spot checks put each reference in exactly the sections shown here.</p>
+    <p><b>Links.</b> Every DOI on this page was fetched back from Crossref and its title compared with the title in the survey's own reference list. <span id="v-verified">—</span> agreed and were kept; the ones that did not were dropped rather than shipped. Those failures were all <i>textbooks</i>, which Crossref matches to published <i>reviews</i> of themselves — Raibert's <i>Legged Robots That Balance</i> resolved to a 1986 IEEE Expert review of it — so the five books here link to their publishers by hand instead.</p>
+    <p><b>Published versions.</b> Where a reference is a preprint, arXiv is asked directly whether it was later published, since the authors record that themselves. Where it was, the page links the publisher and keeps the preprint beside it. <span id="v-nolink">—</span> references have no DOI and no repository link at all — preprints and workshop papers that Crossref does not index, such as Isaac Gym, PyBullet and Dreamer — and those fall back to a title search.</p>
+    <p class="plot-note">One correction worth naming: the survey cites “Towards Versatile Humanoid Table Tennis”, and that preprint has since been renamed “PACE”. The arXiv link is the same paper; the page says so on the entry rather than silently showing a different title.</p>
+  </div>
   <div class="stat-row">
     <div class="card stat-tile"><div class="num">280</div><div class="lab">references</div><div class="sub">every work the survey cites, parsed from the manuscript</div></div>
     <div class="card stat-tile"><div class="num">17</div><div class="lab">method families</div><div class="sub">one per section of the survey, from analytical models to foundation models</div></div>
@@ -323,21 +342,8 @@
 <!-- =================== MODELS AND SIMULATORS =================== -->
 <section class="section" id="models">
   <h2 class="section-title">Models and simulators, from physics-based to data-driven</h2>
-  <p class="lead">The survey's Fig. 2 lays the models a controller can be written against on one axis, from those you derive to those you fit. Where a method sits on that axis decides what it can express, what it costs to evaluate, and how it fails when the world disagrees with it.</p>
-  <div class="table-wrap">
-    <table class="data-table">
-      <thead><tr><th style="width:150px">Where it sits</th><th style="width:190px">What it is</th><th>What it buys you</th><th>Where it breaks</th><th style="width:170px">Typical use</th></tr></thead>
-      <tbody>
-        <tr><td class="k">Physics-based</td><td>Reduced-order model — linear inverted pendulum, centroidal dynamics, single rigid body</td><td>A handful of states with an analytic solution; constraints stay convex, so the loop runs at kilohertz and can be proved stable.</td><td>Everything it abstracts away: limb inertia, compliance, and any contact it did not assume.</td><td>Real-time balance, footstep planning, convex MPC</td></tr>
-        <tr><td class="k">Physics-based</td><td>Full-order rigid-body model with contact</td><td>Every joint and every wrench, exactly as derived; whole-body control and contact-implicit optimisation are written on it.</td><td>Nonsmooth contact and the cost of solving it; parameters you must identify.</td><td>Whole-body QPs, nonlinear MPC, offline trajectory optimisation</td></tr>
-        <tr><td class="k">Physics-based</td><td>Simulator — MuJoCo, Isaac, Newton, Genesis</td><td>Contact-rich physics at thousands of times real speed on a GPU, which is what makes reinforcement learning affordable.</td><td>The reality gap: actuator dynamics, friction, latency and deformation that are cheap to simulate wrongly.</td><td>Policy training, domain randomisation</td></tr>
-        <tr><td class="k">Hybrid</td><td>Physics plus a learned residual — learned actuator models, residual dynamics</td><td>Keeps the structure and the guarantees, and lets data absorb what the derivation missed.</td><td>Only as good as the data covering the residual; the split between the two halves is a design choice.</td><td>Sim-to-real correction, system identification</td></tr>
-        <tr><td class="k">Data-driven</td><td>Learned dynamics</td><td>Predicts the next state from data without a derivation, including effects nobody wrote down.</td><td>Extrapolation; error compounds over a horizon.</td><td>Model-based RL, short-horizon planning</td></tr>
-        <tr><td class="k">Data-driven</td><td>Latent dynamics</td><td>Rolls out in a compact learned space, so long horizons stay cheap.</td><td>The latent space is only as meaningful as its training distribution; physical constraints are not naturally expressible.</td><td>Planning from pixels, model-based RL</td></tr>
-        <tr><td class="k">Data-driven</td><td>World model</td><td>Predicts observations and consequences of actions directly, including semantics; supports imagination and reasoning about futures.</td><td>Expensive to evaluate, hard to constrain, and unverified against physics.</td><td>The deliberative layer, long-horizon and multi-task behaviour</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <p class="lead">The survey's Fig. 2 lays the models a controller can be written against on one axis, from those you derive to those you fit. Where a method sits on that axis decides what it can express, what it costs to evaluate, and how it fails when the world disagrees with it. Open the count in the last column to see the references behind each row, and the rule that selected them.</p>
+  <div class="table-wrap" id="models-table"></div>
   <p class="scroll-hint">◆ scroll the table sideways</p>
   <p class="plot-note" style="margin-top:12px">The survey's own list of tools to start from: model-based, the MIT Cheetah software, OpenLoong, CasADi, acados, OCS2 and Judo; learning-based, Isaac Lab, MuJoCo Playground, MJLab, and Newton and Genesis for large-scale differentiable simulation. Every one of them is in the library below — filter by the <i>simulators</i> subject.</p>
   <figure class="fig"><img src="assets/images/projects/locomotion/survey_fig2.jpg" alt="Figure 2 of the survey: the spectrum of models" loading="lazy"><figcaption><b>The survey's Fig. 2: the spectrum of models.</b> Reduced-order models, full-order models and simulators on the physics side; learned dynamics, latent dynamics and world models on the data side; hybrids in between, such as learned actuator models and residual dynamics.</figcaption></figure>

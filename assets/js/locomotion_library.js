@@ -24,7 +24,9 @@
     'quadruped': 'quadrupeds', 'human-motion': 'human motion & biomechanics', 'simulation': 'simulators',
     'benchmark-dataset': 'datasets & benchmarks', 'survey': 'surveys & reviews', 'humanoid': 'humanoids',
     'walking-gait': 'walking & balance', 'adaptive-robust': 'adaptive & robust control', 'planning': 'planning & footsteps',
-    'animation': 'character animation', 'contact': 'contact & compliance', 'efficiency': 'energy & actuation',
+    'animation': 'character animation',
+    'curriculum': 'curricula & distillation',
+    'ml-foundations': 'machine-learning foundations', 'contact': 'contact & compliance', 'efficiency': 'energy & actuation',
   };
   const ERA_LABEL = { classical: 'classical', learning: 'learning-based', emerging: 'emerging', outlook: 'outlook', front: 'framing' };
 
@@ -77,8 +79,12 @@
     return `<li class="pl-item" data-n="${p.n}">
       <span class="pl-n">${p.n}</span>
       <span class="pl-main"><span class="pl-t">${esc(p.t)}</span>
-        <span class="pl-meta">${[p.a, p.v, p.y].filter(Boolean).map(esc).join(' · ')}</span></span>
-      <a class="pl-link${lab === 'search' ? ' weak' : ''}" href="${esc(l)}" target="_blank" rel="noopener">${lab} ↗</a>
+        <span class="pl-meta">${[p.a, p.v, p.y].filter(Boolean).map(esc).join(' · ')}</span>
+        ${p.note ? `<span class="pl-note">${esc(p.note)}</span>` : ''}</span>
+      <span class="pl-links">
+        <a class="pl-link${lab === 'search' ? ' weak' : ''}" href="${esc(l)}" target="_blank" rel="noopener">${lab} ↗</a>
+        ${p.pre ? `<a class="pl-link pre" href="${esc(p.pre)}" target="_blank" rel="noopener">preprint</a>` : ''}
+      </span>
     </li>`;
   };
   const listOf = (papers) => papers.length
@@ -110,6 +116,81 @@
         }).join('')}
       </div>`;
     }).join('');
+  }
+
+
+  /* ------------------------------------------------- models and simulators */
+  /* One row per place on the survey's Fig. 2 axis. `pick` says which references belong to a row:
+     a subject tag, a pattern over the title, or both. The rule is printed under each expanded row
+     so the reader can see how the list was made rather than trusting it. */
+  const MODEL_ROWS = [
+    { side: 'Physics-based', what: 'Reduced-order model — linear inverted pendulum, centroidal dynamics, single rigid body',
+      buys: 'A handful of states with an analytic solution; constraints stay convex, so the loop runs at kilohertz and can be proved stable.',
+      breaks: 'Everything it abstracts away: limb inertia, compliance, and any contact it did not assume.',
+      use: 'Real-time balance, footstep planning, convex MPC',
+      topics: ['zmp-lip'], re: /reduced.order|inverted pendulum|centroidal|single rigid body|template|capture point|divergent component|preview control|angular momentum/i,
+      rule: 'subject “ZMP & inverted pendulum”, or a title naming a reduced-order model' },
+    { side: 'Physics-based', what: 'Full-order rigid-body model with contact',
+      buys: 'Every joint and every wrench, exactly as derived; whole-body control and contact-implicit optimisation are written on it.',
+      breaks: 'Nonsmooth contact and the cost of solving it; parameters you must identify.',
+      use: 'Whole-body QPs, nonlinear MPC, offline trajectory optimisation',
+      topics: ['whole-body', 'contact'], re: /full.order|whole.body|inverse dynamics|rigid.body|contact.implicit|multi.contact|complementarity/i,
+      rule: 'subjects “whole-body control” or “contact & compliance”, or a title naming the full model' },
+    { side: 'Physics-based', what: 'Simulator — MuJoCo, Isaac, Newton, Genesis',
+      buys: 'Contact-rich physics at thousands of times real speed on a GPU, which is what makes reinforcement learning affordable.',
+      breaks: 'The reality gap: actuator dynamics, friction, latency and deformation that are cheap to simulate wrongly.',
+      use: 'Policy training, domain randomisation',
+      topics: ['simulation'], re: /mujoco|isaac|bullet|raisim|genesis|newton|physics engine|simulat/i,
+      rule: 'subject “simulators”, or a title naming a simulator or physics engine' },
+    { side: 'Hybrid', what: 'Physics plus a learned residual — learned actuator models, residual dynamics',
+      buys: 'Keeps the structure and the guarantees, and lets data absorb what the derivation missed.',
+      breaks: 'Only as good as the data covering the residual; the split between the two halves is a design choice.',
+      use: 'Sim-to-real correction, system identification',
+      topics: ['sim-to-real'], re: /residual|actuator model|system identification|reality gap|domain random|hybrid model|delta dynamics/i,
+      rule: 'subject “sim-to-real”, or a title naming a residual, an actuator model or identification' },
+    { side: 'Data-driven', what: 'Learned dynamics',
+      buys: 'Predicts the next state from data without a derivation, including effects nobody wrote down.',
+      breaks: 'Extrapolation; error compounds over a horizon.',
+      use: 'Model-based RL, short-horizon planning',
+      topics: [], re: /learned dynamics|dynamics model|model.based reinforcement|learning.{0,20}dynamics|neural.{0,20}dynamics|deep dynamics/i,
+      rule: 'a title naming a learned or neural dynamics model' },
+    { side: 'Data-driven', what: 'Latent dynamics',
+      buys: 'Rolls out in a compact learned space, so long horizons stay cheap.',
+      breaks: 'The latent space is only as meaningful as its training distribution; physical constraints are not naturally expressible.',
+      use: 'Planning from pixels, model-based RL',
+      topics: [], re: /latent|autoencoder|variational|representation learning|embedding space/i,
+      rule: 'a title naming a latent space, an autoencoder or a learned representation' },
+    { side: 'Data-driven', what: 'World model',
+      buys: 'Predicts observations and consequences of actions directly, including semantics; supports imagination and reasoning about futures.',
+      breaks: 'Expensive to evaluate, hard to constrain, and unverified against physics.',
+      use: 'The deliberative layer, long-horizon and multi-task behaviour',
+      topics: ['world-model'], re: /world model|dreamer|imagination|video prediction|video generation/i,
+      rule: 'subject “world models”, or a title naming a world model or video prediction' },
+  ];
+  function renderModels() {
+    const host = $('#models-table'); if (!host) return;
+    const pick = (r) => DATA.papers.filter(p =>
+      (r.topics.length && r.topics.some(t => p.tp.includes(t))) || (r.re && r.re.test(p.t))).sort(byYear);
+    host.innerHTML = `<table class="data-table models">
+      <thead><tr><th style="width:132px">Where it sits</th><th style="width:20%">What it is</th><th>What it buys you</th><th>Where it breaks</th><th style="width:16%">Typical use</th><th style="width:96px">Papers</th></tr></thead>
+      <tbody>${MODEL_ROWS.map((r, i) => {
+        const ps = pick(r);
+        return `<tr class="mrow" data-i="${i}">
+            <td class="k">${esc(r.side)}</td><td>${esc(r.what)}</td><td>${esc(r.buys)}</td>
+            <td>${esc(r.breaks)}</td><td>${esc(r.use)}</td>
+            <td><button class="mexp" data-i="${i}" aria-expanded="false">${ps.length} ▾</button></td>
+          </tr>
+          <tr class="mpapers" data-i="${i}" hidden><td colspan="6">
+            <p class="rule">${esc(r.rule)} — ${ps.length} of ${DATA.papers.length} references.</p>
+            ${listOf(ps)}
+          </td></tr>`;
+      }).join('')}</tbody></table>`;
+    $$('#models-table .mexp').forEach(b => b.addEventListener('click', () => {
+      const row = $(`#models-table tr.mpapers[data-i="${b.dataset.i}"]`);
+      const open = row.hidden;
+      row.hidden = !open; b.setAttribute('aria-expanded', String(open));
+      b.textContent = b.textContent.replace(open ? '▾' : '▴', open ? '▴' : '▾');
+    }));
   }
 
   /* ------------------------------------------------------------- five shifts */
@@ -194,7 +275,7 @@
           <td class="fam">${esc(famNames(p) || '—')}</td>
           <td class="rate">${esc(famRate(p))}</td>
           <td class="tp">${p.tp.map(t => `<button class="tp-chip" data-topic="${t}">${esc(TOPIC_LABEL[t] || t)}</button>`).join('')}</td>
-          <td><a class="${lab === 'search' ? 'weak' : ''}" href="${esc(l)}" target="_blank" rel="noopener">${lab} ↗</a></td>
+          <td><a class="${lab === 'search' ? 'weak' : ''}" href="${esc(l)}" target="_blank" rel="noopener">${lab} ↗</a>${p.pre ? `<a class="pre" href="${esc(p.pre)}" target="_blank" rel="noopener">preprint</a>` : ''}</td>
         </tr>`;
       }).join('')}
       </tbody></table>`;
@@ -252,6 +333,8 @@
       { label: 'simulators', topic: 'simulation' },
       { label: 'teleoperation & mocap', topic: 'teleoperation' },
       { label: 'hardware & platforms', topic: 'hardware' },
+      { label: 'machine-learning foundations', topic: 'ml-foundations' },
+      { label: 'whole-body control', topic: 'whole-body' },
     ];
     host.innerHTML = picks.map(p => {
       const n = DATA.papers.filter(x => x.tp.includes(p.topic)).length;
@@ -302,7 +385,7 @@
     try {
       DATA = await fetch('assets/data/locomotion_papers.json').then(r => r.json());
     } catch (e) { console.error('paper data failed to load', e); return; }
-    renderMethods(); renderShifts(); renderQuickPicks();
+    renderMethods(); renderShifts(); renderModels(); renderQuickPicks();
 
     $('#lib-era').innerHTML = '<option value="">every era</option>' +
       ['classical', 'learning', 'emerging', 'outlook', 'front'].map(e => `<option value="${e}">${ERA_LABEL[e]}</option>`).join('');
@@ -337,6 +420,12 @@
         throwOnError: false,
       }));
     }
+    /* the verification note quotes numbers, so they are computed from the data, not typed in */
+    const verified = DATA.papers.filter(p => p.doi).length;
+    const nolink = DATA.papers.filter(p => !p.doi && !p.url).length;
+    const vv = $('#v-verified'), vn = $('#v-nolink');
+    if (vv) vv.textContent = `${verified} of the ${verified} DOIs shown`;
+    if (vn) vn.textContent = String(nolink);
     document.dispatchEvent(new CustomEvent('library-ready'));
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
