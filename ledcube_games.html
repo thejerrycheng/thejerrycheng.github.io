@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The console: 3-D Snake and 3-D Pong on an LED cube — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="Play 3-D Snake with wrap-around walls and 3-D Pong against a machine opponent, on a simulated 8x8x8 LED cube driven exactly the way the hardware drives it.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/ledcube_games.html">
+  <meta property="og:title" content="3-D Snake and 3-D Pong on an LED cube">
+  <meta property="og:description" content="Wrap-around 3-D Snake and Pong against a machine opponent, on a simulated 512-LED cube.">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/ledcube/poster.jpg">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <link rel="stylesheet" href="assets/css/project-page.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="assets/css/ledcube.css">
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button type="button" class="theme-btn" aria-label="Switch between day and night" aria-pressed="false">
+      <span class="if-night"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Day</span></span>
+      <span class="if-day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="lbl">Night</span></span>
+    </button>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+  <a href="cv.html">CV</a>
+</div>
+
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">The console ◆ 3-D Snake ◆ 3-D Pong ◆ 512 LEDs ◆ MIE438</p>
+    <h1>Press start</h1>
+    <p>Two games written for a display that is 8 cells wide, 8 deep and 8 tall, and that can only ever light one layer at a time. Snake gains a third axis and loses its walls — run off one face and you come back on the other. Pong gains a machine opponent that solves for where the ball will cross its own face and moves to meet it. Both run on the same multiplexed frame buffer the hardware uses.</p>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
+<section class="section" id="play">
+  <div class="cube-switch">
+    <button type="button" class="btn gm-pick btn-primary" data-game="snake">3-D Snake</button>
+    <button type="button" class="btn gm-pick" data-game="pong">3-D Pong</button>
+    <a class="btn" href="ledcube.html#sandbox">← Animations &amp; liquid</a>
+  </div>
+
+  <div class="card scene-block">
+    <span class="caption-box" id="gm-title">3-D Snake</span>
+    <div class="demo-grid">
+      <div class="demo-scene cube-stage">
+        <div id="gm-fx" style="position:absolute;inset:0;pointer-events:none;z-index:5"></div>
+        <canvas id="gm-canvas" class="cube-canvas" aria-label="LED cube game"></canvas>
+        <div class="keycaps" id="gm-snake-keys">
+          <kbd>←</kbd><kbd>→</kbd> x &nbsp; <kbd>↑</kbd><kbd>↓</kbd> y &nbsp; <kbd>W</kbd><kbd>S</kbd> z
+          &nbsp;— six directions, which is the whole point of playing Snake in a cube. Walls wrap.
+        </div>
+        <div class="keycaps" id="gm-pong-keys" hidden>
+          <kbd>←</kbd><kbd>→</kbd> slide &nbsp; <kbd>W</kbd><kbd>S</kbd> raise / lower
+          &nbsp;— your paddle is the near face; the machine holds the far one.
+        </div>
+      </div>
+      <div class="demo-controls">
+        <div class="gm-board" id="gm-board"></div>
+        <div class="demo-buttons">
+          <button class="btn btn-primary" id="gm-go" type="button">Pause</button>
+          <button class="btn" id="gm-restart" type="button">Restart</button>
+          <button class="btn" id="gm-clear" type="button">Clear scores</button>
+        </div>
+        <label id="gm-speed-wrap">Snake speed <span id="gm-speed-v">4</span> steps/s<input type="range" id="gm-speed" min="1" max="12" step="1" value="4"></label>
+        <label id="gm-skill-wrap" hidden>Machine skill <span id="gm-skill-v">fair</span><input type="range" id="gm-skill" min="0" max="1" step="0.05" value="0.5"></label>
+        <label>Refresh rate <span id="gm-refresh-v">120</span> Hz<input type="range" id="gm-refresh" min="3" max="200" step="1" value="120"></label>
+        <p class="plot-note">Drag the cube to turn it — you will want to, because the snake occludes itself from every fixed angle. Scores are kept in your own browser and nowhere else.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== HOW SNAKE CHANGES =================== -->
+<section class="section" id="snake">
+  <h2 class="section-title">Snake, without walls</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>Two things change when Snake moves into a volume, and only one of them is the obvious one.</p>
+      <p>The obvious one is the input space: four directions become six, and the two extra ones point along the axis you are looking down, so they are the two you cannot see yourself moving in. That is why the cube has to be draggable. On the hardware they are the shoulder buttons of the PS2 pad, for the same reason.</p>
+      <p>The one that actually changes the game is <b>density</b>. A 2-D 8 × 8 board is 64 cells and a snake of length 20 fills nearly a third of it; the 8 × 8 × 8 cube is 512, and the same snake fills 4 %. Self-collision stops being the pressure it is in two dimensions, and the difficulty moves entirely into <em>navigation</em> — finding a cell you cannot see because your own body is between it and your eye.</p>
+      <p>So the walls come off. Running off the +x face puts you back on −x, which removes the only remaining source of cheap deaths and leaves the game to be about the thing that is hard:</p>
+      <div class="eq">wrap(v) = ((v mod 8) + 8) mod 8 &nbsp;— applied per axis, every step</div>
+      <p>The double modulo is not decoration; JavaScript's <code>%</code> keeps the sign of its left operand, so <code>-1 % 8</code> is <code>-1</code>, and a single modulo sends the snake to index −1 rather than to the far face.</p>
+      <p>The rest matches the hardware version: no straight reversal (the one input the PS2 build also refuses, because it is always a self-collision), grow by one on food, and food respawns only into a cell the body does not occupy.</p>
+    </div>
+    <div>
+      <div class="ledger" style="margin-top:0">
+        <div class="card"><h4 class="known">2-D Snake</h4><ul><li>64 cells</li><li>4 inputs</li><li>Length 20 = 31 % full</li><li>Walls kill</li></ul></div>
+        <div class="card"><h4 class="unknown">3-D Snake</h4><ul><li>512 cells</li><li>6 inputs</li><li>Length 20 = 3.9 % full</li><li>Walls wrap</li></ul></div>
+        <div class="card"><h4 class="truth">What is hard</h4><ul><li>Occlusion, not space</li><li>Depth along the view axis</li><li>Holding a volume in your head</li></ul></div>
+      </div>
+      <div class="card finding" style="margin-top:22px">
+        <div class="no">i</div>
+        <h3>The head has to blink</h3>
+        <p>On a binary display the head and the body are the same brightness, so at any moment you cannot tell which end of a 20-cell curve you are steering. The fix that costs nothing is temporal: the head is toggled on and off at about 2 Hz, which is far below the refresh rate and therefore free — the multiplexer was going to redraw the frame anyway. It is the only per-LED "brightness" this display has, and it is spent on the one bit of state the player genuinely cannot infer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== PONG AI =================== -->
+<section class="section" id="pong">
+  <h2 class="section-title">The machine you are playing</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>The Pong opponent does not chase the ball. Chasing looks plausible and plays badly: the paddle is always behind, and against a fast ball it never arrives. Instead it does what a person does, which is to solve for where the ball will be when it gets there.</p>
+      <p>The ball travels in a straight line between bounces, so the time to reach the machine's face is exact:</p>
+      <div class="eq">t* = (7 − y) / v<sub>y</sub> &nbsp; (only while v<sub>y</sub> &gt; 0)</div>
+      <p>and the free-flight crossing point is x + v<sub>x</sub>t*, z + v<sub>z</sub>t*. The four side walls make that a guess rather than an answer, and the fix is to <b>fold</b> the coordinate rather than iterate the bounces — reflect it back into the box with a triangle wave of period 2(N−1), which is exact for any number of wall hits and costs one modulo:</p>
+      <div class="eq">fold(u) = u mod 2W, &nbsp; then u &gt; W ? 2W − u : u &nbsp;&nbsp; (W = 7)</div>
+      <p>Then the paddle moves toward that point at a capped rate. That cap is the only thing that makes the machine beatable: the prediction itself is exact, so if the paddle could teleport there would be no game.</p>
+
+      <h3>Aiming, and why it was necessary</h3>
+      <p>The first version only defended, and against a competent player it produced <b>rallies that never ended</b> — both paddles arrived in time, every time, for minutes. A predictor that only defends cannot win; it can only fail to lose.</p>
+      <p>So the machine aims. Contact away from the paddle centre already imparts lateral velocity to the ball — that is what makes your own shots steerable — so the machine deliberately places its paddle <em>off</em> the intercept, on the side that throws the ball away from where your paddle currently is:</p>
+      <div class="eq">x<sub>target</sub> = fold(x + v<sub>x</sub>t*) − sgn(3.5 − x<sub>you</sub>) · 0.9·skill</div>
+      <p>The offset has to stay inside the paddle's 1.5-cell half-width or the machine misses its own shot, which is a pleasing constraint: it can only aim as hard as it can still catch.</p>
+
+      <h3>One slider, three effects</h3>
+      <p>Skill does not degrade the prediction. A perfect predictor that merely moves slowly is beatable but never <em>wrong</em>, and reads as a machine asleep rather than one you out-thought. Skill instead moves three things at once: paddle rate <b>2.6 → 8.8</b> cells/s, aim error <b>±1.4 → 0</b> cells, and aim offset <b>0 → 0.9</b> cells. At the bottom it misjudges by most of a paddle width and you can pick a corner; at the top it is exact, and it is trying to make you run.</p>
+      <p>It is honest about the one thing it cannot do: while v<sub>y</sub> ≤ 0 the ball is travelling away and there is nothing to predict, so it holds its last intercept — the same hedge a human plays.</p>
+    </div>
+    <div>
+      <div class="cmd"><span class="c">// fold a free-flight coordinate back into the box</span>
+const fold = (u) =&gt; {
+  const p = 2 * (N - 1);
+  u = ((u % p) + p) % p;
+  return u &gt; N - 1 ? p - u : u;
+};
+
+<span class="c">// where will it cross my face, and when</span>
+const t = (N - 1 - this.p[1]) / this.v[1];
+let tx = fold(this.p[0] + this.v[0] * t);
+let tz = fold(this.p[2] + this.v[2] * t);
+
+<span class="c">// aim: sit off-centre so contact throws the ball</span>
+<span class="c">// away from where the human is standing</span>
+const aim = 0.9 * skill;
+tx -= Math.sign(3.5 - this.pad[0] || 1) * aim;
+tz -= Math.sign(3.5 - this.pad[1] || 1) * aim;
+
+<span class="c">// move there, at the rate skill allows</span>
+const rate = (2.6 + 6.2 * skill) * dt;
+const slop = (1 - skill) * 2.8;</div>
+
+      <div class="table-wrap" style="margin-top:20px">
+        <table class="data-table compact">
+          <thead><tr><th>Slider</th><th>Paddle</th><th>Aim error</th><th>You win</th></tr></thead>
+          <tbody>
+            <tr><td>Sleepy</td><td>2.6 cells/s</td><td>±1.4</td><td>97 %</td></tr>
+            <tr><td>Easy</td><td>4.2</td><td>±1.05</td><td>70 %</td></tr>
+            <tr><td>Fair</td><td>5.7</td><td>±0.70</td><td>51 %</td></tr>
+            <tr><td>Sharp</td><td>7.3</td><td>±0.35</td><td>28 %</td></tr>
+            <tr><td>Ruthless</td><td>8.8</td><td>0</td><td>0 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="plot-note" style="margin-top:10px">Share of points won, over 3 × 200 s per setting against a <em>simulated</em> player: one that predicts the intercept the same way the machine does, but on a 200 ms stale view of the ball and with ±1.2 cells of aim error, moving at 10 cells/s. That stand-in is a modelling choice, not a measurement of you — it exists so the slider could be calibrated to be monotone and to sit near even at the midpoint, which it does. Where you actually fall on it is the interesting part.</p>
+      <p class="plot-note">The paddle is 3 × 3 on an 8 × 8 face, so it covers 14 % of what it defends, and the ball speeds up 4 % per exchange to a cap of 18 cells/s — without that cap it eventually moves more than a cell per frame and passes through a paddle instead of hitting it.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="credits">
+  <h2 class="section-title">Credits</h2>
+  <div class="card card-pad credits">
+    <p><b>MIE438: Microprocessors and Embedded Microcontrollers</b> at the University of Toronto, joint work with <b>Jiaming (Jason) Dong</b>. The cube, the PCB design, the display library and both games are from the course project.</p>
+    <p style="margin-top:8px">The browser console on this page — the frame buffer, the multiplexer, the persistence-of-vision model, wrap-around Snake and the Pong opponent — was written afterwards, so the games can be played rather than described.</p>
+    <div class="links" style="margin-top:12px">
+      <a href="ledcube.html">The cube, the electronics &amp; the liquid</a>
+      <a href="assets/pdf/projects/MIE438_Final_Report.pdf" target="_blank" rel="noopener">Report</a>
+      <a href="https://github.com/thejerrycheng/MIE438_LED_cubic_console" target="_blank" rel="noopener">Code</a>
+      <a href="https://www.youtube.com/watch?v=cC_NXlKTEwk&list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV" target="_blank" rel="noopener">Video</a>
+      <a href="projects.html">All projects</a>
+    </div>
+  </div>
+</section>
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+<script src="assets/js/ledcube.js"></script>
+<script src="assets/js/ledcube_render.js"></script>
+<script src="assets/js/ledcube_games.js"></script>
+</body>
+</html>

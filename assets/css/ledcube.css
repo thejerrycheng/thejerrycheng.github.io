@@ -1,0 +1,63 @@
+/* ledcube.css — shared by ledcube.html (animations + liquid) and
+   ledcube_games.html (Snake + Pong). Buttons follow the MABEL .btn recipe in
+   gotham.css; everything here is layout, the cube canvas, and the comic FX. */
+
+.cube-canvas { width: 100%; height: 500px; display: block; border: var(--line-w) solid var(--ink);
+               border-radius: var(--radius-sm); background: #0C1018; box-shadow: var(--sh-xs);
+               cursor: grab; touch-action: none; }
+.cube-canvas:active { cursor: grabbing; }
+.cube-stage { position: relative; }
+
+.lb-note { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.75; background: var(--paper);
+           border: 1.5px solid var(--ink); border-radius: 6px; padding: 10px 12px; }
+.lb-note b { color: var(--hi-deep); }
+
+/* ---- the big button bar (no dropdowns anywhere on these pages) ---- */
+.cube-buttons { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+                gap: 10px; margin: 0 0 4px; }
+.cube-buttons .btn { display: block; text-align: left; padding: 11px 13px 10px; line-height: 1.25;
+                     font-size: 14px; letter-spacing: 0.01em; }
+.cube-buttons .btn small { display: block; margin-top: 3px; font-family: var(--font-mono);
+                           font-size: 10.5px; font-weight: 400; letter-spacing: 0; opacity: 0.72;
+                           text-transform: none; line-height: 1.4; }
+.cube-buttons .btn-primary small { opacity: 0.9; }
+
+/* ---- scoreboard ---- */
+.gm-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+.gm-score { background: var(--paper); border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm);
+            box-shadow: var(--sh-xs); padding: 9px 10px 7px; text-align: center; }
+.gm-score .gm-k { display: block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.09em;
+                  text-transform: uppercase; color: var(--ink-soft); }
+.gm-score b { display: block; font-family: var(--font-display); font-size: 26px; line-height: 1.1;
+              color: var(--hi-deep); }
+.gm-score.gm-vs b { color: var(--ink); }
+.gm-score.gm-best b { font-size: 20px; padding-top: 5px; }
+
+/* ---- comic FX: the text that pops when you eat, crash, score or concede ---- */
+.cube-fx { position: absolute; left: 50%; top: 46%; z-index: 5; pointer-events: none;
+           font-family: var(--font-comic);
+           font-size: clamp(30px, 6vw, 58px); letter-spacing: 0.03em; white-space: nowrap;
+           color: var(--pop); -webkit-text-stroke: 2px #151820;
+           text-shadow: 4px 4px 0 rgba(0,0,0,0.55);
+           animation: cube-pop 1.15s cubic-bezier(.18,.9,.3,1) forwards; }
+.cube-fx.cube-fx-die  { color: #FF6B4A; }
+.cube-fx.cube-fx-win  { color: #7BE8A3; }
+.cube-fx.cube-fx-eat  { color: var(--pop); }
+@keyframes cube-pop {
+  0%   { transform: translate(-50%, -50%) scale(0.3) rotate(0deg); opacity: 0; }
+  18%  { transform: translate(calc(-50% + var(--dx) * 0.25), calc(-50% + var(--dy) * 0.25))
+                    scale(1.22) rotate(var(--rot)); opacity: 1; }
+  34%  { transform: translate(calc(-50% + var(--dx) * 0.45), calc(-50% + var(--dy) * 0.45))
+                    scale(1) rotate(var(--rot)); opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy)))
+                    scale(1.05) rotate(var(--rot)); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cube-fx { animation: cube-fade 0.5s linear forwards; }
+  @keyframes cube-fade { 0% { opacity: 0; } 20% { opacity: 1; } 100% { opacity: 0; } }
+}
+
+.cube-switch { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.cube-switch .btn { font-size: 15px; padding: 10px 20px 9px; }
+
+@media (max-width: 900px) { .cube-canvas { height: 380px; } }

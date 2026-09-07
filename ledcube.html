@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>An 8×8×8 LED cube game console — Jerry (Qilong) Cheng</title>
-  <meta name="description" content="512 LEDs, nine shift registers, one SPI bus and an illusion held together by refreshing faster than the eye can follow. Play 3-D Snake in the browser, and drag the refresh rate down until persistence of vision gives out.">
+  <title>An 8×8×8 LED cube: twelve animations and a cube of liquid — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="512 LEDs, nine shift registers, one SPI bus and an illusion held together by refreshing faster than the eye can follow. Run twelve animations, tip a cube that is a third full of liquid, and drag the refresh rate down until persistence of vision gives out.">
   <meta name="author" content="Jerry Cheng">
   <link rel="canonical" href="https://thejerrycheng.github.io/ledcube.html">
-  <meta property="og:title" content="An 8×8×8 LED cube you can play">
-  <meta property="og:description" content="Play 3-D Snake on a simulated LED cube, and watch multiplexing fall apart when you slow the refresh rate down.">
+  <meta property="og:title" content="An 8×8×8 LED cube you can drive">
+  <meta property="og:description" content="Twelve animations, a sloshing cube of liquid, and multiplexing falling apart when you slow the refresh rate down.">
   <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/ledcube/poster.jpg">
   <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
   <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
@@ -23,16 +23,7 @@
   <link rel="stylesheet" href="assets/css/project-page.css">
   <script>document.documentElement.classList.add('js');</script>
   <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
-  <style>
-    #lb-canvas { width: 100%; height: 480px; display: block; border: var(--line-w) solid var(--ink);
-                 border-radius: var(--radius-sm); background: #0C1018; box-shadow: var(--sh-xs);
-                 cursor: grab; touch-action: none; }
-    #lb-canvas:active { cursor: grabbing; }
-    .lb-note { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.8; background: var(--paper);
-               border: 1.5px solid var(--ink); border-radius: 6px; padding: 10px 12px; }
-    .lb-note b { color: var(--hi-deep); }
-    @media (max-width: 900px) { #lb-canvas { height: 360px; } }
-  </style>
+  <link rel="stylesheet" href="assets/css/ledcube.css">
 </head>
 <body>
 
@@ -66,7 +57,7 @@
   <div class="wrap">
     <p class="kicker">Embedded systems ◆ 512 LEDs ◆ MIE438 ◆ University of Toronto ◆ 2022</p>
     <h1>512 lights</h1>
-    <p>Console games have been stuck behind a flat pane of glass since Computer Space. So we soldered 512 LEDs into a cube, drove them with nine shift registers over one SPI bus, and rewrote Snake and Pong for three dimensions. The whole thing is an illusion: only one of the eight layers is ever lit, and it works because the cube refreshes faster than your eye can follow. Below you can play it — and take that refresh rate away.</p>
+    <p>Console games have been stuck behind a flat pane of glass since Computer Space. So we soldered 512 LEDs into a cube, drove them with nine shift registers over one SPI bus, and rewrote Snake and Pong for three dimensions. The whole thing is an illusion: only one of the eight layers is ever lit, and it works because the cube refreshes faster than your eye can follow. Below you can drive it — twelve animations, a cube a third full of liquid you tip by dragging — and then take that refresh rate away.</p>
   </div>
 </header>
 <div class="deco-band" aria-hidden="true"></div>
@@ -83,7 +74,8 @@
       <a href="assets/pdf/projects/MIE438_Final_Report.pdf" target="_blank" rel="noopener">Report (PDF)</a>
       <a href="https://github.com/thejerrycheng/MIE438_LED_cubic_console" target="_blank" rel="noopener">Code</a>
       <a href="https://www.youtube.com/watch?v=cC_NXlKTEwk&list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV" target="_blank" rel="noopener">Video</a>
-      <a href="#sandbox">Play it</a>
+      <a href="#sandbox">Drive it</a>
+      <a href="ledcube_games.html">Snake &amp; Pong</a>
     </div>
   </div>
 
@@ -99,43 +91,77 @@
 
 <!-- =================== SANDBOX =================== -->
 <section class="section" id="sandbox">
-  <h2 class="section-title">Play it, then break it</h2>
-  <p class="lead">The cube below runs the same way the hardware does: a frame buffer of 512 bits, and a multiplexer that lights one layer at a time in sequence. The glow you see is a persistence-of-vision model — an LED reads as lit for about 55 ms after it is driven. Drag the refresh rate down and the illusion comes apart in front of you, which is exactly the constraint the whole electronics design is built around.</p>
+  <h2 class="section-title">Drive it, then break it</h2>
+  <p class="lead">The cube below runs the way the hardware does: a frame buffer of 512 bits, and a multiplexer that lights one layer at a time in sequence. The glow is a persistence-of-vision model — an LED reads as lit for about 55&nbsp;ms after it is driven. Pick a pattern, then drag the refresh rate down and watch the illusion come apart in front of you, which is exactly the constraint the whole electronics design is built around.</p>
 
   <div class="card scene-block">
     <span class="caption-box">The cube</span>
     <div class="demo-grid">
-      <div class="demo-scene">
-        <canvas id="lb-canvas" aria-label="8x8x8 LED cube"></canvas>
-        <div class="keycaps" id="lb-keys" hidden>
-          <kbd>←</kbd><kbd>→</kbd> x &nbsp; <kbd>↑</kbd><kbd>↓</kbd> y &nbsp; <kbd>W</kbd><kbd>S</kbd> z
-          &nbsp;— six directions, which is the whole point of playing Snake in a cube.
-        </div>
+      <div class="demo-scene cube-stage">
+        <canvas id="lb-canvas" class="cube-canvas" aria-label="8 by 8 by 8 LED cube"></canvas>
+        <p class="plot-note">Drag the cube to turn it. In <b>Liquid</b> the drag is the tilt: gravity is resolved into the cube frame, so tipping the box pours the fluid downhill.</p>
       </div>
       <div class="demo-controls">
-        <div class="lb-note" id="lb-note">
-          Only <b>one layer</b> is lit at any instant. The yellow ring marks the layer the
-          multiplexer is driving right now; everything else you see is your own eye
-          holding on to a light that has already gone out.
-        </div>
-        <label style="margin-top:12px">Showing
-          <select id="lb-mode">
-            <option value="wave">Wave</option>
-            <option value="rain">Rain</option>
-            <option value="firework">Firework</option>
-            <option value="spin">Spinning bar</option>
-            <option value="snake">3-D Snake — play it</option>
-          </select>
+        <div class="lb-note" id="lb-note"></div>
+        <div class="cube-buttons" id="lb-buttons"></div>
+
+        <label id="lb-text-wrap" hidden>Scroll this text
+          <input type="text" id="lb-text" value="MIE438 LED CUBE " maxlength="40">
         </label>
+
         <label>Refresh rate <span id="lb-refresh-v">120</span> Hz<input type="range" id="lb-refresh" min="3" max="200" step="1" value="120"></label>
-        <label id="lb-speed-wrap" hidden>Snake speed <span id="lb-speed-v">4</span> steps/s<input type="range" id="lb-speed" min="1" max="10" step="1" value="4"></label>
-        <div class="demo-buttons">
-          <button class="btn" id="lb-reset" type="button">Reset</button>
+
+        <div id="lb-liquid-wrap" hidden>
+          <label>Gravity <span id="lb-gravity-v">9.8</span> m/s²<input type="range" id="lb-gravity" min="1" max="20" step="0.2" value="9.8"></label>
+          <label>Damping <span id="lb-visc-v">0.6</span><input type="range" id="lb-visc" min="0" max="3" step="0.05" value="0.6"></label>
+          <div class="demo-buttons"><button class="btn" id="lb-liquid-reset" type="button">Level it off</button></div>
         </div>
-        <p class="plot-note">Drag the cube to turn it. Take the refresh rate below about 40 Hz and the layers start to separate; below 10 Hz you can watch the multiplexer walk up the cube one plane at a time, which is all it has ever been doing.</p>
+
+        <p class="plot-note">Take the refresh rate below about 40&nbsp;Hz and the layers start to separate; below 10&nbsp;Hz you can watch the multiplexer walk up the cube one plane at a time, which is all it has ever been doing.</p>
+        <div class="demo-buttons" style="margin-top:12px">
+          <a class="btn btn-primary" href="ledcube_games.html">Play Snake &amp; Pong →</a>
+        </div>
       </div>
     </div>
   </div>
+</section>
+
+<!-- =================== LIQUID =================== -->
+<section class="section" id="liquid">
+  <h2 class="section-title">A cube one-third full</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>The display is binary — an LED is on or off, there is no room in the refresh loop for brightness — so a liquid has to be drawn as a <em>height field</em>: for each of the 64 columns, how many of its eight cells are wet. That turns out to be exactly what the cheapest useful fluid model produces.</p>
+      <p>The solver is <b>shallow water</b> on the 8 × 8 floor: a height <em>h</em> per column, and velocities stored on the faces between columns rather than at the centres. Each step accelerates the faces down the surface gradient and along the tilt, then moves volume with an upwind flux:</p>
+      <div class="eq">u<sub>i+½</sub> ← (u<sub>i+½</sub> + Δt·[ −g<sub>z</sub>(h<sub>i+1</sub> − h<sub>i</sub>) + g<sub>x</sub> ]) · (1 − λΔt)<br>
+      h<sub>i</sub> ← h<sub>i</sub> − Δt·(F<sub>i+½</sub> − F<sub>i−½</sub>), &nbsp; F = u · h<sup>upwind</sup></div>
+      <p>Faces are the reason it behaves. Storing velocity at cell centres lets a column push and pull itself, and the surface develops a checkerboard that no amount of damping removes; on the staggered grid a face velocity only ever moves volume between the two columns it separates, so the scheme conserves mass by construction. The cube is filled to <b>h = 8/3 ≈ 2.67 cells</b> — a third of its height, 170.7 cell-volumes — and the total is renormalised every step to kill the drift that clamping <em>h</em> ≥ 0 at the walls would otherwise introduce.</p>
+      <p>Gravity comes from where you dragged the cube. The renderer's screen-up direction is rotated back into cube coordinates, giving <span class="eq" style="display:inline;padding:2px 6px">g = (g·sinθ·sinψ, g·sinθ·cosψ, g·cosθ)</span> for yaw ψ and pitch θ; the in-plane part drives the fluid downhill and the vertical part sets the wave speed √(g<sub>z</sub>h). Tip the cube far enough and g<sub>z</sub> weakens, the waves slow down, and the surface takes visibly longer to settle — which is correct, and not something you would get from animating a tilted plane.</p>
+      <p>Rendering is one line per column: light cells 0…⌊h⌋−1, then light the cell at ⌊h⌋ if the fractional part clears 0.45, so the surface reads as a surface rather than a staircase.</p>
+      <p>That last rule is where the display gets its say. A third of eight cells is 2.667, and a column can only be drawn 2 or 3 deep — so at rest, when every column has the same fraction, every column rounds the same way and the cube lights <b>192 of 512 LEDs, or 37.5 %</b>, not 33.3 %. The <em>solver</em> holds 170.667 cell-volumes exactly; the <em>display</em> cannot show a two-thirds-full cell. Tip the cube and the columns stop agreeing, the rounding goes both ways, and it settles to about 176 — closer to the true volume when the surface is sloped than when it is flat, which is the opposite of what you would guess.</p>
+    </div>
+    <div>
+      <div class="ledger" style="margin-top:0">
+        <div class="card"><h4 class="known">Given</h4><ul><li>8 × 8 columns, 8 cells tall</li><li>Fill = 1/3, h₀ = 2.667</li><li>Volume 170.7 cell-units</li></ul></div>
+        <div class="card"><h4 class="unknown">Solved</h4><ul><li>h per column</li><li>u on 2 × 72 faces</li><li>4 substeps per frame</li></ul></div>
+        <div class="card"><h4 class="truth">Measured</h4><ul><li>Volume 170.667 at every tilt</li><li>Depth 2.67 flat upright</li><li>1.42–3.87 at 20°</li><li>0.00–5.57 at 40°</li></ul></div>
+      </div>
+      <div class="card finding" style="margin-top:22px">
+        <div class="no">i</div>
+        <h3>Why not particles</h3>
+        <p>The obvious answer to "liquid in a cube" is SPH or a particle sim, and on a 512-voxel binary display it is the wrong one: a few thousand particles have to be binned into 64 columns to be drawn at all, so every bit of detail the particles buy is thrown away in the last step. The height field solves for the quantity the display can actually show, at about 150 arithmetic operations per column per substep — cheap enough to run four substeps a frame and stay well inside the animation budget.</p>
+        <p>What it gives up is real: a height field cannot break a wave, cannot separate a droplet, and cannot hold liquid on the ceiling, so tipping past vertical is not modelled. On this display none of those are visible.</p>
+      </div>
+    </div>
+  </div>
+
+  <figure class="fig">
+    <img src="assets/images/projects/ledcube/ledcube_liquid.png" alt="Three panels: settled surface profiles at six tilts, the depth envelope and volume against tilt, and the number of LEDs lit against tilt.">
+    <figcaption><b>The solver, measured.</b> Thirty-one tilts from 0° to 60°, each settled for 12.5 s of simulated time (3,000 steps at Δt = 1/240, damping λ = 0.6), driving the <em>same</em> <code>Liquid</code> class this page runs — the harness is <code>scripts/tools/ledcube_liquid.py</code>, which calls into <code>assets/js/ledcube.js</code> through node, so the numbers cannot drift from the code.
+    <b>(a)</b> Every settled profile is a straight line, and they all pivot about the centroid — which is the correctness test, because a fluid at rest must put its surface normal to gravity. Fitting the slope across the wet columns and comparing it to tan θ gives a maximum error of <b>0.0084 cells per column over 30 tilts</b>; the solver is not approximately level, it is level.
+    <b>(b)</b> Volume is <b>170.666667</b> at every one of the 31 tilts, with a total spread of 6.5 × 10⁻¹³ — the staggered grid conserves mass by construction, and the renormalisation only has to undo the clamping at dry walls. Past <b>38°</b> the uphill floor goes dry and the liquid is pooled in a corner.
+    <b>(c)</b> The interesting failure. The display cannot show a 2.667-deep column, so upright — when all 64 columns round the same way — it lights 192 LEDs for a volume of 170.7, over-reading by 12 %. Tilt it and the columns disagree, the rounding goes both ways, and the count oscillates within ±4 % of the truth. The picture is <em>more</em> honest when the liquid is sloshing than when it is still.</figcaption>
+  </figure>
 </section>
 
 <!-- =================== THE ELECTRONICS =================== -->
@@ -192,9 +218,18 @@ for (uint8_t L = 0; L &lt; 8; L++) {
 <!-- =================== GAMES =================== -->
 <section class="section" id="games">
   <h2 class="section-title">Snake, with a third axis</h2>
-  <div class="prose" style="max-width:74ch">
-    <p>Snake in two dimensions has four inputs. In a cube it has six, and that changes the game rather than decorating it: the body occludes itself from every viewing angle, so a player has to hold a mental model of a volume rather than read a plane. The build drives it from a PS2 controller, with the two shoulder buttons taking the z-axis.</p>
-    <p>The sandbox above runs the same rules — grow on food, die on a wall or on yourself, and no straight reversal, which is the one input the hardware also refuses. Pong went in as well; a 3-D pong paddle turns out to be much harder to aim than it sounds, for exactly the occlusion reason.</p>
+  <div class="grid-2">
+    <div class="prose">
+      <p>Snake in two dimensions has four inputs. In a cube it has six, and that changes the game rather than decorating it: the body occludes itself from every viewing angle, so a player has to hold a mental model of a volume rather than read a plane. The build drives it from a PS2 controller, with the two shoulder buttons taking the z-axis.</p>
+      <p>Pong went in as well, and a 3-D paddle is much harder to aim than it sounds — for exactly the occlusion reason. Both are on their own page, with a machine opponent to play Pong against.</p>
+    </div>
+    <div class="card card-pad" style="align-self:start">
+      <h3 style="margin-top:0">The console</h3>
+      <p class="plot-note" style="margin-bottom:14px">Walls wrap, so running off one face brings you back on the other. Scores persist in your browser.</p>
+      <div class="demo-buttons">
+        <a class="btn btn-primary" href="ledcube_games.html">Open the console →</a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -225,6 +260,7 @@ for (uint8_t L = 0; L &lt; 8; L++) {
 
 <script src="assets/js/site.js"></script>
 <script src="assets/js/ledcube.js"></script>
+<script src="assets/js/ledcube_render.js"></script>
 <script src="assets/js/ledcube_ui.js"></script>
 </body>
 </html>
