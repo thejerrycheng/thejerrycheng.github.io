@@ -2,11 +2,35 @@
    ledcube_games.html (Snake + Pong). Buttons follow the MABEL .btn recipe in
    gotham.css; everything here is layout, the cube canvas, and the comic FX. */
 
-.cube-canvas { width: 100%; height: 500px; display: block; border: var(--line-w) solid var(--ink);
-               border-radius: var(--radius-sm); background: #0C1018; box-shadow: var(--sh-xs);
-               cursor: grab; touch-action: none; }
+/* The cube wants room: .demo-scene canvas in project-page.css caps at 380px,
+   and this needs to beat it on specificity. */
+.demo-scene .cube-canvas,
+.cube-canvas { width: 100%; height: clamp(420px, 64vh, 760px); display: block;
+               border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm);
+               background: #0C1018; box-shadow: var(--sh-xs); cursor: grab; touch-action: none; }
 .cube-canvas:active { cursor: grabbing; }
 .cube-stage { position: relative; }
+
+/* give the scene more of the row than the default 1.4fr / 1fr */
+.cube-block .demo-grid { grid-template-columns: 1.85fr 1fr; }
+
+/* ---- fullscreen: the whole block goes, so the controls come with it ---- */
+.cube-block:fullscreen,
+.cube-block:-webkit-full-screen {
+  background: var(--paper); margin: 0; border-radius: 0; border: none;
+  box-shadow: none; padding: 14px 18px 10px; overflow-y: auto;
+}
+.cube-block:fullscreen .demo-grid,
+.cube-block:-webkit-full-screen .demo-grid { grid-template-columns: 2.6fr 1fr; margin-top: 8px; }
+.cube-block:fullscreen .demo-scene .cube-canvas,
+.cube-block:-webkit-full-screen .demo-scene .cube-canvas { height: calc(100vh - 130px); }
+.cube-block:fullscreen .caption-box,
+.cube-block:-webkit-full-screen .caption-box { display: none; }
+.cube-block:fullscreen .plot-note,
+.cube-block:-webkit-full-screen .plot-note { display: none; }
+.cube-block:fullscreen .keycaps,
+.cube-block:-webkit-full-screen .keycaps { margin-top: 6px; }
+@media (max-width: 1100px) { .cube-block .demo-grid { grid-template-columns: 1fr; } }
 
 .lb-note { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.75; background: var(--paper);
            border: 1.5px solid var(--ink); border-radius: 6px; padding: 10px 12px; }
@@ -61,3 +85,15 @@
 .cube-switch .btn { font-size: 15px; padding: 10px 20px 9px; }
 
 @media (max-width: 900px) { .cube-canvas { height: 380px; } }
+
+/* ---- on-screen turn pad (touch, and usable in fullscreen) ---- */
+.gm-pad { display: grid; grid-template-columns: repeat(3, 46px); gap: 6px;
+          justify-content: center; margin: 12px auto 4px; }
+.gm-pad .btn { padding: 9px 0 8px; font-size: 15px; line-height: 1; }
+.cube-block:fullscreen .gm-pad,
+.cube-block:-webkit-full-screen .gm-pad { margin-top: 8px; }
+
+/* the fullscreen button is the one control that must stay visible in fullscreen */
+.cube-block:fullscreen .keycaps,
+.cube-block:-webkit-full-screen .keycaps { font-size: 12px; }
+

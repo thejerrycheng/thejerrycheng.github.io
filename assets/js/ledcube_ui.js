@@ -102,6 +102,8 @@
   $('lb-gravity-v').textContent = $('lb-gravity').value;
   $('lb-visc-v').textContent = $('lb-visc').value;
 
+  V.fullscreen(document.getElementById('lb-full'), document.getElementById('lb-block'));
+
   select('countdown');
   S.last = performance.now();
   requestAnimationFrame(loop);

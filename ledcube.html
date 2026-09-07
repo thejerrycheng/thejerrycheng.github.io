@@ -94,7 +94,7 @@
   <h2 class="section-title">Drive it, then break it</h2>
   <p class="lead">The cube below runs the way the hardware does: a frame buffer of 512 bits, and a multiplexer that lights one layer at a time in sequence. The glow is a persistence-of-vision model — an LED reads as lit for about 55&nbsp;ms after it is driven. Pick a pattern, then drag the refresh rate down and watch the illusion come apart in front of you, which is exactly the constraint the whole electronics design is built around.</p>
 
-  <div class="card scene-block">
+  <div class="card scene-block cube-block" id="lb-block">
     <span class="caption-box">The cube</span>
     <div class="demo-grid">
       <div class="demo-scene cube-stage">
@@ -119,6 +119,7 @@
 
         <p class="plot-note">Take the refresh rate below about 40&nbsp;Hz and the layers start to separate; below 10&nbsp;Hz you can watch the multiplexer walk up the cube one plane at a time, which is all it has ever been doing.</p>
         <div class="demo-buttons" style="margin-top:12px">
+          <button class="btn" id="lb-full" type="button">Fullscreen</button>
           <a class="btn btn-primary" href="ledcube_games.html">Play Snake &amp; Pong →</a>
         </div>
       </div>

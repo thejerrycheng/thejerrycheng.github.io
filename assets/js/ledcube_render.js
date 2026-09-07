@@ -20,7 +20,7 @@
     const x = p[0] - 3.5, y = p[1] - 3.5, z = p[2] - 3.5;
     const a = x * cy - y * sy, b = x * sy + y * cy;
     const u = a, v = z * cp - b * sp, d = b * cp + z * sp + 22;
-    const f = Math.min(w, h) * 0.95;
+    const f = Math.min(w, h) * (view.zoom || 1.5);
     return [w / 2 + f * u / d, h / 2 - f * v / d, d];
   }
 
@@ -114,6 +114,28 @@
   }
   const pick = (a) => a[Math.floor(Math.random() * a.length)];
 
-  window.CUBEVIEW = { drawCube, multiplex, sizeCanvas, project, css, fx, pick,
+  /** Wire a Fullscreen button to an element. Hides the button where the API is
+      missing (iOS Safari on iPhone), and reports state changes so the caller can
+      resize its canvas. */
+  function fullscreen(btn, target, onChange) {
+    if (!btn || !target) return;
+    const req = target.requestFullscreen || target.webkitRequestFullscreen;
+    const exit = document.exitFullscreen || document.webkitExitFullscreen;
+    if (!req) { btn.hidden = true; return; }
+    const on = () => (document.fullscreenElement || document.webkitFullscreenElement) === target;
+    btn.addEventListener('click', () => {
+      try { on() ? exit.call(document) : req.call(target); } catch (e) { /* denied */ }
+    });
+    const sync = () => {
+      btn.textContent = on() ? 'Exit fullscreen' : 'Fullscreen';
+      btn.classList.toggle('btn-pop', on());
+      if (onChange) onChange(on());
+    };
+    ['fullscreenchange', 'webkitfullscreenchange'].forEach((e) =>
+      document.addEventListener(e, sync));
+    sync();
+  }
+
+  window.CUBEVIEW = { fullscreen, drawCube, multiplex, sizeCanvas, project, css, fx, pick,
                       EAT, DIE, WIN, LOSE, POV };
 })();

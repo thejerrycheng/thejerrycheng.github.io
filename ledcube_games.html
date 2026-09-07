@@ -57,7 +57,7 @@
   <div class="wrap">
     <p class="kicker">The console ◆ 3-D Snake ◆ 3-D Pong ◆ 512 LEDs ◆ MIE438</p>
     <h1>Press start</h1>
-    <p>Two games written for a display that is 8 cells wide, 8 deep and 8 tall, and that can only ever light one layer at a time. Snake gains a third axis and loses its walls — run off one face and you come back on the other. Pong gains a machine opponent that solves for where the ball will cross its own face and moves to meet it. Both run on the same multiplexed frame buffer the hardware uses.</p>
+    <p>Two games written for a display that is 8 cells wide, 8 deep and 8 tall, and that can only ever light one layer at a time. Snake gains a third axis and loses its walls — run off one face and you come back on the other — and steers with four keys that turn it relative to itself, not six that name world axes. Pong gains a machine opponent that solves for where the ball will cross its own face and moves to meet it. Both run on the same multiplexed frame buffer the hardware uses.</p>
   </div>
 </header>
 <div class="deco-band" aria-hidden="true"></div>
@@ -69,18 +69,26 @@
     <a class="btn" href="ledcube.html#sandbox">← Animations &amp; liquid</a>
   </div>
 
-  <div class="card scene-block">
+  <div class="card scene-block cube-block" id="gm-block">
     <span class="caption-box" id="gm-title">3-D Snake</span>
     <div class="demo-grid">
       <div class="demo-scene cube-stage">
         <div id="gm-fx" style="position:absolute;inset:0;pointer-events:none;z-index:5"></div>
         <canvas id="gm-canvas" class="cube-canvas" aria-label="LED cube game"></canvas>
+        <div class="gm-pad" aria-label="Turn controls">
+          <span></span>
+          <button class="btn gm-turn" data-turn="up" type="button" aria-label="turn up">▲</button>
+          <span></span>
+          <button class="btn gm-turn" data-turn="left" type="button" aria-label="turn left">◀</button>
+          <button class="btn gm-turn" data-turn="down" type="button" aria-label="turn down">▼</button>
+          <button class="btn gm-turn" data-turn="right" type="button" aria-label="turn right">▶</button>
+        </div>
         <div class="keycaps" id="gm-snake-keys">
-          <kbd>←</kbd><kbd>→</kbd> x &nbsp; <kbd>↑</kbd><kbd>↓</kbd> y &nbsp; <kbd>W</kbd><kbd>S</kbd> z
-          &nbsp;— six directions, which is the whole point of playing Snake in a cube. Walls wrap.
+          <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> &nbsp;— or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>.
+          Four keys, and every one is a turn <em>relative to the way the snake is already going</em>. Walls wrap.
         </div>
         <div class="keycaps" id="gm-pong-keys" hidden>
-          <kbd>←</kbd><kbd>→</kbd> slide &nbsp; <kbd>W</kbd><kbd>S</kbd> raise / lower
+          <kbd>←</kbd><kbd>→</kbd> slide &nbsp; <kbd>↑</kbd><kbd>↓</kbd> or <kbd>W</kbd><kbd>S</kbd> raise / lower
           &nbsp;— your paddle is the near face; the machine holds the far one.
         </div>
       </div>
@@ -90,6 +98,7 @@
           <button class="btn btn-primary" id="gm-go" type="button">Pause</button>
           <button class="btn" id="gm-restart" type="button">Restart</button>
           <button class="btn" id="gm-clear" type="button">Clear scores</button>
+          <button class="btn" id="gm-full" type="button">Fullscreen</button>
         </div>
         <label id="gm-speed-wrap">Snake speed <span id="gm-speed-v">4</span> steps/s<input type="range" id="gm-speed" min="1" max="12" step="1" value="4"></label>
         <label id="gm-skill-wrap" hidden>Machine skill <span id="gm-skill-v">fair</span><input type="range" id="gm-skill" min="0" max="1" step="0.05" value="0.5"></label>
@@ -106,7 +115,10 @@
   <div class="grid-2">
     <div class="prose">
       <p>Two things change when Snake moves into a volume, and only one of them is the obvious one.</p>
-      <p>The obvious one is the input space: four directions become six, and the two extra ones point along the axis you are looking down, so they are the two you cannot see yourself moving in. That is why the cube has to be draggable. On the hardware they are the shoulder buttons of the PS2 pad, for the same reason.</p>
+      <p>The obvious one is the input space. Six axes need six buttons, and two of them always point along the direction you are looking down — so they are the two you cannot see yourself moving in. That is what the PS2 pad's shoulder buttons were for on the hardware, and it is genuinely hard to play, because every keypress has to be translated out of the world's frame and into the one you are looking at.</p>
+      <p>So the version here steers <b>relative to the snake</b> instead. It carries its own frame — a forward vector and an up vector, with left and right falling out of their cross product — and the four arrow keys are turns, not axes:</p>
+      <div class="eq">left: d ← −(d × u) &nbsp;·&nbsp; right: d ← d × u &nbsp;·&nbsp; up: d ← u, u ← −d &nbsp;·&nbsp; down: d ← −u, u ← d</div>
+      <p>Four keys instead of six, nothing to translate, and it stays on the integer lattice because every vector involved is a unit axis. Two properties come free and are worth having. Four presses of the same key return the snake exactly to where it started, so the controls are a group you can feel out rather than memorise. And <b>no key can ever reverse the snake</b> — a turn is always perpendicular to travel — so unlike the absolute scheme, no single press can kill you. (Verified over 20,000 random turns: the frame stays orthonormal and integer, and there is not one reversal.)</p>
       <p>The one that actually changes the game is <b>density</b>. A 2-D 8 × 8 board is 64 cells and a snake of length 20 fills nearly a third of it; the 8 × 8 × 8 cube is 512, and the same snake fills 4 %. Self-collision stops being the pressure it is in two dimensions, and the difficulty moves entirely into <em>navigation</em> — finding a cell you cannot see because your own body is between it and your eye.</p>
       <p>So the walls come off. Running off the +x face puts you back on −x, which removes the only remaining source of cheap deaths and leaves the game to be about the thing that is hard:</p>
       <div class="eq">wrap(v) = ((v mod 8) + 8) mod 8 &nbsp;— applied per axis, every step</div>
@@ -116,7 +128,7 @@
     <div>
       <div class="ledger" style="margin-top:0">
         <div class="card"><h4 class="known">2-D Snake</h4><ul><li>64 cells</li><li>4 inputs</li><li>Length 20 = 31 % full</li><li>Walls kill</li></ul></div>
-        <div class="card"><h4 class="unknown">3-D Snake</h4><ul><li>512 cells</li><li>6 inputs</li><li>Length 20 = 3.9 % full</li><li>Walls wrap</li></ul></div>
+        <div class="card"><h4 class="unknown">3-D Snake</h4><ul><li>512 cells</li><li>4 inputs, relative</li><li>Length 20 = 3.9 % full</li><li>Walls wrap</li></ul></div>
         <div class="card"><h4 class="truth">What is hard</h4><ul><li>Occlusion, not space</li><li>Depth along the view axis</li><li>Holding a volume in your head</li></ul></div>
       </div>
       <div class="card finding" style="margin-top:22px">

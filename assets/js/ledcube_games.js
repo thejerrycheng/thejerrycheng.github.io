@@ -53,12 +53,15 @@
   });
 
   // ---- input ----------------------------------------------------------------
-  const SNAKE_KEYS = { ArrowLeft: [-1,0,0], ArrowRight: [1,0,0],
-                       ArrowUp: [0,1,0], ArrowDown: [0,-1,0],
-                       w: [0,0,1], s: [0,0,-1], W: [0,0,1], S: [0,0,-1] };
+  // Snake steers relative to itself: four keys, and each one is a turn rather
+  // than an axis, so nothing has to be translated out of the world frame.
+  const SNAKE_KEYS = { ArrowLeft: 'left', ArrowRight: 'right',
+                       ArrowUp: 'up', ArrowDown: 'down',
+                       a: 'left', d: 'right', w: 'up', s: 'down',
+                       A: 'left', D: 'right', W: 'up', S: 'down' };
   const held = {};
   window.addEventListener('keydown', (e) => {
-    if (S.game === 'snake' && SNAKE_KEYS[e.key]) { S.snake.steer(SNAKE_KEYS[e.key]); e.preventDefault(); }
+    if (S.game === 'snake' && SNAKE_KEYS[e.key]) { S.snake.turn(SNAKE_KEYS[e.key]); e.preventDefault(); }
     if (S.game === 'pong') { held[e.key] = true; if (e.key.startsWith('Arrow') || 'wsWS'.includes(e.key)) e.preventDefault(); }
   });
   window.addEventListener('keyup', (e) => { held[e.key] = false; });
@@ -152,8 +155,9 @@
     g.font = `${11 * dpr}px "Space Mono", monospace`;
     if (S.count > 0 && S.running) g.fillText('get ready…', 12 * dpr, 20 * dpr);
     else if (!S.running) g.fillText(S.game === 'snake' && S.snake.dead ? 'crashed into yourself — press Restart' : 'paused', 12 * dpr, 20 * dpr);
-    else g.fillText(S.game === 'snake' ? 'walls wrap — run off one face, come back on the other'
-                                       : 'block the ball · the machine is thinking too', 12 * dpr, 20 * dpr);
+    else g.fillText(S.game === 'snake'
+      ? 'turn left / right / up / down — all relative to the way you are going · walls wrap'
+      : 'block the ball · the machine is thinking too', 12 * dpr, 20 * dpr);
     requestAnimationFrame(loop);
   }
 
@@ -168,6 +172,22 @@
   $('gm-speed-v').textContent = $('gm-speed').value;
   $('gm-refresh-v').textContent = $('gm-refresh').value;
   $('gm-skill-v').textContent = 'fair';
+
+  // on-screen pad, so the game is playable on a touchscreen and in fullscreen
+  document.querySelectorAll('.gm-turn').forEach((b) =>
+    b.addEventListener('click', () => {
+      stopAuto();
+      if (S.game === 'snake') S.snake.turn(b.dataset.turn);
+      else {
+        const d = { left: [-0.6, 0], right: [0.6, 0], up: [0, 0.6], down: [0, -0.6] }[b.dataset.turn];
+        S.pong.movePad(d[0], d[1]);
+      }
+    }));
+
+  V.fullscreen($('gm-full'), document.getElementById('gm-block'), () => {
+    // the canvas box changes size; force a redraw on the next frame
+    S.flash = 0.01;
+  });
 
   select('snake');
   S.last = performance.now();

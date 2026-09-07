@@ -358,13 +358,23 @@
 
   // ---- 3-D snake, the game they actually built --------------------------------
   const wrap = (v) => ((v % N) + N) % N;
+  const cross = (a, b) => [a[1] * b[2] - a[2] * b[1],
+                           a[2] * b[0] - a[0] * b[2],
+                           a[0] * b[1] - a[1] * b[0]];
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const neg = (a) => [-a[0], -a[1], -a[2]];
 
   class Snake {
     constructor() { this.best = 0; this.reset(); }
     reset() {
       this.body = [[3, 3, 3], [2, 3, 3], [1, 3, 3]];
+      // The snake carries its own frame, so steering is relative: forward is
+      // where it is going, up is which way is "up" for it, and left/right come
+      // from their cross product. Four keys instead of six axes.
       this.dir = [1, 0, 0];
+      this.up = [0, 0, 1];
       this.next = [1, 0, 0];
+      this.nextUp = [0, 0, 1];
       this.food = this.spawn();
       this.dead = false;
       this.score = 0;
@@ -376,15 +386,31 @@
         if (!this.body.some((b) => b[0] === f[0] && b[1] === f[1] && b[2] === f[2])) return f;
       }
     }
+    /** Absolute steering, kept for headless tests and for the greedy driver. */
     steer(d) {
       const h = this.dir;
       if (d[0] === -h[0] && d[1] === -h[1] && d[2] === -h[2]) return;
       this.next = d;
+      // keep the frame orthonormal: pick any up that is not along the new dir
+      if (Math.abs(dot(d, this.up)) > 0.5) this.nextUp = cross(d, this.up);
+      else this.nextUp = this.up;
+    }
+
+    /** Relative steering: yaw about the snake's own up, pitch about its right.
+        `k` is 'left' | 'right' | 'up' | 'down'. Forward continues by itself and
+        there is no way to reverse, so no move can ever be an instant loss. */
+    turn(k) {
+      const d = this.next, u = this.nextUp, r = cross(d, u);
+      if (k === 'left')  { this.next = neg(r); this.nextUp = u; }
+      else if (k === 'right') { this.next = r;  this.nextUp = u; }
+      else if (k === 'up')    { this.next = u;  this.nextUp = neg(d); }
+      else if (k === 'down')  { this.next = neg(u); this.nextUp = d; }
     }
     step() {
       this.ate = false;
       if (this.dead) return;
       this.dir = this.next;
+      this.up = this.nextUp;
       const h = this.body[0];
       // the walls wrap: run off one face and come back on the opposite one
       const nh = [wrap(h[0] + this.dir[0]), wrap(h[1] + this.dir[1]), wrap(h[2] + this.dir[2])];
