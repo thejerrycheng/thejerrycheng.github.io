@@ -66,6 +66,12 @@ export class Arm {
     this.continuous = this.jointBodies.map((b, i) => (this.hi[i] - this.lo[i]) >= 2 * Math.PI - 1e-6);   /* joints 4 and 6: continuous-rotation motors */
     this.home = [0, -20, -100, 0, 40, 0].map(d => d * Math.PI / 180);          /* the thesis START_Q */
     this.vmax = 1.5;                                                            /* rad/s per joint, a cinema-smooth cap */
+    /* Comfort cap on joint acceleration. Measured across the shipped library at 1x speed, the
+       presets peak between 0 and 29 rad/s^2 with a median of 3.6; every one of them except the
+       whip pan, which is violent on purpose and already carries its own raised speed cap, sits
+       under 12. That is where this is set, and it is what bounds how sharply a speed ramp may
+       change: ramping faster than this asks the joints for acceleration the shot never needed. */
+    this.amax = 12;                                                             /* rad/s^2 per joint */
   }
   fkAll(q) {
     const poses = { world: M4.I() }; let k = 0;

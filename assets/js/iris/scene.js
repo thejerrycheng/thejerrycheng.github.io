@@ -338,7 +338,38 @@ export class Studio {
       parents[b.name] = inner; this.bodies[b.name] = inner;
     }
     this.bodies.ee_mount.add(this.rig); this.setQ(this.q);
+    this.buildGhost(meshes);
   }
+  /** A translucent twin of the arm, the way a motion planner shows you a plan before you run it.
+      It shares the link geometry — only the material and the joint frames are its own — so it costs
+      almost nothing until it is shown. */
+  buildGhost(meshes) {
+    const ghostMat = new THREE.MeshBasicMaterial({ color: 0x4d9bff, transparent: true, opacity: 0.24,
+      depthWrite: false, side: THREE.DoubleSide });
+    const root = new THREE.Group(); root.visible = false; this.scene.add(root);
+    const parents = { world: root }; this.ghostFrames = [];
+    for (const b of this.arm.bodies) {
+      const frame = new THREE.Group(); frame.position.set(...b.pos);
+      frame.quaternion.set(b.quat[1], b.quat[2], b.quat[3], b.quat[0]); parents[b.parent].add(frame);
+      let inner = frame;
+      if (b.joint) { inner = new THREE.Group(); frame.add(inner); this.ghostFrames.push({ group: inner, axis: new THREE.Vector3(...b.joint.axis) }); }
+      for (const ge of b.geoms) {
+        const src = meshes[ge.mesh]; if (!src) continue;
+        const m = new THREE.Mesh(src.geometry, ghostMat);
+        m.position.set(...ge.pos); m.quaternion.set(ge.quat[1], ge.quat[2], ge.quat[3], ge.quat[0]);
+        m.renderOrder = 2; inner.add(m);
+      }
+      parents[b.name] = inner;
+      if (b.name === 'ee_mount') this.ghostMount = inner;
+    }
+    this.ghost = root;
+    /* a marker on the ghost's lens so the preview shows where the camera would be */
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.018, 16, 12),
+      new THREE.MeshBasicMaterial({ color: 0x4d9bff, transparent: true, opacity: 0.5, depthWrite: false }));
+    eye.position.set(0, 0, 0.14); if (this.ghostMount) this.ghostMount.add(eye);
+  }
+  setGhostVisible(on) { if (this.ghost) this.ghost.visible = !!on; }
+  setGhostQ(q) { if (!this.ghostFrames) return; this.ghostFrames.forEach((j, k) => j.group.quaternion.setFromAxisAngle(j.axis, q[k])); }
   setQ(q) { this.q = q.slice(); if (!this.jointFrames) return; this.jointFrames.forEach((j, k) => j.group.quaternion.setFromAxisAngle(j.axis, q[k])); }
   eePose() { const T = this.arm.fk(this.q); return { pos: M4.pos(T), R: M4.rot(T), T }; }
   /* ---- products ---- */
@@ -400,12 +431,14 @@ export class Studio {
          (a static shot puts its own key frames a few centimetres in front of the glass) */
       const kg = this.keyGroup ? this.keyGroup.visible : false, pv = this.pathLine ? this.pathLine.visible : false;
       if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false;
+      const pa = this.pathArrows ? this.pathArrows.visible : false; if (this.pathArrows) this.pathArrows.visible = false;
+      const gh = this.ghost ? this.ghost.visible : false; if (this.ghost) this.ghost.visible = false;
       const bv = this.ball.visible; this.ball.visible = false;
       this.feedCam.aspect = fr.w / fr.h; this.feedCam.updateProjectionMatrix();
       r.setViewport(fr.x * pr, fr.y * pr, fr.w * pr, fr.h * pr); r.setScissor(fr.x * pr, fr.y * pr, fr.w * pr, fr.h * pr);
       this.dof.render(r, this.scene, this.feedCam, this.lens, this.dofEnabled && !this.feedNoDof);
       this.rig.visible = true; this.gizmoHelper.visible = gv; this.ball.visible = bv; if (this.trail) this.trail.visible = true;
-      if (this.keyGroup) this.keyGroup.visible = kg; if (this.pathLine) this.pathLine.visible = pv;
+      if (this.keyGroup) this.keyGroup.visible = kg; if (this.pathLine) this.pathLine.visible = pv; if (this.pathArrows) this.pathArrows.visible = pa; if (this.ghost) this.ghost.visible = gh;
     }
     r.setScissorTest(false);
   }
@@ -422,10 +455,11 @@ export class Studio {
     this._pickCam.updateMatrixWorld(true);
     const prev = r.getRenderTarget(); const rigVis = this.rig.visible; this.rig.visible = false; const gv = this.gizmoHelper.visible; this.gizmoHelper.visible = false;
     const kg = this.keyGroup ? this.keyGroup.visible : false, pv = this.pathLine ? this.pathLine.visible : false, tv = this.trail ? this.trail.visible : false;
-    if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false; if (this.trail) this.trail.visible = false;
+    if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false; if (this.pathArrows) this.pathArrows.visible = false; if (this.trail) this.trail.visible = false;
+    const gh2 = this.ghost ? this.ghost.visible : false; if (this.ghost) this.ghost.visible = false;
     const bv2 = this.ball.visible; this.ball.visible = false;
     r.setRenderTarget(this._pick); r.render(this.scene, this._pickCam); r.readRenderTargetPixels(this._pick, 0, 0, w, h, this._pickBuf); r.setRenderTarget(prev);
-    this.rig.visible = rigVis; this.gizmoHelper.visible = gv; this.ball.visible = bv2; if (this.keyGroup) this.keyGroup.visible = kg; if (this.pathLine) this.pathLine.visible = pv; if (this.trail) this.trail.visible = tv;
+    this.rig.visible = rigVis; this.gizmoHelper.visible = gv; this.ball.visible = bv2; if (this.ghost) this.ghost.visible = gh2; if (this.keyGroup) this.keyGroup.visible = kg; if (this.pathLine) this.pathLine.visible = pv; if (this.trail) this.trail.visible = tv;
     return { data: this._pickBuf, w, h };
   }
   /** Draw a polyline trail of end-effector positions. */
@@ -454,15 +488,17 @@ export class Studio {
     for (const m of this.keyMeshes) { m.group.traverse(o => { if (o.geometry) o.geometry.dispose(); }); this.keyGroup.remove(m.group); }
     this.keyMeshes = [];
     const size = opts.size ?? 0.075;
-    for (const k of keys) {
+    const total = keys.length;
+    for (let idx = 1; idx <= total; idx++) {
+      const k = keys[idx - 1];
       const g = new THREE.Group();
       const R = k.R; const q = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().set(R[0][0], R[0][1], R[0][2], 0, R[1][0], R[1][1], R[1][2], 0, R[2][0], R[2][1], R[2][2], 0, 0, 0, 0, 1));
       g.position.set(...k.pos); g.quaternion.copy(q);
       const h = size * Math.tan(fovV(k.f) * Math.PI / 360) / Math.tan(fovV(35) * Math.PI / 360);
       const w = h * 1.5;
       const pts = [[0, 0, 0], [-w, -h, size], [w, -h, size], [w, h, size], [-w, h, size]];
-      const idx = [0, 1, 0, 2, 0, 3, 0, 4, 1, 2, 2, 3, 3, 4, 4, 1];
-      const pos = []; for (const i of idx) pos.push(...pts[i]);
+      const wireIdx = [0, 1, 0, 2, 0, 3, 0, 4, 1, 2, 2, 3, 3, 4, 4, 1];
+      const pos = []; for (const i of wireIdx) pos.push(...pts[i]);
       const wire = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)),
         new THREE.LineBasicMaterial({ color: 0x0a84ff, transparent: true, opacity: 0.9 }));
       g.add(wire);
@@ -471,10 +507,70 @@ export class Studio {
       g.add(screen);
       const hit = new THREE.Mesh(new THREE.SphereGeometry(0.016, 16, 12), new THREE.MeshBasicMaterial({ color: 0x0a84ff, transparent: true, opacity: 0.85 }));
       g.add(hit);
+      /* three rings round the ball, one per axis, so the stop reads as something you can turn as
+         well as move — grabbing one switches the tool to Aim and hands it to the rotate gizmo */
+      const rings = new THREE.Group();
+      const RING = [[0xff4d5a, [0, Math.PI / 2, 0]], [0x59d96b, [Math.PI / 2, 0, 0]], [0x4d9bff, [0, 0, 0]]];
+      for (const [col, rot] of RING) {
+        const r = new THREE.Mesh(new THREE.TorusGeometry(0.027, 0.0016, 8, 48),
+          new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.75, depthWrite: false }));
+        r.rotation.set(...rot); rings.add(r);
+      }
+      rings.renderOrder = 4; g.add(rings);
+      /* which way the move goes, and how far along it this stop is */
+      const label = this.makeKeyLabel(k, idx, total);
+      label.position.set(0, -size * 0.62, 0.004); g.add(label);
       this.keyGroup.add(g);
-      this.keyMeshes.push({ id: k.id, group: g, screen, wire, hit });
+      this.keyMeshes.push({ id: k.id, group: g, screen, wire, hit, rings, label });
     }
     return this.keyMeshes;
+  }
+  /** A little canvas sign for a stop: its order, its name and when it happens. */
+  makeKeyLabel(key, idx, total) {
+    const W = 512, H = 128;
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    const c = cv.getContext('2d');
+    const name = key.name || key.label || '';
+    const time = `${(Math.round(key.t * 10) / 10).toFixed(1)}s`;
+    c.clearRect(0, 0, W, H);
+    c.fillStyle = 'rgba(12,14,20,0.82)';
+    const pad = 12, r = 22;
+    c.beginPath(); c.roundRect(pad, 24, W - 2 * pad, 80, r); c.fill();
+    c.strokeStyle = 'rgba(255,255,255,0.35)'; c.lineWidth = 3; c.stroke();
+    c.fillStyle = '#ffd60a'; c.font = 'bold 46px ui-monospace, Menlo, monospace';
+    c.textBaseline = 'middle';
+    c.fillText(`${idx}/${total}`, pad + 22, 64);
+    const numW = c.measureText(`${idx}/${total}`).width;
+    c.fillStyle = '#ffffff'; c.font = '40px -apple-system, system-ui, sans-serif';
+    const label = name ? name : 'stop';
+    c.fillText(label, pad + 40 + numW, 64);
+    const labW = c.measureText(label).width;
+    c.fillStyle = '#8fd0ff'; c.font = '38px ui-monospace, Menlo, monospace';
+    c.fillText(time, pad + 60 + numW + labW, 64);
+    const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, depthTest: false }));
+    sp.scale.set(0.19, 0.0475, 1); sp.renderOrder = 6;
+    return sp;
+  }
+  /** Arrows along the path so the direction of travel is never in doubt. */
+  setPathArrows(points, colour = 0x0a84ff) {
+    if (this.pathArrows) { this.scene.remove(this.pathArrows); this.pathArrows.traverse(o => { if (o.geometry) o.geometry.dispose(); }); this.pathArrows = null; }
+    if (!points || points.length < 4) return;
+    const g = new THREE.Group();
+    const mat = new THREE.MeshBasicMaterial({ color: colour, transparent: true, opacity: 0.9, depthWrite: false });
+    const cone = new THREE.ConeGeometry(0.009, 0.026, 12);
+    const N = Math.min(9, Math.max(3, Math.floor(points.length / 18)));
+    for (let a = 1; a <= N; a++) {
+      const i = Math.round((a - 0.5) / N * (points.length - 2));
+      const p = points[i], q = points[Math.min(points.length - 1, i + 1)];
+      const d = [q[0] - p[0], q[1] - p[1], q[2] - p[2]];
+      const n = Math.hypot(...d); if (n < 1e-6) continue;
+      const m = new THREE.Mesh(cone, mat);
+      m.position.set(p[0], p[1], p[2]);
+      m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(d[0] / n, d[1] / n, d[2] / n));
+      g.add(m);
+    }
+    g.renderOrder = 4; this.pathArrows = g; this.scene.add(g);
   }
   /** Render what the camera sees at a key and paste it onto that key's floating frame. */
   renderKeyThumbnail(key, marker) {
@@ -497,23 +593,51 @@ export class Studio {
     cam.updateMatrixWorld(true);
     const r = this.renderer, prev = r.getRenderTarget(), st = r.getScissorTest();
     const vis = [this.rig.visible, this.keyGroup ? this.keyGroup.visible : false, this.pathLine ? this.pathLine.visible : false, this.gizmoHelper.visible, this.trail ? this.trail.visible : false];
-    this.rig.visible = false; if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false; this.gizmoHelper.visible = false; const bk = this.ball.visible; this.ball.visible = false; if (this.trail) this.trail.visible = false;
+    this.rig.visible = false; if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false; if (this.pathArrows) this.pathArrows.visible = false; this.gizmoHelper.visible = false; const bk = this.ball.visible; this.ball.visible = false; if (this.trail) this.trail.visible = false;
     r.setScissorTest(false); r.setRenderTarget(this._kiRT); r.setViewport(0, 0, w, h); r.clear(); r.render(this.scene, cam);
     r.readRenderTargetPixels(this._kiRT, 0, 0, w, h, this._kiBuf);
     r.setRenderTarget(prev); r.setScissorTest(st);
     this.rig.visible = vis[0]; if (this.keyGroup) this.keyGroup.visible = vis[1]; if (this.pathLine) this.pathLine.visible = vis[2]; this.gizmoHelper.visible = vis[3]; this.ball.visible = bk; if (this.trail) this.trail.visible = vis[4];
     return this._kiBuf;
   }
+  /** Move one key marker in place, without rebuilding any geometry. Used while a stop is being
+      dragged: rebuilding the whole marker set every pointer event is what made it feel jittery. */
+  moveKeyMarker(marker, key) {
+    if (!marker) return;
+    const R = key.R;
+    const q = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().set(
+      R[0][0], R[0][1], R[0][2], 0, R[1][0], R[1][1], R[1][2], 0, R[2][0], R[2][1], R[2][2], 0, 0, 0, 0, 1));
+    marker.group.position.set(...key.pos);
+    marker.group.quaternion.copy(q);
+  }
+  /** Rebuild only the tube through the path, reusing the existing material. */
+  updatePath(points) {
+    if (!points || points.length < 2 || !this.pathLine) return this.setPath(points);
+    const pts = points.map(p => new THREE.Vector3(...p));
+    const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal', 0.4);
+    const geo = new THREE.TubeGeometry(curve, Math.min(240, pts.length * 2), 0.0035, 8, false);
+    this.pathLine.geometry.dispose(); this.pathLine.geometry = geo;
+  }
   /** Highlight one key marker. */
   highlightKey(id) { for (const m of this.keyMeshes || []) { const on = m.id === id; m.wire.material.color.set(on ? 0xffd60a : 0x0a84ff); m.hit.material.color.set(on ? 0xffd60a : 0x0a84ff); m.group.scale.setScalar(on ? 1.15 : 1); } }
   /** Ray-pick a key marker from a normalised pointer position. */
-  pickKey(nx, ny) {
+  pickKey(nx, ny, detail = false) {
     if (!this.keyMeshes || !this.keyMeshes.length) return null;
     const ray = this._ray || (this._ray = new THREE.Raycaster());
     ray.setFromCamera({ x: nx, y: ny }, this.camera);
     const hits = ray.intersectObjects(this.keyMeshes.map(m => m.group), true);
     if (!hits.length) return null;
-    for (const m of this.keyMeshes) { let found = false; m.group.traverse(o => { if (o === hits[0].object) found = true; }); if (found) return m.id; }
+    const obj = hits[0].object;
+    for (const m of this.keyMeshes) {
+      let found = false, part = 'frame';
+      m.group.traverse(o => {
+        if (o !== obj) return;
+        found = true;
+        if (m.rings && m.rings.children.includes(o)) part = 'ring';
+        else if (o === m.hit) part = 'ball';
+      });
+      if (found) return detail ? { id: m.id, part } : m.id;
+    }
     return null;
   }
 
@@ -590,7 +714,7 @@ export class Studio {
     this.feedCam.getWorldPosition(cam.position); this.feedCam.getWorldQuaternion(cam.quaternion); cam.updateMatrixWorld(true);
     const prevRT = r.getRenderTarget(), st = r.getScissorTest(), rigVis = this.rig.visible, gv = this.gizmoHelper.visible;
     const kg = this.keyGroup ? this.keyGroup.visible : false, pl = this.pathLine ? this.pathLine.visible : false;
-    this.rig.visible = false; this.gizmoHelper.visible = false; const bd = this.ball.visible; this.ball.visible = false; if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false;
+    this.rig.visible = false; this.gizmoHelper.visible = false; const bd = this.ball.visible; this.ball.visible = false; if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false; if (this.pathArrows) this.pathArrows.visible = false;
     this.scene.overrideMaterial = this._depthMat;
     r.setScissorTest(false); r.setRenderTarget(this._depthRT); r.setViewport(0, 0, W, H); r.clear(); r.render(this.scene, cam);
     r.readRenderTargetPixels(this._depthRT, 0, 0, W, H, this._depthBuf);

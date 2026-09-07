@@ -50,13 +50,32 @@ export class Timeline {
   move(id, t) { const k = this.keys.find(k => k.id === id); if (k) { k.t = Math.max(0, t); this.sort(); this.changed(); } }
   index(id) { return this.keys.findIndex(k => k.id === id); }
   /** The rate the clock runs at time t: linear between the stops' own speeds. */
+  /** The speed ramp is every stop's own speed plus any extra points the operator dropped between
+      them, read as one piecewise-linear curve. Extra points let a move slow in the middle without
+      having to put a camera stop there. */
+  get rampPoints() {
+    const pts = this.keys.map(k => ({ t: k.t, v: k.speed || 1, key: k }));
+    for (const r of (this.ramp || [])) pts.push({ t: r.t, v: r.v, ramp: r });
+    pts.sort((a, b) => a.t - b.t);
+    return pts;
+  }
+  addRampPoint(t, v) {
+    this.ramp = this.ramp || [];
+    const p = { t: Math.max(0, Math.min(this.duration, t)), v };
+    this.ramp.push(p); this.ramp.sort((a, b) => a.t - b.t); this.changed();
+    return p;
+  }
+  removeRampPoint(p) {
+    if (!this.ramp) return;
+    const i = this.ramp.indexOf(p); if (i >= 0) { this.ramp.splice(i, 1); this.changed(); }
+  }
   speedAt(t) {
-    const K = this.keys; if (!K.length) return 1;
-    if (t <= K[0].t) return K[0].speed || 1;
-    if (t >= K[K.length - 1].t) return K[K.length - 1].speed || 1;
-    let i = 0; while (i < K.length - 2 && t > K[i + 1].t) i++;
-    const a = K[i], b = K[i + 1], u = (t - a.t) / Math.max(1e-4, b.t - a.t);
-    return (a.speed || 1) + ((b.speed || 1) - (a.speed || 1)) * u;
+    const P = this.rampPoints; if (!P.length) return 1;
+    if (t <= P[0].t) return P[0].v;
+    if (t >= P[P.length - 1].t) return P[P.length - 1].v;
+    let i = 0; while (i < P.length - 2 && t > P[i + 1].t) i++;
+    const a = P[i], b = P[i + 1], u = (t - a.t) / Math.max(1e-4, b.t - a.t);
+    return a.v + (b.v - a.v) * u;
   }
   /** Split the move at time t: a new stop with exactly the state the shot already has there, so the
       picture does not change — it just becomes two segments that can be retimed independently. */
@@ -103,8 +122,8 @@ export class Timeline {
     for (let i = 0; i <= samples; i++) { const t = d * i / samples; const s = this.sample(t); if (prev) peak = Math.max(peak, V3.norm(V3.sub(s.pos, prev)) / (d / samples) * this.speed); prev = s.pos; }
     return peak;
   }
-  toJSON() { return { name: this.name, speed: this.speed, smoothness: this.smoothness, keys: this.keys.map(k => k.toJSON()) }; }
-  static fromJSON(j) { return new Timeline((j.keys || []).map(k => new Key(k)), j); }
+  toJSON() { return { name: this.name, speed: this.speed, smoothness: this.smoothness, ramp: this.ramp || [], keys: this.keys.map(k => k.toJSON()) }; }
+  static fromJSON(j) { const tl = new Timeline((j.keys || []).map(k => new Key(k)), j); tl.ramp = (j.ramp || []).map(r => ({ ...r })); return tl; }
   /** Build a timeline from one of the built-in presets by sampling its parametric definition. */
   static fromShot(shot, ctx, evalShot, n = 5) {
     const keys = [];

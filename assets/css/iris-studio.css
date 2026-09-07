@@ -4,6 +4,7 @@
    panels over the live set, one accent colour, generous targets, calm motion.
    ============================================================================= */
 :root {
+  --side-w: 272px; --side-w-right: 292px; --tl-h: 214px;
   --bg: #0b0b0d;
   --panel: rgba(28, 28, 32, 0.72);
   --panel-solid: #1c1c20;
@@ -63,7 +64,7 @@ button { cursor: pointer; border: 0; background: none; }
 .icon-btn:hover { background: rgba(255,255,255,.15); }
 
 /* ---------- stage ---------- */
-.stage { position: relative; z-index: 1; display: grid; grid-template-columns: 272px 1fr 292px; min-height: 0; }
+.stage { position: relative; z-index: 1; display: grid; grid-template-columns: var(--side-w) 1fr var(--side-w-right); min-height: 0; }
 .side.right { margin: 12px 12px 12px 0; }
 .side { position: relative; z-index: 2; margin: 12px 0 12px 12px; padding: 4px; overflow-y: auto; overflow-x: hidden;
   background: var(--panel); backdrop-filter: blur(30px) saturate(1.7); -webkit-backdrop-filter: blur(30px) saturate(1.7);
@@ -121,6 +122,23 @@ select.sel:focus { outline: none; border-color: var(--accent); }
 .rec-dot.on { background: var(--rec); box-shadow: 0 0 10px var(--rec); animation: pulse 1.1s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: .35; } }
 #af-box { position: absolute; border: 1.5px solid var(--warn); border-radius: 3px; opacity: .9; transition: opacity .2s; }
+/* drag a box on the picture to choose what the camera follows */
+#view-feed { cursor: crosshair; }
+#track-sel { position: absolute; border: 1.5px dashed rgba(255,255,255,.9); background: rgba(255,255,255,.08); border-radius: 2px; }
+#track-box { position: absolute; border: 2px solid var(--good); border-radius: 3px; box-shadow: 0 0 0 1px rgba(0,0,0,.45), inset 0 0 0 1px rgba(0,0,0,.35); transition: none; }
+#track-box[data-state="searching"] { border-color: var(--warn); border-style: dashed; }
+#track-box[data-state="edge"] { border-color: var(--warn); }
+#track-box[data-state="lost"] { border-color: var(--rec); border-style: dotted; }
+#track-box::before, #track-box::after { content: ""; position: absolute; width: 9px; height: 9px; border: inherit; border-width: 2px; }
+#track-box::before { left: -2px; top: -2px; border-right: 0; border-bottom: 0; }
+#track-box::after { right: -2px; bottom: -2px; border-left: 0; border-top: 0; }
+#track-label { position: absolute; transform: translateY(3px); font-family: var(--mono); font-size: 10.5px; color: var(--good); text-shadow: 0 1px 3px rgba(0,0,0,.9); white-space: nowrap; }
+#track-label[data-state="searching"], #track-label[data-state="edge"] { color: var(--warn); }
+#track-label[data-state="lost"] { color: var(--rec); }
+#btn-untrack { position: absolute; right: 10px; bottom: 26px; pointer-events: auto; font-size: 11px; padding: 4px 9px; border-radius: 7px;
+  background: rgba(0,0,0,.55); color: #fff; border: 1px solid rgba(255,255,255,.35); font-family: var(--font); }
+#btn-untrack:hover { background: var(--rec); border-color: var(--rec); }
+.mon-overlay { pointer-events: none; }
 #af-box.locked { border-color: var(--good); }
 
 /* ---------- timeline ---------- */
@@ -249,3 +267,29 @@ body.capture[data-view="monitor"] .mon-overlay { display: none; }
   .side.right { position: absolute; right: 12px; top: 12px; bottom: 12px; width: 280px; z-index: 5; }
   .mon-ctl { display: none; }
 }
+
+
+/* ---------- draggable edges ---------- */
+.resize-h { position: absolute; top: 12px; bottom: 12px; width: 9px; z-index: 6; cursor: col-resize; }
+.resize-h { left: calc(var(--side-w) - 4px); }
+.resize-h.right { left: auto; right: calc(var(--side-w-right) - 4px); }
+.resize-h::after { content: ""; position: absolute; left: 3px; top: 0; bottom: 0; width: 3px; border-radius: 3px; background: transparent; transition: background .15s var(--ease); }
+.resize-h:hover::after, .resize-h.dragging::after { background: var(--accent); }
+.resize-v { position: absolute; left: 12px; right: 12px; top: -5px; height: 10px; z-index: 6; cursor: row-resize; }
+.resize-v::after { content: ""; position: absolute; top: 4px; left: 0; right: 0; height: 3px; border-radius: 3px; background: transparent; transition: background .15s var(--ease); }
+.resize-v:hover::after, .resize-v.dragging::after { background: var(--accent); }
+.timeline { position: relative; min-height: var(--tl-h); display: flex; flex-direction: column; }
+.tl-track { flex: 1 1 auto; overflow-x: auto; overflow-y: hidden; }
+.tl-inner { position: relative; height: 100%; min-width: 100%; }
+.tl-zoom { display: inline-flex; align-items: center; gap: 6px; }
+.tl-zoom .icon-btn { width: 26px; height: 26px; font-size: 15px; line-height: 1; }
+.tl-zoom .btn { padding: 5px 10px; font-size: 12px; }
+.tl-key .tl-t { position: absolute; left: 50%; bottom: -15px; transform: translateX(-50%); font-family: var(--mono);
+  font-size: 10px; color: var(--text-3); white-space: nowrap; }
+.tl-key.sel .tl-t { color: var(--warn); }
+
+/* preview: the plan, shown on a ghost of the arm, before it is run */
+#btn-preview.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+body.previewing .monitor { outline: 2px solid var(--accent); outline-offset: -2px; }
+#run-state { color: var(--text-3); }
+body.previewing #run-state { color: var(--accent); }

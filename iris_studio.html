@@ -52,6 +52,7 @@
         <div class="row"><span class="k">Focus</span><span class="v" id="v-focus">0.50 m</span></div>
         <div class="row"><span class="k">Find it for me</span><span class="switch" id="sw-af"></span></div>
         <label class="slider"><input type="range" id="s-focus" min="-1.6" max="3" step="0.01" value="-0.69"></label>
+        <div class="row"><span class="k">Following</span><span class="v" id="track-row" style="font-weight:400;color:var(--text-2);font-size:12px;text-align:right">Nothing — drag a box on the picture</span></div>
         <p class="hint"><span id="v-focus-src">following the shot</span></p>
         <p class="hint"><span id="v-sharp">—</span></p>
         <p class="hint"><span id="v-fov">—</span> · <span id="v-blur-n">f/4</span> · tap the picture to focus there</p>
@@ -96,9 +97,14 @@
           <div class="bar t"><span class="rec-dot" id="m-rec"></span><span id="m-tc">00:00:00</span><span class="sp"></span><span id="m-iso">ISO 400</span></div>
           <div class="bar b"><span id="m-zoom">35 mm</span><span id="m-blur">f/4</span><span class="sp"></span><span id="m-focus">0.50 m</span></div>
             <div id="af-box" hidden></div>
+            <div id="track-sel" hidden></div>
+            <div id="track-box" hidden></div>
+            <div id="track-label" hidden></div>
+            <button id="btn-untrack" hidden title="Stop following (Esc)">✕ stop following</button>
         </div>
       </div>
-      <!-- the camera's own controls, docked under the picture it makes -->
+        <div class="resize-h" id="rz-left" title="Drag to resize the panel"></div>
+    <!-- the camera's own controls, docked under the picture it makes -->
       <div class="mon-ctl" id="mon-ctl">
         <div class="mc-head"><b>This camera</b><span id="mc-target">the whole shot</span></div>
         <div class="mc-pads">
@@ -135,6 +141,7 @@
     </div>
 
     <!-- right panel: the controls a roboticist wants, next to the ones a filmmaker wants -->
+    <div class="resize-h right" id="rz-right" title="Drag to resize the panel"></div>
     <aside class="side right" id="side-right">
       <section class="card">
         <h3>Camera moves</h3>
@@ -171,12 +178,21 @@
 
   <!-- ───────────────────────────── timeline ───────────────────────────── -->
   <div class="timeline">
+    <div class="resize-v" id="rz-tl" title="Drag to make the timeline taller"></div>
     <div class="tl-head">
-      <button class="btn primary" id="btn-play"><b>▶</b> Play</button>
+      <button class="btn ghost" id="btn-preview" title="Walk a ghost of the arm through the move without running it"><b>▷</b> Preview</button>
+      <button class="btn primary" id="btn-play" title="Run the move on the rig"><b>▶</b> Execute</button>
       <button class="icon-btn" id="btn-start" title="Back to the beginning">⏮</button>
+      <span class="tl-time" id="run-state">Idle</span>
       <span class="tl-time"><b id="t-now">0.0</b> / <span id="t-total">6.0</span> s</span>
       <span class="tl-time" id="tl-state">Preset shot</span>
       <span class="spacer" style="flex:1"></span>
+      <div class="tl-zoom">
+        <button class="icon-btn" id="btn-zoom-out" title="Zoom out (⌘/Ctrl + scroll)">−</button>
+        <span class="tl-time" id="tl-zoom-val">1.0×</span>
+        <button class="icon-btn" id="btn-zoom-in" title="Zoom in (⌘/Ctrl + scroll)">+</button>
+        <button class="btn ghost" id="btn-zoom-fit" title="Fit the whole shot">Fit</button>
+      </div>
       <div class="seg">
         <button data-tool="move" class="on">Move</button>
         <button data-tool="aim">Aim</button>

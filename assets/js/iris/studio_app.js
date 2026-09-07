@@ -15,12 +15,14 @@ import { evalShot, makeContext, EASE, carPosition } from './shots.js';
 import { M4, V3, R3, lookAtRotation, yawPitchRoll } from './kin.js';
 import { LENS, SENSOR, dof, fovH, fovV } from './lens.js';
 import { Timeline, Key } from './timeline.js';
+import { BoxTracker } from './tracker.js';
 import { Recorder, Policy, Ensembler, thumbnail, goalVector, HIST } from './policy.js';
 
 const $ = (id) => document.getElementById(id);
 const D2R = Math.PI / 180, R2D = 180 / Math.PI;
 const fmt = (v, d = 2) => (Math.round(v * 10 ** d) / 10 ** d).toFixed(d);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const TRACK_W = 240, TRACK_H = 160;      /* the read-back the tracker searches */
 /* plain words for the aperture: what the audience actually sees */
 const blurWord = (N) => N <= 3.2 ? 'Very soft' : N <= 5 ? 'Soft' : N <= 9 ? 'Some' : N <= 16 ? 'Little' : 'None';
 const mm = (f) => Math.round(f) + ' mm';
@@ -43,6 +45,7 @@ export class StudioApp {
     this.qTarget = this.arm.home.slice(); this.ikInfo = { ok: true, it: 0, posErr: 0 };
     this.af = true; this.afPoint = { u: 0.5, v: 0.5 }; this.afLocked = false; this.subjectDist = 0.5; this.iso = 400;
     this.trackingMode = 'gt'; this.gaze = null; this.trailPts = [];
+    this.tracker = new BoxTracker(); this.trackBox = null; this.trackGaze = null;
     this.frame = 0; this.time = 0; this.carRunning = false;
     this.telemetryLog = []; this.logTelemetry = false;
     this.recorder = new Recorder(); this.policy = new Policy(spec.shots.length); this.ensembler = new Ensembler();
@@ -106,7 +109,8 @@ export class StudioApp {
     this.studio.gizmo.addEventListener('dragging-changed', (e) => { if (!e.value) this.commitKeyEdit(); });
 
     /* ---- transport ---- */
-    $('btn-play').addEventListener('click', () => this.togglePlay());
+    $('btn-play').addEventListener('click', () => { if (this.preview) return; if (!this.playing) this.execute(); else this.togglePlay(); });
+    $('btn-preview').addEventListener('click', () => { this.preview ? this.stopPreview() : this.startPreview(); });
     $('btn-start').addEventListener('click', () => this.restart());
     this.bindSwitch('sw-loop', true, (on) => { this.loop = on; });
     $('speed').addEventListener('input', () => { this.speed = +$('speed').value; $('speed-val').textContent = fmt(this.speed, 1) + '×'; });
@@ -121,6 +125,27 @@ export class StudioApp {
     $('btn-look').addEventListener('click', () => this.toggleFirstPerson());
     $('btn-reset').addEventListener('click', () => this.selectShot(this.shot.id, false));
     this.bindTrack();
+    this.tlZoom = 1;
+    const zoomTo = (z, anchorFrac) => {
+      const track = $('tl-track'), inner = $('tl-inner');
+      const before = track.scrollLeft + track.clientWidth * (anchorFrac ?? 0.5);
+      const oldW = inner.clientWidth || 1;
+      this.tlZoom = clamp(z, 1, 12);
+      this.renderTimeline();
+      const newW = (inner.clientWidth || 1);
+      track.scrollLeft = before * (newW / oldW) - track.clientWidth * (anchorFrac ?? 0.5);
+      $('tl-zoom-val').textContent = this.tlZoom.toFixed(1) + '×';
+    };
+    $('btn-zoom-in').addEventListener('click', () => zoomTo(this.tlZoom * 1.5));
+    $('btn-zoom-out').addEventListener('click', () => zoomTo(this.tlZoom / 1.5));
+    $('btn-zoom-fit').addEventListener('click', () => zoomTo(1));
+    $('tl-track').addEventListener('wheel', (ev) => {
+      if (!(ev.ctrlKey || ev.metaKey)) return;
+      ev.preventDefault();
+      const r = $('tl-track').getBoundingClientRect();
+      zoomTo(this.tlZoom * (ev.deltaY < 0 ? 1.18 : 1 / 1.18), (ev.clientX - r.left) / r.width);
+    }, { passive: false });
+    this.bindResizers();
 
     /* ---- views ---- */
     document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => this.setView(b.dataset.view)));
@@ -214,6 +239,43 @@ export class StudioApp {
       this.lens.focus.set(Math.exp(v)); this.touchKey('S', Math.exp(v)); $('s-focus').value = v;
     });
   }
+  /** The two panels and the timeline can be resized by dragging their inner edge. Sizes are kept
+      in localStorage so a layout survives a reload. */
+  bindResizers() {
+    const root = document.documentElement;
+    const load = (k, d) => { try { const v = +localStorage.getItem(k); return v > 0 ? v : d; } catch (e) { return d; } };
+    const save = (k, v) => { try { localStorage.setItem(k, String(Math.round(v))); } catch (e) {} };
+    const W = { left: load('iris.w.left', 272), right: load('iris.w.right', 292), tl: load('iris.h.tl', 214) };
+    const apply = () => {
+      root.style.setProperty('--side-w', W.left + 'px');
+      root.style.setProperty('--side-w-right', W.right + 'px');
+      root.style.setProperty('--tl-h', W.tl + 'px');
+      setTimeout(() => this.studio.resize(), 0);
+    };
+    apply();
+    const grab = (el, onMove) => {
+      if (!el) return;
+      el.addEventListener('pointerdown', (ev) => {
+        ev.preventDefault(); el.setPointerCapture(ev.pointerId); el.classList.add('dragging');
+        document.body.style.cursor = getComputedStyle(el).cursor;
+        const move = (e) => { onMove(e); apply(); };
+        const up = () => {
+          el.classList.remove('dragging'); document.body.style.cursor = '';
+          el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up);
+          save('iris.w.left', W.left); save('iris.w.right', W.right); save('iris.h.tl', W.tl);
+          this.renderTimeline();
+        };
+        el.addEventListener('pointermove', move); el.addEventListener('pointerup', up);
+      });
+    };
+    grab($('rz-left'), (e) => { W.left = clamp(e.clientX - 12, 200, 520); });
+    grab($('rz-right'), (e) => { W.right = clamp(window.innerWidth - e.clientX - 12, 200, 560); });
+    grab($('rz-tl'), (e) => { W.tl = clamp(window.innerHeight - e.clientY - 12, 120, Math.round(window.innerHeight * 0.62)); });
+    $('rz-left').addEventListener('dblclick', () => { W.left = 272; apply(); save('iris.w.left', W.left); });
+    $('rz-right').addEventListener('dblclick', () => { W.right = 292; apply(); save('iris.w.right', W.right); });
+    $('rz-tl').addEventListener('dblclick', () => { W.tl = 214; apply(); save('iris.h.tl', W.tl); this.renderTimeline(); });
+  }
+
   bindSlider(id, fn) { const el = $(id); el.addEventListener('input', () => fn(+el.value)); }
   bindSwitch(id, initial, fn) { const el = $(id); el.classList.toggle('on', initial); el.addEventListener('click', () => { const on = !el.classList.contains('on'); el.classList.toggle('on', on); fn(on); }); }
   syncSwitch(id, on) { $(id).classList.toggle('on', on); }
@@ -257,6 +319,7 @@ export class StudioApp {
     this.mode = 'shots'; this.playing = !!play; this._settling = true; this._settleFrames = 0; this._settleWait = 0;
     this.studio.setTurntable(0); this.carRunning = shot.aim.type === 'track'; if (!this.carRunning) this.studio.updateCar(0);
     if (this.recEvery && play) this.startRecord();
+    this._prof = null; this.limitRamp();
     this.renderTimeline(); this.refreshScene(); this.updateTransport();
   }
   /** Any edit switches the shot from the planned preset to the user's own keys. */
@@ -311,6 +374,99 @@ export class StudioApp {
     this.toTimeline(); k.label = name.trim(); this.renderTimeline();
   }
   /* ---- the speed ramp: one point per stop, straight lines between, dragged vertically ---- */
+  /** What the arm can actually take, sampled once per shot.
+      Writing the shot's own clock as tau and the operator's ramp as s(t), the joints follow
+      q(t) = Q(tau(t)) with dtau/dt = s, so
+
+          qdot  = Q' s,        qddot = Q'' s^2 + Q' sdot.
+
+      A speed multiplier therefore costs velocity linearly and acceleration quadratically, and a
+      steep ramp costs acceleration on its own. Both caps are the arm's: vmax and amax in kin.js.
+      This returns, per sample, the largest |Q'| and |Q''| over the joints, which is all the two
+      limits below need. */
+  speedProfile() {
+    const key = (this.shot ? this.shot.id : 'tl') + '|' + this.playMode + '|' + (this.tl ? this.tl.keys.length : 0)
+              + '|' + this.duration.toFixed(2);
+    if (this._prof && this._prof.key === key) return this._prof;
+    const N = 96, D = this.duration;
+    const Q = []; let q = this.studio.q.slice();
+    const d0 = this.ctx.d0; this.ctx.d0 = undefined;
+    for (let i = 0; i <= N; i++) {
+      const t = D * i / N;
+      let pos, R;
+      if (this.playMode === 'preset' && this.shot) {
+        this.ctx.t = t; const e = evalShot(this.shot, t, this.ctx); pos = e.pos; R = e.R;
+      } else {
+        const sm = this.tl.sample(t); if (!sm) { Q.push(q.slice()); continue; }
+        pos = sm.pos; R = lookAtRotation(pos, sm.look);
+      }
+      const r = this.arm.ikMulti(pos, { R }, q); if (r.ok) q = r.q;
+      Q.push(q.slice());
+    }
+    this.ctx.d0 = d0;
+    const dt = D / N, v = new Float64Array(N + 1), a = new Float64Array(N + 1);
+    for (let i = 1; i < N; i++) {
+      const d1 = this.arm.wrapDelta(Q[i + 1].map((x, j) => x - Q[i - 1][j])).map(x => x / (2 * dt));
+      const dA = this.arm.wrapDelta(Q[i + 1].map((x, j) => x - Q[i][j]));
+      const dB = this.arm.wrapDelta(Q[i].map((x, j) => x - Q[i - 1][j]));
+      const d2 = dA.map((x, j) => (x - dB[j]) / (dt * dt));
+      v[i] = Math.max(...d1.map(Math.abs)); a[i] = Math.max(...d2.map(Math.abs));
+    }
+    v[0] = v[1]; v[N] = v[N - 1]; a[0] = a[1]; a[N] = a[N - 1];
+    this._prof = { key, N, D, v, a };
+    return this._prof;
+  }
+  /** The fastest the shot may be played at time t before a joint passes its speed cap. */
+  speedCeiling(t) {
+    const P = this.speedProfile(); if (!P) return SPEED_MAX;
+    const i = clamp(Math.round(t / P.D * P.N), 0, P.N);
+    const vm = (this.shot && this.shot.vmax && this.playMode === 'preset') ? this.shot.vmax : this.arm.vmax;
+    const am = this.arm.amax * ((this.shot && this.shot.vmax) ? this.shot.vmax / this.arm.vmax : 1);
+    const bySpeed = P.v[i] > 1e-6 ? vm / P.v[i] : SPEED_MAX;
+    const byAccel = P.a[i] > 1e-6 ? Math.sqrt(am / P.a[i]) : SPEED_MAX;   /* the s^2 term alone */
+    return clamp(Math.min(bySpeed, byAccel), SPEED_MIN, SPEED_MAX);
+  }
+  /** How fast the ramp may change between t0 and t1 while it runs at up to s.
+      A segment holds one constant slope, so the constraint |Q'' s^2 + Q' sdot| <= amax has to hold
+      everywhere along it, not at one end: the worst |Q'| and |Q''| over the interval are the ones
+      that bind. Evaluating at a single endpoint is what let a cliff through. */
+  slopeLimit(t0, t1, s) {
+    const P = this.speedProfile(); if (!P) return 4;
+    let i0 = clamp(Math.floor(Math.min(t0, t1) / P.D * P.N), 0, P.N);
+    let i1 = clamp(Math.ceil(Math.max(t0, t1) / P.D * P.N), 0, P.N);
+    let v = 0, a = 0;
+    for (let i = i0; i <= i1; i++) { if (P.v[i] > v) v = P.v[i]; if (P.a[i] > a) a = P.a[i]; }
+    const am = this.arm.amax * ((this.shot && this.shot.vmax) ? this.shot.vmax / this.arm.vmax : 1);
+    const head = am - a * s * s;                       /* what is left after the shot's own curve */
+    if (v < 1e-6) return 8;
+    return Math.max(0.05, head / v);
+  }
+  /** Pull the operator's ramp back inside the envelope: clamp to the ceiling, then a forward and a
+      backward pass so no segment climbs or falls faster than the joints can follow. */
+  limitRamp() {
+    if (!this.tl) return { clipped: 0 };
+    const P = this.tl.rampPoints; if (P.length < 2) return { clipped: 0 };
+    let clipped = 0;
+    const set = (p, v) => { const nv = clamp(v, SPEED_MIN, SPEED_MAX);
+      if (Math.abs(nv - p.v) > 1e-4) { clipped++; if (p.key) p.key.speed = nv; else p.ramp.v = nv; p.v = nv; } };
+    for (const p of P) { const c = this.speedCeiling(p.t); if (p.v > c) set(p, c); }
+    /* Both passes may only lower a point. Raising one to satisfy a slope would undo the ceiling —
+       the arm cannot climb out of a dip the physics put there any faster than the acceleration cap
+       allows, so the dip propagates outwards instead. This is the usual forward-backward velocity
+       profile, and it converges on the fastest ramp that stays inside the envelope. */
+    for (let i = 1; i < P.length; i++) {
+      const dt = Math.max(1e-3, P[i].t - P[i - 1].t);
+      const lim = this.slopeLimit(P[i - 1].t, P[i].t, Math.max(P[i].v, P[i - 1].v)) * dt;
+      if (P[i].v > P[i - 1].v + lim) set(P[i], P[i - 1].v + lim);
+    }
+    for (let i = P.length - 2; i >= 0; i--) {
+      const dt = Math.max(1e-3, P[i + 1].t - P[i].t);
+      const lim = this.slopeLimit(P[i].t, P[i + 1].t, Math.max(P[i].v, P[i + 1].v)) * dt;
+      if (P[i].v > P[i + 1].v + lim) set(P[i], P[i + 1].v + lim);
+    }
+    return { clipped };
+  }
+
   bindSpeedGraph() {
     const cv = $('tl-speed'); if (!cv) return;
     const at = (ev) => { const r = cv.getBoundingClientRect(); return { x: (ev.clientX - r.left) / r.width, y: (ev.clientY - r.top) / r.height }; };
@@ -319,21 +475,59 @@ export class StudioApp {
       for (const k of this.tl.keys) { const dx = Math.abs(k.t / d - x); if (dx < bd) { bd = dx; best = k; } }
       return bd < 0.06 ? best : null;
     };
+    /* a point near the pointer, whether it belongs to a stop or was dropped on the ramp */
+    const nearestPoint = (x, y) => {
+      if (!this.tl) return null; const d = this.duration; let best = null, bd = 1e9;
+      for (const p of this.tl.rampPoints) {
+        const dx = Math.abs(p.t / d - x), dy = Math.abs((SPEED_MAX - p.v) / (SPEED_MAX - SPEED_MIN) - y);
+        const dist = Math.hypot(dx * 3, dy);
+        if (dist < bd) { bd = dist; best = p; }
+      }
+      return bd < 0.12 ? best : null;
+    };
     let drag = null;
     cv.addEventListener('pointerdown', (ev) => {
-      const { x, y } = at(ev); drag = nearest(x); if (!drag) return;
-      cv.setPointerCapture(ev.pointerId); this.selectKey(drag.id); this.setSpeedFrom(drag, y);
+      const { x, y } = at(ev);
+      const p = nearestPoint(x, y);
+      cv.setPointerCapture(ev.pointerId);
+      if (p) { drag = p; if (p.key) this.selectKey(p.key.id); }
+      else {                                        /* empty space: drop a new ramp point here */
+        this.toTimeline();
+        const t = clamp(x, 0, 1) * this.duration;
+        const v = clamp(SPEED_MAX - y * (SPEED_MAX - SPEED_MIN), SPEED_MIN, SPEED_MAX);
+        const np = this.tl.addRampPoint(t, v);
+        drag = this.tl.rampPoints.find(q => q.ramp === np) || null;
+        this.toast('Speed point added — drag it, double-click to remove');
+      }
+      if (drag) this.setRampPoint(drag, at(ev));
     });
-    cv.addEventListener('pointermove', (ev) => { if (!drag) return; this.setSpeedFrom(drag, at(ev).y); });
-    const end = () => { drag = null; };
+    cv.addEventListener('pointermove', (ev) => { if (!drag) return; this.setRampPoint(drag, at(ev)); });
+    const end = () => { if (drag) { this.limitRamp(); this.drawSpeedGraph(); } drag = null; };
     cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
-    cv.addEventListener('dblclick', (ev) => { const k = nearest(at(ev).x); if (k) { this.toTimeline(); k.speed = 1; this.drawSpeedGraph(); } });
+    cv.addEventListener('dblclick', (ev) => {
+      const { x, y } = at(ev); const p = nearestPoint(x, y); if (!p) return;
+      this.toTimeline();
+      if (p.ramp) this.tl.removeRampPoint(p.ramp); else p.key.speed = 1;
+      this.limitRamp(); this.drawSpeedGraph();
+    });
     new ResizeObserver(() => this.drawSpeedGraph()).observe(cv);
   }
   setSpeedFrom(k, y) {
     this.toTimeline();
     k.speed = clamp(SPEED_MAX - (SPEED_MAX - SPEED_MIN) * clamp(y, 0, 1), SPEED_MIN, SPEED_MAX);
     this.drawSpeedGraph(); $('sp-hint').textContent = `stop ${this.tl.index(k.id) + 1} at ${fmt(k.speed, 2)}×`;
+  }
+  /** Move one ramp point. A stop's point keeps its time; a dropped point can slide in time too. */
+  setRampPoint(p, at) {
+    this.toTimeline();
+    const v = clamp(SPEED_MAX - at.y * (SPEED_MAX - SPEED_MIN), SPEED_MIN, SPEED_MAX);
+    const ceil = this.speedCeiling(p.t);
+    const vv = Math.min(v, ceil);
+    if (p.key) p.key.speed = vv; else { p.ramp.v = vv; p.ramp.t = clamp(at.x, 0, 1) * this.duration; }
+    p.v = vv;
+    if (v > ceil + 1e-3) $('sp-hint').textContent = `held at ${fmt(ceil, 2)}× — the joints cannot go faster here`;
+    else $('sp-hint').textContent = `${fmt(vv, 2)}× at ${fmt(p.t, 1)} s`;
+    this.drawSpeedGraph();
   }
   drawSpeedGraph() {
     const cv = $('tl-speed'); if (!cv || !this.tl) return;
@@ -347,13 +541,23 @@ export class StudioApp {
     g.beginPath(); g.moveTo(0, Y(1)); g.lineTo(w, Y(1)); g.stroke();
     g.fillStyle = 'rgba(255,255,255,.35)'; g.font = '9px ui-monospace, monospace';
     g.fillText('1.0×', 4, Y(1) - 3);
-    const keys = this.tl.keys;
+    /* the envelope: everything above this line asks the joints for more than they have */
+    const M = 60; const ceil = [];
+    for (let i = 0; i <= M; i++) { const t = d * i / M; ceil.push([X(t), Y(this.speedCeiling(t))]); }
+    g.fillStyle = 'rgba(255,69,58,.13)';
+    g.beginPath(); g.moveTo(0, 0); ceil.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.lineTo(x, y)); g.lineTo(w, 0); g.closePath(); g.fill();
+    g.strokeStyle = 'rgba(255,69,58,.55)'; g.lineWidth = 1; g.setLineDash([4, 3]);
+    g.beginPath(); ceil.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.stroke(); g.setLineDash([]);
+    const pts = this.tl.rampPoints;
     g.strokeStyle = '#0a84ff'; g.lineWidth = 2; g.beginPath();
-    keys.forEach((k, i) => { const x = X(k.t), y = Y(k.speed || 1); i ? g.lineTo(x, y) : g.moveTo(x, y); });
+    pts.forEach((p, i) => { const x = X(p.t), y = Y(p.v); i ? g.lineTo(x, y) : g.moveTo(x, y); });
     g.stroke();
-    keys.forEach((k) => {
-      const x = X(k.t), y = Y(k.speed || 1); const on = k.id === this.selKey;
-      g.fillStyle = on ? '#ffd60a' : '#0a84ff'; g.beginPath(); g.arc(x, y, on ? 5 : 4, 0, 2 * Math.PI); g.fill();
+    pts.forEach((p) => {
+      const x = X(p.t), y = Y(p.v); const on = p.key && p.key.id === this.selKey;
+      g.fillStyle = on ? '#ffd60a' : p.ramp ? '#59d96b' : '#0a84ff';
+      g.beginPath();
+      if (p.ramp) { g.rect(x - 4, y - 4, 8, 8); } else { g.arc(x, y, on ? 5 : 4, 0, 2 * Math.PI); }
+      g.fill();
     });
     g.strokeStyle = 'rgba(255,214,10,.8)'; g.lineWidth = 1.5;                      /* the playhead */
     g.beginPath(); g.moveTo(X(this.t), 0); g.lineTo(X(this.t), h); g.stroke();
@@ -368,11 +572,23 @@ export class StudioApp {
       if (this.tool === 'move') { const d = V3.norm(V3.sub(k.look, k.pos)); const fwd = [h.R[0][2], h.R[1][2], h.R[2][2]]; k.pos = h.pos.slice(); k.look = V3.add(h.pos, V3.scale(fwd, d)); }
       else { const fwd = [h.R[0][2], h.R[1][2], h.R[2][2]]; k.look = V3.add(k.pos, V3.scale(fwd, V3.norm(V3.sub(k.look, k.pos)))); }
       this.t = k.t;
+      this._liveDirty = true;                 /* redrawn once in the next frame, not per event */
     }
     /* always solve so the arm follows the ball live */
     const r = this.arm.ikMulti(h.pos, { R: h.R }, this.studio.q); if (r.ok) this.qTarget = r.q; this.ikInfo = r;
   }
-  commitKeyEdit() { if (this.playMode === 'timeline') { this.renderTimeline(); this.refreshScene(); } }
+  commitKeyEdit() {
+    if (this.playMode !== 'timeline') return;
+    /* on release, bring the one stop that moved up to date rather than every stop */
+    const k = this.key;
+    if (this.showPath) { const pts = this.plannedPath(140); this.studio.setPath(pts); this.studio.setPathArrows(pts); }
+    if (k && this.showFrames) {
+      const m = (this.studio.keyMeshes || []).find(x => x.id === k.id);
+      if (m) { this.studio.moveKeyMarker(m, k); this.studio.renderKeyThumbnail(k, m); }
+      this.scheduleThumb(k);
+    }
+    this.renderTimeline();
+  }
   touchKey(field, v) { const k = this.key; if (k && !this.playing) { this.toTimeline(); k[field] = v; this.scheduleThumb(k); } }
 
   /** Fly the studio camera to a stop: either beside it, or right behind the lens. */
@@ -413,12 +629,18 @@ export class StudioApp {
   renderTimeline() {
     if (!this.tl) return;
     const d = this.duration, keys = this.tl.keys;
-    const ruler = []; const step = d > 12 ? 4 : d > 6 ? 2 : 1;
-    for (let s = 0; s <= d + 1e-6; s += step) ruler.push(`<span style="left:${(s / d * 100).toFixed(2)}%">${s}s</span>`);
+    const z = this.tlZoom || 1;
+    $('tl-inner').style.width = (100 * z).toFixed(2) + '%';
+    /* tick every whole second when there is room for it, coarser when zoomed out */
+    const perSec = z * ($('tl-inner').clientWidth || 800) / Math.max(d, 0.1) / Math.max(z, 1);
+    const step = d / z > 24 ? 5 : d / z > 12 ? 2 : d / z > 5 ? 1 : 0.5;
+    const ruler = [];
+    for (let s2 = 0; s2 <= d + 1e-6; s2 += step) ruler.push(`<span style="left:${(s2 / d * 100).toFixed(2)}%">${step < 1 ? s2.toFixed(1) : s2}s</span>`);
     $('tl-ruler').innerHTML = ruler.join('');
     $('tl-keys').innerHTML = keys.map((k, i) => `
       <div class="tl-key${k.id === this.selKey ? ' sel' : ''}" data-id="${k.id}" style="left:${(k.t / d * 100).toFixed(2)}%">
-        <canvas width="96" height="64" data-thumb="${k.id}"></canvas><span class="n">${i + 1}</span>${k.label ? `<span class="kname">${k.label}</span>` : ''}</div>`).join('');
+        <canvas width="96" height="64" data-thumb="${k.id}"></canvas><span class="n">${i + 1}</span>${k.label ? `<span class="kname">${k.label}</span>` : ''}
+        <span class="tl-t">${k.t.toFixed(k.t < 10 ? 1 : 0)}s</span></div>`).join('');
     this.thumbQueue = keys.slice();
     $('btn-delkey').disabled = keys.length <= 2;
     $('tl-count').textContent = `${keys.length} stops`;
@@ -438,12 +660,40 @@ export class StudioApp {
     ctx.putImageData(img, 0, 0);
   }
   /** Redraw the path and the floating frames in the set. */
+  /** The path drawn in the set must be the path that will actually be played. A preset follows its
+      own parametric curve, not the spline through the stops sampled from it — on an orbit the two
+      differ by centimetres, which is exactly the "it is not following the line" you can see. */
+  plannedPath(n = 140) {
+    if (this.playMode === 'timeline' || !this.shot) return this.tl.path(n);
+    const out = []; const D = this.shot.duration;
+    const d0 = this.ctx.d0; this.ctx.d0 = undefined;
+    for (let i = 0; i <= n; i++) {
+      const t = D * i / n; this.ctx.t = t;
+      try { out.push(evalShot(this.shot, t, this.ctx).pos); } catch (e) { /* skip an unevaluable sample */ }
+    }
+    this.ctx.d0 = d0;
+    return out;
+  }
   refreshScene() {
     if (!this.tl) return;
-    this.studio.setPath(this.showPath ? this.tl.path(140) : null);
+    const pts = this.plannedPath(140);
+    this.studio.setPath(this.showPath ? pts : null);
+    this.studio.setPathArrows(this.showPath ? pts : null);
     this.studio.setKeyMarkers(this.showFrames ? this.tl.keys : []);
     if (this.showFrames) { for (const m of this.studio.keyMeshes) { const k = this.tl.keys.find(x => x.id === m.id); if (k) this.studio.renderKeyThumbnail(k, m); } this.studio.highlightKey(this.selKey); }
     this.renderTimeline();
+  }
+  /** While a stop is being dragged: move that one marker and redraw the tube, nothing else.
+      A full refresh rebuilds every marker and re-renders every framing preview, which is far too
+      much work for one pointer event and is what made dragging feel like it was catching up. */
+  refreshLive() {
+    if (!this.tl) return;
+    if (this.showPath) { const pts = this.plannedPath(80); this.studio.updatePath(pts); this.studio.setPathArrows(pts); }
+    const k = this.key;
+    if (k && this.showFrames) {
+      const m = (this.studio.keyMeshes || []).find(x => x.id === k.id);
+      this.studio.moveKeyMarker(m, k);
+    }
   }
 
   /* ============================================================ playing */
@@ -455,6 +705,9 @@ export class StudioApp {
   }
   stepShot(dt) {
     if (!this.shot) return;
+    /* while a preview is running the rig holds still: the point of a preview is to see the plan
+       without committing the arm to it */
+    if (this.preview) return;
     const D = this.duration;
     if (this._settling) {
       this.t = 0;
@@ -484,10 +737,155 @@ export class StudioApp {
       if (s.roll) R = R3.mul(R3.axisAngle([R[0][2], R[1][2], R[2][2]], s.roll), R);
       f = s.f; N = s.N; S = s.S == null ? V3.norm(V3.sub(target, pos)) : s.S;
     }
-    const r = this.arm.ikMulti(pos, { R }, this.qTarget); if (r.ok) this.qTarget = r.q; this.ikInfo = r;
-    if (!this.manualLens) { this.lens.zoom.set(f); this.lens.N = N; if (!this.afDrives) this.lens.focus.set(S); }
+    /* A subject the operator picked out overrides the shot's own aim: the move still runs, the
+       camera just keeps that thing in the middle of it. From some of the shot's positions the wrist
+       simply cannot turn that far, so the correction is backed off until the arm can hold it, and
+       if even a tenth of it is unreachable the shot's own aim is kept and the panel says so. */
+    let solved = null;
+    if (this.tracking) {
+      for (const gain of [1, 0.5, 0.25, 0.1]) {
+        const g = this.trackAim(pos, gain); if (!g) break;
+        const rr = this.arm.ikMulti(pos, { R: g.R }, this.qTarget);
+        if (rr.ok) { R = g.R; target = g.target; solved = rr; this.trackReach = gain < 1 ? 'partial' : 'full'; break; }
+      }
+      if (!solved) this.trackReach = 'blocked';
+    } else this.trackReach = null;
+    const r = solved || this.arm.ikMulti(pos, { R }, this.qTarget);
+    if (r.ok) this.qTarget = r.q; this.ikInfo = r;
+    if (!this.manualLens) { this.lens.zoom.set(f); this.lens.N = N; if (!this.afDrives && !this.tracking) this.lens.focus.set(S); }
     this.aimTarget = target;
     if (this.playing && !this._settling && this.frame % 3 === 0) { this.trailPts.push(this.studio.eePose().pos); if (this.trailPts.length > 400) this.trailPts.shift(); }
+  }
+
+  /* ------------------------------------------------------- preview vs execute */
+  /** Preview walks a translucent copy of the arm through the whole move without touching the rig,
+      the way a motion planner shows a plan before you run it. Execute is the move itself. */
+  startPreview() {
+    if (!this.shot && !this.tl) return;
+    this.stopPreview();
+    const D = this.duration, n = Math.max(40, Math.round(D * 30));
+    const poses = []; let q = this.studio.q.slice(); let fails = 0;
+    const d0 = this.ctx.d0; this.ctx.d0 = undefined;
+    for (let i = 0; i <= n; i++) {
+      const t = D * i / n;
+      let pos, R;
+      if (this.playMode === 'preset') {
+        this.ctx.t = t; const e = evalShot(this.shot, t, this.ctx); pos = e.pos; R = e.R;
+      } else {
+        const sm = this.tl.sample(t); if (!sm) continue; pos = sm.pos; R = lookAtRotation(pos, sm.look);
+        if (sm.roll) R = R3.mul(R3.axisAngle([R[0][2], R[1][2], R[2][2]], sm.roll), R);
+      }
+      const r = this.arm.ikMulti(pos, { R }, q);
+      if (r.ok) q = r.q; else fails++;
+      poses.push({ t, q: q.slice() });
+    }
+    this.ctx.d0 = d0;
+    this.preview = { poses, i: 0, acc: 0, fails, n: poses.length };
+    this.studio.setGhostVisible(true); this.studio.setGhostQ(poses[0].q);
+    this.playing = false;
+    this.toast(fails ? `Previewing — ${fails} of ${poses.length} poses are out of reach` : 'Previewing the move');
+    this.updateRunUI();
+  }
+  stopPreview() {
+    if (!this.preview) return;
+    this.preview = null; this.studio.setGhostVisible(false); this.updateRunUI();
+  }
+  stepPreview(dt) {
+    const P = this.preview; if (!P) return;
+    P.acc += dt * Math.max(0.25, this.speed);
+    const D = this.duration;
+    while (P.i < P.n - 1 && P.poses[P.i + 1].t <= P.acc) P.i++;
+    this.studio.setGhostQ(P.poses[P.i].q);
+    if (P.acc >= D) { if (this.loop) { P.acc = 0; P.i = 0; } else { this.stopPreview(); this.toast('Preview finished'); } }
+    const el = $('run-state');
+    if (el) el.textContent = `Previewing · ${P.poses[P.i].t.toFixed(1)} / ${D.toFixed(1)} s${P.fails ? ` · ${P.fails} unreachable` : ''}`;
+  }
+  execute() {
+    this.stopPreview();
+    this.restart();
+    this.toast('Running the move on the rig');
+    this.updateRunUI();
+  }
+  updateRunUI() {
+    const pv = $('btn-preview'), ex = $('btn-play'), st = $('run-state');
+    if (pv) { pv.classList.toggle('on', !!this.preview); pv.innerHTML = this.preview ? '<b>■</b> Stop preview' : '<b>▷</b> Preview'; }
+    if (ex) ex.disabled = !!this.preview;
+    if (st && !this.preview) st.textContent = this.playing ? 'Running on the rig' : 'Idle';
+    document.body.classList.toggle('previewing', !!this.preview);
+  }
+
+  /* ---------------------------------------------------------------- tracking */
+  /** Learn whatever is inside the box the operator drew, and follow it from then on. */
+  startTracking(rect) {
+    const frame = this.studio.readFeed(TRACK_W, TRACK_H);
+    if (this.tracker.learn(frame, rect)) {
+      this.trackBox = { u: rect.x + rect.w / 2, v: rect.y + rect.h / 2, w: rect.w, h: rect.h, conf: 1, state: 'locked' };
+      this.trackGaze = null; this.manualLens = false;
+      this.toast('Following that. Drag another box to change it, Esc to stop.');
+    } else {
+      this.toast('Nothing distinct enough in that box — try a tighter one.');
+    }
+    this.updateTrackUI();
+  }
+  stopTracking() {
+    if (!this.tracker.active) return;
+    this.tracker.reset(); this.trackBox = null; this.trackGaze = null;
+    this.toast('Stopped following'); this.updateTrackUI();
+  }
+  get tracking() { return this.tracker.active && this.trackBox && this.tracker.state !== 'lost'; }
+  stepTrack(dt) {
+    if (!this.tracker.active) return;
+    this._trkTimer = (this._trkTimer || 0) + dt;
+    if (this._trkTimer < 1 / 20) return; this._trkTimer = 0;
+    const box = this.tracker.step(this.studio.readFeed(TRACK_W, TRACK_H));
+    if (box) this.trackBox = box;
+    else if (this.tracker.state === 'lost') this.trackBox = { ...this.trackBox, state: 'lost', conf: 0 };
+    this.updateTrackUI();
+  }
+  /** Steer the optical axis so the tracked box sits in the middle of the frame. The correction is
+      applied to the camera's measured orientation, not to the accumulated command, so the loop
+      cannot wind up while the joints are still catching up. */
+  trackAim(pos, gain = 1) {
+    const b = this.trackBox; if (!b || b.state === 'lost') return null;
+    const T = this.arm.fk(this.studio.q); const fwd = [T[0][2], T[1][2], T[2][2]];
+    const yaw = Math.atan2(fwd[1], fwd[0]), pitch = Math.asin(clamp(fwd[2], -1, 1));
+    const du = b.u - 0.5, dv = b.v - 0.5;                    /* dv is positive downwards */
+    const aYaw = Math.atan(2 * du * Math.tan(fovH(this.lens.f) * D2R / 2));
+    const aPit = Math.atan(2 * dv * Math.tan(fovV(this.lens.f) * D2R / 2));
+    const k = (b.state === 'edge' ? 0.35 : 0.9) * gain;      /* a box on the frame edge is only half seen */
+    const g = { yaw: yaw - k * aYaw, pitch: clamp(pitch - k * aPit, -1.4, 1.4) };
+    this.trackGaze = g;
+    const R = yawPitchRoll(g.yaw, g.pitch, 0, pos);
+    const f2 = [R[0][2], R[1][2], R[2][2]];
+    return { R, target: V3.add(pos, V3.scale(f2, Math.max(this.subjectDist || 0.5, 0.2))) };
+  }
+  updateTrackUI() {
+    const el = $('track-box'), lab = $('track-label'), row = $('track-row'), btn = $('btn-untrack');
+    const b = this.trackBox;
+    if (!this.tracker.active || !b) {
+      if (el) el.hidden = true; if (lab) lab.hidden = true;
+      if (btn) btn.hidden = true;
+      if (row) row.textContent = 'Nothing — drag a box on the picture';
+      return;
+    }
+    if (el) {
+      el.hidden = false;
+      el.style.left = ((b.u - b.w / 2) * 100) + '%'; el.style.top = ((b.v - b.h / 2) * 100) + '%';
+      el.style.width = (b.w * 100) + '%'; el.style.height = (b.h * 100) + '%';
+      el.dataset.state = b.state;
+    }
+    if (lab) {
+      lab.hidden = false;
+      lab.style.left = ((b.u - b.w / 2) * 100) + '%'; lab.style.top = ((b.v + b.h / 2) * 100) + '%';
+      lab.textContent = b.state === 'lost' ? 'lost it' : b.state === 'searching' ? 'searching…'
+        : b.state === 'edge' ? 'at the frame edge' : `following · ${Math.round(b.conf * 100)} %`;
+      lab.dataset.state = b.state;
+    }
+    if (btn) btn.hidden = false;
+    if (row) row.textContent = b.state === 'lost' ? 'Lost it — drag a new box'
+      : this.trackReach === 'blocked' ? 'Following, but the arm cannot turn that far from here'
+      : `Following your subject · ${Math.round(b.conf * 100)} % sure · ${fmt(this.subjectDist || 0, 2)} m away`
+        + (this.trackReach === 'partial' ? ' · turning as far as the arm allows' : '');
   }
 
   /* ---- autofocus: measure how far the subject is, using the camera's own view ---- */
@@ -496,12 +894,16 @@ export class StudioApp {
     if (this._afTimer < 0.12) return; this._afTimer = 0;
     /* where to look: the tracked blob if we have one, else the middle of the frame */
     let u = 0.5, v = 0.5;
-    if (this.aimTarget) { const p = this.studio.projectToFeed(this.aimTarget); if (p.inFront) { u = clamp(p.u, 0.08, 0.92); v = clamp(p.v, 0.08, 0.92); } }
+    if (this.tracking) { u = clamp(this.trackBox.u, 0.06, 0.94); v = clamp(this.trackBox.v, 0.06, 0.94); }
+    else if (this.aimTarget) { const p = this.studio.projectToFeed(this.aimTarget); if (p.inFront) { u = clamp(p.u, 0.08, 0.92); v = clamp(p.v, 0.08, 0.92); } }
     this.afPoint = { u, v };
-    const d = this.studio.depthAt(u, v, 0.13);
+    /* Measure depth over the tracked object rather than a fixed patch: with a large selection a
+       fixed patch samples whatever is behind it and focus runs off to the backdrop. */
+    const frac = this.tracking ? clamp(Math.min(this.trackBox.w, this.trackBox.h) * 0.7, 0.04, 0.3) : 0.13;
+    const d = this.studio.depthAt(u, v, frac);
     if (d && d > 0.05 && d < 25) {
       this.subjectDist = this.subjectDist ? this.subjectDist + (d - this.subjectDist) * 0.5 : d;    /* a little damping, like a real AF */
-      if (this.afDrives) this.lens.focus.set(this.subjectDist);
+      if (this.afDrives || this.tracking) this.lens.focus.set(this.subjectDist);
     }
     this.afLocked = Math.abs(this.lens.S - this.subjectDist) / Math.max(this.subjectDist, 0.1) < 0.02;
   }
@@ -630,9 +1032,13 @@ export class StudioApp {
     this.frame++; this.time += dt;
     if (this.mode === 'policy') this.stepPolicy(dt); else this.stepShot(dt);
     const vmax = (this.shot && this.shot.vmax && this.playMode === 'preset') ? this.shot.vmax : this.arm.vmax;
-    this.studio.setQ(this.arm.track(this.studio.q, this.qTarget, dt, vmax));
+    /* a preview must not move the rig at all, not even to finish converging on its last command */
+    if (!this.preview) this.studio.setQ(this.arm.track(this.studio.q, this.qTarget, dt, vmax));
     if (!this.studio.gizmo.dragging) { if (this.editingKey()) this.gizmoOnKey(); else this.studio.syncHandle(); }
     this.studio.update(dt);
+    if (this._liveDirty) { this.refreshLive(); this._liveDirty = false; }
+    if (this.preview) this.stepPreview(dt);
+    this.stepTrack(dt);
     this.stepFocus(dt);
     if (this.showBeam) this.studio.updateProjection(this.subjectDist);
     if (this.playing && this.frame % 9 === 0 && this.trailPts.length > 2) this.studio.setTrail(this.trailPts);
@@ -693,6 +1099,7 @@ export class StudioApp {
     this.updateTransport();
   }
   updateTransport() {
+    this.updateRunUI();
     const b = $('btn-play'); b.innerHTML = this.playing ? '<b>❚❚</b> Pause' : '<b>▶</b> Play';
     $('tl-state').textContent = this._settling ? 'Moving into place…' : this.playMode === 'timeline' ? 'Your shot' : 'Preset shot';
   }
@@ -703,21 +1110,57 @@ export class StudioApp {
   }
   /* clicking in the picture sets where the camera focuses */
   bindPointer() {
-    const mon = $('view-feed');
+    /* On the monitor: a tap pulls focus where you touched, a drag draws a box round something
+       and hands it to the tracker, which then keeps it framed and in focus. */
+    const mon = $('view-feed'), sel = $('track-sel');
+    let drag = null;
+    const at = (ev) => { const r = mon.getBoundingClientRect();
+      return { u: clamp((ev.clientX - r.left) / r.width, 0, 1), v: clamp((ev.clientY - r.top) / r.height, 0, 1) }; };
+    const draw = () => {
+      if (!drag) { sel.hidden = true; return; }
+      const x0 = Math.min(drag.a.u, drag.b.u), y0 = Math.min(drag.a.v, drag.b.v);
+      sel.hidden = false;
+      sel.style.left = (x0 * 100) + '%'; sel.style.top = (y0 * 100) + '%';
+      sel.style.width = (Math.abs(drag.b.u - drag.a.u) * 100) + '%';
+      sel.style.height = (Math.abs(drag.b.v - drag.a.v) * 100) + '%';
+    };
     mon.addEventListener('pointerdown', (ev) => {
-      const r = mon.getBoundingClientRect();
-      this.afPoint = { u: clamp((ev.clientX - r.left) / r.width, 0, 1), v: clamp((ev.clientY - r.top) / r.height, 0, 1) };
-      const d = this.studio.depthAt(this.afPoint.u, this.afPoint.v, 0.1);
-      if (d) { this.subjectDist = d; this.lens.focus.set(d); this.toast(`Focused on what is ${fmt(d, 2)} m away`); }
+      ev.preventDefault(); mon.setPointerCapture(ev.pointerId);
+      drag = { a: at(ev), b: at(ev) }; draw();
     });
-    /* clicking a floating frame in the set opens that stop */
+    mon.addEventListener('pointermove', (ev) => { if (!drag) return; drag.b = at(ev); draw(); });
+    const finish = (ev) => {
+      if (!drag) return;
+      const a = drag.a, b = drag.b; drag = null; draw();
+      const w = Math.abs(b.u - a.u), h = Math.abs(b.v - a.v);
+      if (w < 0.03 || h < 0.03) {                      /* a tap, not a drag: pull focus there */
+        this.afPoint = a;
+        const d = this.studio.depthAt(a.u, a.v, 0.1);
+        if (d) { this.subjectDist = d; this.lens.focus.set(d); this.toast(`Focused on what is ${fmt(d, 2)} m away`); }
+        return;
+      }
+      this.startTracking({ x: Math.min(a.u, b.u), y: Math.min(a.v, b.v), w, h });
+    };
+    mon.addEventListener('pointerup', finish);
+    mon.addEventListener('pointercancel', () => { drag = null; draw(); });
+    const stop = $('btn-untrack'); if (stop) stop.addEventListener('click', () => this.stopTracking());
+    /* Picking a stop in the set: done on pointerdown so the orbit control never swallows it, and
+       grabbing one of the rings round the ball turns the tool to Aim, which is the rotate gizmo. */
     const cv = $('studio-canvas');
-    cv.addEventListener('click', (ev) => {
+    cv.addEventListener('pointerdown', (ev) => {
       if (this.studio.gizmo.dragging) return;
       const r = cv.getBoundingClientRect();
-      const id = this.studio.pickKey(((ev.clientX - r.left) / r.width) * 2 - 1, -(((ev.clientY - r.top) / r.height) * 2 - 1));
-      if (id != null) this.selectKey(id);
-    });
+      const nx = ((ev.clientX - r.left) / r.width) * 2 - 1, ny = -(((ev.clientY - r.top) / r.height) * 2 - 1);
+      const hit = this.studio.pickKey(nx, ny, true);
+      if (!hit) return;
+      const id = typeof hit === 'object' ? hit.id : hit;
+      const onRing = typeof hit === 'object' && hit.part === 'ring';
+      this.studio.controls.enabled = false;            /* this gesture is a selection, not an orbit */
+      setTimeout(() => { this.studio.controls.enabled = true; }, 0);
+      if (id !== this.selKey) this.selectKey(id);
+      if (onRing && this.tool !== 'aim') this.setTool('aim');
+      this.gizmoOnKey();
+    }, true);
   }
   bindKeys() {
     document.addEventListener('keydown', (e) => {
@@ -727,7 +1170,7 @@ export class StudioApp {
       if (e.key === 'Backspace') this.deleteKey();
       if (e.key === 'f') this.toggleFirstPerson();
       if (e.key === '1') this.setView('studio'); if (e.key === '2') this.setView('monitor'); if (e.key === '3') this.setView('film');
-      if (e.key === 'Escape') this.closeDrawer();
+      if (e.key === 'Escape') { if (this.tracker.active) this.stopTracking(); else this.closeDrawer(); }
     });
   }
 }
