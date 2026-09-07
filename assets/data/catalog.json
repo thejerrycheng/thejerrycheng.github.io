@@ -410,6 +410,29 @@
   ],
   "projects": [
     {
+      "id": "m2",
+      "title": "M₂: Cooperative Object Transport with Two Mobile Manipulators",
+      "short": "M₂: two robots carrying one shared load",
+      "year": 2026,
+      "tag": "Robot learning",
+      "images": [
+        "assets/projects/m2/media/067468276535.jpg"
+      ],
+      "alts": [
+        "Two mobile manipulators carrying a shared object in MuJoCo"
+      ],
+      "video": "assets/projects/m2/media/aea3157089c0.mp4",
+      "fit": "contain",
+      "links": [
+        {
+          "label": "Website",
+          "href": "m2.html",
+          "internal": true
+        }
+      ],
+      "desc": "RRT-Connect planning, local obstacle avoidance and shared low-level policies for approach, grasp, lift and transport. Twelve simulated scenes, four-hand trajectories and documented failures. A new local transformer learns with finite grasps, delayed arrivals and noisy pose estimates; reliable grasp-loss recovery remains in development."
+    },
+    {
       "id": "mabel",
       "title": "MABEL: An Open Mobile Anthropomorphic Bimanual Robot",
       "short": "MABEL: Open Mobile Bimanual Robot",
