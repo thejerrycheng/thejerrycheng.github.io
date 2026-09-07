@@ -411,12 +411,12 @@
   "projects": [
     {
       "id": "m2",
-      "title": "M₂: Cooperative Object Transport with Two Mobile Manipulators",
-      "short": "M₂: two robots carrying one shared load",
+      "title": "Read the Room: Cooperative Multi-Robot Transport",
+      "short": "Read the Room: shared policy, shared load",
       "year": 2026,
       "tag": "Robot learning",
       "images": [
-        "assets/projects/m2/media/067468276535.jpg"
+        "assets/projects/m2/figures/iros_01_task.png"
       ],
       "alts": [
         "Two mobile manipulators carrying a shared object in MuJoCo"
@@ -430,7 +430,7 @@
           "internal": true
         }
       ],
-      "desc": "RRT-Connect planning, local obstacle avoidance and shared low-level policies for approach, grasp, lift and transport. Twelve simulated scenes, four-hand trajectories and documented failures. A new local transformer learns with finite grasps, delayed arrivals and noisy pose estimates; reliable grasp-loss recovery remains in development."
+      "desc": "Grasp-aware planning and shared learned local control for cooperative transport. Explore the paper, seven-stage task visualization, 35/40 frozen missions across ten scenes, and interactive trajectories. Separate development experiments study recovery and local coordination."
     },
     {
       "id": "mabel",
