@@ -298,6 +298,7 @@ export class StudioApp {
       place that turns them on goes through here rather than setting the flags itself. */
   showGizmo(on) {
     const v = !!on && !this.capture;
+    this.gizmoAllowed = v;
     this.studio.gizmo.enabled = v;
     this.studio.gizmoHelper.visible = v;
     if (this.studio.ball) this.studio.ball.visible = v;
@@ -1144,23 +1145,28 @@ export class StudioApp {
     mon.addEventListener('pointerup', finish);
     mon.addEventListener('pointercancel', () => { drag = null; draw(); });
     const stop = $('btn-untrack'); if (stop) stop.addEventListener('click', () => this.stopTracking());
-    /* Picking a stop in the set: done on pointerdown so the orbit control never swallows it, and
-       grabbing one of the rings round the ball turns the tool to Aim, which is the rotate gizmo. */
+    /* Picking a stop in the set. This must never touch the orbit control: taking the gesture away
+       from it on pointerdown, even for one tick, is enough to lose the whole drag and leave the
+       view unable to rotate. So the pick happens on release, and only when the pointer barely
+       moved — a click. A drag is an orbit and nothing else. */
     const cv = $('studio-canvas');
-    cv.addEventListener('pointerdown', (ev) => {
-      if (this.studio.gizmo.dragging) return;
+    let down = null;
+    cv.addEventListener('pointerdown', (ev) => { down = { x: ev.clientX, y: ev.clientY, t: performance.now() }; });
+    cv.addEventListener('pointercancel', () => { down = null; });
+    cv.addEventListener('pointerup', (ev) => {
+      const d = down; down = null;
+      if (!d || this.studio.gizmo.dragging) return;
+      if (Math.hypot(ev.clientX - d.x, ev.clientY - d.y) > 5) return;      /* that was an orbit */
       const r = cv.getBoundingClientRect();
       const nx = ((ev.clientX - r.left) / r.width) * 2 - 1, ny = -(((ev.clientY - r.top) / r.height) * 2 - 1);
       const hit = this.studio.pickKey(nx, ny, true);
       if (!hit) return;
       const id = typeof hit === 'object' ? hit.id : hit;
       const onRing = typeof hit === 'object' && hit.part === 'ring';
-      this.studio.controls.enabled = false;            /* this gesture is a selection, not an orbit */
-      setTimeout(() => { this.studio.controls.enabled = true; }, 0);
       if (id !== this.selKey) this.selectKey(id);
       if (onRing && this.tool !== 'aim') this.setTool('aim');
       this.gizmoOnKey();
-    }, true);
+    });
   }
   bindKeys() {
     document.addEventListener('keydown', (e) => {

@@ -265,7 +265,7 @@ export class Studio {
       new THREE.MeshBasicMaterial({ color: 0x0a84ff, transparent: true, opacity: 0.75, depthWrite: false }));
     nose.rotation.x = Math.PI / 2; nose.position.z = 0.0275; this.ball.add(nose);
     this.ball.renderOrder = 5; this.handle.add(this.ball);
-    this.gizmo = new TransformControls(this.camera, canvas); this.gizmo.setSize(0.55); this.gizmo.attach(this.handle); this.gizmo.enabled = false; this.gizmoHelper = this.gizmo.getHelper ? this.gizmo.getHelper() : this.gizmo; this.gizmoHelper.visible = false; this.scene.add(this.gizmoHelper);
+    this.gizmo = new TransformControls(this.camera, canvas); this.gizmo.setSize(0.45); this.gizmo.attach(this.handle); this.gizmo.enabled = false; this.gizmoHelper = this.gizmo.getHelper ? this.gizmo.getHelper() : this.gizmo; this.gizmoHelper.visible = false; this.scene.add(this.gizmoHelper);
     this.gizmo.addEventListener('dragging-changed', (e) => { this.controls.enabled = !e.value; });
     this.trail = null;
     new ResizeObserver(() => this.resize()).observe(canvas); this.resize();
