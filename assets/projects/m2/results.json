@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-07T20:10:49.943465+00:00",
+  "updated": "2026-09-07T20:19:08.103285+00:00",
   "motions": [
     {
       "name": "Living room",
@@ -590223,6 +590223,902 @@
           "teacher_fraction": null,
           "objective": null,
           "mission_success": null
+        },
+        {
+          "episode": 187,
+          "steps": 124928,
+          "return": 30.254598679290623,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -0.9918516837442152,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 13.693943975797483,
+            "grasp_loss": -2.5,
+            "grasp_proximity": 0.0,
+            "supported_progress": 49.17151146723633,
+            "stable_goal": 0.08,
+            "unsupported_travel": -1.960829548018118,
+            "slip": -1.1832815266066317,
+            "load": -0.4412134734405987,
+            "tilt": -1.329708751274867,
+            "upright_torso": -3.646202703108237e-05,
+            "action_rate": -0.003935318632028837,
+            "time": -4.279999999999764,
+            "success": 0.0,
+            "failure": -20.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 72.56757413350516,
+            "max_slip_m": 0.029957975966102682,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 33.35935163180393,
+            "peak_orientation_error_rad": 0.24859821846410443,
+            "first_full_support_s": 0.88,
+            "pre_support_max_xy_m": 0.0038447379217222866,
+            "max_unsupported_segment_travel_m": 0.02389425004903316,
+            "capacity_releases": 1,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.525233644859813,
+            "goal_error_se3": [
+              0.17022021983640376,
+              -0.019481877015623095,
+              -0.12819572667911083,
+              -0.07934803268910746,
+              0.15981287520866436,
+              -0.17310346284645706
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
+        },
+        {
+          "episode": 188,
+          "steps": 124928,
+          "return": 32.70626019831215,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -0.4026703671179145,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 17.582907575484715,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 25.74543519293755,
+            "stable_goal": 0.0,
+            "unsupported_travel": -0.24705679802030728,
+            "slip": -2.1524055167587783,
+            "load": -1.0436683457404219,
+            "tilt": -0.771334245128936,
+            "upright_torso": -7.206576607973374e-05,
+            "action_rate": -0.004875231577480363,
+            "time": -6.000000000000338,
+            "success": 0.0,
+            "failure": 0.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 78.14141087816327,
+            "max_slip_m": 0.027688494550310038,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 55.93433348267945,
+            "peak_orientation_error_rad": 0.09995684395951489,
+            "first_full_support_s": 0.76,
+            "pre_support_max_xy_m": 0.013354360206585503,
+            "max_unsupported_segment_travel_m": 0.011365992900022392,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.6636666666666666,
+            "goal_error_se3": [
+              0.11568919484466317,
+              0.23591502797000263,
+              -0.18310192701392247,
+              -0.0246691487566485,
+              0.0028292788676969193,
+              -0.021595156344222103
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
+        },
+        {
+          "episode": 189,
+          "steps": 125952,
+          "return": -23.653991045581122,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -1.1869468428461156,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 9.454596703287786,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": -3.8063142541423938,
+            "stable_goal": 0.0,
+            "unsupported_travel": -6.976621900231854,
+            "slip": -0.10434338872410664,
+            "load": -0.03202998350276006,
+            "tilt": -0.06373876597611752,
+            "upright_torso": -2.484783092245365e-06,
+            "action_rate": -0.002590128662490573,
+            "time": -0.9360000000000007,
+            "success": 0.0,
+            "failure": -20.0
+          },
+          "recovery": {
+            "fault_armed": true,
+            "fault_started_s": 1.98,
+            "fault_robot": "milo",
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.051115388860183256,
+            "peak_load_n": 56.412415161794044,
+            "max_slip_m": 0.015835662202325147,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 23.427683512013342,
+            "peak_orientation_error_rad": 0.06590497199070108,
+            "first_full_support_s": 1.16,
+            "pre_support_max_xy_m": 0.002445045284254848,
+            "max_unsupported_segment_travel_m": 0.05015328723681001,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": 0.7837837837837838,
+            "supporter_observed_s": 7.4,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.45085470085470086,
+            "goal_error_se3": [
+              0.007162700743157214,
+              0.4344599099946519,
+              0.0489775565012317,
+              0.05138234832369543,
+              3.020947966346272e-05,
+              0.011833336035566999
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
+        },
+        {
+          "episode": 190,
+          "steps": 126976,
+          "return": 45.40204283005541,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -0.3212094142621075,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 18.812161717580345,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 49.46328518321148,
+            "stable_goal": 0.0,
+            "unsupported_travel": -0.027770926764617967,
+            "slip": -0.5710692859368898,
+            "load": -0.15507562386584697,
+            "tilt": -0.027792952374598993,
+            "upright_torso": -8.136097323482787e-06,
+            "action_rate": -0.0024777314350757584,
+            "time": -1.767999999999916,
+            "success": 0.0,
+            "failure": -20.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 58.5909384655747,
+            "max_slip_m": 0.02186948100410439,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 32.36412332021787,
+            "peak_orientation_error_rad": 0.030666349638918212,
+            "first_full_support_s": 0.36,
+            "pre_support_max_xy_m": 0.00098168602543922,
+            "max_unsupported_segment_travel_m": 0.0008528041767447809,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.4592760180995475,
+            "goal_error_se3": [
+              -0.006284620399164815,
+              0.0045383214749544765,
+              -0.12146936565843758,
+              0.02222429526690899,
+              0.006968514470613215,
+              0.008266875113572037
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
+        },
+        {
+          "episode": 191,
+          "steps": 126976,
+          "return": 28.733783444404406,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -0.3468173461688314,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 17.48624940102758,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 33.24441373230246,
+            "stable_goal": 0.0,
+            "unsupported_travel": -0.05531849065240222,
+            "slip": -0.2962817805391501,
+            "load": -0.1862917664247033,
+            "tilt": -0.01258839001840076,
+            "upright_torso": -9.597792863980743e-06,
+            "action_rate": -0.0015723173293774944,
+            "time": -1.0979999999999899,
+            "success": 0.0,
+            "failure": -20.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 77.81895819504541,
+            "max_slip_m": 0.023617201430708227,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 50.19093761227411,
+            "peak_orientation_error_rad": 0.03376873486884236,
+            "first_full_support_s": 0.76,
+            "pre_support_max_xy_m": 0.0008521810782870251,
+            "max_unsupported_segment_travel_m": 0.0008521810782870251,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.4116575591985428,
+            "goal_error_se3": [
+              -0.004355836655316201,
+              0.16047803162405858,
+              -0.058495137817558995,
+              0.02405415907688625,
+              0.010957142384668337,
+              0.021015849174090804
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
+        },
+        {
+          "episode": 192,
+          "steps": 126976,
+          "return": -10.942351371269302,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -0.6800736667023779,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 10.134980006400177,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 1.0154741265800875,
+            "stable_goal": 0.0,
+            "unsupported_travel": -1.1678205001368154,
+            "slip": -0.015852535990178638,
+            "load": -0.010324360152588186,
+            "tilt": -0.001503086945530163,
+            "upright_torso": -5.757428076620916e-07,
+            "action_rate": -0.0012307785792671055,
+            "time": -0.21600000000000016,
+            "success": 0.0,
+            "failure": -20.0
+          },
+          "recovery": {
+            "fault_armed": true,
+            "fault_started_s": 1.38,
+            "fault_robot": "milo",
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.049915263878892786,
+            "peak_load_n": 44.1341484478537,
+            "max_slip_m": 0.008671852637101546,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 14.339766360997016,
+            "peak_orientation_error_rad": 0.020551927077328107,
+            "first_full_support_s": 0.42,
+            "pre_support_max_xy_m": 0.0010920491640300384,
+            "max_unsupported_segment_travel_m": 0.05008653971657433,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": 0.625,
+            "supporter_observed_s": 0.8,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.8703703703703703,
+            "goal_error_se3": [
+              -0.009728571745895347,
+              0.43563026557263285,
+              0.08122070067824377,
+              0.01862521714725299,
+              0.00024028905316002546,
+              0.0035935932455290853
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
+        },
+        {
+          "episode": 193,
+          "steps": 127488,
+          "return": -6.372795247657793,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -1.1968828821245094,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 9.526520122550373,
+            "grasp_loss": -5.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 12.25689718737969,
+            "stable_goal": 0.0,
+            "unsupported_travel": -1.381389843966756,
+            "slip": -0.0623573835639891,
+            "load": -0.07807478337950001,
+            "tilt": -0.004406026073216085,
+            "upright_torso": -3.080036792084196e-06,
+            "action_rate": -0.0010985584431147594,
+            "time": -0.43200000000000033,
+            "success": 0.0,
+            "failure": -20.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 67.36398445027126,
+            "max_slip_m": 0.0375353854895175,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 55.43825472153976,
+            "peak_orientation_error_rad": 0.05266228000454648,
+            "first_full_support_s": 1.0,
+            "pre_support_max_xy_m": 0.006628303663399342,
+            "max_unsupported_segment_travel_m": 0.050511311780176434,
+            "capacity_releases": 2,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.5925925925925926,
+            "goal_error_se3": [
+              0.003005323570393936,
+              0.3171903964875713,
+              -0.017945177766596765,
+              -0.013567114842894322,
+              0.03436676545406989,
+              0.0008678977421645145
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
+        },
+        {
+          "episode": 194,
+          "steps": 129536,
+          "return": 25.500058402522548,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -0.7330635709022542,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 10.165419263510378,
+            "grasp_loss": -5.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 47.993648630609954,
+            "stable_goal": 0.0,
+            "unsupported_travel": -1.3218356179950392,
+            "slip": -0.8134581668777909,
+            "load": -0.9064681992003599,
+            "tilt": -0.9432418545724875,
+            "upright_torso": -6.932749298488034e-05,
+            "action_rate": -0.0028727545571552134,
+            "time": -2.9379999999997874,
+            "success": 0.0,
+            "failure": -20.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 120.78457830668606,
+            "max_slip_m": 0.02567565064724735,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 34.9317865056458,
+            "peak_orientation_error_rad": 0.15647857237751556,
+            "first_full_support_s": 0.78,
+            "pre_support_max_xy_m": 0.0030928418088720317,
+            "max_unsupported_segment_travel_m": 0.05101196896957948,
+            "capacity_releases": 2,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.5888359428182437,
+            "goal_error_se3": [
+              0.11412144285799238,
+              -0.03706128726589436,
+              0.010201562143132392,
+              -0.061389925072674746,
+              0.07604647734588438,
+              -0.04860028386328455
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
+        },
+        {
+          "episode": 195,
+          "steps": 130048,
+          "return": 44.598686927168494,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -0.25403267866619866,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 18.817064989067674,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 49.799276528919236,
+            "stable_goal": 0.0,
+            "unsupported_travel": -0.045570436093998606,
+            "slip": -0.7285242909330766,
+            "load": -0.20192006105654542,
+            "tilt": -0.3767715040714291,
+            "upright_torso": -1.409060624318602e-05,
+            "action_rate": -0.0028215293908363842,
+            "time": -2.407999999999846,
+            "success": 0.0,
+            "failure": -20.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 55.11802388736795,
+            "max_slip_m": 0.02216695897353451,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 36.64606709044273,
+            "peak_orientation_error_rad": 0.11604613371331748,
+            "first_full_support_s": 0.46,
+            "pre_support_max_xy_m": 0.001512897743304866,
+            "max_unsupported_segment_travel_m": 0.001512897743304866,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.4684385382059801,
+            "goal_error_se3": [
+              0.02219417574208209,
+              -0.05723197874887703,
+              -0.09771128692403352,
+              -0.0734493980003045,
+              0.05614838485243711,
+              -0.06772860549031205
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
+        },
+        {
+          "episode": 196,
+          "steps": 132096,
+          "return": 29.40528711672401,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -0.8674114448769447,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 13.83278097438899,
+            "grasp_loss": -2.5,
+            "grasp_proximity": 0.0,
+            "supported_progress": 45.07473039033363,
+            "stable_goal": 0.0,
+            "unsupported_travel": -1.803806744006193,
+            "slip": -0.6425176899470285,
+            "load": -0.4317739225082738,
+            "tilt": -0.8280135347916945,
+            "upright_torso": -2.7301371709658416e-05,
+            "action_rate": -0.002673610496570634,
+            "time": -2.425999999999844,
+            "success": 0.0,
+            "failure": -20.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 82.9863687337461,
+            "max_slip_m": 0.02744469435954978,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 34.160435646587494,
+            "peak_orientation_error_rad": 0.2198639146393817,
+            "first_full_support_s": 0.34,
+            "pre_support_max_xy_m": 0.0004055612927000798,
+            "max_unsupported_segment_travel_m": 0.018931497753316318,
+            "capacity_releases": 1,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.49546578730420443,
+            "goal_error_se3": [
+              0.0795269438005677,
+              0.028476624244716142,
+              -0.08029154533795069,
+              -0.1360779000494569,
+              0.11471014623453801,
+              -0.11160759811969002
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
+        },
+        {
+          "episode": 197,
+          "steps": 132608,
+          "return": -14.758657040999086,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -0.7508293255892597,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 9.977344020624853,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": -1.2626359991552984,
+            "stable_goal": 0.0,
+            "unsupported_travel": -2.3182096457404726,
+            "slip": -0.03234701063266562,
+            "load": -0.009007340682023999,
+            "tilt": -0.0053741286468250125,
+            "upright_torso": -5.825680747670123e-07,
+            "action_rate": -0.0015970286092984215,
+            "time": -0.35600000000000026,
+            "success": 0.0,
+            "failure": -20.0
+          },
+          "recovery": {
+            "fault_armed": true,
+            "fault_started_s": 1.4,
+            "fault_robot": "milo",
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.04960179206059622,
+            "peak_load_n": 57.38325216350998,
+            "max_slip_m": 0.012217832613579394,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 20.967008589543163,
+            "peak_orientation_error_rad": 0.03304485641562814,
+            "first_full_support_s": 0.48,
+            "pre_support_max_xy_m": 0.0014142221553457507,
+            "max_unsupported_segment_travel_m": 0.050913062788431204,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": 0.6880733944954128,
+            "supporter_observed_s": 2.18,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.7247191011235955,
+            "goal_error_se3": [
+              -0.011764933262761658,
+              0.44780168903778744,
+              0.07811332735421261,
+              0.021723079822847012,
+              0.00012482925516540963,
+              -0.0008505512828755288
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
+        },
+        {
+          "episode": 198,
+          "steps": 134144,
+          "return": 24.883077654538553,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -0.4124847375672676,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 17.46862994009125,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 30.796373366313375,
+            "stable_goal": 0.0,
+            "unsupported_travel": -0.13578244811417314,
+            "slip": -0.6198265027218256,
+            "load": -0.15005578573956407,
+            "tilt": -0.16143716493307136,
+            "upright_torso": -1.0386877103306287e-05,
+            "action_rate": -0.0023286259130042156,
+            "time": -1.8999999999999015,
+            "success": 0.0,
+            "failure": -20.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 62.55493830420266,
+            "max_slip_m": 0.02475870036333424,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 36.39074273101593,
+            "peak_orientation_error_rad": 0.1220448575086368,
+            "first_full_support_s": 1.02,
+            "pre_support_max_xy_m": 0.002756958296182678,
+            "max_unsupported_segment_travel_m": 0.002756958296182678,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.5263157894736842,
+            "goal_error_se3": [
+              -0.01903390416691134,
+              0.18257976147145943,
+              -0.15339552710590398,
+              -0.02856202064311776,
+              0.009273148612305795,
+              -0.11829271717185143
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
+        },
+        {
+          "episode": 199,
+          "steps": 135168,
+          "return": -24.017630279078475,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -0.8930449662277183,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 9.733136927232668,
+            "grasp_loss": -5.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": -3.4580598473891264,
+            "stable_goal": 0.0,
+            "unsupported_travel": -3.5471419153812422,
+            "slip": -0.0465070849476749,
+            "load": -0.12728431987928077,
+            "tilt": -0.019084000576805153,
+            "upright_torso": -6.3285089876307365e-06,
+            "action_rate": -0.0016387434002843374,
+            "time": -0.6580000000000005,
+            "success": 0.0,
+            "failure": -20.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 122.9598253430473,
+            "max_slip_m": 0.02460614211990026,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 30.31269550865832,
+            "peak_orientation_error_rad": 0.0359267704360586,
+            "first_full_support_s": 1.24,
+            "pre_support_max_xy_m": 0.005737069795152276,
+            "max_unsupported_segment_travel_m": 0.05007564974625217,
+            "capacity_releases": 1,
+            "policy_open_releases": 1,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.48328267477203646,
+            "goal_error_se3": [
+              0.020113141923021695,
+              0.4553938485824096,
+              0.07285702353440637,
+              0.027108789479399095,
+              0.00012271397556504456,
+              -0.0038253624690183694
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
+        },
+        {
+          "episode": 200,
+          "steps": 135680,
+          "return": -21.36120425407574,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -0.9900987480875423,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 9.428777201183443,
+            "grasp_loss": -5.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": -1.9818048851067296,
+            "stable_goal": 0.0,
+            "unsupported_travel": -2.017323606752385,
+            "slip": -0.04984878372805878,
+            "load": -0.03820635208178601,
+            "tilt": -0.017214408009646378,
+            "upright_torso": -2.594668825168138e-06,
+            "action_rate": -0.0014820768242231298,
+            "time": -0.6940000000000005,
+            "success": 0.0,
+            "failure": -20.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 66.74371604892649,
+            "max_slip_m": 0.026167206320746098,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 32.358370898550554,
+            "peak_orientation_error_rad": 0.041333062052049195,
+            "first_full_support_s": 0.54,
+            "pre_support_max_xy_m": 0.0032826620283063963,
+            "max_unsupported_segment_travel_m": 0.019771040182062875,
+            "capacity_releases": 1,
+            "policy_open_releases": 1,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.345821325648415,
+            "goal_error_se3": [
+              0.0002678290279981743,
+              0.3899970658652991,
+              0.07117259196354836,
+              -0.023210819896052847,
+              0.015589070528685202,
+              -0.0021559373026844553
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
+        },
+        {
+          "episode": 201,
+          "steps": 135680,
+          "return": 57.36582132726325,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -0.3452997607663868,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 18.31253213508611,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": 49.573075964985634,
+            "stable_goal": 0.0,
+            "unsupported_travel": -0.09471736066549849,
+            "slip": -2.0215970117146633,
+            "load": -0.624053669442827,
+            "tilt": -1.4287583707545268,
+            "upright_torso": -4.47662903668015e-05,
+            "action_rate": -0.00531583317407501,
+            "time": -6.000000000000338,
+            "success": 0.0,
+            "failure": 0.0
+          },
+          "recovery": {
+            "fault_armed": false,
+            "fault_started_s": null,
+            "fault_robot": null,
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.0,
+            "peak_load_n": 71.18512058609764,
+            "max_slip_m": 0.026455640544445734,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 49.63651562892547,
+            "peak_orientation_error_rad": 0.11503764002666117,
+            "first_full_support_s": 0.56,
+            "pre_support_max_xy_m": 0.004563191711582659,
+            "max_unsupported_segment_travel_m": 0.0040551788410284,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": null,
+            "supporter_observed_s": 0.0,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.772,
+            "goal_error_se3": [
+              -0.043891493146927175,
+              -0.021173188507871032,
+              -0.09333814835372178,
+              -0.07780288671568203,
+              -0.021939669037964255,
+              -0.005980442944627904
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
+        },
+        {
+          "episode": 202,
+          "steps": 136192,
+          "return": -13.65206992738944,
+          "success": false,
+          "reward_components": {
+            "grasp_progress": -0.8127764040258982,
+            "grasp_rotation_progress": 0.0,
+            "contact_progress": 9.878362140092925,
+            "grasp_loss": 0.0,
+            "grasp_proximity": 0.0,
+            "supported_progress": -0.7935711914214166,
+            "stable_goal": 0.0,
+            "unsupported_travel": -1.5305555172894383,
+            "slip": -0.028597740389715586,
+            "load": -0.012481944948359094,
+            "tilt": -0.002565406256931237,
+            "upright_torso": -6.182636630213751e-07,
+            "action_rate": -0.001883244886949511,
+            "time": -0.34800000000000025,
+            "success": 0.0,
+            "failure": -20.0
+          },
+          "recovery": {
+            "fault_armed": true,
+            "fault_started_s": 2.24,
+            "fault_robot": "milo",
+            "regrasped_s": null,
+            "max_unsupported_travel_m": 0.04928364366789893,
+            "peak_load_n": 60.13607255225153,
+            "max_slip_m": 0.01214756873410511,
+            "load_scope": "total_contact",
+            "peak_attachment_load_n": 21.864663223307325,
+            "peak_orientation_error_rad": 0.024109665387133196,
+            "first_full_support_s": 1.28,
+            "pre_support_max_xy_m": 0.0024889828632842564,
+            "max_unsupported_segment_travel_m": 0.05035088092295222,
+            "capacity_releases": 0,
+            "policy_open_releases": 0,
+            "supporter_wait_fraction": 0.6984126984126984,
+            "supporter_observed_s": 1.26,
+            "post_regrasp_progress_m": 0.0,
+            "actuator_saturation_fraction": 0.6839080459770115,
+            "goal_error_se3": [
+              -0.009490115429510495,
+              0.4447179812375559,
+              0.08180932551821923,
+              0.018336258571472194,
+              -7.26415353345921e-05,
+              -0.0016804255936961282
+            ]
+          },
+          "teacher_fraction": null,
+          "objective": null,
+          "mission_success": null
         }
       ],
       "imitation": [],
@@ -590301,6 +591197,21 @@
           "name": "ep000154_step00102912",
           "video": "assets/projects/m2/media/d1e12c33fc79.mp4",
           "poster": "assets/projects/m2/media/092db924f4b2.jpg"
+        },
+        {
+          "name": "ep000164_step00109568",
+          "video": "assets/projects/m2/media/6ac36e745734.mp4",
+          "poster": "assets/projects/m2/media/27578ce447d5.jpg"
+        },
+        {
+          "name": "ep000174_step00113664",
+          "video": "assets/projects/m2/media/6c3659019cf2.mp4",
+          "poster": "assets/projects/m2/media/f0c8994a3db3.jpg"
+        },
+        {
+          "name": "ep000184_step00118272",
+          "video": "assets/projects/m2/media/4ba64c17c90c.mp4",
+          "poster": "assets/projects/m2/media/6e414a4f1741.jpg"
         }
       ]
     },
@@ -591945,13 +592856,277 @@
           "weighted_mse": 0.002210453932519975,
           "round": 0,
           "labelled_samples": null
+        },
+        {
+          "epoch": 26,
+          "train_weighted_mse": 0.0020468988060182445,
+          "validation_weighted_mse": 0.0027325956616550684,
+          "weighted_mse": 0.0020468988060182445,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 27,
+          "train_weighted_mse": 0.002012365777146306,
+          "validation_weighted_mse": 0.0032931892201304436,
+          "weighted_mse": 0.002012365777146306,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 28,
+          "train_weighted_mse": 0.0022333892969192003,
+          "validation_weighted_mse": 0.003490503178909421,
+          "weighted_mse": 0.0022333892969192003,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 29,
+          "train_weighted_mse": 0.002015136497607368,
+          "validation_weighted_mse": 0.002561569679528475,
+          "weighted_mse": 0.002015136497607368,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 30,
+          "train_weighted_mse": 0.0019530059061701036,
+          "validation_weighted_mse": 0.005387297831475735,
+          "weighted_mse": 0.0019530059061701036,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 31,
+          "train_weighted_mse": 0.0016564124746098231,
+          "validation_weighted_mse": 0.0039214519783854485,
+          "weighted_mse": 0.0016564124746098231,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 32,
+          "train_weighted_mse": 0.0013089989829527036,
+          "validation_weighted_mse": 0.0033455193042755127,
+          "weighted_mse": 0.0013089989829527036,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 33,
+          "train_weighted_mse": 0.001317751001672882,
+          "validation_weighted_mse": 0.004083371255546808,
+          "weighted_mse": 0.001317751001672882,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 34,
+          "train_weighted_mse": 0.0016127826236577917,
+          "validation_weighted_mse": 0.0077338931150734425,
+          "weighted_mse": 0.0016127826236577917,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 35,
+          "train_weighted_mse": 0.0017714009313981682,
+          "validation_weighted_mse": 0.002857568208128214,
+          "weighted_mse": 0.0017714009313981682,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 36,
+          "train_weighted_mse": 0.0013149246144016627,
+          "validation_weighted_mse": 0.002553105354309082,
+          "weighted_mse": 0.0013149246144016627,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 37,
+          "train_weighted_mse": 0.0013744411425176753,
+          "validation_weighted_mse": 0.002682599239051342,
+          "weighted_mse": 0.0013744411425176753,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 38,
+          "train_weighted_mse": 0.0013783021918917988,
+          "validation_weighted_mse": 0.0031067386735230684,
+          "weighted_mse": 0.0013783021918917988,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 39,
+          "train_weighted_mse": 0.0014312754087412224,
+          "validation_weighted_mse": 0.0038510789163410664,
+          "weighted_mse": 0.0014312754087412224,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 40,
+          "train_weighted_mse": 0.002009878240403423,
+          "validation_weighted_mse": 0.0028853456024080515,
+          "weighted_mse": 0.002009878240403423,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 41,
+          "train_weighted_mse": 0.0018023145420041507,
+          "validation_weighted_mse": 0.0026074755005538464,
+          "weighted_mse": 0.0018023145420041507,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 42,
+          "train_weighted_mse": 0.0016629592135437524,
+          "validation_weighted_mse": 0.0030022491700947285,
+          "weighted_mse": 0.0016629592135437524,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 43,
+          "train_weighted_mse": 0.0014269414732370565,
+          "validation_weighted_mse": 0.0024567325599491596,
+          "weighted_mse": 0.0014269414732370565,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 44,
+          "train_weighted_mse": 0.0016753930585584975,
+          "validation_weighted_mse": 0.0023108981549739838,
+          "weighted_mse": 0.0016753930585584975,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 45,
+          "train_weighted_mse": 0.0010084212957227239,
+          "validation_weighted_mse": 0.002791276667267084,
+          "weighted_mse": 0.0010084212957227239,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 46,
+          "train_weighted_mse": 0.001080999052791102,
+          "validation_weighted_mse": 0.002758345101028681,
+          "weighted_mse": 0.001080999052791102,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 47,
+          "train_weighted_mse": 0.0011026252174773069,
+          "validation_weighted_mse": 0.002751101739704609,
+          "weighted_mse": 0.0011026252174773069,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 48,
+          "train_weighted_mse": 0.0010168596173469723,
+          "validation_weighted_mse": 0.0022698405664414167,
+          "weighted_mse": 0.0010168596173469723,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 49,
+          "train_weighted_mse": 0.001531894873308304,
+          "validation_weighted_mse": 0.004723887890577316,
+          "weighted_mse": 0.001531894873308304,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 50,
+          "train_weighted_mse": 0.0013678119512615108,
+          "validation_weighted_mse": 0.0030617231968790293,
+          "weighted_mse": 0.0013678119512615108,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 51,
+          "train_weighted_mse": 0.0014478485743831036,
+          "validation_weighted_mse": 0.0033591659739613533,
+          "weighted_mse": 0.0014478485743831036,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 52,
+          "train_weighted_mse": 0.001226680921533607,
+          "validation_weighted_mse": 0.002439589239656925,
+          "weighted_mse": 0.001226680921533607,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 53,
+          "train_weighted_mse": 0.001050991674001099,
+          "validation_weighted_mse": 0.004987867083400488,
+          "weighted_mse": 0.001050991674001099,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 54,
+          "train_weighted_mse": 0.001146919102620633,
+          "validation_weighted_mse": 0.0023514656350016594,
+          "weighted_mse": 0.001146919102620633,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 55,
+          "train_weighted_mse": 0.0009837309626418381,
+          "validation_weighted_mse": 0.0023116208612918854,
+          "weighted_mse": 0.0009837309626418381,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 56,
+          "train_weighted_mse": 0.0020398990004261187,
+          "validation_weighted_mse": 0.0025361848529428244,
+          "weighted_mse": 0.0020398990004261187,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 57,
+          "train_weighted_mse": 0.0010477771764420937,
+          "validation_weighted_mse": 0.002385996049270034,
+          "weighted_mse": 0.0010477771764420937,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 58,
+          "train_weighted_mse": 0.0011060725291274502,
+          "validation_weighted_mse": 0.0021891191136091948,
+          "weighted_mse": 0.0011060725291274502,
+          "round": 0,
+          "labelled_samples": null
         }
       ],
       "clips": []
     },
     {
       "id": "cooperative_recovery_v37_wider_transformer_refit",
-      "status": "running",
+      "status": "complete",
       "supervised": true,
       "collection_control": "reused",
       "settings": {
@@ -592451,6 +593626,238 @@
           "train_weighted_mse": 0.0007232444329661941,
           "validation_weighted_mse": 0.030086025595664978,
           "weighted_mse": 0.0007232444329661941,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 52,
+          "train_weighted_mse": 0.000671377322515743,
+          "validation_weighted_mse": 0.030784673988819122,
+          "weighted_mse": 0.000671377322515743,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 53,
+          "train_weighted_mse": 0.000859599742317099,
+          "validation_weighted_mse": 0.029977813363075256,
+          "weighted_mse": 0.000859599742317099,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 54,
+          "train_weighted_mse": 0.0006140565287619773,
+          "validation_weighted_mse": 0.03078223206102848,
+          "weighted_mse": 0.0006140565287619773,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 55,
+          "train_weighted_mse": 0.00038107485402417074,
+          "validation_weighted_mse": 0.0309199970215559,
+          "weighted_mse": 0.00038107485402417074,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 56,
+          "train_weighted_mse": 0.00048617446839766096,
+          "validation_weighted_mse": 0.030634647235274315,
+          "weighted_mse": 0.00048617446839766096,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 57,
+          "train_weighted_mse": 0.00043306064157457616,
+          "validation_weighted_mse": 0.03056974895298481,
+          "weighted_mse": 0.00043306064157457616,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 58,
+          "train_weighted_mse": 0.0010815129478959843,
+          "validation_weighted_mse": 0.030832545831799507,
+          "weighted_mse": 0.0010815129478959843,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 59,
+          "train_weighted_mse": 0.000595136018062709,
+          "validation_weighted_mse": 0.029787451028823853,
+          "weighted_mse": 0.000595136018062709,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 60,
+          "train_weighted_mse": 0.0002807106329749623,
+          "validation_weighted_mse": 0.02945292741060257,
+          "weighted_mse": 0.0002807106329749623,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 61,
+          "train_weighted_mse": 0.0002468026948124779,
+          "validation_weighted_mse": 0.030371278524398804,
+          "weighted_mse": 0.0002468026948124779,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 62,
+          "train_weighted_mse": 0.00048658948712662376,
+          "validation_weighted_mse": 0.02913275733590126,
+          "weighted_mse": 0.00048658948712662376,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 63,
+          "train_weighted_mse": 0.0004188885543828553,
+          "validation_weighted_mse": 0.02970261685550213,
+          "weighted_mse": 0.0004188885543828553,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 64,
+          "train_weighted_mse": 0.00040539617462292694,
+          "validation_weighted_mse": 0.029262665659189224,
+          "weighted_mse": 0.00040539617462292694,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 65,
+          "train_weighted_mse": 0.0002576415467103914,
+          "validation_weighted_mse": 0.02908124215900898,
+          "weighted_mse": 0.0002576415467103914,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 66,
+          "train_weighted_mse": 0.00025072193742160185,
+          "validation_weighted_mse": 0.02921081706881523,
+          "weighted_mse": 0.00025072193742160185,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 67,
+          "train_weighted_mse": 0.0003248447861625537,
+          "validation_weighted_mse": 0.02988879196345806,
+          "weighted_mse": 0.0003248447861625537,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 68,
+          "train_weighted_mse": 0.00045383112616990745,
+          "validation_weighted_mse": 0.02826247364282608,
+          "weighted_mse": 0.00045383112616990745,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 69,
+          "train_weighted_mse": 0.00047757667233538914,
+          "validation_weighted_mse": 0.02821558527648449,
+          "weighted_mse": 0.00047757667233538914,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 70,
+          "train_weighted_mse": 0.0005914923950902882,
+          "validation_weighted_mse": 0.02927646040916443,
+          "weighted_mse": 0.0005914923950902882,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 71,
+          "train_weighted_mse": 0.0003016084740817219,
+          "validation_weighted_mse": 0.02883502095937729,
+          "weighted_mse": 0.0003016084740817219,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 72,
+          "train_weighted_mse": 0.0008504600596365979,
+          "validation_weighted_mse": 0.02787530981004238,
+          "weighted_mse": 0.0008504600596365979,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 73,
+          "train_weighted_mse": 0.00039022493583130643,
+          "validation_weighted_mse": 0.028946828097105026,
+          "weighted_mse": 0.00039022493583130643,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 74,
+          "train_weighted_mse": 0.0002901883854948201,
+          "validation_weighted_mse": 0.028091229498386383,
+          "weighted_mse": 0.0002901883854948201,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 75,
+          "train_weighted_mse": 0.0008867579614185775,
+          "validation_weighted_mse": 0.028069453313946724,
+          "weighted_mse": 0.0008867579614185775,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 76,
+          "train_weighted_mse": 0.0007273165097012345,
+          "validation_weighted_mse": 0.028062419965863228,
+          "weighted_mse": 0.0007273165097012345,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 77,
+          "train_weighted_mse": 0.0004343507599407798,
+          "validation_weighted_mse": 0.026408661156892776,
+          "weighted_mse": 0.0004343507599407798,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 78,
+          "train_weighted_mse": 0.000290427329648923,
+          "validation_weighted_mse": 0.027090558782219887,
+          "weighted_mse": 0.000290427329648923,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 79,
+          "train_weighted_mse": 0.0002658663948956087,
+          "validation_weighted_mse": 0.027138222008943558,
+          "weighted_mse": 0.0002658663948956087,
+          "round": 0,
+          "labelled_samples": null
+        },
+        {
+          "epoch": 80,
+          "train_weighted_mse": 0.0002874189717595355,
+          "validation_weighted_mse": 0.02704075537621975,
+          "weighted_mse": 0.0002874189717595355,
           "round": 0,
           "labelled_samples": null
         }
@@ -649231,6 +650638,178 @@
           "scenario": "loss_milo",
           "motion": "configured",
           "seed": 276007,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deployment_v145_v35_motion14",
+      "complete": true,
+      "unintended_contact_guard": true,
+      "fault_progress_m": 0.15,
+      "transport": {
+        "completed": 14,
+        "expected": 14,
+        "successes": 0
+      },
+      "safe_wait": {
+        "completed": 0,
+        "expected": 0,
+        "successes": 0
+      },
+      "rows": [
+        {
+          "scenario": "nominal",
+          "motion": "forward",
+          "seed": 277000,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "forward",
+          "seed": 277001,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "robot_self_penetration"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "backward",
+          "seed": 277002,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "backward",
+          "seed": 277003,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "robot_self_penetration"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "left",
+          "seed": 277004,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "left",
+          "seed": 277005,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "robot_self_penetration"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "right",
+          "seed": 277006,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "robot_self_penetration"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "right",
+          "seed": 277007,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "yaw_left",
+          "seed": 277008,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "robot_self_penetration"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "yaw_left",
+          "seed": 277009,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "yaw_right",
+          "seed": 277010,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "robot_self_penetration"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "yaw_right",
+          "seed": 277011,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "robot_self_penetration"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "mixed",
+          "seed": 277012,
+          "success": false,
+          "objective": "transport",
+          "safe_wait_success": null,
+          "terminations": [
+            "unsupported_object_travel"
+          ]
+        },
+        {
+          "scenario": "nominal",
+          "motion": "mixed",
+          "seed": 277013,
           "success": false,
           "objective": "transport",
           "safe_wait_success": null,
