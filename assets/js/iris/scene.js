@@ -254,6 +254,17 @@ export class Studio {
     this.armReady = this.loadArm(); this.ready = Promise.all([this.armReady, this.loadSet(spec.default_set)]);
     /* the end-effector target gizmo */
     this.handle = new THREE.Object3D(); this.scene.add(this.handle);
+    /* the thing you actually grab: a soft ball sitting on the camera, with a stub along the
+       optical axis so it is obvious which way the lens is pointing */
+    this.ball = new THREE.Group();
+    this.ball.add(new THREE.Mesh(new THREE.SphereGeometry(0.026, 32, 24),
+      new THREE.MeshBasicMaterial({ color: 0x0a84ff, transparent: true, opacity: 0.34, depthWrite: false })));
+    this.ball.add(new THREE.Mesh(new THREE.SphereGeometry(0.0115, 24, 18),
+      new THREE.MeshBasicMaterial({ color: 0xdfeeff, transparent: true, opacity: 0.9, depthWrite: false })));
+    const nose = new THREE.Mesh(new THREE.CylinderGeometry(0.0022, 0.0022, 0.055, 10),
+      new THREE.MeshBasicMaterial({ color: 0x0a84ff, transparent: true, opacity: 0.75, depthWrite: false }));
+    nose.rotation.x = Math.PI / 2; nose.position.z = 0.0275; this.ball.add(nose);
+    this.ball.renderOrder = 5; this.handle.add(this.ball);
     this.gizmo = new TransformControls(this.camera, canvas); this.gizmo.setSize(0.55); this.gizmo.attach(this.handle); this.gizmo.enabled = false; this.gizmoHelper = this.gizmo.getHelper ? this.gizmo.getHelper() : this.gizmo; this.gizmoHelper.visible = false; this.scene.add(this.gizmoHelper);
     this.gizmo.addEventListener('dragging-changed', (e) => { this.controls.enabled = !e.value; });
     this.trail = null;
@@ -373,7 +384,7 @@ export class Studio {
     let mx = 0, my = 0, mw = W, mh = H;
     if (mainRect) { mx = mainRect.left - c.left; my = c.bottom - mainRect.bottom; mw = mainRect.width; mh = mainRect.height; }
     r.setViewport(mx * pr, my * pr, mw * pr, mh * pr); r.setScissor(mx * pr, my * pr, mw * pr, mh * pr);
-    this.camera.aspect = mw / mh; this.camera.updateProjectionMatrix(); this.gizmoHelper.visible = this.gizmo.enabled; this.rig.visible = true; r.render(this.scene, this.camera);
+    this.camera.aspect = mw / mh; this.camera.updateProjectionMatrix(); this.gizmoHelper.visible = this.gizmo.enabled; this.ball.visible = this.gizmo.enabled; this.rig.visible = true; r.render(this.scene, this.camera);
     /* 2. the camera feed: scene -> DOF target (the target's own viewport), composite into the feed rect (scissored clear) */
     const fr = this.feedRect();
     if (fr && fr.w > 8) {
@@ -382,10 +393,11 @@ export class Studio {
          (a static shot puts its own key frames a few centimetres in front of the glass) */
       const kg = this.keyGroup ? this.keyGroup.visible : false, pv = this.pathLine ? this.pathLine.visible : false;
       if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false;
+      const bv = this.ball.visible; this.ball.visible = false;
       this.feedCam.aspect = fr.w / fr.h; this.feedCam.updateProjectionMatrix();
       r.setViewport(fr.x * pr, fr.y * pr, fr.w * pr, fr.h * pr); r.setScissor(fr.x * pr, fr.y * pr, fr.w * pr, fr.h * pr);
       this.dof.render(r, this.scene, this.feedCam, this.lens, this.dofEnabled && !this.feedNoDof);
-      this.rig.visible = true; this.gizmoHelper.visible = gv; if (this.trail) this.trail.visible = true;
+      this.rig.visible = true; this.gizmoHelper.visible = gv; this.ball.visible = bv; if (this.trail) this.trail.visible = true;
       if (this.keyGroup) this.keyGroup.visible = kg; if (this.pathLine) this.pathLine.visible = pv;
     }
     r.setScissorTest(false);
@@ -404,8 +416,9 @@ export class Studio {
     const prev = r.getRenderTarget(); const rigVis = this.rig.visible; this.rig.visible = false; const gv = this.gizmoHelper.visible; this.gizmoHelper.visible = false;
     const kg = this.keyGroup ? this.keyGroup.visible : false, pv = this.pathLine ? this.pathLine.visible : false, tv = this.trail ? this.trail.visible : false;
     if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false; if (this.trail) this.trail.visible = false;
+    const bv2 = this.ball.visible; this.ball.visible = false;
     r.setRenderTarget(this._pick); r.render(this.scene, this._pickCam); r.readRenderTargetPixels(this._pick, 0, 0, w, h, this._pickBuf); r.setRenderTarget(prev);
-    this.rig.visible = rigVis; this.gizmoHelper.visible = gv; if (this.keyGroup) this.keyGroup.visible = kg; if (this.pathLine) this.pathLine.visible = pv; if (this.trail) this.trail.visible = tv;
+    this.rig.visible = rigVis; this.gizmoHelper.visible = gv; this.ball.visible = bv2; if (this.keyGroup) this.keyGroup.visible = kg; if (this.pathLine) this.pathLine.visible = pv; if (this.trail) this.trail.visible = tv;
     return { data: this._pickBuf, w, h };
   }
   /** Draw a polyline trail of end-effector positions. */
@@ -477,11 +490,11 @@ export class Studio {
     cam.updateMatrixWorld(true);
     const r = this.renderer, prev = r.getRenderTarget(), st = r.getScissorTest();
     const vis = [this.rig.visible, this.keyGroup ? this.keyGroup.visible : false, this.pathLine ? this.pathLine.visible : false, this.gizmoHelper.visible, this.trail ? this.trail.visible : false];
-    this.rig.visible = false; if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false; this.gizmoHelper.visible = false; if (this.trail) this.trail.visible = false;
+    this.rig.visible = false; if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false; this.gizmoHelper.visible = false; const bk = this.ball.visible; this.ball.visible = false; if (this.trail) this.trail.visible = false;
     r.setScissorTest(false); r.setRenderTarget(this._kiRT); r.setViewport(0, 0, w, h); r.clear(); r.render(this.scene, cam);
     r.readRenderTargetPixels(this._kiRT, 0, 0, w, h, this._kiBuf);
     r.setRenderTarget(prev); r.setScissorTest(st);
-    this.rig.visible = vis[0]; if (this.keyGroup) this.keyGroup.visible = vis[1]; if (this.pathLine) this.pathLine.visible = vis[2]; this.gizmoHelper.visible = vis[3]; if (this.trail) this.trail.visible = vis[4];
+    this.rig.visible = vis[0]; if (this.keyGroup) this.keyGroup.visible = vis[1]; if (this.pathLine) this.pathLine.visible = vis[2]; this.gizmoHelper.visible = vis[3]; this.ball.visible = bk; if (this.trail) this.trail.visible = vis[4];
     return this._kiBuf;
   }
   /** Highlight one key marker. */
@@ -570,13 +583,13 @@ export class Studio {
     this.feedCam.getWorldPosition(cam.position); this.feedCam.getWorldQuaternion(cam.quaternion); cam.updateMatrixWorld(true);
     const prevRT = r.getRenderTarget(), st = r.getScissorTest(), rigVis = this.rig.visible, gv = this.gizmoHelper.visible;
     const kg = this.keyGroup ? this.keyGroup.visible : false, pl = this.pathLine ? this.pathLine.visible : false;
-    this.rig.visible = false; this.gizmoHelper.visible = false; if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false;
+    this.rig.visible = false; this.gizmoHelper.visible = false; const bd = this.ball.visible; this.ball.visible = false; if (this.keyGroup) this.keyGroup.visible = false; if (this.pathLine) this.pathLine.visible = false;
     this.scene.overrideMaterial = this._depthMat;
     r.setScissorTest(false); r.setRenderTarget(this._depthRT); r.setViewport(0, 0, W, H); r.clear(); r.render(this.scene, cam);
     r.readRenderTargetPixels(this._depthRT, 0, 0, W, H, this._depthBuf);
     this.scene.overrideMaterial = null;
     r.setRenderTarget(prevRT); r.setScissorTest(st);
-    this.rig.visible = rigVis; this.gizmoHelper.visible = gv; if (this.keyGroup) this.keyGroup.visible = kg; if (this.pathLine) this.pathLine.visible = pl;
+    this.rig.visible = rigVis; this.gizmoHelper.visible = gv; this.ball.visible = bd; if (this.keyGroup) this.keyGroup.visible = kg; if (this.pathLine) this.pathLine.visible = pl;
     /* the read-back is bottom-up, the caller's v is top-down */
     const cx = Math.round(u * W), cy = Math.round((1 - v) * H);
     const rad = Math.max(1, Math.round(boxFrac * W / 2));
