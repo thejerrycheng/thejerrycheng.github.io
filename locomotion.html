@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Evolution of Humanoid Locomotion Control — illustrated — Jerry (Qilong) Cheng</title>
-  <meta name="description" content="A personal illustration of the Science Robotics survey 'Evolution of Humanoid Locomotion Control': the three eras on an interactive timeline, the unified view of the paradigms, and a balance lab where a classical capture-point controller, a step MPC and a PPO policy take the same shoves. Not the official site of the paper.">
+  <title>Evolution of Humanoid Locomotion Control — a reading companion — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="A reading companion to the Science Robotics survey 'Evolution of Humanoid Locomotion Control': all 280 references, searchable and filterable by method, subject and year, with the equations behind the classical methods and a vertical timeline of the field. Not the official site of the paper.">
   <meta name="author" content="Jerry Cheng">
   <link rel="canonical" href="https://thejerrycheng.github.io/locomotion.html">
   <meta property="og:title" content="Evolution of Humanoid Locomotion Control, illustrated">
-  <meta property="og:description" content="Three eras, three shared principles, one balance lab you can push. A personal page by one of the authors.">
-  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/locomotion/tease_poster.jpg">
+  <meta property="og:description" content="All 280 papers of the survey, categorised by method, subject and era, with the equations and a timeline. A personal page by one of the authors.">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/locomotion/survey_fig1.jpg">
   <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
   <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
@@ -20,6 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/gotham.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css">
   <script>document.documentElement.classList.add('js');</script>
   <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 
@@ -94,72 +95,128 @@
     .credits b { color: var(--ink); }
     .cmd { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; background: #151820; color: #F4EAD2; border-radius: 8px; padding: 14px 16px; overflow-x: auto; border: var(--line-w) solid var(--ink); box-shadow: var(--sh-sm); white-space: pre; }
     .cmd .c { color: var(--gold); }
-    /* ---- interactive blocks ---- */
-    .scene-block { margin-top: 22px; padding: 18px 18px 14px; }
-    .scene-head h3 { margin: 10px 0 6px; font-size: 20px; }
-    .scene-head p { margin: 0 0 12px; font-size: 14px; color: var(--ink-soft); max-width: 92ch; }
-    .scene-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-top: 10px; font-size: 13px; }
-    .scene-bar input[type="range"] { flex: 1 1 110px; min-width: 90px; max-width: 200px; accent-color: var(--hi); }
-    .scene-bar label { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
-    .scene-bar select { font: inherit; font-size: 13px; padding: 3px 6px; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--panel); color: var(--ink); }
-    .scene-bar .btn { font-size: 13px; padding: 7px 12px; }
-    .scene-bar .out { font-family: var(--font-mono); font-size: 12px; color: var(--ash); min-width: 52px; }
-    .scene-info { margin-top: 8px; font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
-    #lab-canvas { display: block; width: 100%; height: 560px; border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); background: var(--panel); box-shadow: var(--sh-xs); outline: none; touch-action: none; }
-    #lab-canvas:focus { box-shadow: 0 0 0 3px var(--yellow); }
-    .who { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; }
-    .who label { display: inline-flex; gap: 5px; align-items: center; font-family: var(--font-comic); letter-spacing: .04em; }
-    /* timeline */
-    .tl-wrap { position: relative; margin-top: 12px; }
-    .tl-svg { width: 100%; display: block; }
-    .tl-era { font-family: var(--font-comic); font-size: 15px; letter-spacing: .05em; }
-    .tl-year, .tl-note { font-family: var(--font-mono); font-size: 10.5px; }
-    .tl-label { font-family: var(--font-body, Jost, sans-serif); font-size: 11.5px; }
-    .tl-item { cursor: pointer; }
-    .tl-item.on .tl-label { font-weight: 700; }
-    .tl-item.on circle { r: 9; }
-    .tl-card { margin-top: 10px; padding: 14px 16px; min-height: 120px; }
-    .tl-card-kicker { display: inline-block; font-family: var(--font-comic); font-size: 12px; letter-spacing: .06em; color: #FFF9F0; padding: 2px 8px; border-radius: 3px; margin-bottom: 6px; }
-    .tl-card h4 { font-size: 17px; margin: 2px 0 2px; }
-    .tl-card .who { font-family: var(--font-mono); font-size: 12px; color: var(--ash); margin: 0 0 6px; display: block; }
-    .tl-card p { font-size: 14px; line-height: 1.5; color: var(--ink-soft); margin: 0; }
-    .tl-card .ref { font-family: var(--font-mono); font-size: 12px; color: var(--ash); margin-top: 6px; }
-    .tl-card .ref a { color: var(--hi-deep); text-decoration: none; font-weight: 700; }
-    /* unified view SVG */
-    .uv { width: 100%; display: block; }
-    .uv .box { fill: var(--panel); stroke: var(--ink); stroke-width: 1.6; }
-    .uv .box.sys2 { fill: var(--paper); }
-    .uv text { font-family: var(--font-body, Jost, sans-serif); fill: var(--ink); font-size: 12px; }
-    .uv .k { font-family: var(--font-comic); letter-spacing: .05em; font-size: 13px; }
-    .uv .rate { font-family: var(--font-mono); font-size: 10.5px; fill: var(--ash); }
-    .uv .flow { fill: none; stroke: var(--hi); stroke-width: 2; stroke-dasharray: 6 5; animation: uvflow 1.2s linear infinite; }
-    .uv .flow.slow { animation-duration: 3s; stroke: var(--gold); }
-    .uv .flow.dim { stroke: var(--ash); opacity: .5; animation: none; }
-    @keyframes uvflow { to { stroke-dashoffset: -22; } }
-    @media (prefers-reduced-motion: reduce) { .uv .flow { animation: none; } }
-    .uv-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 10px; }
-    .uv-tabs .btn { font-size: 13px; padding: 7px 12px; }
-    .uv-tabs .btn.on { background: var(--hi); color: #FFF9F0; }
-    .shift { padding: 14px 14px 12px; }
-    .shift .from { font-family: var(--font-mono); font-size: 12px; color: var(--ash); }
-    .shift .to { font-family: var(--font-comic); font-size: 20px; letter-spacing: .03em; color: var(--hi); line-height: 1.1; margin: 2px 0 6px; }
-    .shift p { font-size: 13px; line-height: 1.45; color: var(--ink-soft); }
-    .plot2d { display: block; width: 100%; height: 280px; }
-    .plot-note { margin: 8px 0 0; font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
-    .plot-tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bone); font: 12px var(--font-mono); padding: 4px 8px; border-radius: 4px; white-space: nowrap; z-index: 5; }
-    .card-pad { padding: 16px 18px; }
-    .readlist { columns: 2; column-gap: 24px; font-size: 13.5px; line-height: 1.5; }
-    .readlist h4 { break-after: avoid; font-family: var(--font-comic); letter-spacing: .05em; color: var(--hi); font-size: 14px; margin: 10px 0 4px; }
-    .readlist ul { padding-left: 16px; margin: 0 0 6px; }
-    .readlist li { margin-bottom: 3px; break-inside: avoid; }
-    .readlist a { color: var(--ink); text-decoration: none; border-bottom: 1px dotted var(--ash); }
-    .readlist a:hover { color: var(--hi-deep); }
-    .steps { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 14px; }
-    .step { padding: 12px 12px 12px; }
-    .step .no { font-family: var(--font-comic); font-size: 24px; color: var(--hi); line-height: 1; }
-    .step p { font-size: 12.5px; line-height: 1.4; color: var(--ink-soft); margin-top: 4px; }
+    /* ---------------- the vertical timeline ---------------- */
+    .tl-filters { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 14px 0 6px; font-size: 13px; }
+    .tl-chip { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-comic); letter-spacing: .04em; padding: 3px 10px; border: 1.5px solid var(--ink); border-radius: 999px; background: var(--panel); cursor: pointer; }
+    .tl-chip.era-classical { color: #2a78d6; } .tl-chip.era-learning { color: #E4442A; } .tl-chip.era-emerging { color: #D9A13F; }
+    .tl-chip.kind { color: var(--ash); font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0; }
+    #timeline { margin-top: 8px; }
+    .tl-era-head { display: grid; grid-template-columns: 92px 1fr; gap: 0 22px; align-items: baseline; margin: 34px 0 10px; padding-left: 0; }
+    .tl-era-head .tl-era-name { grid-column: 2; font-family: var(--font-comic); font-size: 26px; letter-spacing: .04em; }
+    .tl-era-head .tl-era-span { grid-column: 2; font-family: var(--font-mono); font-size: 12.5px; color: var(--ash); }
+    .tl-era-head .tl-era-tools { grid-column: 2; font-size: 13px; color: var(--ink-soft); }
+    .tl-era-head.era-classical .tl-era-name { color: #2a78d6; }
+    .tl-era-head.era-learning .tl-era-name { color: #E4442A; }
+    .tl-era-head.era-emerging .tl-era-name { color: #D9A13F; }
+    .tl-row { display: grid; grid-template-columns: 92px 26px 1fr; gap: 0 8px; align-items: stretch; }
+    .tl-row .tl-year { font-family: var(--font-mono); font-size: 17px; font-weight: 700; color: var(--ink); text-align: right; padding: 14px 0 0; }
+    .tl-row .tl-spine { position: relative; }
+    .tl-row .tl-spine::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; transform: translateX(-50%); background: rgba(21,24,32,.22); }
+    .tl-row:last-child .tl-spine::before { bottom: 50%; }
+    .tl-row .tl-dot { position: absolute; left: 50%; top: 20px; width: 15px; height: 15px; border-radius: 50%; transform: translateX(-50%); background: var(--dot, var(--hi)); border: 2.5px solid var(--ink); box-shadow: var(--sh-xs); }
+    .tl-row .tl-card { margin: 8px 0 8px 12px; padding: 13px 17px 14px; background: var(--panel); border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); box-shadow: var(--sh-xs); }
+    .tl-row .tl-card h4 { font-size: 18px; margin: 0 0 3px; line-height: 1.25; }
+    .tl-row .tl-who { font-family: var(--font-mono); font-size: 12.5px; color: var(--ash); margin: 0 0 7px; }
+    .tl-row .tl-kind { display: inline-block; margin-left: 8px; padding: 1px 7px; border-radius: 3px; background: var(--paper); border: 1px solid rgba(21,24,32,.3); font-size: 11px; letter-spacing: .04em; }
+    .tl-row .tl-note { font-size: 14.5px; line-height: 1.55; color: var(--ink-soft); margin: 0; }
+    .tl-row .tl-ref { font-family: var(--font-mono); font-size: 12px; color: var(--ash); margin: 8px 0 0; }
+    .tl-row .tl-ref a { color: var(--hi-deep); font-weight: 700; text-decoration: none; }
+    .tl-row .tl-ref a:hover { text-decoration: underline; }
+    .tl-row.era-classical .tl-card { border-left: 6px solid #2a78d6; }
+    .tl-row.era-learning .tl-card { border-left: 6px solid #E4442A; }
+    .tl-row.era-emerging .tl-card { border-left: 6px solid #D9A13F; }
+
+    /* ---------------- method families ---------------- */
+    .fam-era-title { font-family: var(--font-comic); font-size: 24px; letter-spacing: .05em; margin: 30px 0 10px; }
+    .fam-era-title.era-classical { color: #2a78d6; } .fam-era-title.era-learning { color: #E4442A; }
+    .fam-era-title.era-emerging { color: #D9A13F; } .fam-era-title.era-outlook, .fam-era-title.era-front { color: var(--ash); }
+    details.fam { background: var(--panel); border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); box-shadow: var(--sh-xs); margin-bottom: 12px; }
+    details.fam > summary { cursor: pointer; list-style: none; padding: 14px 18px; display: grid; grid-template-columns: 1fr auto auto; gap: 6px 16px; align-items: baseline; }
+    details.fam > summary::-webkit-details-marker { display: none; }
+    details.fam > summary::before { content: "▸"; position: absolute; margin-left: -14px; color: var(--hi); font-size: 12px; }
+    details.fam[open] > summary::before { content: "▾"; }
+    details.fam > summary:hover .fam-name { color: var(--hi-deep); }
+    .fam-name { font-size: 18px; font-weight: 600; }
+    .fam-count { font-family: var(--font-comic); font-size: 13px; letter-spacing: .05em; color: var(--hi); white-space: nowrap; }
+    .fam-rate { font-family: var(--font-mono); font-size: 11.5px; color: var(--ash); white-space: nowrap; }
+    .fam-rate:empty { display: none; }
+    .fam-body { padding: 0 18px 16px; border-top: 1.5px dashed rgba(21,24,32,.3); }
+    .fam-blurb { font-size: 15px; line-height: 1.55; color: var(--ink-soft); margin: 12px 0 0; }
+    .fam-eq { margin: 14px 0 6px; padding: 14px 16px; background: var(--paper); border: 1.5px solid rgba(21,24,32,.4); border-radius: 6px; }
+    .fam-eq .eq-lead { font-size: 14px; line-height: 1.5; margin: 0 0 4px; }
+    .fam-eq .eq-note { font-size: 13px; line-height: 1.5; color: var(--ash); margin: 4px 0 12px; }
+    .fam-eq .katex-block { overflow-x: auto; overflow-y: hidden; padding: 4px 0 10px; }
+    .fam-eq .katex-display { margin: 6px 0; }
+
+    /* ---------------- paper lists ---------------- */
+    .paper-list { list-style: none; margin: 12px 0 0; padding: 0; max-height: 460px; overflow-y: auto; }
+    .pl-item { display: grid; grid-template-columns: 40px 1fr auto; gap: 10px; align-items: baseline; padding: 7px 0; border-bottom: 1px dashed rgba(21,24,32,.22); }
+    .pl-item:last-child { border-bottom: none; }
+    .pl-n { font-family: var(--font-mono); font-size: 11.5px; color: var(--ash); }
+    .pl-t { display: block; font-size: 14.5px; line-height: 1.4; }
+    .pl-meta { display: block; font-family: var(--font-mono); font-size: 11.5px; color: var(--ash); margin-top: 2px; line-height: 1.4; }
+    .pl-link { font-family: var(--font-comic); font-size: 12px; letter-spacing: .05em; color: var(--hi-deep); text-decoration: none; white-space: nowrap; }
+    .pl-link:hover { text-decoration: underline; }
+    .pl-link.weak, a.weak { color: var(--ash); font-weight: 400; }
+    .pl-empty { font-size: 14px; color: var(--ash); margin: 10px 0 0; }
+
+    /* ---------------- shifts ---------------- */
+    .shift-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(430px, 1fr)); gap: 16px; margin-top: 18px; }
+    .shift-card { padding: 16px 18px 14px; }
+    .shift-card header { margin-bottom: 6px; }
+    .shift-card .from { font-family: var(--font-mono); font-size: 12.5px; color: var(--ash); display: block; }
+    .shift-card .to { font-family: var(--font-comic); font-size: 24px; letter-spacing: .03em; color: var(--hi); line-height: 1.1; }
+    .shift-blurb { font-size: 14px; line-height: 1.5; color: var(--ink-soft); margin: 0 0 10px; }
+    details.sub { border-top: 1.5px dashed rgba(21,24,32,.3); }
+    details.sub > summary { cursor: pointer; padding: 9px 0 8px; font-family: var(--font-comic); font-size: 14px; letter-spacing: .04em; list-style: none; }
+    details.sub > summary::-webkit-details-marker { display: none; }
+    details.sub.after > summary { color: var(--hi); }
+    details.sub .hint { font-family: var(--font-body, Jost, sans-serif); font-size: 12px; letter-spacing: 0; color: var(--ash); margin-left: 6px; }
+    .shift-card .rule { font-size: 11.5px; color: var(--ash); line-height: 1.45; margin: 10px 0 0; border-top: 1px dashed rgba(21,24,32,.2); padding-top: 8px; }
+
+    /* ---------------- the library ---------------- */
+    .lib-controls { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 16px; }
+    .lib-search { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    #lib-q { flex: 1 1 320px; min-width: 220px; font: inherit; font-size: 16px; padding: 11px 14px; border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); background: var(--panel); color: var(--ink); box-shadow: var(--sh-xs); }
+    #lib-q:focus { outline: none; box-shadow: 0 0 0 3px var(--yellow); }
+    .lib-selects { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 13px; }
+    .lib-selects select, .lib-selects input[type=number] { font: inherit; font-size: 13px; padding: 7px 9px; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--panel); color: var(--ink); }
+    .lib-selects input[type=number] { width: 78px; font-family: var(--font-mono); }
+    .lib-selects .yr { display: inline-flex; align-items: center; gap: 6px; color: var(--ash); }
+    #lib-quick { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .quick { font-family: var(--font-comic); font-size: 13px; letter-spacing: .04em; padding: 6px 12px; border: 1.5px solid var(--ink); border-radius: 999px; background: var(--panel); color: var(--ink); cursor: pointer; box-shadow: var(--sh-xs); }
+    .quick:hover { background: var(--hi); color: #FFF9F0; }
+    .quick span { font-family: var(--font-mono); font-size: 11px; margin-left: 6px; color: var(--ash); }
+    .quick:hover span { color: #FFF9F0; }
+    #lib-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-height: 26px; }
+    .chip { font-family: var(--font-mono); font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--hi); color: #FFF9F0; border: none; cursor: pointer; }
+    .chip.clear-all { background: var(--ink); }
+    .chip-none { font-size: 12.5px; color: var(--ash); }
+    #lib-count { font-family: var(--font-comic); font-size: 14px; letter-spacing: .05em; color: var(--hi); }
+    table.lib { font-size: 12px; table-layout: fixed; width: 100%; }
+    table.lib td { word-break: break-word; }
+    table.lib th[data-sort] { cursor: pointer; user-select: none; }
+    table.lib th[data-sort]:hover { color: var(--yellow); }
+    table.lib th.sorted::after { content: " ▾"; color: var(--yellow); }
+    table.lib td.ttl { font-family: var(--font-body, Jost, sans-serif); font-size: 13.5px; line-height: 1.35; }
+    table.lib td.ttl .au { display: block; font-family: var(--font-mono); font-size: 11px; color: var(--ash); margin-top: 2px; }
+    table.lib td.num { font-family: var(--font-mono); text-align: right; color: var(--ash); }
+    table.lib td.ven, table.lib td.fam { font-family: var(--font-body, Jost, sans-serif); font-size: 12.5px; line-height: 1.35; color: var(--ink-soft); }
+    table.lib td.rate { font-family: var(--font-mono); font-size: 11px; color: var(--ash); }
+    .tp-chip { font-family: var(--font-mono); font-size: 10.5px; padding: 2px 7px; margin: 1px 3px 1px 0; border-radius: 999px; border: 1px solid rgba(21,24,32,.35); background: var(--paper); color: var(--ink-soft); cursor: pointer; }
+    .tp-chip:hover { background: var(--hi); color: #FFF9F0; border-color: var(--hi); }
+    .lib-wrap { max-height: 900px; overflow: auto; margin-top: 14px; border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); box-shadow: var(--sh-sm); }
+    .lib-wrap table.lib { border: none; box-shadow: none; }
+    .lib-wrap thead th { position: sticky; top: 0; z-index: 2; }
+    @media (max-width: 820px) {
+      .tl-row { grid-template-columns: 62px 20px 1fr; }
+      .tl-row .tl-year { font-size: 14px; }
+      .tl-era-head { grid-template-columns: 62px 1fr; gap: 0 14px; }
+      details.fam > summary { grid-template-columns: 1fr; }
+      .lib-wrap { max-height: 620px; }
+    }
+
     @media (max-width: 1100px) { .steps { grid-template-columns: repeat(4, 1fr); } .grid-5 { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 900px) { #lab-canvas { height: 640px; } }
     @media (max-width: 820px) {
       .strip3, .grid-3, .grid-2, .grid-32, .clip-grid, .clip-grid.three, .grid-5 { grid-template-columns: 1fr; }
       .steps { grid-template-columns: 1fr 1fr; } .readlist { columns: 1; }
@@ -193,44 +250,32 @@
   <a href="cv.html">CV</a>
 </div>
 
+
 <header class="page-cover night">
   <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
   <div class="skyline" aria-hidden="true"></div>
   <div class="wrap">
-    <p class="kicker">Humanoids ◆ Locomotion control ◆ Survey ◆ Science Robotics 2026 ◆ A personal illustration, not the official site</p>
+    <p class="kicker">Humanoids ◆ Locomotion control ◆ Survey ◆ Science Robotics 2026 ◆ A personal reading companion, not the official site</p>
     <h1>Evolution of Humanoid Locomotion Control</h1>
-    <p>Sixty years of making two-legged machines stay up, in three eras: classical feedback and predictive control on physics models, reinforcement learning in massively parallel simulation, and the generative models now arriving. This page is my own illustration of the survey I co-authored: the eras on an interactive timeline, the unified view that ties them together, and a balance lab where a 1980s capture-point controller, a 2010s step MPC and a 2020s PPO policy take the same shoves, so the survey's argument can be pushed with a finger.</p>
+    <p>Sixty years of making two-legged machines stay up, in three eras: classical feedback and predictive control on physics models, reinforcement learning in massively parallel simulation, and the generative models now arriving. This page is a reading companion to the survey I co-authored — every one of its <b>280 references</b>, sorted by the method it belongs to, the subject it is about and the year it appeared, each with a link to the paper itself, alongside the equations the classical methods are actually written in.</p>
   </div>
 </header>
 <div class="deco-band" aria-hidden="true"></div>
 
 <div class="disclaimer">
-  <div class="card"><span class="badge">NOT THE OFFICIAL SITE</span><p>This is a personal page by one of the paper's authors, made to illustrate the survey; it is not endorsed by the co-authors, Purdue's TRACE lab, or Science Robotics. The paper is at <a href="https://www.science.org/doi/10.1126/scirobotics.aed3973" target="_blank" rel="noopener">doi:10.1126/scirobotics.aed3973</a> and the official companion material (figures, the curated reading list) at <a href="https://github.com/purdue-tracelab/Humanoid-Locomotion-Survey" target="_blank" rel="noopener">github.com/purdue-tracelab/Humanoid-Locomotion-Survey</a>. The balance lab, its videos and its numbers are mine and are not part of the paper.</p></div>
+  <div class="card"><span class="badge">NOT THE OFFICIAL SITE</span><p>This is a personal page by one of the paper's authors, made as a way to read the survey and find its references; it is not endorsed by the co-authors, Purdue's TRACE lab, or Science Robotics. The paper is at <a href="https://www.science.org/doi/10.1126/scirobotics.aed3973" target="_blank" rel="noopener">doi:10.1126/scirobotics.aed3973</a> and the official companion material (figures, the curated reading list) at <a href="https://github.com/purdue-tracelab/Humanoid-Locomotion-Survey" target="_blank" rel="noopener">github.com/purdue-tracelab/Humanoid-Locomotion-Survey</a>. The categorisation, the equations and the timeline notes on this page are mine.</p></div>
 </div>
 
-<!-- =================== HERO =================== -->
-<section class="section" id="demo">
-  <div class="hero-video">
-    <video controls playsinline preload="metadata" poster="assets/images/projects/locomotion/tease_poster.jpg">
-      <source src="assets/videos/locomotion_tease.mp4" type="video/mp4">
-    </video>
-  </div>
-  <div class="hero-caption">
-    <p>Teaser (15 s): the three eras on a timeline, then four controllers of three eras taking the same shoves on a planar walker. The <a href="#explainer">75-second explainer</a> is further down.</p>
-    <div class="links">
-      <a href="https://www.science.org/doi/10.1126/scirobotics.aed3973" target="_blank" rel="noopener">Paper (Science Robotics)</a>
-      <a href="https://github.com/purdue-tracelab/Humanoid-Locomotion-Survey" target="_blank" rel="noopener">Companion repository</a>
-      <a href="assets/pdf/projects/locomotion_lab_report.pdf" target="_blank" rel="noopener">Balance-lab report</a>
-      <a href="#explainer">Explainer video</a>
-    </div>
-  </div>
+<!-- =================== HOW TO READ THIS PAGE =================== -->
+<section class="section" id="how">
+  <h2 class="section-title">How this page is built</h2>
+  <p class="lead">Every list here comes from the manuscript itself. The reference list is parsed in full, and each paper is placed by <b>the section of the survey that cites it</b> — the authors' own placement, not my opinion of where it belongs. On top of that, each paper is tagged by subject from its title, which is what the filters and the search use. Papers appear in more than one place when the survey cites them in more than one place.</p>
   <div class="stat-row">
-    <div class="card stat-tile"><div class="num">3</div><div class="lab">eras</div><div class="sub">classical 1960s–, learning-based 2015–, emerging 2023–: what the controller considers, which tools, which tasks</div></div>
-    <div class="card stat-tile"><div class="num">3</div><div class="lab">shared principles</div><div class="sub">physics-based modelling, constrained decision making, adaptation to uncertainty</div></div>
-    <div class="card stat-tile"><div class="num">1000 · 100 · &lt;100<small>Hz</small></div><div class="lab">loop rates</div><div class="sub">real-time feedback, predictive control and RL deployment, generative models (Fig. 3)</div></div>
-    <div class="card stat-tile"><div class="num">5</div><div class="lab">shifts under way</div><div class="sub">generative, multi-modal, multi-task, loco-manipulation, test-time adaptation (Fig. 5)</div></div>
-    <div class="card stat-tile"><div class="num">13</div><div class="lab">authors, 7 institutions</div><div class="sub">Purdue, CMU, NUS, Berkeley, NYU, Caltech, Meta; three equal first authors</div></div>
-    <div class="card stat-tile"><div class="num">~290</div><div class="lab">references</div><div class="sub">organised by section in the companion repository</div></div>
+    <div class="card stat-tile"><div class="num">280</div><div class="lab">references</div><div class="sub">every work the survey cites, parsed from the manuscript</div></div>
+    <div class="card stat-tile"><div class="num">17</div><div class="lab">method families</div><div class="sub">one per section of the survey, from analytical models to foundation models</div></div>
+    <div class="card stat-tile"><div class="num">30</div><div class="lab">subjects</div><div class="sub">world models, diffusion, MPC, hybrid zero dynamics, sim-to-real, and the rest</div></div>
+    <div class="card stat-tile"><div class="num">3</div><div class="lab">eras</div><div class="sub">classical from the 1960s, learning-based from 2015, emerging from 2023</div></div>
+    <div class="card stat-tile"><div class="num">25</div><div class="lab">milestones</div><div class="sub">on the timeline, with the survey's reference numbers</div></div>
   </div>
 </section>
 
@@ -245,204 +290,102 @@
   </div>
   <figure class="fig"><img src="assets/images/projects/locomotion/survey_fig1.jpg" alt="Figure 1 of the survey: the evolution of humanoid locomotion control paradigms" loading="lazy"><figcaption><b>The survey's Fig. 1.</b> Evolution of humanoid locomotion control paradigms over the past several decades, from classical methods to learning-based approaches and into an emerging era driven by generative AI. Images from Unitree (G1) and Vazquez88 (motion capture), as credited in the paper. Figure from the companion repository.</figcaption></figure>
 
-  <div class="card scene-block" id="timeline">
-    <div class="scene-head">
-      <span class="caption-box">INTERACTIVE · THE TIMELINE</span>
-      <h3>Milestones the survey cites, on the eras it defines</h3>
-      <p>Hover or tap a milestone for what it did and where the survey cites it. The axis is stretched after 2013 because that is where most of the story now happens. Dates are first public appearances; the labels are mine, the reference numbers are the paper's.</p>
-    </div>
-    <div class="scene-bar">
-      <span class="dim">eras:</span>
-      <label><input type="checkbox" class="tl-era-box" value="classical" checked> <b style="color:#2a78d6">classical</b></label>
-      <label><input type="checkbox" class="tl-era-box" value="learning" checked> <b style="color:#E4442A">learning-based</b></label>
-      <label><input type="checkbox" class="tl-era-box" value="emerging" checked> <b style="color:#D9A13F">emerging</b></label>
-      <span class="dim">kinds:</span>
-      <label><input type="checkbox" class="tl-kind-box" value="method" checked> methods</label>
-      <label><input type="checkbox" class="tl-kind-box" value="robot" checked> robots</label>
-      <label><input type="checkbox" class="tl-kind-box" value="event" checked> events</label>
-      <span class="out" id="tl-count"></span>
-    </div>
-    <div class="tl-wrap" id="tl-host"></div>
-    <div class="card tl-card" id="tl-card" hidden></div>
-  </div>
-  <div class="big-clip" style="margin-top:18px"><video controls muted loop playsinline preload="metadata" poster="assets/images/projects/locomotion/posters/timeline.jpg"><source src="assets/videos/locomotion_timeline.mp4" type="video/mp4"></video></div>
+  
+  <figure class="fig"><img src="assets/images/projects/locomotion/survey_fig1.jpg" alt="Figure 1 of the survey: the evolution of humanoid locomotion control paradigms" loading="lazy"><figcaption><b>The survey's Fig. 1.</b> Evolution of humanoid locomotion control paradigms over the past several decades, from classical methods to learning-based approaches and into an emerging era driven by generative AI. Images from Unitree (G1) and Vazquez88 (motion capture), as credited in the paper. Figure from the companion repository.</figcaption></figure>
+  <figure class="fig"><img src="assets/images/projects/locomotion/survey_fig3.jpg" alt="Figure 3 of the survey: the unified two-level view of humanoid control" loading="lazy"><figcaption><b>The survey's Fig. 3.</b> The unified view: a deliberative System 2 that reasons slowly over goals and semantics above a reactive System 1 that closes the loop on the body. Classical hierarchies, learned policies and foundation-model stacks all fall into this picture; what changes between eras is which layer is written down and which is learned.</figcaption></figure>
 </section>
 
-<!-- =================== UNIFIED VIEW =================== -->
-<section class="section" id="unified">
-  <h2 class="section-title">One picture of all of them</h2>
-  <div class="grid-32">
-    <div>
-      <div class="uv-tabs" id="uv-tabs">
-        <button class="btn on" data-era="classical" type="button">Classical feedback</button>
-        <button class="btn" data-era="predictive" type="button">Predictive control</button>
-        <button class="btn" data-era="learning" type="button">Reinforcement learning</button>
-        <button class="btn" data-era="emerging" type="button">Generative / foundation</button>
-      </div>
-      <div class="card card-pad">
-        <svg class="uv" id="uv-svg" viewBox="0 0 760 330" aria-label="the unified view: offline computation, online computation, the robot and the low-level loop, with the signal flow of the selected era">
-          <rect class="box sys2" x="20" y="20" width="720" height="80" rx="8"/>
-          <text class="k" x="34" y="42">SYSTEM 2 · DELIBERATIVE</text>
-          <rect class="box" x="40" y="52" width="200" height="38" rx="6"/><text x="52" y="76" id="uv-off">offline · none</text>
-          <rect class="box" x="280" y="52" width="200" height="38" rx="6"/><text x="292" y="76" id="uv-on">online · —</text>
-          <rect class="box" x="520" y="52" width="200" height="38" rx="6"/><text x="532" y="76" id="uv-model">model · reduced-order</text>
-          <rect class="box sys2" x="20" y="130" width="720" height="80" rx="8"/>
-          <text class="k" x="34" y="152">SYSTEM 1 · REACTIVE</text>
-          <rect class="box" x="40" y="162" width="200" height="38" rx="6"/><text x="52" y="186" id="uv-fb">real-time feedback · 1 kHz</text>
-          <rect class="box" x="280" y="162" width="200" height="38" rx="6"/><text x="292" y="186" id="uv-pd">joint PD / whole-body QP</text>
-          <rect class="box" x="520" y="162" width="200" height="38" rx="6"/><text x="532" y="186" id="uv-est">state estimation · explicit</text>
-          <rect class="box" x="40" y="240" width="680" height="60" rx="8"/>
-          <text class="k" x="54" y="262">THE ROBOT</text>
-          <text x="54" y="284" id="uv-robot">contacts, actuators, terrain: hybrid dynamics with impacts</text>
-          <path class="flow" id="f-off-on" d="M240 71 L280 71"/>
-          <path class="flow" id="f-on-fb" d="M380 90 L380 162"/>
-          <path class="flow" id="f-fb-pd" d="M240 181 L280 181"/>
-          <path class="flow" id="f-pd-robot" d="M380 200 L380 240"/>
-          <path class="flow" id="f-robot-est" d="M620 240 L620 200"/>
-          <path class="flow" id="f-est-fb" d="M520 181 L480 181"/>
-          <path class="flow" id="f-model-on" d="M520 71 L480 71"/>
-          <path class="flow" id="f-est-on" d="M600 162 L600 90"/>
-          <text class="rate" x="392" y="130" id="uv-rate-on">100 Hz</text>
-          <text class="rate" x="392" y="226" id="uv-rate-pd">1 kHz</text>
-        </svg>
-        <p class="plot-note" id="uv-note"></p>
-      </div>
-    </div>
-    <div class="prose">
-      <p>The survey's Fig. 3 sorts every paradigm by two questions: <b>when</b> does the optimisation or learning happen (hardly at all, online, or offline), and on <b>what</b> (a reduced-order model, a full model, a simulator, or data). The diagram on the left is my animated version: pick a paradigm and watch which boxes carry the signal.</p>
-      <ul>
-        <li><b>Classical feedback</b> optimises almost nothing at run time: a stabilising law on a reduced-order model at 1 kHz, myopic but principled.</li>
-        <li><b>Predictive control</b> solves a trajectory optimisation online, about every 10 ms, over a horizon of under a second, with explicit constraints for contacts.</li>
-        <li><b>Reinforcement learning</b> moves the optimisation offline, into simulation over enormous state distributions, and deploys a policy at the same 100 Hz that hands PD targets to the same 1 kHz loop. It can skip explicit state estimation.</li>
-        <li><b>Generative and foundation models</b> train offline on large data and run slower at deployment; today they mostly sit above a separate locomotion module (System 2 over System 1).</li>
-      </ul>
-      <p>The survey's reading: this is one progression, not four camps. Physics-based modelling, constrained decision making and adaptation to uncertainty appear in every column; what changes is where the computation happens and how much of the world it is allowed to see.</p>
-    </div>
-  </div>
-  <div class="grid-2" style="margin-top:22px">
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/locomotion/survey_fig3.jpg" alt="Figure 3 of the survey: unified view across model-data complexity and computational hierarchy" loading="lazy"><figcaption><b>The survey's Fig. 3.</b> (A) approaches by when optimisation or learning occurs and by model or data complexity; (B) pre-deployment against deployment, with loop rates, and the two levels of reasoning, System 1 and System 2.</figcaption></figure>
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/locomotion/survey_fig4.jpg" alt="Figure 4 of the survey: classical versus learning-based control pipelines" loading="lazy"><figcaption><b>The survey's Fig. 4.</b> Classical control: explicit state estimator, analytical model, online controller. RL: a policy learned offline against a simulator with reward-driven optimisation. The differences are in state estimation, model use and the timing of the optimisation.</figcaption></figure>
-  </div>
-  <div class="table-wrap">
-    <table class="data-table">
-      <thead><tr><th>challenge</th><th>classical</th><th>learning-based</th><th>emerging</th></tr></thead>
-      <tbody>
-        <tr><td class="k">stabilising unstable dynamics</td><td>analytical models and stabilising controllers</td><td>physics simulators and learned controllers</td><td>world models for dynamics, planning and control</td></tr>
-        <tr><td class="k">high dimensionality</td><td>reduced-order models, hierarchical control</td><td>autoencoders and latent spaces, latent dynamics</td><td>diffusion policies, vision-language-action models</td></tr>
-        <tr><td class="k">robustness to uncertainty</td><td>robust control, adaptive control</td><td>domain randomisation, teacher–student and adaptation modules</td><td>in-context learning, test-time adaptation</td></tr>
-        <tr><td class="k">hybrid contact dynamics</td><td>hybrid system models, contact schedules</td><td>contact solved numerically in the simulator</td><td>contact represented implicitly by learned predictive models</td></tr>
-        <tr><td class="k">structure and reuse</td><td>cascaded, hierarchical control</td><td>hierarchical policies, motion primitives</td><td>System 2 planners over System 1 trackers</td></tr>
-      </tbody>
-    </table>
-    <div class="scroll-hint">← swipe the table →</div>
-  </div>
-  <p class="plot-note">After the survey's Table 2, paraphrased: each era answers the same challenges with its own tools, and the newer tools are recognisably the older ideas. Domain randomisation is robust control; adaptation modules are adaptive control; attention is gain scheduling; a diffusion model's denoising is stochastic optimal control.</p>
+<!-- =================== TIMELINE =================== -->
+<section class="section" id="timeline-section">
+  <h2 class="section-title">The milestones, in order</h2>
+  <p class="lead">Twenty-five milestones the survey cites, on the eras it defines, running down the page so that the list can keep growing without anything colliding. Dates are first public appearances; the notes are mine, the reference numbers are the paper's.</p>
+  <div class="tl-filters" id="tl-filters"></div>
+  <p class="plot-note" id="tl-count" style="margin:0 0 6px"></p>
+  <div id="timeline"></div>
 </section>
 
-<!-- =================== THE BALANCE LAB =================== -->
-<section class="section" id="lab">
-  <h2 class="section-title">The balance lab: three eras take the same shove</h2>
-  <p class="lead">To make the eras tangible I built the smallest walker that still has the problem: a <b>linear inverted pendulum</b> (the survey's ref. 45) with a point foot, an ankle that can move the zero-moment point by ±5 cm, and a step to a new foot location every 0.24 to 0.60 s. It is pushed, its velocity sensor is noisy and late, and its true centre-of-mass height may not be what the controller believes. Four controllers close the loop, one per paradigm. Everything runs in your browser at 100 Hz; the learned policy is the exact network trained offline.</p>
-  <div class="grid-2">
-    <div class="prose">
-      <div class="eq">between steps: <span class="m">ẍ</span> = ω² (x − a), ω = √(g / z₀) &nbsp;·&nbsp; |a| ≤ 5 cm (ankle) &nbsp;·&nbsp; at a step: x ← x − u, |u| ≤ 0.65 m &nbsp;·&nbsp; capture point ξ = x + ẋ/ω</div>
-      <ul>
-        <li><b style="color:#2a78d6">Classical, 1980s–2000s</b>: capture-point stepping plus an ankle strategy, fixed 0.40 s period. At each step the foot goes to ξ minus the offset of the periodic gait; between steps the ankle pushes the ZMP towards the capture-point error. Model-based, myopic, clips what it cannot do.</li>
-        <li><b style="color:#1baf7a">Classical + adaptation</b>: the same law with ω estimated online by recursive least squares, the adaptive-control row of Table 2.</li>
-        <li><b style="color:#8e6bd1">Predictive, 2010s–</b>: at every tick, a three-step optimisation on the step-to-step pendulum with the step-length limit as a constraint and the step time chosen from a set. It steps early when a big step is coming.</li>
-        <li><b style="color:#E4442A">Learned, 2015–</b>: a 64×64 tanh policy trained by PPO on 512 parallel walkers with pushes, sensor noise, delays and random centre-of-mass heights (domain randomisation), choosing ankle, step location and step time together. A second policy, <b style="color:#eb6834">nominal only</b>, saw a single body during training: the sim-to-real ablation. Each is the better of two training seeds, chosen on the nominal body.</li>
-      </ul>
-    </div>
-    <div>
-      <figure class="fig" style="margin-top:0"><img src="assets/images/projects/locomotion/figs/fig_push.png" alt="Survival against push magnitude for the four controllers, forward and backward, and the recovery time" loading="lazy"><figcaption><b>Push it harder.</b> Survival of 64 walkers against a single push at a random step phase, forward and backward, and the time to settle back. The fixed-period classical law survives 64 % of 1.0 m/s shoves and 6 % of 1.8 m/s ones; the step MPC survives 100 % at 1.4 m/s and 81 % at 1.8; the two learned policies 98–100 % at 1.4 and 88–97 % at 1.8, by stepping early and long. Estimating ω online (green) changes nothing: the blue curve is underneath it.</figcaption></figure>
-    </div>
-  </div>
-
-  <div class="card scene-block">
-    <div class="scene-head">
-      <span class="caption-box">INTERACTIVE · PUSH THEM</span>
-      <h3>Four walkers, your shoves</h3>
-      <p>Arrow keys or the buttons push every walker at once. Lower the true centre of mass while the controllers still believe 0.8 m; add noise and delay to the velocity sensor; ask for another speed. <b style="color:#FFCE0A">▼</b> is the zero-moment point the ankle produces, <b style="color:#E4442A">◆</b> the capture point, <b>|</b> the planned foot.</p>
-    </div>
-    <div class="who">
-      <label><input type="checkbox" class="lab-who" value="classical" checked> <span style="color:#2a78d6">classical</span></label>
-      <label><input type="checkbox" class="lab-who" value="adaptive"> <span style="color:#1baf7a">classical + adaptation</span></label>
-      <label><input type="checkbox" class="lab-who" value="predictive" checked> <span style="color:#8e6bd1">predictive</span></label>
-      <label><input type="checkbox" class="lab-who" value="learned_dr" checked> <span style="color:#E4442A">learned, randomised</span></label>
-      <label><input type="checkbox" class="lab-who" value="learned_nodr" checked> <span style="color:#eb6834">learned, nominal only</span></label>
-    </div>
-    <canvas id="lab-canvas" aria-label="four planar walkers balancing under pushes"></canvas>
-    <div class="scene-bar">
-      <button class="btn btn-primary" id="lab-push-b" type="button">◀ shove back</button>
-      <button class="btn btn-primary" id="lab-push-f" type="button">shove forward ▶</button>
-      <label>size <input type="range" id="lab-push-mag" min="0.2" max="2.4" step="0.1" value="1.0"> <span class="out" id="lab-push-out">1.0 m/s</span></label>
-      <label>random shoves <input type="range" id="lab-auto" min="0" max="1.5" step="0.1" value="0"> <span class="out" id="lab-auto-out">off</span></label>
-      <button class="btn" id="lab-reset" type="button">Reset (Space)</button>
-      <button class="btn" id="lab-pause" type="button">Pause</button>
-      <label>speed <select id="lab-speed"><option value="0.25">¼×</option><option value="0.5">½×</option><option value="1" selected>1×</option></select></label>
-      <label><input type="checkbox" id="lab-markers" checked> markers</label>
-    </div>
-    <div class="scene-bar">
-      <label>true CoM height <input type="range" id="lab-z0" min="0.5" max="1.1" step="0.01" value="0.8"> <span class="out" id="lab-z0-out">0.80 m</span></label>
-      <label>commanded speed <input type="range" id="lab-vdes" min="-0.3" max="1.0" step="0.05" value="0.5"> <span class="out" id="lab-vdes-out">0.50 m/s</span></label>
-      <label>velocity noise σ <input type="range" id="lab-noise" min="0" max="0.4" step="0.01" value="0.03"> <span class="out" id="lab-noise-out">0.03</span></label>
-      <label>sensor delay <input type="range" id="lab-delay" min="1" max="6" step="1" value="1"> <span class="out" id="lab-delay-out">10 ms</span></label>
-    </div>
-    <div class="scene-info" id="lab-info">Loading the policies…</div>
-  </div>
-
-  <div class="clip-grid three">
-    <div class="card"><video muted loop playsinline preload="metadata" controls poster="assets/images/projects/locomotion/posters/lab_classical.jpg"><source src="assets/videos/locomotion_lab_classical.mp4" type="video/mp4"></video><span class="caption-box">CLASSICAL</span><div class="body"><h3>Capture point and ankle</h3><p>Five shared pushes, absorbed with the ankle and one step each to the capture point. At a fixed 0.4 s period a 1.4 m/s shove is a coin flip (39 % survival in the sweep); this one it wins.</p></div></div>
-    <div class="card"><video muted loop playsinline preload="metadata" controls poster="assets/images/projects/locomotion/posters/lab_predictive.jpg"><source src="assets/videos/locomotion_lab_predictive.mp4" type="video/mp4"></video><span class="caption-box">PREDICTIVE</span><div class="body"><h3>Step MPC</h3><p>The same pushes: the step comes early and long when the horizon sees the limit; the velocity error is traded against step effort.</p></div></div>
-    <div class="card"><video muted loop playsinline preload="metadata" controls poster="assets/images/projects/locomotion/posters/lab_learned_dr.jpg"><source src="assets/videos/locomotion_lab_learned_dr.mp4" type="video/mp4"></video><span class="caption-box">LEARNED</span><div class="body"><h3>PPO with domain randomisation</h3><p>The policy never saw these exact pushes; it learned ankle, step and timing as one decision from twelve million simulated ticks, and takes fewer, longer steps than the model-based laws.</p></div></div>
-  </div>
-  <div class="clip-grid">
-    <div class="card"><video muted loop playsinline preload="metadata" controls poster="assets/images/projects/locomotion/posters/race_nominal.jpg"><source src="assets/videos/locomotion_race_nominal.mp4" type="video/mp4"></video><span class="caption-box">THE RACE · NOMINAL BODY</span><div class="body"><h3>Four controllers, the same five pushes</h3><p>Classical, predictive, learned with randomisation, learned on the nominal model only. This time all four stand; the sweeps below give the odds, and for the classical law the 1.4 m/s shove is a 39 % chance.</p></div></div>
-    <div class="card"><video muted loop playsinline preload="metadata" controls poster="assets/images/projects/locomotion/posters/race_mismatch.jpg"><source src="assets/videos/locomotion_race_mismatch.mp4" type="video/mp4"></video><span class="caption-box">THE RACE · 0.6 M BODY</span><div class="body"><h3>Same controllers, shorter robot</h3><p>The centre of mass is 0.6 m while the model says 0.8 m. The classical laws use the wrong frequency and still stand; the learned policies infer the body from their velocity history. The one fall is the randomised policy at the last 1.4 m/s shove: on a short body that shove is at the edge for everyone.</p></div></div>
-  </div>
-
-  <div class="grid-2" style="margin-top:22px">
-    <div class="card card-pad"><canvas class="plot2d" id="lp-push"></canvas><p class="plot-note"><b>Survival against a forward push</b> at 2 s, 64 walkers per point with random step phase, 0.03 m/s velocity noise and 10 ms delay. Hover for values. The classical and the adaptive curves coincide.</p></div>
-    <div class="card card-pad"><canvas class="plot2d" id="lp-push-back"></canvas><p class="plot-note"><b>Backward push.</b> Stepping backwards against a forward commanded velocity is harder for everyone.</p></div>
-    <div class="card card-pad"><canvas class="plot2d" id="lp-mismatch"></canvas><p class="plot-note"><b>Model mismatch.</b> Random pushes of up to 1 m/s at 0.6 per second while the true CoM height varies from 0.5 to 1.1 m; every controller assumes 0.8 m. The classical law falls in about a quarter of the episodes whatever the body, the predictive one never, the randomised policy in 0–2 %, the nominal-only policy in 6 % at 0.6 m and 11 % at 0.5 m.</p></div>
-    <div class="card card-pad"><canvas class="plot2d" id="lp-noise"></canvas><p class="plot-note"><b>Sensor noise.</b> Falls in 10 s against the noise on the measured velocity, 10 ms delay. At σ = 0.4 m/s the classical law falls 84 % of the time, the step MPC 12 %, both learned policies 0 %: a policy with a velocity history in its observation filters, a law reacts to every sample.</p></div>
-    <div class="card card-pad"><canvas class="plot2d" id="lp-velocity"></canvas><p class="plot-note"><b>Velocity tracking</b> under gentle pushes across commanded speeds, including walking backwards.</p></div>
-    <div class="card card-pad"><canvas class="plot2d" id="lp-rec"></canvas><p class="plot-note"><b>Recovery time</b> after a forward push: how long until the velocity is back within 0.12 m/s of the command for half a second.</p></div>
-    <div class="card card-pad"><canvas class="plot2d" id="lp-episode"></canvas><p class="plot-note"><b>One episode, five shared pushes</b> (the race above): CoM velocity of each controller.</p></div>
-    <div class="card card-pad"><canvas class="plot2d" id="lp-episode-z06"></canvas><p class="plot-note"><b>The same episode on the 0.6 m body.</b></p></div>
-    <div class="card card-pad"><canvas class="plot2d" id="lp-training"></canvas><p class="plot-note"><b>PPO training</b> of the two policies: reward per second of walking against iterations of 512 walkers × 48 ticks.</p></div>
-    <div class="card card-pad"><canvas class="plot2d" id="lp-training-falls"></canvas><p class="plot-note"><b>Falls per second during training.</b> Both policies are the better of two seeds; the first seed of the nominal-only policy ended at 0.05 falls per second and fell in 41 % of the 0.6 m episodes, the second at 0.004 and 6 %. The seed mattered more than the training distribution.</p></div>
-  </div>
-
-  <div class="grid-3" style="margin-top:22px">
-    <div class="card finding"><span class="no">1</span><h3>Timing and constraints, not the model, are what the classical law lacks</h3><p>Its capture-point stepping is right, but at a fixed period and with a step it clips instead of planning around. Estimating ω online changes nothing measurable (23 % falls under random pushes either way); choosing when to step takes the predictive controller to 0 %.</p></div>
-    <div class="card finding"><span class="no">2</span><h3>The predictive controller and the learned policy land in the same place</h3><p>Both step early and long. One reasons on the step-to-step model at run time; the other encoded millions of such solutions into 64×64 weights offline: the survey's optimal-control view of RL (Eq. 2 against Eq. 3).</p></div>
-    <div class="card finding"><span class="no">3</span><h3>Domain randomisation helps at the edges; the seed mattered more</h3><p>The randomised policy survives 97 % of 2.2 m/s shoves against 80 % for the nominal-only one, and falls in 2 % of episodes on a 0.5 m body against 11 %. But a well-trained nominal-only policy also stands on the wrong body: with a velocity history in its observation it adapts implicitly, the survey's teacher–student point. A first seed of that policy fell 41 % of the time on the 0.6 m body; two seeds of one algorithm differed more than two training distributions. The survey calls RL algorithmically fragile; this is what that looks like. The price of learning here: velocity tracking of 0.15–0.23 m/s against 0.11 for the model-based laws.</p></div>
-  </div>
+<!-- =================== THE METHODS =================== -->
+<section class="section" id="methods">
+  <h2 class="section-title">The methods, and every paper behind them</h2>
+  <p class="lead">One entry per section of the survey. Open a family for what it is, the equations it is written in where it has them, and the complete list of references the survey cites there — each linked to the paper. The loop rate and the compute beside a family are properties of that <i>layer</i>, as the survey describes it in Fig. 3, not measurements of any individual paper.</p>
+  <figure class="fig" style="margin:0 0 22px"><img src="assets/images/projects/locomotion/survey_fig4.jpg" alt="Figure 4 of the survey: the learning-based control pipeline" loading="lazy"><figcaption><b>The survey's Fig. 4.</b> The learning-based pipeline the middle era converged on: pre-training in massively parallel simulation with randomised dynamics, then fine-tuning and deployment, with the reduced-order model and inverse kinematics still present as the thing the policy is trained against. Figure from the companion repository.</figcaption></figure>
+  <div id="method-cards"></div>
 </section>
 
 <!-- =================== FIVE SHIFTS =================== -->
 <section class="section" id="shifts">
   <h2 class="section-title">Five shifts under way</h2>
-  <p class="lead">The emerging era is not one method but a direction of travel. The survey names five shifts (Fig. 5) and, for each, the connection to a classical idea.</p>
-  <div class="grid-5">
-    <div class="card shift"><div class="from">discriminative →</div><div class="to">generative</div><p>Policies that model a distribution over feasible actions or trajectories, so multi-modal choices (step left or right) and inference-time conditioning become possible. Denoising is stochastic optimal control.</p></div>
-    <div class="card shift"><div class="from">uni-modal →</div><div class="to">multi-modal</div><p>Proprioception alone is blind; vision, depth, tactile and language enter through fusion architectures and vision-language-action models, doubling success on terrain-aware tasks.</p></div>
-    <div class="card shift"><div class="from">single-task →</div><div class="to">multi-task</div><p>Shared representations, skill libraries, cross-embodiment data and behaviour foundation models replace one policy per task with its own rewards.</p></div>
-    <div class="card shift"><div class="from">locomotion →</div><div class="to">loco-manipulation</div><p>Walking and handling in one whole-body policy: co-tracking human–object interaction, hierarchical planners over trackers, force-adaptive control.</p></div>
-    <div class="card shift"><div class="from">offline →</div><div class="to">test-time adaptation</div><p>Adjust online to what training never showed: in-context learning as adaptive control, standardised tests for falls and recovery.</p></div>
+  <p class="lead">The emerging era is not one method but a direction of travel. The survey names five shifts (Fig. 5). For each, the work the survey cites on the far side of the shift, and the line of work it grew out of — so the change can be read as a continuation rather than a break.</p>
+  <div class="shift-grid" id="shift-papers"></div>
+  <figure class="fig"><img src="assets/images/projects/locomotion/survey_fig5.jpg" alt="Figure 5 of the survey: five emerging research shifts" loading="lazy"><figcaption><b>The survey's Fig. 5.</b> Emerging research shifts in humanoid control across five dimensions: learning paradigm, modality, task scope, functionality and computation. Figure from the companion repository.</figcaption></figure>
+</section>
+
+<!-- =================== MODELS AND SIMULATORS =================== -->
+<section class="section" id="models">
+  <h2 class="section-title">Models and simulators, from physics-based to data-driven</h2>
+  <p class="lead">The survey's Fig. 2 lays the models a controller can be written against on one axis, from those you derive to those you fit. Where a method sits on that axis decides what it can express, what it costs to evaluate, and how it fails when the world disagrees with it.</p>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead><tr><th style="width:150px">Where it sits</th><th style="width:190px">What it is</th><th>What it buys you</th><th>Where it breaks</th><th style="width:170px">Typical use</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Physics-based</td><td>Reduced-order model — linear inverted pendulum, centroidal dynamics, single rigid body</td><td>A handful of states with an analytic solution; constraints stay convex, so the loop runs at kilohertz and can be proved stable.</td><td>Everything it abstracts away: limb inertia, compliance, and any contact it did not assume.</td><td>Real-time balance, footstep planning, convex MPC</td></tr>
+        <tr><td class="k">Physics-based</td><td>Full-order rigid-body model with contact</td><td>Every joint and every wrench, exactly as derived; whole-body control and contact-implicit optimisation are written on it.</td><td>Nonsmooth contact and the cost of solving it; parameters you must identify.</td><td>Whole-body QPs, nonlinear MPC, offline trajectory optimisation</td></tr>
+        <tr><td class="k">Physics-based</td><td>Simulator — MuJoCo, Isaac, Newton, Genesis</td><td>Contact-rich physics at thousands of times real speed on a GPU, which is what makes reinforcement learning affordable.</td><td>The reality gap: actuator dynamics, friction, latency and deformation that are cheap to simulate wrongly.</td><td>Policy training, domain randomisation</td></tr>
+        <tr><td class="k">Hybrid</td><td>Physics plus a learned residual — learned actuator models, residual dynamics</td><td>Keeps the structure and the guarantees, and lets data absorb what the derivation missed.</td><td>Only as good as the data covering the residual; the split between the two halves is a design choice.</td><td>Sim-to-real correction, system identification</td></tr>
+        <tr><td class="k">Data-driven</td><td>Learned dynamics</td><td>Predicts the next state from data without a derivation, including effects nobody wrote down.</td><td>Extrapolation; error compounds over a horizon.</td><td>Model-based RL, short-horizon planning</td></tr>
+        <tr><td class="k">Data-driven</td><td>Latent dynamics</td><td>Rolls out in a compact learned space, so long horizons stay cheap.</td><td>The latent space is only as meaningful as its training distribution; physical constraints are not naturally expressible.</td><td>Planning from pixels, model-based RL</td></tr>
+        <tr><td class="k">Data-driven</td><td>World model</td><td>Predicts observations and consequences of actions directly, including semantics; supports imagination and reasoning about futures.</td><td>Expensive to evaluate, hard to constrain, and unverified against physics.</td><td>The deliberative layer, long-horizon and multi-task behaviour</td></tr>
+      </tbody>
+    </table>
   </div>
-  <figure class="fig"><img src="assets/images/projects/locomotion/survey_fig5.jpg" alt="Figure 5 of the survey: emerging research shifts across five dimensions" loading="lazy"><figcaption><b>The survey's Fig. 5.</b> Emerging research shifts in humanoid control across five dimensions. Figure from the companion repository.</figcaption></figure>
-  <div class="grid-2" style="margin-top:22px">
-    <figure class="fig" style="margin-top:0"><img src="assets/images/projects/locomotion/survey_fig2.jpg" alt="Figure 2 of the survey: the spectrum of modelling approaches from physics-based to data-driven" loading="lazy"><figcaption><b>The survey's Fig. 2: the spectrum of models.</b> Reduced-order models, full-order models and simulators on the physics side; learned dynamics, latent dynamics and world models on the data side; hybrids in between, such as learned actuator models and residual dynamics.</figcaption></figure>
+  <p class="scroll-hint">◆ scroll the table sideways</p>
+  <p class="plot-note" style="margin-top:12px">The survey's own list of tools to start from: model-based, the MIT Cheetah software, OpenLoong, CasADi, acados, OCS2 and Judo; learning-based, Isaac Lab, MuJoCo Playground, MJLab, and Newton and Genesis for large-scale differentiable simulation. Every one of them is in the library below — filter by the <i>simulators</i> subject.</p>
+  <figure class="fig"><img src="assets/images/projects/locomotion/survey_fig2.jpg" alt="Figure 2 of the survey: the spectrum of models" loading="lazy"><figcaption><b>The survey's Fig. 2: the spectrum of models.</b> Reduced-order models, full-order models and simulators on the physics side; learned dynamics, latent dynamics and world models on the data side; hybrids in between, such as learned actuator models and residual dynamics.</figcaption></figure>
+</section>
+
+<!-- =================== THE LIBRARY =================== -->
+<section class="section" id="library">
+  <h2 class="section-title">The library: all 280 references</h2>
+  <p class="lead">Search by anything on the row — title, author, venue, year, method or subject — and narrow it with the filters. Clicking a subject anywhere on the page filters to it, so “world models” or “hybrid zero dynamics” is one click. Every row links out: a DOI where Crossref has one, the arXiv or repository link the reference itself carries, otherwise a title search.</p>
+  <div class="lib-controls">
+    <div class="lib-search">
+      <input id="lib-q" type="search" placeholder="Search 280 papers — try: world model, diffusion, Raibert, 2024, hybrid zero dynamics" autocomplete="off" spellcheck="false">
+      <span id="lib-count"></span>
+    </div>
+    <div id="lib-quick"></div>
+    <div class="lib-selects">
+      <select id="lib-era" aria-label="Filter by era"></select>
+      <select id="lib-topic" aria-label="Filter by subject"></select>
+      <select id="lib-family" aria-label="Filter by method family"></select>
+      <span class="yr">years <input id="lib-y0" type="number" min="1960" max="2026" step="1" value="1960" aria-label="From year"> – <input id="lib-y1" type="number" min="1960" max="2026" step="1" value="2026" aria-label="To year"></span>
+    </div>
+    <div id="lib-chips"></div>
+  </div>
+  <div class="lib-wrap"><div id="lib-table"></div></div>
+  <p class="plot-note" style="margin-top:10px">The <i>method family</i> column is where the survey cites the paper; the <i>loop rate</i> is the rate the survey attributes to that layer, not a number from the paper. A paper cited in several sections carries several families.</p>
+</section>
+
+<!-- =================== OUTLOOK =================== -->
+<section class="section" id="outlook">
+  <h2 class="section-title">What the survey asks of the next decade</h2>
+  <div class="grid-2">
     <div class="prose">
-      <p><b>What the survey asks of the next decade.</b> Safer and more reliable humanoids first: falling is the barrier to deployment, and the paper calls for standardised recovery and impact tests, compliant and energy-dissipating hardware, and test-time adaptation. Then accessible platforms, since costs have already dropped by an order of magnitude; then the integration of control with perceptual and cognitive intelligence in a two-level hierarchy, a reactive motor layer under a deliberative one; and, further out, an ecosystem of networked embodied agents.</p>
-      <p>The conclusion the authors draw is the one the balance lab tries to make physical: the recent leap in agility is not the triumph of neural policies alone but of contact-rich simulation, expressive architectures, physics-guided training design and asymmetric training together. Physics did not get replaced; it moved into the simulator, the reward, the curriculum and the real-time interface.</p>
+      <p><b>Safety and reliability first.</b> Falling is the barrier to deployment. The paper calls for standardised recovery and impact tests, compliant and energy-dissipating hardware, and test-time adaptation, so that a humanoid outside the laboratory fails gracefully rather than catastrophically.</p>
+      <p><b>Then accessibility.</b> Platform costs have already dropped by an order of magnitude; open hardware and open toolchains decide whether the field's progress is reproducible by more than a handful of groups.</p>
+      <p><b>Then the integration of control with perceptual and cognitive intelligence</b> in a two-level hierarchy — a reactive motor layer under a deliberative one — and, further out, an ecosystem of networked embodied agents.</p>
+      <p>The conclusion the authors draw is that the recent leap in agility is not the triumph of neural policies alone but of contact-rich simulation, expressive architectures, physics-guided training design and asymmetric training together. Physics did not get replaced; it moved into the simulator, the reward, the curriculum and the real-time interface.</p>
+      <p class="plot-note">The <b>31 references</b> behind the open challenges and the recommended entry points are under <a href="#fam-outlook">Open challenges and getting started</a> in the methods above, and filterable in <a href="#library">the library</a> by the <i>outlook</i> era.</p>
+    </div>
+    <div>
+      <div class="card card-pad prose"><h3>Three principles that survive every era</h3>
+        <p><b>Physics-based modelling.</b> Whether written down, simulated, or learned, a model of the body is what the controller reasons against.</p>
+        <p><b>Constrained decision making.</b> Support polygons and torque limits in the classical era; reward shaping, curricula and action limits in the learning era; conditioning and filtering in the emerging one.</p>
+        <p><b>Adaptation to uncertainty.</b> Adaptive and robust control, then domain randomisation, then in-context and test-time adaptation. The survey's argument is that these are the same problem in three vocabularies.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- =================== GETTING STARTED =================== -->
 <section class="section" id="start">
   <h2 class="section-title">Getting started, as the survey recommends</h2>
   <div class="grid-3">
@@ -502,36 +445,7 @@
   </div>
 </section>
 
-<!-- =================== EXPLAINER =================== -->
-<section class="section" id="explainer">
-  <h2 class="section-title">The explainer</h2>
-  <div class="big-clip"><video controls playsinline preload="metadata" poster="assets/images/projects/locomotion/tease_poster.jpg"><source src="assets/videos/locomotion_explainer.mp4" type="video/mp4"></video></div>
-  <p class="plot-note" style="margin-top:12px">Seventy-five seconds: the three eras, the timeline, the unified view, the balance lab and its races, the push sweeps, the three principles and the five shifts.</p>
-</section>
 
-<!-- =================== REPRODUCE =================== -->
-<section class="section" id="reproduce">
-  <h2 class="section-title">Reproduce the lab</h2>
-  <div class="grid-2">
-    <div class="prose">
-      <p>The lab is one small Python package (the vectorised LIP world, the four controllers, rollouts and the push-recovery protocol), a PPO trainer in PyTorch, a study script, and the figure and video scripts. Everything is seeded; the two policies train in about twenty minutes on a laptop CPU. The browser lab is a line-for-line port with the exported weights.</p>
-<pre class="cmd"><span class="c"># Locomotion/experiments</span>
-python -m pytest -q tests                <span class="c"># exact LIP map, periodic gait fixed point, MPC limits, adaptive estimator</span>
-python train_rl.py --name dr             <span class="c"># PPO with domain randomisation -> out/policy_dr.json</span>
-python train_rl.py --name nodr           <span class="c"># PPO on the nominal body only</span>
-python run_study.py                      <span class="c"># push / mismatch / noise / velocity sweeps + traced episodes -> out/study.json</span>
-python make_figures.py                   <span class="c"># docs/figures/*.pdf, site PNGs, assets/data/locomotion_results.json, docs/numbers.tex</span>
-python make_videos.py --which all        <span class="c"># lab clips, races, timeline, teaser, explainer, thumb</span>
-cd ../docs && make                       <span class="c"># locomotion_lab.pdf</span></pre>
-    </div>
-    <div class="prose">
-      <p><b>Files.</b> <code>lipwalk/model.py</code> (LIPWorld, exact integration, pushes, noise, delay, randomisation), <code>lipwalk/controllers.py</code> (ClassicalDCM, AdaptiveDCM, StepMPC, MLPPolicy), <code>lipwalk/sim.py</code> (rollout, push_recovery), <code>train_rl.py</code>. On the site: <code>assets/js/locomotion_lab.js</code>, <code>locomotion_timeline.js</code>, <code>locomotion_plots.js</code>, the policies in <code>assets/data/locomotion_policy_*.json</code>.</p>
-      <p><b>What the lab is not.</b> A planar point-foot pendulum with instantaneous steps is the survey's reduced-order model, not a humanoid: no swing-leg dynamics, no torque limits, no terrain, no perception. It shows the mechanism of each era's controller under the same disturbance, not their performance on a robot. The <a href="assets/pdf/projects/locomotion_lab_report.pdf" target="_blank" rel="noopener">report</a> has the equations, the training details, every number and the limitations.</p>
-    </div>
-  </div>
-</section>
-
-<!-- =================== CREDITS =================== -->
 <section class="section" id="credits">
   <h2 class="section-title">Credits</h2>
   <div class="card card-pad credits">
@@ -540,47 +454,12 @@ cd ../docs && make                       <span class="c"># locomotion_lab.pdf</s
   </div>
 </section>
 
-<footer class="site-footer night">
-  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
-  <div class="skyline" aria-hidden="true"></div>
-  <div class="wrap">
-    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
-    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
-    <div class="footer-rule"></div>
-    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
-    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
-  </div>
-</footer>
+<footer class="site-foot"><div class="wrap"><p>© 2026 Qilong (Jerry) Cheng · <a href="index.html">home</a> · <a href="publications.html">publications</a> · <a href="projects.html">projects</a></p></div></footer>
 
 <script src="assets/js/site.js"></script>
-<script src="assets/js/locomotion_plots.js"></script>
-<script type="module">
-  import { initLab } from './assets/js/locomotion_lab.js';
-  import { initTimeline } from './assets/js/locomotion_timeline.js';
-  const q = (id) => document.getElementById(id);
-  fetch('assets/data/locomotion_timeline.json').then(r => r.json()).then(d => initTimeline({ host: q('tl-host'), card: q('tl-card'), count: q('tl-count'), eraBoxes: [...document.querySelectorAll('.tl-era-box')], kindBoxes: [...document.querySelectorAll('.tl-kind-box')] }, d)).catch(e => console.error(e));
-  Promise.all(['dr', 'nodr'].map(n => fetch(`assets/data/locomotion_policy_${n}.json`).then(r => r.json()))).then(([dr, nodr]) => {
-    initLab({ canvas: q('lab-canvas'), pushF: q('lab-push-f'), pushB: q('lab-push-b'), pushMag: q('lab-push-mag'), pushOut: q('lab-push-out'), auto: q('lab-auto'), autoOut: q('lab-auto-out'), reset: q('lab-reset'), pause: q('lab-pause'), speed: q('lab-speed'), markers: q('lab-markers'),
-      z0: q('lab-z0'), z0Out: q('lab-z0-out'), vdes: q('lab-vdes'), vdesOut: q('lab-vdes-out'), noise: q('lab-noise'), noiseOut: q('lab-noise-out'), delay: q('lab-delay'), delayOut: q('lab-delay-out'), who: [...document.querySelectorAll('.lab-who')] }, { dr, nodr });
-    q('lab-info').textContent = 'Click the lab, then ← → to shove and Space to reset. Each walker runs the same 100 Hz loop as the study; the learned walkers run the exported PPO weights (' + dr.meta.iters + ' iterations of 512 walkers).';
-  }).catch(e => { q('lab-info').textContent = 'The lab needs the policy files served over http (assets/data/locomotion_policy_*.json): ' + e.message; });
-  /* unified view */
-  const UV = {
-    classical: { off: 'offline · gait design by hand', on: 'online · none (a fixed law)', model: 'model · reduced-order (LIP, ZMP)', fb: 'real-time feedback · 1 kHz', pd: 'joint PD / inverse dynamics', est: 'state estimation · explicit', rateOn: '—', ratePd: '1 kHz', flows: { 'f-off-on': 'dim', 'f-on-fb': 'dim', 'f-fb-pd': '', 'f-pd-robot': '', 'f-robot-est': '', 'f-est-fb': '', 'f-model-on': 'dim', 'f-est-on': 'dim' }, note: 'Classical real-time feedback: a stabilising law on a reduced-order model, computed at 1 kHz from an explicit state estimate. Fast and principled, no horizon, restricted to pre-planned behaviours.' },
-    predictive: { off: 'offline · trajectory optimisation (HZD, footstep plans)', on: 'online · MPC, horizon < 1 s', model: 'model · centroidal / full-order', fb: 'real-time feedback · 1 kHz', pd: 'whole-body QP / PD', est: 'state estimation · explicit', rateOn: '~100 Hz', ratePd: '1 kHz', flows: { 'f-off-on': '', 'f-on-fb': '', 'f-fb-pd': '', 'f-pd-robot': '', 'f-robot-est': '', 'f-est-fb': '', 'f-model-on': '', 'f-est-on': '' }, note: 'Predictive control: a constrained optimisation solved online every few milliseconds over a short horizon, on a reduced or full model, with contacts as explicit constraints. Robust, and often less agile than the model allows.' },
-    learning: { off: 'offline · RL in parallel simulation', on: 'online · policy inference', model: 'model · the simulator (implicit)', fb: 'real-time feedback · 1 kHz', pd: 'joint PD targets from the policy', est: 'state estimation · implicit (history)', rateOn: '~100 Hz', ratePd: '1 kHz', flows: { 'f-off-on': 'slow', 'f-on-fb': '', 'f-fb-pd': '', 'f-pd-robot': '', 'f-robot-est': '', 'f-est-fb': '', 'f-model-on': 'slow', 'f-est-on': '' }, note: 'Reinforcement learning: the optimisation moves offline into a physics simulator over enormous state distributions; the policy runs at deployment at the same rate as MPC and hands PD targets to the same low-level loop. State estimation becomes implicit.' },
-    emerging: { off: 'offline · large-scale data + hybrid training', on: 'online · generative planner (System 2)', model: 'model · world / latent model', fb: 'real-time feedback · 1 kHz', pd: 'a separate locomotion tracker', est: 'perception · vision, language', rateOn: '< 100 Hz', ratePd: '1 kHz', flows: { 'f-off-on': 'slow', 'f-on-fb': 'slow', 'f-fb-pd': '', 'f-pd-robot': '', 'f-robot-est': '', 'f-est-fb': '', 'f-model-on': 'slow', 'f-est-on': 'slow' }, note: 'Generative and foundation models: trained offline on large multi-modal data, deployed slower, mostly as a deliberative layer proposing motions to a fast tracking policy. Versatile; real-world reliability is the open problem.' },
-  };
-  function setUV(era) {
-    const s = UV[era]; for (const [id, key] of [['uv-off', 'off'], ['uv-on', 'on'], ['uv-model', 'model'], ['uv-fb', 'fb'], ['uv-pd', 'pd'], ['uv-est', 'est'], ['uv-rate-on', 'rateOn'], ['uv-rate-pd', 'ratePd']]) q(id).textContent = s[key];
-    for (const id in s.flows) { const p = q(id); p.setAttribute('class', 'flow ' + s.flows[id]); }
-    q('uv-note').textContent = s.note;
-    document.querySelectorAll('#uv-tabs .btn').forEach(b => b.classList.toggle('on', b.dataset.era === era));
-  }
-  document.querySelectorAll('#uv-tabs .btn').forEach(b => b.addEventListener('click', () => setUV(b.dataset.era)));
-  setUV('classical');
-  const io = new IntersectionObserver((es) => es.forEach(e => { const v = e.target; if (e.isIntersecting) v.play().catch(() => {}); else v.pause(); }), { threshold: 0.25 });
-  document.querySelectorAll('.clip-grid video, .big-clip video[muted]').forEach(v => io.observe(v));
-</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/contrib/auto-render.min.js"></script>
+<script defer src="assets/js/locomotion_timeline.js"></script>
+<script defer src="assets/js/locomotion_library.js"></script>
 </body>
 </html>
