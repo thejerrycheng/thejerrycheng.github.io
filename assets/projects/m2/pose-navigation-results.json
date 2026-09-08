@@ -222638,8 +222638,9 @@
     {
       "id": "end_to_end_se3_navigation_initialization_retry_1",
       "status": {
-        "status": "running",
-        "reason": "Collecting contact-checked demonstrations and fitting the shared actor."
+        "status": "interrupted",
+        "reason": "",
+        "completed_episodes": 4
       },
       "kind": "imitation",
       "method": "Supervised initialization / DAgger; separate frozen evaluation required",
@@ -222936,7 +222937,14 @@
           "weighted_mse": 0.0012460075797409648
         }
       ],
-      "clips": []
+      "clips": [
+        {
+          "label": "round 0",
+          "success": false,
+          "video": "assets/projects/m2/media/b00f6fa6c628.mp4",
+          "poster": "assets/projects/m2/media/a47dcb11d0ec.jpg"
+        }
+      ]
     },
     {
       "id": "end_to_end_se3_v10_navigation_ppo",
@@ -222950,9 +222958,9 @@
     }
   ],
   "validation": {
-    "status": "running",
+    "status": "interrupted",
     "scope": "Gated acquisition / welded retention SE3 task, light painting with small payload-pose offsets, approach-distance variation, and 1.25\u20131.75 kg mass. Repeated development validation selects candidates; only a frozen actor on fresh confirmation seeds can meet the empirical >90% target. No ungated recovery, sensing-noise, other-scene or hardware claim.",
-    "reason": "Training and evaluation continue until the declared target passes.",
+    "reason": "Coordinator interrupted; completed artifacts retained.",
     "target_met": false,
     "cohorts": []
   }
