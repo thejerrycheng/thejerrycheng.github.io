@@ -222644,7 +222644,17 @@
       "kind": "imitation",
       "method": "Supervised initialization / DAgger; separate frozen evaluation required",
       "teacher_fraction_after_first_round": 0.35,
-      "outcomes": [],
+      "outcomes": [
+        {
+          "round": 0,
+          "seed": 357000,
+          "steps": 5469,
+          "success": true,
+          "return": 696.6818288087995,
+          "terminations": [],
+          "controller": "teacher"
+        }
+      ],
       "losses": [],
       "clips": []
     },
