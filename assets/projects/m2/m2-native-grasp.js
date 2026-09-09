@@ -77,10 +77,20 @@
   function select(){if(!clip) return;$('native-video').src=clip.video;$('native-video').poster=clip.poster;$('native-caption').textContent=clip.label+' · '+(clip.scope||'Native contact dynamics. Recorded failures remain visible.');plot();}
   root.querySelectorAll('[data-native-plot]').forEach(b=>b.onclick=()=>{mode=b.dataset.nativePlot;root.querySelectorAll('[data-native-plot]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));plot();});
   if(clip)category();else $('native-caption').textContent='Complete checkpoint videos will appear after their recording jobs finish.';
+  const frozen=(d.evaluations||[]).filter(e=>e.complete&&e.acceptance_eligible&&e.completed>0);
+  const latestAcquisition=frozen.findLast(e=>e.id.startsWith('native_grasp_acquisition_'));
+  const latestScenes=frozen.findLast(e=>e.id.startsWith('native_grasp_scene_screen_'));
+  const rate=e=>`${e.successes}/${e.completed} (${(100*e.successes/e.completed).toFixed(1)}%)`;
+  if($('native-validation-rate'))$('native-validation-rate').textContent=[
+    `Latest frozen grasp-and-lift test: ${latestAcquisition?rate(latestAcquisition):'pending'}.`,
+    `Latest cross-scene screen: ${latestScenes?rate(latestScenes):'pending'}.`,
+    `Full-mission >90% validation: ${d.validation.target_met?'passed':'not achieved'}.`
+  ].join(' ');
   function training(){
     const supervised=run?.demonstrations?.length&&!run.completed;
     const fractions=supervised?[...new Set(run.demonstrations.map(e=>e.teacher_fraction??1))]:[];
-    const control=fractions.length===1&&fractions[0]===1?'Scripted teacher':`Teacher/student mixture (${fractions.map(f=>(100*f).toFixed(0)+'% teacher').join(', ')})`;
+    const perturbed=supervised&&run.demonstrations.some(e=>(e.action_perturbation_scale??1)>0&&e.action_perturbation_std?.some(s=>s>0));
+    const control=fractions.length===1&&fractions[0]===1?(perturbed?'Scripted teacher with action disturbances':'Scripted teacher'):`Teacher/student mixture (${fractions.map(f=>(100*f).toFixed(0)+'% teacher').join(', ')})`;
     $('native-status').textContent=supervised ? `${run.id}: ${control} · ${run.demonstrations.filter(e=>e.success).length}/${run.demonstrations.length} collection episodes passed. These are initialization outcomes; learned full-mission >90% validation is not achieved.` : run ? `${run.id}: ${run.completed} completed training episodes · ${run.successes} successes (${(100*run.successes/run.completed).toFixed(1)}%). Full-mission >90% validation: ${d.validation.target_met?'passed':'not achieved'}.` : 'Native-contact training is starting. Full-mission >90% validation is not achieved.';
     $('native-failures').textContent=run ? Object.entries(run.failures).map(([k,v])=>`${k.replaceAll('_',' ')}: ${v}`).join(' · ') : 'No completed training episodes yet.';
     $('native-settings').textContent=JSON.stringify(run?.settings??d.runs.at(-1)?.settings??{},null,2);
