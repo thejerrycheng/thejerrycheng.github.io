@@ -1,5 +1,5 @@
 {
-  "run": "native_grasp_light_coordination_mlp_continue_003",
+  "run": "native_grasp_light_coordination_mlp_continue_004",
   "settings": {
     "schema_version": 1,
     "task": "cooperative_recovery",
@@ -920,7 +920,7 @@
       }
     },
     "training": {
-      "num_envs": 1,
+      "num_envs": 2,
       "vector_backend": "serial",
       "horizon": 128,
       "total_steps": 131072,
@@ -935,10 +935,10 @@
       "clip_value": 0.2,
       "value_coef": 0.5,
       "entropy_coef": 0.001,
-      "freeze_normalization": false,
+      "freeze_normalization": true,
       "policy_anchor_coef": 0.0,
       "policy_anchor_from": null,
-      "initialize_actor_from": null,
+      "initialize_actor_from": "/Users/jerrycheng/Desktop/M2/rl/runs/native_grasp_light_coordination_mlp_continue_003/final.pt",
       "initialize_log_std": -3.5,
       "value_warmup_updates": 10,
       "native_teacher_auxiliary_coef": 10.0,
@@ -1036,7 +1036,7 @@
         "promote_success_rate": 0.9
       },
       "snapshot_every_steps": 8192,
-      "seed": 1660000,
+      "seed": 5660000,
       "log_every": 1,
       "save_every": 5,
       "video_every_episodes": 20,
@@ -1045,7 +1045,7 @@
       "video_seed": 319999,
       "video_async": true,
       "update_site": true,
-      "run_name": "native_grasp_light_coordination_mlp_continue_003",
+      "run_name": "native_grasp_light_coordination_mlp_continue_004",
       "device": "mps",
       "policy_group": "policy",
       "critic_group": "critic",
@@ -1063,7 +1063,7 @@
       "episodes": 24,
       "epochs": 100,
       "rounds": 2,
-      "seed_start": 4660000,
+      "seed_start": 1660000,
       "round_seed_stride": 100,
       "checkpoint_seed_offset": 10000,
       "collection_checkpoint_every_episodes": 5,
@@ -1071,7 +1071,7 @@
       "reset_standoffs": [
         0.4
       ],
-      "teacher_fraction": 0.0,
+      "teacher_fraction": 1.0,
       "action_perturbation_std": [
         0.025,
         0.025,
@@ -1157,7 +1157,7 @@
       "fit_snapshot_every_epochs": 20,
       "recovery_hold_closure": null,
       "recovery_wait_every_episodes": 0,
-      "import_initialization_labels": true
+      "import_initialization_labels": false
     }
   },
   "scope": "Native-contact development; separate from frozen imitation and pickup PPO."
