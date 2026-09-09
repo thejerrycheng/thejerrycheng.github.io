@@ -204,7 +204,9 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
         angles=[]
         for side in ('left','right'):
             key=robot,side;captured=self.contact_grasps.anchors.get(key)
-            relative=captured[1] if captured is not None else self._palm_nominal_rotation[key]
+            retain=(self.cfg.recovery.physical_grasp.enabled and
+                    self.cfg.recovery.physical_grasp.retain_assigned_orientation)
+            relative=captured[1] if captured is not None and not retain else self._palm_nominal_rotation[key]
             actual=self.data.site_xmat[self.bindings.palm_site[robot][side]].reshape(3,3)
             angles.append(np.linalg.norm(Rotation.from_matrix(rotation@relative@actual.T).as_rotvec()))
         return float(np.mean(angles))
@@ -621,6 +623,9 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
         good=(supported and np.linalg.norm(goal_error[:3])<c.position_tolerance_m
               and np.linalg.norm(goal_error[3:])<c.orientation_tolerance_rad
               and np.linalg.norm(self.measured_twist_se3())<.05)
+        if physical:
+            from m2_rl.native_contact_grasp import planner_palm_alignment_accepted
+            good=good and planner_palm_alignment_accepted(self)
         self._goal_hold=self._goal_hold+1 if good and not terminated else 0
         success=self.stage_success() and not terminated
         shared_progress=(self._progress-old_progress) if old_supported and supported else min(0.,self._progress-old_progress)

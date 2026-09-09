@@ -231,7 +231,8 @@ def measured_closure_potential(env,robot):
         key=robot,side;sid=env.bindings.palm_site[robot][side]
         held=env.contact_grasps.anchors.get(key) if c.constellation_use_held_frame else None
         target=env.grasp_reward_target(robot,side) if held is not None else env.palm_target(robot,side)
-        rotation=object_rotation@(held[1] if held is not None else env._palm_nominal_rotation[key])
+        rotation=object_rotation@(held[1] if held is not None and not c.retain_assigned_orientation
+                                   else env._palm_nominal_rotation[key])
         angle=np.linalg.norm(Rotation.from_matrix(rotation@env.data.site_xmat[sid].reshape(3,3).T).as_rotvec())
         total+=pose_closure_potential(np.linalg.norm(target-env.data.site_xpos[sid]),angle,
                                      measured_hand_closure(env,robot,side),c)
@@ -241,6 +242,20 @@ def measured_closure_potential(env,robot):
 def relative_hold_cost(linear,angular,cfg):
     return float(np.clip((np.linalg.norm(linear)/cfg.held_linear_speed_m_s)**2+
                         (np.linalg.norm(angular)/cfg.held_angular_speed_rad_s)**2,0.,1.))
+
+
+def planner_palm_alignment_accepted(env):
+    """Success check only; never suppress or replace the actor's commands."""
+    limit=env.cfg.recovery.physical_grasp.success_palm_angle_rad
+    if limit is None:return True
+    rotation=env.measured_pose().rotation
+    for robot in env.robot_ids:
+        for side in ('left','right'):
+            sid=env.bindings.palm_site[robot][side]
+            normal=env.data.site_xmat[sid].reshape(3,3)[:,1]
+            desired=(rotation@env._palm_nominal_rotation[robot,side])[:,1]
+            if normal@desired<np.cos(limit):return False
+    return True
 
 
 def physical_reward_parts(env,robot,previous,dt):
@@ -264,7 +279,8 @@ def physical_reward_parts(env,robot,previous,dt):
         closure+=float(np.linalg.norm(nominal-actual)>.06)*env._closure[key]**2
         captured=monitor.anchors.get(key) if c.constellation_use_held_frame else None
         constellation_target=target if c.constellation_use_held_frame else nominal
-        target_rotation=object_rotation@(captured[1] if captured is not None else env._palm_nominal_rotation[key])
+        target_rotation=object_rotation@(captured[1] if captured is not None and not c.retain_assigned_orientation
+                                          else env._palm_nominal_rotation[key])
         actual_rotation=env.data.site_xmat[sid].reshape(3,3)
         constellation+=np.mean(np.sum((actual+points@actual_rotation.T-constellation_target-points@target_rotation.T)**2,axis=1))
         from scipy.spatial.transform import Rotation

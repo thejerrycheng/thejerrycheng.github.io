@@ -1,5 +1,5 @@
 {
-  "run": "native_grasp_hand_targets_v1",
+  "run": "native_grasp_palm_up_mlp_v1",
   "settings": {
     "schema_version": 1,
     "task": "cooperative_recovery",
@@ -62,8 +62,10 @@
             "distance_scale_m": 0.06,
             "separation_speed_scale_m_s": 0.05,
             "constellation_use_held_frame": true,
+            "retain_assigned_orientation": true,
+            "success_palm_angle_rad": 0.17453292519943295,
             "alignment_distance_m": 0.03,
-            "alignment_rotation_rad": 0.25,
+            "alignment_rotation_rad": 0.15,
             "closure_reward_target": 0.6,
             "held_linear_speed_m_s": 0.03,
             "held_angular_speed_rad_s": 0.2,
@@ -80,7 +82,7 @@
               "distance": 6.0,
               "separation_speed": 3.0,
               "secure_contact": 0.0,
-              "pose_alignment": 3.0,
+              "pose_alignment": 6.0,
               "aligned_closure": 12.0,
               "held_adjustment": 1.0
             }
@@ -965,9 +967,9 @@
       ],
       "native_teacher": {
         "seating_distance_m": 0.023,
-        "seating_rotation_rad": 0.35,
+        "seating_rotation_rad": 0.15,
         "closing_distance_m": 0.05,
-        "closing_rotation_rad": 0.65,
+        "closing_rotation_rad": 0.2,
         "closing_command_threshold": 0.05,
         "holding_closure": 0.9
       },
@@ -976,12 +978,12 @@
         128,
         128
       ],
-      "actor_type": "transformer",
+      "actor_type": "mlp",
       "context_length": 8,
       "transformer_width": 64,
       "transformer_heads": 4,
       "transformer_layers": 2,
-      "transformer_direct_head": true,
+      "transformer_direct_head": false,
       "activation": "elu",
       "init_log_std": -0.8,
       "init_action_mean": [
@@ -1040,15 +1042,14 @@
       "video_seed": 319999,
       "video_async": true,
       "update_site": true,
-      "run_name": "native_grasp_hand_targets_v1",
+      "run_name": "native_grasp_palm_up_mlp_v1",
       "device": "mps",
       "policy_group": "policy",
       "critic_group": "critic",
       "start_stage": "transport",
       "auto_curriculum": false,
       "extra": {
-        "scope": "Paired PPO reward-tuning acquisition study; identical starting actor, dynamics, initial-condition distribution and training seed. No transport acceptance.",
-        "target": "strictly greater than 90% in each declared full-mission cohort"
+        "scope": "Planner-owned palm-up support: retain assigned orientation after contact, tighter seating before closure. New teacher collection and MLP fitting; not part of the paired architecture study."
       }
     },
     "bootstrap": {
@@ -1059,7 +1060,7 @@
       "episodes": 24,
       "epochs": 100,
       "rounds": 2,
-      "seed_start": 1340000,
+      "seed_start": 1560000,
       "round_seed_stride": 100,
       "checkpoint_seed_offset": 10000,
       "collection_checkpoint_every_episodes": 5,
@@ -1097,16 +1098,16 @@
       "action_perturbation_curriculum": {
         "enabled": true,
         "initial_level": 0.0,
-        "maximum_level": 0.2,
+        "maximum_level": 0.0,
         "increment": 0.2,
         "window_episodes": 8,
         "promote_success_rate": 0.95
       },
       "native_teacher": {
         "seating_distance_m": 0.023,
-        "seating_rotation_rad": 0.35,
+        "seating_rotation_rad": 0.15,
         "closing_distance_m": 0.05,
-        "closing_rotation_rad": 0.65,
+        "closing_rotation_rad": 0.2,
         "closing_command_threshold": 0.05,
         "holding_closure": 0.9
       },
