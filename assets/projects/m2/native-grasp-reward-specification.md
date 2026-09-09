@@ -126,7 +126,10 @@ collection and PPO are followed by separate frozen-policy tests.
 At seed 1640900 the 0.3 kg scripted retention diagnostic lifted 6.013 cm and
 completed the eight-second hold. Four-hand support began at 2.42 s; the reported
 actuator-saturation fraction was 1.91%. This is one teacher trial, not a learned
-success rate. Retention can use opposing finger contacts even when the measured
+success rate. A second queued campaign adds signed XY/yaw/pitch commands, delayed
+starts and actual release/regrasp after confirmed acquisition. Each of its 12
+cohorts requires its own >90% confirmation; see `RL_LIGHT_LOAD_COORDINATION.md`.
+Retention can use opposing finger contacts even when the measured
 palm-body support force is zero. Reliable bar-on-palm support remains unresolved.
 
 The separate `native_grasp_palm_support_mlp_v1.json` candidate adds a **0.2 N**
