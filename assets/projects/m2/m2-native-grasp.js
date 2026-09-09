@@ -8,9 +8,24 @@
     margin:{l:55,r:18,t:44,b:65},font:{family:'inherit',size:12},legend:{orientation:'h',y:-.22},
     xaxis:{title:'Simulation time (s)'},yaxis:{automargin:true}});
   const line=(name,x,y,i)=>({name,x,y,type:'scatter',mode:'lines',line:{color:colors[i%colors.length],width:2}});
-  function plot(){
+  const pendingTraces=new Map();
+  function trajectory(c){
+    if(c.trajectory)return Promise.resolve(c.trajectory);
+    const key=c.trajectory_key;
+    if(window.M2NativeTraces?.[key])return Promise.resolve(window.M2NativeTraces[key]);
+    if(!pendingTraces.has(key))pendingTraces.set(key,new Promise((resolve,reject)=>{
+      const script=document.createElement('script');script.src=c.trajectory_file;
+      script.onload=()=>{const rows=window.M2NativeTraces?.[key];Array.isArray(rows)?resolve(rows):reject(new Error('Measurements are unavailable'));};
+      script.onerror=()=>reject(new Error('Measurements could not load'));document.head.append(script);
+    }));
+    return pendingTraces.get(key);
+  }
+  async function plot(){
     if(!clip) return;
-    const rows=clip.trajectory, t=rows.map(r=>r.time_s), hands=Object.keys(rows[0].hands_xyz_m||{});
+    const selected=clip;let rows;
+    try{rows=await trajectory(selected);}catch(error){if(clip===selected)$('native-caption').textContent=selected.label+' · '+error.message;return;}
+    if(selected!==clip||!rows.length)return;
+    const t=rows.map(r=>r.time_s), hands=Object.keys(rows[0].hands_xyz_m||{});
     let traces=[], l=layout('Object and four hand paths');
     if(mode==='3d'){
       traces=['Object',...hands].map((name,i)=>{const points=rows.map(r=>i?r.hands_xyz_m[name]:r.centroid_xyz_m);
@@ -31,7 +46,8 @@
       }
       l.title.text=l.yaxis.title;
     }
-    Plotly.react($('native-plot'),traces,l,{responsive:true,displaylogo:false});
+    await Plotly.react($('native-plot'),traces,l,{responsive:true,displaylogo:false});
+    $('native-plot').dataset.recording=selected.video;$('native-plot').dataset.mode=mode;
   }
   root.querySelectorAll('.native-choice-group').forEach(group=>{
     let selected;
