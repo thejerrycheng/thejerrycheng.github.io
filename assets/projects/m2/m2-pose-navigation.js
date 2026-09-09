@@ -1,7 +1,7 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id),D=window.M2PoseNavigation;
 if(!D?.trials?.length){$('pose-navigation').hidden=true;return;}
-const C={object:'#ff9500',mabel:'#376fb4',milo:'#2b9d99',plan:'#8054b3',gray:'#8993a1'};
+const C={object:'#b39ddb',mabel:'#ff9500',milo:'#0abab5',plan:'#8054b3',gray:'#8993a1'};
 const video=$('navigation-video');let selected=0,mode='3d';
 const nearest=(rows,t)=>rows.reduce((a,b)=>Math.abs(b.time_s-t)<Math.abs(a.time_s-t)?b:a);
 const line=(name,x,y,color,dash)=>({name,x,y,mode:'lines',line:{color,width:2,dash:dash||'solid'}});

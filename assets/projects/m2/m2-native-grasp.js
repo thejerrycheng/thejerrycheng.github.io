@@ -7,7 +7,7 @@
   const layout=title=>({title:{text:title,font:{size:15}},paper_bgcolor:'transparent',plot_bgcolor:'transparent',
     margin:{l:55,r:18,t:44,b:65},font:{family:'inherit',size:12},legend:{orientation:'h',y:-.22},
     xaxis:{title:'Simulation time (s)'},yaxis:{automargin:true}});
-  const line=(name,x,y,i)=>({name,x,y,type:'scatter',mode:'lines',line:{color:colors[i%colors.length],width:2}});
+  const line=(name,x,y,i)=>({name,x,y,type:'scatter',mode:'lines',line:{color:/mabel/i.test(name)?'#ff9500':/milo/i.test(name)?'#0abab5':colors[i%colors.length],width:2,dash:/right/i.test(name)?'dash':'solid'}});
   const pendingTraces=new Map();
   function trajectory(c){
     if(c.trajectory)return Promise.resolve(c.trajectory);
@@ -29,7 +29,7 @@
     let traces=[], l=layout('Object and four hand paths');
     if(mode==='3d'){
       traces=['Object',...hands].map((name,i)=>{const points=rows.map(r=>i?r.hands_xyz_m[name]:r.centroid_xyz_m);
-        return {name,type:'scatter3d',mode:'lines',x:points.map(p=>p[0]),y:points.map(p=>p[1]),z:points.map(p=>p[2]),line:{color:colors[i],width:4}};});
+        return {name,type:'scatter3d',mode:'lines',x:points.map(p=>p[0]),y:points.map(p=>p[1]),z:points.map(p=>p[2]),line:{color:/mabel/i.test(name)?'#ff9500':/milo/i.test(name)?'#0abab5':'#b39ddb',width:4,dash:/right/i.test(name)?'dash':'solid'}};});
       l.scene={aspectmode:'data',xaxis:{title:'World X (m)'},yaxis:{title:'World Y (m)'},zaxis:{title:'World Z (m)'}};
     } else if(mode==='reward'){
       const keys=Object.keys(rows.find(r=>r.reward_components)?.reward_components||{});
