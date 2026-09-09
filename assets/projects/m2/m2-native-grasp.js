@@ -31,6 +31,15 @@
       traces=['Object',...hands].map((name,i)=>{const points=rows.map(r=>i?r.hands_xyz_m[name]:r.centroid_xyz_m);
         return {name,type:'scatter3d',mode:'lines',x:points.map(p=>p[0]),y:points.map(p=>p[1]),z:points.map(p=>p[2]),line:{color:/mabel/i.test(name)?'#ff9500':/milo/i.test(name)?'#0abab5':'#b39ddb',width:4,dash:/right/i.test(name)?'dash':'solid'}};});
       l.scene={aspectmode:'data',xaxis:{title:'World X (m)'},yaxis:{title:'World Y (m)'},zaxis:{title:'World Z (m)'}};
+    } else if(mode==='distance'){
+      traces=hands.map((h,i)=>line(h.replaceAll('_',' '),t,rows.map(r=>r.assigned_grasp_distance_m?.[h]!=null?1000*r.assigned_grasp_distance_m[h]:null),i+1));
+      l.title.text='Palm distance to assigned grasp frame';l.yaxis.title='Distance (mm)';
+    } else if(mode==='centroid'){
+      traces=['mabel','milo'].map((robot,i)=>line(robot.toUpperCase(),t,rows.map(r=>r.robot_centroid_distance_m?.[robot]??null),i+1));
+      l.title.text='Base origin to object centroid · 3D distance';l.yaxis.title='Distance (m)';
+    } else if(mode==='contact'){
+      traces=hands.map((h,i)=>line(h.replaceAll('_',' '),t,rows.map(r=>{const q=r.physical_grasps?.[h.replace('_','/')];return q?.qualified==null?null:Number(q.qualified);}),i+1));
+      traces.forEach(t=>t.line.shape='hv');l.title.text='Opposing finger contacts with sufficient force';l.yaxis.title='Qualified contact (0 / 1)';l.yaxis.range=[-.05,1.05];
     } else if(mode==='reward'){
       const keys=Object.keys(rows.find(r=>r.reward_components)?.reward_components||{});
       traces=keys.length?keys.map((k,i)=>line(k.replaceAll('_',' '),t,rows.map(r=>r.reward_components?.[k]??null),i)):
