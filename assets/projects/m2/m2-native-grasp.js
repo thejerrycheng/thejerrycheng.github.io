@@ -2,11 +2,8 @@
   const d=window.M2NativeGrasp, root=document.getElementById('native-grasp');
   if(!d || !root) return;
   const $=id=>document.getElementById(id), colors=['#d18a00','#2876bd','#21a5a6','#8b58ae','#c66061'];
-  const runs=d.runs.filter(r=>r.completed), run=runs.at(-1), clips=[...d.clips,...d.runs.flatMap(r=>r.clips)];
-  $('native-status').textContent=run ? `${run.id}: ${run.completed} completed training episodes · ${run.successes} successes (${(100*run.successes/run.completed).toFixed(1)}%). Full-mission >90% validation: ${d.validation.target_met?'passed':'not achieved'}.` : 'Native-contact training is starting. Full-mission >90% validation is not achieved.';
-  const failure=run ? Object.entries(run.failures).map(([k,v])=>`${k.replaceAll('_',' ')}: ${v}`).join(' · ') : 'No completed training episodes yet.';
-  $('native-failures').textContent=failure;
-  let clip=clips[0], mode='3d';
+  const runs=d.runs.filter(r=>r.completed||r.demonstrations?.length), clips=[...d.clips.map(c=>({group:'diagnostics',...c})),...d.runs.flatMap(r=>r.clips.map(c=>({...c,group:'checkpoints',label:`${r.id} · ${c.label}`})))];
+  let run=runs.at(-1), clip=clips[0], mode='3d';
   const layout=title=>({title:{text:title,font:{size:15}},paper_bgcolor:'transparent',plot_bgcolor:'transparent',
     margin:{l:55,r:18,t:44,b:65},font:{family:'inherit',size:12},legend:{orientation:'h',y:-.22},
     xaxis:{title:'Simulation time (s)'},yaxis:{automargin:true}});
@@ -36,15 +33,52 @@
     }
     Plotly.react($('native-plot'),traces,l,{responsive:true,displaylogo:false});
   }
-  clips.forEach((c,i)=>{const b=document.createElement('button');b.textContent=c.label;b.setAttribute('aria-pressed',i===0?'true':'false');
-    b.onclick=()=>{clip=c;for(const x of $('native-clips').children)x.setAttribute('aria-pressed',String(x===b));select();};$('native-clips').append(b);});
-  function select(){if(!clip) return;$('native-video').src=clip.video;$('native-video').poster=clip.poster;$('native-caption').textContent=clip.label+' · Native contact dynamics. Recorded failures remain visible.';plot();}
+  root.querySelectorAll('.native-choice-group').forEach(group=>{
+    let selected;
+    const update=()=>group.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.value===group.value)));
+    Object.defineProperty(group,'value',{get:()=>selected??group.querySelector('button')?.value??'',set:value=>{selected=String(value);update();}});
+    group.addEventListener('click',event=>{const b=event.target.closest('button');if(!b||b.parentElement!==group)return;group.value=b.value;if(group.onchange)group.onchange();});
+    new MutationObserver(update).observe(group,{childList:true});update();
+  });
+  const option=(value,label)=>{const e=document.createElement('button');e.type='button';e.value=String(value);e.textContent=label;return e;};
+  for(const [key,label] of [['diagnostics','Grasp diagnostics'],['checkpoints','Learned checkpoints'],['scenes','Scene evaluations']]){
+    if(clips.some(c=>c.group===key))$('native-category').append(option(key,label));
+  }
+  function category(){const choices=clips.filter(c=>c.group===$('native-category').value);$('native-recording').replaceChildren();
+    choices.forEach((c,i)=>$('native-recording').append(option(i,c.label)));
+    $('native-recording').onchange=()=>{clip=choices[Number($('native-recording').value)];select();};
+    clip=choices[0];select();}
+  $('native-category').onchange=category;
+  function select(){if(!clip) return;$('native-video').src=clip.video;$('native-video').poster=clip.poster;$('native-caption').textContent=clip.label+' · '+(clip.scope||'Native contact dynamics. Recorded failures remain visible.');plot();}
   root.querySelectorAll('[data-native-plot]').forEach(b=>b.onclick=()=>{mode=b.dataset.nativePlot;root.querySelectorAll('[data-native-plot]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));plot();});
-  if(clip)select();else $('native-caption').textContent='Complete checkpoint videos will appear after their recording jobs finish.';
-  if(run){const x=run.episodes.map((e,i)=>e.episode??i+1), returns=run.episodes.map(e=>e.return);
-    const success=run.episodes.map((_,i)=>{const window=run.episodes.slice(Math.max(0,i-39),i+1);return 100*window.filter(e=>e.success).length/window.length;});
-    const l=layout('Training return and success');l.xaxis.title='Completed training episode';l.yaxis.title='Episode return';
+  if(clip)category();else $('native-caption').textContent='Complete checkpoint videos will appear after their recording jobs finish.';
+  function training(){
+    const supervised=run?.demonstrations?.length&&!run.completed;
+    const fractions=supervised?[...new Set(run.demonstrations.map(e=>e.teacher_fraction??1))]:[];
+    const control=fractions.length===1&&fractions[0]===1?'Scripted teacher':`Teacher/student mixture (${fractions.map(f=>(100*f).toFixed(0)+'% teacher').join(', ')})`;
+    $('native-status').textContent=supervised ? `${run.id}: ${control} · ${run.demonstrations.filter(e=>e.success).length}/${run.demonstrations.length} collection episodes passed. These are initialization outcomes; learned full-mission >90% validation is not achieved.` : run ? `${run.id}: ${run.completed} completed training episodes · ${run.successes} successes (${(100*run.successes/run.completed).toFixed(1)}%). Full-mission >90% validation: ${d.validation.target_met?'passed':'not achieved'}.` : 'Native-contact training is starting. Full-mission >90% validation is not achieved.';
+    $('native-failures').textContent=run ? Object.entries(run.failures).map(([k,v])=>`${k.replaceAll('_',' ')}: ${v}`).join(' · ') : 'No completed training episodes yet.';
+    $('native-settings').textContent=JSON.stringify(run?.settings??d.runs.at(-1)?.settings??{},null,2);
+    if(!run)return;
+    if(supervised&&$('native-training-metric').value==='fit'){const rows=run.imitation_history||[],x=rows.map(r=>r.epoch),l=layout('Supervised initialization · held-out episodes');
+      l.xaxis.title='Fit epoch';l.yaxis.title='Weighted action prediction MSE';
+      Plotly.react($('native-training'),[line('Fitting episodes',x,rows.map(r=>r.train_weighted_mse),1),line('Held-out episodes',x,rows.map(r=>r.validation_weighted_mse),0)],l,{responsive:true,displaylogo:false});return;}
+    const episodes=supervised?run.demonstrations:run.episodes;
+    const x=episodes.map((e,i)=>e.episode??i+1), returns=episodes.map(e=>e.return);
+    const success=episodes.map((_,i)=>{const window=episodes.slice(Math.max(0,i-39),i+1);return 100*window.filter(e=>e.success).length/window.length;});
+    const l=layout(supervised?'Initialization collection · '+control:'PPO training return and success');l.xaxis.title='Completed episode';l.yaxis.title='Episode return';
     l.yaxis2={title:'Success (%) · last 40',overlaying:'y',side:'right',range:[0,100]};l.margin.r=65;
-    Plotly.react($('native-training'),[line('Return',x,returns,1),{...line('Rolling training success',x,success,0),yaxis:'y2'}],l,{responsive:true,displaylogo:false});}
-  $('native-settings').textContent=JSON.stringify(run?.settings??d.runs.at(-1)?.settings??{},null,2);
+    Plotly.react($('native-training'),[line('Return',x,returns,1),{...line(supervised?'Rolling collection success':'Rolling training success',x,success,0),yaxis:'y2'}],l,{responsive:true,displaylogo:false});
+  }
+  runs.forEach((r,i)=>$('native-run').append(option(i,r.id)));
+  if(runs.length)$('native-run').value=String(runs.length-1);
+  $('native-run').onchange=()=>{run=runs[Number($('native-run').value)];training();};$('native-training-metric').onchange=training;training();
+  const evaluations=d.evaluations?.filter(e=>e.rows.some(r=>r.duration_s>0))||[];
+  evaluations.forEach((e,i)=>$('native-evaluation').append(option(i,e.id)));
+  if(evaluations.length)$('native-evaluation').value=String(Math.max(0,evaluations.findLastIndex(e=>e.acceptance_eligible)));
+  function evaluation(){const e=evaluations[Number($('native-evaluation').value)];$('native-evaluations').replaceChildren();
+    $('native-evaluation-summary').textContent=e ? `${e.successes}/${e.completed} successful trials; ${e.completed}/${e.expected} completed. ${e.scope} ${e.audit.scope||''}` : 'Scene evaluation is pending.';
+    for(const row of e?.rows||[]){const tr=document.createElement('tr');
+      [row.id.replaceAll('_',' ')+` · seed ${row.seed}`,row.success?'Passed':'Failed',(row.terminations||[]).map(x=>x.replaceAll('_',' ')).join(', ')||row.error||''].forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td);});$('native-evaluations').append(tr);}}
+  $('native-evaluation').onchange=evaluation;evaluation();
 })();
