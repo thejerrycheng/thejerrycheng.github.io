@@ -1,0 +1,1160 @@
+{
+  "run": "native_grasp_hand_targets_v1",
+  "settings": {
+    "schema_version": 1,
+    "task": "cooperative_recovery",
+    "environment": {
+      "simulation": {
+        "dynamics_version": 3,
+        "reset_standoff_m": 0.4,
+        "reset_payload_pose": null,
+        "obstacle_paths": [],
+        "scene": "m2_flat_arena",
+        "control_hz": 50.0,
+        "physics_hz": 500.0,
+        "seed": 0
+      },
+      "task": {
+        "learned_coordination": true,
+        "recovery": {
+          "physical_grasp": {
+            "enabled": true,
+            "maximum_payload_mass_kg": 1.9,
+            "level": 0.0,
+            "easy_sliding_friction": [
+              3.0,
+              4.0
+            ],
+            "full_sliding_friction": [
+              2.5,
+              3.5
+            ],
+            "torsional_friction_m": [
+              0.001,
+              0.003
+            ],
+            "contact_time_constant_s": [
+              0.008,
+              0.016
+            ],
+            "contact_damping_ratio": [
+              1.0,
+              1.5
+            ],
+            "finger_joint_damping_nm_s_rad": [
+              0.1,
+              0.16
+            ],
+            "hand_position_gain_nm_rad": 2.0,
+            "hand_velocity_gain_nm_s_rad": 0.1,
+            "hand_torque_limit_nm": 1.0,
+            "minimum_contact_force_n": 0.2,
+            "minimum_normal_force_n": 2.0,
+            "target_normal_force_n": 12.0,
+            "maximum_normal_force_n": 40.0,
+            "opposition_threshold": 0.7,
+            "acquisition_hold_s": 0.08,
+            "release_hold_s": 0.02,
+            "slip_speed_limit_m_s": 0.04,
+            "maximum_contact_penetration_m": 0.004,
+            "observe_finger_effort": true,
+            "open_hand_from_joint_reference": true,
+            "distance_scale_m": 0.06,
+            "separation_speed_scale_m_s": 0.05,
+            "constellation_use_held_frame": true,
+            "alignment_distance_m": 0.03,
+            "alignment_rotation_rad": 0.25,
+            "closure_reward_target": 0.6,
+            "held_linear_speed_m_s": 0.03,
+            "held_angular_speed_rad_s": 0.2,
+            "rewards": {
+              "acquisition": 8.0,
+              "firmness": 1.5,
+              "contact_slip": 12.0,
+              "friction_margin": 0.5,
+              "excess_normal_force": 2.0,
+              "mechanical_work": 0.02,
+              "holding_effort": 0.002,
+              "precontact_closure": 0.5,
+              "contact_constellation": 100.0,
+              "distance": 6.0,
+              "separation_speed": 3.0,
+              "secure_contact": 0.0,
+              "pose_alignment": 3.0,
+              "aligned_closure": 12.0,
+              "held_adjustment": 1.0
+            }
+          },
+          "history_length": 8,
+          "history_stride": 2,
+          "observe_load": true,
+          "load_observation_mode": "total_contact",
+          "observe_grasp_memory": true,
+          "observe_reference_error": true,
+          "observe_planner_hand_targets": true,
+          "grasp_memory_contact_timeout_s": 0.2,
+          "grasp_memory_max_gap_m": 0.06,
+          "grasp_memory_max_rotation_rad": 0.8,
+          "observe_gripper_targets": true,
+          "gripper_command_mode": "position",
+          "upper_body_command_mode": "position",
+          "incremental_use_control_period": true,
+          "arm_rate_rad_s": 0.3,
+          "lift_rate_m_s": 0.04,
+          "torso_rate_rad_s": 0.08,
+          "joint_target_error_rad": 0.12,
+          "motion_rate_deadband": 0.0,
+          "gripper_rate_deadband": 0.0,
+          "control_period_steps": [
+            1,
+            1
+          ],
+          "grasp": {
+            "closure_rate_s": 2.0,
+            "finger_mcp_rad": 0.85,
+            "finger_pip_rad": 0.7,
+            "thumb_mcp_rad": 0.3,
+            "thumb_pip_rad": 0.3,
+            "thumb_dip_rad": 0.15,
+            "thumb_abduction_rad": -0.5,
+            "stiffness_n_m": 1200.0,
+            "damping_n_s_m": 18.0,
+            "rotation_stiffness_nm_rad": 2.0,
+            "rotation_damping_nm_s_rad": 0.15,
+            "normal_force_n": 35.0,
+            "max_force_n": 60.0,
+            "max_torque_nm": 2.0,
+            "break_distance_m": 0.045,
+            "break_rotation_rad": 0.7,
+            "capture_distance_m": 0.035,
+            "capture_rotation_rad": 0.5,
+            "closure_threshold": 0.6,
+            "release_threshold": 0.25,
+            "regrasp_cooldown_s": 0.25
+          },
+          "sensors": {
+            "object_period_s": 0.04,
+            "hands_period_s": 0.02,
+            "odometry_period_s": 0.02,
+            "latency_range_s": [
+              0.0,
+              0.0
+            ],
+            "dropout_probability": 0.0,
+            "stale_after_s": 0.25,
+            "communication_stop_after_s": 1.0
+          },
+          "rewards": {
+            "grasp_progress": 20.0,
+            "grasp_rotation_progress": 6.0,
+            "contact_progress": 5.0,
+            "grasp_loss": 6.0,
+            "grasp_proximity": 1.0,
+            "supported_progress": 100.0,
+            "goal_pose_progress": 200.0,
+            "supported_lift_progress": 200.0,
+            "stable_goal": 2.0,
+            "unsupported_travel": 20.0,
+            "slip": 2.0,
+            "load": 0.2,
+            "tilt": 4.0,
+            "upright_torso": 0.2,
+            "action_rate": 0.01,
+            "time": 2.0,
+            "success": 300.0,
+            "failure": 500.0
+          },
+          "captured_position_reward": true,
+          "path_lookahead_m": 0.05,
+          "path_rotation_radius_m": 0.35,
+          "speed_limit_m_s": 0.15,
+          "position_tolerance_m": 0.04,
+          "orientation_tolerance_rad": 0.08,
+          "success_hold_s": 8.0,
+          "unsafe_tilt_rad": 0.6,
+          "unsupported_travel_limit_m": 0.05,
+          "unintended_contact_force_n": 1.0,
+          "goal_displacement_m": [
+            0.0,
+            0.0,
+            0.06
+          ],
+          "goal_rotation_vector_rad": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "goal_displacement_ranges_m": null,
+          "goal_rotation_vector_ranges_rad": null,
+          "fault_probability": 0.0,
+          "fault_after_progress_m": 0.045,
+          "fault_after_progress_range_m": null,
+          "fault_duration_s": [
+            0.3,
+            1.0
+          ],
+          "fault_robot": "either",
+          "require_fault_recovery": false
+        },
+        "success_criteria": {
+          "linear_rms_m_s": 0.15,
+          "angular_rms_rad_s": 0.2,
+          "relative_rms": 0.65,
+          "normalized_stop_rms": 0.15,
+          "command_linear_deadband_m_s": 0.05,
+          "command_angular_deadband_rad_s": 0.05,
+          "carry_quantile": 0.95,
+          "carry_height_m": 0.05,
+          "sequence_carry_tilt_rad": 0.15,
+          "held_start_duration_fraction": 0.9,
+          "path_duration_fraction": 0.5,
+          "lift_final_height_m": 0.05,
+          "lift_final_tilt_rad": 0.15,
+          "lift_final_twist_norm": 0.15
+        },
+        "end_to_end": true,
+        "terminate_on_world_contact": false,
+        "isolate_held_start": false,
+        "sequence_version": 8,
+        "clip_episode_to_plan": true,
+        "command_lookahead_s": [
+          0.4,
+          0.8,
+          1.6
+        ],
+        "track_rms_m": 0.1,
+        "track_along_m": 0.3,
+        "tilt_success_rad": 0.15,
+        "sequence_reward_version": 1,
+        "sequence_lift_height_tolerance_m": 0.02,
+        "sequence_lift_tilt_tolerance_rad": 0.06,
+        "sequence_lift_hold_steps": 25,
+        "sequence_transport_hold_s": 8.0,
+        "sequence_formation_gain_s": 0.8,
+        "sequence_formation_yaw_gain_s": 1.0,
+        "sequence_formation_speed_m_s": 0.03,
+        "sequence_formation_yaw_rate_rad_s": 0.06,
+        "path_feedback_gain": 0.35,
+        "path_feedback_gain_yaw": 0.7,
+        "hold_in_furnished_scenes": true,
+        "object_grasp_profiles": null,
+        "lift_target_m": 0.12,
+        "drop_margin_m": 0.12,
+        "settle_hold_steps": 40,
+        "settle_height_tol_m": 0.04,
+        "settle_tilt_tol_rad": 0.1,
+        "settle_twist_tol": 0.1,
+        "droop_passes": 4,
+        "settle_steps": 120,
+        "reset_settle_steps": 20,
+        "held_lift_action": 0.35,
+        "lift_dwell_steps": 250,
+        "start_stage": 1
+      },
+      "actions": {
+        "sequence_action_lift_rate_m_s": 0.06,
+        "sequence_action_approach_arm_scale": 1.0,
+        "sequence_action_carried_arm_scale": 0.1,
+        "sequence_action_torso_scale": 0.1,
+        "sequence_action_approach_lift_scale": 0.24,
+        "sequence_action_transport_lift_scale": 0.12,
+        "base_tilt_limit_rad": 0.03490658503988659,
+        "base_yaw_accel_rad_s2": 2.0,
+        "base_residual": false,
+        "action_scale_base_residual": 0.06,
+        "action_scale_base_residual_ang": 0.1,
+        "action_scale_arm_rad": 0.3,
+        "action_scale_lift_m": 0.25,
+        "action_scale_torso_rad": 0.2,
+        "action_scale_base_lin": 0.15,
+        "action_scale_base_ang": 0.3
+      },
+      "acquisition": {
+        "nominal_torso_rad": 0.0,
+        "grasp_close_m": 0.035,
+        "approach_standoff_m": [
+          0.04,
+          0.1
+        ],
+        "approach_spawn_radius_m": null,
+        "approach_heading_range_rad": [
+          0.0,
+          0.0
+        ],
+        "approach_spawn_attempts": 64,
+        "approach_speed_m_s": 0.18,
+        "approach_yaw_rate_rad_s": 0.35,
+        "approach_hand_clearance_m": 0.0,
+        "approach_lateral_staging_m": 0.0,
+        "approach_retreat_first": false,
+        "approach_contact_pause": false,
+        "approach_arm_refine_distance_m": 0.04,
+        "asynchronous_lift": false,
+        "early_lift_height_m": 0.04,
+        "grasp_palm_up": true,
+        "grasp_palm_up_gain": 0.05,
+        "grasp_palm_up_iters": 300,
+        "grasp_palm_below_bar_m": -0.04,
+        "grasp_palm_forward_offset_m": 0.045,
+        "grasp_require_contact": true,
+        "grasp_hand_span_m": 0.4,
+        "grasp_bimanual_pose_ik": true,
+        "grasp_min_lift_m": 0.0,
+        "grasp_use_canonical_seed": false,
+        "grasp_joint_seed": {}
+      },
+      "domain_randomization": {
+        "stand_off_jitter_m": 0.0,
+        "policy_delay_max_s": 0.0,
+        "wait_for_both_controllers": false,
+        "delayed_grasp": false,
+        "late_approach_m": [
+          0.05,
+          0.15
+        ],
+        "payload_overrides": {
+          "mass_kg": 0.8,
+          "rail_radius_m": 0.015,
+          "rail_proud_m": 0.15
+        },
+        "payload_kinds": [],
+        "randomize_native_payload": false,
+        "payload_rail_vertical_span_range_m": null,
+        "randomization_scale": 0.0,
+        "episode_scenes": [],
+        "payload_scale_ranges": [
+          [
+            0.9,
+            1.1
+          ],
+          [
+            0.9,
+            1.1
+          ],
+          [
+            0.9,
+            1.1
+          ]
+        ]
+      },
+      "observations": {
+        "local_actor": true,
+        "observation_term_overrides": {},
+        "wrench_observation_version": 1,
+        "pose_estimation_noise": {
+          "enabled": false,
+          "level": 0.0,
+          "object": {
+            "position_std_m": 0.02,
+            "orientation_std_rad": 0.03490658503988659,
+            "position_bias_std_m": 0.01,
+            "orientation_bias_std_rad": 0.017453292519943295,
+            "position_drift_std_m_sqrt_s": 0.001,
+            "orientation_drift_std_rad_sqrt_s": 0.0008726646259971648
+          },
+          "hands": {
+            "position_std_m": 0.005,
+            "orientation_std_rad": 0.017453292519943295,
+            "position_bias_std_m": 0.003,
+            "orientation_bias_std_rad": 0.008726646259971648,
+            "position_drift_std_m_sqrt_s": 0.0,
+            "orientation_drift_std_rad_sqrt_s": 0.0
+          },
+          "odometry": {
+            "position_std_m": 0.01,
+            "orientation_std_rad": 0.017453292519943295,
+            "position_bias_std_m": 0.01,
+            "orientation_bias_std_rad": 0.017453292519943295,
+            "position_drift_std_m_sqrt_s": 0.002,
+            "orientation_drift_std_rad_sqrt_s": 0.0017453292519943296
+          }
+        },
+        "observe_hand_orientation": false,
+        "observation_groups": [
+          "policy",
+          "critic"
+        ]
+      },
+      "rewards": {
+        "sequence_rewards": {
+          "reach_progress": 6.0,
+          "progress_clip_m_s": 0.1,
+          "proximity": 2.0,
+          "proximity_sigma_m": 0.1,
+          "time_cost": 0.5,
+          "base_inclination_cost": 4.0,
+          "alignment": 1.0,
+          "alignment_rotation_sigma_rad": 0.35,
+          "alignment_distance_sigma_m": 0.15,
+          "both_attached_bonus": 2.0,
+          "lift_height": 10.0,
+          "lift_level": 3.0,
+          "lift_completed_bonus": 2.0,
+          "failure_cost": 5.0
+        },
+        "se3_rewards": {
+          "tracking_as_cost": false,
+          "path_progress": 0.0,
+          "time_cost": 0.0,
+          "completion_bonus": 0.0,
+          "position": 8.0,
+          "orientation": 10.0,
+          "twist": 3.0,
+          "base_tilt": 12.0,
+          "torso_upright": 2.0,
+          "action_rate": 0.01,
+          "self_clearance": 0.0,
+          "self_clearance_margin_m": 0.025,
+          "position_sigma_m": 0.05,
+          "orientation_sigma_rad": 0.15,
+          "linear_velocity_sigma_m_s": 0.1,
+          "angular_velocity_sigma_rad_s": 0.2
+        }
+      },
+      "object_pose": {
+        "se3_pose_control": false,
+        "se3_arm_rate_rad_s": 0.35,
+        "se3_arm_target_error_limit_rad": null,
+        "se3_position_tolerance_m": 0.025,
+        "se3_orientation_tolerance_rad": 0.05235987755982989,
+        "se3_hold_s": 3.0,
+        "se3_lift_rate_m_s": 0.06,
+        "se3_teacher_posture_gain_s": 0.0,
+        "se3_teacher_posture_weight": 0.002,
+        "se3_teacher_arm_posture_targets_rad": {},
+        "se3_lost_position_m": 0.3,
+        "se3_lost_orientation_rad": 0.6,
+        "se3_settle_linear_m_s": 0.04,
+        "se3_settle_angular_rad_s": 0.04,
+        "se3_teacher_pose_gain": 3.0,
+        "se3_teacher_rotation_weight": 0.2,
+        "se3_teacher_damping": 0.0001,
+        "se3_teacher_base_gain": 1.5,
+        "se3_teacher_stance_weight": 0.05,
+        "se3_teacher_yaw_per_roll": {},
+        "se3_teacher_yaw_stance_weight": null,
+        "se3_teacher_base_speed_m_s": 0.1,
+        "se3_teacher_base_yaw_rate_rad_s": 0.2,
+        "se3_teacher_axial_admittance_m_s_n": 0.004,
+        "se3_teacher_axial_force_target_n": 3.0,
+        "se3_teacher_admittance_speed_m_s": 0.04,
+        "se3_self_clearance_m": 0.01,
+        "se3_collision_activation_m": 0.03,
+        "se3_certify_self_clearance": false,
+        "se3_collision_velocity_gain": 3.0,
+        "se3_solver_tolerance": 1e-06,
+        "se3_solver_max_iterations": 4000,
+        "se3_joint_limit_margin_rad": 0.02,
+        "se3_lift_limit_margin_m": 0.005,
+        "se3_joint_limit_velocity_gain": 2.0,
+        "se3_self_clearance_pairs": [
+          [
+            "lift_base",
+            "right_tower"
+          ],
+          [
+            "lift_base",
+            "left_tower"
+          ],
+          [
+            "body_mount",
+            "right_tower"
+          ],
+          [
+            "body_mount",
+            "left_tower"
+          ],
+          [
+            "torso",
+            "right_tower"
+          ],
+          [
+            "torso",
+            "left_tower"
+          ]
+        ]
+      },
+      "stages": {
+        "lift_hold": {
+          "name": "lift_hold",
+          "scene": "m2_flat_arena",
+          "grasp_mode": "free",
+          "episode_s": 30.0,
+          "control_base": false,
+          "start_held": false,
+          "arm_scale": 1.0,
+          "lift_scale": 1.0,
+          "torso_scale": 1.0,
+          "start_open_grasp": false,
+          "command_ranges": {},
+          "command_resample_s": 4.0,
+          "command_transition_s": 0.0,
+          "stand_prob": 1.0,
+          "rewards": {
+            "lift_height": {
+              "func": "m2_rl.mdp.rewards:lift_height",
+              "params": {
+                "sigma": 0.08,
+                "coarse_sigma": 0.25,
+                "coarse_weight": 0.5,
+                "normalise": true
+              },
+              "weight": 10.0,
+              "gate": null
+            },
+            "lift_progress": {
+              "func": "m2_rl.mdp.rewards:lift_progress",
+              "params": {},
+              "weight": 4.0,
+              "gate": null
+            },
+            "payload_level": {
+              "func": "m2_rl.mdp.rewards:payload_level",
+              "params": {
+                "sigma": 0.15
+              },
+              "weight": 3.0,
+              "gate": "lift_height"
+            },
+            "stationary": {
+              "func": "m2_rl.mdp.rewards:stationary_when_commanded",
+              "params": {
+                "sigma": 0.15
+              },
+              "weight": 2.0,
+              "gate": "lift_height"
+            },
+            "settled": {
+              "func": "m2_rl.mdp.rewards:payload_settled",
+              "params": {
+                "height_sigma": 0.05,
+                "tilt_sigma": 0.08,
+                "twist_sigma": 0.12
+              },
+              "weight": 8.0,
+              "gate": "lift_height"
+            },
+            "swing": {
+              "func": "m2_rl.mdp.rewards:payload_swing",
+              "params": {},
+              "weight": 0.5,
+              "gate": null
+            },
+            "lift_smooth": {
+              "func": "m2_rl.mdp.rewards:lift_smoothness",
+              "params": {},
+              "weight": 0.001,
+              "gate": null
+            },
+            "base_acc": {
+              "func": "m2_rl.mdp.rewards:base_acceleration",
+              "params": {},
+              "weight": 0.0001,
+              "gate": null
+            },
+            "load_share": {
+              "func": "m2_rl.mdp.rewards:load_share",
+              "params": {
+                "sigma": 0.25
+              },
+              "weight": 2.0,
+              "gate": "lift_height"
+            },
+            "internal_force": {
+              "func": "m2_rl.mdp.rewards:internal_force",
+              "params": {},
+              "weight": 0.0002,
+              "gate": null
+            },
+            "action_rate": {
+              "func": "m2_rl.mdp.rewards:action_rate",
+              "params": {},
+              "weight": 0.02,
+              "gate": null
+            },
+            "joint_torque": {
+              "func": "m2_rl.mdp.rewards:joint_torque",
+              "params": {},
+              "weight": 2e-05,
+              "gate": null
+            },
+            "joint_acc": {
+              "func": "m2_rl.mdp.rewards:joint_acceleration",
+              "params": {},
+              "weight": 2e-06,
+              "gate": null
+            },
+            "alive": {
+              "func": "m2_rl.mdp.rewards:alive",
+              "params": {},
+              "weight": 0.25,
+              "gate": null
+            },
+            "finish_credit": {
+              "func": "m2_rl.mdp.rewards:early_finish_credit",
+              "params": {
+                "rate": 0.2
+              },
+              "weight": 1.0,
+              "gate": null
+            },
+            "drop": {
+              "func": "m2_rl.mdp.rewards:drop_penalty",
+              "params": {},
+              "weight": 50.0,
+              "gate": null
+            }
+          },
+          "terminations": {
+            "dropped": {
+              "func": "m2_rl.mdp.terminations:payload_dropped",
+              "params": {},
+              "terminal": true
+            },
+            "tilted": {
+              "func": "m2_rl.mdp.terminations:payload_tilted",
+              "params": {
+                "limit_rad": 0.6
+              },
+              "terminal": true
+            },
+            "base_over": {
+              "func": "m2_rl.mdp.terminations:base_overturned",
+              "params": {
+                "limit_rad": 0.5
+              },
+              "terminal": true
+            },
+            "overshot": {
+              "func": "m2_rl.mdp.terminations:payload_overshot",
+              "params": {
+                "factor": 2.5
+              },
+              "terminal": true
+            },
+            "settled": {
+              "func": "m2_rl.mdp.terminations:settled_at_target",
+              "params": {},
+              "terminal": false
+            },
+            "time_limit": {
+              "func": "m2_rl.mdp.terminations:time_limit",
+              "params": {},
+              "terminal": false
+            }
+          },
+          "events": {
+            "clear_dist": {
+              "func": "m2_rl.mdp.events:clear_disturbances",
+              "params": {},
+              "mode": "reset",
+              "interval_s": null,
+              "interval_jitter": 0.25
+            },
+            "mass": {
+              "func": "m2_rl.mdp.events:randomise_payload_mass",
+              "params": {
+                "mass_range": [
+                  0.6,
+                  1.6
+                ],
+                "mass_kg_range": [
+                  0.6,
+                  1.2
+                ]
+              },
+              "mode": "reset",
+              "interval_s": null,
+              "interval_jitter": 0.25
+            },
+            "com": {
+              "func": "m2_rl.mdp.events:randomise_payload_com",
+              "params": {
+                "offset_m": [
+                  0.05,
+                  0.12,
+                  0.05
+                ]
+              },
+              "mode": "reset",
+              "interval_s": null,
+              "interval_jitter": 0.25
+            },
+            "gains": {
+              "func": "m2_rl.mdp.events:randomise_actuator_gains",
+              "params": {
+                "kp_range": [
+                  0.85,
+                  1.15
+                ]
+              },
+              "mode": "reset",
+              "interval_s": null,
+              "interval_jitter": 0.25
+            },
+            "pose": {
+              "func": "m2_rl.mdp.events:randomise_initial_pose",
+              "params": {
+                "joint_noise_rad": 0.03,
+                "base_noise_m": 0.05,
+                "base_noise_rad": 0.05
+              },
+              "mode": "reset",
+              "interval_s": null,
+              "interval_jitter": 0.25
+            }
+          },
+          "promote": {
+            "name": "lift_hold",
+            "promote_success_rate": 0.8,
+            "promote_window": 50,
+            "min_episodes": 100
+          }
+        },
+        "transport": {
+          "name": "transport",
+          "scene": "m2_flat_arena",
+          "grasp_mode": "free",
+          "episode_s": 30.0,
+          "control_base": true,
+          "start_held": false,
+          "arm_scale": 0.1,
+          "lift_scale": 0.12,
+          "torso_scale": 0.1,
+          "start_open_grasp": true,
+          "command_ranges": {
+            "lin_vel_x": [
+              -0.25,
+              0.25
+            ],
+            "lin_vel_y": [
+              -0.15,
+              0.15
+            ],
+            "ang_vel_z": [
+              -0.2,
+              0.2
+            ]
+          },
+          "command_resample_s": 10.0,
+          "command_transition_s": 0.8,
+          "stand_prob": 0.15,
+          "rewards": {
+            "transport_task": {
+              "func": "m2_rl.mdp.rewards:transport_progress",
+              "params": {},
+              "weight": 10.0,
+              "gate": null
+            },
+            "track_lin": {
+              "func": "m2_rl.mdp.rewards:track_lin_vel",
+              "params": {
+                "sigma": 0.25
+              },
+              "weight": 3.0,
+              "gate": null
+            },
+            "track_ang": {
+              "func": "m2_rl.mdp.rewards:track_ang_vel",
+              "params": {
+                "sigma": 0.35
+              },
+              "weight": 2.0,
+              "gate": null
+            },
+            "height": {
+              "func": "m2_rl.mdp.rewards:lift_height",
+              "params": {
+                "sigma": 0.08,
+                "coarse_sigma": 0.25,
+                "coarse_weight": 0.5,
+                "normalise": true
+              },
+              "weight": 2.0,
+              "gate": "transport_task"
+            },
+            "level": {
+              "func": "m2_rl.mdp.rewards:payload_level",
+              "params": {
+                "sigma": 0.15
+              },
+              "weight": 1.0,
+              "gate": "transport_task"
+            },
+            "grasp": {
+              "func": "m2_rl.mdp.rewards:grasp_maintained",
+              "params": {},
+              "weight": 1.0,
+              "gate": "transport_task"
+            },
+            "base_tilt": {
+              "func": "m2_rl.mdp.rewards:base_tilt_cost",
+              "params": {
+                "limit_rad": null
+              },
+              "weight": 4.0,
+              "gate": null
+            },
+            "torso_upright": {
+              "func": "m2_rl.mdp.rewards:torso_upright",
+              "params": {
+                "sigma_rad": 0.261799
+              },
+              "weight": 0.5,
+              "gate": "transport_task"
+            },
+            "arms_symmetric": {
+              "func": "m2_rl.mdp.rewards:arms_symmetric",
+              "params": {
+                "sigma_m": 0.15
+              },
+              "weight": 0.5,
+              "gate": "transport_task"
+            },
+            "contact_constellation": {
+              "func": "m2_rl.mdp.rewards:contact_constellation_cost",
+              "params": {
+                "sigma_m": 0.05
+              },
+              "weight": 1.0,
+              "gate": null
+            },
+            "base_constellation": {
+              "func": "m2_rl.mdp.rewards:base_constellation_cost",
+              "params": {
+                "sigma_m": 0.05
+              },
+              "weight": 1.0,
+              "gate": null
+            },
+            "residual_magnitude": {
+              "func": "m2_rl.mdp.rewards:residual_magnitude",
+              "params": {},
+              "weight": 2.0,
+              "gate": null
+            },
+            "payload_tilt": {
+              "func": "m2_rl.mdp.rewards:payload_tilt_cost",
+              "params": {
+                "limit_rad": 0.15
+              },
+              "weight": 0.5,
+              "gate": null
+            },
+            "action_rate": {
+              "func": "m2_rl.mdp.rewards:action_rate",
+              "params": {},
+              "weight": 0.005,
+              "gate": null
+            },
+            "drop": {
+              "func": "m2_rl.mdp.rewards:drop_penalty",
+              "params": {},
+              "weight": 50.0,
+              "gate": null
+            }
+          },
+          "terminations": {
+            "dropped": {
+              "func": "m2_rl.mdp.terminations:payload_dropped",
+              "params": {},
+              "terminal": true
+            },
+            "tilted": {
+              "func": "m2_rl.mdp.terminations:payload_tilted",
+              "params": {
+                "limit_rad": 0.6
+              },
+              "terminal": true
+            },
+            "base_over": {
+              "func": "m2_rl.mdp.terminations:base_overturned",
+              "params": {
+                "limit_rad": 0.5
+              },
+              "terminal": true
+            },
+            "overshot": {
+              "func": "m2_rl.mdp.terminations:payload_overshot",
+              "params": {
+                "factor": 2.5
+              },
+              "terminal": true
+            },
+            "time_limit": {
+              "func": "m2_rl.mdp.terminations:time_limit",
+              "params": {},
+              "terminal": false
+            }
+          },
+          "events": {
+            "mass": {
+              "func": "m2_rl.mdp.events:randomise_payload_mass",
+              "params": {
+                "mass_range": [
+                  0.6,
+                  1.6
+                ],
+                "mass_kg_range": [
+                  0.6,
+                  1.2
+                ]
+              },
+              "mode": "reset",
+              "interval_s": null,
+              "interval_jitter": 0.25
+            }
+          },
+          "promote": {
+            "name": "transport",
+            "promote_success_rate": 0.85,
+            "promote_window": 50,
+            "min_episodes": 200
+          }
+        }
+      }
+    },
+    "training": {
+      "num_envs": 1,
+      "vector_backend": "serial",
+      "horizon": 128,
+      "total_steps": 131072,
+      "epochs": 3,
+      "minibatches": 4,
+      "lr": 0.0001,
+      "lr_decay": true,
+      "max_grad_norm": 1.0,
+      "gamma": 0.995,
+      "gae_lambda": 0.95,
+      "clip_ratio": 0.2,
+      "clip_value": 0.2,
+      "value_coef": 0.5,
+      "entropy_coef": 0.001,
+      "freeze_normalization": false,
+      "policy_anchor_coef": 0.0,
+      "policy_anchor_from": null,
+      "initialize_actor_from": null,
+      "initialize_log_std": -3.5,
+      "value_warmup_updates": 10,
+      "native_teacher_auxiliary_coef": 10.0,
+      "native_teacher_auxiliary_decay": 0.998,
+      "native_teacher_action_weights": [
+        20.0,
+        20.0,
+        8.0,
+        8.0,
+        2.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        6.0,
+        6.0
+      ],
+      "native_teacher": {
+        "seating_distance_m": 0.023,
+        "seating_rotation_rad": 0.35,
+        "closing_distance_m": 0.05,
+        "closing_rotation_rad": 0.65,
+        "closing_command_threshold": 0.05,
+        "holding_closure": 0.9
+      },
+      "target_kl": 0.02,
+      "hidden": [
+        128,
+        128
+      ],
+      "actor_type": "transformer",
+      "context_length": 8,
+      "transformer_width": 64,
+      "transformer_heads": 4,
+      "transformer_layers": 2,
+      "transformer_direct_head": true,
+      "activation": "elu",
+      "init_log_std": -0.8,
+      "init_action_mean": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "learn_log_std": true,
+      "min_log_std": null,
+      "difficulty_curriculum": false,
+      "difficulty_start": 0.25,
+      "difficulty_step": 0.15,
+      "pose_noise_curriculum": {
+        "enabled": false,
+        "initial_level": 0.1,
+        "maximum_level": 1.0,
+        "increment": 0.1,
+        "window_episodes": 20,
+        "promote_success_rate": 0.9
+      },
+      "contact_curriculum": {
+        "enabled": false,
+        "initial_level": 0.0,
+        "maximum_level": 1.0,
+        "increment": 0.2,
+        "window_episodes": 40,
+        "promote_success_rate": 0.9
+      },
+      "snapshot_every_steps": 8192,
+      "seed": 1121000,
+      "log_every": 1,
+      "save_every": 5,
+      "video_every_episodes": 20,
+      "video_seconds": 30.0,
+      "video_fps": 20,
+      "video_seed": 319999,
+      "video_async": true,
+      "update_site": true,
+      "run_name": "native_grasp_hand_targets_v1",
+      "device": "mps",
+      "policy_group": "policy",
+      "critic_group": "critic",
+      "start_stage": "transport",
+      "auto_curriculum": false,
+      "extra": {
+        "scope": "Paired PPO reward-tuning acquisition study; identical starting actor, dynamics, initial-condition distribution and training seed. No transport acceptance.",
+        "target": "strictly greater than 90% in each declared full-mission cohort"
+      }
+    },
+    "bootstrap": {
+      "transport_checkpoint": null,
+      "resume": null,
+      "initialize_se3_from_planar": null,
+      "dataset": null,
+      "episodes": 24,
+      "epochs": 100,
+      "rounds": 2,
+      "seed_start": 1340000,
+      "round_seed_stride": 100,
+      "checkpoint_seed_offset": 10000,
+      "collection_checkpoint_every_episodes": 5,
+      "progress_every_steps": 500,
+      "reset_standoffs": [
+        0.4
+      ],
+      "teacher_fraction": 1.0,
+      "action_perturbation_std": [
+        0.025,
+        0.025,
+        0.015,
+        0.025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.035,
+        0.035
+      ],
+      "action_perturbation_hold_steps": 5,
+      "action_perturbation_curriculum": {
+        "enabled": true,
+        "initial_level": 0.0,
+        "maximum_level": 0.2,
+        "increment": 0.2,
+        "window_episodes": 8,
+        "promote_success_rate": 0.95
+      },
+      "native_teacher": {
+        "seating_distance_m": 0.023,
+        "seating_rotation_rad": 0.35,
+        "closing_distance_m": 0.05,
+        "closing_rotation_rad": 0.65,
+        "closing_command_threshold": 0.05,
+        "holding_closure": 0.9
+      },
+      "prefit_import": false,
+      "pose_jitter": 0.0,
+      "yaw_jitter": 0.0,
+      "storage_reserve_gib": 8.0,
+      "stop_after_success": false,
+      "record_checkpoints": true,
+      "checkpoint_scene": "m2_flat_arena",
+      "fit_lr": 0.0003,
+      "batch_size": 256,
+      "action_loss_weights": [
+        20.0,
+        20.0,
+        8.0,
+        8.0,
+        2.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        6.0,
+        6.0
+      ],
+      "fit_max_grad_norm": 1.0,
+      "observation_std_floor": 0.1,
+      "postfit_log_std": -2.5,
+      "recovery_teacher": "native_contact",
+      "validation_episode_fraction": 0.25,
+      "fit_selection": "best_validation",
+      "fit_snapshot_every_epochs": 20,
+      "recovery_hold_closure": null,
+      "recovery_wait_every_episodes": 0,
+      "import_initialization_labels": false
+    }
+  },
+  "scope": "Native-contact development; separate from frozen imitation and pickup PPO."
+}
