@@ -1,5 +1,5 @@
 {
-  "run": "native_grasp_light_coordination_mlp_continue_001",
+  "run": "native_grasp_light_coordination_mlp_continue_002",
   "settings": {
     "schema_version": 1,
     "task": "cooperative_recovery",
@@ -1045,7 +1045,7 @@
       "video_seed": 319999,
       "video_async": true,
       "update_site": true,
-      "run_name": "native_grasp_light_coordination_mlp_continue_001",
+      "run_name": "native_grasp_light_coordination_mlp_continue_002",
       "device": "mps",
       "policy_group": "policy",
       "critic_group": "critic",
@@ -1063,7 +1063,7 @@
       "episodes": 24,
       "epochs": 100,
       "rounds": 2,
-      "seed_start": 2660000,
+      "seed_start": 3660000,
       "round_seed_stride": 100,
       "checkpoint_seed_offset": 10000,
       "collection_checkpoint_every_episodes": 5,
@@ -1071,7 +1071,7 @@
       "reset_standoffs": [
         0.4
       ],
-      "teacher_fraction": 0.7,
+      "teacher_fraction": 0.3,
       "action_perturbation_std": [
         0.025,
         0.025,
