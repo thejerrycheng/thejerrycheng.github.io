@@ -1,0 +1,1 @@
+Individual editable figure decks and one combined deck. Text, paths, arrows, chart traces and card regions are PowerPoint objects; simulation renderings remain images. Original previews are included. Fonts/math layout can vary between PowerPoint installations. Plots are editable freeform traces, not Excel charts. Retain the measured data when editing scientific figures.
