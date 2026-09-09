@@ -45,19 +45,20 @@
       l.title.text='Base origin to object centroid · 3D distance';l.yaxis.title='Distance (m)';
     } else if(mode==='contact'){
       traces=hands.map((h,i)=>line(h.replaceAll('_',' '),t,rows.map(r=>{const q=r.physical_grasps?.[h.replace('_','/')];return q?.qualified==null?null:Number(q.qualified);}),i+1));
-      traces.forEach(t=>t.line.shape='hv');l.title.text='Opposing finger contacts with sufficient force';l.yaxis.title='Qualified contact (0 / 1)';l.yaxis.range=[-.05,1.05];
+      traces.forEach(t=>t.line.shape='hv');l.title.text='Measured grasp qualification · recorded configuration';l.yaxis.title='Qualified contact (0 / 1)';l.yaxis.range=[-.05,1.05];
     } else if(mode==='reward'){
       const keys=Object.keys(rows.find(r=>r.reward_components)?.reward_components||{});
       traces=keys.length?keys.map((k,i)=>line(k.replaceAll('_',' '),t,rows.map(r=>r.reward_components?.[k]??null),i)):
         [line('Reward',t,rows.map(r=>r.reward??null),0)];l.title.text='Reward components per control step';l.yaxis.title='Reward';
     } else {
-      const settings={force:['normal_force_n',1,'Normal force (N)'],slip:['slip_speed_m_s',1000,'Contact slip (mm/s)'],firmness:['firmness',1,'Firmness proxy (0–1)']};
+      const settings={force:['normal_force_n',1,'Normal force (N)'],support:['palm_support_force_n',1,'Palm support along measured palm normal (N)'],slip:['slip_speed_m_s',1000,'Contact slip (mm/s)'],firmness:['firmness',1,'Firmness proxy (0–1)']};
       if(mode==='work'){
         traces=['mabel','milo'].map((r,i)=>line(r.toUpperCase(),t,rows.map(row=>row.grasp_mechanical_work_j?.[r]??row.render?.robots?.[r]?.grasp_work_j??null),i+1));l.yaxis.title='Finger mechanical work (J)';
       } else {
         const [key,factor,label]=settings[mode];
         traces=hands.map((h,i)=>{const parts=h.split('_'),robot=parts[0],side=parts[1];
-          return line(`${robot} ${side}`,t,rows.map(r=>{const q=r.physical_grasps?.[`${robot}/${side}`]??r.render?.robots?.[robot]?.hands?.[side]?.physical_grasp;return q?factor*q[key]:null;}),i+1);});l.yaxis.title=label;
+          return line(`${robot} ${side}`,t,rows.map(r=>{const q=r.physical_grasps?.[`${robot}/${side}`]??r.render?.robots?.[robot]?.hands?.[side]?.physical_grasp;return q?.[key]!=null?factor*q[key]:null;}),i+1);});l.yaxis.title=label;
+        if(mode==='support'&&!traces.some(t=>t.y.some(v=>v!==null)))l.annotations=[{text:'Palm contact force was not logged in this older recording.',xref:'paper',yref:'paper',x:.5,y:.5,showarrow:false}];
       }
       l.title.text=l.yaxis.title;
     }

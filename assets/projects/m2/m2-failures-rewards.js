@@ -6,7 +6,7 @@ for(const id of chosen){const row=screen?.rows.find(r=>r.id===id);if(!row)contin
  const b=document.createElement('button');b.textContent='Inspect contact and grasp plots';b.onclick=()=>{const category=$('native-category');category.value='scenes';category.onchange();const choices=d.clips.filter(c=>c.group==='scenes');const index=choices.findIndex(c=>c.video===clip.video);$('native-recording').value=String(index);$('native-recording').onchange();document.querySelector('[data-native-plot="distance"]').click();$('native-plot').scrollIntoView({behavior:'smooth',block:'center'});};card.append(h,v,p,b);$('failure-gallery').append(card);}
 const run=d.runs.findLast(r=>r.settings?.environment?.task?.recovery?.observe_planner_hand_targets)||d.runs.find(r=>r.id==='native_grasp_guided_continue_004');if(!run)return;const cfg=run.settings.environment.task.recovery,w=cfg.rewards,c=cfg.physical_grasp,pw=c.rewards;
 const contact=[
- ['Hand pose alignment','pose_alignment','−Δt ⟨1 − Aₕ⟩','Aₕ = exp(−(dₕ/σp)² − (θₕ/σθ)²); held hands use their captured frame.'],
+ ['Hand pose alignment','pose_alignment','−Δt ⟨1 − Aₕ⟩',`Aₕ = exp(−(dₕ/σp)² − (θₕ/σθ)²); held positions use their captured frame. Orientation follows ${c.retain_assigned_orientation?'the planner’s assigned frame':'the captured frame'}.`],
  ['Aligned finger closure','aligned_closure','Ψt − Ψt−1','Ψ = ⟨Aₕ clip(curlₕ / ctarget, 0, 1)⟩, using measured finger joints. Holding the same curl earns no progress credit.'],
  ['Held-hand adjustment','held_adjustment','−Δt ⟨aₕ clip(‖vrel,ₕ/σhv‖² + ‖ωrel,ₕ/σhω‖²,0,1)⟩','Velocity relative to the rigid object at the hand; intended carrying motion is not penalized.'],
  ['First acquisition','acquisition','ΔN','One credit per hand’s first qualified acquisition.','event'],
@@ -14,6 +14,7 @@ const contact=[
  ['Separation speed','separation_speed','−Δt ⟨clip(vout,ₕ / σv, 0, 1)⟩','Penalizes moving away from the object-relative target.'],
  ['Secure contact','secure_contact','−Δt ⟨1 − qₕ⟩','qₕ = 1 for qualified opposing contacts.'],
  ['Firmness','firmness','−Δt ⟨1 − fₕ⟩','fₕ is the monitored contact firmness.'],
+ ['Palm support','palm_support','−Δt ⟨1 − clip(Fpalm,ₕ / Ftarget, 0, 1)⟩',`Actual palm-body force on the bar, projected along the palm normal; finger-only contact earns no support credit. Ftarget = ${c.target_palm_support_force_n??2} N. Zero weight disables this term.`],
  ['Contact slip','contact_slip','−Δt ⟨vslip,ₕ⟩','Tangential contact slip speed (m/s).'],
  ['Friction reserve','friction_margin','−Δt ⟨1 − fₕ mₕ⟩','mₕ is the monitored friction margin.'],
  ['Excess grip force','excess_normal_force','−Δt ⟨max(Fn,ₕ / Fmax − 1, 0)²⟩','Penalizes excessive summed normal force.'],

@@ -32,7 +32,7 @@ of one robot, while `sum` adds them. `clip(x,a,b)` limits x to [a,b].
 - `E`: sum over both hands of mean squared error of four grasp-frame landmarks
   (origin and 4 cm offsets along each axis).
 
-## Physical grasp terms (all 15)
+## Physical grasp terms (15 active/configured terms plus optional palm support)
 
 These are already weighted contributions. Do not multiply by the weight again.
 
@@ -53,6 +53,7 @@ These are already weighted contributions. Do not multiply by the weight again.
 | `grasp_distance` | 6 | `-6 * mean(tanh(d/0.06)) * dt` | Discourage remaining far from the handles |
 | `grasp_separation_speed` | 3 | `-3 * mean(clip(vout/0.05,0,1)) * dt` | Discourage moving away from the grasp |
 | `secure_contact` | **0** | `-0 * mean(1-qualified) * dt` | Explicit missing-contact cost is disabled in this profile; physical contact criteria and other rewards remain active |
+| `palm_support` | **0** in the retention baseline; **3** in the palm-support candidate | `-weight * mean(1-clip(Fpalm/2,0,1)) * dt` | Actual palm-body force on the bar along the palm normal; excludes finger forces |
 
 ## Task terms (all 18)
 
@@ -112,6 +113,29 @@ degrees. Fresh MLP collection now uses the additional
 `success_palm_angle_rad = 10 degrees` requirement for **every** hand throughout
 the eight-second final hold. It remains a learned-policy development experiment;
 this single teacher diagnostic is not the >90% acceptance result.
+
+### Lower-mass coordination profile
+
+`native_grasp_light_coordination_mlp_v1.json` keeps the palm-up MLP, motor limits,
+observation/action layout and retention criteria. It lowers the nominal mass to
+**0.3 kg** and the absolute reset range to **0.2–0.4 kg**; mass and inertia scale
+together. It starts from the palm-up MLP weights, collects new labels, and does
+not import the heavier-load demonstration dataset. Subsequent corrective
+collection and PPO are followed by separate frozen-policy tests.
+
+At seed 1640900 the 0.3 kg scripted retention diagnostic lifted 6.013 cm and
+completed the eight-second hold. Four-hand support began at 2.42 s; the reported
+actuator-saturation fraction was 1.91%. This is one teacher trial, not a learned
+success rate. Retention can use opposing finger contacts even when the measured
+palm-body support force is zero. Reliable bar-on-palm support remains unresolved.
+
+The separate `native_grasp_palm_support_mlp_v1.json` candidate adds a **0.2 N**
+minimum palm support per hand and the optional weight-3 reward, with MCP/PIP
+closure targets of 1.2/1.2 rad. The bolted-hand fixture passed 8/10 tested initial
+placements at these angles, versus 0/10 with 0.85/0.70 rad. This did **not** transfer
+to reliable two-robot acquisition: the full robot tests still failed. It is not
+the active low-mass coordination training profile. No grasp constraint or applied
+object-support force was introduced by either experiment.
 
 ## What qualifies as a grasp
 

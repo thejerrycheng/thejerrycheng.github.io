@@ -1,5 +1,5 @@
 {
-  "run": "native_grasp_palm_up_mlp_v1",
+  "run": "native_grasp_light_coordination_mlp_v1",
   "settings": {
     "schema_version": 1,
     "task": "cooperative_recovery",
@@ -64,6 +64,8 @@
             "constellation_use_held_frame": true,
             "retain_assigned_orientation": true,
             "success_palm_angle_rad": 0.17453292519943295,
+            "minimum_palm_support_force_n": 0.0,
+            "target_palm_support_force_n": 2.0,
             "alignment_distance_m": 0.03,
             "alignment_rotation_rad": 0.15,
             "closure_reward_target": 0.6,
@@ -84,7 +86,8 @@
               "secure_contact": 0.0,
               "pose_alignment": 6.0,
               "aligned_closure": 12.0,
-              "held_adjustment": 1.0
+              "held_adjustment": 1.0,
+              "palm_support": 0.0
             }
           },
           "history_length": 8,
@@ -315,7 +318,7 @@
           0.15
         ],
         "payload_overrides": {
-          "mass_kg": 0.8,
+          "mass_kg": 0.3,
           "rail_radius_m": 0.015,
           "rail_proud_m": 0.15
         },
@@ -661,8 +664,8 @@
                   1.6
                 ],
                 "mass_kg_range": [
-                  0.6,
-                  1.2
+                  0.2,
+                  0.4
                 ]
               },
               "mode": "reset",
@@ -898,8 +901,8 @@
                   1.6
                 ],
                 "mass_kg_range": [
-                  0.6,
-                  1.2
+                  0.2,
+                  0.4
                 ]
               },
               "mode": "reset",
@@ -1033,7 +1036,7 @@
         "promote_success_rate": 0.9
       },
       "snapshot_every_steps": 8192,
-      "seed": 1121000,
+      "seed": 1660000,
       "log_every": 1,
       "save_every": 5,
       "video_every_episodes": 20,
@@ -1042,7 +1045,7 @@
       "video_seed": 319999,
       "video_async": true,
       "update_site": true,
-      "run_name": "native_grasp_palm_up_mlp_v1",
+      "run_name": "native_grasp_light_coordination_mlp_v1",
       "device": "mps",
       "policy_group": "policy",
       "critic_group": "critic",
@@ -1060,7 +1063,7 @@
       "episodes": 24,
       "epochs": 100,
       "rounds": 2,
-      "seed_start": 1560000,
+      "seed_start": 1660000,
       "round_seed_stride": 100,
       "checkpoint_seed_offset": 10000,
       "collection_checkpoint_every_episodes": 5,

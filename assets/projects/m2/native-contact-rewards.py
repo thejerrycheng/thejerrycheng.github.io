@@ -41,7 +41,8 @@ def restore_native_materials(env):
 def contact_quality(records,cfg):
     if not records:
         return dict(contact_count=0,normal_force_n=0.,opposition=0.,slip_speed_m_s=0.,
-            friction_utilization=0.,friction_margin=0.,firmness=0.,qualified=False,penetration_m=0.)
+            friction_utilization=0.,friction_margin=0.,firmness=0.,qualified=False,penetration_m=0.,
+            palm_support_force_n=0.)
     force=np.array([r['normal_force_n'] for r in records]);total=float(force.sum())
     normals=np.array([r['normal_world'] for r in records]);bodies=np.array([r['hand_body'] for r in records])
     opposite=(1.-normals@normals.T)*.5
@@ -51,11 +52,13 @@ def contact_quality(records,cfg):
     utilization=float(max(r['friction_utilization'] for r in records))
     margin=float(np.clip(1.-utilization,0.,1.))
     firm=float(min(total/cfg.target_normal_force_n,1.)*opposition)
+    palm_support=float(max(0.,sum(r.get('palm_support_force_n',0.) for r in records)))
     qualified=(opposition>=cfg.opposition_threshold and total>=cfg.minimum_normal_force_n
-        and slip<=cfg.slip_speed_limit_m_s)
+        and slip<=cfg.slip_speed_limit_m_s and palm_support>=cfg.minimum_palm_support_force_n)
     return dict(contact_count=len(records),normal_force_n=total,opposition=opposition,
         slip_speed_m_s=slip,friction_utilization=utilization,friction_margin=margin,
-        firmness=firm,qualified=bool(qualified),penetration_m=max(r['penetration_m'] for r in records))
+        firmness=firm,qualified=bool(qualified),penetration_m=max(r['penetration_m'] for r in records),
+        palm_support_force_n=palm_support)
 
 
 class NativeContactGrasps(ContactGrasps):
@@ -131,6 +134,8 @@ class NativeContactGrasps(ContactGrasps):
         for robot in env.robot_ids:
             for side in ('left','right'):
                 key=robot,side;rail=env._wrench_rail_geoms[key];own=env._wrench_hand_masks[key]
+                sid=env.bindings.palm_site[robot][side]
+                palm_body=int(model.site_bodyid[sid]);palm_normal=data.site_xmat[sid].reshape(3,3)[:,1]
                 matches=((all_geoms[:,0]==rail)&own[all_bodies[:,1]])|((all_geoms[:,1]==rail)&own[all_bodies[:,0]])
                 records=[]
                 for index in np.flatnonzero(matches):
@@ -148,6 +153,7 @@ class NativeContactGrasps(ContactGrasps):
                         cone_components=np.r_[cone_components,force[3]/max(contact.friction[2]*force[0],1e-12)]
                     cone=float(np.linalg.norm(cone_components))
                     records.append(dict(hand_body=body,normal_world=normal.tolist(),normal_force_n=float(force[0]),
+                        palm_support_force_n=(float((-sign*frame.T@force[:3])@palm_normal) if body==palm_body else 0.),
                         slip_speed_m_s=float(np.linalg.norm(relative[1:])),friction_utilization=cone,
                         penetration_m=float(max(0.,-contact.dist)),position_world_m=contact.pos.tolist(),
                         tangent_force_n=float(np.linalg.norm(force[1:3]))))
@@ -298,6 +304,7 @@ def physical_reward_parts(env,robot,previous,dt):
         'aligned_finger_closure':w.aligned_closure*closed_progress,
         'held_hand_adjustment':-w.held_adjustment*adjustment*.5*dt,
         'grasp_firmness':-w.firmness*np.mean([1-r['firmness'] for r in q])*dt,
+        'palm_support':-w.palm_support*np.mean([1-np.clip(r['palm_support_force_n']/c.target_palm_support_force_n,0.,1.) for r in q])*dt,
         'contact_slip':-w.contact_slip*np.mean([r['slip_speed_m_s'] for r in q])*dt,
         'friction_reserve':-w.friction_margin*np.mean([1-r['firmness']*r['friction_margin'] for r in q])*dt,
         'excess_grip_force':-w.excess_normal_force*np.mean([max(0.,r['normal_force_n']/c.maximum_normal_force_n-1.)**2 for r in q])*dt,
