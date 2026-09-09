@@ -35,7 +35,7 @@ const task=[
  ['Unsupported travel','unsupported_travel','−Δℓxy 𝟙[not supported]','Horizontal object travel without required support.'],
  ['Anchor slip','slip','−Δt min(δ, 0.1) 𝟙[engaged]','δ: grasp drift from its captured frame (m).'],
  ['Load','load','−Δt (‖Fᵢ‖ / max(1, 2Fcap))²','Fcap is the configured grasp force scale.'],
- ['Object orientation error','tilt','−Δt β²','Rotation error relative to the nearby object reference (rad).'],
+ ['Object orientation error','tilt','−Δt ‖eR‖²','Rotation error relative to the nearby object reference (rad).'],
  ['Torso posture','upright_torso','−Δt ψᵢ²','Local torso pitch (rad).'],
  ['Action change','action_rate','−Δt ‖at − at−1‖²','Penalty on changing normalized policy actions.'],
  ['Time','time','−Δt','Per-second cost.'],
