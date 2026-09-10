@@ -14,6 +14,7 @@ from m2_rl.envs.end_to_end import EndToEndCarryEnv, end_to_end_cfg
 from m2_rl.contact_grasp import ContactGrasps, point_velocity
 from m2_rl.history import LocalHistory
 from m2_rl.measurement_stream import MeasurementStream
+from m2_rl.grasp_progress import grasp_error_progress
 from m2_rl.managers import ObservationManager, RewardManager, TerminationManager
 from m2_rl.managers.base import ObsTermCfg
 from m2_rl.managers.termination import TerminationTermCfg
@@ -146,6 +147,8 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
         self._initial_position=np.asarray(initial.xyz).copy()
         self._unsupported_origin=self._initial_position.copy()
         self._max_unsupported_segment_travel=0.
+        from m2_rl.grasp_safety import GraspSafetyMonitor
+        self._grasp_safety=GraspSafetyMonitor(c,self._initial_position[:2])
         # Keep goal sampling independent of fault/control/sensor random streams.
         goal_rng=np.random.default_rng(np.random.SeedSequence([
             self._recovery_seed,self._recovery_episode-1,25109]))
@@ -520,8 +523,10 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
             return [{'reason':'nonfinite_state'}]
         # Compare to nearby planner orientation: commanded flips are permitted.
         error=self.measured_pose().error_to(self._nearby_pose)
-        if np.linalg.norm(error[3:])>self.cfg.recovery.unsafe_tilt_rad:
-            return [{'reason':'unsafe_object_orientation'}]
+        c=self.cfg.recovery
+        limit=c.grasp_safety.hard_orientation_limit_rad if c.grasp_safety.enabled else c.unsafe_tilt_rad
+        if np.linalg.norm(error[3:])>limit:
+            return [{'reason':'unsafe_object_orientation','error_rad':float(np.linalg.norm(error[3:])),'limit_rad':limit}]
         from m2_rl.se3_safety import carried_contact_failures,unintended_payload_contact_failures
         from m2_sim.config import IDENTITIES
         prefixes=tuple(IDENTITIES[r].prefix for r in self.robot_ids)
@@ -614,7 +619,14 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
             self._max_unsupported_segment_travel=max(self._max_unsupported_segment_travel,
                 float(np.linalg.norm((np.asarray(actual.xyz)-self._unsupported_origin)[:2])))
         else:self._unsupported_origin=None
-        if self._max_unsupported_segment_travel>c.unsupported_travel_limit_m:
+        if c.grasp_safety.enabled:
+            safety_failures=self._grasp_safety.advance(self.elapsed_s,actual.xyz[:2],
+                float(np.linalg.norm(actual.error_to(self._nearby_pose)[3:])),supported)
+            if safety_failures:
+                terminated=True
+                info.setdefault('terminations',[]).extend(f['reason'] for f in safety_failures)
+                info.setdefault('task_physics_failures',[]).extend(safety_failures)
+        elif self._max_unsupported_segment_travel>c.unsupported_travel_limit_m:
             terminated=True
             info.setdefault('terminations',[]).append('unsupported_object_travel')
             info.setdefault('task_physics_failures',[]).append({'reason':'unsupported_object_travel',
@@ -649,11 +661,11 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
         components={};rewards={}
         for robot in self.robot_ids:
             gap=self.grasp_position_error(robot)
-            delta=np.clip(self._previous_grasp_distance[robot]-gap,-.05,.05)
-            self._previous_grasp_distance[robot]=gap
+            delta,self._previous_grasp_distance[robot]=grasp_error_progress(
+                self._previous_grasp_distance[robot],gap,c.grasp_progress_mode,.05)
             angle=self.grasp_rotation_error(robot)
-            angle_progress=np.clip(self._previous_grasp_rotation[robot]-angle,-.02,.02)
-            self._previous_grasp_rotation[robot]=angle
+            angle_progress,self._previous_grasp_rotation[robot]=grasp_error_progress(
+                self._previous_grasp_rotation[robot],angle,c.grasp_progress_mode,.02)
             potential=0.
             for side in ('left','right'):
                 key=robot,side
@@ -684,7 +696,7 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
                 'unsupported_travel':-w.unsupported_travel*travel*float(not supported),
                 'slip':-w.slip*min(slip,.1)*float(self.grasp_engaged(robot))*dt,
                 'load':-w.load*(load/max(1.,2*c.grasp.max_force_n))**2*dt,
-                'tilt':-w.tilt*tilt**2*dt,
+                'tilt':-w.tilt*(self._grasp_safety.tilt_cost(tilt) if c.grasp_safety.enabled else tilt**2)*dt,
                 'upright_torso':-w.upright_torso*self.torso_pitch(robot)**2*dt,
                 'action_rate':-w.action_rate*np.sum((self.last_action[robot]-self.prev_action[robot])**2)*dt,
                 'time':-w.time*dt,'success':w.success*float(success),'failure':-w.failure*float(terminated)}
@@ -702,6 +714,7 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
             episode_reward_components=dict(self._reward_totals),phase_events=list(self.phase_events),
             pose_reference=self.pose_reference.as_dict(),spatial_progress_m=self._progress,
             grasp_events=list(self.contact_grasps.events),recovery={
+                'grasp_safety':dict(self._grasp_safety.last) if c.grasp_safety.enabled else {'enabled':False},
                 'fault_armed':self._fault_armed,'fault_started_s':self._fault_started,
                 'fault_trigger_progress_m':self._fault_progress_m,
                 'fault_robot':self._fault_robot if self._fault_started is not None else None,
