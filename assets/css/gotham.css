@@ -696,7 +696,9 @@ a .papertitle:hover { color: var(--link); }
 }
 .exp-media .shots { display: flex; gap: 8px; }
 .exp-media .shots img { width: calc((100% - 16px) / 3); background: #0b0b0f; }
-.exp-media figcaption { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .02em; color: var(--ash); }
+.exp-media figcaption { font-family: var(--font-mono); font-size: 10.5px; line-height: 1.5; letter-spacing: .02em; color: var(--ash); }
+.exp-media figcaption a { color: var(--link); text-decoration: none; }
+.exp-media figcaption a:hover { text-decoration: underline; }
 @media (max-width: 820px) {
   .exp-panel.has-media { grid-template-columns: 1fr; gap: 18px; }
   .exp-media { max-width: 340px; }
