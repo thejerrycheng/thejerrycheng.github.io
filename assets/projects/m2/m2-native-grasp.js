@@ -2,7 +2,7 @@
   const d=window.M2NativeGrasp, root=document.getElementById('native-grasp');
   if(!d || !root) return;
   const $=id=>document.getElementById(id), colors=['#d18a00','#2876bd','#21a5a6','#8b58ae','#c66061'];
-  const runs=d.runs.filter(r=>r.completed||r.demonstrations?.length||r.imitation_history?.length||r.dataset_import?.labelled_samples), clips=[...d.clips.map(c=>({group:'diagnostics',...c})),...d.runs.flatMap(r=>r.clips.map(c=>({...c,group:'checkpoints',label:`${r.id} · ${c.label}`})))];
+  const runs=d.runs.filter(r=>r.completed||r.demonstrations?.length||r.imitation_history?.length||r.dataset_import?.labelled_samples), clips=[...(d.replay_review?.clips||[]),...d.clips.map(c=>({group:'diagnostics',...c})),...d.runs.flatMap(r=>r.clips.map(c=>({...c,group:'checkpoints',label:`${r.id} · ${c.label}`})))];
   let run=runs.at(-1), clip=clips[0], mode='3d';
   const layout=title=>({title:{text:title,font:{size:15}},paper_bgcolor:'transparent',plot_bgcolor:'transparent',
     margin:{l:55,r:18,t:44,b:65},font:{family:'inherit',size:12},legend:{orientation:'h',y:-.22},
@@ -73,7 +73,7 @@
     new MutationObserver(update).observe(group,{childList:true});update();
   });
   const option=(value,label)=>{const e=document.createElement('button');e.type='button';e.value=String(value);e.textContent=label;return e;};
-  for(const [key,label] of [['diagnostics','Grasp diagnostics'],['checkpoints','Learned checkpoints'],['scenes','Scene evaluations']]){
+  for(const [key,label] of [['review','Replay comparison'],['diagnostics','Grasp diagnostics'],['checkpoints','Learned checkpoints'],['scenes','Scene evaluations']]){
     if(clips.some(c=>c.group===key))$('native-category').append(option(key,label));
   }
   function category(){const choices=clips.filter(c=>c.group===$('native-category').value);$('native-recording').replaceChildren();
@@ -81,9 +81,36 @@
     $('native-recording').onchange=()=>{clip=choices[Number($('native-recording').value)];select();};
     clip=choices[0];select();}
   $('native-category').onchange=category;
-  function select(){if(!clip) return;$('native-video').src=clip.video;$('native-video').poster=clip.poster;$('native-caption').textContent=clip.label+' · '+(clip.scope||'Native contact dynamics. Recorded failures remain visible.');plot();}
+  let replayRows=[];
+  function select(){if(!clip) return;
+    const selected=clip,v=$('native-video');v.pause();v.src=clip.video;v.poster=clip.poster;
+    v.playbackRate=Number($('native-speed')?.value||1);
+    $('native-caption').textContent=clip.label+' · '+(clip.summary||clip.scope||'Native contact dynamics. Recorded failures remain visible.');
+    if($('native-replay-note'))$('native-replay-note').textContent=clip.group==='review'?(d.replay_review?.scope||''):'';
+    if($('native-chapters')){
+      $('native-chapters').replaceChildren();
+      for(const event of clip.chapters||[]){const b=option(event.time_s,event.label+' · '+event.time_s.toFixed(2)+' s');
+        b.onclick=()=>{v.pause();v.currentTime=Math.min(Math.max(0,event.time_s-(replayRows[0]?.time_s||0)),Math.max(0,(v.duration||0)-.01));};$('native-chapters').append(b);}
+    }
+    replayRows=[];if($('native-now'))$('native-now').textContent='Loading measured replay state…';
+    trajectory(selected).then(rows=>{if(clip===selected){replayRows=rows;replayState();}}).catch(()=>{});plot();
+  }
+  function replayState(){if(!$('native-now')||!replayRows.length)return;
+    const time=$('native-video').currentTime+(replayRows[0].time_s||0);
+    const row=replayRows.reduce((a,b)=>Math.abs(a.time_s-time)<Math.abs(b.time_s-time)?a:b);
+    const start=replayRows[0].centroid_xyz_m,p=row.centroid_xyz_m;
+    const qualities=Object.values(row.physical_grasps||{}).filter(q=>q.qualified!=null);
+    const contacts=qualities.length?`${qualities.filter(q=>q.qualified).length}/${qualities.length} contacts qualify`:'Historical attachment model';
+    $('native-now').textContent=`t = ${row.time_s.toFixed(2)} s · ${contacts} · rise ${((p[2]-start[2])*1000).toFixed(1)} mm · horizontal travel ${(Math.hypot(p[0]-start[0],p[1]-start[1])*1000).toFixed(1)} mm. Nearest sampled measurement.`;
+  }
+  $('native-video').addEventListener('timeupdate',replayState);
+  if($('native-speed'))$('native-speed').onchange=()=>{$('native-video').playbackRate=Number($('native-speed').value);};
   root.querySelectorAll('[data-native-plot]').forEach(b=>b.onclick=()=>{mode=b.dataset.nativePlot;root.querySelectorAll('[data-native-plot]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));plot();});
   if(clip)category();else $('native-caption').textContent='Complete checkpoint videos will appear after their recording jobs finish.';
+  const query=new URLSearchParams(location.search),requested=clips.find(c=>c.id===query.get('replay'));
+  if(requested){$('native-category').value=requested.group;category();const choices=clips.filter(c=>c.group===requested.group);
+    $('native-recording').value=String(choices.indexOf(requested));$('native-recording').onchange();
+    if(query.get('play')==='1'){$('native-video').muted=true;$('native-video').play().catch(()=>{});}}
   const frozen=(d.evaluations||[]).filter(e=>e.complete&&e.acceptance_eligible&&e.completed>0);
   const latestAcquisition=frozen.findLast(e=>e.id.startsWith('native_grasp_acquisition_'));
   const latestScenes=frozen.findLast(e=>e.id.startsWith('native_grasp_scene_screen_'));
@@ -115,6 +142,21 @@
     $('native-failures').textContent=run ? Object.entries(run.failures).map(([k,v])=>`${k.replaceAll('_',' ')}: ${v}`).join(' · ') : 'No completed training episodes yet.';
     $('native-settings').textContent=JSON.stringify(run?.settings??d.runs.at(-1)?.settings??{},null,2);
     if(!run)return;
+    const metric=$('native-training-metric').value;
+    if(metric==='value'||metric==='objective'){
+      const rows=run.metrics||[],x=rows.map(r=>r.steps),l=layout(metric==='value'?'Critic learning from simulated returns':'PPO objective · demonstration influence');
+      l.xaxis.title='Environment steps';let traces=[];
+      if(metric==='value'){
+        l.yaxis.title='Value loss';l.yaxis2={title:'Explained variance',overlaying:'y',side:'right'};l.margin.r=75;
+        traces=[line('Value loss',x,rows.map(r=>r.value_loss??null),1),{...line('Explained variance · pre-update',x,rows.map(r=>r.value_explained_variance??null),0),yaxis:'y2'}];
+      }else{
+        const t=run.settings?.training||{};l.yaxis.title='Auxiliary coefficient';l.yaxis2={title:'PPO policy loss',overlaying:'y',side:'right'};l.margin.r=75;
+        traces=[line('Teacher weight · logged / configured schedule',x,rows.map(r=>r.teacher_auxiliary_coef??((t.native_teacher_auxiliary_coef||0)*(t.native_teacher_auxiliary_decay??1)**Math.max(0,r.update-1))),0),
+          {...line('PPO policy loss',x,rows.map(r=>r.policy_loss??null),1),yaxis:'y2'}];
+      }
+      if(!rows.length)l.annotations=[{text:'This run fits demonstrations; it has no PPO value updates.',xref:'paper',yref:'paper',x:.5,y:.5,showarrow:false}];
+      Plotly.react($('native-training'),traces,l,{responsive:true,displaylogo:false});return;
+    }
     if(supervised&&$('native-training-metric').value==='fit'){const rows=run.imitation_history||[],x=rows.map(r=>r.epoch),l=layout('Supervised initialization · held-out episodes');
       l.xaxis.title='Fit epoch';l.yaxis.title='Weighted action prediction MSE';
       Plotly.react($('native-training'),[line('Fitting episodes',x,rows.map(r=>r.train_weighted_mse),1),line('Held-out episodes',x,rows.map(r=>r.validation_weighted_mse),0)],l,{responsive:true,displaylogo:false});return;}
