@@ -124,187 +124,196 @@
     <h2 class="section-title">Research Experience</h2>
     <button type="button" class="see-all" data-expand-all aria-expanded="false">Expand all</button>
   </div>
-  <p class="exp-hint">Open a role to see what it produced</p>
+  <p class="exp-hint">Five labs. Open one to see the projects that came out of it</p>
 
   <div class="exp-stack">
 
     <details class="card exp" open>
       <summary>
-        <span class="exp-mark" aria-hidden="true">MiM</span>
+        <span class="exp-mark lg logo"><img src="assets/icons/uoft.png" alt="University of Toronto"></span>
         <span class="exp-id">
-          <span class="exp-org">Machine in Motion Lab</span>
+          <span class="exp-org"><a href="https://starslab.ca" target="_blank" rel="noopener">Space &amp; Terrestrial Autonomous Robotic Systems Lab</a></span>
+          <span class="exp-role">Ph.D. Researcher — <a href="https://discover.research.utoronto.ca/20331-jonathan-kelly" target="_blank" rel="noopener">Prof. Jonathan Kelly</a></span>
+          <span class="exp-where">University of Toronto Institute for Aerospace Studies &middot; Toronto</span>
+        </span>
+        <span class="exp-date">Sep 2021 – Aug 2025<span class="second">Sep 2026 – present</span></span>
+        <span class="exp-tog" aria-hidden="true"></span>
+      </summary>
+      <div class="exp-panel">
+        <div class="exp-projects">
+
+          <div class="proj-row">
+            <a class="proj-thumb" href="m2.html"><img src="assets/projects/m2/figures/iros_01_task.png" alt="Two mobile manipulators carrying a shared load through a doorway" loading="lazy" decoding="async"></a>
+            <div class="proj-text">
+              <a class="proj-name" href="m2.html">Read the Room — Cooperative Multi-Robot Transport</a>
+              <span class="proj-when">Ph.D. &middot; Aug 2026 – present &middot; paper in preparation</span>
+              <p>Two mobile manipulators carry one load. The planner searches over the <b>grasped assembly</b> rather than the payload alone — counting both carrier footprints narrows admissible yaw through an aperture from 25.8° to 5.5° in the illustrated beam geometry. A 10 Hz object-level MPC drives references that one frozen 50 Hz actor, the same weights on both robots, turns into 21 actions each. Frozen cohort: 35/40 full missions across ten MuJoCo scenes.</p>
+              <div class="links"><a href="m2.html">Website</a><a href="assets/projects/m2/read-the-room.pdf" target="_blank" rel="noopener">Paper</a></div>
+            </div>
+          </div>
+
+          <div class="proj-row">
+            <a class="proj-thumb" href="rwhe_calibration.html"><img src="assets/images/projects/rwhe/card.jpg" alt="Robot-world and hand-eye calibration setup" loading="lazy" decoding="async"></a>
+            <div class="proj-text">
+              <a class="proj-name" href="rwhe_calibration.html">Certifiably Correct Robot–World &amp; Hand–Eye Calibration</a>
+              <span class="proj-when">M.Eng. &middot; IJRR 2025</span>
+              <p>A generalized robot–world and hand–eye calibration algorithm that returns a certificate of global optimality rather than a local minimum you have to trust.</p>
+            </div>
+          </div>
+
+          <div class="proj-row">
+            <a class="proj-thumb" href="radar_radar.html"><img src="assets/images/projects/radar_radar/card.jpg" alt="Two millimetre-wave radars mounted for extrinsic calibration" loading="lazy" decoding="async"></a>
+            <div class="proj-text">
+              <a class="proj-name" href="radar_radar.html">Extrinsic Calibration of 2D Radar Pairs from Ego-Velocity</a>
+              <span class="proj-when">B.A.Sc. &middot; IEEE AIM 2023 &middot; first author</span>
+              <p>Two radars that never see the same thing can still be calibrated: each one's ego-velocity estimate constrains the transform between them, so no overlapping field of view and no targets are needed.</p>
+            </div>
+          </div>
+
+          <div class="proj-row">
+            <a class="proj-thumb" href="radar_camera.html"><img src="assets/images/projects/radar_camera/card.jpg" alt="Radar and camera rig used for spatiotemporal calibration" loading="lazy" decoding="async"></a>
+            <div class="proj-text">
+              <a class="proj-name" href="radar_camera.html">Spatiotemporal Calibration of 3D Radar–Camera Pairs</a>
+              <span class="proj-when">B.A.Sc. &middot; IEEE T-RO 2022</span>
+              <p>Targetless calibration of the transform <i>and</i> the time offset between a 3D radar and a camera, using continuous-time B-spline trajectories.</p>
+            </div>
+          </div>
+
+        </div>
+        <div class="chips"><span class="chip">Multi-robot manipulation</span><span class="chip">Motion planning</span><span class="chip">Extrinsic calibration</span><span class="chip">Continuous-time estimation</span><span class="chip">Certifiable optimization</span></div>
+      </div>
+    </details>
+
+    <details class="card exp">
+      <summary>
+        <span class="exp-mark lg logo"><img src="assets/icons/nyu.png" alt="New York University"></span>
+        <span class="exp-id">
+          <span class="exp-org"><a href="https://www.machinesinmotion.org" target="_blank" rel="noopener">Machine in Motion Lab</a></span>
           <span class="exp-role">Ph.D. Research Fellow — <a href="https://engineering.nyu.edu/faculty/ludovic-righetti" target="_blank" rel="noopener">Prof. Ludovic Righetti</a> and <a href="https://engineering.nyu.edu/faculty/katsuo-kurabayashi" target="_blank" rel="noopener">Prof. Katsuo Kurabayashi</a></span>
-          <span class="exp-where">New York University, Tandon School of Engineering · New York</span>
+          <span class="exp-where">New York University, Tandon School of Engineering &middot; New York</span>
         </span>
-        <span class="exp-date">Sep 2025 – present</span>
+        <span class="exp-date">Sep 2025 – Aug 2026</span>
         <span class="exp-tog" aria-hidden="true"></span>
       </summary>
       <div class="exp-panel">
-        <ul class="exp-points">
-          <li><b>GeoDEX</b> — a geometric diffusion-transformer policy for 26-DOF dexterous pick-and-place, mapping dual-view RGB-D and proprioception to action chunks under geodesic SO(3) and contact-aware fingertip losses.</li>
-          <li>Apple Vision Pro demonstrations retargeted into MuJoCo through SE(3)-preserving optimization, so human hand motion survives the change of embodiment.</li>
-          <li>Mixture-of-experts RL controllers for user-adaptive hip exoskeletons in musculoskeletal simulation.</li>
-        </ul>
-        <div class="chips"><span class="chip">Dexterous manipulation</span><span class="chip">Diffusion policy</span><span class="chip">Reinforcement learning</span><span class="chip">Sim-to-real</span><span class="chip">MuJoCo</span></div>
-        <div class="links">
-          <a href="geodex.html">GeoDEX write-up</a>
-          <a href="https://www.machinesinmotion.org" target="_blank" rel="noopener">Lab</a>
+        <div class="exp-projects">
+
+          <div class="proj-row">
+            <a class="proj-thumb" href="projects.html#mabel"><img src="assets/images/projects/mabel/mabel_hero.jpg" alt="MABEL, an open-source anthropomorphic mobile bimanual robot" loading="lazy" decoding="async"></a>
+            <div class="proj-text">
+              <a class="proj-name" href="projects.html#mabel">MABEL — Mobile Anthropomorphic Bimanual Embodiment</a>
+              <span class="proj-when">Project lead &middot; Apr 2026 – present &middot; system paper under review</span>
+              <p>A <b>56-DOF</b> open-source mobile bimanual robot built for <b>$8,722</b> with no machine shop: holonomic swerve base, 0.635 m lift with a pitching torso, two 7-DOF arms, two 17-DOF tendon-driven ORCA hands, 3-DOF head. Nested compliant whole-body control behind a ZMP tip-over filter, Vision Pro / iPhone / browser teleoperation driving the MuJoCo twin and the robot from one server, and a demonstration-to-policy pipeline (ACT, Diffusion Policy, π<sub>0</sub>) running onboard.</p>
+              <div class="links"><a href="https://robotmabel.github.io/website/" target="_blank" rel="noopener">Website</a><a href="https://github.com/robotmabel/MABEL" target="_blank" rel="noopener">Code</a><a href="https://robotmabel.github.io/website/docs/" target="_blank" rel="noopener">Build guide</a></div>
+            </div>
+          </div>
+
+          <div class="proj-row">
+            <a class="proj-thumb" href="geodex.html"><img src="assets/images/projects/geodex/geodex.jpg" alt="Dexterous hand performing a pick-and-place task" loading="lazy" decoding="async"></a>
+            <div class="proj-text">
+              <a class="proj-name" href="geodex.html">GeoDEX — Geometric Diffusion Policies for Dexterous Manipulation</a>
+              <span class="proj-when">2025 – 2026</span>
+              <p>A geometric diffusion-transformer policy for 26-DOF dexterous pick-and-place: dual-view RGB-D and proprioception to action chunks, trained under geodesic SO(3) and contact-aware fingertip losses on Apple Vision Pro demonstrations retargeted into MuJoCo through SE(3)-preserving optimization.</p>
+            </div>
+          </div>
+
         </div>
+        <div class="chips"><span class="chip">Dexterous manipulation</span><span class="chip">Diffusion policy</span><span class="chip">Whole-body control</span><span class="chip">Teleoperation</span><span class="chip">Sim-to-real</span></div>
+        <p class="exp-note">Also in the lab: mixture-of-experts RL controllers for user-adaptive hip exoskeletons in musculoskeletal simulation.</p>
       </div>
     </details>
 
     <details class="card exp">
       <summary>
-        <span class="exp-mark sm" aria-hidden="true">MABEL</span>
+        <span class="exp-mark lg logo"><img src="assets/icons/uoft.png" alt="University of Toronto"></span>
         <span class="exp-id">
-          <span class="exp-org">MABEL — Mobile Anthropomorphic Bimanual Embodiment</span>
-          <span class="exp-role">Project lead — open-source mobile manipulation platform</span>
-          <span class="exp-where">Independent research · New York</span>
-        </span>
-        <span class="exp-date">Apr 2026 – present</span>
-        <span class="exp-tog" aria-hidden="true"></span>
-      </summary>
-      <div class="exp-panel">
-        <ul class="exp-points">
-          <li>Designed and built a <b>56-DOF</b> anthropomorphic mobile bimanual robot for <b>$8,722</b> with no machine shop: a 3-module holonomic swerve base, a 0.635 m lift with a pitching torso, two 7-DOF arms, two 17-DOF tendon-driven ORCA hands, and a 3-DOF active head.</li>
-          <li>Nested compliant whole-body controller — Cartesian admittance, self-collision barriers, disturbance-observer impedance — behind a ZMP tip-over filter that teleoperation and learned policies both run through.</li>
-          <li>Teleoperation from Apple Vision Pro, iPhone, browser or gamepad, with one networked server driving the MuJoCo digital twin and the physical robot from the same commands.</li>
-          <li>Demonstration-to-policy pipeline (ACT, Diffusion Policy, &pi;<sub>0</sub>) trained from teleoperated episodes and deployed onboard.</li>
-        </ul>
-        <div class="chips"><span class="chip">Mechatronic design</span><span class="chip">Whole-body control</span><span class="chip">Teleoperation</span><span class="chip">Digital twin</span><span class="chip">Imitation learning</span></div>
-        <div class="links">
-          <a href="https://robotmabel.github.io/website/" target="_blank" rel="noopener">Website</a>
-          <a href="https://github.com/robotmabel/MABEL" target="_blank" rel="noopener">Code</a>
-          <a href="https://robotmabel.github.io/website/docs/" target="_blank" rel="noopener">Build guide</a>
-        </div>
-        <p class="exp-note">System paper under review. Hardware, firmware and build guide released under MIT.</p>
-      </div>
-    </details>
-
-    <details class="card exp">
-      <summary>
-        <span class="exp-mark" aria-hidden="true">M2</span>
-        <span class="exp-id">
-          <span class="exp-org">Read the Room — Cooperative Multi-Robot Transport</span>
-          <span class="exp-role">Lead researcher — grasp-aware planning and learned local control</span>
-          <span class="exp-where">Independent research · New York</span>
-        </span>
-        <span class="exp-date">2026 – present</span>
-        <span class="exp-tog" aria-hidden="true"></span>
-      </summary>
-      <div class="exp-panel">
-        <ul class="exp-points">
-          <li>Two mobile manipulators carry one load. The planner searches over the <b>grasped assembly</b> rather than the payload alone: in the illustrated beam geometry, admissible yaw through the aperture narrows from <b>25.8° to 5.5°</b> once the carrier footprints are counted.</li>
-          <li>A 10 Hz object-level MPC follows measured path progress; one frozen 50 Hz actor — the same weights on both robots — turns shared references and local observations into 21 actions per robot.</li>
-          <li>Frozen cohort: <b>35 / 40</b> full missions across ten scenes, four seeds each, acquisition included. All five failures stop before verified-route transport. Aligning the collision representation and margin moved a paired eight-scene comparison from <b>36/40 to 40/40</b>.</li>
-          <li>An instrumented panel trial shows one hand at <b>363 N</b> and another at <b>107 N·m</b> — opposing reactions that robot-level totals hide entirely.</li>
-        </ul>
-        <div class="chips"><span class="chip">Multi-robot systems</span><span class="chip">Cooperative manipulation</span><span class="chip">Motion planning</span><span class="chip">Teacher–student RL</span><span class="chip">MuJoCo</span></div>
-        <div class="links">
-          <a href="m2.html">Website</a>
-          <a href="assets/projects/m2/read-the-room.pdf" target="_blank" rel="noopener">Paper</a>
-          <a href="https://github.com/thejerrycheng/2027_cheng_iros_m2" target="_blank" rel="noopener">Source</a>
-        </div>
-        <p class="exp-note">Evaluated in simulation. Hardware deployment, communication-budget ablations and reliable grasp-loss recovery remain open.</p>
-      </div>
-    </details>
-
-    <details class="card exp">
-      <summary>
-        <span class="exp-mark sm" aria-hidden="true">STARS</span>
-        <span class="exp-id">
-          <span class="exp-org">Space &amp; Terrestrial Autonomous Robotic Systems Lab</span>
-          <span class="exp-role">Robotics Researcher — <a href="https://discover.research.utoronto.ca/20331-jonathan-kelly" target="_blank" rel="noopener">Prof. Jonathan Kelly</a></span>
-          <span class="exp-where">University of Toronto Institute for Aerospace Studies · Toronto</span>
-        </span>
-        <span class="exp-date">Sep 2021 – Aug 2025</span>
-        <span class="exp-tog" aria-hidden="true"></span>
-      </summary>
-      <div class="exp-panel">
-        <ul class="exp-points">
-          <li>A certifiably globally optimal algorithm for generalized robot–world and hand–eye calibration (<i>IJRR</i>, 2025).</li>
-          <li>Extrinsic calibration of 2D millimetre-wave radar pairs from ego-velocity estimates — no overlapping fields of view, no targets (<i>IEEE AIM</i>, 2023).</li>
-          <li>Targetless spatiotemporal calibration of 3D radar–camera pairs using continuous-time B-splines (<i>IEEE T-RO</i>, 2022).</li>
-        </ul>
-        <div class="chips"><span class="chip">Extrinsic calibration</span><span class="chip">Continuous-time estimation</span><span class="chip">Certifiable optimization</span><span class="chip">Radar</span></div>
-        <div class="links">
-          <a href="rwhe_calibration.html">Hand–eye</a>
-          <a href="radar_radar.html">Radar–radar</a>
-          <a href="radar_camera.html">Radar–camera</a>
-        </div>
-      </div>
-    </details>
-
-    <details class="card exp">
-      <summary>
-        <span class="exp-mark" aria-hidden="true">DGP</span>
-        <span class="exp-id">
-          <span class="exp-org">Dynamic Graphics Project Lab</span>
+          <span class="exp-org"><a href="https://www.dgp.toronto.edu" target="_blank" rel="noopener">Dynamic Graphics Project Lab</a></span>
           <span class="exp-role">HCI Researcher — <a href="https://danielwigdor.com" target="_blank" rel="noopener">Prof. Daniel Wigdor</a></span>
-          <span class="exp-where">University of Toronto, Department of Computer Science · Toronto</span>
+          <span class="exp-where">University of Toronto, Department of Computer Science &middot; Toronto</span>
         </span>
         <span class="exp-date">Sep 2022 – Aug 2025</span>
         <span class="exp-tog" aria-hidden="true"></span>
       </summary>
       <div class="exp-panel">
-        <ul class="exp-points">
-          <li><b>VibraForge</b> — a 128-actuator high-bandwidth toolkit for spatialized vibrotactile feedback, built so a haptic prototype does not start with a soldering iron (<i>CHI</i>, 2025).</li>
-          <li><b>AeroHaptix</b> — wearable vibrotactile feedback for UAV teleoperation, with multi-CBF collision avoidance that keeps the pilot informed instead of overruled (<i>IEEE RA-L</i>, 2024).</li>
-        </ul>
-        <div class="chips"><span class="chip">Haptics</span><span class="chip">Teleoperation</span><span class="chip">Wearables</span><span class="chip">CBF safety</span><span class="chip">Multisensory interfaces</span></div>
-        <div class="links">
-          <a href="haptic_toolkit.html">VibraForge</a>
-          <a href="aerohaptix.html">AeroHaptix</a>
+        <div class="exp-projects">
+
+          <div class="proj-row">
+            <a class="proj-thumb" href="haptic_toolkit.html"><img src="assets/images/publications/vibraforge_toolkit.JPG" alt="VibraForge vibrotactile prototyping toolkit" loading="lazy" decoding="async"></a>
+            <div class="proj-text">
+              <a class="proj-name" href="haptic_toolkit.html">VibraForge — Spatialized Vibrotactile Prototyping Toolkit</a>
+              <span class="proj-when">ACM CHI 2025</span>
+              <p>A 128-actuator, high-bandwidth toolkit built so a spatialized haptic prototype does not have to start with a soldering iron.</p>
+            </div>
+          </div>
+
+          <div class="proj-row">
+            <a class="proj-thumb" href="aerohaptix.html"><img src="assets/images/publications/drone_teleop.jpg" alt="Wearable haptic vest used for UAV teleoperation" loading="lazy" decoding="async"></a>
+            <div class="proj-text">
+              <a class="proj-name" href="aerohaptix.html">AeroHaptix — Wearable Haptics for UAV Teleoperation</a>
+              <span class="proj-when">IEEE RA-L 2024</span>
+              <p>Vibrotactile feedback plus multi-CBF collision avoidance, so the pilot is informed about the obstacles around the drone rather than overruled by the controller.</p>
+            </div>
+          </div>
+
         </div>
+        <div class="chips"><span class="chip">Haptics</span><span class="chip">Teleoperation</span><span class="chip">Wearables</span><span class="chip">CBF safety</span><span class="chip">Multisensory interfaces</span></div>
       </div>
     </details>
 
     <details class="card exp">
       <summary>
-        <span class="exp-mark sm" aria-hidden="true">IRIS</span>
+        <span class="exp-mark lg logo"><img src="assets/icons/uoft.png" alt="University of Toronto"></span>
         <span class="exp-id">
-          <span class="exp-org">IRIS — Intelligent Robotic Imaging System</span>
+          <span class="exp-org"><a href="https://robotics.utoronto.ca" target="_blank" rel="noopener">University of Toronto Robotics Institute</a></span>
           <span class="exp-role">M.Eng. Researcher — <a href="https://www.mie.utoronto.ca/faculty_staff/mackay/" target="_blank" rel="noopener">Prof. Matthew Mackay</a> and <a href="https://www.ece.utoronto.ca/people/bereyhi-a/" target="_blank" rel="noopener">Prof. Ali Bereyhi</a></span>
-          <span class="exp-where">University of Toronto Robotics Institute · Toronto</span>
+          <span class="exp-where">Master's thesis &middot; Toronto</span>
         </span>
         <span class="exp-date">Sep 2024 – Aug 2025</span>
         <span class="exp-tog" aria-hidden="true"></span>
       </summary>
       <div class="exp-panel">
-        <ul class="exp-points">
-          <li>Designed and built a low-cost 6-DOF 3D-printed cinema robot arm on quasi-direct-drive actuation — a camera mover that a single person can carry and afford.</li>
-          <li>Vertically integrated ROS stack with a MuJoCo digital twin, so the same kinematics, planners and controllers run in simulation and on the hardware.</li>
-          <li>Goal-conditioned ACT–CVAE visuomotor policy for smooth, object-aware camera motion learned from expert demonstrations (<i>CRV</i> 2026, oral, top 10%).</li>
-        </ul>
-        <div class="chips"><span class="chip">Task-specific design</span><span class="chip">QDD actuation</span><span class="chip">Impedance control</span><span class="chip">Imitation learning</span><span class="chip">ROS</span></div>
-        <div class="links">
-          <a href="iris.html">Project</a>
-          <a href="iris_studio.html">Studio</a>
-          <a href="https://arxiv.org/abs/2602.17537" target="_blank" rel="noopener">Paper</a>
+        <div class="exp-projects">
+
+          <div class="proj-row">
+            <a class="proj-thumb" href="iris.html"><img src="assets/images/publications/iris_cover.jpg" alt="IRIS, a 3D-printed 6-DOF cinema robot arm" loading="lazy" decoding="async"></a>
+            <div class="proj-text">
+              <a class="proj-name" href="iris.html">IRIS — Intelligent Robotic Imaging System</a>
+              <span class="proj-when">M.Eng. thesis &middot; CRV 2026 (oral, top 10%)</span>
+              <p>A low-cost 6-DOF 3D-printed cinema robot arm on quasi-direct-drive actuation, a vertically integrated ROS stack with a MuJoCo digital twin for sim-to-real, and a goal-conditioned ACT–CVAE visuomotor policy that learns smooth, object-aware camera motion from expert demonstrations.</p>
+              <div class="links"><a href="iris.html">Project</a><a href="iris_studio.html">Studio</a><a href="https://arxiv.org/abs/2602.17537" target="_blank" rel="noopener">Paper</a></div>
+            </div>
+          </div>
+
         </div>
+        <div class="chips"><span class="chip">Task-specific design</span><span class="chip">QDD actuation</span><span class="chip">Impedance control</span><span class="chip">Imitation learning</span><span class="chip">ROS</span></div>
       </div>
     </details>
 
     <details class="card exp">
       <summary>
-        <span class="exp-mark" aria-hidden="true">NRL</span>
+        <span class="exp-mark sm" aria-hidden="true">KITE</span>
         <span class="exp-id">
-          <span class="exp-org">Neural Robotics Lab</span>
+          <span class="exp-org"><a href="https://kite-uhn.com" target="_blank" rel="noopener">Neural Robotics Lab</a></span>
           <span class="exp-role">Robotics Researcher — <a href="https://kite-uhn.com/scientist/brokoslaw-laschowski" target="_blank" rel="noopener">Prof. Brokoslaw Laschowski</a></span>
-          <span class="exp-where">KITE Research Institute · Toronto</span>
+          <span class="exp-where">KITE Research Institute, University Health Network &middot; Toronto</span>
         </span>
         <span class="exp-date">Sep 2023 – Aug 2024</span>
         <span class="exp-tog" aria-hidden="true"></span>
       </summary>
       <div class="exp-panel">
-        <ul class="exp-points">
-          <li>Integrated monocular perception with virtual-holonomic-constraint control for adaptive stair walking.</li>
-          <li>Built a Metric3D-based depth pipeline with enhanced normal-map reasoning to recover stair geometry — rise, run and edge — from a single camera.</li>
-        </ul>
-        <div class="chips"><span class="chip">Exoskeleton control</span><span class="chip">VHC locomotion</span><span class="chip">Monocular depth</span><span class="chip">Stair perception</span></div>
-        <div class="links">
-          <a href="bipednav.html">BipedNav</a>
+        <div class="exp-projects">
+
+          <div class="proj-row">
+            <a class="proj-thumb" href="bipednav.html"><img src="assets/images/projects/bipednav/poster/fig4_results_grid.jpg" alt="Monocular depth estimation of stairs for a walking robot" loading="lazy" decoding="async"></a>
+            <div class="proj-text">
+              <a class="proj-name" href="bipednav.html">BipedNav — Stair Perception for Adaptive Walking</a>
+              <span class="proj-when">TRC poster 2024</span>
+              <p>Monocular perception joined to virtual-holonomic-constraint control for adaptive stair walking, with a Metric3D-based depth pipeline and enhanced normal-map reasoning that recovers stair geometry — rise, run and edge — from a single camera.</p>
+            </div>
+          </div>
+
         </div>
+        <div class="chips"><span class="chip">Exoskeleton control</span><span class="chip">VHC locomotion</span><span class="chip">Monocular depth</span><span class="chip">Stair perception</span></div>
       </div>
     </details>
 
@@ -317,17 +326,17 @@
     <h2 class="section-title">Industry Experience</h2>
     <button type="button" class="see-all" data-expand-all aria-expanded="false">Expand all</button>
   </div>
-  <p class="exp-hint">Open a role to see what it produced</p>
+  <p class="exp-hint">Open a role to see what it produced — or read the <a href="experience.html">full write-ups</a></p>
 
   <div class="exp-stack">
 
     <details class="card exp" open>
       <summary>
-        <span class="exp-mark" aria-hidden="true">GP</span>
+        <span class="exp-mark lg logo bleed"><img src="assets/images/experience/logos/goupals.png" alt="GouPals"></span>
         <span class="exp-id">
           <span class="exp-org">GouPals Inc.</span>
           <span class="exp-role">Cofounder / CEO</span>
-          <span class="exp-where">Toronto</span>
+          <span class="exp-where"><a href="https://www.linkedin.com/company/104389511/" target="_blank" rel="noopener">linkedin.com/company/goupals</a> &middot; Toronto</span>
         </span>
         <span class="exp-date">Aug 2024 – Apr 2025</span>
         <span class="exp-tog" aria-hidden="true"></span>
@@ -339,41 +348,60 @@
           <li>Led a team of three cofounders across product, marketing and finance for China–North America–Europe trade routes.</li>
         </ul>
         <div class="chips"><span class="chip">Product</span><span class="chip">SwiftUI</span><span class="chip">React</span><span class="chip">Firebase</span><span class="chip">Fundraising</span></div>
-        <div class="links">
-          <a href="#startups">The full story</a>
-          <a href="https://www.linkedin.com/company/104389511/" target="_blank" rel="noopener">LinkedIn</a>
-        </div>
+        <div class="links"><a href="experience.html#goupals">Full write-up</a><a href="https://www.linkedin.com/company/104389511/" target="_blank" rel="noopener">LinkedIn</a></div>
       </div>
     </details>
 
     <details class="card exp">
       <summary>
-        <span class="exp-mark" aria-hidden="true">800</span>
+        <span class="exp-mark lg logo"><img src="assets/images/experience/logos/one800.svg" alt="ONE800"></span>
         <span class="exp-id">
           <span class="exp-org">ONE800 Inc.</span>
           <span class="exp-role">Software Engineer / Machine Learning Engineer</span>
-          <span class="exp-where">Toronto</span>
+          <span class="exp-where">LLM products &middot; Toronto</span>
         </span>
         <span class="exp-date">Apr 2023 – Dec 2023</span>
         <span class="exp-tog" aria-hidden="true"></span>
       </summary>
       <div class="exp-panel">
         <ul class="exp-points">
-          <li>Built an Apple-approved iMessage integration with a 10-person engineering team, putting LLM access — text, image and voice memo — within reach of older users who never install an app.</li>
+          <li>Built an Apple-approved iMessage integration with a ten-person engineering team, putting LLM access — text, image and voice memo — within reach of older users who never install an app.</li>
           <li>Developed multilingual LLM pipelines for transcription, translation, OCR and generation.</li>
           <li>Built a LangChain + Redis memory layer giving conversational agents both short- and long-term recall.</li>
         </ul>
         <div class="chips"><span class="chip">LLM pipelines</span><span class="chip">LangChain</span><span class="chip">Redis</span><span class="chip">OCR</span><span class="chip">iMessage / Apple review</span></div>
+        <div class="links"><a href="experience.html#one800">Full write-up</a></div>
       </div>
     </details>
 
     <details class="card exp">
       <summary>
-        <span class="exp-mark sm" aria-hidden="true">CSSC</span>
+        <span class="exp-mark lg logo"><img src="assets/images/experience/logos/boe.svg" alt="BOE Technology Group"></span>
+        <span class="exp-id">
+          <span class="exp-org">BOE Technology Group Co.</span>
+          <span class="exp-role">Machine Learning Engineer Intern</span>
+          <span class="exp-where"><a href="https://www.boe.com" target="_blank" rel="noopener">boe.com</a> &middot; Beijing</span>
+        </span>
+        <span class="exp-date">May 2021 – Jul 2021</span>
+        <span class="exp-tog" aria-hidden="true"></span>
+      </summary>
+      <div class="exp-panel">
+        <ul class="exp-points">
+          <li>Designed, trained and evaluated two CNNs in TensorFlow and PyTorch to distinguish pedestrian features, judged against a spread of metrics rather than accuracy alone.</li>
+          <li>Wrote the web crawlers that sourced the data — <b>3000+ videos and images</b> — then pre-processed and quality-checked the set, taking model accuracy from <b>64% to 89%</b>.</li>
+        </ul>
+        <div class="chips"><span class="chip">CNNs</span><span class="chip">TensorFlow</span><span class="chip">PyTorch</span><span class="chip">Data pipelines</span><span class="chip">Computer vision</span></div>
+        <div class="links"><a href="experience.html#boe">Full write-up</a></div>
+      </div>
+    </details>
+
+    <details class="card exp">
+      <summary>
+        <span class="exp-mark lg logo"><img src="assets/images/experience/logos/cssc.svg" alt="China State Shipbuilding Corporation"></span>
         <span class="exp-id">
           <span class="exp-org">China State Shipbuilding Corporation</span>
           <span class="exp-role">Mechanical Engineer Intern</span>
-          <span class="exp-where">Shanghai</span>
+          <span class="exp-where"><a href="https://www.chinaships.com" target="_blank" rel="noopener">chinaships.com</a> &middot; Shanghai</span>
         </span>
         <span class="exp-date">Sep 2020 – Apr 2021</span>
         <span class="exp-tog" aria-hidden="true"></span>
@@ -384,19 +412,17 @@
           <li>Patented a high-efficiency spray-nozzle fire pipeline: CFD tests showed <b>80% water savings</b> and <b>67% faster fire response</b>.</li>
         </ul>
         <div class="chips"><span class="chip">HVAC design</span><span class="chip">CFD</span><span class="chip">CADMATIC</span><span class="chip">Bentley</span></div>
-        <div class="links">
-          <a href="https://epub.cnipa.gov.cn/cred/CN114470591B" target="_blank" rel="noopener">Patent CN114470591B</a>
-        </div>
+        <div class="links"><a href="experience.html#cssc">Full write-up</a><a href="https://epub.cnipa.gov.cn/cred/CN114470591B" target="_blank" rel="noopener">Patent</a></div>
       </div>
     </details>
 
     <details class="card exp">
       <summary>
-        <span class="exp-mark sm" aria-hidden="true">ADSK</span>
+        <span class="exp-mark lg logo"><img src="assets/images/experience/logos/autodesk.svg" alt="Autodesk"></span>
         <span class="exp-id">
           <span class="exp-org">Autodesk Inc.</span>
           <span class="exp-role">Student Ambassador</span>
-          <span class="exp-where">Toronto</span>
+          <span class="exp-where"><a href="https://www.autodesk.com" target="_blank" rel="noopener">autodesk.com</a> &middot; Toronto</span>
         </span>
         <span class="exp-date">Sep 2019 – Jun 2020</span>
         <span class="exp-tog" aria-hidden="true"></span>
@@ -404,12 +430,10 @@
       <div class="exp-panel">
         <ul class="exp-points">
           <li>Founded and led the Fusion Design Association, training students in Fusion 360 — CAD, CAM and generative design — and the manufacturing workflows around them.</li>
-          <li>Mentored 30+ students and ran an annual 3D-printed glider competition, including a custom engineered launch system.</li>
+          <li>Mentored 30+ students and ran an annual 3D-printed glider competition with a custom engineered launch system.</li>
         </ul>
         <div class="chips"><span class="chip">Generative design</span><span class="chip">Fusion 360</span><span class="chip">CAM</span><span class="chip">Teaching</span></div>
-        <div class="links">
-          <a href="unicycle.html">Generative design work</a>
-        </div>
+        <div class="links"><a href="experience.html#autodesk">Full write-up</a><a href="unicycle.html">Generative design work</a></div>
       </div>
     </details>
 
@@ -418,33 +442,72 @@
 
 <!-- ===================== STARTUPS ===================== -->
 <section class="section" id="startups">
-  <h2 class="section-title">Startups</h2>
-  <div class="startup card card-pad">
-    <div class="startup-body">
-      <h3>Motion Picture Robotics</h3>
-      <div class="meta">Cinema robotics • 2025–present</div>
-      <p>Film-grade robotic camera motion is astonishing — and priced out of reach, with professional camera-motion rigs running well into six figures. I'm building a <b>mobile cinema robot arm</b> that flips that equation: portable enough to carry onto any set, affordable enough for independent creators, and simple enough to run without a dedicated technical crew. The aim is to put programmable, repeatable, cinematic camera moves in everyone's hands.</p>
-      <div class="links">
-        <a href="cinema_robot.html">Website</a>
-        <a href="https://www.youtube.com/@thejerrycheng" target="_blank" rel="noopener">Demo</a>
-      </div>
-    </div>
-    <div class="startup-media">
-      <img class="startup-hero" src="assets/images/startups/mpr_cinema.jpg" alt="Mobile cinema robot arm" loading="lazy" decoding="async">
-    </div>
+  <div class="section-head">
+    <h2 class="section-title">Startups</h2>
+    <button type="button" class="see-all" data-expand-all aria-expanded="true">Collapse all</button>
   </div>
+  <p class="exp-hint">Two ventures — one still running</p>
 
-  <div class="startup card card-pad" style="margin-top:18px;">
-    <div class="startup-body">
-      <h3>GouPals</h3>
-      <div class="meta">Cross-border commerce • 2024–2025</div>
-      <p>A peer-to-peer shopping network built on one idea: <b>anything, from anywhere — carried by people, not corporations.</b> Buyers browse a global marketplace and request items from any city; travelers already flying that route bring them home, with live door-to-door tracking and a verified handoff. I designed and built the product end to end — the iOS app, backend, and brand.</p>
-    </div>
-    <div class="startup-media startup-shots">
-      <img src="assets/images/startups/goupals_landing.jpg" alt="GouPals — landing" loading="lazy" decoding="async">
-      <img src="assets/images/startups/goupals_feed.jpg" alt="GouPals — global marketplace" loading="lazy" decoding="async">
-      <img src="assets/images/startups/goupals_tracking.jpg" alt="GouPals — live tracking" loading="lazy" decoding="async">
-    </div>
+  <div class="exp-stack">
+
+    <details class="card exp" open>
+      <summary>
+        <span class="exp-mark lg logo"><img src="assets/images/experience/logos/mpr.svg" alt="Motion Picture Robotics"></span>
+        <span class="exp-id">
+          <span class="exp-org">Motion Picture Robotics</span>
+          <span class="exp-role">Founder — cinema robotics</span>
+          <span class="exp-where"><a href="cinema_robot.html">motion picture robotics</a> &middot; Toronto / New York</span>
+        </span>
+        <span class="exp-date">2025 – present</span>
+        <span class="exp-tog" aria-hidden="true"></span>
+      </summary>
+      <div class="exp-panel has-media">
+        <div>
+          <ul class="exp-points">
+            <li>Film-grade robotic camera motion is astonishing — and priced out of reach, with professional camera-motion rigs running well into six figures. I'm building a <b>mobile cinema robot arm</b> that flips that equation: portable enough to carry onto any set, affordable enough for independent creators, simple enough to run without a dedicated technical crew.</li>
+            <li>The work spans the whole stack — quasi-direct-drive actuators and firmware, kinematics and shot planning, and the company around them. The aim is to put programmable, repeatable, cinematic camera moves in everyone's hands.</li>
+          </ul>
+          <div class="chips"><span class="chip">Mechatronics</span><span class="chip">QDD actuation</span><span class="chip">Motion planning</span><span class="chip">Product</span></div>
+          <div class="links"><a href="cinema_robot.html">Website</a><a href="iris.html">The research behind it</a><a href="https://www.youtube.com/@thejerrycheng" target="_blank" rel="noopener">Demo</a></div>
+        </div>
+        <figure class="exp-media">
+          <img src="assets/images/startups/mpr_cinema.jpg" alt="The mobile cinema robot arm planning a shot around an obstacle" loading="lazy" decoding="async">
+          <figcaption>Shot planning with and without an obstacle in the frame.</figcaption>
+        </figure>
+      </div>
+    </details>
+
+    <details class="card exp" open>
+      <summary>
+        <span class="exp-mark lg logo bleed"><img src="assets/images/experience/logos/goupals.png" alt="GouPals"></span>
+        <span class="exp-id">
+          <span class="exp-org">GouPals</span>
+          <span class="exp-role">Cofounder / CEO — cross-border commerce</span>
+          <span class="exp-where"><a href="https://www.linkedin.com/company/104389511/" target="_blank" rel="noopener">linkedin.com/company/goupals</a> &middot; Toronto</span>
+        </span>
+        <span class="exp-date">2024 – 2025</span>
+        <span class="exp-tog" aria-hidden="true"></span>
+      </summary>
+      <div class="exp-panel has-media">
+        <div>
+          <ul class="exp-points">
+            <li>A peer-to-peer shopping network built on one idea: <b>anything, from anywhere — carried by people, not corporations.</b> Buyers browse a global marketplace and request items from any city; travellers already flying that route bring them home, with live door-to-door tracking and a verified handoff.</li>
+            <li>I designed and built the product end to end — the iOS app, the backend, and the brand.</li>
+          </ul>
+          <div class="chips"><span class="chip">SwiftUI</span><span class="chip">React</span><span class="chip">Firebase</span><span class="chip">Brand</span></div>
+          <div class="links"><a href="experience.html#goupals">Full write-up</a><a href="https://www.linkedin.com/company/104389511/" target="_blank" rel="noopener">LinkedIn</a></div>
+        </div>
+        <figure class="exp-media">
+          <div class="shots">
+            <img src="assets/images/startups/goupals_landing.jpg" alt="GouPals — landing" loading="lazy" decoding="async">
+            <img src="assets/images/startups/goupals_feed.jpg" alt="GouPals — global marketplace" loading="lazy" decoding="async">
+            <img src="assets/images/startups/goupals_tracking.jpg" alt="GouPals — live tracking" loading="lazy" decoding="async">
+          </div>
+          <figcaption>The shipped iOS app: landing, marketplace, live tracking.</figcaption>
+        </figure>
+      </div>
+    </details>
+
   </div>
 </section>
 

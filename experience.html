@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Industry Experience — Jerry (Qilong) Cheng</title>
-  <meta name="description" content="Industry experience of Jerry (Qilong) Cheng — cinema robotics, cross-border logistics, LLM products, ship HVAC design, and generative design.">
+  <meta name="description" content="Industry experience of Jerry (Qilong) Cheng — cinema robotics, cross-border logistics, LLM products, computer vision at BOE, ship HVAC design, and generative design.">
   <meta name="author" content="Jerry Cheng">
   <link rel="canonical" href="https://thejerrycheng.github.io/experience.html">
   <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
@@ -55,67 +55,196 @@
   <div class="wrap">
     <p class="kicker">Companies, products, and the things that shipped</p>
     <h1>Industry Experience</h1>
-    <p>Where I have worked outside the lab — a cinema robotics company, a logistics startup, an LLM product team, a shipyard, and a design-tools ambassadorship. Newest first.</p>
+    <p>Where I have worked outside the lab — a cinema robotics company, a logistics startup, an LLM product team, a display-tech lab, a shipyard, and a design-tools ambassadorship. Newest first.</p>
   </div>
 </header>
 <div class="deco-band" aria-hidden="true"></div>
 
 <section class="section" id="experience">
-  <div class="pub-list">
+  <div class="section-head">
+    <h2 class="section-title">Industry Experience</h2>
+    <button type="button" class="see-all" data-expand-all aria-expanded="true">Collapse all</button>
+  </div>
 
-    <div class="pub card card-hover" id="mpr">
-      <div class="pub-thumb"><img src="assets/images/startups/mpr_cinema.jpg" alt="The mobile cinema robot arm on a desk, planning a shot around an obstacle" loading="lazy" decoding="async" class="fit-contain"></div>
-      <div class="pub-meta">
-        <span class="papertitle">Founder — Motion Picture Robotics</span><span class="proj-year">Now</span>
-        <span class="authors">Motion Picture Robotics &middot; Toronto / New York</span>
-        <span class="venue"><em>2025 – present</em> &middot; Cinema robotics</span>
-        <p class="proj-body">Film-grade robotic camera motion is astonishing, and priced out of reach — professional camera-motion rigs run well into six figures. I am building a <b>mobile cinema robot arm</b> that flips that equation: portable enough to carry onto any set, affordable enough for independent creators, simple enough to run without a technical crew. My work spans the actuators and firmware, the kinematics and shot planner, and the company around them.</p>
-        <div class="links"><a href="cinema_robot.html">Website</a><a href="iris.html">The research behind it</a><a href="https://www.youtube.com/@thejerrycheng" target="_blank" rel="noopener">Demo</a></div>
-      </div>
-    </div>
+  <div class="exp-stack">
 
-    <div class="pub card card-hover" id="goupals">
-      <div class="pub-thumb"><div class="pub-carousel" data-carousel><div class="carousel-track"><div class="slide"><img src="assets/images/startups/goupals_landing.jpg" alt="GouPals — landing screen" loading="lazy" decoding="async" class="fit-contain"></div><div class="slide"><img src="assets/images/startups/goupals_feed.jpg" alt="GouPals — global marketplace" loading="lazy" decoding="async" class="fit-contain"></div><div class="slide"><img src="assets/images/startups/goupals_tracking.jpg" alt="GouPals — live door-to-door tracking" loading="lazy" decoding="async" class="fit-contain"></div></div><button class="c-btn prev" aria-label="Previous slide"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg></button><button class="c-btn next" aria-label="Next slide"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div></div>
-      <div class="pub-meta">
-        <span class="papertitle">Cofounder / CEO — GouPals Inc.</span><span class="proj-year">2025</span>
-        <span class="authors"><a href="https://www.linkedin.com/company/104389511/" target="_blank" rel="noopener">GouPals Inc.</a> &middot; Toronto</span>
-        <span class="venue"><em>Aug 2024 – Apr 2025</em> &middot; Cross-border commerce</span>
-        <p class="proj-body">A peer-to-peer international logistics platform on one idea: <b>anything, from anywhere — carried by people, not corporations.</b> Buyers request items from any city; travellers already flying that route bring them home, with live door-to-door tracking and a verified handoff. I built and launched the iOS MVP in under two months on Swift, React and Firebase, and led three cofounders across product, marketing and finance for China–North America–Europe routes.</p>
-        <div class="links"><a href="https://www.linkedin.com/company/104389511/" target="_blank" rel="noopener">LinkedIn</a><a href="cv.html#startups">More on the CV</a></div>
+    <details class="card exp" id="mpr" open>
+      <summary>
+        <span class="exp-mark lg logo"><img src="assets/images/experience/logos/mpr.svg" alt="Motion Picture Robotics"></span>
+        <span class="exp-id">
+          <span class="exp-org">Motion Picture Robotics</span>
+          <span class="exp-role">Founder — cinema robotics</span>
+          <span class="exp-where"><a href="cinema_robot.html">motion picture robotics</a> &middot; Toronto / New York</span>
+        </span>
+        <span class="exp-date">2025 – present</span>
+        <span class="exp-tog" aria-hidden="true"></span>
+      </summary>
+      <div class="exp-panel has-media">
+        <div>
+          <ul class="exp-points">
+            <li>Film-grade robotic camera motion is astonishing, and priced out of reach — professional camera-motion rigs run well into six figures. I am building a <b>mobile cinema robot arm</b>: portable enough to carry onto any set, affordable enough for independent creators, simple enough to run without a technical crew.</li>
+            <li>The work spans the whole stack — quasi-direct-drive actuators and firmware, kinematics and shot planning, and the company around them.</li>
+          </ul>
+          <div class="chips"><span class="chip">Mechatronics</span><span class="chip">QDD actuation</span><span class="chip">Motion planning</span><span class="chip">Product</span></div>
+          <div class="links">
+            <a href="cinema_robot.html">Website</a>
+            <a href="iris.html">The research behind it</a>
+            <a href="https://www.youtube.com/@thejerrycheng" target="_blank" rel="noopener">Demo</a>
+          </div>
+        </div>
+        <figure class="exp-media">
+          <img src="assets/images/startups/mpr_cinema.jpg" alt="The cinema robot arm planning a shot around an obstacle" loading="lazy" decoding="async">
+          <figcaption>Shot planning with and without an obstacle in the frame.</figcaption>
+        </figure>
       </div>
-    </div>
+    </details>
 
-    <div class="pub card card-hover" id="one800">
-      <div class="pub-thumb"><img src="assets/images/experience/one800.svg" alt="ONE800 — printed plate with a message bubble" loading="lazy" decoding="async" class="fit-contain"></div>
-      <div class="pub-meta">
-        <span class="papertitle">Software / Machine Learning Engineer — ONE800 Inc.</span><span class="proj-year">2023</span>
-        <span class="authors">ONE800 Inc. &middot; Toronto</span>
-        <span class="venue"><em>Apr 2023 – Dec 2023</em> &middot; LLM products</span>
-        <p class="proj-body">Put a large language model where older users already are: inside iMessage, with no app to install. With a ten-person engineering team I built an Apple-approved iMessage integration handling text, images and voice memos, multilingual LLM pipelines for transcription, translation, OCR and generation, and a LangChain + Redis memory layer that gave the conversational agents both short- and long-term recall.</p>
+    <details class="card exp" id="goupals" open>
+      <summary>
+        <span class="exp-mark lg logo bleed"><img src="assets/images/experience/logos/goupals.png" alt="GouPals"></span>
+        <span class="exp-id">
+          <span class="exp-org">GouPals Inc.</span>
+          <span class="exp-role">Cofounder / CEO — cross-border commerce</span>
+          <span class="exp-where"><a href="https://www.linkedin.com/company/104389511/" target="_blank" rel="noopener">linkedin.com/company/goupals</a> &middot; Toronto</span>
+        </span>
+        <span class="exp-date">Aug 2024 – Apr 2025</span>
+        <span class="exp-tog" aria-hidden="true"></span>
+      </summary>
+      <div class="exp-panel has-media">
+        <div>
+          <ul class="exp-points">
+            <li>A peer-to-peer international logistics platform on one idea: <b>anything, from anywhere — carried by people, not corporations.</b> Buyers request items from any city; travellers already flying that route bring them home, with live door-to-door tracking and a verified handoff.</li>
+            <li>Built and launched the iOS MVP in under two months on Swift, React and Firebase, with GPS tracking, push notifications and a backend tuned for traveller–buyer pairing.</li>
+            <li>Led a team of three cofounders across product, marketing and finance for China–North America–Europe trade routes.</li>
+          </ul>
+          <div class="chips"><span class="chip">Product</span><span class="chip">SwiftUI</span><span class="chip">React</span><span class="chip">Firebase</span><span class="chip">Fundraising</span></div>
+          <div class="links">
+            <a href="https://www.linkedin.com/company/104389511/" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="cv.html#startups">More on the CV</a>
+          </div>
+        </div>
+        <figure class="exp-media">
+          <div class="shots">
+            <img src="assets/images/startups/goupals_landing.jpg" alt="GouPals — landing screen" loading="lazy" decoding="async">
+            <img src="assets/images/startups/goupals_feed.jpg" alt="GouPals — global marketplace" loading="lazy" decoding="async">
+            <img src="assets/images/startups/goupals_tracking.jpg" alt="GouPals — live door-to-door tracking" loading="lazy" decoding="async">
+          </div>
+          <figcaption>The shipped iOS app: landing, marketplace, live tracking.</figcaption>
+        </figure>
       </div>
-    </div>
+    </details>
 
-    <div class="pub card card-hover" id="cssc">
-      <div class="pub-thumb"><img src="assets/images/experience/cssc.svg" alt="China State Shipbuilding — printed plate with a cruise ship" loading="lazy" decoding="async" class="fit-contain"></div>
-      <div class="pub-meta">
-        <span class="papertitle">Mechanical Engineer Intern — China State Shipbuilding</span><span class="proj-year">2021</span>
-        <span class="authors"><a href="https://www.chinaships.com" target="_blank" rel="noopener">China State Shipbuilding Corporation</a> &middot; Shanghai</span>
-        <span class="venue"><em>Sep 2020 – Apr 2021</em> &middot; Marine HVAC &amp; fire systems</span>
-        <p class="proj-body">Designed HVAC subsystems for China's first domestically built 12-deck cruise ship, working in CADMATIC and Bentley alongside the shipyard's engineering teams. Patented a high-efficiency spray-nozzle fire pipeline: CFD tests showed <b>80% water savings</b> and <b>67% faster fire response</b> than the baseline system.</p>
-        <div class="links"><a href="https://epub.cnipa.gov.cn/cred/CN114470591B" target="_blank" rel="noopener">Patent CN114470591B</a></div>
+    <details class="card exp" id="one800" open>
+      <summary>
+        <span class="exp-mark lg logo"><img src="assets/images/experience/logos/one800.svg" alt="ONE800"></span>
+        <span class="exp-id">
+          <span class="exp-org">ONE800 Inc.</span>
+          <span class="exp-role">Software Engineer / Machine Learning Engineer</span>
+          <span class="exp-where">LLM products &middot; Toronto</span>
+        </span>
+        <span class="exp-date">Apr 2023 – Dec 2023</span>
+        <span class="exp-tog" aria-hidden="true"></span>
+      </summary>
+      <div class="exp-panel has-media">
+        <div>
+          <ul class="exp-points">
+            <li>Put a large language model where older users already are: inside iMessage, with no app to install. With a ten-person engineering team I built the Apple-approved integration, handling text, images and voice memos.</li>
+            <li>Developed multilingual LLM pipelines for transcription, translation, OCR and generation.</li>
+            <li>Built a LangChain + Redis memory layer that gave the conversational agents both short- and long-term recall.</li>
+          </ul>
+          <div class="chips"><span class="chip">LLM pipelines</span><span class="chip">LangChain</span><span class="chip">Redis</span><span class="chip">OCR</span><span class="chip">iMessage / Apple review</span></div>
+        </div>
+        <figure class="exp-media">
+          <img src="assets/images/experience/one800.svg" alt="ONE800 — printed plate with a message bubble" loading="lazy" decoding="async">
+          <figcaption>An LLM that answers in the messages app people already use.</figcaption>
+        </figure>
       </div>
-    </div>
+    </details>
 
-    <div class="pub card card-hover" id="autodesk">
-      <div class="pub-thumb"><img src="assets/images/experience/autodesk.svg" alt="Autodesk — printed plate with a paper glider" loading="lazy" decoding="async" class="fit-contain"></div>
-      <div class="pub-meta">
-        <span class="papertitle">Student Ambassador — Autodesk Inc.</span><span class="proj-year">2020</span>
-        <span class="authors"><a href="https://www.autodesk.com" target="_blank" rel="noopener">Autodesk Inc.</a> &middot; Toronto</span>
-        <span class="venue"><em>Sep 2019 – Jun 2020</em> &middot; Design tools &amp; teaching</span>
-        <p class="proj-body">Founded and led the Fusion Design Association, teaching students Fusion 360 — CAD, CAM and generative design — and the manufacturing workflows around them. Mentored 30+ students and ran an annual 3D-printed glider competition, including the custom engineered launch system it flew from. The generative-design habit stuck: it shows up in the unicycle robot and in every printed bracket since.</p>
-        <div class="links"><a href="unicycle.html">Generative design work</a></div>
+    <details class="card exp" id="boe" open>
+      <summary>
+        <span class="exp-mark lg logo"><img src="assets/images/experience/logos/boe.svg" alt="BOE Technology Group"></span>
+        <span class="exp-id">
+          <span class="exp-org">BOE Technology Group Co.</span>
+          <span class="exp-role">Machine Learning Engineer Intern</span>
+          <span class="exp-where"><a href="https://www.boe.com" target="_blank" rel="noopener">boe.com</a> &middot; Beijing</span>
+        </span>
+        <span class="exp-date">May 2021 – Jul 2021</span>
+        <span class="exp-tog" aria-hidden="true"></span>
+      </summary>
+      <div class="exp-panel has-media">
+        <div>
+          <ul class="exp-points">
+            <li>Designed, trained and evaluated two CNNs in TensorFlow and PyTorch to distinguish pedestrian features, tuning each against a spread of metrics rather than accuracy alone.</li>
+            <li>Wrote the web crawlers that sourced the data — <b>3000+ videos and images</b> — then pre-processed and quality-checked the set, which took model accuracy from <b>64% to 89%</b>.</li>
+          </ul>
+          <div class="chips"><span class="chip">CNNs</span><span class="chip">TensorFlow</span><span class="chip">PyTorch</span><span class="chip">Data pipelines</span><span class="chip">Computer vision</span></div>
+        </div>
+        <figure class="exp-media">
+          <img src="assets/images/experience/boe.svg" alt="BOE — printed plate with a pedestrian inside a detection box" loading="lazy" decoding="async">
+          <figcaption>Pedestrian features, learned from a dataset I had to crawl first.</figcaption>
+        </figure>
       </div>
-    </div>
+    </details>
+
+    <details class="card exp" id="cssc" open>
+      <summary>
+        <span class="exp-mark lg logo"><img src="assets/images/experience/logos/cssc.svg" alt="China State Shipbuilding Corporation"></span>
+        <span class="exp-id">
+          <span class="exp-org">China State Shipbuilding Corporation</span>
+          <span class="exp-role">Mechanical Engineer Intern — marine HVAC &amp; fire systems</span>
+          <span class="exp-where"><a href="https://www.chinaships.com" target="_blank" rel="noopener">chinaships.com</a> &middot; Shanghai</span>
+        </span>
+        <span class="exp-date">Sep 2020 – Apr 2021</span>
+        <span class="exp-tog" aria-hidden="true"></span>
+      </summary>
+      <div class="exp-panel has-media">
+        <div>
+          <ul class="exp-points">
+            <li>Designed HVAC subsystems for China's first domestically built 12-deck cruise ship, working in CADMATIC and Bentley alongside the shipyard's engineering teams.</li>
+            <li>Patented a high-efficiency spray-nozzle fire pipeline: CFD tests showed <b>80% water savings</b> and <b>67% faster fire response</b> than the baseline system.</li>
+          </ul>
+          <div class="chips"><span class="chip">HVAC design</span><span class="chip">CFD</span><span class="chip">CADMATIC</span><span class="chip">Bentley</span></div>
+          <div class="links">
+            <a href="https://epub.cnipa.gov.cn/cred/CN114470591B" target="_blank" rel="noopener">Patent CN114470591B</a>
+          </div>
+        </div>
+        <figure class="exp-media">
+          <img src="assets/images/experience/cssc.svg" alt="CSSC — printed plate with a cruise ship" loading="lazy" decoding="async">
+          <figcaption>Twelve decks, and the fire main that runs through all of them.</figcaption>
+        </figure>
+      </div>
+    </details>
+
+    <details class="card exp" id="autodesk" open>
+      <summary>
+        <span class="exp-mark lg logo"><img src="assets/images/experience/logos/autodesk.svg" alt="Autodesk"></span>
+        <span class="exp-id">
+          <span class="exp-org">Autodesk Inc.</span>
+          <span class="exp-role">Student Ambassador — design tools &amp; teaching</span>
+          <span class="exp-where"><a href="https://www.autodesk.com" target="_blank" rel="noopener">autodesk.com</a> &middot; Toronto</span>
+        </span>
+        <span class="exp-date">Sep 2019 – Jun 2020</span>
+        <span class="exp-tog" aria-hidden="true"></span>
+      </summary>
+      <div class="exp-panel has-media">
+        <div>
+          <ul class="exp-points">
+            <li>Founded and led the Fusion Design Association, teaching students Fusion 360 — CAD, CAM and generative design — and the manufacturing workflows around them.</li>
+            <li>Mentored 30+ students and ran an annual 3D-printed glider competition, including the custom engineered launch system it flew from.</li>
+            <li>The generative-design habit stuck: it shows up in the unicycle robot and in every printed bracket since.</li>
+          </ul>
+          <div class="chips"><span class="chip">Generative design</span><span class="chip">Fusion 360</span><span class="chip">CAM</span><span class="chip">Teaching</span></div>
+          <div class="links">
+            <a href="unicycle.html">Generative design work</a>
+          </div>
+        </div>
+        <figure class="exp-media">
+          <img src="assets/images/experience/autodesk.svg" alt="Autodesk — printed plate with a paper glider" loading="lazy" decoding="async">
+          <figcaption>Thirty students, one glider competition, one launch rig.</figcaption>
+        </figure>
+      </div>
+    </details>
 
   </div>
 

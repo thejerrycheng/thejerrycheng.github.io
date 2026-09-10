@@ -18,6 +18,17 @@ MONO = "'Space Mono', 'Courier New', monospace"
 
 # a flat ink drawing per company, drawn inside a 200x160 box at (330, 108)
 ART = {
+    # pedestrian inside a detection box with corner ticks
+    "boe": """
+      <g transform="translate(366,84)" fill="none" stroke="{ink}" stroke-width="7"
+         stroke-linejoin="round" stroke-linecap="round">
+        <path d="M6 6 H50 M6 6 V44 M160 6 H116 M160 6 V44 M6 158 H50 M6 158 V120 M160 158 H116 M160 158 V120"
+              stroke="{red}"/>
+        <circle cx="83" cy="44" r="15" fill="{bone}"/>
+        <path d="M83 60 V104"/>
+        <path d="M83 70 L58 88 M83 70 L108 84"/>
+        <path d="M83 104 L64 140 M83 104 L104 140"/>
+      </g>""",
     # cruise ship: hull, three decks, funnel, waterline
     "cssc": """
       <g transform="translate(360,84)" fill="none" stroke="{ink}" stroke-width="7"
@@ -52,6 +63,7 @@ ART = {
 
 PLATES = [
     ("one800", "800", "ONE800 Inc.", "Software / ML engineer"),
+    ("boe", "BOE", "BOE Technology Group", "Machine learning intern"),
     ("cssc", "CSSC", "China State Shipbuilding", "Mechanical engineer intern"),
     ("autodesk", "ADSK", "Autodesk Inc.", "Student ambassador"),
 ]
@@ -75,8 +87,31 @@ TEMPLATE = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" widt
 </svg>
 """
 
+# square wordmark tiles, used where a company has no public logo to show
+TILE = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="220" height="220" role="img" aria-label="{name}">
+  <rect width="220" height="220" fill="{bone}"/>
+  <rect x="10" y="10" width="200" height="200" fill="none" stroke="{ink}" stroke-width="5"/>
+  <rect x="21" y="21" width="178" height="178" fill="none" stroke="{gold}" stroke-width="2"/>
+  <text x="110" y="{ty}" text-anchor="middle" font-family="{font}" font-size="{size}" letter-spacing="2" fill="{ink}">{word}</text>
+  <path d="M110 158 l11 11 -11 11 -11 -11 Z" fill="{red}"/>
+</svg>
+"""
+
+TILES = [
+    ("one800", "800", "ONE800 Inc.", 70, 126),
+    ("mpr", "MPR", "Motion Picture Robotics", 58, 124),
+]
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
+    logos = OUT / "logos"
+    logos.mkdir(parents=True, exist_ok=True)
+    for key, word, name, size, ty in TILES:
+        (logos / f"{key}.svg").write_text(TILE.format(
+            bone=BONE, ink=INK, red=RED, gold=GOLD, font=FONT, monofont=MONO,
+            word=word, name=name, size=size, ty=ty), encoding="utf-8")
+        print("wrote", logos / f"{key}.svg")
     for key, mono_txt, name, role in PLATES:
         svg = TEMPLATE.format(
             w=W, h=H, iw=W - 32, ih=H - 32, iw2=W - 56, ih2=H - 56,
