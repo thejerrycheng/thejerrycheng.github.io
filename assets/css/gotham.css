@@ -607,6 +607,73 @@ a .papertitle:hover { color: var(--link); }
 .startup-shots img { width: calc((100% - 20px) / 3); border-radius: 8px; display: block; background: #0b0b0f; border: 1.5px solid var(--line); box-shadow: var(--sh-xs); }
 
 /* =============================================================================
+   EXPERIENCE — expandable role cards (CV: research + industry)
+   Closed, a card reads like an Education row: monogram tile, org, role, date.
+   Open, it drops the panel of what the role actually produced. Native
+   <details>, so it still expands with JS off; the +/× is the only ornament.
+   ============================================================================= */
+.exp-stack { display: flex; flex-direction: column; gap: 16px; }
+.exp-hint { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--ash); margin: -14px 0 18px; }
+.exp { overflow: hidden; transition: box-shadow .18s var(--ease-out); }
+.exp[open] { box-shadow: var(--sh-lg); }
+.exp > summary {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto;
+  grid-template-areas: "mark id date tog";
+  align-items: center; gap: 4px 16px; padding: 16px 18px;
+  cursor: pointer; list-style: none; transition: background .18s ease;
+}
+.exp > summary::-webkit-details-marker { display: none; }
+.exp > summary:hover { background: var(--wash); }
+.exp[open] > summary { background: var(--wash); }
+.exp > summary:focus-visible { outline: 3px solid var(--hi); outline-offset: -3px; }
+.exp-mark {
+  grid-area: mark; width: 50px; height: 50px; border-radius: 8px; display: grid; place-items: center;
+  background: var(--bone); border: 1.5px solid var(--line); box-shadow: var(--sh-xs);
+  font-family: var(--font-comic); font-size: 16px; letter-spacing: .06em; line-height: 1; color: var(--imp); text-align: center;
+}
+.exp-mark.sm { font-size: 12.5px; letter-spacing: .03em; }
+.exp-id { grid-area: id; min-width: 0; }
+.exp-org, .exp-role, .exp-where { display: block; }
+.exp-org { font-size: 16.5px; font-weight: 700; line-height: 1.25; color: var(--ink); }
+.exp-role { font-size: 14.5px; line-height: 1.45; color: var(--ink-soft); margin-top: 2px; }
+.exp-role a { color: var(--link); font-weight: 600; text-decoration: none; }
+.exp-role a:hover { text-decoration: underline; }
+.exp-where { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .02em; color: var(--ash); margin-top: 4px; }
+.exp-date { grid-area: date; font-family: var(--font-mono); font-size: 12px; color: var(--ash); white-space: nowrap; }
+.exp-tog {
+  grid-area: tog; width: 26px; height: 26px; border-radius: 6px; display: grid; place-items: center;
+  font-family: var(--font-mono); font-weight: 700; font-size: 15px; line-height: 1; color: var(--ink);
+  background: var(--panel); border: 1.5px solid var(--line); box-shadow: 2px 2px 0 var(--sh-c);
+  transition: background .18s ease, color .18s ease;
+}
+.exp-tog::before { content: "+"; display: block; transition: transform .18s var(--ease-out); }
+.exp > summary:hover .exp-tog { background: var(--hi); color: #FFF9F0; }
+.exp[open] .exp-tog { background: var(--hi); color: #FFF9F0; }
+.exp[open] .exp-tog::before { transform: rotate(45deg); }
+.exp-panel { border-top: 1.5px dashed var(--line-soft); padding: 16px 20px 20px; }
+.exp-points { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.exp-points li { position: relative; padding-left: 20px; font-size: 14.5px; line-height: 1.6; color: var(--ink-soft); }
+.exp-points li::before { content: "▸"; position: absolute; left: 2px; top: 0; color: var(--imp); font-size: 13px; }
+.exp-points b, .exp-points strong { color: var(--ink); font-weight: 600; }
+.exp-panel .chips { margin-top: 15px; }
+.exp-panel .links { margin-top: 13px; }
+.exp-note { font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; letter-spacing: .02em; color: var(--ash); margin-top: 14px; }
+.see-all[data-expand-all] { cursor: pointer; font-family: var(--font-comic); }
+@media (min-width: 721px) { .exp-panel { padding-left: 84px; } }
+@media (prefers-reduced-motion: no-preference) {
+  .exp[open] > .exp-panel { animation: expOpen .24s var(--ease-out) both; }
+}
+@keyframes expOpen { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@media (max-width: 620px) {
+  .exp > summary { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "mark id tog" "mark date tog"; gap: 2px 12px; padding: 14px; }
+  .exp-mark { width: 44px; height: 44px; font-size: 14px; }
+  .exp-mark.sm { font-size: 11px; }
+  .exp-org { font-size: 15.5px; }
+  .exp-date { margin-top: 4px; }
+  .exp-panel { padding: 14px 16px 18px; }
+}
+
+/* =============================================================================
    RESPONSIVE
    ============================================================================= */
 @media (max-width: 820px) {

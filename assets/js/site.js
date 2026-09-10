@@ -144,6 +144,31 @@
     });
   });
 
+  /* ---- CV experience cards: a link in the header follows, it does not toggle ---- */
+  [].forEach.call(document.querySelectorAll(".exp > summary a"), function (a) {
+    a.addEventListener("click", function (e) { e.stopPropagation(); });
+  });
+
+  /* ---- CV experience cards: expand or collapse a whole section at once ---- */
+  [].forEach.call(document.querySelectorAll("[data-expand-all]"), function (btn) {
+    var scope = btn.closest("section") || document;
+    var cards = [].slice.call(scope.querySelectorAll("details.exp"));
+    if (!cards.length) { btn.hidden = true; return; }
+    function allOpen() { return cards.every(function (d) { return d.open; }); }
+    function sync() {
+      var open = allOpen();
+      btn.textContent = open ? "Collapse all" : "Expand all";
+      btn.setAttribute("aria-expanded", String(open));
+    }
+    btn.addEventListener("click", function () {
+      var open = !allOpen();
+      cards.forEach(function (d) { d.open = open; });
+      sync();
+    });
+    cards.forEach(function (d) { d.addEventListener("toggle", sync); });
+    sync();
+  });
+
   /* ---- Last updated ---- */
   var lu = document.querySelector("#last-updated time");
   if (lu) {
