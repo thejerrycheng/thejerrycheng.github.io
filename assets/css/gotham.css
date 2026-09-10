@@ -667,6 +667,31 @@ a .papertitle:hover { color: var(--link); }
 .exp-panel .chips { margin-top: 15px; }
 .exp-panel .links { margin-top: 13px; }
 .exp-note { font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; letter-spacing: .02em; color: var(--ash); margin-top: 14px; }
+/* CV timeline — one line per entry, dates in the rail, detail lives elsewhere */
+.tl { list-style: none; }
+.tl-item { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 20px; }
+.tl-when { font-family: var(--font-mono); font-size: 12px; line-height: 1.5; color: var(--ash); text-align: right; padding-top: 1px; }
+.tl-body { position: relative; border-left: 2px solid var(--line-soft); padding: 0 0 22px 22px; }
+.tl-item:last-child .tl-body { border-left-color: transparent; padding-bottom: 0; }
+.tl-body::before {
+  content: "◆"; position: absolute; left: -8px; top: -2px; font-size: 12px; line-height: 1;
+  color: var(--imp); background: var(--panel); padding: 2px 0;
+}
+.tl-title { font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.tl-title a { color: inherit; text-decoration: none; }
+.tl-title a:hover { color: var(--link); }
+.tl-sub { font-size: 14.5px; line-height: 1.45; color: var(--ink-soft); margin-top: 3px; }
+.tl-sub a { color: var(--link); text-decoration: none; }
+.tl-sub a:hover { text-decoration: underline; }
+.tl-meta { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .02em; color: var(--ash); margin-top: 4px; }
+.tl-meta a { color: var(--link); text-decoration: none; }
+.tl-meta a:hover { text-decoration: underline; }
+@media (max-width: 620px) {
+  .tl-item { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .tl-when { text-align: left; padding-left: 22px; margin-bottom: 2px; }
+  .tl-body { padding-bottom: 20px; }
+  .tl-item:not(:last-child) .tl-when { border-left: 2px solid var(--line-soft); padding-left: 20px; }
+}
 /* projects listed inside a lab card: thumbnail, name, when, one paragraph */
 .exp-projects { display: flex; flex-direction: column; gap: 18px; }
 .proj-row { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px; align-items: start; }
