@@ -1,0 +1,1134 @@
+{
+ "multi-robot-marl": {
+  "why": "<p>M2 is the project where the hard part is not any single robot's competence but the fact that two of\n them share one rigid object. The moment a payload couples two mobile manipulators, the system stops being\n two control problems and becomes one under-actuated, over-constrained, partially-observed problem where\n every local decision imposes a force on the other agent. That coupling is what makes the literature here\n worth reading carefully rather than skimming.</p>\n <p>There is also a strategic reason. Single-robot manipulation is the most crowded area in robotics right\n now. Multi-robot physical collaboration is not — the datasets do not exist, the benchmarks are thin, and\n most published work is either simulation-only or two drones carrying a stick. A working two-manipulator\n physical collaboration result with real contact forces is still a publishable systems contribution.</p>",
+  "state": "<p>The field splits cleanly into two camps that barely cite each other. On one side, <b>model-based\n distributed control</b>: ADMM-decomposed MPC, control barrier functions for safety, event-triggered\n communication to keep bandwidth down. This camp has guarantees, handles the rigid-constraint case properly,\n and is what most of your <em>distributed_mpc</em> and <em>collaborative_transport</em> folders contain. On the\n other, <b>multi-agent RL</b>: [[mappo]] as the pragmatic default, [[qmix]] for value factorization,\n [[maddpg]] as the original centralized-critic template. This camp scales to messy observations and\n discovers coordination strategies nobody scripted, and offers essentially no guarantees.</p>\n <p>The honest summary of MARL-for-robotics as of now: <b>[[mappo]] with a well-shaped reward beats almost\n every specialized MARL algorithm</b> once you actually tune it, which is the same lesson single-agent RL\n learned about PPO. Do not start by implementing QMIX. Start by implementing centralized-critic PPO and\n spending your time on the reward and the observation space instead.</p>\n <p>The most convincing recent physical result in your library is [[decentralized-aerial]] — multiple aerial\n vehicles manipulating a cable-suspended load with decentralized policies. It matters because the cable\n imposes exactly the kind of shared constraint your two ground manipulators will face, and because the\n policies are genuinely decentralized at execution time rather than a centralized controller in disguise.\n On the ground side, [[h2compact]] handles the human-humanoid case with adaptive contact trajectories, which\n is the same problem with a far less predictable partner.</p>\n <p>Worth noting what is <em>missing</em> from the literature: almost nobody reports what happens when the\n two agents disagree about the object's pose. Estimation error is the dominant real-world failure mode in\n coupled transport and it is systematically under-reported.</p>",
+  "threads": [
+   "<b>Centralized training, decentralized execution (CTDE).</b> The organizing principle of the whole area.\n  [[mappo]], [[qmix]], [[maddpg]]. Read MAPPO first and treat the others as context.",
+   "<b>Distributed MPC and ADMM.</b> Your M2 <em>distributed_mpc</em> folder has ~17 papers here. The\n  relevant question is not which solver is fastest but which formulation lets you write the rigid-body\n  constraint exactly rather than as a soft penalty.",
+   "<b>Cooperative transport with physical coupling.</b> [[decentralized-aerial]] is the cleanest learned\n  result; the quadruped and box-transport papers in your <em>collaborative_transport</em> folder are the\n  ground-robot equivalents.",
+   "<b>Human-in-the-loop co-manipulation.</b> [[h2compact]] and the carbon-fibre-ply and co-manipulation\n  papers in your library. This is the bridge to your separate HRI idea — the human is just an agent whose\n  policy you cannot train.",
+   "<b>Force sensing versus force inference.</b> A recurring split: measure the interaction wrench, or\n  infer it from proprioception. Cheaper robots force the second choice, and it is where most of the\n  interesting recent work sits."
+  ],
+  "gap": "<p>The opening is <b>learned coordination that respects a hard physical constraint, evaluated on real\n hardware with reported force data</b>. Almost all learned cooperative transport is either simulated or\n reports only task success. Nobody is publishing the internal-force time series — the squeeze the two robots\n put on the object when they disagree — even though that is the quantity that determines whether the object\n survives.</p>\n <p>M2 is unusually well positioned for this because you control both robots end to end and can instrument\n them. A paper that (a) trains decentralized policies for two mobile manipulators carrying a shared rigid\n object, (b) reports internal wrench alongside success rate, and (c) shows graceful degradation when one\n robot's state estimate drifts, would be filling a real hole rather than adding to a pile.</p>",
+  "plan": [
+   "Build the sim first: two M2 bases plus arms holding one rigid box in MuJoCo or Isaac Lab, with the\n  grasp modelled as a compliant constraint so internal forces are observable rather than infinitely stiff.",
+   "Baseline with centralized MPC — you need to know what the model-based answer looks like before claiming\n  RL beats it. Use your existing <em>distributed_mpc</em> reading for the formulation.",
+   "Train [[mappo]] with the internal wrench in the reward as a penalty, not just task progress. Sweep the\n  penalty weight; the tradeoff curve between speed and squeeze is the headline figure.",
+   "Add the realistic failure: inject drift into one agent's object-pose estimate and measure how far the\n  policy degrades versus the MPC baseline. This is where learned policies usually win and nobody shows it.",
+   "Transfer to the two real M2 platforms. Report the sim-to-real force gap honestly — it will be large."
+  ],
+  "risks": [
+   "<b>Reward shaping eats the project.</b> Multi-agent reward design is harder than single-agent because\n  credit assignment and force penalties interact. Budget for this and consider [[eureka]]-style automated\n  reward search rather than hand-tuning for months.",
+   "<b>Sim contact fidelity.</b> Two robots squeezing a box is exactly the regime where soft-constraint\n  contact solvers misbehave. Validate the simulator against a static squeeze test on real hardware early.",
+   "<b>It becomes a communication paper.</b> Easy to drift into bandwidth and latency questions that are\n  well covered by the DMPC literature and not what makes M2 distinctive. Keep the contribution physical."
+  ],
+  "read": [
+   {
+    "id": "mappo",
+    "why": "Start here. The baseline you should actually run, and the paper that explains why the fancy alternatives usually are not needed."
+   },
+   {
+    "id": "decentralized-aerial",
+    "why": "The cleanest recent demonstration that decentralized learned policies can hold a shared rigid constraint."
+   },
+   {
+    "id": "h2compact",
+    "why": "The human-in-the-loop version — read for how they handle a partner whose policy is unknown."
+   },
+   {
+    "id": "qmix",
+    "why": "Context for the value-factorization alternative, so you can say why you did not use it."
+   },
+   {
+    "id": "falcon",
+    "why": "Not multi-agent, but the force-curriculum idea transfers directly to the squeeze-penalty problem."
+   },
+   {
+    "id": "maddpg",
+    "why": "Historical anchor for centralized-critic methods; skim."
+   },
+   {
+    "id": "crossformer",
+    "why": "If M2 ever needs one policy across heterogeneous robots, this is the reference."
+   }
+  ]
+ },
+ "tactile-wm": {
+  "why": "<p>Every world model in this library predicts pixels or latents derived from pixels. That is a\n modality choice, not a law, and it is the wrong one for manipulation. The events that determine whether a\n grasp succeeds — first contact, incipient slip, the moment a finger loses normal force — are frequently\n invisible to a camera, occluded by the hand itself, or happening faster than the frame rate. A world model\n that cannot represent them cannot predict the failures that actually occur.</p>\n <p>This is a real gap rather than a fashionable one. The tactile-learning literature is large but almost\n entirely <em>reactive</em> — touch as an extra observation channel for a policy. Touch as something you\n <em>predict</em>, as a learned forward model over contact state, is close to unexplored.</p>",
+  "state": "<p><b>Hardware is no longer the bottleneck.</b> [[gelsight]] turned tactile sensing into a vision\n problem; [[digit]] shrank it to fingertip scale and open-sourced it; [[anyskin]] made sensors\n <em>replaceable without recalibration</em>, which is quietly the most important property for any learning\n pipeline because it means your policy survives a broken finger. [[dexskin]] extends coverage from fingertips\n to conformable full-hand skin, which matters because fingertip-only sensing misses most of the contact in a\n real grasp.</p>\n <p><b>Touch-only control already works.</b> [[rotate-without-seeing]] does in-hand rotation with binary\n contact sensors and no vision at all. That is the existence proof: contact signals carry enough state for\n dexterity. If a reactive policy can do it, a predictive model over the same signals should be learnable.</p>\n <p><b>The world-model side is mature but blind.</b> [[dreamerv3]] and [[dreamerv4]] give you the training\n machinery; [[vjepa2]] argues convincingly that predicting in latent space beats predicting pixels. None of\n them have touch. [[flare]] is the closest in spirit — world modelling as an auxiliary alignment loss rather\n than a separate generative model — and that formulation is the easiest to extend to a second modality.</p>\n <p><b>Data is the actual obstacle.</b> [[robotacdex]] in your library is a paired visual-tactile dataset for\n humanoid manipulation, and it is the kind of thing that did not exist two years ago. [[omnitactune]] shows\n tactile residual RL working on top of an existing policy. Between them, the ingredients exist.</p>\n <p><b>And then 2026 happened.</b> A live search turns up an entire cluster that did not exist when this idea\n was written down: [[dream-tac]] is a unified tactile <em>world-action</em> model that jointly predicts\n actions, future images and tactile dynamics on a Tac-UMI gripper; [[omnivta]], [[vt-wam]], [[tactile-wam]]\n and [[tacforesight]] all attack the same target from slightly different angles (visuo-tactile fusion,\n asymmetric attention, force-guided prediction). [[wt-umi]] does the hardware half on a whole-body system.\n The honest read: <b>the general idea is taken</b>. What is not taken is the evaluation — none of these\n report slip-prediction lead time as a primary metric, and none run on a high-DOF multi-finger hand.</p>",
+  "threads": [
+   "<b>Sensor hardware.</b> Optical ([[gelsight]], [[digit]]) versus magnetic ([[anyskin]], [[reskin]])\n  versus conformable high-coverage ([[dexskin]]). For a world model you want coverage and calibration\n  stability over resolution — which argues for AnySkin/DexSkin rather than GelSight.",
+   "<b>Tactile representation learning.</b> The tactile analogue of [[r3m]]: pretrain an encoder on\n  unlabelled contact data. Thinner literature than vision, which is an opportunity.",
+   "<b>Touch-only and touch-primary control.</b> [[rotate-without-seeing]], [[omnitactune]]. Evidence that\n  the signal is sufficient.",
+   "<b>Latent predictive architectures.</b> [[vjepa2]] and [[flare]] are the right backbones — predicting a\n  latent that happens to be predictive of touch is far more tractable than generating tactile images.",
+   "<b>Force feedback in capture.</b> [[doglove]] collects demonstrations <em>with</em> force feedback at\n  $600, which means the human's contact strategy is recorded rather than guessed."
+  ],
+  "gap": "<p>As of mid-2026 the claim \"nobody predicts contact\" is no longer available — [[dream-tac]] and friends got\n there first, and you should cite them rather than compete with them on framing. Two openings survive, and\n both are sharper than the original idea. <b>First, the metric.</b> Every one of these papers evaluates on\n task success; none of them answers the question that would actually justify the architecture — does the\n model see the failure coming, and how early? <b>Second, the hand.</b> The 2026 tactile-WAM cluster runs on\n grippers and simple end-effectors. On a 20+ DOF hand the contact state is far higher-dimensional and the\n vision occlusion far worse, which is precisely where the argument for touch is strongest and where nobody\n has data.</p>\n <p>The formulation worth trying: a [[vjepa2]]-style joint-embedding predictive model over a <em>fused</em>\n vision-plus-tactile stream, where the training objective includes predicting the tactile latent one step\n ahead. Then evaluate it on the only thing that matters — <b>does it predict slip before it happens?</b></p>\n <p>That evaluation is the paper. \"Our world model predicts contact events N milliseconds before they are\n visible in RGB\" is a crisp, falsifiable, previously-unmeasured claim, and it does not require beating\n anyone on task success to be interesting.</p>",
+  "plan": [
+   "Instrument one GeoDex hand with [[anyskin]] or [[dexskin]]-style coverage. Prioritize calibration\n  stability over resolution — you need the sensor to mean the same thing next month.",
+   "Collect a paired vision+touch dataset on deliberately slip-prone tasks: lifting a smooth object with\n  marginal force, a slow pull-out-of-grasp, a re-grasp. Label slip events from the tactile stream itself.",
+   "Train a [[flare]]-style auxiliary predictive head on frozen visual features plus tactile, since it is\n  far cheaper than a full [[dreamerv3]] and isolates the question you care about.",
+   "Headline experiment: slip prediction lead time, tactile-included versus vision-only, as a distribution\n  not a single number. Report the false-positive rate too.",
+   "Only then close the loop — use the predicted contact latent as an observation for a re-grasp policy and\n  measure whether recovery improves."
+  ],
+  "risks": [
+   "<b>Sensor drift makes the model unlearnable.</b> Optical gels change with wear and temperature. This\n  kills more tactile projects than any modelling issue; it is why AnySkin's replaceability matters.",
+   "<b>Slip labels are ambiguous.</b> Defining ground-truth slip onset is genuinely hard. Settle the\n  definition before collecting, with an external measurement (object-mounted marker) as arbiter.",
+   "<b>Scope creep into a full world model.</b> The auxiliary-head version answers the question. Resist\n  building a generative tactile simulator first."
+  ],
+  "read": [
+   {
+    "id": "rotate-without-seeing",
+    "why": "The existence proof that contact alone carries enough state. Read first — it sets the ceiling."
+   },
+   {
+    "id": "anyskin",
+    "why": "The sensor property that makes tactile learning reproducible: swap a skin without recalibrating."
+   },
+   {
+    "id": "dexskin",
+    "why": "High-coverage conformable skin — fingertip-only sensing is not enough for a world model."
+   },
+   {
+    "id": "vjepa2",
+    "why": "The architecture to extend. Latent prediction, not pixel generation."
+   },
+   {
+    "id": "flare",
+    "why": "The cheap version: world modelling as an auxiliary loss. This is what to build first."
+   },
+   {
+    "id": "robotacdex",
+    "why": "Paired visual-tactile data for pretraining — check whether it covers your task regime."
+   },
+   {
+    "id": "gelsight",
+    "why": "Origin of vision-based tactile sensing; read for what the signal physically is."
+   },
+   {
+    "id": "doglove",
+    "why": "If you need human demonstrations with recorded contact, this is the $600 way."
+   },
+   {
+    "id": "omnitactune",
+    "why": "Recent tactile residual RL — the closest existing work to closing the loop."
+   },
+   {
+    "id": "dream-tac",
+    "why": "Read before anything else you write on this. It is your idea, published, on a Tac-UMI gripper."
+   },
+   {
+    "id": "omnivta",
+    "why": "The earliest of the 2026 visuo-tactile world-model cluster; the baseline the others compare to."
+   },
+   {
+    "id": "vt-wam",
+    "why": "Same target, different fusion. Read with Tactile-WAM to see what the architecture fight is actually about."
+   },
+   {
+    "id": "tacforesight",
+    "why": "Force-guided prediction — closest to the slip-before-it-is-visible framing you want."
+   },
+   {
+    "id": "wt-umi",
+    "why": "The hardware side: a tactile UMI driving whole-body manipulation."
+   }
+  ]
+ },
+ "ego-dex": {
+  "why": "<p>Robot dexterity data is the scarcest resource in the field, and human hand data is one of the most\n abundant. The whole bet of this idea is that the exchange rate between them can be made good enough to\n matter. Everything hinges on the embodiment gap — the human hand has ~27 degrees of freedom, soft skin,\n tendon coupling and a lifetime of learned priors; your robot hand has none of that.</p>\n <p>Three strategies exist for closing that gap, and the field has not settled which wins: make the\n <em>hardware</em> match (exoskeleton adapters), make the <em>pixels</em> match (inpaint the robot into human\n video), or make the <em>representation</em> match (learn a shared action space). Each is a paper.</p>",
+  "state": "<p><b>The data exists.</b> [[ego4d]] gives 3,670 hours of egocentric video; [[egoexo4d]] adds\n time-synchronized third-person views of the same skilled activity, which makes the ego-versus-exo question\n an experiment rather than an argument. [[open-aoe]] in your library is an open egocentric manipulation\n dataset shipped <em>with</em> its capture toolchain, which is the more useful artefact.</p>\n <p><b>Representation transfer was established first.</b> [[r3m]] showed that pretraining a frozen visual\n encoder on Ego4D cuts the number of robot demonstrations needed by roughly an order of magnitude. [[vip]]\n went further and extracted a dense reward function from human video. These are the safe, well-replicated\n results.</p>\n <p><b>Action transfer is where the current fight is.</b> [[egomimic]] puts Aria glasses on a human and\n co-trains with humanoid teleop by normalizing hand and robot action spaces into a common frame.\n [[humanoid-policy]] makes the same move at larger scale — one policy, human and humanoid data in the same\n batch. [[phantom]] takes the opposite and more audacious route: edit the human hand out of the video and\n paint the robot in, then train ordinary BC on the edited frames, with <em>zero</em> robot demonstrations.\n [[dexumi]] splits the difference with a wearable hand exoskeleton for kinematics plus video inpainting for\n appearance.</p>\n <p><b>The area is now crowded and moving fast.</b> Your own M2 library already holds [[human-video-survey]]\n (2026), [[do-as-i-do]], [[simdex]] and [[c2dex]]. A live search adds [[egoengine]] (egocentric video to a\n simulatable scene to dexterous demonstrations), [[video2sim2real]] (one human video to a dexterous skill,\n end to end), [[realdexumi]] (a wearable UMI purpose-built for dexterous hands) and [[egodemogen]]\n (synthesising novel egocentric viewpoints so the policy stops memorising camera placement). Generic\n \"learn dexterity from human video\" is no longer a claimable contribution — you need a specific angle.</p>",
+  "threads": [
+   "<b>Representation pretraining.</b> [[r3m]], [[vip]], [[vjepa2]]. Reliable, incremental, well understood.",
+   "<b>Co-training with normalized action spaces.</b> [[egomimic]], [[humanoid-policy]]. Currently the most\n  practical approach if you have <em>some</em> robot data.",
+   "<b>Pixel-level embodiment editing.</b> [[phantom]], [[dexumi]], and the video-diffusion inpainting work\n  ([[x-aceegohandrepurposingvideodiffusionmodel]] in your library). Zero robot data, but you inherit every artefact of the generative model.",
+   "<b>Hardware adapters.</b> [[dexumi]]'s exoskeleton, [[dexcap]]'s glove-plus-SLAM rig, [[ume]]'s\n  whole-body exoskeleton. Sidesteps the gap by constraining the human instead.",
+   "<b>Retrieval rather than training on everything.</b> [[simdex]] mines similar egocentric clips for the\n  task at hand — a cheap lever that most pipelines skip.",
+   "<b>Contact-consistent retargeting.</b> [[c2dex]] — see your separate learned-retargeting idea; it is\n  the same problem viewed from the other end."
+  ],
+  "gap": "<p>Given how crowded this has become, the defensible angle is not \"learn dexterity from ego video\" but\n <b>a controlled comparison of the three gap-closing strategies on the same hand, the same tasks and the same\n human data</b>. Nobody has run that. Every paper advocates its own strategy against weak versions of the\n others, so the field genuinely does not know whether hardware adapters, pixel editing or shared\n representations win, or under what conditions.</p>\n <p>You are unusually well placed to run it: GeoDex gives you the hand, [[egoexo4d]] gives you paired data,\n and your library already contains all three camps. A rigorous three-way ablation would be cited by everyone\n in the area, and it doubles as the groundwork for whichever strategy you then build on.</p>",
+  "plan": [
+   "Fix the substrate: one hand, one set of 5-8 tasks spanning power grasp to in-hand reorientation, one\n  egocentric capture rig. Everything else varies.",
+   "Implement all three arms honestly: (a) [[r3m]]/[[vjepa2]] frozen-encoder pretraining + small robot\n  dataset, (b) [[egomimic]]-style normalized-action co-training, (c) [[phantom]]-style inpainting with zero\n  robot data.",
+   "Measure the exchange rate directly: how many robot demonstrations does each strategy save, as a curve,\n  not a point. That curve is the contribution.",
+   "Add the failure analysis everyone omits — which task properties (contact richness, occlusion, force\n  precision) break which strategy.",
+   "Read [[human-video-survey]] first and position against it explicitly; it will tell you what has already\n  been claimed."
+  ],
+  "risks": [
+   "<b>Someone publishes the comparison first.</b> Real risk given the pace. Mitigate by scoping tightly to\n  dexterous multi-finger tasks rather than general manipulation, where you have the hardware advantage.",
+   "<b>Inpainting artefacts confound the comparison.</b> The [[phantom]] arm's performance depends heavily\n  on the video model. Report the inpainting quality separately so a reader can discount it.",
+   "<b>Hand mismatch dominates everything.</b> If your robot hand is kinematically far from a human hand,\n  all three strategies degrade and you learn about your hardware, not the strategies. Argues for running this\n  after the 22-DOF hand exists."
+  ],
+  "read": [
+   {
+    "id": "human-video-survey",
+    "why": "Read first. The most recent map of the area — it will give you the citation skeleton and tell you what is already taken."
+   },
+   {
+    "id": "egomimic",
+    "why": "The most practical co-training recipe; the action-space normalization is the part to copy."
+   },
+   {
+    "id": "phantom",
+    "why": "The zero-robot-data extreme. Cheap, slightly absurd, and it works — a required baseline."
+   },
+   {
+    "id": "dexumi",
+    "why": "The hardware-adapter answer, and the paper standing closest to your own plan."
+   },
+   {
+    "id": "r3m",
+    "why": "The reliable baseline. Anything you build must beat frozen-encoder pretraining."
+   },
+   {
+    "id": "humanoid-policy",
+    "why": "Scaled co-training; also relevant to MABEL."
+   },
+   {
+    "id": "egoexo4d",
+    "why": "The paired ego/exo data that makes your comparison possible."
+   },
+   {
+    "id": "simdex",
+    "why": "Retrieval instead of training on everything — a cheap win worth folding in."
+   },
+   {
+    "id": "c2dex",
+    "why": "Contact-consistent retargeting; connects this to your retargeting idea."
+   },
+   {
+    "id": "dexcap",
+    "why": "If you need to collect your own glove data, this is the portable rig."
+   },
+   {
+    "id": "egoengine",
+    "why": "2026. Egocentric video to a simulatable scene to dexterous demos — the pipeline, already built."
+   },
+   {
+    "id": "realdexumi",
+    "why": "2026. A wearable UMI for dexterous hands; the capture hardware is no longer the contribution."
+   },
+   {
+    "id": "egodemogen",
+    "why": "Cheap viewpoint augmentation any ego pipeline should include."
+   }
+  ]
+ },
+ "real2sim2real-ego": {
+  "why": "<p>This is now one of your four live projects, so the review matters more than the others. The pitch is a\n loop: capture a scene egocentrically, rebuild it as something a simulator can step, learn a policy inside it,\n and put the policy back in the real scene. Each leg of that loop is individually mature — 3D reconstruction,\n sim training, sim-to-real — and the interesting claim is that stitching them with the <em>ego view as the\n shared interface</em> gives you scene-specific policies without scene-specific robot data.</p>\n <p>The reason to care is economics. A robot demonstration costs a robot, an operator and a scene. An\n egocentric capture costs a person walking through a kitchen with a headset. If the exchange rate is even\n modest, the data equation changes.</p>",
+  "state": "<p><b>The full loop has been built.</b> [[egoengine]] (June 2026) reconstructs a simulation scene\n from egocentric video that preserves task-relevant geometry and object layout, recovering hand pose and\n scene entities jointly, then trains in that twin. [[video2sim2real]] (June 2026) goes further and closes\n the whole loop from a <em>single</em> human video to a deployed dexterous skill, with an explicit division\n of labour: imitation learning produces the transferable base trajectory, and a residual RL policy learns\n the local corrections that contact discrepancies demand. If you were going to write down the architecture\n for this project, that is the architecture.</p>\n <p><b>The reconstruction leg is the bottleneck, and the field knows it.</b> [[r2s-ego]] (Aug 2026) exists\n precisely because egocentric capture gives you sparse, badly-distributed views — dual-proxy refinement for\n sparse-capture real-to-sim. Expect this to consume most of your engineering time, not the policy learning.</p>\n <p><b>The humanoid version came earlier.</b> [[videomimic]] reconstructs both the human motion and the\n terrain from ordinary video and trains a terrain-aware humanoid policy in the reconstruction. It is the\n cleanest demonstration that reconstructing the <em>scene</em>, not just the human, is what makes this work.</p>\n <p><b>Real-to-sim is also being used for evaluation, not just training.</b> [[polaris]] builds twins so\n generalist policies can be benchmarked cheaply and reproducibly. That is a lower-risk use of the same\n machinery and worth adopting regardless of what your training story ends up being.</p>\n <p><b>What closes the last gap.</b> [[asap]]'s delta-action model — collect real rollouts, learn a residual\n correction to the simulator, retrain against the corrected sim — is the most convincing published answer to\n the dynamics half of the gap, and it composes with everything above. [[real2sim]] is the older, simpler\n statement of the same loop on a deformable.</p>",
+  "threads": [
+   "<b>Ego capture → scene reconstruction.</b> [[egoengine]], [[r2s-ego]], [[videomimic]]. The geometry and\n  layout have to be task-relevant, not photorealistic — a lesson that saves a lot of Gaussian-splatting time.",
+   "<b>IL base + residual RL.</b> [[video2sim2real]], [[hil-serl]], [[pld]]. The consensus structure: get a\n  transferable trajectory by imitation, fix contact with RL.",
+   "<b>Dynamics-gap correction.</b> [[asap]], [[dexndm]], [[dexsim2real]]. Learn the correction rather than\n  randomize over your ignorance.",
+   "<b>Rendering-gap correction.</b> [[simweaver]], [[phantom]]. Editing pixels is often cheaper than\n  matching them.",
+   "<b>Real-to-sim for evaluation.</b> [[polaris]]. Underrated; it makes your ablations affordable.",
+   "<b>Viewpoint robustness.</b> [[egodemogen]]. Ego policies overfit to camera placement badly."
+  ],
+  "gap": "<p>The loop is built, so the contribution has to be in the loop's <em>closure</em>. Two things are\n missing from all of the above. <b>First, iteration.</b> Every published system runs the loop once: capture,\n reconstruct, train, deploy. Nobody feeds the real-world failure back into the reconstruction and goes\n round again, even though that is the obvious thing to do and [[asap]] gives you the mechanism.\n <b>Second, scene generalization.</b> These systems build a twin of <em>the</em> kitchen. The question nobody\n answers is how many reconstructed kitchens you need before the policy stops needing a new one.</p>\n <p>A paper that runs the loop N times on the same task and reports the error trajectory — reconstruction\n fidelity, sim-real dynamics gap, and task success, all as functions of iteration count — would be a genuine\n contribution, and it is a systems result you are well set up to produce.</p>",
+  "plan": [
+   "Reproduce [[video2sim2real]] on one task first. Do not start by building your own pipeline; start by\n  confirming you can run theirs, because the reconstruction stage will otherwise silently eat a month.",
+   "Instrument the three gaps separately: geometry error against a scanned ground truth, dynamics error\n  against real rollouts ([[asap]]'s delta-action residual is a good scalar), and rendering error.",
+   "Add the second iteration. Feed real failure rollouts back into the delta-action model and the scene\n  estimate, re-train, re-deploy. Report the curve.",
+   "Then the generalization experiment: 1, 3, 10 reconstructed scenes, evaluate on a held-out scene. This\n  is the number the field actually wants.",
+   "Use [[polaris]]-style twins as the evaluation harness so you can afford the ablations."
+  ],
+  "risks": [
+   "<b>Reconstruction quality dominates every result.</b> If the twin is bad, everything downstream measures\n  your reconstruction, not your method. [[r2s-ego]] exists because of this. Budget accordingly and report\n  reconstruction quality as a first-class variable.",
+   "<b>The loop may not converge.</b> Iterating a real-to-sim loop can diverge if the correction model\n  overfits to the last batch of failures. Hold out rollouts and watch for it.",
+   "<b>It becomes a graphics project.</b> Very easy to spend six months on splatting. The published systems\n  all use task-relevant geometry, not beauty — copy that discipline."
+  ],
+  "read": [
+   {
+    "id": "video2sim2real",
+    "why": "Start here. Single human video to deployed dexterous skill, with the IL-plus-residual-RL split you want."
+   },
+   {
+    "id": "egoengine",
+    "why": "The reconstruction leg done properly — hand pose and scene entities recovered together."
+   },
+   {
+    "id": "videomimic",
+    "why": "The humanoid/terrain version, and the clearest argument for reconstructing the scene rather than just the human."
+   },
+   {
+    "id": "asap",
+    "why": "The dynamics-gap correction that composes with all of this. The delta-action idea is the one to reuse."
+   },
+   {
+    "id": "r2s-ego",
+    "why": "Sparse-capture reconstruction — the engineering problem that will actually cost you time."
+   },
+   {
+    "id": "polaris",
+    "why": "Real-to-sim as an evaluation harness. Adopt this early; it makes ablations affordable."
+   },
+   {
+    "id": "hil-serl",
+    "why": "If the RL fine-tuning stage is on real hardware, this is the sample budget to beat."
+   },
+   {
+    "id": "real2sim",
+    "why": "The original, simplest statement of the loop. Short; read for framing."
+   },
+   {
+    "id": "simweaver",
+    "why": "The rendering half of the gap, on deformables where it is worst."
+   }
+  ]
+ },
+ "rl-post-training": {
+  "why": "<p>A pretrained VLA is a strong prior and a mediocre policy. It has seen a million trajectories and\n still fails the specific task in your specific scene maybe a third of the time, and no amount of additional\n demonstration data fixes that efficiently, because demonstrations teach the policy what success looks like\n and never what recovery looks like. RL is the only mechanism that reliably converts broad competence into\n task reliability.</p>\n <p>This is also the cheapest of your ideas to start: the base models are open, the algorithms are published,\n and the experiment fits on one arm.</p>",
+  "state": "<p><b>The base result is settled.</b> [[hil-serl]] gets near-100% success on genuinely hard\n contact-rich tasks in one to two and a half hours of real training, with human corrections folded into the\n replay buffer. [[serl]] is the infrastructure that makes that possible and [[rlpd]] is the algorithm\n underneath — symmetric sampling from offline and online buffers, LayerNorm on critics, critic ensembles.\n Three unglamorous tricks. If you only read three things, read those.</p>\n <p><b>Applying it to VLAs specifically is now a small field.</b> [[iRe-VLA]] alternates RL on the action head\n with supervised fine-tuning of the whole model, because pure RL on a full VLA destabilizes the language\n backbone. [[ript-vla]] post-trains with nothing but binary task success, which is attractive because success\n is the one signal you can always instrument. [[conrft]] makes the diffusion action head tractable for RL by\n cutting the denoising chain.</p>\n <p><b>And 2025-26 produced a clear winner architecture.</b> [[pld]] — probe, learn, distill — trains\n lightweight <em>residual</em> actors off-policy to fix the base VLA's failures, collects the successful\n rollouts, and distills them back into the base model. This sidesteps the destabilization problem entirely\n because the big model is never the thing being RL'd. [[expo-ft]] attacks sample efficiency,\n [[stare-vla]] attacks long-horizon credit assignment, [[dlr-vla]] inverts the whole thing and uses RL as a\n <em>data generator</em> for pretraining, and [[rlinf-vla]] is the shared infrastructure (RSS 2026).</p>\n <p><b>The commercial confirmation.</b> [[pi06]] is Physical Intelligence's statement of the same thesis with\n far more robot time behind it: RECAP, advantage-conditioned RL over demonstrations, on-policy rollouts and\n expert teleoperated interventions, producing espresso, box assembly and laundry. When the group with the\n most data says post-training is where the gains are, that is worth weighting.</p>",
+  "threads": [
+   "<b>Real-world off-policy RL.</b> [[rlpd]] → [[serl]] → [[hil-serl]]. The foundation. Everything else is\n  this plus a bigger initial policy.",
+   "<b>Residual rather than full-model RL.</b> [[pld]], [[omnitactune]]. Currently the most practical answer,\n  and the one least likely to wreck a model you cannot afford to retrain.",
+   "<b>Reward without instrumentation.</b> [[ript-vla]] (binary success), [[vip]] (value from human video).\n  The unglamorous blocker for real-world RL is always the reward.",
+   "<b>Human-in-the-loop corrections.</b> [[hil-serl]], [[pi06]]. DAgger's descendant; still the highest\n  value-per-minute of operator time.",
+   "<b>Infrastructure.</b> [[rlinf-vla]], [[serl]], [[harbor]]. Do not write your own rollout loop."
+  ],
+  "gap": "<p>The methods are converging; the <em>evaluation</em> is not. Every paper here reports success rate\n on its own tasks with its own base model, so the field cannot answer the question a practitioner actually\n has: <b>given a fixed budget of one hour of robot time, which post-training method buys the most\n reliability, and on what kind of task?</b></p>\n <p>You have an arm, a base model you can run, and — through IRIS — a task suite with a real notion of\n precision. A controlled budget-matched comparison of residual RL ([[pld]]), interactive post-training\n ([[ript-vla]]), and human-in-the-loop ([[hil-serl]]) on one base policy would be cited constantly, and it\n is a week of compute rather than a year of method development. It also doubles as the pilot for your\n real-world RL harness idea.</p>",
+  "plan": [
+   "Pick one open base VLA you can actually run and fine-tune — [[openvla]] with [[openvla-oft]]'s continuous\n  action head, or a π0-class model if you have access.",
+   "Build the reward instrumentation before the algorithm. Binary success detection that works unattended is\n  the thing that decides whether this project happens.",
+   "Implement [[pld]]-style residual RL first. It is the least likely to destroy the base model and the\n  easiest to debug.",
+   "Budget-match the comparison: same base policy, same tasks, one hour of wall-clock robot time each.\n  Report reliability as a function of minutes, not epochs.",
+   "Report the failure modes the aggregate hides — which task properties (precision, contact, horizon) each\n  method fixes and which it does not."
+  ],
+  "risks": [
+   "<b>Reward engineering eats the project.</b> This is the real reason real-world RL papers are rare. Solve\n  it first or pick tasks where success is trivially detectable.",
+   "<b>Catastrophic forgetting of the base model.</b> Exactly why [[pld]] keeps the big model out of the RL\n  loop. If you do fine-tune the whole model, hold out an OOD eval set and watch it.",
+   "<b>Hardware wear.</b> An hour of contact-rich RL is hard on a gripper. Plan the consumables."
+  ],
+  "read": [
+   {
+    "id": "rlpd",
+    "why": "The algorithm underneath everything. Short, and the three tricks are the whole paper."
+   },
+   {
+    "id": "hil-serl",
+    "why": "The result that proves real-world RL post-training is a two-hour job, not a research programme."
+   },
+   {
+    "id": "pld",
+    "why": "The current best architecture: residual actors fix failures, then distil back. Start your implementation here."
+   },
+   {
+    "id": "pi06",
+    "why": "The commercial confirmation, with RECAP and far more robot time than anyone else has."
+   },
+   {
+    "id": "ript-vla",
+    "why": "Post-training from binary success alone — the most deployable reward signal."
+   },
+   {
+    "id": "iRe-VLA",
+    "why": "Why you cannot naively RL a full VLA, and the alternating fix."
+   },
+   {
+    "id": "rlinf-vla",
+    "why": "The infrastructure. Use it instead of writing your own."
+   },
+   {
+    "id": "serl",
+    "why": "The reset/reward plumbing, and the direct template for your RL harness idea."
+   },
+   {
+    "id": "expo-ft",
+    "why": "Sample efficiency, which is the binding constraint on real hardware."
+   }
+  ]
+ },
+ "wam-umi-gloves": {
+  "why": "<p>A world-action model predicts the future and the action that causes it. The bottleneck is data with\n both halves — you need observations <em>and</em> the actions that produced them, at scale, in the wild. UMI\n solved exactly that problem for grippers: a handheld device that records deployable demonstrations with no\n robot present. Pointing that data at a world-action model rather than a behaviour-cloning policy is the idea,\n and it is the one on your list with the clearest data story.</p>",
+  "state": "<p><b>The capture side is solved and then some.</b> [[umi]] established the pattern; [[fast-umi]]\n made the tracking easier; [[dexumi]] extended it to dexterous hands with a wearable exoskeleton plus video\n inpainting; [[ume]] added compliance and whole-body reach; [[realdexumi]] (June 2026) is a wearable UMI\n purpose-built for dexterous hands; [[dexcap]] and [[doglove]] do the glove version, the latter with force\n feedback at $600. Commercially, [[sunday-gelato]] shipped a handheld Skill Capture device, which is this\n thesis with a company behind it. <b>The interface is no longer the contribution.</b></p>\n <p><b>The modelling side matured in parallel.</b> [[genie]] showed you can learn a <em>latent action space</em>\n from unlabelled video with no action labels at all — which is the key enabler if your capture ever gives you\n observations without clean actions. [[vjepa2]] made the case for predicting in latent space rather than\n pixels, and demonstrated zero-shot manipulation from 62 hours of unlabelled robot video. [[gr2]] and\n [[unipi]] are the generative-video branch. [[flare]] is the cheap version — world modelling as an auxiliary\n alignment loss on top of an ordinary policy.</p>\n <p><b>And the explicit WAM line now exists.</b> [[mobilewam]] and [[decowam]] in your own M2 library bridge\n world-action models to mobile and legged manipulation; [[dream-tac]] does the tactile version on a Tac-UMI\n gripper. The phrase \"world-action model\" went from unused to crowded inside about a year.</p>",
+  "threads": [
+   "<b>In-the-wild capture.</b> [[umi]], [[realdexumi]], [[dexumi]], [[ume]], [[dexcap]]. Pick one; do not\n  build another.",
+   "<b>Latent action learning.</b> [[genie]]. The trick that makes unlabelled video usable.",
+   "<b>Latent vs generative prediction.</b> [[vjepa2]] vs [[gr2]]/[[unipi]]. Latent is cheaper and less\n  distracted by texture; generative gives you something to look at.",
+   "<b>WAM on real robots.</b> [[mobilewam]], [[decowam]], [[dream-tac]]. Read these for what breaks.",
+   "<b>The cheap first step.</b> [[flare]] — add a future-latent prediction loss to a policy you already\n  have, and see whether it buys anything before building a world model."
+  ],
+  "gap": "<p>The opening is the property UMI data has that robot-teleop data does not: <b>it is collected in\n hundreds of different real scenes, cheaply</b>. Every world-action model published so far is trained on\n data from a handful of lab environments, which is exactly the regime where a world model's main selling\n point — generalizing the dynamics rather than the policy — cannot be tested.</p>\n <p>So the experiment is: hold scene diversity as the independent variable. Train the same WAM on N scenes\n of UMI capture for N across two orders of magnitude, and measure prediction error and downstream policy\n success on held-out scenes. Nobody can run that with teleop data because nobody can afford to. You can,\n because the capture is a person walking around with a stick. <b>That is the paper.</b> Collaboration with\n Rooholla and Joseph on the capture scale-up is the right move.</p>",
+  "plan": [
+   "Standardise on one capture rig. [[realdexumi]] if you want hands, plain [[umi]] if you want to maximise\n  scenes per hour. Resist redesigning it.",
+   "Start with [[flare]], not a full world model — an auxiliary future-latent loss on a diffusion policy\n  tells you within two weeks whether the signal is there.",
+   "Then the real thing: a [[vjepa2]]-style latent predictive model over the UMI stream, with [[genie]]-style\n  latent actions as a fallback for any capture where the action track is unreliable.",
+   "The scene-scaling curve is the headline. Prediction error and task success against number of distinct\n  capture scenes, log x-axis.",
+   "Deploy on MABEL via the [[umi-on-legs]] interface — end-effector trajectories in the task frame, whole-body\n  controller underneath. Do not couple the WAM to the embodiment."
+  ],
+  "risks": [
+   "<b>UMI action quality.</b> The recorded actions come from SLAM pose tracking, and the noise floor there\n  sets a ceiling on anything you learn. Measure it before you model it.",
+   "<b>Someone runs the scaling experiment first.</b> [[generalist-ai]] is explicitly claiming robot-data\n  scaling laws off a 270k-hour corpus. Your differentiator is open, reproducible, in-the-wild scenes, not raw volume.",
+   "<b>The world model does not beat the policy.</b> Entirely possible, and worth reporting. [[flare]]-first\n  keeps that discovery cheap."
+  ],
+  "read": [
+   {
+    "id": "umi",
+    "why": "The interface, and the hardware section is the part people skip and should not."
+   },
+   {
+    "id": "vjepa2",
+    "why": "The architecture to build on. Latent prediction, zero-shot transfer, and an honest ablation section."
+   },
+   {
+    "id": "genie",
+    "why": "Latent actions from unlabelled video — your fallback when the action track is bad."
+   },
+   {
+    "id": "flare",
+    "why": "The two-week version of this project. Do it first."
+   },
+   {
+    "id": "realdexumi",
+    "why": "2026 wearable UMI for dexterous hands — the capture rig if you want fingers."
+   },
+   {
+    "id": "mobilewam",
+    "why": "WAM on a mobile manipulator; in your own M2 library. Read for what breaks in practice."
+   },
+   {
+    "id": "dream-tac",
+    "why": "The tactile WAM on a Tac-UMI gripper — the closest neighbour to this idea."
+   },
+   {
+    "id": "umi-on-legs",
+    "why": "How to deploy a UMI policy on a mobile base without coupling the two."
+   },
+   {
+    "id": "sunday-gelato",
+    "why": "Competitive intelligence: the commercial version of this thesis."
+   }
+  ]
+ },
+ "mobile-dex-umi": {
+  "why": "<p>You called this a low-hanging fruit, and the components genuinely do exist: UMI-style capture, a\n dexterous hand, a mobile base, and a whole-body controller that will track end-effector trajectories. The\n combination is what does not exist as a working system.</p>\n <p>The reason it matters is reach. Static bimanual setups can only learn tasks that fit inside their\n workspace, which excludes most of what a home robot would do. Mobility plus dexterity is where the useful\n tasks live, and it is also where nobody has good data.</p>",
+  "state": "<p><b>Mobility is solved to a usable standard.</b> [[tidybot2]] gives you an open holonomic base\n with a powered-caster drive at around $6k and a phone-based whole-body teleop interface. [[mobile-aloha]]\n showed the co-training result that matters: adding static bimanual data lifts mobile task success by up to\n 90%, which means you do not need all your data to be mobile. [[behavior-robot-suite]] decomposes household\n tasks into the three capabilities that actually matter — bimanual coordination, stable navigation, extensive\n reach — and builds the platform around them. [[yor]] and [[homer]] are the 2026 entries.</p>\n <p><b>The interface between manipulation and mobility is solved too.</b> [[umi-on-legs]] is the key paper:\n the manipulation policy speaks end-effector trajectories in the task frame, and an RL whole-body controller\n figures out how to deliver them. That decomposition is what lets you develop the two halves independently.</p>\n <p><b>Dexterous capture is now commodity.</b> [[dexumi]] (exoskeleton adapter plus video inpainting),\n [[realdexumi]] (wearable UMI for dexterous hands, 2026), [[ume]] (whole-body exoskeleton with compliance),\n [[dexcap]] (portable glove plus SLAM). Any of these will give you data.</p>\n <p><b>What is missing is the combination.</b> Nobody has published a mobile base + multi-finger hand +\n in-the-wild dexterous capture system working end to end. The dexterous UMI papers all evaluate on static\n arms; the mobile manipulation papers all use grippers.</p>",
+  "threads": [
+   "<b>The base.</b> [[tidybot2]] holonomic, or MABEL's swerve platform. Holonomic matters more than it\n  sounds — you want the base drivable <em>during</em> demonstration, not parked.",
+   "<b>The manipulation/mobility interface.</b> [[umi-on-legs]], [[falcon]], [[deep-wbc]]. Task-frame\n  end-effector trajectories, whole-body controller underneath.",
+   "<b>Dexterous capture.</b> [[realdexumi]], [[dexumi]], [[ume]], [[wt-umi]].",
+   "<b>Co-training static with mobile.</b> [[mobile-aloha]]. The single highest-value trick in this area.",
+   "<b>Task decomposition.</b> [[behavior-robot-suite]] — read its capability analysis before specifying\n  anything."
+  ],
+  "gap": "<p>This is a <b>systems</b> contribution, and you should be honest that it is. There is no new\n algorithm here; there is an integration nobody has done, and integrations of this kind have historically been\n very well cited when the hardware and data are released ([[umi]], [[aloha]], [[tidybot2]] are all in that\n category).</p>\n <p>The concrete claim to aim for: <b>in-the-wild dexterous demonstrations, collected with no robot present,\n executed by a multi-finger hand on a mobile base in scenes the robot has never been in.</b> The\n [[mobile-aloha]] co-training result suggests the mobile data requirement may be far smaller than expected,\n which is the finding that would make this cheap.</p>",
+  "plan": [
+   "Fix the stack early and stop redesigning it: MABEL's base, one hand, [[realdexumi]]- or\n  [[dexumi]]-style capture, [[umi-on-legs]] as the interface.",
+   "Validate the interface before the data. Can the whole-body controller track a recorded end-effector\n  trajectory to a few centimetres? If not, nothing downstream works.",
+   "Collect in at least 10 distinct real scenes. The whole argument for in-the-wild capture is scene\n  diversity; three scenes proves nothing.",
+   "Run the [[mobile-aloha]] co-training ablation: static-only, mobile-only, mixed. The mixing ratio is a\n  publishable number on its own.",
+   "Release the hardware and the data. That is what makes a systems paper matter."
+  ],
+  "risks": [
+   "<b>Integration debt.</b> Four subsystems means four failure modes multiplying. Stage the bring-up and\n  keep a working configuration you can fall back to.",
+   "<b>Base motion corrupts the capture.</b> UMI pose tracking assumes a reasonably static world; a moving\n  base plus a moving hand is harder. Check the SLAM quality early.",
+   "<b>Hand reliability.</b> Multi-finger hands break. [[orca-hand]] and [[ruka-v2]] are explicitly engineered\n  for repairability — that is not a minor consideration for a data-collection campaign."
+  ],
+  "read": [
+   {
+    "id": "umi-on-legs",
+    "why": "The interface that makes this tractable. Read first."
+   },
+   {
+    "id": "mobile-aloha",
+    "why": "The co-training result that may make the mobile data requirement small."
+   },
+   {
+    "id": "tidybot2",
+    "why": "The base design, and the phone-teleop trick worth stealing."
+   },
+   {
+    "id": "realdexumi",
+    "why": "2026 wearable dexterous UMI — the most likely capture rig."
+   },
+   {
+    "id": "dexumi",
+    "why": "The two-part embodiment-gap strategy: exoskeleton for kinematics, inpainting for pixels."
+   },
+   {
+    "id": "behavior-robot-suite",
+    "why": "The capability decomposition to write your spec against."
+   },
+   {
+    "id": "ume",
+    "why": "Whole-body exoskeleton capture with compliance — the force half UMI leaves out."
+   },
+   {
+    "id": "falcon",
+    "why": "Force-adaptive whole-body control for when the payload fights back."
+   }
+  ]
+ },
+ "hand-22dof": {
+  "why": "<p>Everything in your dexterity agenda — egocentric learning, tactile world models, the dexterous UMI —\n needs a hand you control, can repair, and can simulate. Buying one means inheriting someone else's kinematics\n and a support contract; building one means the hardware stops being the excuse.</p>\n <p>The 1X Redwood hand is the target aesthetic: high DOF, tendon-driven, soft-covered, built for a home\n robot rather than a lab bench. The open-source version of that does not exist yet at 22 DOF.</p>",
+  "state": "<p><b>The open-hand field got crowded in 2026, and you should know exactly how crowded before\n committing.</b> [[leap-hand]] (2023, ~$2000) made dexterity research affordable and contributed real\n kinematics — the MCP design that keeps fingers dexterous in every pose. [[orca-hand]] (ETH, IROS 2025) is\n 17 DOF, tendon-driven, under 2000 CHF, assembles in under eight hours, survived 10,000+ continuous cycles,\n and is engineered for repairability rather than peak spec. [[ruka]] (NYU) contributed the idea that matters\n most for high DOF: <b>stop modelling tendon coupling analytically and learn the motor-to-joint map from\n glove data</b>.</p>\n <p>Then 2026: [[ruka-v2]] adds a decoupled 2-DOF parallel wrist and finger abduction, fully open-sourced,\n demonstrated across 13 teleoperated dexterous tasks. [[mm-hand]] is <b>21 DOF</b> with remote tendon\n actuation, modular printed fingers, and joint-angle + tactile + motor + in-palm stereo sensing — which is\n close to a line-by-line match for the spec you wrote down. [[aero-hand]] is a five-finger, 16-joint,\n seven-motor, 374 g hand for $314 of parts, shipped simulation-ready.</p>\n <p><b>The mechanism literature is separate and worth reading.</b> [[dlr-hand]] for variable stiffness and\n impact tolerance, [[faive-ball]] for rolling-contact joints (the ETH lineage behind [[mimic-robotics]]),\n [[midas-hand]] for the direct-drive counter-argument, [[dexwrist]] for the joint everyone under-designs,\n [[pds-joint]] for spiral-joint mechanisms.</p>",
+  "threads": [
+   "<b>Cheap and repairable.</b> [[orca-hand]], [[aero-hand]], [[leap-hand]]. Reliability beats spec for\n  anything you plan to collect data with.",
+   "<b>High DOF with learned kinematics.</b> [[ruka]], [[ruka-v2]], [[mm-hand]]. The learned motor-to-joint\n  map is the enabling idea.",
+   "<b>Joint mechanisms.</b> [[faive-ball]] rolling contact, [[pds-joint]] spiral, [[dlr-hand]] variable\n  stiffness, [[midas-hand]] direct drive.",
+   "<b>Sensing integrated from the start.</b> [[mm-hand]], [[dexskin]], [[anyskin]]. Retrofitting touch onto\n  a finished hand is much worse than designing for it.",
+   "<b>The wrist.</b> [[dexwrist]], [[ruka-v2]]. A brilliant hand on a bad wrist is a bad manipulator."
+  ],
+  "gap": "<p>Be blunt about this one: <b>21-DOF open tendon hands now exist</b> ([[mm-hand]]), and so does an\n open tendon hand with wrist and abduction ([[ruka-v2]]). \"22 DOF, tendon-driven, open source\" is no longer a\n contribution by itself, and a paper making that claim would be rejected on novelty.</p>\n <p>What is still open, in descending order of value. <b>Durability as a measured quantity</b> — [[orca-hand]]\n reports 10,000 cycles and is almost alone in reporting anything; a hand with a published wear model and\n field-replaceable tendons would be genuinely useful to everyone doing data collection. <b>Sensing density</b>\n — nobody has combined [[dexskin]]-class conformable coverage with a 20+ DOF open hand, and that combination\n is exactly what your tactile world-model project needs. <b>Simulation fidelity</b> — [[aero-hand]] ships\n simulation-ready, most do not, and a hand whose MuJoCo model actually matches measured tendon behaviour\n would unblock sim-to-real for everyone.</p>\n <p>The honest framing: build the hand as <em>infrastructure</em> for your other projects, and publish it when\n it has a property the others lack — most plausibly full-coverage touch, or a validated sim model.</p>",
+  "plan": [
+   "Before designing anything, build one [[orca-hand]] or [[aero-hand]]. Two weeks, and it will change your\n  design opinions more than any amount of reading.",
+   "Adopt [[ruka]]'s learned motor-to-joint mapping from the start. It removes the hardest modelling problem\n  in tendon hands and it is the only reason 20+ DOF is tractable for one person.",
+   "Design the sensing in, not on. Route for [[dexskin]]/[[anyskin]]-class coverage at the fingers and palm\n  before the mechanical design is frozen.",
+   "Publish a wear protocol: cycles to tendon replacement, drift after N cycles, time to repair. Nobody does\n  this and everybody needs it.",
+   "Validate the MuJoCo model against measured joint trajectories under load, and release both."
+  ],
+  "risks": [
+   "<b>Novelty.</b> Addressed above — this is infrastructure first, paper second.",
+   "<b>Tendon maintenance eats the research.</b> The reason [[orca-hand]]'s reliability focus exists. Design\n  for field replacement or you will spend your PhD restringing.",
+   "<b>Sim-to-real for tendon hands is genuinely hard.</b> Friction and hysteresis are not well modelled by\n  any simulator. [[dexndm]]'s joint-wise learned dynamics is the most promising escape hatch."
+  ],
+  "read": [
+   {
+    "id": "ruka-v2",
+    "why": "The current state of the art for exactly this idea. Read first and decide what you would do differently."
+   },
+   {
+    "id": "mm-hand",
+    "why": "21 DOF, modular, multi-modal sensing — essentially your written spec, already built."
+   },
+   {
+    "id": "orca-hand",
+    "why": "The reliability argument, and the only hand reporting a durability number. Build one."
+   },
+   {
+    "id": "ruka",
+    "why": "The learned motor-to-joint map. The single most important idea for making high DOF tractable."
+   },
+   {
+    "id": "aero-hand",
+    "why": "$314, 374 g, simulation-ready. Cheapest credible entry point."
+   },
+   {
+    "id": "leap-hand",
+    "why": "The kinematic contribution that made cheap hands actually dexterous."
+   },
+   {
+    "id": "dexskin",
+    "why": "The sensing you should design in from the start."
+   },
+   {
+    "id": "dexwrist",
+    "why": "Do not under-design the wrist."
+   },
+   {
+    "id": "dexndm",
+    "why": "How to close the sim-to-real gap for a tendon hand once you have one."
+   }
+  ]
+ },
+ "learned-retargeting": {
+  "why": "<p>Retargeting is the silent tax on every teleoperation and human-video pipeline you run. The standard\n formulation minimizes distance between human and robot keypoints, which is the wrong objective: it optimizes\n for the hand <em>looking</em> right rather than for the contacts being right. Two fingers that should touch\n end up a centimetre apart, a box that should be gripped is held by fingertips that are not quite on it, and\n the policy trained on that data learns a task that does not physically work.</p>",
+  "state": "<p><b>The classical formulation is well established and well understood.</b> [[dexpilot]] introduced\n the fingertip-distance cost that most systems still use, [[anyteleop]] generalized it across hands and arms\n with camera-only input, and [[dex-retargeting]] is the library that made it a solved engineering problem\n rather than a research one. For whole-body, [[h2o]] fits the human shape to the robot's kinematics before\n tracking, [[omnih2o]] extends that to dexterous hands and many interfaces, and [[hover]] distils multiple\n command modes into one masked policy.</p>\n <p><b>The contact-aware reformulation has arrived.</b> [[c2dex]] (Aug 2026, in your own M2 library) does\n <em>contact-consistent</em> reconstruction and retargeting — preserving which surfaces touch rather than\n which joints match. That is the idea you wrote down, published. [[x-op]] takes the optimization route with\n MPC-based cross-morphology retargeting.</p>\n <p><b>The learned-mapping precedent is on the hardware side.</b> [[ruka]] learns the motor-to-joint map from\n glove data rather than modelling it, which is the same move one level lower in the stack. [[dexumi]] avoids\n the problem entirely by making the human wear the robot's kinematics.</p>\n <p><b>And the masking insight generalizes.</b> [[maskedmimic]] and [[hover]] both show that training with\n randomly masked goal specifications produces one policy that serves many interfaces — which is directly\n applicable if you want a retargeter that accepts whatever signal the capture happens to provide.</p>",
+  "threads": [
+   "<b>Keypoint retargeting.</b> [[dexpilot]], [[anyteleop]], [[dex-retargeting]]. The baseline you must beat.",
+   "<b>Contact-consistent retargeting.</b> [[c2dex]]. Read this before writing anything.",
+   "<b>Optimization-based cross-morphology.</b> [[x-op]], [[h2o]].",
+   "<b>Avoiding retargeting by construction.</b> [[dexumi]], [[ume]] — make the human wear the robot.",
+   "<b>Learned kinematic maps.</b> [[ruka]] — the same trick, applied to tendons.",
+   "<b>Interface-agnostic policies.</b> [[hover]], [[maskedmimic]]."
+  ],
+  "gap": "<p>[[c2dex]] takes the headline framing, so the opening has to be sharper. Two remain.</p>\n <p><b>The benchmark.</b> There is no standard way to evaluate a retargeter. Papers report task success of a\n downstream policy, which confounds retargeting quality with policy quality. A benchmark that measures\n retargeting directly — contact-set agreement, force-closure preservation, fingertip-contact recall on a\n set of human demonstrations with ground-truth contact — would be used by everyone in this list, and it is\n exactly the kind of contribution that makes a lab's work citable for years.</p>\n <p><b>Task-conditioned retargeting.</b> Every method above retargets the same way regardless of what the\n hand is doing. But the correct retargeting for a precision pinch and for a power grasp are different, and\n the information about which one is happening is right there in the demonstration. Nobody conditions on it.</p>",
+  "plan": [
+   "Build the evaluation first. Take human demonstrations with measured contact (a [[doglove]]-class force\n  glove, or vision plus a tactile object), retarget with [[dex-retargeting]], and measure contact-set\n  agreement. That number is your baseline and the paper's spine.",
+   "Reproduce [[c2dex]] as the strong baseline. Do not skip this; it defines the current bar.",
+   "Train the task-conditioned version: a small network that predicts the retargeting objective's weights\n  from the demonstration segment, supervised by downstream contact agreement.",
+   "Evaluate on the two-fingers-touching and holding-a-box cases you named — they are good tests precisely\n  because keypoint methods fail on them in visible, diagnosable ways.",
+   "Close the loop: show the downstream policy trained on better-retargeted data actually succeeds more often."
+  ],
+  "risks": [
+   "<b>Ground-truth contact is hard to get.</b> The whole benchmark rests on it. Settle the measurement\n  method before collecting anything — a tactile-instrumented object is usually more reliable than a glove.",
+   "<b>Retargeting may not be the bottleneck.</b> Possible that policy capacity dominates. The benchmark\n  answers this honestly either way, which is why it is the right first step.",
+   "<b>Hand mismatch caps the achievable score.</b> If your robot hand cannot make the contact the human\n  made, no retargeter can fix it. Report the achievable ceiling per hand."
+  ],
+  "read": [
+   {
+    "id": "c2dex",
+    "why": "Contact-consistent retargeting, 2026, already in your library. Read first — it is the closest prior work."
+   },
+   {
+    "id": "anyteleop",
+    "why": "The general camera-only system and the practical baseline."
+   },
+   {
+    "id": "dex-retargeting",
+    "why": "The library. Your baseline implementation, not a paper to argue with."
+   },
+   {
+    "id": "ruka",
+    "why": "Learning the kinematic map instead of modelling it — the same move one layer down."
+   },
+   {
+    "id": "hover",
+    "why": "Masked training so one policy serves many command interfaces."
+   },
+   {
+    "id": "dexumi",
+    "why": "The alternative: remove the retargeting problem by construction."
+   },
+   {
+    "id": "x-op",
+    "why": "The MPC-based cross-morphology answer, for contrast."
+   },
+   {
+    "id": "doglove",
+    "why": "Force-feedback capture, if you need demonstrations with measured contact."
+   }
+  ]
+ },
+ "rl-harness": {
+  "why": "<p>Real-world RL is rare not because the algorithms are missing but because the <em>apparatus</em> is.\n Every hour of on-robot RL needs automatic reset, automatic success detection, automatic logging, and\n something to stop the arm destroying itself at 3am. Labs that have built that apparatus publish real-world\n RL results constantly; labs that have not, publish none. The harness is the moat.</p>",
+  "state": "<p><b>The canonical example is [[serl]]</b> — a software suite with RLPD-style off-policy RL, learned\n reward classifiers, and forward-backward reset controllers, which turns real-robot RL from a research\n project into a two-hour job. [[hil-serl]] adds the human-correction channel and reaches near-100% on\n contact-rich tasks in one to two and a half hours.</p>\n <p><b>The 2026 development is that the harness itself became the paper.</b> [[harbor]] is a harness framework\n for agentic robot RL that automates the whole simulation-RL workflow across 6 benchmarks and 16 tasks\n spanning manipulation, locomotion and bimanual dexterous control, with policies transferring to real robots.\n That is your idea, in simulation. [[polaris]] does the evaluation-harness half using real-to-sim twins.</p>\n <p><b>Reward without instrumentation is the recurring blocker.</b> [[vip]] gets a dense reward from human\n video; [[ript-vla]] shows binary success is enough if you have it; [[eureka]] and [[rf-agent]] generate\n reward code automatically.</p>",
+  "threads": [
+   "<b>Reset.</b> Forward-backward policies ([[serl]]), scripted resets, or task design that is\n  self-resetting. This is the unglamorous thing that decides whether the harness works overnight.",
+   "<b>Reward.</b> Learned classifiers ([[serl]]), binary success ([[ript-vla]]), video-derived value\n  ([[vip]]), LLM-written reward code ([[eureka]], [[rf-agent]]).",
+   "<b>Orchestration.</b> [[harbor]], [[rlinf-vla]]. Someone else's rollout loop is better than yours.",
+   "<b>Evaluation.</b> [[polaris]] — twins so the ablations are affordable.",
+   "<b>Safety and wear.</b> Under-discussed and it is what actually stops unattended running."
+  ],
+  "gap": "<p>[[harbor]] automates the <b>simulation</b> RL workflow. The real-world harness — the one that runs\n unattended on physical hardware for days — is still bespoke per lab, and [[serl]] is the closest thing to a\n shared artefact. That gap is your opening, and it is a systems-and-infrastructure contribution rather than\n an algorithmic one.</p>\n <p>Concretely: <b>a standing set of physical tasks with automatic reset, automatic scoring, and continuous\n logging, that any RL algorithm can be pointed at.</b> Release it with baseline curves for three or four\n algorithms and you have given the field something it has wanted for a decade. It also unblocks your own\n RL-post-training and agentic-auto-research ideas, both of which need exactly this.</p>",
+  "plan": [
+   "Pick 5-8 physical tasks that are genuinely self-resetting or cheaply resettable — peg insertion into a\n  fixture, a hinged door, a sliding drawer, a tethered object. Resist tasks that need a human to tidy up.",
+   "Build reward detection per task before anything else, and validate it against human labels for a few\n  hundred episodes. A harness with 5% reward-detection error is worse than no harness.",
+   "Wrap [[serl]]/[[rlinf-vla]] rather than writing a new trainer.",
+   "Run it unattended for 72 hours and report what broke. That failure log is a more valuable contribution\n  than the learning curves.",
+   "Publish baselines: [[rlpd]], [[hil-serl]], [[pld]] on the same tasks and the same time budget."
+  ],
+  "risks": [
+   "<b>Hardware wear and unattended failure.</b> The reason this is rare. Design for graceful failure and\n  instrument for it; assume a gripper is a consumable.",
+   "<b>Reward detection is the whole project in disguise.</b> Budget most of your time here.",
+   "<b>Nobody adopts it.</b> Mitigated by making the hardware cheap and the task fixtures printable —\n  the [[aloha]]/[[so100]] lesson."
+  ],
+  "read": [
+   {
+    "id": "serl",
+    "why": "The closest existing artefact to what you want to build. Read the reset and reward sections closely."
+   },
+   {
+    "id": "harbor",
+    "why": "2026. The simulation version of this idea, already done — read it to scope yours to the real-world half."
+   },
+   {
+    "id": "hil-serl",
+    "why": "What a working harness enables: near-100% on hard tasks in two hours."
+   },
+   {
+    "id": "polaris",
+    "why": "The evaluation half, via real-to-sim twins."
+   },
+   {
+    "id": "rlpd",
+    "why": "The algorithm your baselines should start from."
+   },
+   {
+    "id": "eureka",
+    "why": "If reward code generation becomes part of the harness."
+   },
+   {
+    "id": "vip",
+    "why": "Reward from human video, for tasks you cannot instrument."
+   }
+  ]
+ },
+ "auto-research-dex": {
+  "why": "<p>You wrote \"you can try now\" next to this one, and that is the right instinct — of everything on\n your list, this needs the least new hardware and the least new theory. The loop is: an agent writes the\n reward, launches the training, reads the curves, diagnoses the failure, and revises. Every piece of that has\n been demonstrated separately.</p>",
+  "state": "<p><b>[[eureka]] is the proof of concept</b>: GPT-4 writes reward <em>code</em>, trains a policy,\n reads the training statistics, and mutates — producing human-level reward functions and a pen-spinning\n Shadow Hand. [[dreureka]] extends it to writing the domain-randomization config, i.e. the sim-to-real knobs.\n [[rf-agent]] (Feb 2026) replaces Eureka's evolutionary search with language agent tree search over reward\n functions.</p>\n <p><b>And [[harbor]] (June 2026) closes the loop</b>: a harness framework for agentic robot RL that automates\n the whole simulation-RL workflow across 16 tasks including bimanual dexterous control, with real-robot\n transfer. Read it before you plan anything — this is the idea, implemented.</p>\n <p><b>The general auto-research literature is more sobering.</b> [[ai-scientist]] and [[agent-laboratory]]\n run the full hypothesis-to-paper loop outside robotics, and the consistent finding is that agents are good\n at writing code and running experiments, and weak at judging whether a result is interesting. [[voyager]]'s\n growing skill library and self-proposed curriculum is the architecture that works best when the environment\n gives clean feedback — which simulated dexterity does and real dexterity does not.</p>",
+  "threads": [
+   "<b>Reward generation.</b> [[eureka]], [[rf-agent]], [[dreureka]]. The most mature component.",
+   "<b>Workflow automation.</b> [[harbor]], [[rlinf-vla]].",
+   "<b>Self-improving loops.</b> [[robocat]] (adapt, self-generate data, fold back), [[voyager]] (skill\n  library plus self-curriculum), [[pld]] (probe, learn, distil).",
+   "<b>The honest limits.</b> [[ai-scientist]], [[agent-laboratory]] — read the criticism as well as the papers."
+  ],
+  "gap": "<p>[[harbor]] occupies the simulated version. Two openings remain and both are specific to dexterity.</p>\n <p><b>The agent cannot currently diagnose a dexterity failure.</b> Reward-generation systems read scalar\n training curves. A failed in-hand rotation is not diagnosable from a reward curve — you need to look at the\n contact history and see that the thumb lost purchase at 40% of the rollout. An agent that reads <em>contact\n and trajectory traces</em> rather than scalars, and proposes targeted fixes, is a real and unclaimed\n contribution — and it plugs straight into your tactile work.</p>\n <p><b>Nobody runs the loop on real hardware.</b> Simulated auto-research is cheap and mostly solved.\n Real-world auto-research needs the harness from your other idea, which is precisely why these two ideas\n belong together.</p>",
+  "plan": [
+   "Reproduce [[eureka]] on one in-hand task this week. It is genuinely a week, and it calibrates every\n  intuition you have about what the agent can and cannot do.",
+   "Replace the scalar feedback with structured traces: contact events, joint limits hit, object drop times.\n  Give the agent something it can actually diagnose from.",
+   "Benchmark against [[rf-agent]] and the [[harbor]] pipeline rather than against hand-tuned rewards only.",
+   "Measure the thing that matters: agent iterations to reach a target success rate, versus a human\n  researcher's iterations on the same task. Nobody reports this honestly.",
+   "Then, and only then, point it at real hardware through the harness."
+  ],
+  "risks": [
+   "<b>It is a wrapper.</b> The failure mode of this whole area is producing a nicely-engineered loop with\n  no research claim. The contact-trace diagnosis angle is what keeps it a contribution.",
+   "<b>Reward hacking.</b> LLM-written rewards get gamed by the RL agent in creative and hard-to-detect ways.\n  Hold out an honest evaluation the reward cannot touch.",
+   "<b>Cost.</b> Many LLM calls times many training runs. Cap it and report the budget."
+  ],
+  "read": [
+   {
+    "id": "harbor",
+    "why": "Read first. It is this idea, implemented, in simulation — it tells you exactly what is left."
+   },
+   {
+    "id": "eureka",
+    "why": "The proof of concept, and a one-week reproduction that will calibrate everything."
+   },
+   {
+    "id": "rf-agent",
+    "why": "2026 successor: tree search over reward functions instead of evolution."
+   },
+   {
+    "id": "dreureka",
+    "why": "Extends the loop to the sim-to-real knobs."
+   },
+   {
+    "id": "voyager",
+    "why": "The skill-library + self-curriculum architecture for open-ended improvement."
+   },
+   {
+    "id": "agent-laboratory",
+    "why": "The honest reference point for what agent-run research does and does not do."
+   },
+   {
+    "id": "serl",
+    "why": "What the real-world version needs underneath it."
+   }
+  ]
+ },
+ "codesign-dex-agentic": {
+  "why": "<p>Hand design is currently a craft: someone with taste iterates on tendon routing and link lengths\n until it feels right. That loop is slow, undocumented, and does not transfer. If an agent can propose a\n morphology, build it in simulation, train a policy, read the result and revise, then hand design becomes a\n search problem — and search problems scale.</p>",
+  "state": "<p><b>Co-design has a long history and a clear modern formulation.</b> [[sims1994]] evolved bodies\n and brains together in 1994 and the framing has barely changed. [[transform2act]] gives the cleanest modern\n statement — make design choices <em>actions</em> in an extended MDP so one RL algorithm handles both.\n [[derl]] showed morphology and learning speed co-evolve (the \"morphological Baldwin effect\"), which is the\n result to cite when arguing co-design is more than hyperparameter tuning. [[robogrammar]] constrains the\n search with a grammar so results are buildable, and [[neural-graph-evo]] (Toronto) does the GNN version.</p>\n <p><b>For hands specifically, the gradient-based line is strongest.</b> [[hardware-as-policy]] treats the\n mechanism as part of the policy network so hardware parameters get gradients from the same backward pass,\n demonstrated on underactuated hands. [[diff-contact-design]] differentiates through contact. [[fit2form]]\n generates gripper geometry from the task. Those three are the technical core for dexterity co-design.</p>\n <p><b>The agentic layer arrived in 2024-26.</b> [[text2robot]] goes from a text prompt through a 3D\n generative model to a printable quadruped with an evolved controller in under a day. [[robomorph]] uses an\n LLM as the mutation operator with automatic reward design alongside. [[diffusebot]] puts a diffusion model\n over morphologies with differentiable physics steering the sampling. [[eureka]] and [[rf-agent]] supply the\n reward half.</p>",
+  "threads": [
+   "<b>Formulations.</b> [[transform2act]] (design-as-action), [[codesign-rl]] (distribution over designs),\n  [[coros-codesign]]/[[dinev-codesign]] (differentiate through the solver).",
+   "<b>Search-space constraints.</b> [[robogrammar]], [[lipson2000]]. An agent proposing in free space\n  produces unbuildable garbage; a grammar fixes that.",
+   "<b>Hands and contact.</b> [[hardware-as-policy]], [[diff-contact-design]], [[fit2form]].",
+   "<b>Generative proposal.</b> [[text2robot]], [[diffusebot]], [[robomorph]].",
+   "<b>Benchmarks.</b> [[evogym]], [[taskagnostic-morph]]."
+  ],
+  "gap": "<p>Everything above optimizes for locomotion or for simple grippers. <b>Nobody has run an agentic\n co-design loop on a multi-finger dexterous hand</b>, and the reason is technical, not accidental: the\n objective for dexterity is contact behaviour, which is expensive to simulate, poorly differentiable, and\n badly captured by any scalar. That is exactly why it is worth doing.</p>\n <p>The tractable version couples this to your other work: use [[hardware-as-policy]]-style differentiable\n hardware parameters within a [[robogrammar]]-style constrained space, with an LLM agent proposing structural\n changes and a [[eureka]]-style component writing the task reward. Evaluate on in-hand reorientation, where\n the literature ([[chen-inhand]], [[chen-visual-inhand]]) gives you a hard baseline. And make the output\n <em>buildable</em> — validate on the real hand from your 22-DOF project.</p>",
+  "plan": [
+   "Fix the design space first: tendon routing, link ratios, joint axes, actuator selection — parameterised,\n  bounded, and buildable. This is most of the work and it is where domain knowledge beats the agent.",
+   "Baseline with [[transform2act]] or [[hardware-as-policy]] before adding an LLM. You need to know what\n  plain optimization achieves.",
+   "Add the agent as the <em>structural</em> proposer only (add a finger joint, change the thumb opposition\n  axis), leaving continuous parameters to gradients. Agents are better at discrete choices than at numbers.",
+   "Evaluate on in-hand reorientation success across an object set — a measure with real prior art to\n  compare against.",
+   "Build the best candidate. An unbuilt co-design result is a simulation paper."
+  ],
+  "risks": [
+   "<b>Simulation fidelity for tendon hands.</b> The optimizer will exploit whatever the simulator gets\n  wrong. Constrain aggressively and sanity-check candidates against a physical prototype early.",
+   "<b>Compute.</b> Every design evaluation is an RL training run. [[meta-rl-legged]]'s design-conditioned\n  policy trick is the standard escape — adopt it from the start.",
+   "<b>The agent adds nothing.</b> Very possible. The honest ablation — agent proposer vs random proposer vs\n  evolutionary proposer — should be in the paper whichever way it comes out."
+  ],
+  "read": [
+   {
+    "id": "hardware-as-policy",
+    "why": "The most directly relevant formulation: hardware parameters inside the policy network, demonstrated on hands."
+   },
+   {
+    "id": "transform2act",
+    "why": "The cleanest general formulation — design choices as actions."
+   },
+   {
+    "id": "text2robot",
+    "why": "2025. The closest existing agentic co-design system, end to end and printable."
+   },
+   {
+    "id": "robogrammar",
+    "why": "Why you need a grammar, not free-space proposal."
+   },
+   {
+    "id": "diff-contact-design",
+    "why": "Differentiating through contact — the hard part for dexterity."
+   },
+   {
+    "id": "derl",
+    "why": "The argument that co-design changes learnability, not just performance."
+   },
+   {
+    "id": "robomorph",
+    "why": "LLM as mutation operator; the mechanism you are proposing."
+   },
+   {
+    "id": "meta-rl-legged",
+    "why": "The design-conditioned-policy trick that makes the compute affordable."
+   },
+   {
+    "id": "fit2form",
+    "why": "Generating gripper geometry from the task."
+   }
+  ]
+ },
+ "codesign-dog-rl": {
+  "why": "<p>A single, brutally clear objective — top speed — with body and controller optimized together, end\n to end. The clarity is the appeal: no reward shaping argument, no subjective evaluation, and a number at the\n end that is either better or not.</p>",
+  "state": "<p><b>The hardware baseline is [[mit-cheetah]]</b> and its proprioceptive-actuator argument: high\n torque density, low gear ratio, backdrivable. That single design choice is responsible for most of what made\n cheap dynamic legged robots possible, and any co-design that ignores actuator selection is optimizing the\n wrong variables.</p>\n <p><b>The co-design formulations are mature.</b> [[transform2act]] (design as action), [[derl]] (evolution\n plus learning), [[codesign-rl]] (distribution over designs), [[coros-codesign]] and [[dinev-codesign]]\n (differentiate through the motion solver — far more sample-efficient when your model is good, which for a\n quadruped it is).</p>\n <p><b>The compute problem has a standard solution.</b> [[meta-rl-legged]] trains a design-conditioned policy\n once and then evaluates candidate morphologies cheaply without retraining. Without this trick, every design\n evaluation costs an RL run and the search is unaffordable.</p>\n <p><b>And the real-world version exists.</b> [[dyret]] is a quadruped that physically changes its own leg\n lengths and evolves its morphology in the real world rather than in simulation. It is the most relevant prior\n work here and also the clearest evidence of how punishing the real-world loop is.</p>\n <p><b>Finally, [[text2robot]] produces printable quadrupeds from a text prompt with evolved controllers in\n under a day</b> — the agentic generative version, and the thing that makes \"co-design a dog\" a much shorter\n project than it would have been two years ago.</p>",
+  "threads": [
+   "<b>Actuator-first design.</b> [[mit-cheetah]]. Get this variable in the search space or the result is\n  uninteresting.",
+   "<b>RL-in-the-loop formulations.</b> [[transform2act]], [[derl]], [[codesign-rl]].",
+   "<b>Model-based gradients.</b> [[coros-codesign]], [[dinev-codesign]] — cheaper when the model is good.",
+   "<b>Design-conditioned policies.</b> [[meta-rl-legged]] — the compute unlock.",
+   "<b>Real-world morphology adaptation.</b> [[dyret]].",
+   "<b>Massively parallel training.</b> [[rudin2021]], [[isaaclab]] — the substrate that makes this feasible\n  at all."
+  ],
+  "gap": "<p>Almost all co-design work optimizes a simulated objective and stops. The unclaimed contribution is\n <b>a physically built, measured result</b>: the co-designed quadruped, fabricated, running, with its top\n speed measured against a hand-designed control at matched mass and actuator budget. [[dyret]] is the closest\n and it adapts an existing platform rather than designing one.</p>\n <p>The honest second contribution — and possibly the more valuable one — is the <b>sim-to-real gap of the\n design itself</b>. Everyone reports the sim-to-real gap of a policy. Nobody reports how much of a co-designed\n morphology's simulated advantage survives fabrication. That number does not exist in the literature and\n people would cite it.</p>",
+  "plan": [
+   "Parameterise honestly: link lengths, mass distribution, gear ratio, and actuator selection from a real\n  catalogue. A search over link lengths alone will not find anything interesting.",
+   "Adopt [[meta-rl-legged]]'s design-conditioned policy immediately — otherwise the search is unaffordable.",
+   "Use [[rudin2021]]/[[isaaclab]] massively-parallel training as the substrate.",
+   "Build the top candidate and one hand-designed control at matched mass and actuator budget. Measure both.",
+   "Report the design sim-to-real gap explicitly, with the discrepancy decomposed into actuator, structural\n  compliance, and contact."
+  ],
+  "risks": [
+   "<b>The optimizer exploits the simulator.</b> Guaranteed at some level. Constrain to buildable ranges,\n  penalise anything relying on unmodelled compliance, and validate candidates physically before committing.",
+   "<b>Fabrication is slow.</b> This is the step that turns a six-month project into eighteen. Design for\n  printable and off-the-shelf actuators from the start.",
+   "<b>Speed is dominated by actuators.</b> Very likely the answer is \"buy better motors\". If so, say it —\n  that is a real finding about where co-design's leverage actually is."
+  ],
+  "read": [
+   {
+    "id": "mit-cheetah",
+    "why": "The actuator argument that dominates this whole problem. Read first."
+   },
+   {
+    "id": "dyret",
+    "why": "Real-world morphological adaptation on a quadruped — the closest prior work, and a warning."
+   },
+   {
+    "id": "transform2act",
+    "why": "The formulation to implement."
+   },
+   {
+    "id": "meta-rl-legged",
+    "why": "The design-conditioned policy that makes the search affordable."
+   },
+   {
+    "id": "text2robot",
+    "why": "Prompt to printable quadruped in under a day — the fast path to a first result."
+   },
+   {
+    "id": "derl",
+    "why": "The evidence that co-design changes learnability, not just performance."
+   },
+   {
+    "id": "coros-codesign",
+    "why": "The model-based alternative: differentiate through the trajectory optimizer."
+   },
+   {
+    "id": "rudin2021",
+    "why": "The parallel-training substrate this all assumes."
+   }
+  ]
+ },
+ "agentic-physical": {
+  "why": "<p>Software agents plan, call tools, observe results and replan. Robots mostly do not — they execute a\n policy. The idea is to put the agent loop on a physical body: high-level reasoning that decomposes a task,\n calls learned skills, watches what happens, and revises. You called it a wild idea with low-hanging fruit,\n and both halves of that are right.</p>",
+  "state": "<p><b>The dual-system architecture already converged on something close.</b> [[groot-n1]] splits a\n slow VLM reasoning system from a fast diffusion controller; [[helix]] makes the same split at 7-9 Hz and\n 200 Hz; [[pi05]] predicts high-level subtasks before acting. These are agent loops in all but name — what\n they lack is <em>persistent</em> state across attempts and genuine replanning after failure.</p>\n <p><b>The agent literature supplies the missing half.</b> [[voyager]] maintains a growing library of\n executable skills with a self-proposed curriculum; [[robocat]] adapts, self-generates data and folds it back;\n [[tidybot]] uses an LLM for the narrow and correct thing — summarising a few user examples into a\n generalizable preference rule.</p>\n <p><b>And the harness exists now.</b> [[harbor]] automates agentic robot RL workflows; [[agent-laboratory]]\n and [[ai-scientist]] show the general loop outside robotics, along with its honest limitation: agents are\n strong at generating and executing, weak at evaluating.</p>",
+  "threads": [
+   "<b>Dual-system VLAs.</b> [[groot-n1]], [[helix]], [[pi05]].",
+   "<b>Skill libraries and self-curriculum.</b> [[voyager]], [[robocat]].",
+   "<b>LLMs used narrowly and well.</b> [[tidybot]].",
+   "<b>Failure recovery.</b> [[hil-serl]], [[pi06]] — corrections as a first-class data source.",
+   "<b>Orchestration.</b> [[harbor]], [[rlinf-vla]]."
+  ],
+  "gap": "<p>The low-hanging fruit is real and specific: <b>memory across attempts</b>. Every system above\n starts each episode fresh. A robot that remembers that this particular drawer sticks, that this mug is\n heavier than it looks, and that the last three attempts at this grasp failed the same way — and conditions\n its next attempt on that — is a small change to the architecture and a large change to the behaviour.\n Nobody has published it properly for physical manipulation.</p>\n <p>It also composes with everything else you are doing: the memory is exactly the place a world model\n ([[vjepa2]], [[flare]]) or a tactile trace ([[dream-tac]]) belongs.</p>",
+  "plan": [
+   "Start from an existing dual-system stack ([[groot-n1]] is open) rather than building an agent framework.",
+   "Add a per-object, per-scene memory: failure modes, observed masses, successful grasp poses. Keep it\n  small and structured, not a vector database.",
+   "Evaluate on repeated attempts at the same task, and report success rate as a function of attempt number.\n  That curve is the whole claim, and no current system has a positive slope on it.",
+   "Add the [[voyager]]-style skill library only if the memory result holds.",
+   "Use the tasks from your real-world RL harness so the repeated-attempt experiment can run unattended."
+  ],
+  "risks": [
+   "<b>Framework without a finding.</b> The dominant failure mode. The attempt-number curve keeps you honest.",
+   "<b>Latency.</b> A reasoning call per attempt is fine; per timestep is not. Keep the agent above the\n  control loop, as the dual-system papers do.",
+   "<b>Evaluation is hard.</b> Agentic behaviour resists single-number evaluation. Commit to the repeated-attempt\n  metric early rather than arguing about it later."
+  ],
+  "read": [
+   {
+    "id": "groot-n1",
+    "why": "The open dual-system stack to start from."
+   },
+   {
+    "id": "voyager",
+    "why": "Skill library plus self-curriculum — the architecture for open-ended improvement."
+   },
+   {
+    "id": "harbor",
+    "why": "The agentic-RL harness, so you are not writing orchestration."
+   },
+   {
+    "id": "pi05",
+    "why": "High-level subtask prediction inside a VLA — reasoning without a separate agent."
+   },
+   {
+    "id": "robocat",
+    "why": "Self-improvement: adapt, generate data, fold back."
+   },
+   {
+    "id": "tidybot",
+    "why": "The example of using an LLM for exactly the right narrow thing."
+   },
+   {
+    "id": "pi06",
+    "why": "Corrections and experience as first-class data, at scale."
+   }
+  ]
+ },
+ "wm-residual": {
+  "why": "<p>World models learn physics from scratch, which is absurd when you already have a simulator and a\n robot model that are right about most of it. Giving the model that structure and learning only the residual\n should cut sample complexity enormously, and should produce rollouts that stay physically plausible instead\n of drifting into nonsense.</p>",
+  "state": "<p><b>The residual idea is proven at the actuator and dynamics level.</b> [[anymal-hwangbo]]'s\n learned actuator network is the canonical instance — identify the real actuator's torque response from data\n and put <em>that</em> in the simulator, rather than randomizing over your ignorance. [[asap]] is the modern\n whole-body version: learn a delta-action model from real rollouts and fine-tune the policy against the\n corrected simulator. [[dexndm]] does the same joint-wise for a dexterous hand. All three are residual\n physics, and all three work.</p>\n <p><b>The world-model side has the machinery but not the prior.</b> [[dreamerv3]] and [[dreamerv4]] are\n domain-agnostic by design; [[tdmpc2]] is decoder-free and cheap; [[vjepa2]] predicts in latent space;\n [[pwm]] uses first-order gradients through a learned smooth model, which is the closest to a differentiable\n hybrid. None of them are given a simulator to start from.</p>\n <p><b>Differentiable simulation is the other half.</b> [[diff-contact-design]] and [[genesis]] make the\n analytic model differentiable, which is what you need if the residual is to be trained end to end against\n the prior.</p>",
+  "threads": [
+   "<b>Residual dynamics.</b> [[anymal-hwangbo]], [[asap]], [[dexndm]]. Read all three; they are the same\n  idea at three scales.",
+   "<b>Latent world models.</b> [[dreamerv3]], [[dreamerv4]], [[tdmpc2]], [[vjepa2]].",
+   "<b>Differentiable physics.</b> [[genesis]], [[diff-contact-design]], [[pwm]].",
+   "<b>Auxiliary-loss world modelling.</b> [[flare]] — the cheap way to test whether the prior helps."
+  ],
+  "gap": "<p>Nobody has built a world model whose <b>backbone is a simulator</b>. The residual-physics literature\n corrects a simulator to help a policy; the world-model literature learns dynamics from scratch. The hybrid —\n roll out MuJoCo, predict the residual with a learned model, and train the agent inside the sum — is an\n obvious construction that has not been done for robot manipulation.</p>\n <p>The claim to test is sharp and falsifiable: <b>sample complexity versus a pure learned world model, at\n matched final performance.</b> And a second one that matters more for safety — rollouts from a\n physics-backed model should stay plausible for far longer horizons, which you can measure directly as\n divergence from ground truth over time.</p>",
+  "plan": [
+   "Pick a task where the analytic model is good but not perfect: contact-rich insertion, or in-hand\n  rotation. Free-space reaching will not show anything.",
+   "Implement the baseline pure world model ([[tdmpc2]] is cheapest) and the sim-only baseline. You need both.",
+   "Add the residual: MuJoCo rollout plus a learned correction on the state delta, trained on real or\n  higher-fidelity rollouts. This is exactly [[asap]]'s delta-action model used as a dynamics model rather\n  than an action corrector.",
+   "Headline figure: sample complexity to a fixed success rate, three ways.",
+   "Second figure: rollout divergence versus horizon length. This is where physics-backed should win big."
+  ],
+  "risks": [
+   "<b>The residual absorbs everything.</b> If it is high-capacity it will just learn the dynamics and you\n  are back where you started. Constrain capacity and report what fraction of the prediction the prior explains.",
+   "<b>Differentiating through contact is unstable.</b> Well known. Consider keeping the prior non-differentiable\n  and training the residual on rollouts instead.",
+   "<b>The prior is wrong in the regime you care about.</b> Contact is exactly where simulators are weakest,\n  which is both the risk and the reason the experiment is interesting."
+  ],
+  "read": [
+   {
+    "id": "asap",
+    "why": "The delta-action model. This is your residual, already built and validated — repurpose it as a dynamics model."
+   },
+   {
+    "id": "anymal-hwangbo",
+    "why": "The original residual-physics argument, and still the clearest."
+   },
+   {
+    "id": "dexndm",
+    "why": "The dexterous-hand version: joint-wise learned dynamics closing the reality gap."
+   },
+   {
+    "id": "tdmpc2",
+    "why": "The cheapest pure world-model baseline to beat."
+   },
+   {
+    "id": "vjepa2",
+    "why": "Latent prediction, for the architecture of the learned half."
+   },
+   {
+    "id": "flare",
+    "why": "The cheap first experiment before building anything."
+   },
+   {
+    "id": "pwm",
+    "why": "First-order gradients through a learned smooth model, if you want it differentiable end to end."
+   }
+  ]
+ },
+ "auto-research-wm": {
+  "why": "<p>Real-robot experiments are the scarce resource. If an agent can form hypotheses, test them inside a\n learned world model, and spend physical robot time only on the survivors, the throughput of a lab changes\n qualitatively rather than incrementally.</p>",
+  "state": "<p><b>Training agents entirely inside a world model now works.</b> [[dreamerv4]] learns Minecraft\n diamonds from offline data alone by training the agent purely in imagination — which is the strongest\n existing signal that a learned model can substitute for interaction. [[genie3]] generates interactive worlds\n in real time with minute-scale consistency. [[dreamerv3]] established that one hyperparameter set works\n across 150+ domains.</p>\n <p><b>The agentic research loop exists separately.</b> [[ai-scientist]] and [[agent-laboratory]] run the\n hypothesis-to-paper loop; [[eureka]] and [[rf-agent]] run the narrower reward-design loop with actual\n training in it; [[harbor]] automates the robot RL workflow; [[real-deep-research]] does agentic analysis of\n the literature itself.</p>\n <p><b>What is missing is the join.</b> Nobody uses a learned world model as the <em>cheap experiment\n substrate</em> for an agent that is doing research. The two literatures do not cite each other.</p>",
+  "threads": [
+   "<b>Agents inside world models.</b> [[dreamerv4]], [[genie3]], [[dreamerv3]].",
+   "<b>Agentic experiment loops.</b> [[eureka]], [[rf-agent]], [[harbor]], [[ai-scientist]].",
+   "<b>Self-improvement.</b> [[robocat]], [[voyager]], [[pld]].",
+   "<b>Model fidelity as the gating variable.</b> [[asap]], [[dexndm]] — how wrong the model is determines\n  whether any of this is sound."
+  ],
+  "gap": "<p>The join is the contribution, and it has a sharp, testable form: <b>does hypothesis triage inside a\n learned world model actually save real-robot time?</b> Run the agent loop twice — once with every hypothesis\n tested on hardware, once with the world model filtering first — and report robot-hours to reach the same\n conclusion.</p>\n <p>The failure mode is well defined too, and worth measuring: the model's false-negative rate. A world model\n that confidently rejects a hypothesis that would have worked is worse than no filter at all, and nobody has\n quantified that for robot dynamics.</p>",
+  "plan": [
+   "Start narrow. One task family, one world model ([[tdmpc2]] or [[flare]]-style), a hypothesis space of\n  reward and controller variants rather than open-ended ideas.",
+   "Calibrate the model before trusting it: rank 20 known-outcome variants in the model and compare with\n  their real ranking. That correlation is the gating result — if it is weak, stop.",
+   "Then the triage experiment: robot-hours to a fixed conclusion, with and without model filtering.",
+   "Report false negatives explicitly. This is the number that decides whether anyone should use this.",
+   "Use [[harbor]] for orchestration and the physical harness for the real-robot arm of the comparison."
+  ],
+  "risks": [
+   "<b>Model error is correlated with what is interesting.</b> Novel hypotheses are exactly the ones the model\n  has least data on. This is a real and possibly fatal objection — confront it in the calibration step.",
+   "<b>Compounding automation error.</b> An agent on top of a world model on top of a simulator is three\n  layers of approximation. Keep the hypothesis space narrow.",
+   "<b>It becomes an LLM paper.</b> Keep the contribution measured in robot-hours saved, not in prompt design."
+  ],
+  "read": [
+   {
+    "id": "dreamerv4",
+    "why": "Agents trained entirely inside the model, from offline data. The enabling result."
+   },
+   {
+    "id": "harbor",
+    "why": "The orchestration layer, already built for robot RL."
+   },
+   {
+    "id": "eureka",
+    "why": "The narrow version of the loop that demonstrably works."
+   },
+   {
+    "id": "genie3",
+    "why": "What interactive world generation now looks like."
+   },
+   {
+    "id": "ai-scientist",
+    "why": "The honest limits of agent-run research — read the criticism too."
+   },
+   {
+    "id": "asap",
+    "why": "How wrong your model is, and how to make it less wrong."
+   },
+   {
+    "id": "real-deep-research",
+    "why": "Agentic analysis of the literature; the other half of a research loop."
+   }
+  ]
+ },
+ "third-person": {
+  "why": "<p>Third-person human video is the single most abundant demonstration source that exists — every\n cooking video, every assembly tutorial, every sports clip. It is also the hardest to use, because you have\n both an embodiment gap and a viewpoint gap at once, and the viewpoint gap changes with every clip.</p>",
+  "state": "<p><b>The paired data now exists.</b> [[egoexo4d]] gives time-synchronized first- and third-person\n video of the same skilled activity, which turns \"is ego better than exo?\" from an argument into an\n experiment. That dataset is the reason this idea is tractable now and was not three years ago.</p>\n <p><b>Representation transfer works from either viewpoint.</b> [[r3m]] pretrains on Ego4D and cuts robot\n demonstrations by roughly an order of magnitude; [[vip]] extracts a dense reward. Neither is viewpoint-specific.</p>\n <p><b>Action transfer is where viewpoint bites.</b> [[mimicplay]] uses human play video for the high-level\n planner and a small amount of teleop for the low-level controller — a sensible division that sidesteps the\n viewpoint problem by only asking the video for coarse information. [[vid2robot]] conditions the policy on a\n human video of the task instead of a language string. [[x-mimicfuncimitatingtoolmanipulationfromas]] imitates tool manipulation from a single\n human video via functional correspondence.</p>\n <p><b>Pixel editing works from third person too.</b> [[phantom]] edits the human out and paints the robot in,\n training with zero robot demonstrations — and that approach is largely viewpoint-agnostic, which makes it a\n surprisingly strong baseline here.</p>\n <p><b>And viewpoint robustness has its own line now.</b> [[egodemogen]] synthesises novel egocentric views;\n the same trick applies to exocentric capture.</p>",
+  "threads": [
+   "<b>Paired ego/exo data.</b> [[egoexo4d]] — the substrate for any honest comparison.",
+   "<b>Viewpoint-agnostic representations.</b> [[r3m]], [[vip]], [[vjepa2]].",
+   "<b>Coarse-from-video, fine-from-teleop.</b> [[mimicplay]]. The most robust practical split.",
+   "<b>Video-conditioned policies.</b> [[vid2robot]], [[x-mimicfuncimitatingtoolmanipulationfromas]].",
+   "<b>Pixel editing.</b> [[phantom]] — works from either viewpoint.",
+   "<b>View augmentation.</b> [[egodemogen]], [[one-demo]]."
+  ],
+  "gap": "<p>The field has quietly assumed egocentric is better, because it matches the robot's wrist camera, and\n has mostly stopped asking. But third-person video is far more abundant, and [[egoexo4d]] makes the comparison\n runnable. <b>The unclaimed result is the controlled ego-versus-exo study</b>: same task, same paired data,\n same policy class, varying only viewpoint — and reported per task type, because the answer is almost\n certainly \"ego for fine manipulation, exo for anything involving the whole body or the scene layout\".</p>\n <p>That finding would be immediately useful to everyone building capture rigs, and it is a study rather than\n a system, which makes it fast.</p>",
+  "plan": [
+   "Use [[egoexo4d]] directly. The paired structure is the entire reason this is cheap.",
+   "Fix everything but viewpoint: one policy class, one pretraining recipe, one task set.",
+   "Run three arms: ego-only, exo-only, both. Report per task category.",
+   "Add [[phantom]]-style editing as a fourth arm, since it should be the most viewpoint-robust and nobody\n  has checked that claim.",
+   "Close with the practical recommendation — which viewpoint to buy a camera for, given a task type."
+  ],
+  "risks": [
+   "<b>Confounds in the dataset.</b> Ego and exo clips differ in resolution, motion blur and framing as well\n  as viewpoint. Control for what you can and report what you cannot.",
+   "<b>The answer is boring.</b> \"It depends on the task\" is the likely result — which is fine if the\n  dependence is characterised precisely enough to act on.",
+   "<b>Someone runs it first.</b> It is an obvious study. Move quickly or scope to dexterous tasks where you\n  have the hardware advantage."
+  ],
+  "read": [
+   {
+    "id": "egoexo4d",
+    "why": "The paired dataset that makes the study possible. Start here."
+   },
+   {
+    "id": "mimicplay",
+    "why": "The coarse-from-video, fine-from-teleop split — the most robust practical recipe."
+   },
+   {
+    "id": "phantom",
+    "why": "Viewpoint-agnostic pixel editing; a strong and cheap baseline."
+   },
+   {
+    "id": "r3m",
+    "why": "The representation baseline everything must beat."
+   },
+   {
+    "id": "vid2robot",
+    "why": "Conditioning the policy on a human video rather than a language string."
+   },
+   {
+    "id": "x-mimicfuncimitatingtoolmanipulationfromas",
+    "why": "Single human video to tool manipulation via functional correspondence."
+   },
+   {
+    "id": "human-video-survey",
+    "why": "The 2026 map of the area — position against it explicitly."
+   }
+  ]
+ },
+ "hri-collab": {
+  "why": "<p>Physical collaboration with a person is the hardest case of the M2 problem: your partner's policy\n is unknown, non-stationary, and cannot be retrained. It is also the case with the clearest path to something\n people actually want, since most useful physical tasks in a home or a workshop involve a human.</p>",
+  "state": "<p><b>Humanoid co-manipulation has a concrete recent instance.</b> [[h2compact]] does\n human-humanoid co-manipulation with adaptive contact trajectory policies — in your own M2 library. The\n related work in your <em>collaborative_transport</em> folder (carbon-fibre plies, co-manipulated systems,\n human-guided transport) covers the industrial side.</p>\n <p><b>Force-adaptive whole-body control is the enabling capability.</b> [[falcon]]'s decoupled upper/lower-body\n formulation with an explicit external-force curriculum is exactly what a robot carrying one end of something\n with a person needs, and it is directly portable to MABEL.</p>\n <p><b>Intent inference is the part borrowed from elsewhere.</b> The MARL literature's opponent modelling\n ([[mappo]] and the belief-based opponent-shaping work in your library) is the formal version of \"guess what\n your partner is about to do\", and human-video work ([[r3m]], [[vip]]) is where the perception side comes\n from.</p>\n <p><b>And corrections-as-data is the loop that makes it improve.</b> [[hil-serl]] and [[pi06]] both treat\n human intervention as a first-class training signal rather than a nuisance.</p>",
+  "threads": [
+   "<b>Physical human-robot co-manipulation.</b> [[h2compact]], and the co-manipulation papers in your M2\n  collaborative_transport folder.",
+   "<b>Force-adaptive control.</b> [[falcon]], [[deep-wbc]].",
+   "<b>Intent inference.</b> Opponent modelling from MARL, adapted to a partner you cannot train.",
+   "<b>Corrections as data.</b> [[hil-serl]], [[pi06]].",
+   "<b>Handovers.</b> The task-oriented handover work in your whole_body_loco_manipulation folder."
+  ],
+  "gap": "<p>The measurement is missing. Physical HRI papers report task success and occasionally a subjective\n comfort survey. What they do not report is <b>who is doing the adapting</b>. In almost every deployed system\n the human silently adapts to the robot, and the paper claims the collaboration worked.</p>\n <p>An experiment that quantifies the division of adaptation — how much the human's trajectory changes when\n partnered with the robot versus with another human, on the same task — would be a genuinely novel measurement,\n and it is the one that distinguishes a collaborative robot from a compliant one. It connects directly to M2,\n where you already have the two-agent infrastructure and can substitute a human for one agent.</p>",
+  "plan": [
+   "Reuse the M2 collaborative-transport setup with a human replacing one robot. The instrumentation is\n  already there.",
+   "Collect the human-human baseline on the same task. Without it there is nothing to compare against, and\n  this is the step everyone skips.",
+   "Measure adaptation on both sides: trajectory deviation from solo behaviour, internal force, lead/follow\n  switching frequency.",
+   "Then intervene: give the robot an intent-inference module and show the human's adaptation burden drops.\n  That is the result.",
+   "Report the subjective measures too, but lead with the objective ones."
+  ],
+  "risks": [
+   "<b>Human-subject approval and variance.</b> Budget time for ethics approval and enough participants for\n  the variance, which will be large.",
+   "<b>Safety.</b> A force-adaptive whole-body controller sharing a payload with a person needs a real safety\n  case, not a software limit.",
+   "<b>The human adapts anyway.</b> People are extremely good at compensating. Designing a task where that\n  compensation is measurable rather than invisible is the hard experimental-design problem."
+  ],
+  "read": [
+   {
+    "id": "h2compact",
+    "why": "Human-humanoid co-manipulation with adaptive contact policies — the closest prior work, in your own library."
+   },
+   {
+    "id": "falcon",
+    "why": "The force-adaptive whole-body control this needs underneath."
+   },
+   {
+    "id": "mappo",
+    "why": "The formal frame for reasoning about a partner whose policy you do not control."
+   },
+   {
+    "id": "hil-serl",
+    "why": "Human corrections as a first-class training signal."
+   },
+   {
+    "id": "pi06",
+    "why": "The same idea at scale — interventions during autonomous execution."
+   },
+   {
+    "id": "deep-wbc",
+    "why": "Whole-body control with arm and legs in one policy."
+   }
+  ]
+ },
+ "soft-sim2real": {
+  "why": "<p>Deformables break sim-to-real twice at once. The physics is wrong — cloth, rope and soft objects are\n badly modelled by every general-purpose simulator — and the rendering is wrong, because a simulated towel\n does not look like a real one to a CNN. Most work attacks one gap and inherits the other.</p>",
+  "state": "<p><b>The field is unusually honest about being stuck.</b> The recent literature states plainly that\n widely-used simulators exhibit unreliable contact dynamics for thin structures, that demonstration-synthesis\n pipelines built for rigid bodies transfer poorly to deformables, and that pixel-based end-to-end policy\n learning for deformables has stagnated on precisely this gap. That is a refreshing starting point.</p>\n <p><b>The rendering gap has recent attacks.</b> [[simweaver]] (June 2026) claims zero-shot RGB sim-to-real\n for deformable manipulation. [[phantom]]'s editing approach sidesteps rendering entirely by working on real\n video.</p>\n <p><b>The physics gap has its own line.</b> [[real2sim]] identifies dynamics for a cable from real rollouts;\n [[dist-r2s2r]] does the distributional version for deformable linear objects; [[soft-gentle]] makes \"do not\n break it\" a differentiable stress-guided objective; [[genesis]] offers unified multi-material simulation\n (rigid, MPM, SPH, cloth), which is the main practical reason to care about it.</p>\n <p><b>And the residual-physics escape hatch applies here too.</b> [[asap]] and [[dexndm]] correct the\n simulator from real data rather than trying to make it right a priori, which for deformables may be the only\n tractable route.</p>",
+  "threads": [
+   "<b>Rendering gap.</b> [[simweaver]], [[phantom]]. Editing real pixels often beats matching them.",
+   "<b>Physics gap.</b> [[real2sim]], [[dist-r2s2r]], [[genesis]], [[soft-gentle]].",
+   "<b>Residual correction.</b> [[asap]], [[dexndm]] — learn the discrepancy instead of removing it.",
+   "<b>Tactile as the missing observation.</b> [[dexskin]], [[dream-tac]] — for deformables, contact tells\n  you things vision cannot, and this is barely explored.",
+   "<b>Real-to-sim loops.</b> [[egoengine]], [[video2sim2real]] — reconstruct the specific object rather\n  than modelling the class."
+  ],
+  "gap": "<p>The two gaps are always attacked separately, and that is the opening. <b>An ablation that separates\n them — same task, same policy, four conditions (real physics/real render, sim physics/real render via\n editing, real physics/sim render, sim/sim) — would tell the field which gap to spend money on.</b> That\n experiment is buildable with [[phantom]]-style editing for the rendering axis and [[asap]]-style residual\n correction for the physics axis, and nobody has run it.</p>\n <p>The second opening is tactile. Every deformable sim-to-real paper is vision-based, and for cloth and rope\n the contact signal is exactly what disambiguates the state. Combining this with your tactile world-model\n project is the natural move.</p>",
+  "plan": [
+   "Pick one task with a clean metric — towel folding, or rope threading. Avoid anything where success is\n  subjective.",
+   "Build the four-condition ablation. This is the contribution; the policy is incidental.",
+   "Add the residual-physics arm ([[asap]]-style delta model fitted to real rollouts) and report how much of\n  the physics gap it closes.",
+   "Add tactile observation as a fifth condition, since for deformables it should help disproportionately.",
+   "Report the decomposition, not just the best number."
+  ],
+  "risks": [
+   "<b>Simulator choice determines the result.</b> [[genesis]]'s multi-material support may or may not\n  hold up; benchmark it against a rigid-only baseline before building on it.",
+   "<b>Deformable state is hard to measure.</b> Ground truth for \"did the fold succeed\" needs care.",
+   "<b>Both gaps may be irreducible with current tools.</b> That is a publishable negative result if the\n  decomposition is clean."
+  ],
+  "read": [
+   {
+    "id": "simweaver",
+    "why": "The most recent attack on the rendering half, and the honest framing of why this area stalled."
+   },
+   {
+    "id": "real2sim",
+    "why": "The physics half via identification from real rollouts, on a cable."
+   },
+   {
+    "id": "asap",
+    "why": "Residual correction — the most likely tractable route for deformables."
+   },
+   {
+    "id": "soft-gentle",
+    "why": "Stress-guided reward: making 'do not break it' differentiable."
+   },
+   {
+    "id": "genesis",
+    "why": "Multi-material simulation, if it holds up. Benchmark before trusting."
+   },
+   {
+    "id": "phantom",
+    "why": "Editing real pixels instead of matching them — your rendering-axis tool."
+   },
+   {
+    "id": "dream-tac",
+    "why": "Tactile prediction, which deformable work has almost entirely ignored."
+   },
+   {
+    "id": "dist-r2s2r",
+    "why": "The distributional real2sim2real treatment for deformable linear objects."
+   }
+  ]
+ }
+}

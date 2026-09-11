@@ -110,7 +110,14 @@ R["tactile-wm"] = dict(
  than a separate generative model — and that formulation is the easiest to extend to a second modality.</p>
  <p><b>Data is the actual obstacle.</b> [[robotacdex]] in your library is a paired visual-tactile dataset for
  humanoid manipulation, and it is the kind of thing that did not exist two years ago. [[omnitactune]] shows
- tactile residual RL working on top of an existing policy. Between them, the ingredients exist.</p>""",
+ tactile residual RL working on top of an existing policy. Between them, the ingredients exist.</p>
+ <p><b>And then 2026 happened.</b> A live search turns up an entire cluster that did not exist when this idea
+ was written down: [[dream-tac]] is a unified tactile <em>world-action</em> model that jointly predicts
+ actions, future images and tactile dynamics on a Tac-UMI gripper; [[omnivta]], [[vt-wam]], [[tactile-wam]]
+ and [[tacforesight]] all attack the same target from slightly different angles (visuo-tactile fusion,
+ asymmetric attention, force-guided prediction). [[wt-umi]] does the hardware half on a whole-body system.
+ The honest read: <b>the general idea is taken</b>. What is not taken is the evaluation — none of these
+ report slip-prediction lead time as a primary metric, and none run on a high-DOF multi-finger hand.</p>""",
  threads=[
   """<b>Sensor hardware.</b> Optical ([[gelsight]], [[digit]]) versus magnetic ([[anyskin]], [[reskin]])
   versus conformable high-coverage ([[dexskin]]). For a world model you want coverage and calibration
@@ -124,8 +131,15 @@ R["tactile-wm"] = dict(
   """<b>Force feedback in capture.</b> [[doglove]] collects demonstrations <em>with</em> force feedback at
   $600, which means the human's contact strategy is recorded rather than guessed.""",
  ],
- gap="""<p>Nobody has built a world model whose predicted observation includes contact. The specific
- formulation worth trying: a [[vjepa2]]-style joint-embedding predictive model over a <em>fused</em>
+ gap="""<p>As of mid-2026 the claim "nobody predicts contact" is no longer available — [[dream-tac]] and friends got
+ there first, and you should cite them rather than compete with them on framing. Two openings survive, and
+ both are sharper than the original idea. <b>First, the metric.</b> Every one of these papers evaluates on
+ task success; none of them answers the question that would actually justify the architecture — does the
+ model see the failure coming, and how early? <b>Second, the hand.</b> The 2026 tactile-WAM cluster runs on
+ grippers and simple end-effectors. On a 20+ DOF hand the contact state is far higher-dimensional and the
+ vision occlusion far worse, which is precisely where the argument for touch is strongest and where nobody
+ has data.</p>
+ <p>The formulation worth trying: a [[vjepa2]]-style joint-embedding predictive model over a <em>fused</em>
  vision-plus-tactile stream, where the training objective includes predicting the tactile latent one step
  ahead. Then evaluate it on the only thing that matters — <b>does it predict slip before it happens?</b></p>
  <p>That evaluation is the paper. "Our world model predicts contact events N milliseconds before they are
@@ -161,6 +175,11 @@ R["tactile-wm"] = dict(
   dict(id="gelsight", why="Origin of vision-based tactile sensing; read for what the signal physically is."),
   dict(id="doglove", why="If you need human demonstrations with recorded contact, this is the $600 way."),
   dict(id="omnitactune", why="Recent tactile residual RL — the closest existing work to closing the loop."),
+  dict(id="dream-tac", why="Read before anything else you write on this. It is your idea, published, on a Tac-UMI gripper."),
+  dict(id="omnivta", why="The earliest of the 2026 visuo-tactile world-model cluster; the baseline the others compare to."),
+  dict(id="vt-wam", why="Same target, different fusion. Read with Tactile-WAM to see what the architecture fight is actually about."),
+  dict(id="tacforesight", why="Force-guided prediction — closest to the slip-before-it-is-visible framing you want."),
+  dict(id="wt-umi", why="The hardware side: a tactile UMI driving whole-body manipulation."),
  ])
 
 R["ego-dex"] = dict(
@@ -187,8 +206,11 @@ R["ego-dex"] = dict(
  [[dexumi]] splits the difference with a wearable hand exoskeleton for kinematics plus video inpainting for
  appearance.</p>
  <p><b>The area is now crowded and moving fast.</b> Your own M2 library already holds [[human-video-survey]]
- (2026), [[do-as-i-do]], [[simdex]] and [[c2dex]]. That is the signal that generic "learn dexterity from
- human video" is no longer a claimable contribution — you need a specific angle.</p>""",
+ (2026), [[do-as-i-do]], [[simdex]] and [[c2dex]]. A live search adds [[egoengine]] (egocentric video to a
+ simulatable scene to dexterous demonstrations), [[video2sim2real]] (one human video to a dexterous skill,
+ end to end), [[realdexumi]] (a wearable UMI purpose-built for dexterous hands) and [[egodemogen]]
+ (synthesising novel egocentric viewpoints so the policy stops memorising camera placement). Generic
+ "learn dexterity from human video" is no longer a claimable contribution — you need a specific angle.</p>""",
  threads=[
   """<b>Representation pretraining.</b> [[r3m]], [[vip]], [[vjepa2]]. Reliable, incremental, well understood.""",
   """<b>Co-training with normalized action spaces.</b> [[egomimic]], [[humanoid-policy]]. Currently the most
@@ -243,4 +265,7 @@ R["ego-dex"] = dict(
   dict(id="simdex", why="Retrieval instead of training on everything — a cheap win worth folding in."),
   dict(id="c2dex", why="Contact-consistent retargeting; connects this to your retargeting idea."),
   dict(id="dexcap", why="If you need to collect your own glove data, this is the portable rig."),
+  dict(id="egoengine", why="2026. Egocentric video to a simulatable scene to dexterous demos — the pipeline, already built."),
+  dict(id="realdexumi", why="2026. A wearable UMI for dexterous hands; the capture hardware is no longer the contribution."),
+  dict(id="egodemogen", why="Cheap viewpoint augmentation any ego pipeline should include."),
  ])
