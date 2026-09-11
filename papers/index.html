@@ -421,6 +421,21 @@ html[data-theme="night"] .dvenue{ color:#151820 }
   <div class="ideagrid" id="ideaGrid"></div>
 </section>
 
+<section class="downloads">
+  <h3>Take it with you</h3>
+  <div class="dl-row">
+    <a class="dl" href="papers_by_project.xmind" download>
+      <b>XMind mind map</b><small>Every paper, organised by project · 1,367 topics</small></a>
+    <a class="dl" href="papers_by_project.md" download>
+      <b>Markdown outline</b><small>The same map, for anything that does not read .xmind</small></a>
+    <a class="dl" href="papers_data.json" download>
+      <b>papers_data.json</b><small>The whole database, with every field</small></a>
+    <a class="dl" href="reviews.json" download>
+      <b>reviews.json</b><small>All 19 literature reviews</small></a>
+  </div>
+  <p class="prov" id="provenance"></p>
+</section>
+
 <div class="atlas-foot">
   <span id="footMeta"></span>
   <span><a href="../index.html">← jerrycheng.io</a> · <a href="../umi/index.html">UMI catalog</a> · <a href="../humanoids/index.html">Humanoids</a> · <a href="../actuators/index.html">Actuators</a></span>
@@ -451,6 +466,22 @@ html[data-theme="night"] .dvenue{ color:#151820 }
 </aside>
 
 <style>
+/* ---------- downloads ---------- */
+.downloads{ background:var(--panel); border:var(--line-w) solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--sh-sm); padding:20px 22px; margin:20px 0 0 }
+.downloads h3{ font-family:var(--font-comic); font-size:17px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--imp); margin:0 0 14px }
+.dl-row{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px }
+.dl{ display:flex; flex-direction:column; gap:2px; text-decoration:none; background:var(--bone);
+  border:1.5px solid var(--line); border-radius:var(--radius-sm); padding:11px 13px; box-shadow:var(--sh-xs);
+  transition:transform .15s ease, box-shadow .15s ease, background .15s ease }
+.dl:hover{ transform:translate(-2px,-2px); box-shadow:3px 3px 0 var(--sh-c); background:var(--yellow) }
+.dl b{ font-size:14px; font-weight:700; color:var(--ink) }
+.dl small{ font-family:var(--font-mono); font-size:10.5px; color:var(--ash); line-height:1.35 }
+.dl:hover b,.dl:hover small{ color:#151820 }
+.prov{ font-family:var(--font-mono); font-size:11px; color:var(--ash); line-height:1.55; margin:15px 0 0;
+  padding-top:13px; border-top:1.5px solid var(--line-soft) }
+
 /* ---------- timeline ---------- */
 .tl-controls{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; background:var(--panel);
   border:var(--line-w) solid var(--line); border-radius:var(--radius); box-shadow:var(--sh-xs);
@@ -599,6 +630,15 @@ function boot(){
     [DATA.meta.ideas.length,"research ideas"],
   ].map(([n,l])=>`<div><b>${n}</b><span>${l}</span></div>`).join("");
   $("#footMeta").textContent = `${c.total} papers · ${c.curated} hand-annotated · ${c.library} harvested from your disk · generated ${DATA.meta.generated}`;
+  const nfig = PAPERS.filter(p=>p.fig).length, nax = PAPERS.filter(p=>p.arxiv).length;
+  const ndoi = PAPERS.filter(p=>String(p.url||"").startsWith("https://doi.org/")).length;
+  $("#provenance").textContent =
+    `How this was built: PDFs harvested from ~/Desktop (papers/, M2/literature/, MABEL/literatures/), `
+    + `metadata pulled from the arXiv API, then every record cross-checked against OpenAlex and Crossref. `
+    + `All ${nax} arXiv ids were audited against the live arXiv record and titles are synced to it at build time. `
+    + `${ndoi} records link to a published DOI rather than the preprint. `
+    + `${nfig} teaser figures were extracted from the PDFs themselves. `
+    + `Records marked as harvested have inferred tags — check them before citing.`;
   $("#ideaLede").textContent = `Your ${DATA.meta.ideas.length} ideas — deduplicated from the original ${
     DATA.meta.ideas.reduce((a,i)=>a+(i.merged?i.merged.length:1),0)} bullets — each with a literature review: where the field actually is, what is already taken, and where the opening is.`;
   buildFacets(); renderTrees(); renderProjects(); renderIdeas(); buildLegend(); render();
