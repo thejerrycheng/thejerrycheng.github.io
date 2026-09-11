@@ -7,7 +7,7 @@
   const cards=[];
   const stageOrder=['grasp','lift','move','scenes','rotate'];
   // Show one of each movement first, then the remaining trials.
-  const ordered=stageOrder.map(s=>d.clips.find(c=>c.stage===s)).filter(Boolean);
+  const ordered=stageOrder.map(s=>d.clips.find(c=>c.stage===s&&c.id.startsWith('shared-lift-'))||d.clips.find(c=>c.stage===s)).filter(Boolean);
   ordered.push(...d.clips.filter(c=>!ordered.includes(c)));
   for(const c of ordered){
     const card=make('article','rollout-card');card.dataset.stage=c.stage;
@@ -74,7 +74,7 @@
   if(selected)select(selected);else $('rollout-feature').hidden=true;
   const scores=d.evaluations;
   const translation=scores.find(s=>s.label==='Translate');
-  if(translation&&$('rollout-progress-note'))$('rollout-progress-note').textContent=`Lift completes 198/200 trials. The corrected final-target translation evaluation completes ${translation.passed}/${translation.total} with a 30-second allowance. Full six-axis tracking is still in development.`;
+  if(translation&&$('rollout-progress-note'))$('rollout-progress-note').textContent=`Established couch benchmarks: lift completes 198/200 trials; corrected final-target translation completes ${translation.passed}/${translation.total} with a 30-second allowance. Full six-axis tracking is still in development.`;
   if(scores.length&&window.Plotly){
     const l=common();l.margin={l:75,r:28,t:12,b:38};l.xaxis={title:'Successful trials · %',range:[0,110],ticksuffix:'%'};l.yaxis={autorange:'reversed'};l.showlegend=false;
     Plotly.newPlot($('rollout-success-plot'),[{type:'bar',orientation:'h',y:scores.map(s=>s.label),x:scores.map(s=>100*s.passed/s.total),
