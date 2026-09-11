@@ -89,7 +89,7 @@
             <div class="proj-text">
               <a class="proj-name" href="m2.html">Read the Room — Cooperative Multi-Robot Transport</a>
               <span class="proj-when">Ph.D. &middot; Aug 2026 – present &middot; paper in preparation</span>
-              <p>Two mobile manipulators carry one load. The planner searches over the <b>grasped assembly</b> rather than the payload alone — counting both carrier footprints narrows admissible yaw through an aperture from 25.8° to 5.5° in the illustrated beam geometry. A 10 Hz object-level MPC drives references that one frozen 50 Hz actor, the same weights on both robots, turns into 21 actions each. Frozen cohort: 35/40 full missions across ten MuJoCo scenes.</p>
+              <p>Two mobile manipulators carry one load. Planning over the <b>grasped assembly</b> rather than the payload alone narrows admissible yaw through an aperture from 25.8° to 5.5°; 35/40 frozen missions across ten MuJoCo scenes.</p>
               <div class="links"><a href="m2.html">Website</a><a href="assets/projects/m2/read-the-room.pdf" target="_blank" rel="noopener">Paper</a></div>
             </div>
           </div>
@@ -99,7 +99,8 @@
             <div class="proj-text">
               <a class="proj-name" href="rwhe_calibration.html">Certifiably Correct Robot–World &amp; Hand–Eye Calibration</a>
               <span class="proj-when">M.Eng. &middot; IJRR 2025</span>
-              <p>A generalized robot–world and hand–eye calibration algorithm that returns a certificate of global optimality rather than a local minimum you have to trust.</p>
+              <p>A generalized robot–world and hand–eye calibration that returns a certificate of global optimality instead of a local minimum you have to trust, verified on simulated and real camera–robot data.</p>
+              <div class="links"><a href="rwhe_calibration.html">Website</a><a href="https://arxiv.org/abs/2507.23045" target="_blank" rel="noopener">Paper</a></div>
             </div>
           </div>
 
@@ -108,7 +109,8 @@
             <div class="proj-text">
               <a class="proj-name" href="radar_radar.html">Extrinsic Calibration of 2D Radar Pairs from Ego-Velocity</a>
               <span class="proj-when">B.A.Sc. &middot; IEEE AIM 2023 &middot; first author</span>
-              <p>Two radars that never see the same thing can still be calibrated: each one's ego-velocity estimate constrains the transform between them, so no overlapping field of view and no targets are needed.</p>
+              <p>Two radars that never see the same scene can still be calibrated: each one's ego-velocity estimate constrains the transform between them, so no overlapping field of view and no targets are needed.</p>
+              <div class="links"><a href="radar_radar.html">Website</a><a href="https://ieeexplore.ieee.org/document/10196187" target="_blank" rel="noopener">Paper</a></div>
             </div>
           </div>
 
@@ -117,7 +119,8 @@
             <div class="proj-text">
               <a class="proj-name" href="radar_camera.html">Spatiotemporal Calibration of 3D Radar–Camera Pairs</a>
               <span class="proj-when">B.A.Sc. &middot; IEEE T-RO 2022</span>
-              <p>Targetless calibration of the transform <i>and</i> the time offset between a 3D radar and a camera, using continuous-time B-spline trajectories.</p>
+              <p>Targetless calibration of both the transform and the time offset between a 3D radar and a camera, fitting continuous-time B-spline trajectories to the two asynchronous sensor streams.</p>
+              <div class="links"><a href="radar_camera.html">Website</a><a href="https://ieeexplore.ieee.org/abstract/document/10256219" target="_blank" rel="noopener">Paper</a></div>
             </div>
           </div>
 
@@ -145,8 +148,8 @@
             <div class="proj-text">
               <a class="proj-name" href="projects.html#mabel">MABEL — Mobile Anthropomorphic Bimanual Embodiment</a>
               <span class="proj-when">Project lead &middot; Apr 2026 – present &middot; system paper under review</span>
-              <p>A <b>56-DOF</b> open-source mobile bimanual robot built for <b>$8,722</b> with no machine shop: holonomic swerve base, 0.635 m lift with a pitching torso, two 7-DOF arms, two 17-DOF tendon-driven ORCA hands, 3-DOF head. Nested compliant whole-body control behind a ZMP tip-over filter, Vision Pro / iPhone / browser teleoperation driving the MuJoCo twin and the robot from one server, and a demonstration-to-policy pipeline (ACT, Diffusion Policy, π<sub>0</sub>) running onboard.</p>
-              <div class="links"><a href="https://robotmabel.github.io/website/" target="_blank" rel="noopener">Website</a><a href="https://github.com/robotmabel/MABEL" target="_blank" rel="noopener">Code</a><a href="https://robotmabel.github.io/website/docs/" target="_blank" rel="noopener">Build guide</a></div>
+              <p>A 56-DOF open-source mobile bimanual robot built for $8,722 with no machine shop: swerve base, lifting torso, two 7-DOF arms, two 17-DOF tendon-driven hands, compliant whole-body control, Vision Pro teleoperation.</p>
+              <div class="links"><a href="https://robotmabel.github.io/website/" target="_blank" rel="noopener">Website</a><a href="https://github.com/robotmabel/MABEL" target="_blank" rel="noopener">Code</a></div>
             </div>
           </div>
 
@@ -155,7 +158,8 @@
             <div class="proj-text">
               <a class="proj-name" href="geodex.html">GeoDEX — Geometric Diffusion Policies for Dexterous Manipulation</a>
               <span class="proj-when">2025 – 2026</span>
-              <p>A geometric diffusion-transformer policy for 26-DOF dexterous pick-and-place: dual-view RGB-D and proprioception to action chunks, trained under geodesic SO(3) and contact-aware fingertip losses on Apple Vision Pro demonstrations retargeted into MuJoCo through SE(3)-preserving optimization.</p>
+              <p>A geometric diffusion-transformer policy for 26-DOF dexterous pick-and-place: dual-view RGB-D to action chunks under geodesic SO(3) and contact-aware fingertip losses, trained on Vision Pro demonstrations.</p>
+              <div class="links"><a href="geodex.html">Website</a><a href="https://github.com/thejerrycheng/GeoDEX" target="_blank" rel="noopener">Code</a></div>
             </div>
           </div>
 
@@ -184,7 +188,8 @@
             <div class="proj-text">
               <a class="proj-name" href="haptic_toolkit.html">VibraForge — Spatialized Vibrotactile Prototyping Toolkit</a>
               <span class="proj-when">ACM CHI 2025</span>
-              <p>A 128-actuator, high-bandwidth toolkit built so a spatialized haptic prototype does not have to start with a soldering iron.</p>
+              <p>A 128-actuator, high-bandwidth toolkit for spatialized vibrotactile feedback, built so that a haptic prototype does not have to start with a soldering iron and a custom driver board.</p>
+              <div class="links"><a href="haptic_toolkit.html">Website</a><a href="https://dl.acm.org/doi/abs/10.1145/3706598.3714273" target="_blank" rel="noopener">Paper</a></div>
             </div>
           </div>
 
@@ -193,7 +198,8 @@
             <div class="proj-text">
               <a class="proj-name" href="aerohaptix.html">AeroHaptix — Wearable Haptics for UAV Teleoperation</a>
               <span class="proj-when">IEEE RA-L 2024</span>
-              <p>Vibrotactile feedback plus multi-CBF collision avoidance, so the pilot is informed about the obstacles around the drone rather than overruled by the controller.</p>
+              <p>Wearable vibrotactile feedback for UAV teleoperation, paired with multi-CBF collision avoidance so the pilot is informed about the obstacles around the drone rather than overruled by the controller.</p>
+              <div class="links"><a href="aerohaptix.html">Website</a><a href="https://ieeexplore.ieee.org/document/10916921" target="_blank" rel="noopener">Paper</a></div>
             </div>
           </div>
 
@@ -221,8 +227,8 @@
             <div class="proj-text">
               <a class="proj-name" href="iris.html">IRIS — Intelligent Robotic Imaging System</a>
               <span class="proj-when">M.Eng. thesis &middot; CRV 2026 (oral, top 10%)</span>
-              <p>A low-cost 6-DOF 3D-printed cinema robot arm on quasi-direct-drive actuation, a vertically integrated ROS stack with a MuJoCo digital twin for sim-to-real, and a goal-conditioned ACT–CVAE visuomotor policy that learns smooth, object-aware camera motion from expert demonstrations.</p>
-              <div class="links"><a href="iris.html">Project</a><a href="iris_studio.html">Studio</a><a href="https://arxiv.org/abs/2602.17537" target="_blank" rel="noopener">Paper</a></div>
+              <p>A low-cost 6-DOF 3D-printed cinema robot arm on quasi-direct-drive actuation, with a MuJoCo digital twin and a goal-conditioned ACT–CVAE policy that learns cinematic camera motion from demonstrations.</p>
+              <div class="links"><a href="iris.html">Website</a><a href="https://arxiv.org/abs/2602.17537" target="_blank" rel="noopener">Paper</a></div>
             </div>
           </div>
 
@@ -250,7 +256,8 @@
             <div class="proj-text">
               <a class="proj-name" href="bipednav.html">BipedNav — Stair Perception for Adaptive Walking</a>
               <span class="proj-when">TRC poster 2024</span>
-              <p>Monocular perception joined to virtual-holonomic-constraint control for adaptive stair walking, with a Metric3D-based depth pipeline and enhanced normal-map reasoning that recovers stair geometry — rise, run and edge — from a single camera.</p>
+              <p>Monocular perception joined to virtual-holonomic-constraint control for stair walking, with a Metric3D depth pipeline whose normal maps recover stair rise, run and edge from a single camera.</p>
+              <div class="links"><a href="bipednav.html">Website</a><a href="https://www.researchgate.net/publication/382269581_Monocular_depth_estimation_of_human-robot_walking_environments_using_deep_learning" target="_blank" rel="noopener">Paper</a></div>
             </div>
           </div>
 
