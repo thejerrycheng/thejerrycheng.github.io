@@ -40,13 +40,14 @@
         {name:'Hold time · s',x:t,y:rows.map(r=>r.hold),mode:'lines',line:{color:'#b77513',width:2}}];
       l.yaxis.title='Hands / hold seconds';l.yaxis.range=[-.15,4.3];
     }else{
-      const rotation=mode==='rotation',names=rotation?['Roll','Pitch','Yaw']:['X','Y','Height'];
+      const rotation=mode==='rotation',vector=rotation&&selected.target_rotation_vector_deg,
+        names=rotation?(vector?['About X','About Y','About Z']:['Roll','Pitch','Yaw']):['X','Y','Height'];
       names.forEach((name,i)=>{
-        traces.push({name,x:t,y:rows.map(r=>rotation?r.rpy[i]:r.xyz[i]-rows[0].xyz[i]),mode:'lines',line:{color:colors[i],width:2}});
-        const target=rotation?selected.target_rpy[i]:selected.target_xyz[i]-rows[0].xyz[i];
+        traces.push({name,x:t,y:rows.map(r=>rotation?(vector?r.rotation_vector_deg[i]:r.rpy[i]):r.xyz[i]-rows[0].xyz[i]),mode:'lines',line:{color:colors[i],width:2}});
+        const target=rotation?(vector?selected.target_rotation_vector_deg[i]:selected.target_rpy[i]):selected.target_xyz[i]-rows[0].xyz[i];
         traces.push({name:name+' target',x:[t[0],t.at(-1)],y:[target,target],mode:'lines',showlegend:false,hoverinfo:'skip',line:{color:colors[i],width:1,dash:'dot'}});
       });
-      l.yaxis.title=rotation?'Relative orientation · °':'Displacement · m';
+      l.yaxis.title=rotation?(vector?'Rotation vector · °':'Relative orientation · °'):'Displacement · m';
     }
     if(mode!=='path')l.shapes=[{type:'line',xref:'x',yref:'paper',x0:$('rollout-feature-video').currentTime,x1:$('rollout-feature-video').currentTime,y0:0,y1:1,line:{color:'#888',width:1,dash:'dot'}}];
     await Plotly.react($('rollout-motion-plot'),traces,l,{responsive:true,displayModeBar:false});plotted=true;
