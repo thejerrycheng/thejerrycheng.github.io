@@ -73,12 +73,31 @@
   $('rollout-feature-video').addEventListener('timeupdate',now);
   if(selected)select(selected);else $('rollout-feature').hidden=true;
   const scores=d.evaluations;
+  const translation=scores.find(s=>s.label==='Translate');
+  if(translation&&$('rollout-progress-note'))$('rollout-progress-note').textContent=`Lift completes 198/200 trials. The corrected final-target translation evaluation completes ${translation.passed}/${translation.total} with a 30-second allowance. Full six-axis tracking is still in development.`;
   if(scores.length&&window.Plotly){
     const l=common();l.margin={l:75,r:28,t:12,b:38};l.xaxis={title:'Successful trials · %',range:[0,110],ticksuffix:'%'};l.yaxis={autorange:'reversed'};l.showlegend=false;
     Plotly.newPlot($('rollout-success-plot'),[{type:'bar',orientation:'h',y:scores.map(s=>s.label),x:scores.map(s=>100*s.passed/s.total),
       text:scores.map(s=>`${s.passed}/${s.total}`),textposition:'auto',marker:{color:['#84aaa0','#078b8f','#c18c39']},
       customdata:scores.map(s=>s.note),hovertemplate:'%{y}: %{text}<br>%{customdata}<extra></extra>'}],l,{responsive:true,displayModeBar:false});
   }
+  if(d.comparison&&$('rollout-comparison-plot')&&window.Plotly){
+    const comparison=d.comparison, traces=[], palette={ppo:'#078b8f',sac:'#c18c39'};
+    for(const algorithm of ['ppo','sac']){
+      const groups=comparison.groups.filter(g=>g.algorithm===algorithm),offset=algorithm==='ppo'?-.17:.17;
+      traces.push({type:'bar',name:algorithm.toUpperCase(),x:groups.map((g,i)=>i+offset),
+        y:groups.map(g=>100*g.seeds.reduce((sum,s)=>sum+s.passed/s.total,0)/g.seeds.length),
+        width:.28,marker:{color:palette[algorithm]},hovertemplate:algorithm.toUpperCase()+' mean: %{y:.1f}%<extra></extra>'});
+      groups.forEach((g,i)=>traces.push({type:'scatter',mode:'markers',name:algorithm.toUpperCase()+' seeds',showlegend:false,
+        x:g.seeds.map((s,j)=>i+offset+(j-1)*.065),y:g.seeds.map(s=>100*s.passed/s.total),
+        text:g.seeds.map(s=>`${algorithm.toUpperCase()} · seed ${s.seed}: ${s.passed}/${s.total}`),
+        marker:{color:palette[algorithm],size:7,line:{color:getComputedStyle(root).color,width:1}},hovertemplate:'%{text}<extra></extra>'}));
+    }
+    const l=common();l.margin={l:46,r:15,t:12,b:68};l.xaxis={tickvals:[0,1],ticktext:['MLP actor','Temporal actor'],range:[-.5,1.5]};
+    l.yaxis={title:'Lift success · %',range:[-4,100],ticksuffix:'%'};l.barmode='overlay';l.legend.y=-.23;
+    Plotly.newPlot($('rollout-comparison-plot'),traces,l,{responsive:true,displayModeBar:false});
+    $('rollout-comparison-note').textContent=`${comparison.steps.toLocaleString()} environment steps per run · 3 training seeds per condition. Bars: mean. Dots: individual seeds, each evaluated on 40 paired trials. This comparison starts from the same grasp policy; it is separate from the best controller above.`;
+  }else if($('rollout-comparison'))$('rollout-comparison').hidden=true;
   // The large historical snapshot is fetched only when the archive is opened.
   const archive=$('experiment-archive');let loaded=false;
   async function loadArchive(){
