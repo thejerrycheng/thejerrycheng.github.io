@@ -1,0 +1,43 @@
+{
+  "_comment": "Hand-verified fixes applied by merge.py after the automated passes. Each key is a paper id or, for library rows, a title prefix match.",
+  "by_id": {
+    "so100":           { "url": "https://github.com/huggingface/lerobot" },
+    "koch":            { "url": "https://github.com/jess-moss/koch-v1-1" },
+    "genesis":         { "url": "https://github.com/Genesis-Embodied-AI/Genesis" },
+    "dex-retargeting": { "url": "https://github.com/dexsuite/dex-retargeting" },
+    "allegro":         { "url": "https://www.wonikrobotics.com/robot-hand" },
+    "shadow-hand":     { "url": "https://www.shadowrobot.com/dexterous-hand-series/" },
+    "1x-hand":         { "url": "https://www.1x.tech/neo" },
+    "dexndm": {
+      "arxiv": "2510.08556",
+      "title": "DexNDM: Closing the Reality Gap for Dexterous In-Hand Rotation via Joint-Wise Neural Dynamics Model",
+      "url": "https://arxiv.org/abs/2510.08556", "venue": "ICLR", "venue_type": "conference",
+      "year": 2026, "date": "2025-10-09"
+    }
+  },
+  "by_title_prefix": {
+    "ANIMAL LOCOMOTION Copyright": {
+      "title": "Multi-expert learning of adaptive legged locomotion",
+      "doi": "10.1126/scirobotics.abb2174",
+      "url": "https://doi.org/10.1126/scirobotics.abb2174",
+      "venue": "Science Robotics", "venue_type": "journal", "year": 2020, "date": "2020-10-14"
+    },
+    "AnyPlace": {
+      "arxiv": "2502.04531",
+      "title": "AnyPlace: Learning Generalized Object Placement for Robot Manipulation",
+      "url": "https://arxiv.org/abs/2502.04531", "venue": "CoRL", "venue_type": "conference", "year": 2025
+    },
+    "O3Afford": {
+      "arxiv": "2509.06233",
+      "title": "O$^3$Afford: One-Shot 3D Object-to-Object Affordance Grounding for Generalizable Robotic Manipulation",
+      "url": "https://arxiv.org/abs/2509.06233", "venue": "CoRL", "venue_type": "conference", "year": 2025
+    }
+  },
+  "drop_title_prefix": [
+    "PCW-25 Swerve Control",
+    "Title: A smartphone activity monitor",
+    "LIX IEEE JOURNAL TEMPLATE",
+    "Digital Object Identifier"
+  ],
+  "drop_ids": ["force-control-corl"]
+}

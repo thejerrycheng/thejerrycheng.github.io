@@ -10,8 +10,8 @@ P("aloha","ALOHA: A Low-cost Open-source Hardware System for Bimanual Teleoperat
   inst="Stanford University", lab="Stanford IRIS Lab", v="RSS", vt="conference", y=2023, d="2023-04-23",
   br="bimanual", top="open hardware, bimanual teleoperation, low cost", par="hardware",
   meth="leader-follower joint-space teleoperation with ViperX/WidowX arms, ~$20k BOM",
-  arx="2304.13705", site="https://tonyzhaozh.github.io/aloha/", st=3,
-  note="The hardware half of the ACT paper, and arguably the more consequential half. Direct joint-space "
+  site="https://tonyzhaozh.github.io/aloha/", st=3,
+  note="The hardware introduced in the ACT paper (arXiv 2304.13705) — no separate publication — and arguably the more consequential half of it. Direct joint-space "
        "leader-follower with no force feedback turned out to be enough for fine bimanual work, and the $20k "
        "price point put it in reach of most labs. Every bimanual platform below is responding to it.",
   rel="act,aloha2,mobile-aloha,so100,gello,openpyro", pr="mabel,iris")
@@ -232,9 +232,9 @@ P("leap-hand","LEAP Hand: Low-Cost, Efficient, and Anthropomorphic Hand for Robo
   rel="orca-hand,ruka,leap-v2,dlr-hand,shadow-hand,videodex", pr="geodex", id_="hand-22dof")
 P("orca-hand","ORCA: An Open-Source, Reliable, Cost-Effective, Anthropomorphic Robotic Hand",
   a="Clemens Schwarke; Victor Klemm; Jesus Tordesillas; Jean-Pierre Sleiman; Marco Hutter; et al.",
-  inst="ETH Zürich", lab="ETH RSL", v="arXiv", vt="preprint", y=2025, d="2025-04-30", br="hands",
+  inst="ETH Zürich", lab="ETH RSL", v="IROS", vt="conference", y=2025, d="2025-04-05", br="hands",
   top="open-source tendon hand, 17 DOF, reliability", par="hardware",
-  arx="2504.21205", site="https://www.orcahand.com/", st=3,
+  arx="2504.04259", site="https://www.orcahand.com/", st=3,
   note="In your Robot Hands/ folder and your M2 library. Tendon-driven, 17 DOF, ~$2k, and explicitly "
        "engineered for reliability and repairability rather than peak spec. The closest existing reference "
        "design for your 22-DOF open hand — read its tendon routing and maintenance sections carefully.",
@@ -627,7 +627,7 @@ P("coros-codesign","Computational co-optimization of design parameters and motio
        "the optimal trajectory with respect to the design parameters — is the model-based alternative to "
        "RL-in-the-loop, and it is far more sample-efficient when your model is good.",
   rel="diff-contact-design,dinev-codesign,disney-bdx", id_="codesign-dog-rl")
-P("dinev-codesign","Co-Designing Robots by Differentiating Motion Solvers",
+P("dinev-codesign","A Versatile Co-Design Approach For Dynamic Legged Robots",
   a="Traiko Dinev; Carlos Mastalli; Vladimir Ivan; Steve Tonneau; Sethu Vijayakumar",
   inst="University of Edinburgh", v="ICRA", vt="conference", y=2022, d="2021-03-08",
   br="codesign", top="differentiating through optimal control, co-design", par="co-design",

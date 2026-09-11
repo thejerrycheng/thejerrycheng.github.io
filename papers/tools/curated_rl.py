@@ -480,7 +480,7 @@ P("asap","ASAP: Aligning Simulation and Real-World Physics for Learning Agile Hu
        "delta-action correction, retrain in the corrected sim. This is residual physics applied to sim-to-real, "
        "and it is the template for your residual world-model idea.",
   rel="rma,domain-rand,wm-residual-ref,deepmimic", pr="mabel", id_="wm-residual,real2sim2real-ego")
-P("real2sim","Real2Sim2Real: Self-Supervised Learning of Physical Single-Step Dynamic Actions for Planar Robot Casting",
+P("real2sim","Planar Robot Casting with Real2Sim2Real Self-Supervised Learning",
   a="Vincent Lim; Huang Huang; Lawrence Yunliang Chen; Jonathan Wang; Jeffrey Ichnowski; Daniel Seita; Michael Laskey; Ken Goldberg",
   inst="UC Berkeley", lab="AUTOLAB", v="ICRA", vt="conference", y=2022, d="2021-11-08",
   br="sim2real", top="real2sim2real, dynamics identification, deformables", par="RL, sim2real",

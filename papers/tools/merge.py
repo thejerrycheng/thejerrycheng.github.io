@@ -185,6 +185,7 @@ for p in papers:
 
 
 # ---- derive project membership for the idea-driven current projects ----
+EXO_RX = re.compile(r"exoskelet|prosthe|orthosis|gait assist|assistive torque|rehabilitat|musculoskeletal", re.I)
 IDEA2PROJ = {
   "real2sim2real-ego":"r2s2r", "third-person":"r2s2r", "ego-dex":"r2s2r",
   "wam-umi-gloves":"wam-tactile", "tactile-wm":"wam-tactile", "wm-residual":"wam-tactile",
@@ -194,7 +195,32 @@ for p in papers:
     for i in (p.get("ideas") or []):
         pr = IDEA2PROJ.get(i)
         if pr and pr not in p["projects"]: p["projects"].append(pr)
+    if EXO_RX.search(f"{p['title']} {' '.join(p.get('topics') or [])} {p.get('abstract','')[:400]}"):
+        p["projects"].append("exo")
     p["projects"] = sorted(set(p["projects"]))
+
+
+# ---- authoritative titles: arXiv is the record of truth ----
+AUDIT = os.path.join(HERE, "arxiv_audit.json")
+if os.path.exists(AUDIT):
+    import difflib
+    real = json.load(open(AUDIT)).get("real", {})
+    nt = nbad = 0
+    badlist = []
+    for p in papers:
+        a = p.get("arxiv")
+        if not a or a not in real: continue
+        rt = real[a]["title"]
+        sc = difflib.SequenceMatcher(None, norm(p["title"]), norm(rt)).ratio()
+        if sc >= 0.55 and p["title"] != rt:
+            p["title"] = rt; nt += 1
+        elif sc < 0.55:
+            nbad += 1; badlist.append((p["id"], a, round(sc,2)))
+        if not p.get("authors") and real[a].get("authors"):
+            p["authors"] = real[a]["authors"]; p["first_author"] = p["authors"][0]
+        if not p.get("abstract") and real[a].get("summary"):
+            p["abstract"] = real[a]["summary"]
+    print(f"titles synced to arXiv: {nt}   still mismatched: {nbad} {badlist}")
 
 # ---- apply the OpenAlex/PDF correction overlay, if it exists ----
 CORRFILE = os.path.join(HERE, "corrections.json")
@@ -230,6 +256,47 @@ for p in papers:
     if not p.get("year") and p.get("date"): 
         try: p["year"] = int(p["date"][:4])
         except: pass
+
+
+# ---- hand-verified fixes (last word) ----
+MF = os.path.join(HERE, "manual_fixes.json")
+if os.path.exists(MF):
+    mf = json.load(open(MF))
+    drop_pref = tuple(mf.get("drop_title_prefix", []))
+    drop_ids  = set(mf.get("drop_ids", []))
+    before = len(papers)
+    papers = [p for p in papers
+              if p["id"] not in drop_ids and not p["title"].startswith(drop_pref)]
+    byid = mf.get("by_id", {}); bypre = mf.get("by_title_prefix", {})
+    nfix = 0
+    for p in papers:
+        fix = dict(byid.get(p["id"], {}))
+        for pref, f in bypre.items():
+            if p["title"].startswith(pref): fix.update(f)
+        if not fix: continue
+        nfix += 1
+        for k, v in fix.items():
+            p[k] = v
+        if p.get("arxiv"): p["arxiv_url"] = f"https://arxiv.org/abs/{p['arxiv']}"
+    print(f"manual fixes: {nfix} applied, {before - len(papers)} records dropped")
+
+
+# ---- collapse duplicates (same arXiv id / doi / title harvested from two folders) ----
+_seen, _keep = {}, []
+for p in sorted(papers, key=lambda x: (0 if x.get("curated") else 1, -(x.get("stars") or 1))):
+    k = p.get("arxiv") or p.get("doi") or norm(p["title"])[:70]
+    if k in _seen:
+        o = _seen[k]
+        if p.get("local") and not o.get("local"): o["local"] = p["local"]
+        for f in ("abstract", "note", "fig"):
+            if p.get(f) and not o.get(f): o[f] = p[f]
+        o["projects"] = sorted(set((o.get("projects") or []) + (p.get("projects") or [])))
+        o["ideas"]    = sorted(set((o.get("ideas") or []) + (p.get("ideas") or [])))
+        o["topics"]   = sorted(set((o.get("topics") or []) + (p.get("topics") or [])))[:7]
+        continue
+    _seen[k] = p; _keep.append(p)
+print(f"duplicates collapsed: {len(papers) - len(_keep)}")
+papers = _keep
 
 papers.sort(key=lambda p: (-(p.get("stars") or 1), -(p.get("year") or 0), p["title"]))
 

@@ -155,7 +155,7 @@ P("pi06","π*0.6: a VLA That Learns From Experience",
   a="Physical Intelligence", inst="Physical Intelligence", lab="Physical Intelligence (π)",
   v="arXiv", vt="preprint", y=2025, d="2025-11-05", br="vla",
   top="RL from experience, advantage-conditioned policy, real-world improvement", par="VLA, RL",
-  meth="RECAP: RL with experience and corrections via advantage conditioning", arx="2511.03207", st=3,
+  meth="RECAP: RL with experience and corrections via advantage-conditioned policies", arx="2511.14759", st=3,
   note="The direct precedent for your RL-post-training idea, from the people with the most robot data. "
        "Demonstrations get you a policy; on-robot experience plus corrections is what roughly halves the "
        "failure rate. Verify the exact numbers against the paper before citing.",
