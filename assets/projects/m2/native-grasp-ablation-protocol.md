@@ -92,14 +92,16 @@ not a reproduction of SimToolReal or its SAPG training algorithm. The default
 
 The warm-start supervisor runs at most two simulation workers. Scratch waits
 for the initial tolerance screen to finish before taking its slot, keeping at
-most three training/evaluation environments active. The main continuous
-campaign supervisor is temporarily suspended while its original frozen screen
-continues intact. It resumes automatically after the two warm-start pilots
-finish. Recorded states are kept for deterministic video rendering; rendering
+most three training/evaluation environments active. The original tolerance campaign was retired after its complete 0/20 frozen
+screen. Its checkpoints and reports remain available. The next reference study
+waits for valid reset evidence and completion of the current warm-start pilots;
+the retired campaign will not resume and consume two additional environments. Recorded states are kept for deterministic video rendering; rendering
 does not re-simulate a different trajectory.
 
 Full resumes accept only specifically named task revisions:
-`--allow-grasp-safety-change` and `--allow-grasp-progress-change`. Other physics,
+`--allow-grasp-safety-change`, `--allow-grasp-progress-change`,
+`--allow-grasp-reference-change`, `--allow-approach-range-change`, and
+`--allow-pregrasp-reset-change`. Other physics,
 actions, success requirements and observation changes still fail the resume
 configuration check. Each allowed revision is written to run metadata.
 
@@ -155,3 +157,144 @@ The remaining studies are predeclared in
 The termination and domain comparisons are waiting on reference validation;
 they have not produced results. Broad object/scene randomization and the full
 approach–grasp–lift–transport–reorient sequence remain subsequent requirements.
+
+
+## Reference calibration and reset audit
+
+The best-achieved-distance pilot completed its additional 16,384 PPO steps and
+returned **0/20** on its second frozen cohort. Failures were 15 unsupported
+travel, two base overturns, one hand penetration, one unintended payload/robot
+contact and one timeout. Mean episode length was 8.75 seconds. Changing this
+progress term alone did not solve secure acquisition. The matched control also completed its final cohort at **0/20**. The scratch
+cohort is still running; partial outcomes remain separate from completed cohorts.
+
+The proposed reference comparison uses the original vertical/forward TCP
+offsets of −40/+45 mm and a candidate inner-palm reference of −33.5/+90 mm.
+Both would use the same near-start training distribution, conservative PPO,
+strict KL guard and reward weights. The independent evaluation still starts
+40–100 mm away. This comparison isolates the reference within a new near-start
+training regime; it cannot be compared with the old full-distance training as
+if only one field changed.
+
+Static placement is insufficient to validate a reset. Ideal open and closed
+hands fit the candidate inner-palm reference within the existing 4 mm contact
+penetration bound, but real reset IK and settling produce different finger and
+arm states. Actual 0, 5 and 15 mm standoff resets had 8.08, 11.29 and 22.45 mm
+rail penetration, respectively, with up to 426 N initial contact force. All
+three terminated for penetration at the first 0.02-second policy step. The
+provisional 0–15 mm reset range is therefore **not approved for training**.
+The measured traces are retained in
+`experiments/diagnostics/grasp_geometry_audit_20260909/inner_palm_real_reset_open_hold.json`.
+
+The reset implementation captures final planner hand targets and then moves
+the robot base backwards while keeping its arms fixed. Near this palm target,
+that motion can sweep the fingers through the rail. The next diagnostic lowers
+only the initial open-hand IK target before base backoff, leaving the final
+planner target unchanged. It must establish a physically valid open start
+before the curriculum is enabled. No collision limit, torque limit or success
+criterion is relaxed to admit these starts.
+
+The planned distance curriculum promotes only after strictly more than 90%
+success over a completed-episode window; each level has a minimum trial count.
+Its configuration, current level, evidence window and reset-domain identity
+are saved with checkpoints. A separate frozen-suite distance override prevents
+near-contact training from silently becoming easier evaluation. Closure,
+lifting and waiting remain policy actions throughout this curriculum.
+
+
+A 15 mm reset-only IK clearance reproduced safe two-second open holds through
+the public Gym configuration at 0 and 5 mm standoff: penetration stayed below
+2.41 mm and passive object drift below 0.27 mm. At 15 mm standoff the same
+configuration still produced 14.07 mm penetration and failed immediately.
+These endpoint checks do not establish validity across all interior seeds or
+the full approach range. Wider-distance reset clearance is being audited before
+any automatic distance curriculum is enabled.
+
+A separate fixed-action diagnostic used deeper MCP/PIP closure angles of
+1.2/1.2 radians, versus the unchanged 0.85/0.7 baseline. It completed seven
+seconds, lifted 29.8 mm and drifted 1.37 mm, with actual hand torque below
+0.885 Nm. This is physical evidence, not learned-policy success. Both MABEL
+hands had contact-normal opposition around 0.58–0.59, below the unchanged 0.7
+qualification threshold; MILO was around 0.94–0.96. This scalar opposition test
+is a conservative grasp heuristic, not a complete friction-cone force-closure
+analysis. No measured palm-body support force was present, so the requested
+bar-in-palm behavior remains unresolved even during a stable finger pinch.
+
+
+## Audited reset domain and active reference study
+
+The public configuration now exposes `environment.acquisition.reset_pregrasp_clearance_m`.
+It lowers only the cached initial open-hand IK target. The planner's final
+assigned hand poses, policy observations/actions, native contact mechanics,
+actuator limits and success conditions retain their separate definitions.
+The field defaults to zero for archived behavior; full-checkpoint continuation
+requires the explicit `--allow-pregrasp-reset-change` flag and records both
+source and target values.
+
+A common **50 mm** reset clearance passed both references on a denser physical
+audit: 21 standoff distances from 0 to 100 mm in 5 mm increments, with two
+matched randomized seeds each, for **84 valid open-hold trials**. Observed mass
+ranged from 0.2006 to 0.3974 kg and sliding friction from 3.0047 to 3.9994.
+The calibrated reference had at most 2.17 mm rail penetration and 0.61 mm
+passive object drift during the 0.5-second checks; the original reference had
+no rail contact. This is a finite reset audit, **not 84 grasp successes** and
+not a proof covering every continuous initial condition.
+
+The immutable evidence manifest is
+`experiments/diagnostics/native_grasp_reference_feasibility_v1.json`. It binds
+each reference to a hash of its complete environment configuration, excluding
+only RNG seed and the deliberately swept standoff range. Native material
+samples and per-hand initial/final contacts are retained in the two
+`*_50mm_randomized_reset_audit.json` reports. Training refuses a different
+reset configuration, an incomplete audit, or an uncovered curriculum range.
+
+The original-reference and calibrated-reference PPO pilots are now active.
+Both begin with a 0–5 mm base standoff and the same 50 mm open-hand clearance.
+Their common automatic distance stages are 0–5, 5–20, 20–50 and 40–100 mm.
+A level changes only after more than 90 successes in a completed 100-episode
+training window. The frozen benchmark always uses 40–100 mm; training
+promotion does not count as independent validation.
+
+The earlier calibrated-only continuation was deferred before it trained.
+The active pipeline in `rl/configs/native_grasp_followup_studies_v1.json`
+selects its source from both completed frozen reference cohorts, runs the
+matched termination and material studies below, then continues the selected
+reference in 32,768-step PPO blocks. Fresh 20-trial screens and a separate
+100-trial confirmation must each exceed 90%. This acquisition gate remains
+separate from motion, pitch/yaw, delayed-start, regrasp and full scene missions.
+The retired tolerance campaign and old failed studies remain available.
+
+
+## Executable follow-up comparisons
+
+The source-selection rule was declared before either final 20-trial reference
+cohort completed. In order, it compares successful trials, trials with an exact
+first four-hand-support event, time-integrated qualified-hand contact divided
+by the complete declared episode budget, and lower contact-conditioned slip.
+No contact is treated as missing slip evidence, not perfect zero slip. Exact
+ties select the original reference. The selected checkpoint and every score
+are recorded in `experiments/live/native_grasp_reference_selection_v1.json`.
+Selection is a development decision, not a validation success claim.
+
+| Queued study | Only training factor changed | Matched conditions and frozen evaluation |
+| --- | --- | --- |
+| `native_grasp_termination_ablation_v1.json` | Immediate 5 cm/0.6 rad acquisition limits versus 15 cm/0.75 s travel grace and 60°/0.4 s orientation grace | Same selected actor/critic/Adam, 50 mm reset clearance, near range, all rewards, material sampling, PPO settings; both evaluated with the same tolerant limits and full 40–100 mm starts |
+| `native_grasp_material_ablation_v1.json` | Fixed 0.3 kg/friction 3.5 versus mass 0.2–0.4 kg/friction 3–4 | Same selected source and all other settings; both evaluated using one shared randomized full-distance configuration |
+
+Both studies use 4,096 then 12,288 additional PPO steps per variant, with
+matched training seeds and separate frozen 6/20-trial cohorts. They use the
+same source selected from the reference pair; the second study does not inherit
+weights from whichever termination arm happened to finish first. Training
+standoff stays fixed at 0–5 mm in both arms. Previous distance-curriculum
+evidence is explicitly restarted for this new comparison; actor, critic,
+normalizers and Adam are retained. The narrow mass/friction resume override
+cannot change force limits, contact qualification or success criteria.
+
+The two study supervisors are running in a waiting state. Termination pilots
+start after reference selection; material pilots start after termination
+pilots and evaluations finish. At most two one-environment variants run
+together, leaving the third simulation slot for the scratch comparison.
+The shared frozen evaluation configuration is distinct from each variant's
+training configuration, preventing an easier training mass or termination
+from silently changing the benchmark. Outcomes and recorded-state paths are
+retained for automatic video rendering without another simulation.

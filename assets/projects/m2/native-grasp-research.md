@@ -147,9 +147,19 @@ separate from the frozen six-trial screen. The frozen candidate SHA is
 
 The corresponding frozen screen completed **0/6 successes**. All six trials
 reached the 30-second time limit without establishing four-hand support. The
-second training budget starts from that checkpoint and retains the failure
+second training budget continued from that checkpoint and retains the failure
 records.
 [Frozen six-trial report](../experiments/results/native_grasp_acquisition_random_network_mlp_pilot_001.json).
+
+The second random-network budget has now completed its additional 12,288 steps,
+for 16,384 total. Its actor parameter change L2 is 0.7507 and critic change L2
+is 2.7983; normalizers stayed unchanged and teacher/anchor weights stayed zero.
+The frozen final candidate SHA is
+`b3cc69c0708d08af57931efc92711fbd6b7fbb395aed97f9eabe08e4f226ce04`.
+Its independent 20-trial screen is still in progress as this note is written;
+the live report retains every completed outcome and marks `complete` explicitly.
+[Second learner audit](../rl/runs/native_grasp_light_random_network_mlp_pilot_002/learning_audit.json),
+[frozen 20-trial report](../experiments/results/native_grasp_acquisition_random_network_mlp_pilot_002.json).
 
 - [Scratch experiment specification](../rl/configs/native_grasp_scratch_ablation_v1.json)
 - [Launcher](../rl/scripts/run_native_scratch_ablation.py)
@@ -157,6 +167,15 @@ records.
 - [Initial-state provenance](../experiments/live/native_scratch_ablation_v1/initialization_provenance.json), generated once training starts
 
 ## What comes after a reliable grasp
+
+The training reset-distance curriculum is now implemented, with a strict
+completed-episode promotion threshold above 90%. It remains disabled until
+physical reset evidence covers every proposed range and matches the resolved
+geometry/randomization fingerprint. The frozen acquisition suite independently
+retains its 4–10 cm approach distance. This separates easier training starts
+from actual full-approach validation. See the
+[curriculum configuration and tests](RL_APPROACH_CURRICULUM.md) and
+[physical grasp geometry audit](RL_NATIVE_GRASP_GEOMETRY_AUDIT.md).
 
 The next training distribution should expand reachable object pose goals and
 geometry only after retention works. Test single-axis translation and rotation

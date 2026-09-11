@@ -68,6 +68,13 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
             self._contact_level_pending=cfg.recovery.physical_grasp.level
         self._recovery_ready=False;self._nearby_pose=None;self._path=None
         self._goal_hold=0;self._fault_started=None
+        from m2_rl.hold_pose_success import HoldPoseCriteria,HoldPoseMonitor
+        self._hold_pose=HoldPoseMonitor(HoldPoseCriteria(**cfg.recovery.hold_pose_criteria))
+        from m2_rl.managers.reward_curriculum import RewardCurriculum,RewardCurriculumCfg
+        self._reward_curriculum=RewardCurriculum(
+            RewardCurriculumCfg(**cfg.recovery.reward_curriculum),
+            cfg.recovery.rewards,cfg.recovery.physical_grasp.rewards)
+        self._stage_stats=self._new_stage_stats()
         super().__init__(cfg,render_mode)
         self.action_space=spaces.Box(-1.,1.,(23,),dtype=np.float32)
 
@@ -89,7 +96,13 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
         if self.cfg.recovery.physical_grasp.enabled:
             from m2_rl.native_contact_grasp import restore_native_materials
             restore_native_materials(self)
+        if self._stage_stats.get('any_hand_contact') is not None and self._steps:
+            self._stage_stats.setdefault('lift_threshold_m',
+                self._reward_curriculum.cfg.lift_threshold_m)
+            self._reward_curriculum.observe_episode(self._stage_stats)
+        self._stage_stats=self._new_stage_stats()
         self._recovery_ready=False;self.contact_grasps.reset();self._goal_hold=0
+        self._hold_pose.reset()
         self._nearby_pose=None;self._path=None;self._fault_started=None
         self._fault_physically_exposed_at=None
         _,info=super().reset(seed=seed,options=options)
@@ -226,6 +239,65 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
     @property
     def pose_reference(self):
         return SE3Reference(self._nearby_pose or self.measured_pose(),final=False)
+
+    def base_composite_velocity(self,robot):
+        """The chassis velocity implied by the COMMANDED object pose, in its frame.
+
+        For a rigid grasp every contact point moves with the object,
+        ``v_i = v_object + omega x r_i``. Stage P1 commands translation only, so
+        ``omega = 0`` and every chassis is commanded the object's own velocity;
+        the rotation stages will need the cross term and this is where it goes.
+
+        The reference is the commanded pose -- the planner's carrot -- not the
+        measured one, so this is a feedforward on the high level's own output
+        and never a feedback loop the policy could be said to be closing for it.
+
+        Returned in the chassis frame, capped at ``speed_limit_m_s`` so the
+        feedforward alone can never exceed the stage's own limit and the
+        residual therefore always has room.
+        """
+        c=self.cfg.recovery
+        # The servo follows the moving reference. Acceptance independently
+        # measures the final path endpoint in hold_pose_success.commanded_pose.
+        target=self.pose_reference.pose;actual=self.measured_pose()
+        goal=np.asarray(target.xyz,float);here=np.asarray(actual.xyz,float)
+        want=c.base_feedforward_gain*(goal-here)[:2]
+        if c.base_feedforward_rotation:
+            # omega x r. The object's commanded angular velocity is the same
+            # proportional law on its ORIENTATION error, and each chassis sits
+            # at r_i from the object's centre, so a commanded yaw sweeps the
+            # bases along opposite arcs -- which is exactly what the two bases
+            # are for (the arms cannot supply yaw; see the attitude envelope).
+            # Translation-only stages leave this off and the term is exactly
+            # zero for them either way.
+            error=Rotation.from_matrix(target.rotation@actual.rotation.T).as_rotvec()
+            omega=c.base_feedforward_rotation_gain*np.asarray(error,float)
+            body=self.bindings.chassis_body[robot]
+            r=np.asarray(self.data.xpos[body],float)-here
+            # CAP THE ANGULAR RATE AGAINST THE LEVER ARM, not against a number.
+            # `omega x r` turns a modest angular error into a large chassis
+            # speed: at gain 1.5, a 0.40 rad yaw gives 0.60 rad/s, and at the
+            # 0.5 m lever that is 0.300 m/s against a 0.05 m/s speed limit --
+            # SIX times the cap. Clipping the total afterwards does not help,
+            # because the rotation term then dominates the direction and the two
+            # bases are driven hard along opposite arcs, shearing the payload
+            # between the two grasps. Measured: 0/10 scripted, six of them
+            # ending on `unsupported_object_travel`.
+            #
+            # Capping omega so the INDUCED speed stays inside the same limit
+            # makes the rotation a slow manoeuvre the grasp can follow: 0.1 rad/s
+            # at this lever, so a 0.40 rad yaw takes 4 s of a 30 s episode.
+            lever=float(np.linalg.norm(r[:2]))
+            if lever>1e-6:
+                rate=float(np.linalg.norm(omega))
+                limit=c.speed_limit_m_s/lever
+                if rate>limit:omega=omega*(limit/rate)
+            want=want+np.cross(omega,r)[:2]
+        speed=float(np.linalg.norm(want))
+        cap=float(c.speed_limit_m_s)
+        if speed>cap:want=want*(cap/speed)
+        rotation=self.data.xmat[self.bindings.chassis_body[robot]].reshape(3,3)
+        return rotation[:2,:2].T@want
 
     def set_spatial_path(self,poses,refresh=True):
         self._path=SpatialObjectPath(poses,self.cfg.recovery.path_rotation_radius_m)
@@ -459,8 +531,24 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
                 min(self.data.ctrl[torso],self.nominal_ctrl[torso]-self.cfg.action_scale_torso_rad),
                 max(self.data.ctrl[torso],self.nominal_ctrl[torso]+self.cfg.action_scale_torso_rad))
         # Reuse wheel kinematics, motor limits and acceleration limits only.
-        # base_residual is forbidden; there is no path-following feedforward.
+        # `cfg.base_residual` (the transport stage's planner-path feedforward)
+        # stays forbidden here -- there is no path with a schedule. What IS
+        # available is the rigid-body composite velocity, which needs no
+        # schedule: see `base_composite_velocity`.
         decoded=np.zeros(21);decoded[:3]=a[:3]
+        if c.base_feedforward:
+            local=self.base_composite_velocity(robot)
+            scale=max(self.cfg.action_scale_base_lin,1e-9)
+            # The residual's authority is a fraction of the STAGE's speed limit,
+            # not of `action_scale_base_lin`. Those differ by 3x here (0.05
+            # against 0.15), so reading the fraction against the action scale
+            # gave the policy 0.06 m/s against a 0.05 m/s feedforward cap --
+            # 1.2x, which is a replacement and not a residual. A residual that
+            # can overpower the controller it sits on will learn to: measured
+            # once at +-0.20 m/s, success 45 % -> 0 % with 14 of 20 overturned.
+            authority=c.base_residual_fraction*c.speed_limit_m_s
+            residual=np.asarray(a[:2],float)*(authority/scale)
+            decoded[:2]=local/scale+residual
         speed=float(np.linalg.norm(decoded[:2])*self.cfg.action_scale_base_lin)
         if speed>c.speed_limit_m_s:decoded[:2]*=c.speed_limit_m_s/speed
         decoded[3]=(lift_target-self.nominal_ctrl[lift])/self.cfg.action_scale_lift_m
@@ -543,6 +631,38 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
                     failures.append({'reason':'hand_object_penetration','robot':robot,'hand':side,
                         'penetration_m':quality['penetration_m'],'limit_m':limit})
         return failures
+
+    @staticmethod
+    def _new_stage_stats():
+        return dict(any_hand_contact=False,four_hand_qualified_steps=0,
+                    supported_lift_m=0.,best_score=0.,success=False)
+
+    def _update_stage_stats(self):
+        """Measured episode statistics the reward curriculum reads. No gating.
+
+        Only the native-contact monitor carries per-hand `quality`; the weld
+        and compliant-proxy grasp models do not, and this runs on every step of
+        every configuration. Falling back to `grasp_engaged` keeps the stage
+        estimate meaningful there instead of crashing -- which it did, on every
+        non-native config, until the test suite said so.
+        """
+        st=self._stage_stats
+        q=getattr(self.contact_grasps,'quality',None)
+        if q is not None:
+            records=[q.get((r,s)) for r in self.robot_ids for s in ('left','right')]
+            contact=any(x and x['contact_count'] for x in records)
+            supported=bool(records) and all(x and x['qualified'] for x in records)
+        else:
+            supported=all(self.grasp_engaged(r) for r in self.robot_ids)
+            contact=supported
+        if contact:st['any_hand_contact']=True
+        if supported:
+            st['four_hand_qualified_steps']+=1
+            resting=getattr(self,'_resting_height',None)
+            if resting is not None:
+                st['supported_lift_m']=max(st['supported_lift_m'],
+                    float(self.payload_height()-resting))
+        st['best_score']=self._hold_pose.best_score
 
     def stage_success(self):
         c=self.cfg.recovery
@@ -632,6 +752,33 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
             info.setdefault('task_physics_failures',[]).append({'reason':'unsupported_object_travel',
                 'distance_m':self._max_unsupported_segment_travel,'limit_m':c.unsupported_travel_limit_m})
         goal_error=actual.error_to(self._path.poses[-1])
+        # Dense stopping credit: exp kernel on the object's speed, gated on
+        # being inside the position tolerance so it cannot pay a policy that
+        # simply never sets off. Zero weight by default.
+        settle_credit=0.
+        if w.settle_at_goal:
+            crit=self._hold_pose.criteria
+            if float(np.linalg.norm(goal_error[:3]))<crit.object_position_m:
+                # Kernel width is 1.5x the acceptance threshold. This has been
+                # wrong in both directions and the measurement is the same each
+                # time: a shaping kernel must be steep WHERE THE POLICY IS.
+                #
+                # At 1x it paid exp(-(37/10)^2) = 1e-6 at the 37 mm/s the policy
+                # was then moving -- present in the sum, useless as a signal.
+                # Widened to 3x it fixed that, and the policy duly came down to
+                # crossing the window at 15 mm/s -- where 3x pays 0.78 and the
+                # whole remaining gain from 15 to 10 mm/s is +15 %. It rewarded
+                # the near miss almost as much as the hold, and progress stalled
+                # at 15 mm/s for 90 k steps.
+                #
+                #   gradient 15 -> 10 mm/s:  3x +15 %,  1.5x +74 %,  1x +249 %
+                #
+                # 1.5x keeps usable slope out to ~25 mm/s while making the last
+                # 5 mm/s worth taking.
+                twist=self.measured_twist_se3()
+                settle_credit=float(np.exp(
+                    -(float(np.linalg.norm(twist[:3]))/(1.5*crit.object_linear_speed_m_s))**2
+                    -(float(np.linalg.norm(twist[3:]))/(1.5*crit.object_angular_speed_rad_s))**2))
         good=(supported and np.linalg.norm(goal_error[:3])<c.position_tolerance_m
               and np.linalg.norm(goal_error[3:])<c.orientation_tolerance_rad
               and np.linalg.norm(self.measured_twist_se3())<.05)
@@ -639,7 +786,15 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
             from m2_rl.native_contact_grasp import planner_palm_alignment_accepted
             good=good and planner_palm_alignment_accepted(self)
         self._goal_hold=self._goal_hold+1 if good and not terminated else 0
+        # The user's acceptance test, graded from measured quantities in its own
+        # module so no reward edit can move it. Updated HERE, before rewards --
+        # a counter updated after them is read one step stale, which this
+        # project has already paid for once with the settle counter.
+        self._hold_pose.update(self,self.cfg.control_hz)
+        self._update_stage_stats()
         success=self.stage_success() and not terminated
+        if self.cfg.recovery.use_hold_pose_success:
+            success=self._hold_pose.success(terminated)
         shared_progress=(self._progress-old_progress) if old_supported and supported else min(0.,self._progress-old_progress)
         travel=np.linalg.norm((np.asarray(actual.xyz)-old_position)[:2])
         tilt=np.linalg.norm(actual.error_to(self._nearby_pose)[3:])
@@ -692,7 +847,17 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
                 'supported_lift_progress':w.supported_lift_progress*supported_goal_pose_progress(
                     [0.,0.,old_goal_error[2],0.,0.,0.],[0.,0.,goal_error[2],0.,0.,0.],
                     c.path_rotation_radius_m,old_supported,supported),
-                'stable_goal':w.stable_goal*float(good)*dt,
+                # Shaping must reward the thing acceptance requires. The legacy
+                # `good` flag uses a 0.05 twist norm, which is the same
+                # too-loose stillness that let a policy drift through the
+                # tolerance window and call it a hold. When the strict
+                # criterion is the acceptance test, the per-step bonus keys on
+                # the strict `holding` flag instead, so "at the goal" pays only
+                # while the object is actually stopped there.
+                'settle_at_goal':w.settle_at_goal*settle_credit*dt,
+                'stable_goal':w.stable_goal*float(
+                    (self._hold_pose.last or {}).get('holding', False)
+                    if c.use_hold_pose_success else good)*dt,
                 'unsupported_travel':-w.unsupported_travel*travel*float(not supported),
                 'slip':-w.slip*min(slip,.1)*float(self.grasp_engaged(robot))*dt,
                 'load':-w.load*(load/max(1.,2*c.grasp.max_force_n))**2*dt,
@@ -710,6 +875,19 @@ class CooperativeRecoveryEnv(EndToEndCarryEnv):
         # Reference refresh must not add history samples or advance its clock.
         self._sensor_cache.clear()
         obs=self._observations()
+        self._stage_stats['success']=bool(success)
+        # `hold_pose` and `stage_stats` are EPISODE state: both reset at every
+        # reset, so two identical seeds produce identical values and the Gym
+        # determinism contract holds.
+        #
+        # The reward curriculum is TRAINING state -- its window spans episodes
+        # and its weights evolve across them -- so it must not appear here.
+        # Putting it in the per-step info broke
+        # `test_gym_contract_real_physics_and_reward_accounting`, which steps
+        # the same seed twice and requires equivalent info. It is read straight
+        # off the environment by the vector wrapper instead.
+        info['hold_pose']=self._hold_pose.report(self.cfg.control_hz)
+        info['stage_stats']=dict(self._stage_stats)
         info.update(success=success,phase='autonomous',reward_components=components,
             episode_reward_components=dict(self._reward_totals),phase_events=list(self.phase_events),
             pose_reference=self.pose_reference.as_dict(),spatial_progress_m=self._progress,

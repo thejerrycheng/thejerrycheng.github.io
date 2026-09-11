@@ -1,5 +1,5 @@
 {
-  "run": "native_grasp_light_random_network_mlp_pilot_002",
+  "run": "native_grasp_ablation_original_reference_mlp_002",
   "settings": {
     "schema_version": 1,
     "task": "cooperative_recovery",
@@ -291,9 +291,10 @@
         "nominal_torso_rad": 0.0,
         "grasp_close_m": 0.035,
         "approach_standoff_m": [
-          0.04,
-          0.1
+          0.0,
+          0.005
         ],
+        "reset_pregrasp_clearance_m": 0.05,
         "approach_spawn_radius_m": null,
         "approach_heading_range_rad": [
           0.0,
@@ -936,10 +937,10 @@
       "num_envs": 1,
       "vector_backend": "serial",
       "horizon": 128,
-      "total_steps": 16384,
+      "total_steps": 91904,
       "epochs": 3,
       "minibatches": 4,
-      "lr": 0.0001,
+      "lr": 1e-05,
       "lr_decay": false,
       "max_grad_norm": 1.0,
       "gamma": 0.995,
@@ -990,7 +991,7 @@
         "holding_closure": 0.9
       },
       "target_kl": 0.02,
-      "strict_kl_guard": false,
+      "strict_kl_guard": true,
       "hidden": [
         128,
         128
@@ -1049,28 +1050,174 @@
         "window_episodes": 40,
         "promote_success_rate": 0.9
       },
-      "snapshot_every_steps": 4096,
+      "approach_distance_curriculum": {
+        "enabled": true,
+        "ranges_m": [
+          [
+            0.0,
+            0.005
+          ],
+          [
+            0.005,
+            0.02
+          ],
+          [
+            0.02,
+            0.05
+          ],
+          [
+            0.04,
+            0.1
+          ]
+        ],
+        "initial_level": 0,
+        "maximum_standoff_m": 0.1,
+        "window_episodes": 100,
+        "minimum_episodes_per_level": 100,
+        "promote_success_rate": 0.9,
+        "reset_domain_version": "native_reference_open_clearance_v1",
+        "reset_feasibility_report": "experiments/diagnostics/native_grasp_reference_feasibility_v1.json"
+      },
+      "snapshot_every_steps": 2048,
       "seed": 2540000,
       "log_every": 1,
-      "save_every": 5,
+      "save_every": 8,
       "video_every_episodes": 0,
       "video_seconds": 30.0,
       "video_fps": 20,
       "video_seed": 319999,
-      "video_async": false,
+      "video_async": true,
       "update_site": false,
-      "run_name": "native_grasp_light_random_network_mlp_pilot_002",
+      "run_name": "native_grasp_ablation_original_reference_mlp_002",
       "device": "cpu",
       "policy_group": "policy",
       "critic_group": "critic",
       "start_stage": "transport",
       "auto_curriculum": false,
       "extra": {
-        "scope": "Random actor-mean and critic MLP networks with fresh optimizer; reward-only PPO. Frozen input normalizers and initial per-action exploration scales are copied from the matched warm-start checkpoint. No demonstration labels, actor means, critic weights or optimizer history are inherited. Acquisition-only pilot; no claim of full mission success.",
-        "calibration_checkpoint": "/Users/jerrycheng/Desktop/M2/rl/runs/native_grasp_light_reward_only_mlp_continue_001/step_00075520.pt",
-        "calibration_sha256": "c44591054e6119e3179965366387a982dde404f47c7934b8d0fae3a1552151d1",
-        "teacher_labels_used": false
+        "scope": "Reward-only PPO continuation after finite demonstration initialization. Actor, critic, optimizer and normalizers resume; no teacher labels, imitation loss or policy anchor.",
+        "ablation": {
+          "variant": "original_reference",
+          "phase": 2,
+          "source": "rl/runs/native_grasp_ablation_original_reference_mlp_001/final.pt",
+          "factor": "Original planner-assigned TCP reference; conservative reward-only PPO",
+          "mode": "step_delta",
+          "learning_rate": 1e-05,
+          "strict_kl_guard": true,
+          "scope": "One seed pilot; actor, critic, optimizer, input statistics and exploration resume.",
+          "reset_feasibility": {
+            "report": "experiments/diagnostics/native_grasp_reference_feasibility_v1.json",
+            "report_sha256": "4578452694a68a9b6350338741528c2b5c27ece847f02722cfb4d0bcb8e2f19b",
+            "variant": "original_reference",
+            "reset_domain_sha256": "1119832bbd1a40af81894fa3ef94bdcb2909a9fe0c8d1677216dbc7e1ceb55ab",
+            "reset_domain_version": "native_reference_open_clearance_v1"
+          }
+        }
       }
+    },
+    "bootstrap": {
+      "transport_checkpoint": null,
+      "resume": null,
+      "initialize_se3_from_planar": null,
+      "dataset": null,
+      "episodes": 24,
+      "epochs": 100,
+      "rounds": 2,
+      "seed_start": 1660000,
+      "round_seed_stride": 100,
+      "checkpoint_seed_offset": 10000,
+      "collection_checkpoint_every_episodes": 5,
+      "progress_every_steps": 500,
+      "reset_standoffs": [
+        0.4
+      ],
+      "teacher_fraction": 1.0,
+      "action_perturbation_std": [
+        0.025,
+        0.025,
+        0.015,
+        0.025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.035,
+        0.035
+      ],
+      "action_perturbation_hold_steps": 5,
+      "action_perturbation_curriculum": {
+        "enabled": true,
+        "initial_level": 0.0,
+        "maximum_level": 0.0,
+        "increment": 0.2,
+        "window_episodes": 8,
+        "promote_success_rate": 0.95
+      },
+      "native_teacher": {
+        "seating_distance_m": 0.023,
+        "seating_rotation_rad": 0.15,
+        "closing_distance_m": 0.05,
+        "closing_rotation_rad": 0.2,
+        "closing_command_threshold": 0.05,
+        "holding_closure": 0.9
+      },
+      "prefit_import": false,
+      "pose_jitter": 0.0,
+      "yaw_jitter": 0.0,
+      "storage_reserve_gib": 8.0,
+      "stop_after_success": false,
+      "record_checkpoints": true,
+      "checkpoint_scene": "m2_flat_arena",
+      "fit_lr": 0.0003,
+      "batch_size": 256,
+      "action_loss_weights": [
+        20.0,
+        20.0,
+        8.0,
+        8.0,
+        2.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        4.0,
+        6.0,
+        6.0
+      ],
+      "fit_max_grad_norm": 1.0,
+      "observation_std_floor": 0.1,
+      "postfit_log_std": -2.5,
+      "recovery_teacher": "native_contact",
+      "validation_episode_fraction": 0.25,
+      "fit_selection": "best_validation",
+      "fit_snapshot_every_epochs": 20,
+      "recovery_hold_closure": null,
+      "recovery_wait_every_episodes": 0,
+      "import_initialization_labels": false
     }
   },
   "scope": "Native-contact development; separate from frozen imitation and pickup PPO."

@@ -73,7 +73,7 @@
     new MutationObserver(update).observe(group,{childList:true});update();
   });
   const option=(value,label)=>{const e=document.createElement('button');e.type='button';e.value=String(value);e.textContent=label;return e;};
-  for(const [key,label] of [['review','Replay comparison'],['diagnostics','Grasp diagnostics'],['checkpoints','Learned checkpoints'],['scenes','Scene evaluations']]){
+  for(const [key,label] of [['review','Replay comparison'],['ablations','Ablation evaluations'],['diagnostics','Grasp diagnostics'],['checkpoints','Learned checkpoints'],['scenes','Scene evaluations']]){
     if(clips.some(c=>c.group===key))$('native-category').append(option(key,label));
   }
   function category(){const choices=clips.filter(c=>c.group===$('native-category').value);$('native-recording').replaceChildren();
@@ -90,13 +90,13 @@
     if($('native-chapters')){
       $('native-chapters').replaceChildren();
       for(const event of clip.chapters||[]){const b=option(event.time_s,event.label+' · '+event.time_s.toFixed(2)+' s');
-        b.onclick=()=>{v.pause();v.currentTime=Math.min(Math.max(0,event.time_s-(replayRows[0]?.time_s||0)),Math.max(0,(v.duration||0)-.01));};$('native-chapters').append(b);}
+        b.onclick=()=>{v.pause();v.currentTime=Math.min(Math.max(0,(event.time_s-(replayRows[0]?.time_s||0))/(clip.playback_speed||1)),Math.max(0,(v.duration||0)-.01));};$('native-chapters').append(b);}
     }
     replayRows=[];if($('native-now'))$('native-now').textContent='Loading measured replay state…';
     trajectory(selected).then(rows=>{if(clip===selected){replayRows=rows;replayState();}}).catch(()=>{});plot();
   }
   function replayState(){if(!$('native-now')||!replayRows.length)return;
-    const time=$('native-video').currentTime+(replayRows[0].time_s||0);
+    const time=$('native-video').currentTime*(clip.playback_speed||1)+(replayRows[0].time_s||0);
     const row=replayRows.reduce((a,b)=>Math.abs(a.time_s-time)<Math.abs(b.time_s-time)?a:b);
     const start=replayRows[0].centroid_xyz_m,p=row.centroid_xyz_m;
     const qualities=Object.values(row.physical_grasps||{}).filter(q=>q.qualified!=null);
@@ -142,6 +142,7 @@
       paragraph(cells[1],row.reward==='best_so_far'?'Best-so-far grasp progress':'Step-to-step grasp progress');
       paragraph(cells[1],`PPO learning rate ${Number(row.learning_rate).toExponential(0)}${row.strict_kl_guard?' · KL guard':''}`);
       if(row.id.endsWith('_reference'))paragraph(cells[1],`Hand target (below, forward): ${number(row.hand_target.palm_below_bar_m*1000)}, ${number(row.hand_target.palm_forward_offset_m*1000)} mm`);
+      if(row.hand_target.reset_pregrasp_clearance_m)paragraph(cells[1],`Reset-only hand clearance: ${number(row.hand_target.reset_pregrasp_clearance_m*1000)} mm`);
       const safety=row.safety||{},domain=row.domain||{};
       if(conditions(row)===conditions(baseline))paragraph(cells[2],'Shared safety and variation');
       else{
@@ -149,6 +150,7 @@
         paragraph(cells[2],`${range(domain.mass_kg)} kg · friction ${range(domain.sliding_friction)}`);
         paragraph(cells[2],`${range(domain.standoff_m,100)} cm standoff; ${domain.geometry_randomized?'varied':'fixed'} geometry; pose noise ${domain.pose_noise?'on':'off'}`);
       }
+      if(row.approach_distance_curriculum)paragraph(cells[2],`Training distance stage ${row.approach_distance_curriculum.level+1}; promotion requires >90% in a completed training window`);
       paragraph(cells[3],`${number(row.additional_steps)} / ${number(row.planned_steps)} steps`);
       paragraph(cells[3],`Teacher weight: ${number(row.teacher_weight)}${row.teacher_weight_observed?' (logged)':' (planned)'}`);
       const current=document.createElement('strong');current.textContent=statuses[row.status]||row.status.replaceAll('_',' ');cells[3].append(current);
@@ -158,9 +160,11 @@
         paragraph(cells[4],e.completed?`${e.successes}/${e.completed} passed${e.complete?` (${(100*e.successes/e.completed).toFixed(1)}%)`:' so far'}`:'No completed frozen trials yet');
         paragraph(cells[4],`${e.completed}/${e.expected} trials ${e.complete?'complete':'finished · partial'}`);
         paragraph(cells[4],`At +${number(e.at_additional_steps)} steps`);
+        if(e.evaluation_standoff_m)paragraph(cells[4],`Frozen approach: ${range(e.evaluation_standoff_m,100)} cm`);
         for(const previous of row.evaluations.slice(0,-1))paragraph(cells[4],`Earlier: ${previous.successes}/${previous.completed} passed at +${number(previous.at_additional_steps)} steps${previous.complete?'':' (partial)'}`);
         if(e.checkpoint_audit_matches===false)paragraph(cells[4],'Checkpoint audit mismatch; do not use this result.');
-      }else paragraph(cells[4],'Frozen evaluation pending');
+      }else{paragraph(cells[4],'Frozen evaluation pending');
+        if(study.evaluation_standoff_m)paragraph(cells[4],`Declared approach: ${range(study.evaluation_standoff_m,100)} cm`);}
       target.append(tr);
     }
     const studies=data.studies||[],first=studies[0],phases=first?.phases||[];
@@ -169,7 +173,7 @@
       $('native-ablation-conditions').textContent=`Shared safety and variation: ${range(domain.mass_kg)} kg payload, friction ${range(domain.sliding_friction)}, ${range(domain.standoff_m,100)} cm standoff; ${domain.geometry_randomized?'varied':'fixed'} geometry and pose noise ${domain.pose_noise?'on':'off'}. During acquisition, travel may exceed ${number(s.acquisition_travel_limit_m*100)} cm for at most ${number(s.travel_grace_s)} s; orientation error may exceed ${Math.round(s.acquisition_orientation_limit_rad*180/Math.PI)}° for ${number(s.orientation_grace_s)} s. Hard object limits: ${number(s.hard_unsupported_travel_limit_m*100)} cm and ${Math.round(s.hard_orientation_limit_rad*180/Math.PI)}°. Mobile-base limit: ${number(Number((baseline.base_tilt_limit_rad*180/Math.PI).toFixed(1)))}°.`;
     }
     $('native-ablation-protocol').textContent=first?
-      `Matched acquisition screens: ${first.episode_s} s maximum, ${first.hold_s} s sustained four-hand hold. ${phases.map(p=>`${p.evaluation_repeats} trials from seed ${p.evaluation_seed.toLocaleString()}`).join('; ')}. These are development screens; every failed reset counts. Current training steps exclude inherited training. A completed screen can precede the latest training checkpoint.`:'Ablation manifests will appear when declared.';
+      `Matched acquisition screens: ${first.episode_s} s maximum, ${first.hold_s} s sustained four-hand hold; frozen approach ${range(first.evaluation_standoff_m,100)} cm. ${phases.map(p=>`${p.evaluation_repeats} trials from seed ${p.evaluation_seed.toLocaleString()}`).join('; ')}. Near-contact training, when listed, retains the full evaluation distance. These are development screens; every failed reset counts. Current training steps exclude inherited training. A completed screen can precede the latest training checkpoint.`:'Ablation manifests will appear when declared.';
     const updated=new Date(data.updated);
     $('native-ablation-stamp').textContent=`Exported ${Number.isNaN(updated.valueOf())?data.updated:updated.toLocaleString()}. Status comes from saved experiment manifests; reload after a site update for newer results. Training returns are not validation.`;
   }
