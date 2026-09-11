@@ -1408,3 +1408,103 @@ _445 papers · generated 2026-09-11_
     - [HARBOR: A Harness Framework for Agentic Robot Reinforcement Learning](https://arxiv.org/abs/2606.08610)  `arXiv 2026`
     - [RF-Agent: Automated Reward Function Design via Language Agent Tree Search](https://arxiv.org/abs/2602.23876)  `arXiv 2026`
     - [Skild AI: scaling to 100,000 hours and one-shot video imitation](https://www.skild.ai/)  `company blog 2026`
+
+## OPEN DATASETS  (86)
+
+- Egocentric human  (17)
+  - [EgoVerse](https://arxiv.org/abs/2604.07607)  `2026`
+  - [EgoDex](https://github.com/apple/ml-egodex)  `2025`
+  - [EgoVLA](https://arxiv.org/abs/2507.12440)  `2025`
+  - [OpenEgo](https://arxiv.org/abs/2509.05513)  `2025`
+  - [Aria Everyday Activities Dataset](https://www.projectaria.com/datasets/aea/)  `2024`
+  - [EgoExoLearn](https://github.com/OpenGVLab/EgoExoLearn)  `2024`
+  - [EgoVid-5M](https://egovid.github.io/)  `2024`
+  - [HOT3D](https://facebookresearch.github.io/hot3d/)  `2024`
+  - [Nymeria](https://www.projectaria.com/datasets/nymeria/)  `2024`
+  - [EPIC Fields](https://epic-kitchens.github.io/epic-fields/)  `2023`
+  - [Ego-Exo4D](https://ego-exo4d-data.org/)  `2023`
+  - [Project Aria](https://www.projectaria.com/)  `2023`
+  - [HOI4D](https://hoi4d.github.io/)  `2022`
+  - [Ego4D](https://ego4d-data.org/)  `2021`
+  - [EgoBody](https://sanweiliti.github.io/egobody/egobody.html)  `2021`
+  - [H2O](https://taeinkwon.com/projects/h2o/)  `2021`
+  - [Rescaling Egocentric Vision](https://epic-kitchens.github.io/)  `2020`
+- UMI & handheld  (7)
+  - [Open-AoE](https://arxiv.org/abs/2607.14183)  `2026`
+  - [RealDexUMI](https://arxiv.org/abs/2606.06033)  `2026`
+  - [Universal Manipulation Exoskeleton](https://arxiv.org/abs/2606.14218)  `2026`
+  - [YUBI](https://arxiv.org/abs/2606.10244)  `2026`
+  - [DexUMI](https://dex-umi.github.io/)  `2025`
+  - [FastUMI-100K](https://github.com/MrKeee/FastUMI-100K)  `2025`
+  - [Universal Manipulation Interface](https://umi-gripper.github.io/)  `2024`
+- Teleoperation  (7)
+  - [AirExo-2](https://airexo.tech/airexo2/)  `2025`
+  - [DexCap](https://dex-cap.github.io/)  `2024`
+  - [HumanPlus](https://humanoid-ai.github.io/)  `2024`
+  - [Mobile ALOHA](https://mobile-aloha.github.io/)  `2024`
+  - [Open-TeleVision](https://robot-tv.github.io/)  `2024`
+  - [Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware](https://tonyzhaozh.github.io/aloha/)  `2023`
+  - [RoboTurk](https://roboturk.stanford.edu/)  `2018`
+- Robot manipulation at scale  (16)
+  - [Qwen-RobotManip Technical Report](https://arxiv.org/abs/2606.17846)  `2026`
+  - [AgiBot World Colosseo](https://agibot-world.com/)  `2025`
+  - [Galaxea Open-World Dataset and G0 Dual-System VLA Model](https://opengalaxea.github.io/G0/)  `2025`
+  - [RoboCOIN](https://arxiv.org/abs/2511.17441)  `2025`
+  - [All Robots in One](https://imaei.github.io/project_pages/ario/)  `2024`
+  - [DROID](https://droid-dataset.github.io/)  `2024`
+  - [FMB](https://functional-manipulation-benchmark.github.io/)  `2024`
+  - [RoboMIND](https://x-humanoid-robomind.github.io/)  `2024`
+  - [BridgeData V2](https://rail-berkeley.github.io/bridgedata/)  `2023`
+  - [Open X-Embodiment](https://robotics-transformer-x.github.io/)  `2023`
+  - [RH20T](https://rh20t.github.io/)  `2023`
+  - [RoboAgent](https://robopen.github.io/)  `2023`
+  - [BC-Z](https://sites.google.com/view/bc-z/home)  `2022`
+  - [Interactive Language](https://interactive-language.github.io/)  `2022`
+  - [RT-1](https://robotics-transformer1.github.io/)  `2022`
+  - [RoboNet](https://www.robonet.wiki/)  `2019`
+- Hand-object & dexterous  (8)
+  - [DexGraspNet 2.0](https://pku-epic.github.io/DexGraspNet2/)  `2024`
+  - [OAKINK2](https://oakink.net/v2/)  `2024`
+  - [TACO](https://taco2024.github.io/)  `2024`
+  - [DexArt](https://www.chenbao.tech/dexart/)  `2023`
+  - [ARCTIC](https://arctic.is.tue.mpg.de/)  `2022`
+  - [DexGraspNet](https://pku-epic.github.io/DexGraspNet/)  `2022`
+  - [DexYCB](https://dex-ycb.github.io/)  `2021`
+  - [GRAB](https://grab.is.tue.mpg.de/)  `2020`
+- Tactile  (7)
+  - [RoboTacDex](https://arxiv.org/abs/2606.31836)  `2026`
+  - [A Touch, Vision, and Language Dataset for Multimodal Alignment](https://tactile-vlm.github.io/)  `2024`
+  - [Sparsh](https://sparsh-ssl.github.io/)  `2024`
+  - [Towards Comprehensive Multimodal Perception](https://arxiv.org/abs/2403.09813)  `2024`
+  - [The ObjectFolder Benchmark](https://objectfolder.stanford.edu/)  `2023`
+  - [ObjectFolder 2.0](https://objectfolder.stanford.edu/)  `2022`
+  - [Touch and Go](https://touch-and-go.github.io/)  `2022`
+- Human-robot interaction  (8)
+  - [R2HandoverSim](https://arxiv.org/abs/2606.21011)  `2026`
+  - [DexH2R](https://arxiv.org/abs/2506.23152)  `2025`
+  - [THÖR-MAGNI](http://thor.oru.se/)  `2024`
+  - [Toward Human-Like Social Robot Navigation](https://cs.gmu.edu/~xiao/Research/MuSoHu/)  `2023`
+  - [HandoverSim](https://handover-sim.github.io/)  `2022`
+  - [Socially Compliant Navigation Dataset (SCAND)](https://www.cs.utexas.edu/~xiao/SCAND/SCAND.html)  `2022`
+  - [JRDB-Act](https://jrdb.erc.monash.edu/dataset/activity)  `2021`
+  - [JRDB](https://jrdb.erc.monash.edu/)  `2019`
+- Multi-robot & collaboration  (2)
+  - [HRIBench](https://arxiv.org/abs/2607.13056)  `2026`
+  - [Demonstrating HumanTHOR](https://sites.google.com/view/humanthor)  `2024`
+- Third-person video  (3)
+  - [Assembly101](https://assembly-101.github.io/)  `2022`
+  - [HowTo100M](https://www.di.ens.fr/willow/research/howto100m/)  `2019`
+  - [The "something something" video database for learning and evaluating visual common sense](https://www.qualcomm.com/developer/software/something-something-v2-dataset)  `2017`
+- Human motion & humanoid  (3)
+  - [Learning from Massive Human Videos for Universal Humanoid Pose Control](https://usc-gvl.github.io/UH-1/)  `2024`
+  - [Motion-X](https://motion-x-dataset.github.io/)  `2023`
+  - [AMASS](https://amass.is.tue.mpg.de/)  `2019`
+- Simulation benchmarks  (8)
+  - [RoboVerse](https://roboverseorg.github.io/)  `2025`
+  - [BEHAVIOR-1K](https://behavior.stanford.edu/)  `2024`
+  - [HumanoidBench](https://humanoid-bench.github.io/)  `2024`
+  - [ManiSkill3](https://maniskill.readthedocs.io/)  `2024`
+  - [RoboCasa](https://robocasa.ai/)  `2024`
+  - [LIBERO](https://libero-project.github.io/)  `2023`
+  - [CALVIN](http://calvin.cs.uni-freiburg.de/)  `2021`
+  - [Meta-World](https://meta-world.github.io/)  `2019`

@@ -320,6 +320,7 @@ html[data-theme="night"] .mobile-menu a[data-mview].on{ background:var(--gold); 
     <div class="nav-links" id="viewTabs">
       <button class="vtab active" data-view="library">Library</button>
       <button class="vtab" data-view="trees">Trees</button>
+      <button class="vtab" data-view="datasets">Datasets</button>
       <button class="vtab" data-view="timeline">Timeline</button>
       <button class="vtab" data-view="graph">Graph</button>
       <button class="vtab" data-view="projects">Projects</button>
@@ -336,6 +337,7 @@ html[data-theme="night"] .mobile-menu a[data-mview].on{ background:var(--gold); 
 <div id="mobileMenu" class="mobile-menu" role="menu" aria-labelledby="menuButton" hidden>
   <a role="menuitem" href="#" data-mview="library">Library</a>
   <a role="menuitem" href="#" data-mview="trees">Trees</a>
+  <a role="menuitem" href="#" data-mview="datasets">Datasets</a>
   <a role="menuitem" href="#" data-mview="timeline">Timeline</a>
   <a role="menuitem" href="#" data-mview="graph">Graph</a>
   <a role="menuitem" href="#" data-mview="projects">Projects</a>
@@ -395,6 +397,31 @@ html[data-theme="night"] .mobile-menu a[data-mview].on{ background:var(--gold); 
     <p>The whole library sorted into the structure you actually think in. Every branch lists its papers oldest-first, so you can read a line of work in the order it happened. ◆ marks a foundation paper.</p>
   </div>
   <div class="treewrap" id="treeWrap"></div>
+</section>
+
+<!-- ============ DATASETS ============ -->
+<section class="view" id="view-datasets">
+  <div class="sechead">
+    <h2 class="section-title">Open datasets</h2>
+    <p id="dsLede">The other half of the map. Every figure below is taken from the dataset's own paper, and every project link was checked over the network.</p>
+  </div>
+  <div class="controls" id="dsControls">
+    <div class="crow">
+      <label class="searchbox">
+        <svg viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="dsQ" type="search" placeholder="Search datasets, devices, modalities, robots…" autocomplete="off">
+      </label>
+      <select class="sel" id="dsSort">
+        <option value="cat">Sort · By category</option>
+        <option value="new">Sort · Newest</option>
+        <option value="old">Sort · Oldest</option>
+        <option value="az">Sort · Name A–Z</option>
+      </select>
+    </div>
+    <div class="dsfacets" id="dsFacets"></div>
+  </div>
+  <p class="count" id="dsCount"></p>
+  <div id="dsTable"></div>
 </section>
 
 <!-- ============ TIMELINE ============ -->
@@ -462,7 +489,9 @@ html[data-theme="night"] .mobile-menu a[data-mview].on{ background:var(--gold); 
     <a class="dl" href="papers_by_project.md" download>
       <b>Markdown outline</b><small>The same map, for anything that does not read .xmind</small></a>
     <a class="dl" href="papers_data.json" download>
-      <b>papers_data.json</b><small>The whole database, with every field</small></a>
+      <b>papers_data.json</b><small>The whole paper database, with every field</small></a>
+    <a class="dl" href="datasets_data.json" download>
+      <b>datasets_data.json</b><small>Every open dataset, with scale, devices and verified links</small></a>
     <a class="dl" href="reviews.json" download>
       <b>reviews.json</b><small>All 19 literature reviews</small></a>
   </div>
@@ -499,6 +528,57 @@ html[data-theme="night"] .mobile-menu a[data-mview].on{ background:var(--gold); 
 </aside>
 
 <style>
+/* ---------- datasets table ---------- */
+.dsfacets{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:12px; padding-top:12px;
+  border-top:2px solid var(--line) }
+.dsfacets .glab{ font-family:var(--font-comic); font-size:12px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--ash); margin-right:4px }
+.dsgroup{ margin:0 0 30px }
+.dsgroup h3{ font-family:var(--font-comic); font-size:18px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--imp); margin:0 0 3px; display:flex; align-items:center; gap:11px }
+.dsgroup h3 .n{ font-family:var(--font-mono); font-size:12px; color:var(--ash); border:1.2px solid var(--line-soft);
+  border-radius:4px; padding:1px 6px; letter-spacing:0 }
+.dsgroup h3::after{ content:""; flex:1; height:2px; background:var(--line-soft) }
+.dsgroup .gsub{ font-size:13.6px; color:var(--ash); margin:0 0 14px }
+.dswrap{ overflow-x:auto; border:var(--line-w) solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--sh-xs); background:var(--panel) }
+table.ds{ border-collapse:collapse; width:100%; min-width:980px; font-size:13px }
+table.ds th{ font-family:var(--font-comic); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ash); text-align:left; padding:9px 11px; border-bottom:2px solid var(--line);
+  background:var(--bone); position:sticky; top:0; z-index:1; white-space:nowrap }
+table.ds td{ padding:10px 11px; border-bottom:1.5px solid var(--line-soft); vertical-align:top }
+table.ds tr:last-child td{ border-bottom:0 }
+table.ds tbody tr{ cursor:pointer; transition:background .15s ease }
+table.ds tbody tr:hover{ background:var(--wash) }
+table.ds .c-fig{ width:92px; padding:8px }
+table.ds .c-fig img{ width:84px; height:52px; object-fit:cover; object-position:center top;
+  border:1.5px solid var(--line); border-radius:4px; background:var(--bone); display:block }
+table.ds .c-fig .nofig{ width:84px; height:52px; border:1.5px dashed var(--line-soft); border-radius:4px;
+  display:grid; place-items:center; font-family:var(--font-mono); font-size:9px; color:var(--ash) }
+table.ds .dsname{ font-size:14.2px; font-weight:700; color:var(--ink); line-height:1.25; margin-bottom:3px }
+table.ds .dsyear{ font-family:var(--font-mono); font-size:10.5px; color:var(--ash); font-weight:700 }
+table.ds .dsone{ font-size:12.2px; color:var(--ink-soft); line-height:1.4; max-width:390px }
+table.ds .c-scale{ font-family:var(--font-mono); font-size:11.5px; color:var(--ink); white-space:nowrap; line-height:1.7 }
+table.ds .c-scale b{ color:var(--imp); font-weight:700 }
+table.ds .c-dev, table.ds .c-mod{ font-size:11.8px; color:var(--ink-soft); line-height:1.4; max-width:170px }
+table.ds .c-emb{ font-size:11.8px; color:var(--ink-soft); max-width:130px }
+table.ds .c-lnk{ white-space:nowrap }
+table.ds .c-lnk a{ font-family:var(--font-comic); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--ink); background:var(--bone); border:1.2px solid var(--line); border-radius:4px;
+  padding:3px 6px 2px; text-decoration:none; display:inline-block; margin:0 3px 3px 0 }
+table.ds .c-lnk a:hover{ background:var(--hi); color:#FFF9F0 }
+.orgtag{ font-family:var(--font-mono); font-size:9px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+  padding:1px 5px; border-radius:3px; border:1.2px solid var(--line); margin-left:6px; vertical-align:2px }
+.org-academia{ background:var(--panel-2); color:var(--ink-soft) }
+.org-industry{ background:var(--yellow); color:#151820 }
+.org-consortium{ background:var(--il); color:#FFF9F0 }
+html[data-theme="night"] .org-consortium{ color:#151820 }
+@media (max-width:860px){
+  .dswrap{ border-radius:var(--radius-sm) }
+  table.ds{ min-width:820px }
+  table.ds .c-mod{ display:none } table.ds th.h-mod{ display:none }
+}
+
 /* ---------- downloads ---------- */
 .downloads{ background:var(--panel); border:var(--line-w) solid var(--line); border-radius:var(--radius);
   box-shadow:var(--sh-sm); padding:20px 22px; margin:20px 0 0 }
@@ -626,7 +706,8 @@ let redrawGraph = ()=>{};
 $("#themeBtn").onclick = ()=> setTheme(document.documentElement.getAttribute("data-theme")==="night"?"day":"night");
 
 /* ---------------- state ---------------- */
-let DATA=null, PAPERS=[], BYID={}, REVIEWS={};
+let DATA=null, PAPERS=[], BYID={}, REVIEWS={}, DSETS=null;
+const DSS={ q:"", sort:"cat", cat:new Set(), org:new Set() };
 const S = { view:"library", q:"", sort:"rank", pdfOnly:false,
             f:{tree:new Set(),branch:new Set(),project:new Set(),idea:new Set(),
                venue:new Set(),decade:new Set(),inst:new Set(),paradigm:new Set(),topic:new Set()} };
@@ -640,9 +721,10 @@ const bucketOf = p => { const y=yearOf(p); if(!y) return "undated";
 /* ---------------- load ---------------- */
 Promise.all([
   fetch("papers_data.json").then(r=>r.json()),
-  fetch("reviews.json").then(r=>r.ok?r.json():{}).catch(()=>({}))
-]).then(([d,rv])=>{
-  DATA=d; REVIEWS=rv||{};
+  fetch("reviews.json").then(r=>r.ok?r.json():{}).catch(()=>({})),
+  fetch("datasets_data.json").then(r=>r.ok?r.json():null).catch(()=>null)
+]).then(([d,rv,ds])=>{
+  DATA=d; REVIEWS=rv||{}; DSETS=ds;
   PAPERS=d.papers.map(p=>{
     p.hay = norm([p.title,(p.authors||[]).join(" "),(p.institutions||[]).join(" "),p.lab,p.venue,
                   (p.topics||[]).join(" "),(p.paradigm||[]).join(" "),(p.method||[]).join(" "),
@@ -661,6 +743,7 @@ function boot(){
     [PAPERS.filter(p=>p.local).length,"PDFs on disk"],
     [Object.values(DATA.meta.projects).filter(p=>p.kind==="current").length,"live projects"],
     [DATA.meta.ideas.length,"research ideas"],
+    [DSETS? DSETS.datasets.length : 0,"open datasets"],
   ].map(([n,l])=>`<div><b>${n}</b><span>${l}</span></div>`).join("");
   $("#footMeta").textContent = `${c.total} papers · ${c.curated} hand-annotated · ${c.library} harvested from your disk · generated ${DATA.meta.generated}`;
   const nfig = PAPERS.filter(p=>p.fig).length, nax = PAPERS.filter(p=>p.arxiv).length;
@@ -674,7 +757,7 @@ function boot(){
     + `Records marked as harvested have inferred tags — check them before citing.`;
   $("#ideaLede").textContent = `Your ${DATA.meta.ideas.length} ideas — deduplicated from the original ${
     DATA.meta.ideas.reduce((a,i)=>a+(i.merged?i.merged.length:1),0)} bullets — each with a literature review: where the field actually is, what is already taken, and where the opening is.`;
-  buildFacets(); renderTrees(); renderProjects(); renderIdeas(); buildLegend(); render();
+  buildFacets(); renderTrees(); renderProjects(); renderIdeas(); buildLegend(); buildDatasets(); render();
   window.addEventListener("hashchange", fromHash); fromHash(true);
 }
 
@@ -856,6 +939,7 @@ function go(v, push=true){
   $$(".view").forEach(s=>s.classList.toggle("on", s.id==="view-"+v));
   if(v==="graph") G.start(); else G.stop();
   if(v==="timeline") renderTimeline();
+  if(v==="datasets") renderDatasets();
   if(push) location.hash = v==="library"?"":"#"+v;
   window.scrollTo({top:0,behavior:"instant"});
 }
@@ -864,7 +948,8 @@ function fromHash(initial){
   if(!h){ if(!initial) go("library",false); return; }
   if(h.startsWith("p/")) { const id=decodeURIComponent(h.slice(2)); if(BYID[id]){ go("library",false); openPaper(id,false); } return; }
   if(h.startsWith("i/")) { const id=decodeURIComponent(h.slice(2)); go("ideas",false); openIdea(id,false); return; }
-  if(["library","trees","timeline","graph","projects","ideas"].includes(h)) go(h,false);
+  if(h.startsWith("d/")) { const id=decodeURIComponent(h.slice(2)); go("datasets",false); setTimeout(()=>openDataset(id),0); return; }
+  if(["library","trees","datasets","timeline","graph","projects","ideas"].includes(h)) go(h,false);
 }
 
 /* ---------------- trees view ---------------- */
@@ -1017,10 +1102,147 @@ function renderTimeline(){
   host.onclick = e=>{ const a=e.target.closest("[data-id]"); if(a) openPaper(a.dataset.id); };
 }
 
+
+/* ---------------- open datasets ---------------- */
+function buildDatasets(){
+  if(!DSETS){ $("#dsTable").innerHTML = `<p class="empty">datasets_data.json not found.</p>`; return; }
+  const m=DSETS.meta, rows=DSETS.datasets;
+  rows.forEach(d=> d.hay = norm([d.name,d.title,d.one,d.device,d.modal,d.embod,d.note,
+    (d.authors||[]).join(" "),(d.institutions||[]).join(" "),d.cat,d.org,
+    d.hours,d.eps,d.tasks,d.scenes,d.subj].join(" ")));
+  const catCount={}, orgCount={};
+  rows.forEach(d=>{ catCount[d.cat]=(catCount[d.cat]||0)+1; orgCount[d.org]=(orgCount[d.org]||0)+1; });
+  const ORG={academia:"Academia", industry:"Industry", consortium:"Consortium"};
+  $("#dsFacets").innerHTML =
+    `<span class="glab">Category</span>` +
+    m.order.filter(k=>catCount[k]).map(k=>
+      `<button class="chip" data-dsf="cat" data-v="${esc(k)}">${esc(m.categories[k].name)}<span class="c">${catCount[k]}</span></button>`).join("")
+    + `<span class="glab" style="margin-left:10px">Source</span>` +
+    Object.keys(ORG).filter(k=>orgCount[k]).map(k=>
+      `<button class="chip" data-dsf="org" data-v="${esc(k)}">${esc(ORG[k])}<span class="c">${orgCount[k]}</span></button>`).join("");
+  $("#dsFacets").onclick = e=>{
+    const b=e.target.closest("[data-dsf]"); if(!b) return;
+    const set=DSS[b.dataset.dsf], v=b.dataset.v;
+    set.has(v)?set.delete(v):set.add(v); renderDatasets();
+  };
+  $("#dsQ").addEventListener("input", e=>{ DSS.q=norm(e.target.value); renderDatasets(); });
+  $("#dsSort").addEventListener("change", e=>{ DSS.sort=e.target.value; renderDatasets(); });
+  $("#dsLede").textContent =
+    `${rows.length} open datasets — ${rows.filter(d=>d.org!=="academia").length} with industry or consortium behind them. `
+    + `Every figure is taken from the dataset's own paper; every project link was checked over the network.`;
+}
+function dsPass(d){
+  if(DSS.cat.size && !DSS.cat.has(d.cat)) return false;
+  if(DSS.org.size && !DSS.org.has(d.org)) return false;
+  if(DSS.q){ for(const w of DSS.q.split(/\s+/)) if(w && !d.hay.includes(w)) return false; }
+  return true;
+}
+function scaleCell(d){
+  const bits=[];
+  if(d.hours && d.hours!=="—") bits.push(`<b>${esc(d.hours)}</b>`);
+  if(d.eps   && d.eps!=="—")   bits.push(esc(d.eps));
+  if(d.tasks && d.tasks!=="—") bits.push(esc(d.tasks));
+  if(d.scenes&& d.scenes!=="—")bits.push(esc(d.scenes));
+  if(d.subj  && d.subj!=="—")  bits.push(esc(d.subj));
+  return bits.length? bits.join("<br>") : "<span style='color:var(--ash)'>—</span>";
+}
+function dsRow(d){
+  const links=[];
+  if(d.site)  links.push(`<a href="${esc(d.site)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Data</a>`);
+  if(d.paper) links.push(`<a href="${esc(d.paper)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Paper</a>`);
+  return `<tr data-ds="${esc(d.id)}">
+    <td class="c-fig">${d.fig?`<img src="${esc(d.fig)}" alt="" loading="lazy" decoding="async">`
+                            :`<span class="nofig">no fig</span>`}</td>
+    <td><div class="dsname">${esc(d.name)}<span class="orgtag org-${esc(d.org)}">${esc(d.org)}</span></div>
+        <div class="dsyear">${d.year||""}</div>
+        <div class="dsone">${esc(d.one)}</div></td>
+    <td class="c-scale">${scaleCell(d)}</td>
+    <td class="c-dev">${esc(d.device||"—")}</td>
+    <td class="c-mod">${esc(d.modal||"—")}</td>
+    <td class="c-emb">${esc(d.embod||"—")}</td>
+    <td class="c-lnk">${links.join("")}</td></tr>`;
+}
+function dsTableHTML(rows){
+  return `<div class="dswrap"><table class="ds">
+    <thead><tr><th></th><th>Dataset</th><th>Scale</th><th>Capture device</th>
+      <th class="h-mod">Modalities</th><th>Embodiment</th><th>Links</th></tr></thead>
+    <tbody>${rows.map(dsRow).join("")}</tbody></table></div>`;
+}
+function renderDatasets(){
+  if(!DSETS) return;
+  $$("#dsFacets .chip").forEach(c=> c.classList.toggle("on", DSS[c.dataset.dsf].has(c.dataset.v)));
+  const m=DSETS.meta;
+  let rows=DSETS.datasets.filter(dsPass);
+  const n=DSS.cat.size+DSS.org.size+(DSS.q?1:0);
+  $("#dsCount").textContent = `${rows.length} dataset${rows.length===1?"":"s"}${n?" match your filters":""}`;
+  const host=$("#dsTable");
+  if(!rows.length){ host.innerHTML=`<p class="empty">Nothing matches.</p>`; return; }
+  if(DSS.sort==="cat"){
+    host.innerHTML = m.order.map(k=>{
+      const sub=rows.filter(d=>d.cat===k); if(!sub.length) return "";
+      sub.sort((a,b)=>(b.year||0)-(a.year||0)||a.name.localeCompare(b.name));
+      return `<section class="dsgroup"><h3>${esc(m.categories[k].name)}<span class="n">${sub.length}</span></h3>
+        <p class="gsub">${esc(m.categories[k].blurb)}</p>${dsTableHTML(sub)}</section>`;
+    }).join("");
+  } else {
+    const by={ new:(a,b)=>(b.year||0)-(a.year||0)||a.name.localeCompare(b.name),
+               old:(a,b)=>(a.year||9999)-(b.year||9999)||a.name.localeCompare(b.name),
+               az:(a,b)=>a.name.localeCompare(b.name) }[DSS.sort];
+    host.innerHTML = dsTableHTML(rows.slice().sort(by));
+  }
+  host.onclick = e=>{ const r=e.target.closest("tr[data-ds]"); if(r) openDataset(r.dataset.ds); };
+}
+function openDataset(id){
+  const d=DSETS.datasets.find(x=>x.id===id); if(!d) return;
+  history.replaceState(null,"","#d/"+encodeURIComponent(id));
+  const m=DSETS.meta;
+  $("#dTitleSlot").innerHTML =
+    `<span class="dvenue" style="background:var(--il)">${esc(m.categories[d.cat].name)} · ${d.year||""}</span>`;
+  const row=(k,v)=> v && v!=="—" ? `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>` : "";
+  const links=[];
+  if(d.site)  links.push(`<a class="pri" href="${esc(d.site)}" target="_blank" rel="noopener">Get the data ↗</a>`);
+  if(d.paper) links.push(`<a href="${esc(d.paper)}" target="_blank" rel="noopener">Paper ↗</a>`);
+  links.push(`<a href="https://scholar.google.com/scholar?q=${encodeURIComponent(d.title)}" target="_blank" rel="noopener">Scholar ↗</a>`);
+  const rel = PAPERS.filter(p=>p.arxiv && p.arxiv===d.arxiv);
+  $("#dBody").innerHTML = `
+    ${d.fig?`<img class="dhero" src="${esc(d.fig)}" alt="Figure from ${esc(d.name)}">`:""}
+    <div class="dpad">
+    <h2>${esc(d.title)}</h2>
+    <div class="dnote">${esc(d.one)}</div>
+    <div class="dlinks">${links.join("")}</div>
+    <dl class="dmetagrid">
+      ${row("Category", m.categories[d.cat].name)}
+      ${row("Source", {academia:"Academia",industry:"Industry",consortium:"Multi-institution consortium"}[d.org])}
+      ${row("Released", d.date||String(d.year||""))}
+      ${row("Capture device", d.device)}
+      ${row("Modalities", d.modal)}
+      ${row("Hours", d.hours)}
+      ${row("Size", d.eps)}
+      ${row("Tasks", d.tasks)}
+      ${row("Scenes", d.scenes)}
+      ${row("Subjects / objects", d.subj)}
+      ${row("Embodiment", d.embod)}
+      ${row("Institutions", (d.institutions||[]).join(" · "))}
+      ${row("Authors", (d.authors||[]).slice(0,12).join(", ") + ((d.authors||[]).length>12?" et al.":""))}
+    </dl>
+    ${d.note?`<p class="dsec">Why it matters</p><p class="dabs">${esc(d.note)}</p>`:""}
+    ${(d.figs&&d.figs.length)?`<p class="dsec">Figures</p><div class="figstrip">${
+      d.figs.map(f=>`<img src="${esc(f)}" alt="" loading="lazy" data-zoom="${esc(f)}">`).join("")}</div>`:""}
+    ${rel.length?`<p class="dsec">In the paper library</p><div class="drel">${
+      rel.map(p=>`<div class="rrow" data-id="${esc(p.id)}"><span class="rt">${esc(p.title)}</span>
+        <span class="ry">${p.year||""}</span></div>`).join("")}</div>`:""}
+    </div>`;
+  $("#dBody").onclick = e=>{
+    const a=e.target.closest(".rrow[data-id]"); if(a){ openPaper(a.dataset.id); return; }
+    const z=e.target.closest("[data-zoom]"); if(z) window.open(z.dataset.zoom,"_blank","noopener");
+  };
+  showDrawer();
+}
+
 /* ---------------- drawer ---------------- */
 const drawer=$("#drawer"), scrim=$("#scrim");
 function closeDrawer(){ drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden","true");
-  if(location.hash.startsWith("#p/")||location.hash.startsWith("#i/")) history.replaceState(null,"",location.pathname+(S.view==="library"?"":"#"+S.view)); }
+  if(/^#(p|i|d)\//.test(location.hash)) history.replaceState(null,"",location.pathname+(S.view==="library"?"":"#"+S.view)); }
 $("#dClose").onclick=closeDrawer; scrim.onclick=closeDrawer;
 addEventListener("keydown", e=>{ if(e.key==="Escape") closeDrawer(); });
 function showDrawer(){ drawer.classList.add("on"); scrim.classList.add("on"); drawer.setAttribute("aria-hidden","false"); drawer.scrollTop=0; }

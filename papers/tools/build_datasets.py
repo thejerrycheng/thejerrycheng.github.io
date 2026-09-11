@@ -1,0 +1,97 @@
+# -*- coding: utf-8 -*-
+"""Build datasets_data.json: annotation table + authoritative arXiv metadata,
+with every project URL checked over the network so no dead link ships."""
+import json, os, sys, re, time, urllib.request, urllib.error, concurrent.futures as cf
+HERE=os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0,HERE)
+ROOT=os.path.dirname(HERE)
+import datasets as DS
+
+DP  = json.load(open(os.path.join(HERE,"dataset_papers.json")))
+PDB = json.load(open(os.path.join(ROOT,"papers_data.json")))
+BY_AX = {p["arxiv"]: p for p in PDB["papers"] if p.get("arxiv")}
+
+CATS = {
+ "ego":   ("Egocentric human", "First-person capture of people doing things — the largest and cheapest source of manipulation data."),
+ "exo":   ("Third-person video", "Exocentric human video: abundant, noisy, and the hardest viewpoint to transfer from."),
+ "umi":   ("UMI & handheld", "Robot-free capture rigs that produce directly deployable demonstrations."),
+ "teleop":("Teleoperation", "Demonstrations collected by a human driving the robot, through leader-follower, VR or exoskeleton."),
+ "robot": ("Robot manipulation at scale", "Large pooled corpora of real robot trajectories, single- and cross-embodiment."),
+ "dex":   ("Hand-object & dexterous", "Fine-grained hand pose, contact and grasping — human and synthetic."),
+ "tactile":("Tactile", "Touch data, paired with vision and language where it exists."),
+ "hri":   ("Human-robot interaction", "Robots perceiving, navigating around, and physically exchanging objects with people."),
+ "multi": ("Multi-robot & collaboration", "Two or more agents coordinating on a shared task. The thinnest category here, which is itself the finding."),
+ "motion":("Human motion & humanoid", "Mocap and pose corpora that humanoid whole-body controllers are trained on."),
+ "sim":   ("Simulation benchmarks", "Task suites that define what progress is measured against."),
+}
+ORDER = ["ego","umi","teleop","robot","dex","tactile","hri","multi","exo","motion","sim"]
+
+UA={"User-Agent":"Mozilla/5.0 (compatible; paper-atlas-linkcheck/1.0; +https://thejerrycheng.github.io/papers/)"}
+def check(url):
+    if not url or not url.startswith("http"): return None
+    for method in ("HEAD","GET"):
+        try:
+            req=urllib.request.Request(url, headers=UA, method=method)
+            with urllib.request.urlopen(req, timeout=25) as r:
+                if 200 <= r.status < 400: return r.status
+        except urllib.error.HTTPError as e:
+            if e.code in (403,405,406,429): return e.code      # exists, just blocking us
+            if method=="GET": return e.code
+        except Exception:
+            if method=="GET": return None
+    return None
+
+rows=[]
+for r in DS.ROWS:
+    ax=r.get("arxiv","")
+    meta = DP.get(ax) or {}
+    pdb  = BY_AX.get(ax) or {}
+    title   = meta.get("title") or pdb.get("title") or r["id"]
+    authors = meta.get("authors") or pdb.get("authors") or []
+    date    = meta.get("published") or pdb.get("date") or ""
+    year    = int(date[:4]) if date[:4].isdigit() else None
+    insts   = pdb.get("institutions") or []
+    rows.append(dict(
+      id=r["id"], name=title.split(":")[0].strip(), title=title,
+      cat=r["cat"], org=r["org"], one=r["one"],
+      device=r.get("device",""), modal=r.get("modal",""),
+      hours=r.get("hours","—"), eps=r.get("eps","—"), tasks=r.get("tasks","—"),
+      scenes=r.get("scenes","—"), subj=r.get("subj","—"), embod=r.get("embod","—"),
+      note=r.get("note",""), arxiv=ax, authors=authors, year=year, date=date,
+      institutions=insts,
+      paper=(f"https://arxiv.org/abs/{ax}" if ax else ""),
+      site=r.get("site",""), fig="",
+    ))
+
+# ---- verify project links in parallel ----
+urls=sorted({x["site"] for x in rows if x.get("site")})
+print(f"checking {len(urls)} project links…", flush=True)
+status={}
+with cf.ThreadPoolExecutor(max_workers=10) as ex:
+    for u,s in zip(urls, ex.map(check, urls)): status[u]=s
+dead=[u for u,s in status.items() if s is None]
+for x in rows:
+    s=status.get(x.get("site"))
+    if x.get("site") and s is None:
+        x["site_dead"]=x.pop("site"); x["site"]=""
+print(f"  reachable: {sum(1 for s in status.values() if s)}   unreachable: {len(dead)}")
+for u in dead: print("   DEAD:", u)
+
+# ---- figures already on disk ----
+figdir=os.path.join(ROOT,"figures")
+have=set(os.listdir(figdir)) if os.path.isdir(figdir) else set()
+for x in rows:
+    if f"ds-{x['id']}.webp" in have: x["fig"]=f"figures/ds-{x['id']}.webp"
+    ex=[f"figures/ds-{x['id']}-{i}.webp" for i in (1,2,3) if f"ds-{x['id']}-{i}.webp" in have]
+    if ex: x["figs"]=ex
+
+rows.sort(key=lambda x:(ORDER.index(x["cat"]), -(x["year"] or 0), x["name"]))
+out=dict(meta=dict(generated=time.strftime("%Y-%m-%d"), total=len(rows),
+                   categories={k:dict(name=v[0], blurb=v[1]) for k,v in CATS.items()},
+                   order=ORDER),
+         datasets=rows)
+json.dump(out, open(os.path.join(ROOT,"datasets_data.json"),"w"), indent=1, ensure_ascii=False)
+from collections import Counter
+print(f"\ndatasets: {len(rows)}")
+print("by category:", {CATS[k][0]: v for k,v in Counter(x['cat'] for x in rows).items()})
+print("with a live project link:", sum(1 for x in rows if x.get('site')))
+print("with an arXiv paper     :", sum(1 for x in rows if x.get('arxiv')))

@@ -100,6 +100,31 @@ for tk,tree in TREES.items():
                            children=bk, note=tree["blurb"]))
 root_kids.append(topic("THE THREE TREES", children=tree_kids))
 
+# datasets trunk
+DSF=os.path.join(ROOT,"datasets_data.json")
+if os.path.exists(DSF):
+    dsd=json.load(open(DSF)); dm=dsd["meta"]
+    dk=[]
+    for ck in dm["order"]:
+        sub=[x for x in dsd["datasets"] if x["cat"]==ck]
+        if not sub: continue
+        sub.sort(key=lambda x:-(x.get("year") or 0))
+        kids=[]
+        for x in sub:
+            note="\n".join(filter(None,[
+                x["one"],
+                "Device: "+x["device"] if x.get("device") else "",
+                "Modalities: "+x["modal"] if x.get("modal") else "",
+                " · ".join(filter(lambda v: v and v!="—",
+                    [x.get("hours"),x.get("eps"),x.get("tasks"),x.get("scenes"),x.get("subj")])),
+                "Embodiment: "+x["embod"] if x.get("embod") else "",
+                x.get("note","")]))
+            kids.append(topic(x["name"], note=note, href=x.get("site") or x.get("paper") or None,
+                              labels=[str(x.get("year") or "")] ))
+        dk.append(topic(f"{dm['categories'][ck]['name']}  ({len(sub)})", children=kids,
+                        note=dm["categories"][ck]["blurb"]))
+    root_kids.append(topic(f"OPEN DATASETS  ({len(dsd['datasets'])})", children=dk))
+
 root=topic(f"Paper Atlas — {len(PAPERS)} papers", children=root_kids,
            note=f"Generated {datetime.date.today().isoformat()} from papers_data.json. "
                 f"{META['counts']['curated']} hand-annotated, {META['counts']['library']} harvested from disk.")
