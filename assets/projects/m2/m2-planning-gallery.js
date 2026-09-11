@@ -1,0 +1,24 @@
+(()=>{'use strict';
+const host=document.getElementById('planning-gallery');if(!host)return;
+const navigation=(window.M2PoseNavigation?.trials||[]).filter(s=>s.success);
+const rotations=(window.M2Rotations||[]).filter(s=>s.success);
+const entries=[...navigation.map(s=>({...s,kind:'mission'})),...rotations.map(s=>({...s,kind:'pose'}))];
+const grid=host.querySelector('.planning-video-grid');
+const title=s=>s.kind==='mission'?s.label:s.label.includes('crate')?'Crate · 15° tilt':s.label.includes('beam')?'Beam · 15° tilt':`Panel · ${s.angle_deg}° rotation`;
+function measurements(s){const rows=s.trajectory,t=rows.map(r=>r.time_s),colors=['#8054b3','#ff9500','#0abab5'];
+ host.querySelector('.planning-measure-title').textContent=title(s)+' · measured and requested orientation';
+ const traces=['Roll','Pitch','Yaw'].flatMap((name,i)=>[{name:name+' measured',x:t,y:rows.map(r=>r.measured_rpy_deg[i]),line:{color:colors[i],width:2},mode:'lines'},{name:name+' reference',x:t,y:rows.map(r=>r.reference_rpy_deg?.[i]??null),line:{color:colors[i],dash:'dash',width:1},mode:'lines'}]);
+ const css=getComputedStyle(document.body);
+ host.querySelector('.planning-measurements').hidden=false;
+ Plotly.react('planning-gallery-plot',traces,{paper_bgcolor:css.getPropertyValue('--paper-bg').trim(),plot_bgcolor:css.getPropertyValue('--paper-bg').trim(),font:{color:css.getPropertyValue('--ink').trim(),family:'Jost, sans-serif'},margin:{l:55,r:15,t:15,b:100},xaxis:{title:'Simulation time (s)'},yaxis:{title:s.kind==='mission'?'Navigation-frame angle (°)':'Rotation from carried pose (°)'},legend:{orientation:'h',y:-.3},uirevision:s.source_result},{responsive:true,displaylogo:false});
+ host.querySelector('.planning-measurements').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'nearest'});
+}
+entries.forEach(s=>{const card=document.createElement('article');card.className='planning-video-card';
+ const video=document.createElement('video');video.controls=true;video.playsInline=true;video.preload='none';video.poster=s.poster;video.src=s.video;video.setAttribute('aria-label',title(s));
+ video.addEventListener('play',()=>document.querySelectorAll('video').forEach(v=>{if(v!==video)v.pause();}));
+ const h=document.createElement('h4');h.textContent=title(s);
+ const p=document.createElement('p');p.textContent=`${s.kind==='mission'?'Passage mission passed':'Pose trial passed'} · ${s.controller==='learned'?'Learned actor':s.controller==='teacher'?'Geometric teacher':s.controller} · ${s.duration_s.toFixed(1)} s · ${s.playback_speed}× playback`;
+ const b=document.createElement('button');b.type='button';b.textContent='View rotation plot';b.onclick=()=>measurements(s);
+ card.append(video,h,p,b);grid.append(card);
+});
+})();
