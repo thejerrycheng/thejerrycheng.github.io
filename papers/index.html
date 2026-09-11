@@ -887,14 +887,44 @@ function renderIdeas(){
 
 
 /* ---------------- timeline (vertical, by methodology) ---------------- */
-const METHOD_ORDER = ["RL","MARL","model-based RL","adversarial IL","IL","BC","CVAE","diffusion",
-  "flow matching","transformer","VLA","world model","representation learning","teleop","hardware",
-  "co-design","simulator","benchmark","dataset","LLM","survey","sim2real","real2sim"];
+// A methodology axis that is actually informative: a specific paradigm wins;
+// otherwise fall back to the branch, which says what kind of work it is.
+const SPECIFIC = ["MARL","model-based RL","adversarial IL","diffusion","flow matching","CVAE",
+  "VLA","world model","co-design","LLM","survey","real2sim","representation learning"];
+const BRANCH_METHOD = {
+  "rl/foundations":"RL algorithms", "rl/locomotion":"locomotion RL",
+  "rl/motion-imitation":"motion imitation", "rl/manipulation":"dexterous RL",
+  "rl/loco-manip":"loco-manipulation", "rl/marl":"multi-agent RL",
+  "rl/post-training":"RL post-training", "rl/model-based":"world-model RL",
+  "rl/sim2real":"sim-to-real",
+  "il/foundations":"imitation foundations", "il/visuomotor":"visuomotor policies",
+  "il/vla":"VLA", "il/in-context":"in-context learning", "il/world-models":"world models",
+  "il/human-video":"learning from video", "il/retargeting":"retargeting & teleop",
+  "il/data-scaling":"data scaling", "il/tactile-learn":"tactile learning",
+  "systems/bimanual":"open hardware", "systems/mobile-manip":"mobile platforms",
+  "systems/interfaces":"capture interfaces", "systems/hands":"dexterous hands",
+  "systems/tactile-hw":"tactile sensing", "systems/humanoid-hw":"humanoid platforms",
+  "systems/codesign":"co-design", "systems/sim-bench":"simulators & benchmarks",
+  "systems/planning-control":"planning & control", "systems/perception":"perception",
+  "systems/agentic":"agentic systems",
+};
+const METHOD_ORDER = ["RL algorithms","locomotion RL","motion imitation","dexterous RL",
+  "loco-manipulation","multi-agent RL","MARL","RL post-training","world-model RL","model-based RL",
+  "sim-to-real","real2sim","imitation foundations","visuomotor policies","diffusion","flow matching",
+  "CVAE","adversarial IL","in-context learning","VLA","world models","world model",
+  "learning from video","representation learning","retargeting & teleop","data scaling",
+  "tactile learning","open hardware","mobile platforms","capture interfaces","dexterous hands",
+  "tactile sensing","humanoid platforms","co-design","simulators & benchmarks","planning & control",
+  "perception","agentic systems","LLM","survey"];
 let tlMethod = "";
+const METHOD_ALIAS = {"world model":"world models","MARL":"multi-agent RL",
+  "model-based RL":"world-model RL","real2sim":"sim-to-real","CVAE":"visuomotor policies"};
 function methodOf(p){
-  const par = p.paradigm||[];
-  for(const m of METHOD_ORDER) if(par.includes(m)) return m;
-  return par[0] || ({rl:"RL", il:"IL", systems:"hardware"})[p.tree];
+  const par = p.paradigm || [];
+  let m = null;
+  for(const k of SPECIFIC) if(par.includes(k)) { m = k; break; }
+  if(!m) m = BRANCH_METHOD[p.tree+"/"+p.branch] || par[0] || p.tree;
+  return METHOD_ALIAS[m] || m;
 }
 function renderTimeline(){
   const host=$("#timeline"), ctl=$("#tlControls");

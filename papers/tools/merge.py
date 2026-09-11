@@ -300,6 +300,14 @@ papers = _keep
 
 papers.sort(key=lambda p: (-(p.get("stars") or 1), -(p.get("year") or 0), p["title"]))
 
+# ---- final edge pass: drop references to records removed above, keep symmetry ----
+_ids = {p["id"] for p in papers}
+_adj = {p["id"]: set(r for r in (p.get("related") or []) if r in _ids and r != p["id"]) for p in papers}
+for p in papers:
+    for r in list(_adj[p["id"]]): _adj[r].add(p["id"])
+for p in papers: p["related"] = sorted(_adj[p["id"]])
+print(f"edges after cleanup: {sum(len(p['related']) for p in papers)//2}")
+
 meta = dict(
   generated=datetime.date.today().isoformat(),
   counts=dict(total=len(papers), curated=len(CUR), library=len(merged),
