@@ -409,9 +409,7 @@ html[data-theme="night"] .dvenue{ color:#151820 }
     <h2 class="section-title">Projects</h2>
     <p>What each body of work is reading. Click a project to filter the library down to it.</p>
   </div>
-  <div class="pjgrid" id="pjGrid"></div>
-  <div class="sechead" style="margin-top:34px"><h2 class="section-title">Your own papers</h2><p>Published and in-flight work found in your library.</p></div>
-  <div class="grid" id="mineGrid"></div>
+  <div id="pjGrid"></div>
 </section>
 
 <!-- ============ IDEAS ============ -->
@@ -428,6 +426,23 @@ html[data-theme="night"] .dvenue{ color:#151820 }
   <span><a href="../index.html">← jerrycheng.io</a> · <a href="../umi/index.html">UMI catalog</a> · <a href="../humanoids/index.html">Humanoids</a> · <a href="../actuators/index.html">Actuators</a></span>
 </div>
 </main>
+
+<!-- floating legend -->
+<aside class="legend" id="legend" aria-label="Colour key">
+  <button class="legend-toggle" id="legendToggle" aria-expanded="true" title="Hide the key">Key<span>×</span></button>
+  <div class="legend-body" id="legendBody">
+    <p class="lg-h">Trees</p>
+    <span class="lg-row"><i class="sw" style="background:var(--rl)"></i>Reinforcement learning</span>
+    <span class="lg-row"><i class="sw" style="background:var(--il)"></i>Imitation learning</span>
+    <span class="lg-row"><i class="sw" style="background:var(--sys)"></i>Hardware &amp; systems</span>
+    <p class="lg-h">On a card</p>
+    <span class="lg-row"><i class="sw dot" style="background:var(--pop)"></i>PDF already on your disk</span>
+    <span class="lg-row"><i class="sw dia"></i>Foundation paper</span>
+    <span class="lg-row"><i class="sw tag">M2</i>Project it feeds</span>
+    <p class="lg-h">Projects</p>
+    <div id="legendProjects"></div>
+  </div>
+</aside>
 
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-hidden="true">
@@ -467,7 +482,65 @@ html[data-theme="night"] .tl-m{ color:#151820 }
   line-height:1.28; margin:0 0 5px; color:var(--ink) }
 .tl-a{ font-family:var(--font-mono); font-size:11px; color:var(--ash); margin:0 }
 .tl-n{ font-size:13.4px; line-height:1.5; color:var(--ink-soft); margin:8px 0 0 }
-@media (max-width:640px){ .tl-year{ padding-left:40px } .tl-item{ padding-left:40px } }
+/* two-sided, vertically compact */
+.timeline{ margin-left:0 }
+.timeline::before{ left:50%; transform:translateX(-50%); top:0; bottom:16px }
+.tl-year{ padding:16px 0 8px; text-align:center }
+.tl-year span{ display:inline-block; font-size:21px; border:var(--line-w) solid var(--line);
+  border-radius:980px; background:var(--pop); color:#151820; padding:2px 16px 1px; box-shadow:var(--sh-xs) }
+.tl-year::before{ display:none }
+.tl-item{ position:relative; width:calc(50% - 30px); padding:0; margin-bottom:9px }
+.tl-item.l{ margin-right:auto }
+.tl-item.r{ margin-left:auto }
+.tl-dot{ top:14px; left:auto; right:auto; width:12px; height:12px }
+.tl-item.l .tl-dot{ right:-36px } .tl-item.r .tl-dot{ left:-36px }
+.tl-item::after{ content:""; position:absolute; top:19px; height:2px; width:26px; background:var(--line-soft) }
+.tl-item.l::after{ right:-28px } .tl-item.r::after{ left:-28px }
+.tl-card{ padding:10px 13px }
+.tl-card h4{ font-size:14.6px; margin:0 0 4px }
+.tl-n{ font-size:12.6px; margin:6px 0 0 }
+.tl-item.l .tl-card{ border-left:none; border-right:7px solid var(--tc); text-align:right }
+@media (max-width:820px){
+  .timeline::before{ left:13px; transform:none }
+  .tl-year{ text-align:left; padding-left:44px }
+  .tl-item, .tl-item.l, .tl-item.r{ width:auto; margin:0 0 9px 44px }
+  .tl-item.l .tl-dot, .tl-item.r .tl-dot{ left:-37px; right:auto }
+  .tl-item.l::after, .tl-item.r::after{ left:-29px; right:auto }
+  .tl-item.l .tl-card{ border-right:none; border-left:7px solid var(--tc); text-align:left }
+}
+
+/* ---------- floating colour key ---------- */
+.legend{ position:fixed; right:14px; top:50%; transform:translateY(-50%); z-index:900;
+  background:var(--panel); border:var(--line-w) solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--sh-sm); padding:12px 13px; width:206px; max-height:78vh; overflow-y:auto }
+.legend.min{ width:auto; padding:7px 10px }
+.legend.min .legend-body{ display:none }
+.legend-toggle{ font-family:var(--font-comic); font-size:12.5px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--ink); background:none; border:0; cursor:pointer; padding:0 0 7px; display:flex;
+  align-items:center; gap:8px; width:100% }
+.legend.min .legend-toggle{ padding:0 }
+.legend-toggle span{ margin-left:auto; font-family:var(--font-mono); font-size:14px; color:var(--ash) }
+.legend.min .legend-toggle span::before{ content:"" }
+.lg-h{ font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--ash); margin:10px 0 5px; padding-top:8px; border-top:1.5px solid var(--line-soft) }
+.lg-h:first-of-type{ border-top:0; padding-top:0; margin-top:2px }
+.lg-row{ display:flex; align-items:center; gap:8px; font-size:11.8px; color:var(--ink-soft); margin-bottom:5px; line-height:1.25 }
+.lg-row .sw{ width:12px; height:12px; flex:none; border:1.5px solid var(--line) }
+.lg-row .sw.dot{ border-radius:50% }
+.lg-row .sw.dia{ transform:rotate(45deg); background:var(--ink); width:9px; height:9px }
+.lg-row .sw.tag{ width:auto; height:auto; font-family:var(--font-mono); font-size:8.5px; font-weight:700;
+  background:var(--yellow); color:#151820; padding:1px 4px; border-radius:3px }
+@media (max-width:1400px){ .legend{ width:auto; padding:7px 10px } .legend .legend-body{ display:none }
+  .legend.open{ width:206px; padding:12px 13px } .legend.open .legend-body{ display:block } }
+@media (max-width:700px){ .legend{ right:10px; top:auto; bottom:14px; transform:none } }
+
+/* ---------- projects grouped ---------- */
+.pjgroup{ margin-bottom:30px }
+.pjgroup > h3{ font-family:var(--font-comic); font-size:17px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--imp); margin:0 0 4px; display:flex; align-items:center; gap:11px }
+.pjgroup > h3::after{ content:""; flex:1; height:2px; background:var(--line-soft) }
+.pjgroup > p.gsub{ font-size:13.6px; color:var(--ash); margin:0 0 16px }
+.pjgroup.past .pjcard{ opacity:.9 }
 </style>
 
 <script>
@@ -522,21 +595,40 @@ function boot(){
   $("#heroStats").innerHTML = [
     [c.total,"papers"],[Object.keys(DATA.meta.trees).length,"trees"],
     [PAPERS.filter(p=>p.local).length,"PDFs on disk"],
-    [Object.keys(DATA.meta.projects).length-0,"projects"],
+    [Object.values(DATA.meta.projects).filter(p=>p.kind==="current").length,"live projects"],
     [DATA.meta.ideas.length,"research ideas"],
   ].map(([n,l])=>`<div><b>${n}</b><span>${l}</span></div>`).join("");
   $("#footMeta").textContent = `${c.total} papers · ${c.curated} hand-annotated · ${c.library} harvested from your disk · generated ${DATA.meta.generated}`;
   $("#ideaLede").textContent = `Your ${DATA.meta.ideas.length} ideas — deduplicated from the original ${
     DATA.meta.ideas.reduce((a,i)=>a+(i.merged?i.merged.length:1),0)} bullets — each with a literature review: where the field actually is, what is already taken, and where the opening is.`;
-  buildFacets(); renderTrees(); renderProjects(); renderIdeas(); render();
+  buildFacets(); renderTrees(); renderProjects(); renderIdeas(); buildLegend(); render();
   window.addEventListener("hashchange", fromHash); fromHash(true);
+}
+
+/* ---------------- floating colour key ---------------- */
+function buildLegend(){
+  $("#legendProjects").innerHTML = Object.entries(DATA.meta.projects)
+    .sort((a,b)=>(a[1].order||99)-(b[1].order||99))
+    .map(([k,p])=>`<span class="lg-row"><i class="sw" style="background:${esc(p.color)}"></i>${esc(p.name)}${
+      p.kind==="past"?" <small style=\"color:var(--ash)\">· past</small>":""}</span>`).join("");
+  const el=$("#legend"), btn=$("#legendToggle");
+  const wide = ()=> matchMedia("(min-width:1401px)").matches;
+  let open = true; try{ const v=localStorage.getItem("atlas-legend"); if(v!==null) open = v==="1"; }catch(e){}
+  const apply = ()=>{
+    if(wide()){ el.classList.toggle("min", !open); el.classList.remove("open"); }
+    else { el.classList.remove("min"); el.classList.toggle("open", open); }
+    btn.setAttribute("aria-expanded", open?"true":"false");
+    btn.querySelector("span").textContent = open? "×" : "+";
+  };
+  btn.onclick = ()=>{ open=!open; try{localStorage.setItem("atlas-legend", open?"1":"0")}catch(e){} apply(); };
+  addEventListener("resize", apply); apply();
 }
 
 /* ---------------- facets ---------------- */
 const FACET_DEFS = [
   ["tree","Tree", p=>[p.tree], k=>DATA.meta.trees[k]?.name||k],
   ["branch","Branch", p=>[p.tree+"/"+p.branch], k=>{const[t,b]=k.split("/");return (DATA.meta.trees[t]?.branches[b]?.[0])||b;}],
-  ["project","Project", p=>p.projects||[], k=> k==="mine"?"My own papers":(DATA.meta.projects[k]?.name||k)],
+  ["project","Project", p=>p.projects||[], k=> DATA.meta.projects[k]?.name||k],
   ["idea","Research idea", p=>p.ideas||[], k=>(DATA.meta.ideas.find(i=>i.id===k)?.title)||k],
   ["paradigm","Paradigm", p=>p.paradigm||[], k=>k],
   ["venue","Venue", p=>p.venue?[p.venue]:[], k=>k],
@@ -615,7 +707,7 @@ function sortList(list){
 }
 function cardHTML(p){
   const tags=[];
-  (p.projects||[]).forEach(x=> tags.push(`<span class="pj">${esc(x==="mine"?"my paper":(DATA.meta.projects[x]?.name||x))}</span>`));
+  (p.projects||[]).forEach(x=> tags.push(`<span class="pj">${esc(DATA.meta.projects[x]?.name||x)}</span>`));
   (p.topics||[]).slice(0,3).forEach(t=> tags.push(`<span>${esc(t)}</span>`));
   const stars = (p.stars||1)>1? `<span class="starred">${"<i></i>".repeat(p.stars-1)}</span>`:"";
   return `<article class="pcard t-${p.tree}${p.local?" has":""}" data-id="${esc(p.id)}">
@@ -706,20 +798,28 @@ function renderTrees(){
 /* ---------------- projects view ---------------- */
 function renderProjects(){
   const host=$("#pjGrid");
-  host.innerHTML = Object.entries(DATA.meta.projects).map(([k,p])=>{
+  const entries = Object.entries(DATA.meta.projects)
+    .sort((a,b)=> (a[1].order||99)-(b[1].order||99));
+  const card = ([k,p])=>{
     const n = PAPERS.filter(x=>(x.projects||[]).includes(k)).length;
     return `<article class="pjcard" data-pj="${esc(k)}">
       <div class="n">${n}<small>papers</small></div>
       <h3><span class="dot" style="background:${esc(p.color)}"></span>${esc(p.name)}</h3>
-      <p class="ptag">${esc(p.tag)}${p.kind==="prior"?" · prior work":""}</p>
+      <p class="ptag">${esc(p.tag)}</p>
       <p>${esc(p.blurb)}</p></article>`;
+  };
+  const groups = [
+    ["current","Current", "What MABEL, M2 and the two new threads are reading right now."],
+    ["past","Past", "Finished or paused lines of work, kept for the reading they came with."],
+  ];
+  host.innerHTML = groups.map(([kind,label,sub])=>{
+    const rows = entries.filter(([,p])=>p.kind===kind);
+    if(!rows.length) return "";
+    return `<section class="pjgroup ${kind}"><h3>${label}</h3><p class="gsub">${esc(sub)}</p>
+      <div class="pjgrid">${rows.map(card).join("")}</div></section>`;
   }).join("");
   host.onclick = e=>{ const c=e.target.closest("[data-pj]"); if(!c) return;
     Object.values(S.f).forEach(s=>s.clear()); S.f.project.add(c.dataset.pj); go("library"); render(); };
-  const mine = PAPERS.filter(p=>(p.projects||[]).includes("mine"))
-    .sort((a,b)=>(yearOf(b)||0)-(yearOf(a)||0));
-  $("#mineGrid").innerHTML = mine.length? mine.map(cardHTML).join("") : `<p class="empty">None tagged yet.</p>`;
-  $("#mineGrid").onclick = e=>{ const c=e.target.closest("[data-id]"); if(c) openPaper(c.dataset.id); };
 }
 
 /* ---------------- ideas view ---------------- */
@@ -771,19 +871,20 @@ function renderTimeline(){
 
   const list = pool.filter(p=> !tlMethod || methodOf(p)===tlMethod)
                    .sort((a,b)=> (yearOf(b)-yearOf(a)) || (b.date||"").localeCompare(a.date||"") || (b.stars||1)-(a.stars||1));
-  let html="", lastYear=null;
+  let html="", lastYear=null, side=0;
   list.forEach(p=>{
     const y=yearOf(p);
     if(y!==lastYear){ html += `<div class="tl-year"><span>${y}</span></div>`; lastYear=y; }
     const m=methodOf(p);
-    html += `<article class="tl-item t-${p.tree}" data-id="${esc(p.id)}">
+    const sd = (side++ % 2) ? "r" : "l";
+    html += `<article class="tl-item ${sd} t-${p.tree}" data-id="${esc(p.id)}">
       <span class="tl-dot"></span>
       <div class="tl-card">
         <div class="tl-top"><span class="tl-m">${esc(m)}</span><span class="tl-v">${esc(p.venue||"")}</span></div>
         <h4>${esc(p.title)}</h4>
         <p class="tl-a">${esc((p.authors||[]).slice(0,3).join(", "))}${(p.authors||[]).length>3?" et al.":""}${
           p.lab?" · "+esc(p.lab):((p.institutions||[]).length?" · "+esc(p.institutions[0]):"")}</p>
-        ${p.note?`<p class="tl-n">${esc(p.note.split(". ").slice(0,2).join(". "))}${p.note.split(". ").length>2?".":""}</p>`:""}
+        ${p.note?`<p class="tl-n">${esc(p.note.split(". ")[0])}.</p>`:""}
       </div></article>`;
   });
   host.innerHTML = list.length? html : `<p class="empty">No papers for that methodology.</p>`;
@@ -825,7 +926,7 @@ function openPaper(id, push=true){
   const chip=(k,v,lab)=>`<button data-jump="${k}|${esc(v)}">${esc(lab)}</button>`;
   const tagBlocks=[];
   if((p.projects||[]).length) tagBlocks.push(`<p class="dsec">Projects</p><div class="dchips">${
-    p.projects.map(v=>chip("project",v, v==="mine"?"My own paper":(DATA.meta.projects[v]?.name||v))).join("")}</div>`);
+    p.projects.map(v=>chip("project",v, DATA.meta.projects[v]?.name||v)).join("")}</div>`);
   if((p.ideas||[]).length) tagBlocks.push(`<p class="dsec">Feeds these research ideas</p><div class="dchips">${
     p.ideas.map(v=>`<button data-openidea="${esc(v)}">${esc((DATA.meta.ideas.find(i=>i.id===v)?.title)||v)}</button>`).join("")}</div>`);
   if((p.topics||[]).length||(p.paradigm||[]).length) tagBlocks.push(`<p class="dsec">Topics &amp; paradigm</p><div class="dchips">${

@@ -525,3 +525,144 @@ P("dyna","Dyna Robotics: DYNA-1 Autonomous Dexterous Model",
   top="long-horizon autonomy, commercial dexterity", par="VLA", site="https://www.dyna.co/", st=1,
   note="Claims long-duration autonomous commercial task execution. Unreviewed — useful mainly as a marker "
        "of what industry considers the current reliability bar.", rel="generalist-ai,pi06")
+
+# ---------------------------------------------------------------- co-design (expanded)
+# Author lists deliberately left thin where memory is not reliable — the OpenAlex
+# verification pass fills in authors, institutions and DOIs from the record of truth.
+P("sims1994","Evolving Virtual Creatures",
+  a="Karl Sims", inst="Thinking Machines Corporation", v="SIGGRAPH", vt="conference", y=1994,
+  br="codesign", top="evolutionary co-design, morphology and control", par="co-design", st=3,
+  note="The origin of the whole field: bodies and brains evolved together in simulated physics, in 1994. "
+       "Every modern co-design paper is a re-run of this with better optimizers. Read it to see how little "
+       "the framing has changed and how much the tooling has.",
+  rel="robogrammar,derl,codesign-rl,neural-graph-evo", id_="codesign-dex-agentic,codesign-dog-rl")
+P("lipson2000","Automatic design and manufacture of robotic lifeforms",
+  a="Hod Lipson; Jordan B. Pollack", inst="Brandeis University", v="Nature", vt="journal", y=2000,
+  br="codesign", top="evolutionary design, automatic fabrication", par="co-design", st=2,
+  note="Evolved morphologies actually 3D-printed and run. The first closing of the design–fabricate–test "
+       "loop without a human in it, which is exactly what an agentic co-design system has to reproduce.",
+  rel="sims1994,robogrammar,text2robot", id_="codesign-dex-agentic")
+P("derl","Embodied Intelligence via Learning and Evolution",
+  a="Agrim Gupta; Silvio Savarese; Surya Ganguli; Li Fei-Fei", corr="Agrim Gupta",
+  inst="Stanford University", lab="Stanford Vision & Learning", v="Nature Communications", vt="journal",
+  y=2021, d="2021-02-03", br="codesign", top="evolution, morphological intelligence, Baldwin effect",
+  par="co-design, RL", arx="2102.02202", st=3,
+  note="DERL. Shows morphology and learning speed co-evolve — better bodies are the ones that learn faster, "
+       "not just the ones that score higher. The 'morphological Baldwin effect' is the result to cite when "
+       "arguing co-design is more than hyperparameter search.",
+  rel="sims1994,codesign-rl,transform2act", id_="codesign-dog-rl,codesign-dex-agentic")
+P("neural-graph-evo","Neural Graph Evolution: Towards Efficient Automatic Robot Design",
+  a="Tingwu Wang; Yuhao Zhou; Sanja Fidler; Jimmy Ba", inst="University of Toronto; NVIDIA",
+  lab="Vector Institute", v="ICLR", vt="conference", y=2019, d="2019-06-12",
+  br="codesign", top="graph neural networks, morphology search", par="co-design, RL",
+  arx="1906.05370", st=2,
+  note="Represents the robot as a graph and mutates it, with a GNN policy that transfers across designs. "
+       "University of Toronto — worth knowing locally.",
+  rel="robogrammar,transform2act,derl", id_="codesign-dex-agentic")
+P("transform2act","Transform2Act: Learning a Transform-and-Control Policy for Efficient Agent Design",
+  a="Ye Yuan; Yuda Song; Zhengyi Luo; Wen Sun; Kris Kitani", corr="Ye Yuan",
+  inst="Carnegie Mellon University; Cornell University", v="ICLR", vt="conference", y=2022,
+  d="2021-10-07", br="codesign", top="design as action, morphology optimization", par="co-design, RL",
+  arx="2110.03659", st=3,
+  note="The cleanest formulation in the area: make the design choices *actions* in an extended MDP, so one "
+       "RL algorithm optimizes body and behaviour with no separate outer loop. This is the formulation to "
+       "start from for the quadruped co-design idea.",
+  rel="derl,codesign-rl,robogrammar", id_="codesign-dog-rl,codesign-dex-agentic")
+P("hardware-as-policy","Hardware as Policy: Mechanical and Computational Co-Optimization using Deep Reinforcement Learning",
+  a="Tianjian Chen; Zhanpeng He; Matei Ciocarlie", corr="Tianjian Chen",
+  inst="Columbia University", lab="Columbia ROAM Lab (Ciocarlie)", v="CoRL", vt="conference",
+  y=2020, d="2020-08-05", br="codesign", top="differentiable hardware, co-optimization", par="co-design, RL",
+  arx="2008.04460", st=3,
+  note="Treats the mechanism itself as part of the policy network, so hardware parameters get gradients "
+       "from the same backward pass. Demonstrated on underactuated hands — the most directly relevant "
+       "formulation for dexterous-hand co-design.",
+  rel="transform2act,diff-contact-design,fit2form", id_="codesign-dex-agentic,hand-22dof")
+P("diff-contact-design","An End-to-End Differentiable Framework for Contact-Aware Robot Design",
+  a="Jie Xu; Tao Chen; Lara Zlokapa; Michael Foshey; Wojciech Matusik; Shinjiro Sueda; Pulkit Agrawal",
+  corr="Jie Xu", inst="MIT", lab="MIT CSAIL; Improbable AI", v="RSS", vt="conference", y=2021,
+  d="2021-07-15", br="codesign", top="differentiable simulation, contact-aware design, hands", par="co-design",
+  arx="2107.07501", st=3,
+  note="Differentiable simulation through contact, applied to designing manipulators and hands. The contact "
+       "part is what makes it relevant — for dexterity the design objective *is* the contact behaviour.",
+  rel="hardware-as-policy,fit2form,task2morph", id_="codesign-dex-agentic,hand-22dof")
+P("fit2form","Fit2Form: 3D Generative Model for Robot Gripper Form Design",
+  a="Huy Ha; Shubham Agrawal; Shuran Song", corr="Huy Ha",
+  inst="Columbia University", lab="Columbia REALab", v="CoRL", vt="conference", y=2020,
+  d="2020-11-12", br="codesign", top="generative gripper design, task-driven form", par="co-design",
+  arx="2011.06498", st=2,
+  note="Generate the gripper geometry from the task rather than picking from a catalogue. The natural "
+       "ancestor of 'let a generative model propose the hand'.",
+  rel="diff-contact-design,hardware-as-policy,diffusebot", id_="codesign-dex-agentic,hand-22dof")
+P("evogym","Evolution Gym: A Large-Scale Benchmark for Evolving Soft Robots",
+  a="Jagdeep Singh Bhatia; Holly Jackson; Yunsheng Tian; Jie Xu; Wojciech Matusik",
+  inst="MIT", lab="MIT CSAIL", v="NeurIPS Datasets & Benchmarks", vt="conference", y=2021,
+  d="2022-01-24", br="codesign", top="co-design benchmark, soft robots", par="co-design, benchmark",
+  arx="2201.09863", st=2,
+  note="The benchmark the area needed. Useful for sanity-checking a co-design algorithm before spending "
+       "GPU-months on a quadruped.",
+  rel="sims1994,derl,diffusebot", id_="codesign-dog-rl,soft-sim2real")
+P("dyret","Real-world embodied AI through a morphologically adaptive quadruped robot",
+  a="Tønnes F. Nygaard; Charles P. Martin; Jim Torresen; Kyrre Glette; David Howard",
+  corr="Tønnes F. Nygaard", inst="University of Oslo; CSIRO", v="Nature Machine Intelligence",
+  vt="journal", y=2021, br="codesign", top="morphologically adaptive quadruped, real-world evolution",
+  par="co-design", st=3,
+  note="DyRET — a quadruped that physically changes its own leg lengths and evolves its morphology *in the "
+       "real world*, not in simulation. The single most relevant prior work for the fast-running-dog "
+       "co-design idea, and the one that shows how brutal the real-world version of this loop is.",
+  rel="mit-cheetah,meta-rl-legged,transform2act", id_="codesign-dog-rl")
+P("meta-rl-legged","Meta Reinforcement Learning for Optimal Design of Legged Robots",
+  a="Álvaro Belmonte-Baeza; Joonho Lee; Giorgio Valsecchi; Marco Hutter",
+  inst="ETH Zürich", lab="ETH RSL", v="IEEE RA-L", vt="journal", y=2022, d="2022-10-06",
+  br="codesign", top="meta-RL, legged design optimization", par="co-design, RL",
+  arx="2210.02750", st=2,
+  note="Trains a design-conditioned policy once, then evaluates candidate morphologies cheaply without "
+       "retraining. The practical trick that makes legged co-design affordable — read it before committing "
+       "compute to the dog.",
+  rel="dyret,transform2act,rudin2021", id_="codesign-dog-rl")
+P("coros-codesign","Computational co-optimization of design parameters and motion trajectories for robotic systems",
+  a="Sehoon Ha; Stelian Coros; Alexander Alspach; Joohyung Kim; Katsu Yamane",
+  inst="Disney Research; ETH Zürich", v="IJRR", vt="journal", y=2018,
+  br="codesign", top="trajectory-design co-optimization, sensitivity analysis", par="co-design", st=2,
+  note="In your library's orbit via the Disney line. The implicit-function/sensitivity approach — differentiate "
+       "the optimal trajectory with respect to the design parameters — is the model-based alternative to "
+       "RL-in-the-loop, and it is far more sample-efficient when your model is good.",
+  rel="diff-contact-design,dinev-codesign,disney-bdx", id_="codesign-dog-rl")
+P("dinev-codesign","Co-Designing Robots by Differentiating Motion Solvers",
+  a="Traiko Dinev; Carlos Mastalli; Vladimir Ivan; Steve Tonneau; Sethu Vijayakumar",
+  inst="University of Edinburgh", v="ICRA", vt="conference", y=2022, d="2021-03-08",
+  br="codesign", top="differentiating through optimal control, co-design", par="co-design",
+  arx="2103.04660", st=2,
+  note="Differentiate through the whole motion solver to get design gradients. Complementary to Transform2Act: "
+       "gradients where you have a model, RL where you do not.",
+  rel="coros-codesign,diff-contact-design,transform2act", id_="codesign-dog-rl")
+P("text2robot","Text2Robot: Evolutionary Robot Design from Text Descriptions",
+  a="Ryan P. Ringel; Zachary S. Charlick; Jiaxun Liu; Boxi Xia; Boyuan Chen",
+  corr="Boyuan Chen", inst="Duke University", lab="Duke General Robotics Lab", v="ICRA", vt="conference",
+  y=2025, d="2024-06-28", br="codesign", top="text-to-morphology, generative design, quadrupeds",
+  par="co-design, LLM", arx="2406.19963", st=3,
+  note="Text prompt → 3D generative model → printable quadruped → evolved controller, in under a day. "
+       "This is the closest published thing to your agentic co-design idea, and it is on quadrupeds, so it "
+       "touches the fast-dog idea too. The gap it leaves: it optimizes for locomotion, not for dexterity.",
+  rel="diffusebot,robomorph,eureka,dyret", id_="codesign-dex-agentic,codesign-dog-rl,agentic-physical")
+P("diffusebot","DiffuseBot: Breeding Soft Robots With Physics-Augmented Generative Diffusion Models",
+  a="Tsun-Hsuan Wang; Juntian Zheng; Pingchuan Ma; Yilun Du; Byungchul Kim; Andrew Spielberg; Joshua Tenenbaum; Chuang Gan; Daniela Rus",
+  corr="Tsun-Hsuan Wang", inst="MIT", lab="MIT CSAIL", v="NeurIPS", vt="conference", y=2023,
+  d="2023-11-28", br="codesign", top="generative design, diffusion over morphology, soft robots",
+  par="co-design, diffusion", arx="2311.17053", st=2,
+  note="A diffusion model over robot morphologies, with differentiable physics steering the sampling. The "
+       "generative-prior half of agentic co-design — the LLM proposes, something like this actually draws it.",
+  rel="text2robot,fit2form,evogym", id_="codesign-dex-agentic,soft-sim2real")
+P("robomorph","RoboMorph: Evolving Robot Morphology using Large Language Models",
+  a="Kevin Qiu; Krzysztof Ciebiera; Paweł Fijałkowski; Marek Cygan; Łukasz Kuciński",
+  inst="University of Warsaw; IDEAS NCBR", v="arXiv", vt="preprint", y=2024, d="2024-07-11",
+  br="codesign", top="LLM-driven morphology evolution", par="co-design, LLM", arx="2407.08626", st=2,
+  note="An LLM as the mutation operator in a morphology search loop, with automatic reward design alongside. "
+       "Directly the mechanism your agentic co-design idea proposes — read it to see what is already claimed.",
+  rel="text2robot,eureka,robogrammar", id_="codesign-dex-agentic,auto-research-dex")
+P("taskagnostic-morph","Task-Agnostic Morphology Evolution",
+  a="Donald J. Hejna III; Pieter Abbeel; Lerrel Pinto", inst="UC Berkeley; New York University",
+  v="ICLR", vt="conference", y=2021, d="2021-02-25", br="codesign",
+  top="task-agnostic morphology, information-theoretic objective", par="co-design", arx="2102.13100", st=2,
+  note="Evolve morphologies without committing to a task, by maximizing the diversity of behaviour the body "
+       "can express. Relevant if you want a hand that is good at dexterity in general rather than at one "
+       "benchmark.", rel="derl,transform2act", id_="codesign-dex-agentic,hand-22dof")

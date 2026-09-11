@@ -57,33 +57,45 @@ TREES = {
   },
 }
 
-# your projects
+# your projects — current work first, everything else archived below
 PROJECTS = {
-  "mabel": dict(name="MABEL", kind="active",
+  "mabel": dict(name="MABEL", kind="current", order=1,
     tag="Mobile bimanual humanoid",
     blurb="Wheeled-humanoid platform: bimanual arms on a swerve base, whole-body teleoperation, "
           "learned retargeting, and an open hardware stack.",
-    path="~/Desktop/MABEL", color="#5b8cff"),
-  "m2": dict(name="M2", kind="active",
+    path="~/Desktop/MABEL", color="#23577E"),
+  "m2": dict(name="M2", kind="current", order=2,
     tag="Multi-robot collaboration",
     blurb="Two (and more) mobile manipulators cooperating — collaborative transport, distributed MPC, "
           "multi-agent RL, and the planning stack that keeps them from fighting each other.",
-    path="~/Desktop/M2", color="#7ad4a0"),
-  "geodex": dict(name="GeoDex", kind="active",
+    path="~/Desktop/M2", color="#2E7D4F"),
+  "r2s2r": dict(name="Real2Sim2Real", kind="current", order=3,
+    tag="Egocentric capture → sim → policy",
+    blurb="Learn from egocentric video: reconstruct the scene as a simulatable asset, pretrain the policy "
+          "by imitation inside it, then fine-tune with RL and deploy back to the real scene. The ego view "
+          "is the interface that holds the loop together.",
+    path="", color="#C6301A"),
+  "wam-tactile": dict(name="Tactile WAM", kind="current", order=4,
+    tag="World-action model · touch + UMI glove",
+    blurb="A world-action model whose observation stream carries contact, trained on UMI-glove capture — "
+          "predict the future and the action that causes it, with touch in the loop rather than inferred "
+          "from pixels.",
+    path="", color="#D9A13F"),
+  "geodex": dict(name="GeoDex", kind="past", order=5,
     tag="Geometry-driven dexterity",
     blurb="Dexterous hand work — geometry-aware grasping and in-hand manipulation, rollout studies, "
           "and the hardware behind them.",
-    path="~/Desktop/dexterous_hand", color="#f0a868"),
-  "iris": dict(name="IRIS / MPR", kind="prior",
+    path="~/Desktop/dexterous_hand", color="#C88A2E"),
+  "iris": dict(name="IRIS / MPR", kind="past", order=6,
     tag="Cinema robot arm",
     blurb="6-DOF cinema robot arm with visuomotor imitation learning (ACT/CVAE, diffusion), plus the "
           "next-generation Motion Picture Robotics platform on a swerve base.",
-    path="~/Documents/GitHub/MEng_project", color="#c89bf0"),
-  "exo": dict(name="Exoskeleton / Sim-to-real", kind="prior",
+    path="~/Documents/GitHub/MEng_project", color="#7B5EA8"),
+  "exo": dict(name="Exoskeleton / Sim-to-real", kind="past", order=7,
     tag="Wearable robotics",
-    blurb="Prior line of work: end-to-end assistive torque control, mixture-of-experts exoskeleton "
-          "policies, and musculoskeletal sim-to-real (ExoGym).",
-    path="", color="#e08a9b"),
+    blurb="End-to-end assistive torque control, mixture-of-experts exoskeleton policies, and "
+          "musculoskeletal sim-to-real (ExoGym).",
+    path="", color="#B0566A"),
 }
 
 # research ideas — deduplicated from your list

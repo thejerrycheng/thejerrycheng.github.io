@@ -3,7 +3,7 @@
 import json, os, re, sys, unicodedata, datetime
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import schema, curated_rl, curated_il, curated_sys
+import schema, curated_rl, curated_il, curated_sys, curated_recent
 
 HARVEST = "/private/tmp/claude-501/-Users-jerrycheng-Desktop/bfd64d9a-4eab-4216-ade8-f0b0cd1137d7/scratchpad/harvest"
 OUT = os.path.join(os.path.dirname(HERE), "papers_data.json")
@@ -20,7 +20,7 @@ def splitlist(s):
 
 # ------------------------------------------------------------------ curated
 CUR = {}
-for mod in (curated_rl, curated_il, curated_sys):
+for mod in (curated_rl, curated_il, curated_sys, curated_recent):
     for r in mod.ROWS:
         rec = dict(
             id=r["id"], title=r["title"], tree=r["tree"], branch=r.get("br",""),
@@ -32,7 +32,8 @@ for mod in (curated_rl, curated_il, curated_sys):
             projects=splitlist(r.get("pr","")), ideas=splitlist(r.get("id_","")),
             related=splitlist(r.get("rel","")), arxiv=r.get("arx",""), doi=r.get("doi",""),
             code=r.get("code",""), site=r.get("site",""), note=r.get("note",""),
-            stars=r.get("st",1), curated=True, local="", abstract="", source="curated",
+            
+            stars=r.get("st",1), curated=True, local="", abstract=r.get("abstract",""), source="curated",
         )
         rec["first_author"] = rec["authors"][0] if rec["authors"] else ""
         if rec["arxiv"]: rec["url"] = f"https://arxiv.org/abs/{rec['arxiv']}"
@@ -128,8 +129,9 @@ for a in auto:
         if not hit["authors"] and a.get("authors"): 
             hit["authors"] = a["authors"]; hit["first_author"] = a["authors"][0]
         attached += 1; continue
-    # own papers?
-    mine = "My Papers" in a["folder"] or "Qilong Cheng" in a.get("head","")
+    # your own papers live in the site's Publications page, not here
+    if "My Papers" in a["folder"]:
+        dropped += 1; continue
     blob = f"{a['title']} {a.get('abstract','')} {a['folder']}"
     tree, branch, extra = classify(blob, a["folder"])
     pid = re.sub(r"[^a-z0-9]+","-", norm(a["title"])[:40]) or f"auto{len(merged)}"
@@ -144,7 +146,6 @@ for a in auto:
     projects = []
     p = FOLDER_PROJECT.get(a["source"])
     if p: projects.append(p)
-    if mine: projects.append("mine")
     ideas = []
     fi = FOLDER_IDEA.get(os.path.basename(a["folder"]))
     if fi: ideas.append(fi)
@@ -181,6 +182,49 @@ for p in papers:
     for r in p["related"]: adj[r].add(p["id"])
 for p in papers:
     p["related"] = sorted(adj[p["id"]])
+
+
+# ---- derive project membership for the idea-driven current projects ----
+IDEA2PROJ = {
+  "real2sim2real-ego":"r2s2r", "third-person":"r2s2r", "ego-dex":"r2s2r",
+  "wam-umi-gloves":"wam-tactile", "tactile-wm":"wam-tactile", "wm-residual":"wam-tactile",
+}
+for p in papers:
+    p["projects"] = [x for x in (p.get("projects") or []) if x != "mine"]
+    for i in (p.get("ideas") or []):
+        pr = IDEA2PROJ.get(i)
+        if pr and pr not in p["projects"]: p["projects"].append(pr)
+    p["projects"] = sorted(set(p["projects"]))
+
+# ---- apply the OpenAlex/PDF correction overlay, if it exists ----
+CORRFILE = os.path.join(HERE, "corrections.json")
+if os.path.exists(CORRFILE):
+    corr = json.load(open(CORRFILE)); napp = 0
+    for p in papers:
+        c = corr.get(p["id"])
+        if not c: continue
+        napp += 1
+        if c.get("title_pdf"): p["title"] = c["title_pdf"]
+        if c.get("title_oa"):  p["title"] = c["title_oa"]
+        for k_src, k_dst in (("authors_pdf","authors"),("authors","authors"),
+                             ("corresponding","corresponding"),("institutions","institutions"),
+                             ("doi","doi"),("venue","venue"),("date","date"),("url","url")):
+            if c.get(k_src): p[k_dst] = c[k_src]
+        if p.get("authors"): p["first_author"] = p["authors"][0]
+        if p.get("date") and str(p["date"])[:4].isdigit(): p["year"] = int(str(p["date"])[:4])
+        if p.get("arxiv"): p["arxiv_url"] = f"https://arxiv.org/abs/{p['arxiv']}"
+    print(f"corrections applied: {napp}")
+
+# ---- re-attach figures already extracted to disk ----
+FIGDIR = os.path.join(os.path.dirname(HERE), "figures")
+if os.path.isdir(FIGDIR):
+    have = set(os.listdir(FIGDIR)); nfig = 0
+    for p in papers:
+        if f"{p['id']}.webp" in have:
+            p["fig"] = f"figures/{p['id']}.webp"; nfig += 1
+        ex = [f"figures/{p['id']}-{i}.webp" for i in (1,2,3) if f"{p['id']}-{i}.webp" in have]
+        if ex: p["figs"] = ex
+    print(f"figures attached: {nfig}")
 
 for p in papers:
     if not p.get("year") and p.get("date"): 
