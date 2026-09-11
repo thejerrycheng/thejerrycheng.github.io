@@ -145,7 +145,7 @@ for i,p in enumerate(papers):
     corr_a = [ (a.get("author") or {}).get("display_name","") for a in auths if a.get("is_corresponding") ]
     if names and (not p.get("authors") or (not p.get("curated") and len(names) != len(p["authors"]))):
         p["authors"]=names; p["first_author"]=names[0]; c["authors"]=names; n_auth+=1
-    if insts and not p.get("institutions"):
+    if insts:
         p["institutions"]=insts[:8]; c["institutions"]=p["institutions"]; n_inst+=1
     if corr_a and not p.get("corresponding"):
         p["corresponding"]=corr_a; c["corresponding"]=corr_a

@@ -179,6 +179,47 @@ ANN = {
   "In-hand manipulation of articulated tools — a harder object class than the rigid blocks most in-hand "
   "papers use.", "chen-visual-inhand,clutterdexgrasp"),
 
+# ---------------- NVIDIA GEAR / Jim Fan line + frontier VLA work ----------------
+"2505.12705": ("il","world-models","neural trajectories, video world model, synthetic data","world model, VLA",
+  "wm-residual,wam-umi-gloves,auto-research-wm","",3,
+  "DreamGen, from NVIDIA GEAR. Adapt an image-to-video world model to your robot's embodiment, generate "
+  "photorealistic 'neural trajectories' of tasks it has never done, extract pseudo-actions, and train on "
+  "them. The headline is the data ratio: 22 new behaviours in seen and unseen environments from teleop on "
+  "a single pick-and-place task. This is the strongest existing argument that a video world model is a data "
+  "engine rather than a planner, and it is directly relevant to the UMI-scale-up thesis.",
+  "genie,gr2,cosmos,groot-n1,vjepa2,robocurate"),
+"2503.15558": ("il","vla","physical common sense, embodied reasoning, chain-of-thought","VLA, LLM",
+  "agentic-physical,auto-research-dex","",3,
+  "Cosmos-Reason1 — NVIDIA's reasoning VLM for physical AI, and the 'System 2' that later GR00T models "
+  "plug in. Two models (7B, 56B) that watch video, reason in long chains of thought about physics and "
+  "common sense, and emit an embodied decision in language. Read it for the ontology and the benchmarks: "
+  "it is the clearest statement of what 'physical reasoning' is being defined to mean.",
+  "groot-n1,cosmos,gemini-robotics,pi05,voyager"),
+"2605.06481": ("il","world-models","object-addressable world-action model, robustness","world model",
+  "wam-umi-gloves,tactile-wm","wam-tactile",2,
+  "OA-WAM makes the world-action model address objects explicitly rather than predicting an undifferentiated "
+  "scene. Object-centric structure is the most promising answer to WAM rollouts degrading over long horizons.",
+  "mobilewam,decowam,dream-tac,vjepa2"),
+"2602.18742": ("il","world-models","action-verified neural trajectories, data curation","world model, IL",
+  "wm-residual,auto-research-wm","",2,
+  "RoboCurate is the necessary follow-up to DreamGen: generated trajectories are only useful if they are "
+  "physically executable, so verify the actions before training on them. If you build a world-model data "
+  "engine, this is the filtering step you will need.", "dreamgen,genie,pld"),
+"2505.23705": ("il","vla","knowledge insulation, VLA training, generalization","VLA, flow matching",
+  "rl-post-training","iris",3,
+  "Physical Intelligence's answer to the problem that training a VLA's action expert degrades the VLM's "
+  "language and semantic knowledge. Insulate the backbone from the action gradients: train fast, run fast, "
+  "generalize better. Read alongside iRe-VLA and PLD — all three are attacking the same destabilization "
+  "problem from different directions, and this is the cleanest diagnosis of it.",
+  "pi0,pi05,openvla-oft,iRe-VLA,pld"),
+"2509.25681": ("il","vla","diffusion VLA, multimodal chain-of-thought","VLA, diffusion","","",1,
+  "Diffusion VLA with explicit multimodal chain-of-thought — the reasoning-plus-diffusion combination that "
+  "several 2026 systems converge on.", "dexvla,pi0,cosmos-reason"),
+"2601.03309": ("il","vla","VLM backbone ablation, VLA design","VLA","","",2,
+  "VLM4VLA asks the question nobody in the VLA literature answers honestly: how much does the VLM backbone "
+  "actually matter? Useful as a sanity check before you spend money on a bigger backbone.",
+  "openvla,openvla-oft,pi0,groot-n1"),
+
 # ---------------- survey ----------------
 "2510.10903": ("il","foundations","survey, robot manipulation, unified taxonomy","survey","","",2,
   "A broad 2025 manipulation survey. Useful as a cross-check on this Atlas's taxonomy and as a source of "
@@ -195,6 +236,9 @@ ALIAS = {  # readable ids for cross-references
  "2604.17245":"mm-hand","2608.28578":"aero-hand","2308.02453":"faive-ball","2606.06033":"realdexumi",
  "2606.15338":"simweaver","2605.05241":"dexsim2real","2510.25405":"soft-gentle",
  "2601.02778":"force-grasp-s2r","2509.23075":"artic-tools","2510.10903":"manip-survey",
+ "2505.12705":"dreamgen","2503.15558":"cosmos-reason","2605.06481":"oa-wam",
+ "2602.18742":"robocurate","2505.23705":"knowledge-insulation","2509.25681":"dvla",
+ "2601.03309":"vlm4vla",
 }
 
 VENUE_HINT = {"2510.06710":("RSS","conference"), "2604.13733":("ICRA","conference")}

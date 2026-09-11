@@ -267,6 +267,10 @@ R["agentic-physical"] = dict(
  slow VLM reasoning system from a fast diffusion controller; [[helix]] makes the same split at 7-9 Hz and
  200 Hz; [[pi05]] predicts high-level subtasks before acting. These are agent loops in all but name — what
  they lack is <em>persistent</em> state across attempts and genuine replanning after failure.</p>
+ <p><b>The reasoning half now has a purpose-built model.</b> [[cosmos-reason]] is NVIDIA's VLM for physical
+ AI — it watches video, reasons in long chains of thought about physics and common sense, and emits an
+ embodied decision in language. [[groot-n16]] plugs it in as System 2. If you are building an agent loop on
+ a body, this is the reasoning component you would start from rather than a general-purpose LLM.</p>
  <p><b>The agent literature supplies the missing half.</b> [[voyager]] maintains a growing library of
  executable skills with a self-proposed curriculum; [[robocat]] adapts, self-generates data and folds it back;
  [[tidybot]] uses an LLM for the narrow and correct thing — summarising a few user examples into a
@@ -311,6 +315,8 @@ R["agentic-physical"] = dict(
   dict(id="pi05", why="High-level subtask prediction inside a VLA — reasoning without a separate agent."),
   dict(id="robocat", why="Self-improvement: adapt, generate data, fold back."),
   dict(id="tidybot", why="The example of using an LLM for exactly the right narrow thing."),
+  dict(id="cosmos-reason", why="The physical-reasoning VLM to use as System 2 rather than a generic LLM."),
+  dict(id="groot-n16", why="Cosmos Reason wired into a humanoid foundation model — the reference integration."),
   dict(id="pi06", why="Corrections and experience as first-class data, at scale."),
  ])
 
@@ -329,6 +335,10 @@ R["wm-residual"] = dict(
  domain-agnostic by design; [[tdmpc2]] is decoder-free and cheap; [[vjepa2]] predicts in latent space;
  [[pwm]] uses first-order gradients through a learned smooth model, which is the closest to a differentiable
  hybrid. None of them are given a simulator to start from.</p>
+ <p><b>And a better prior may be arriving.</b> [[newton]] is NVIDIA, Google DeepMind and Disney Research
+ building one GPU physics engine together, with rigid and flexible bodies in the same scene. If its contact
+ model is materially better than MuJoCo's, the residual you need to learn gets smaller — which is the whole
+ argument. Benchmark it rather than assuming.</p>
  <p><b>Differentiable simulation is the other half.</b> [[diff-contact-design]] and [[genesis]] make the
  analytic model differentiable, which is what you need if the residual is to be trained end to end against
  the prior.</p>""",
@@ -373,6 +383,8 @@ R["wm-residual"] = dict(
   dict(id="vjepa2", why="Latent prediction, for the architecture of the learned half."),
   dict(id="flare", why="The cheap first experiment before building anything."),
   dict(id="pwm", why="First-order gradients through a learned smooth model, if you want it differentiable end to end."),
+  dict(id="newton", why="The new joint NVIDIA/DeepMind/Disney physics engine — a better prior means a smaller residual."),
+  dict(id="dreamgen", why="The opposite bet: skip the prior and let a video world model generate the data."),
  ])
 
 R["auto-research-wm"] = dict(
@@ -388,6 +400,10 @@ R["auto-research-wm"] = dict(
  hypothesis-to-paper loop; [[eureka]] and [[rf-agent]] run the narrower reward-design loop with actual
  training in it; [[harbor]] automates the robot RL workflow; [[real-deep-research]] does agentic analysis of
  the literature itself.</p>
+ <p><b>And the world model is already being used as a data engine, which is one step short of this idea.</b>
+ [[dreamgen]] generates trajectories for behaviours the robot has never performed and trains on them;
+ [[robocurate]] verifies they are executable first. Substitute "hypotheses" for "trajectories" and you have
+ the loop you are proposing.</p>
  <p><b>What is missing is the join.</b> Nobody uses a learned world model as the <em>cheap experiment
  substrate</em> for an agent that is doing research. The two literatures do not cite each other.</p>""",
  threads=[
@@ -427,6 +443,8 @@ R["auto-research-wm"] = dict(
   dict(id="genie3", why="What interactive world generation now looks like."),
   dict(id="ai-scientist", why="The honest limits of agent-run research — read the criticism too."),
   dict(id="asap", why="How wrong your model is, and how to make it less wrong."),
+  dict(id="dreamgen", why="The world model already used as a generator of things that never happened — one step from hypothesis testing."),
+  dict(id="robocurate", why="Verifying what the model generated is physically real. The credibility step."),
   dict(id="real-deep-research", why="Agentic analysis of the literature; the other half of a research loop."),
  ])
 

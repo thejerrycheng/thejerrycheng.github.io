@@ -107,6 +107,10 @@ R["rl-post-training"] = dict(
  because the big model is never the thing being RL'd. [[expo-ft]] attacks sample efficiency,
  [[stare-vla]] attacks long-horizon credit assignment, [[dlr-vla]] inverts the whole thing and uses RL as a
  <em>data generator</em> for pretraining, and [[rlinf-vla]] is the shared infrastructure (RSS 2026).</p>
+ <p><b>The destabilization problem got a name and a diagnosis.</b> [[knowledge-insulation]] (Physical
+ Intelligence) is the cleanest account of why naive VLA fine-tuning degrades the backbone's language and
+ semantic knowledge, and of how to insulate it from the action-expert gradients. Read it next to
+ [[iRe-VLA]] and [[pld]] — three different answers to the same failure.</p>
  <p><b>The commercial confirmation.</b> [[pi06]] is Physical Intelligence's statement of the same thesis with
  far more robot time behind it: RECAP, advantage-conditioned RL over demonstrations, on-policy rollouts and
  expert teleoperated interventions, producing espresso, box assembly and laundry. When the group with the
@@ -160,6 +164,7 @@ R["rl-post-training"] = dict(
   dict(id="rlinf-vla", why="The infrastructure. Use it instead of writing your own."),
   dict(id="serl", why="The reset/reward plumbing, and the direct template for your RL harness idea."),
   dict(id="expo-ft", why="Sample efficiency, which is the binding constraint on real hardware."),
+  dict(id="knowledge-insulation", why="Why fine-tuning wrecks a VLA's semantics, and how to stop it. Read before you touch the backbone."),
  ])
 
 R["wam-umi-gloves"] = dict(
@@ -180,6 +185,13 @@ R["wam-umi-gloves"] = dict(
  pixels, and demonstrated zero-shot manipulation from 62 hours of unlabelled robot video. [[gr2]] and
  [[unipi]] are the generative-video branch. [[flare]] is the cheap version — world modelling as an auxiliary
  alignment loss on top of an ordinary policy.</p>
+ <p><b>And the world model as a data engine is now the strongest result in the area.</b> [[dreamgen]]
+ (NVIDIA GEAR) adapts an image-to-video world model to a robot's embodiment, generates photorealistic
+ trajectories of tasks it has never performed, extracts pseudo-actions, and trains on them — reporting 22
+ new behaviours from teleop on a single pick-and-place task. [[robocurate]] adds the necessary filter:
+ verify the generated actions are physically executable before training on them. If UMI capture gives you
+ the seed data, DreamGen is the multiplier on top of it, and that pairing is the sharpest version of this
+ idea.</p>
  <p><b>And the explicit WAM line now exists.</b> [[mobilewam]] and [[decowam]] in your own M2 library bridge
  world-action models to mobile and legged manipulation; [[dream-tac]] does the tactile version on a Tac-UMI
  gripper. The phrase "world-action model" went from unused to crowded inside about a year.</p>""",
@@ -231,6 +243,10 @@ R["wam-umi-gloves"] = dict(
   dict(id="mobilewam", why="WAM on a mobile manipulator; in your own M2 library. Read for what breaks in practice."),
   dict(id="dream-tac", why="The tactile WAM on a Tac-UMI gripper — the closest neighbour to this idea."),
   dict(id="umi-on-legs", why="How to deploy a UMI policy on a mobile base without coupling the two."),
+  dict(id="dreamgen", why="The world model as a data engine — 22 new behaviours from one task's teleop. The multiplier on top of UMI capture."),
+  dict(id="robocurate", why="Verifying generated trajectories are executable. The filter DreamGen needs."),
+  dict(id="oa-wam", why="Object-addressable WAM — structure that keeps long rollouts from degrading."),
+  dict(id="dyna2", why="Unaudited, but an unsaturated scaling curve on human rather than robot data. The shape is the point."),
   dict(id="sunday-gelato", why="Competitive intelligence: the commercial version of this thesis."),
  ])
 

@@ -241,6 +241,31 @@ if os.path.exists(CORRFILE):
         if p.get("arxiv"): p["arxiv_url"] = f"https://arxiv.org/abs/{p['arxiv']}"
     print(f"corrections applied: {napp}")
 
+
+# ---- institution hygiene: the PDF gazetteer produces false positives on common
+#      words ("dexterity", "intrinsic", "google scholar"). Trust OpenAlex where we
+#      have it; otherwise drop the ambiguous company names. ----
+AMBIGUOUS = {"Dexterity Inc.","Intrinsic","Apple","Amazon","Toyota","Sony","Tesla",
+             "Google","Microsoft Research","Meta AI","Tencent","Alibaba","Huawei",
+             "Figure AI","Generalist AI","mimic robotics","1X Technologies",
+             "Unitree Robotics","IIT (Italy)","NTU Singapore","Covariant","Skild AI",
+             "Dyna Robotics","Sunday Robotics","AgiBot","Robot Era","X Square Robot",
+             "Galaxea AI","Preferred Networks","OMRON SINIC X","Boston Dynamics",
+             "Agility Robotics","Apptronik","Sanctuary AI","BAAI","Vector Institute","Mila"}
+_corr_inst = set()
+if os.path.exists(CORRFILE):
+    _c = json.load(open(CORRFILE))
+    _corr_inst = {k for k, v in _c.items() if v.get("institutions")}
+ndrop = 0
+for p in papers:
+    if p.get("curated") or p["id"] in _corr_inst:
+        continue                                   # curated or OpenAlex-verified: leave alone
+    before = p.get("institutions") or []
+    after = [i for i in before if i not in AMBIGUOUS]
+    if len(after) != len(before):
+        ndrop += len(before) - len(after); p["institutions"] = after
+print(f"ambiguous institution matches dropped: {ndrop}")
+
 # ---- re-attach figures already extracted to disk ----
 FIGDIR = os.path.join(os.path.dirname(HERE), "figures")
 if os.path.isdir(FIGDIR):

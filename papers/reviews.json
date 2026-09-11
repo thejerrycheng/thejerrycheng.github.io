@@ -279,7 +279,7 @@
  },
  "rl-post-training": {
   "why": "<p>A pretrained VLA is a strong prior and a mediocre policy. It has seen a million trajectories and\n still fails the specific task in your specific scene maybe a third of the time, and no amount of additional\n demonstration data fixes that efficiently, because demonstrations teach the policy what success looks like\n and never what recovery looks like. RL is the only mechanism that reliably converts broad competence into\n task reliability.</p>\n <p>This is also the cheapest of your ideas to start: the base models are open, the algorithms are published,\n and the experiment fits on one arm.</p>",
-  "state": "<p><b>The base result is settled.</b> [[hil-serl]] gets near-100% success on genuinely hard\n contact-rich tasks in one to two and a half hours of real training, with human corrections folded into the\n replay buffer. [[serl]] is the infrastructure that makes that possible and [[rlpd]] is the algorithm\n underneath — symmetric sampling from offline and online buffers, LayerNorm on critics, critic ensembles.\n Three unglamorous tricks. If you only read three things, read those.</p>\n <p><b>Applying it to VLAs specifically is now a small field.</b> [[iRe-VLA]] alternates RL on the action head\n with supervised fine-tuning of the whole model, because pure RL on a full VLA destabilizes the language\n backbone. [[ript-vla]] post-trains with nothing but binary task success, which is attractive because success\n is the one signal you can always instrument. [[conrft]] makes the diffusion action head tractable for RL by\n cutting the denoising chain.</p>\n <p><b>And 2025-26 produced a clear winner architecture.</b> [[pld]] — probe, learn, distill — trains\n lightweight <em>residual</em> actors off-policy to fix the base VLA's failures, collects the successful\n rollouts, and distills them back into the base model. This sidesteps the destabilization problem entirely\n because the big model is never the thing being RL'd. [[expo-ft]] attacks sample efficiency,\n [[stare-vla]] attacks long-horizon credit assignment, [[dlr-vla]] inverts the whole thing and uses RL as a\n <em>data generator</em> for pretraining, and [[rlinf-vla]] is the shared infrastructure (RSS 2026).</p>\n <p><b>The commercial confirmation.</b> [[pi06]] is Physical Intelligence's statement of the same thesis with\n far more robot time behind it: RECAP, advantage-conditioned RL over demonstrations, on-policy rollouts and\n expert teleoperated interventions, producing espresso, box assembly and laundry. When the group with the\n most data says post-training is where the gains are, that is worth weighting.</p>",
+  "state": "<p><b>The base result is settled.</b> [[hil-serl]] gets near-100% success on genuinely hard\n contact-rich tasks in one to two and a half hours of real training, with human corrections folded into the\n replay buffer. [[serl]] is the infrastructure that makes that possible and [[rlpd]] is the algorithm\n underneath — symmetric sampling from offline and online buffers, LayerNorm on critics, critic ensembles.\n Three unglamorous tricks. If you only read three things, read those.</p>\n <p><b>Applying it to VLAs specifically is now a small field.</b> [[iRe-VLA]] alternates RL on the action head\n with supervised fine-tuning of the whole model, because pure RL on a full VLA destabilizes the language\n backbone. [[ript-vla]] post-trains with nothing but binary task success, which is attractive because success\n is the one signal you can always instrument. [[conrft]] makes the diffusion action head tractable for RL by\n cutting the denoising chain.</p>\n <p><b>And 2025-26 produced a clear winner architecture.</b> [[pld]] — probe, learn, distill — trains\n lightweight <em>residual</em> actors off-policy to fix the base VLA's failures, collects the successful\n rollouts, and distills them back into the base model. This sidesteps the destabilization problem entirely\n because the big model is never the thing being RL'd. [[expo-ft]] attacks sample efficiency,\n [[stare-vla]] attacks long-horizon credit assignment, [[dlr-vla]] inverts the whole thing and uses RL as a\n <em>data generator</em> for pretraining, and [[rlinf-vla]] is the shared infrastructure (RSS 2026).</p>\n <p><b>The destabilization problem got a name and a diagnosis.</b> [[knowledge-insulation]] (Physical\n Intelligence) is the cleanest account of why naive VLA fine-tuning degrades the backbone's language and\n semantic knowledge, and of how to insulate it from the action-expert gradients. Read it next to\n [[iRe-VLA]] and [[pld]] — three different answers to the same failure.</p>\n <p><b>The commercial confirmation.</b> [[pi06]] is Physical Intelligence's statement of the same thesis with\n far more robot time behind it: RECAP, advantage-conditioned RL over demonstrations, on-policy rollouts and\n expert teleoperated interventions, producing espresso, box assembly and laundry. When the group with the\n most data says post-training is where the gains are, that is worth weighting.</p>",
   "threads": [
    "<b>Real-world off-policy RL.</b> [[rlpd]] → [[serl]] → [[hil-serl]]. The foundation. Everything else is\n  this plus a bigger initial policy.",
    "<b>Residual rather than full-model RL.</b> [[pld]], [[omnitactune]]. Currently the most practical answer,\n  and the one least likely to wreck a model you cannot afford to retrain.",
@@ -336,12 +336,16 @@
    {
     "id": "expo-ft",
     "why": "Sample efficiency, which is the binding constraint on real hardware."
+   },
+   {
+    "id": "knowledge-insulation",
+    "why": "Why fine-tuning wrecks a VLA's semantics, and how to stop it. Read before you touch the backbone."
    }
   ]
  },
  "wam-umi-gloves": {
   "why": "<p>A world-action model predicts the future and the action that causes it. The bottleneck is data with\n both halves — you need observations <em>and</em> the actions that produced them, at scale, in the wild. UMI\n solved exactly that problem for grippers: a handheld device that records deployable demonstrations with no\n robot present. Pointing that data at a world-action model rather than a behaviour-cloning policy is the idea,\n and it is the one on your list with the clearest data story.</p>",
-  "state": "<p><b>The capture side is solved and then some.</b> [[umi]] established the pattern; [[fast-umi]]\n made the tracking easier; [[dexumi]] extended it to dexterous hands with a wearable exoskeleton plus video\n inpainting; [[ume]] added compliance and whole-body reach; [[realdexumi]] (June 2026) is a wearable UMI\n purpose-built for dexterous hands; [[dexcap]] and [[doglove]] do the glove version, the latter with force\n feedback at $600. Commercially, [[sunday-gelato]] shipped a handheld Skill Capture device, which is this\n thesis with a company behind it. <b>The interface is no longer the contribution.</b></p>\n <p><b>The modelling side matured in parallel.</b> [[genie]] showed you can learn a <em>latent action space</em>\n from unlabelled video with no action labels at all — which is the key enabler if your capture ever gives you\n observations without clean actions. [[vjepa2]] made the case for predicting in latent space rather than\n pixels, and demonstrated zero-shot manipulation from 62 hours of unlabelled robot video. [[gr2]] and\n [[unipi]] are the generative-video branch. [[flare]] is the cheap version — world modelling as an auxiliary\n alignment loss on top of an ordinary policy.</p>\n <p><b>And the explicit WAM line now exists.</b> [[mobilewam]] and [[decowam]] in your own M2 library bridge\n world-action models to mobile and legged manipulation; [[dream-tac]] does the tactile version on a Tac-UMI\n gripper. The phrase \"world-action model\" went from unused to crowded inside about a year.</p>",
+  "state": "<p><b>The capture side is solved and then some.</b> [[umi]] established the pattern; [[fast-umi]]\n made the tracking easier; [[dexumi]] extended it to dexterous hands with a wearable exoskeleton plus video\n inpainting; [[ume]] added compliance and whole-body reach; [[realdexumi]] (June 2026) is a wearable UMI\n purpose-built for dexterous hands; [[dexcap]] and [[doglove]] do the glove version, the latter with force\n feedback at $600. Commercially, [[sunday-gelato]] shipped a handheld Skill Capture device, which is this\n thesis with a company behind it. <b>The interface is no longer the contribution.</b></p>\n <p><b>The modelling side matured in parallel.</b> [[genie]] showed you can learn a <em>latent action space</em>\n from unlabelled video with no action labels at all — which is the key enabler if your capture ever gives you\n observations without clean actions. [[vjepa2]] made the case for predicting in latent space rather than\n pixels, and demonstrated zero-shot manipulation from 62 hours of unlabelled robot video. [[gr2]] and\n [[unipi]] are the generative-video branch. [[flare]] is the cheap version — world modelling as an auxiliary\n alignment loss on top of an ordinary policy.</p>\n <p><b>And the world model as a data engine is now the strongest result in the area.</b> [[dreamgen]]\n (NVIDIA GEAR) adapts an image-to-video world model to a robot's embodiment, generates photorealistic\n trajectories of tasks it has never performed, extracts pseudo-actions, and trains on them — reporting 22\n new behaviours from teleop on a single pick-and-place task. [[robocurate]] adds the necessary filter:\n verify the generated actions are physically executable before training on them. If UMI capture gives you\n the seed data, DreamGen is the multiplier on top of it, and that pairing is the sharpest version of this\n idea.</p>\n <p><b>And the explicit WAM line now exists.</b> [[mobilewam]] and [[decowam]] in your own M2 library bridge\n world-action models to mobile and legged manipulation; [[dream-tac]] does the tactile version on a Tac-UMI\n gripper. The phrase \"world-action model\" went from unused to crowded inside about a year.</p>",
   "threads": [
    "<b>In-the-wild capture.</b> [[umi]], [[realdexumi]], [[dexumi]], [[ume]], [[dexcap]]. Pick one; do not\n  build another.",
    "<b>Latent action learning.</b> [[genie]]. The trick that makes unlabelled video usable.",
@@ -394,6 +398,22 @@
    {
     "id": "umi-on-legs",
     "why": "How to deploy a UMI policy on a mobile base without coupling the two."
+   },
+   {
+    "id": "dreamgen",
+    "why": "The world model as a data engine — 22 new behaviours from one task's teleop. The multiplier on top of UMI capture."
+   },
+   {
+    "id": "robocurate",
+    "why": "Verifying generated trajectories are executable. The filter DreamGen needs."
+   },
+   {
+    "id": "oa-wam",
+    "why": "Object-addressable WAM — structure that keeps long rollouts from degrading."
+   },
+   {
+    "id": "dyna2",
+    "why": "Unaudited, but an unsaturated scaling curve on human rather than robot data. The shape is the point."
    },
    {
     "id": "sunday-gelato",
@@ -810,7 +830,7 @@
  },
  "agentic-physical": {
   "why": "<p>Software agents plan, call tools, observe results and replan. Robots mostly do not — they execute a\n policy. The idea is to put the agent loop on a physical body: high-level reasoning that decomposes a task,\n calls learned skills, watches what happens, and revises. You called it a wild idea with low-hanging fruit,\n and both halves of that are right.</p>",
-  "state": "<p><b>The dual-system architecture already converged on something close.</b> [[groot-n1]] splits a\n slow VLM reasoning system from a fast diffusion controller; [[helix]] makes the same split at 7-9 Hz and\n 200 Hz; [[pi05]] predicts high-level subtasks before acting. These are agent loops in all but name — what\n they lack is <em>persistent</em> state across attempts and genuine replanning after failure.</p>\n <p><b>The agent literature supplies the missing half.</b> [[voyager]] maintains a growing library of\n executable skills with a self-proposed curriculum; [[robocat]] adapts, self-generates data and folds it back;\n [[tidybot]] uses an LLM for the narrow and correct thing — summarising a few user examples into a\n generalizable preference rule.</p>\n <p><b>And the harness exists now.</b> [[harbor]] automates agentic robot RL workflows; [[agent-laboratory]]\n and [[ai-scientist]] show the general loop outside robotics, along with its honest limitation: agents are\n strong at generating and executing, weak at evaluating.</p>",
+  "state": "<p><b>The dual-system architecture already converged on something close.</b> [[groot-n1]] splits a\n slow VLM reasoning system from a fast diffusion controller; [[helix]] makes the same split at 7-9 Hz and\n 200 Hz; [[pi05]] predicts high-level subtasks before acting. These are agent loops in all but name — what\n they lack is <em>persistent</em> state across attempts and genuine replanning after failure.</p>\n <p><b>The reasoning half now has a purpose-built model.</b> [[cosmos-reason]] is NVIDIA's VLM for physical\n AI — it watches video, reasons in long chains of thought about physics and common sense, and emits an\n embodied decision in language. [[groot-n16]] plugs it in as System 2. If you are building an agent loop on\n a body, this is the reasoning component you would start from rather than a general-purpose LLM.</p>\n <p><b>The agent literature supplies the missing half.</b> [[voyager]] maintains a growing library of\n executable skills with a self-proposed curriculum; [[robocat]] adapts, self-generates data and folds it back;\n [[tidybot]] uses an LLM for the narrow and correct thing — summarising a few user examples into a\n generalizable preference rule.</p>\n <p><b>And the harness exists now.</b> [[harbor]] automates agentic robot RL workflows; [[agent-laboratory]]\n and [[ai-scientist]] show the general loop outside robotics, along with its honest limitation: agents are\n strong at generating and executing, weak at evaluating.</p>",
   "threads": [
    "<b>Dual-system VLAs.</b> [[groot-n1]], [[helix]], [[pi05]].",
    "<b>Skill libraries and self-curriculum.</b> [[voyager]], [[robocat]].",
@@ -857,6 +877,14 @@
     "why": "The example of using an LLM for exactly the right narrow thing."
    },
    {
+    "id": "cosmos-reason",
+    "why": "The physical-reasoning VLM to use as System 2 rather than a generic LLM."
+   },
+   {
+    "id": "groot-n16",
+    "why": "Cosmos Reason wired into a humanoid foundation model — the reference integration."
+   },
+   {
     "id": "pi06",
     "why": "Corrections and experience as first-class data, at scale."
    }
@@ -864,7 +892,7 @@
  },
  "wm-residual": {
   "why": "<p>World models learn physics from scratch, which is absurd when you already have a simulator and a\n robot model that are right about most of it. Giving the model that structure and learning only the residual\n should cut sample complexity enormously, and should produce rollouts that stay physically plausible instead\n of drifting into nonsense.</p>",
-  "state": "<p><b>The residual idea is proven at the actuator and dynamics level.</b> [[anymal-hwangbo]]'s\n learned actuator network is the canonical instance — identify the real actuator's torque response from data\n and put <em>that</em> in the simulator, rather than randomizing over your ignorance. [[asap]] is the modern\n whole-body version: learn a delta-action model from real rollouts and fine-tune the policy against the\n corrected simulator. [[dexndm]] does the same joint-wise for a dexterous hand. All three are residual\n physics, and all three work.</p>\n <p><b>The world-model side has the machinery but not the prior.</b> [[dreamerv3]] and [[dreamerv4]] are\n domain-agnostic by design; [[tdmpc2]] is decoder-free and cheap; [[vjepa2]] predicts in latent space;\n [[pwm]] uses first-order gradients through a learned smooth model, which is the closest to a differentiable\n hybrid. None of them are given a simulator to start from.</p>\n <p><b>Differentiable simulation is the other half.</b> [[diff-contact-design]] and [[genesis]] make the\n analytic model differentiable, which is what you need if the residual is to be trained end to end against\n the prior.</p>",
+  "state": "<p><b>The residual idea is proven at the actuator and dynamics level.</b> [[anymal-hwangbo]]'s\n learned actuator network is the canonical instance — identify the real actuator's torque response from data\n and put <em>that</em> in the simulator, rather than randomizing over your ignorance. [[asap]] is the modern\n whole-body version: learn a delta-action model from real rollouts and fine-tune the policy against the\n corrected simulator. [[dexndm]] does the same joint-wise for a dexterous hand. All three are residual\n physics, and all three work.</p>\n <p><b>The world-model side has the machinery but not the prior.</b> [[dreamerv3]] and [[dreamerv4]] are\n domain-agnostic by design; [[tdmpc2]] is decoder-free and cheap; [[vjepa2]] predicts in latent space;\n [[pwm]] uses first-order gradients through a learned smooth model, which is the closest to a differentiable\n hybrid. None of them are given a simulator to start from.</p>\n <p><b>And a better prior may be arriving.</b> [[newton]] is NVIDIA, Google DeepMind and Disney Research\n building one GPU physics engine together, with rigid and flexible bodies in the same scene. If its contact\n model is materially better than MuJoCo's, the residual you need to learn gets smaller — which is the whole\n argument. Benchmark it rather than assuming.</p>\n <p><b>Differentiable simulation is the other half.</b> [[diff-contact-design]] and [[genesis]] make the\n analytic model differentiable, which is what you need if the residual is to be trained end to end against\n the prior.</p>",
   "threads": [
    "<b>Residual dynamics.</b> [[anymal-hwangbo]], [[asap]], [[dexndm]]. Read all three; they are the same\n  idea at three scales.",
    "<b>Latent world models.</b> [[dreamerv3]], [[dreamerv4]], [[tdmpc2]], [[vjepa2]].",
@@ -912,12 +940,20 @@
    {
     "id": "pwm",
     "why": "First-order gradients through a learned smooth model, if you want it differentiable end to end."
+   },
+   {
+    "id": "newton",
+    "why": "The new joint NVIDIA/DeepMind/Disney physics engine — a better prior means a smaller residual."
+   },
+   {
+    "id": "dreamgen",
+    "why": "The opposite bet: skip the prior and let a video world model generate the data."
    }
   ]
  },
  "auto-research-wm": {
   "why": "<p>Real-robot experiments are the scarce resource. If an agent can form hypotheses, test them inside a\n learned world model, and spend physical robot time only on the survivors, the throughput of a lab changes\n qualitatively rather than incrementally.</p>",
-  "state": "<p><b>Training agents entirely inside a world model now works.</b> [[dreamerv4]] learns Minecraft\n diamonds from offline data alone by training the agent purely in imagination — which is the strongest\n existing signal that a learned model can substitute for interaction. [[genie3]] generates interactive worlds\n in real time with minute-scale consistency. [[dreamerv3]] established that one hyperparameter set works\n across 150+ domains.</p>\n <p><b>The agentic research loop exists separately.</b> [[ai-scientist]] and [[agent-laboratory]] run the\n hypothesis-to-paper loop; [[eureka]] and [[rf-agent]] run the narrower reward-design loop with actual\n training in it; [[harbor]] automates the robot RL workflow; [[real-deep-research]] does agentic analysis of\n the literature itself.</p>\n <p><b>What is missing is the join.</b> Nobody uses a learned world model as the <em>cheap experiment\n substrate</em> for an agent that is doing research. The two literatures do not cite each other.</p>",
+  "state": "<p><b>Training agents entirely inside a world model now works.</b> [[dreamerv4]] learns Minecraft\n diamonds from offline data alone by training the agent purely in imagination — which is the strongest\n existing signal that a learned model can substitute for interaction. [[genie3]] generates interactive worlds\n in real time with minute-scale consistency. [[dreamerv3]] established that one hyperparameter set works\n across 150+ domains.</p>\n <p><b>The agentic research loop exists separately.</b> [[ai-scientist]] and [[agent-laboratory]] run the\n hypothesis-to-paper loop; [[eureka]] and [[rf-agent]] run the narrower reward-design loop with actual\n training in it; [[harbor]] automates the robot RL workflow; [[real-deep-research]] does agentic analysis of\n the literature itself.</p>\n <p><b>And the world model is already being used as a data engine, which is one step short of this idea.</b>\n [[dreamgen]] generates trajectories for behaviours the robot has never performed and trains on them;\n [[robocurate]] verifies they are executable first. Substitute \"hypotheses\" for \"trajectories\" and you have\n the loop you are proposing.</p>\n <p><b>What is missing is the join.</b> Nobody uses a learned world model as the <em>cheap experiment\n substrate</em> for an agent that is doing research. The two literatures do not cite each other.</p>",
   "threads": [
    "<b>Agents inside world models.</b> [[dreamerv4]], [[genie3]], [[dreamerv3]].",
    "<b>Agentic experiment loops.</b> [[eureka]], [[rf-agent]], [[harbor]], [[ai-scientist]].",
@@ -961,6 +997,14 @@
    {
     "id": "asap",
     "why": "How wrong your model is, and how to make it less wrong."
+   },
+   {
+    "id": "dreamgen",
+    "why": "The world model already used as a generator of things that never happened — one step from hypothesis testing."
+   },
+   {
+    "id": "robocurate",
+    "why": "Verifying what the model generated is physically real. The credibility step."
    },
    {
     "id": "real-deep-research",

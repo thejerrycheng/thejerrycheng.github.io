@@ -666,3 +666,59 @@ P("taskagnostic-morph","Task-Agnostic Morphology Evolution",
   note="Evolve morphologies without committing to a task, by maximizing the diversity of behaviour the body "
        "can express. Relevant if you want a hand that is good at dexterity in general rather than at one "
        "benchmark.", rel="derl,transform2act", id_="codesign-dex-agentic,hand-22dof")
+
+# ---------------------------------------------------------------- industry: models & platforms
+# Company tech reports and blogs. Unreviewed by definition — included because they
+# set the field's expectations and because several are direct competitive context
+# for your projects. Claims are theirs, not verified here.
+P("groot-n15","NVIDIA Isaac GR00T N1.5: Improved Open Foundation Model for Humanoid Robots",
+  a="NVIDIA GEAR Lab", inst="NVIDIA", lab="NVIDIA GEAR Lab (Jim Fan, Yuke Zhu)",
+  v="tech report", vt="industry", y=2025, d="2025-05-01", br="vla",
+  top="humanoid foundation model, synthetic data co-training", par="VLA, diffusion",
+  site="https://research.nvidia.com/labs/gear/gr00t-n1_5/", st=2,
+  note="N1 with a refined VLM and, more importantly, a training mix of real, simulated and "
+       "DreamGen-generated synthetic data. The interesting claim is that neural trajectories carry enough "
+       "signal to improve a foundation model — which is the DreamGen thesis, productised.",
+  rel="groot-n1,dreamgen,groot-n16,cosmos-reason", pr="mabel")
+P("groot-n16","NVIDIA Isaac GR00T N1.6",
+  a="NVIDIA GEAR Lab", inst="NVIDIA", lab="NVIDIA GEAR Lab", v="tech report", vt="industry",
+  y=2026, d="2026-01-01", br="vla", top="humanoid foundation model, Cosmos Reason integration", par="VLA",
+  site="https://research.nvidia.com/labs/gear/gr00t-n1_6/", st=2,
+  note="Integrates Cosmos Reason as the deep-thinking System 2, and reports beating N1.5 on simulated "
+       "benchmarks and on real bimanual YAM, AgiBot Genie-1 and Unitree G1. Relevant to MABEL because it "
+       "defines what an off-the-shelf humanoid policy is expected to do in 2026.",
+  rel="groot-n15,cosmos-reason,groot-n1", pr="mabel")
+P("newton","Newton: An Open-Source GPU-Accelerated Physics Engine for Robot Learning",
+  a="NVIDIA; Google DeepMind; Disney Research", inst="NVIDIA; Google DeepMind; Disney Research",
+  v="open source", vt="industry", y=2025, d="2025-09-01", br="sim-bench",
+  top="physics engine, differentiable simulation, rigid and soft bodies", par="simulator",
+  site="https://developer.nvidia.com/newton", code="https://github.com/newton-physics/newton", st=3,
+  note="The three groups with the most to gain from better contact simulation building one engine together, "
+       "with explicit support for rigid and flexible parts in the same scene. If the soft-body claims hold, "
+       "this is the most important development for your soft-object sim-to-real idea — benchmark it against "
+       "MuJoCo and Genesis before believing the marketing.",
+  rel="mujoco,isaaclab,genesis,soft-gentle", id_="soft-sim2real")
+P("dyna2","Dyna Robotics DYNA-2: scaling human video for commercial dexterity",
+  a="Dyna Robotics", inst="Dyna Robotics", lab="Dyna Robotics", v="tech report", vt="industry",
+  y=2026, br="agentic", top="robot foundation model, human video scaling, commercial deployment", par="VLA",
+  site="https://www.dyna.co/", st=2,
+  note="Reports average task success roughly doubling from 20% to 53% as training data scaled from 1,000 to "
+       "1,000,000 hours of human video. Treat the numbers as unaudited, but the <em>shape</em> — a clear, "
+       "unsaturated scaling curve on human rather than robot data — is the claim that matters for your "
+       "UMI-glove thesis.",
+  rel="dyna,sunday-gelato,generalist-ai,pi06", id_="wam-umi-gloves,ego-dex")
+P("skild-scale","Skild AI: scaling to 100,000 hours and one-shot video imitation",
+  a="Skild AI", inst="Skild AI", lab="Skild AI (CMU spin-off)", v="company blog", vt="industry",
+  y=2026, br="agentic", top="cross-embodiment scaling, one-shot imitation from video", par="VLA",
+  site="https://www.skild.ai/", st=2,
+  note="Reports that scaling from 1,000 to 100,000 hours produced a model that can watch a single video of "
+       "an unseen task and attempt it, with ~66% success on unseen tasks. Unaudited, but the one-shot "
+       "video-conditioned framing is exactly the in-context-learning direction you are interested in.",
+  rel="skild,icrt,vid2robot,generalist-ai", id_="third-person,ego-dex")
+P("figure-fleet","Figure AI: Helix in the home and at BMW Spartanburg",
+  a="Figure AI", inst="Figure AI", lab="Figure AI", v="company blog", vt="industry", y=2026,
+  br="agentic", top="humanoid deployment, long-horizon autonomy, fleet operation", par="VLA",
+  site="https://www.figure.ai/news", st=1,
+  note="Figure 03 doing long-horizon kitchen work, fine manipulation and fleet operation at BMW. Useful only "
+       "as a marker of the current industrial reliability bar; no methodology is disclosed.",
+  rel="helix,groot-n16,dyna2", pr="mabel")
