@@ -53,6 +53,7 @@
 .live-key-row button{padding:7px 8px;flex:1;white-space:nowrap;font-size:11px;min-height:38px}
 .live-key-row kbd{font:600 10px var(--font-mono);margin-right:4px}
 .live-key-row button.is-held{background:var(--paper-orange);color:#21190d;border-color:var(--paper-orange)}
+.live-key-row button{touch-action:none;user-select:none;-webkit-user-select:none}
 .live-control-help{font-size:12px;color:var(--paper-muted);margin:12px 0 0!important}
 .live-provenance{border-top:1px solid var(--paper-border);margin-top:18px;padding-top:14px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px 24px}
 .live-provenance p{font-size:12px;line-height:1.6;margin:0}.live-provenance strong{display:block;margin-bottom:3px;font-weight:500}

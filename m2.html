@@ -18,8 +18,8 @@
 <script defer="" src="assets/projects/m2/m2-pose-navigation.js?v=48464aaa95"></script>
 <script data-archive-src="assets/projects/m2/native-grasp-data.js?v=3d9303226a" type="application/json"></script>
 <script data-archive-src="assets/projects/m2/m2-native-grasp.js?v=25ff4bc761" type="application/json"></script>
-<link href="assets/projects/m2/m2-live-demo.css?v=de569e2515" rel="stylesheet"/>
-<script defer="" src="assets/projects/m2/m2-live-demo.js?v=989ac39107"></script>
+<link href="assets/projects/m2/m2-live-demo.css?v=85acdbaf10" rel="stylesheet"/>
+<script defer="" src="assets/projects/m2/m2-live-demo.js?v=c9e4aa27b2"></script>
 <script defer="" src="assets/projects/m2/m2-development.js?v=a63e41cedd"></script>
 <script defer="" src="assets/projects/m2/m2-research.js?v=9681676cc5"></script>
 <script defer="True" src="assets/projects/m2/hand-wrench-data.js?v=950cdffbc9"></script><script defer="True" src="assets/projects/m2/m2-interaction.js?v=286dcb0575"></script><script defer="" src="assets/projects/m2/rollout-gallery-data.js?v=181b3d21bb"></script><script defer="" src="assets/projects/m2/m2-rollouts.js?v=ac67c946ec"></script><link href="assets/projects/m2/m2-rollouts.css?v=6696a2f0d2" rel="stylesheet"/></head><body class="research-page narrative-page">
@@ -71,7 +71,7 @@
 <div class="live-control-group"><span>Turn · yaw</span><div class="live-key-row"><button aria-label="Increase desired object yaw" data-live-key="q" disabled="" type="button"><kbd>Q</kbd> +yaw</button><button aria-label="Decrease desired object yaw" data-live-key="e" disabled="" type="button"><kbd>E</kbd> −yaw</button></div></div>
 <div class="live-control-group"><span>Tilt · pitch</span><div class="live-key-row"><button aria-label="Increase desired object pitch" data-live-key="i" disabled="" type="button"><kbd>I</kbd> +pitch</button><button aria-label="Decrease desired object pitch" data-live-key="k" disabled="" type="button"><kbd>K</kbd> −pitch</button></div></div>
 <div class="live-control-group"><span>Lean · roll</span><div class="live-key-row"><button aria-label="Increase desired object roll" data-live-key="j" disabled="" type="button"><kbd>J</kbd> +roll</button><button aria-label="Decrease desired object roll" data-live-key="l" disabled="" type="button"><kbd>L</kbd> −roll</button></div></div>
-</div><p class="live-control-help" id="live-help">Click inside this demo, then hold a key or tap a control. Release to hold the reference. Switching objects resets the scene.</p></div>
+</div><p class="live-control-help" id="live-help">Hold a key or press and hold a control to move the reference. Release to hold its position. Switching objects resets the scene.</p></div>
 <div class="live-provenance"><p><strong id="live-policy">Secured-grasp SE(3) policy · historical welded baseline</strong><span id="live-grasp">Idealized welded retention</span></p><p>The live controller’s grasp model is shown here. Native-contact learning and its measured failures are documented separately below; this interactive session is not a validation trial.</p></div><p class="section-note">Painting and exhibition panel passed small translation, pitch and yaw checks. Couch pickup remains experimental and timed out in the latest check. These checks do not measure overall reliability.</p><p id="live-limits">Reference changes stay inside the server’s operating range.</p>
 </div></section>
 <section class="research-section" id="more-scenes"><p class="eyebrow">02.3 / More scenes and objects</p><h2>Different loads, different routes.</h2><p class="section-intro">Compare complete wardrobe, table, crate, and beam recordings with their measured 3D object and hand paths. These earlier supervised, welded-retention transport trials change position and heading; the painting experiments above additionally test pitch for vertical clearance.</p><div id="scene-gallery"></div></section>

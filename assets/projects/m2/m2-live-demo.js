@@ -7,6 +7,8 @@
   const el = id => document.getElementById('live-' + id);
   const canvas = el('canvas'), context = canvas.getContext('2d');
   const held = new Set();
+  const pointerHeld = new Map();
+  const pressedKeys = () => new Set([...held, ...pointerHeld.values()]);
   const keys = {
     w: [0, 1], s: [0, -1], a: [1, 1], d: [1, -1],
     r: [2, 1], f: [2, -1], q: [3, 1], e: [3, -1],
@@ -49,8 +51,12 @@
     el('status').dataset.kind = kind;
   }
   function clearKeys() {
-    held.clear();
+    held.clear(); pointerHeld.clear();
     root.querySelectorAll('[data-live-key]').forEach(b => b.classList.remove('is-held'));
+  }
+  function showPressedKeys() {
+    const pressed = pressedKeys();
+    root.querySelectorAll('[data-live-key]').forEach(b => b.classList.toggle('is-held', pressed.has(b.dataset.liveKey)));
   }
   function clearScene(message) {
     frameEpoch += 1; sceneFramesReady = false; commandReady = false;
@@ -285,7 +291,19 @@
     else { if (connected) disconnect(); connect(); }
   });
   root.querySelectorAll('[data-live-key]').forEach(button => {
-    button.addEventListener('click', () => nudge([button.dataset.liveKey]));
+    button.addEventListener('pointerdown', event => {
+      if (event.button !== 0 || button.disabled) return;
+      event.preventDefault();
+      button.focus({preventScroll:true});
+      button.setPointerCapture(event.pointerId);
+      pointerHeld.set(event.pointerId, button.dataset.liveKey);
+      nudge([button.dataset.liveKey]); showPressedKeys();
+    });
+    const release = event => { pointerHeld.delete(event.pointerId); showPressedKeys(); };
+    for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) button.addEventListener(type, release);
+    // Pointer input is handled immediately on down. Preserve keyboard and
+    // assistive-technology activation without double-counting pointer clicks.
+    button.addEventListener('click', event => { if (event.detail === 0) nudge([button.dataset.liveKey]); });
   });
   root.addEventListener('keydown', event => {
     const key = event.key.toLowerCase();
@@ -293,17 +311,17 @@
     if (!connected || role !== 'controller' || paused || stopped || stale || !commandReady) return;
     event.preventDefault();
     if (!held.has(key)) nudge([key]);
-    held.add(key); root.querySelector('[data-live-key="' + key + '"]')?.classList.add('is-held');
+    held.add(key); showPressedKeys();
   });
   window.addEventListener('keyup', event => {
     const key = event.key.toLowerCase(); held.delete(key);
-    root.querySelector('[data-live-key="' + key.replace(/[^a-z]/g, '') + '"]')?.classList.remove('is-held');
+    showPressedKeys();
   });
   root.addEventListener('focusout', event => { if (!root.contains(event.relatedTarget)) clearKeys(); });
   window.addEventListener('blur', clearKeys);
   document.addEventListener('visibilitychange', () => { if (document.hidden) clearKeys(); });
   window.addEventListener('pagehide', () => disconnect());
-  setInterval(() => { if (held.size) nudge(held); }, 100);
+  setInterval(() => { const pressed = pressedKeys(); if (pressed.size) nudge(pressed); }, 100);
   setInterval(() => {
     if (connected && lastState && performance.now() - lastState > 15000) {
       stale = true; clearKeys(); status('Waiting for simulation measurements…', 'waiting'); updateControls();
