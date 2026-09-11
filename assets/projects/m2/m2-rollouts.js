@@ -98,6 +98,30 @@
     Plotly.newPlot($('rollout-comparison-plot'),traces,l,{responsive:true,displayModeBar:false});
     $('rollout-comparison-note').textContent=`${comparison.steps.toLocaleString()} environment steps per run · 3 training seeds per condition. Bars: mean. Dots: individual seeds, each evaluated on 40 paired trials. This comparison starts from the same grasp policy; it is separate from the best controller above.`;
   }else if($('rollout-comparison'))$('rollout-comparison').hidden=true;
+  if(d.response&&$('rollout-response-plot')&&window.Plotly){
+    const renderResponse=async name=>{
+      const c=d.response.cases[name], l=common(),traces=[];
+      c.lines.forEach((line,i)=>{
+        const color=i?'#078b8f':'#b77513';
+        traces.push({type:'scatter',mode:'lines',name:line.label,x:line.time_s,y:line.measured,line:{color,width:2.5},
+          hovertemplate:`%{x:.2f} s · %{y:.2f} ${c.unit}<extra>${line.label}</extra>`});
+        traces.push({type:'scatter',mode:'markers',name:line.success?'Held':'Trial stopped',showlegend:false,
+          x:[line.time_s.at(-1)],y:[line.measured.at(-1)],marker:{color,size:10,symbol:line.success?'circle':'x'},
+          hovertemplate:line.label+(line.success?' · held at target':' · trial stopped')+'<extra></extra>'});
+      });
+      const end=Math.max(...c.lines.map(line=>line.time_s.at(-1))),target=c.lines[0].target;
+      traces.push({type:'scatter',mode:'lines',name:'Target',x:[0,end],y:[target,target],line:{color:'#6f7a83',width:1.3,dash:'dot'},hoverinfo:'skip'});
+      l.yaxis.title=name==='x_positive'?'Object displacement · cm':'Object yaw · °';l.xaxis.range=[0,end*1.03];
+      l.legend={orientation:'h',x:0,y:1.12,xanchor:'left',yanchor:'bottom',font:{size:11}};
+      l.margin.t=60;l.margin.b=50;l.xaxis.title={text:'Simulation time · s',standoff:10};
+      await Plotly.react($('rollout-response-plot'),traces,l,{responsive:true,displayModeBar:false});
+      $('rollout-response-plot').dataset.command=name;
+      $('rollout-response-note').textContent=d.response.scope+' × marks a stopped trial; ● marks a completed hold.';
+      root.querySelectorAll('[data-response-case]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.responseCase===name)));
+    };
+    root.querySelectorAll('[data-response-case]').forEach(b=>b.onclick=()=>renderResponse(b.dataset.responseCase));
+    renderResponse('x_positive');
+  }else if($('rollout-response'))$('rollout-response').hidden=true;
   // The large historical snapshot is fetched only when the archive is opened.
   const archive=$('experiment-archive');let loaded=false;
   async function loadArchive(){
