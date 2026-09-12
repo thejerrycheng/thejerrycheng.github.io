@@ -2,6 +2,11 @@
   const data = window.M2ComplexScenes;
   const host = document.getElementById('complex-planner');
   if (!data?.clips?.length || !host) return;
+  // Keep the public planner grounded in measured contact runs. Welded or
+  // purely geometric clips are useful for development, but should not appear
+  // in the user-facing rollout flow.
+  data.clips = data.clips.filter(c => c.physical_grasp_before_route && c.welded_fallback !== true);
+  if (!data.clips.length) return;
   // The same measured contact clips also belong in the main rollout flow.
   if (window.M2Rollouts) {
     const ids = new Set(window.M2Rollouts.clips.map(c => c.id));
@@ -17,7 +22,8 @@
     const s = data.clips[selected], color = '#078b8f';
     video.pause(); video.src = s.video; video.poster = s.poster; video.load();
     title.textContent = s.title;
-    note.textContent = `${s.physical_grasp_before_route ? 'Four-hand physical grasp acquired. ' : ''}${s.success ? 'Route completed.' : 'Route stopped before completion.'} ${s.termination_reasons.join(', ').replaceAll('_', ' ') || 'No physical termination recorded.'}`;
+    const terminations = Array.isArray(s.termination_reasons) ? s.termination_reasons : [];
+    note.textContent = `${s.physical_grasp_before_route ? 'Four-hand physical grasp acquired. ' : ''}${s.success ? 'Route completed.' : 'Route stopped before completion.'} ${terminations.join(', ').replaceAll('_', ' ') || 'No physical termination recorded.'}`;
     buttons.replaceChildren();
     data.clips.forEach((clip, i) => {
       const b = document.createElement('button'); b.type = 'button'; b.textContent = clip.title;
