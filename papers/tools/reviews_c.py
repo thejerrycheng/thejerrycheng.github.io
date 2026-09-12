@@ -192,70 +192,105 @@ R["codesign-dex-agentic"] = dict(
  ])
 
 R["codesign-dog-rl"] = dict(
- why="""<p>A single, brutally clear objective — top speed — with body and controller optimized together, end
- to end. The clarity is the appeal: no reward shaping argument, no subjective evaluation, and a number at the
- end that is either better or not.</p>""",
- state="""<p><b>The hardware baseline is [[mit-cheetah]]</b> and its proprioceptive-actuator argument: high
- torque density, low gear ratio, backdrivable. That single design choice is responsible for most of what made
- cheap dynamic legged robots possible, and any co-design that ignores actuator selection is optimizing the
- wrong variables.</p>
- <p><b>The co-design formulations are mature.</b> [[transform2act]] (design as action), [[derl]] (evolution
- plus learning), [[codesign-rl]] (distribution over designs), [[coros-codesign]] and [[dinev-codesign]]
- (differentiate through the motion solver — far more sample-efficient when your model is good, which for a
- quadruped it is).</p>
- <p><b>The compute problem has a standard solution.</b> [[meta-rl-legged]] trains a design-conditioned policy
- once and then evaluates candidate morphologies cheaply without retraining. Without this trick, every design
- evaluation costs an RL run and the search is unaffordable.</p>
- <p><b>And the real-world version exists.</b> [[dyret]] is a quadruped that physically changes its own leg
- lengths and evolves its morphology in the real world rather than in simulation. It is the most relevant prior
- work here and also the clearest evidence of how punishing the real-world loop is.</p>
- <p><b>Finally, [[text2robot]] produces printable quadrupeds from a text prompt with evolved controllers in
- under a day</b> — the agentic generative version, and the thing that makes "co-design a dog" a much shorter
- project than it would have been two years ago.</p>""",
+ why="""<p>A single brutally clear objective — top speed — with body and controller optimized together. Adding
+ an articulated trunk makes it richer: the spine is the one part of a running animal that every quadruped robot
+ leaves out, and it is not decorative. In a galloping cheetah the trunk contributes a large fraction of stride
+ length.</p>
+ <p>And the framing you landed on — <em>derive the kinematic chain from real dog footage</em> — is what turns
+ this from a co-design exercise into a question about animals that a robot can answer.</p>""",
+ state="""<p><b>The spine question has just been answered empirically.</b> [[s-cheetah]] (May 2026) is a
+ quadruped with a bio-inspired serial <b>3-DOF active spine</b> giving tri-axial rotation, trained with RL:
+ 6.9 m/s peak speed on a rotary G2 gallop, 7.2 rad/s in-place turning, and emergent feline aerial
+ self-righting. Its conclusion is unambiguous — the 3-DOF spine comprehensively improves agility. So the
+ premise of your idea is confirmed rather than open, and 'add a spine' is no longer a contribution.</p>
+ <p><b>The mechanism behind it has also been identified.</b> [[spine-phase]] shows that high-speed running
+ performance is set by the <b>phase relationship between spinal motion and limb support</b>, under asymmetric
+ spinal stiffness — not by spinal range of motion. That is a gift for a co-design study, because it tells you
+ which variable to parameterise. [[twisting-waist]] is the minimal counterpoint: a single twisting waist joint,
+ useful for asking how much of the benefit one DOF buys.</p>
+ <p><b>The co-design machinery is mature.</b> [[transform2act]] makes design choices actions in an extended MDP;
+ [[derl]] shows morphology and learning speed co-evolve; [[meta-rl-legged]] trains a design-conditioned policy
+ once so candidate morphologies can be evaluated without retraining — the trick without which this search is
+ unaffordable. [[coros-codesign]] and [[dinev-codesign]] give the model-based gradients, which for a quadruped
+ with a good model are far more sample-efficient than RL. [[mit-cheetah]] remains the actuator argument that
+ dominates top speed, and [[dyret]] is the only robot that changes its own morphology in the real world.</p>
+ <p><b>And the animal-measurement side has quietly become tractable.</b> [[dogmo]] (Oct 2025) provides 1,200
+ multi-view RGB-D motion sequences from 10 real dogs — the first dog dataset with enough fidelity to measure
+ how a trunk actually bends at speed. [[barc]] and [[corgi]] regress 3D dog shape from ordinary images,
+ [[animal-avatars]] reconstructs animatable 3D animals from casual video, and [[hsmal]] shows the parametric
+ quadruped approach generalises across species. Five years ago 'design the robot from dog footage' was a
+ slogan; it is now a data pipeline.</p>""",
  threads=[
-  """<b>Actuator-first design.</b> [[mit-cheetah]]. Get this variable in the search space or the result is
-  uninteresting.""",
-  """<b>RL-in-the-loop formulations.</b> [[transform2act]], [[derl]], [[codesign-rl]].""",
-  """<b>Model-based gradients.</b> [[coros-codesign]], [[dinev-codesign]] — cheaper when the model is good.""",
-  """<b>Design-conditioned policies.</b> [[meta-rl-legged]] — the compute unlock.""",
-  """<b>Real-world morphology adaptation.</b> [[dyret]].""",
-  """<b>Massively parallel training.</b> [[rudin2021]], [[isaaclab]] — the substrate that makes this feasible
-  at all.""",
+  """<b>Spined quadrupeds.</b> [[s-cheetah]] (3-DOF, RL, 6.9 m/s), [[twisting-waist]] (1-DOF), [[spine-phase]]
+  (the mechanism).""",
+  """<b>Co-design formulations.</b> [[transform2act]], [[derl]], [[codesign-rl]], with [[coros-codesign]] and
+  [[dinev-codesign]] for the model-based route.""",
+  """<b>Making the search affordable.</b> [[meta-rl-legged]]'s design-conditioned policy — adopt from day one.""",
+  """<b>Actuators.</b> [[mit-cheetah]]. Top speed is an actuator problem before it is a geometry problem.""",
+  """<b>Measuring the animal.</b> [[dogmo]], [[barc]], [[corgi]], [[animal-avatars]], [[hsmal]].""",
+  """<b>Real-world morphology change.</b> [[dyret]], and [[text2robot]] for the fast generative path to a
+  printable quadruped.""",
  ],
- gap="""<p>Almost all co-design work optimizes a simulated objective and stops. The unclaimed contribution is
- <b>a physically built, measured result</b>: the co-designed quadruped, fabricated, running, with its top
- speed measured against a hand-designed control at matched mass and actuator budget. [[dyret]] is the closest
- and it adapts an existing platform rather than designing one.</p>
- <p>The honest second contribution — and possibly the more valuable one — is the <b>sim-to-real gap of the
- design itself</b>. Everyone reports the sim-to-real gap of a policy. Nobody reports how much of a co-designed
- morphology's simulated advantage survives fabrication. That number does not exist in the literature and
- people would cite it.</p>""",
+ gap="""<p>Given [[s-cheetah]], the open question is no longer <em>whether</em> a spine helps but <b>which
+ spine</b> — and that is exactly where your framing has purchase.</p>
+ <p><b>Derive the trunk from the animal, do not assume it.</b> Every spined quadruped in the literature has a
+ hand-chosen DOF count, hand-chosen joint placement and hand-tuned stiffness. [[s-cheetah]] picked three DOF
+ because a cheetah's spine rotates about three axes; that is a reasonable argument, not a measurement.
+ [[dogmo]] now makes the measurement possible: fit a variable-DOF trunk model to real canine motion and ask how
+ many joints the data actually supports, where they sit, and what stiffness profile reproduces the observed
+ bending. Then co-design the robot against that.</p>
+ <p>Two falsifiable outputs, both novel:</p>
+ <ul>
+ <li><b>The DOF count the data justifies.</b> Is three right? Model selection on real dog motion will give a
+ number, and it may not be three. That is a result about animals, obtained with robotics tooling, and it is
+ publishable on its own.</li>
+ <li><b>Data-derived vs hand-designed, at matched mass and actuator budget.</b> Build both spines on the same
+ robot and race them. If the derived one wins, biomimetic measurement beats intuition; if it does not, that is
+ an equally interesting and much-needed negative result.</li>
+ </ul>
+ <p>And the claim that carries over from the original framing: <b>report the design sim-to-real gap</b>. How
+ much of a co-designed morphology's simulated advantage survives fabrication, decomposed into actuator,
+ structural compliance and contact. That number does not exist in the literature.</p>""",
  plan=[
-  """Parameterise honestly: link lengths, mass distribution, gear ratio, and actuator selection from a real
-  catalogue. A search over link lengths alone will not find anything interesting.""",
-  """Adopt [[meta-rl-legged]]'s design-conditioned policy immediately — otherwise the search is unaffordable.""",
-  """Use [[rudin2021]]/[[isaaclab]] massively-parallel training as the substrate.""",
-  """Build the top candidate and one hand-designed control at matched mass and actuator budget. Measure both.""",
-  """Report the design sim-to-real gap explicitly, with the discrepancy decomposed into actuator, structural
-  compliance, and contact.""",
+  """Start from [[dogmo]]. Fit a trunk model with a variable number of joints to the measured motion and do
+  honest model selection — this is a week of work and it determines the whole design.""",
+  """Parameterise properly: link lengths, mass distribution, gear ratio, actuator selection from a real
+  catalogue, <b>and</b> spine DOF count, joint placement and stiffness profile. A search over link lengths
+  alone will find nothing.""",
+  """Adopt [[meta-rl-legged]]'s design-conditioned policy immediately, and [[rudin2021]]/[[isaaclab]] for
+  parallel training. Otherwise every design evaluation costs an RL run.""",
+  """Optimize against [[spine-phase]]'s finding — make the spine-limb phase relationship an explicit term
+  rather than hoping RL discovers it.""",
+  """Build two: the data-derived spine and an [[s-cheetah]]-style hand-designed 3-DOF one, matched on mass and
+  actuators. Measure top speed, turning rate, and cost of transport.""",
+  """Report the design sim-to-real gap with the discrepancy decomposed. And report the aerial-righting
+  behaviour — [[s-cheetah]] found it emerges, which is a nice reproducibility check.""",
  ],
  risks=[
-  """<b>The optimizer exploits the simulator.</b> Guaranteed at some level. Constrain to buildable ranges,
-  penalise anything relying on unmodelled compliance, and validate candidates physically before committing.""",
-  """<b>Fabrication is slow.</b> This is the step that turns a six-month project into eighteen. Design for
-  printable and off-the-shelf actuators from the start.""",
-  """<b>Speed is dominated by actuators.</b> Very likely the answer is "buy better motors". If so, say it —
-  that is a real finding about where co-design's leverage actually is.""",
+  """<b>The optimizer exploits the simulator.</b> Guaranteed at some level, and a compliant spine gives it more
+  to exploit. Constrain to buildable ranges, penalise anything relying on unmodelled compliance, and validate
+  candidates physically early.""",
+  """<b>Model selection on dog motion is under-determined.</b> Marker-free reconstruction has real error, and
+  trunk bending is exactly where it is worst. Report the uncertainty on the DOF count rather than a point
+  estimate, and cross-check [[dogmo]]'s RGB-D against reconstructions from [[animal-avatars]].""",
+  """<b>A spine is heavy and fragile.</b> Actuating the trunk adds mass at the worst place for a running robot.
+  [[twisting-waist]]'s 1-DOF result is the honest baseline — it may be that most of the benefit is available
+  for a third of the cost.""",
+  """<b>Fabrication is slow.</b> This is what turns a six-month project into eighteen. Printable, off-the-shelf
+  actuators, and [[text2robot]]'s pipeline if you want a fast first article.""",
  ],
  read=[
-  dict(id="mit-cheetah", why="The actuator argument that dominates this whole problem. Read first."),
-  dict(id="dyret", why="Real-world morphological adaptation on a quadruped — the closest prior work, and a warning."),
-  dict(id="transform2act", why="The formulation to implement."),
-  dict(id="meta-rl-legged", why="The design-conditioned policy that makes the search affordable."),
-  dict(id="text2robot", why="Prompt to printable quadruped in under a day — the fast path to a first result."),
-  dict(id="derl", why="The evidence that co-design changes learnability, not just performance."),
-  dict(id="coros-codesign", why="The model-based alternative: differentiate through the trajectory optimizer."),
-  dict(id="rudin2021", why="The parallel-training substrate this all assumes."),
+  dict(id="s-cheetah", why="Read first. A 3-DOF active spine, RL-trained, 6.9 m/s — your premise, already built and measured."),
+  dict(id="spine-phase", why="The mechanism: spine-limb phase, not range of motion, sets high-speed performance. This is what to optimize."),
+  dict(id="dogmo", why="1,200 multi-view RGB-D sequences from 10 dogs. The measurement that makes 'derive the spine' possible."),
+  dict(id="meta-rl-legged", why="The design-conditioned policy that makes the search affordable. Adopt on day one."),
+  dict(id="mit-cheetah", why="Actuator selection dominates top speed. Settle it before geometry."),
+  dict(id="transform2act", why="The co-design formulation to implement — design choices as actions."),
+  dict(id="twisting-waist", why="The 1-DOF baseline. How much of the benefit does one joint buy?"),
+  dict(id="barc", why="3D dog shape from ordinary images — body proportions before kinematics."),
+  dict(id="animal-avatars", why="Animatable 3D animals from casual video; the cross-check on DogMo."),
+  dict(id="dyret", why="The only robot that changes its morphology in the real world."),
+  dict(id="derl", why="Evidence that co-design changes learnability, not just performance."),
  ])
 
 R["agentic-physical"] = dict(

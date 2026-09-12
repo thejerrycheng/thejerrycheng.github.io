@@ -134,10 +134,20 @@ IDEAS = [
       project="r2s2r", trees=["rl","systems"],
       pitch="Capture a scene egocentrically, rebuild it as something a simulator can step, train inside it, "
             "and deploy back.",
-      novelty="EgoEngine and Video2Sim2Real both build the loop and run it <b>once</b>. Close it: feed the "
-              "real-world failures back into the reconstruction and the dynamics model, iterate, and report "
-              "geometry error, dynamics gap and task success as functions of iteration count. Second claim: "
-              "how many reconstructed scenes before the policy stops needing a new one."),
+      novelty="EgoEngine and Video2Sim2Real both build this loop and run it <b>exactly once</b> — capture, "
+              "reconstruct, train, deploy, report success. Three claims follow from that, in increasing "
+              "order of value.<br><br><b>(1) Close the loop.</b> Feed real-world failures back into the "
+              "reconstruction and the dynamics model, iterate, and report geometry error, sim-real dynamics "
+              "gap and task success as functions of <em>iteration count</em>. ASAP gives you the correction "
+              "mechanism; nobody has run it round more than once.<br><br><b>(2) Attribute the residual error.</b> "
+              "When a real2sim2real policy fails, no paper says whether the geometry, the dynamics or the "
+              "rendering was at fault — they report end-to-end success and stop. An ablation that holds two "
+              "of the three at ground truth and varies the third gives the field its error budget, and it is "
+              "the thing every practitioner actually wants to know before investing in "
+              "reconstruction.<br><br><b>(3) The scene-count curve.</b> These systems build a twin of <em>the</em> "
+              "kitchen. How many reconstructed scenes before the policy stops needing a new one? That number "
+              "decides whether real2sim2real is a scalable method or an expensive way to overfit to one room, "
+              "and nobody has measured it."),
  dict(id="rl-post-training", title="RL post-training on robot foundation models",
       merged=["Rl post training on foundation models"], project="iris", trees=["rl","il"],
       pitch="Converting a pretrained VLA's broad competence into task reliability with on-robot RL.",
@@ -165,15 +175,28 @@ IDEAS = [
               "in-hand rotation is simply not diagnosable. Give it contact and trajectory <b>traces</b> — "
               "the thumb lost purchase at 40% of the rollout — and measure agent-iterations-to-target against "
               "a human researcher on the same task."),
- dict(id="codesign-dog-rl", title="End-to-end co-design of a fast-running quadruped with RL in the loop",
-      merged=["Codesign a dog that run fast with rl in the loop - completely end to end"],
+ dict(id="codesign-dog-rl", title="Co-design of a fast quadruped with a flexible spine, from dog video",
+      merged=["Codesign a dog that run fast with rl in the loop - completely end to end",
+              "Add a 3-DOF torso/spine for a flexible body; co-design the kinematic chain from real dog "
+              "running videos"],
       project="", trees=["systems","rl"],
-      pitch="Link lengths, gear ratios, actuator choice and control policy optimized together, with top speed "
-            "as the single objective.",
-      novelty="Co-design papers report simulated performance and stop. Build the winner and report the "
-              "<b>design sim-to-real gap</b> — how much of a co-designed morphology's simulated advantage "
-              "survives fabrication, decomposed into actuator, structural compliance and contact. That number "
-              "does not exist in the literature and everyone doing co-design needs it."),
+      pitch="Link lengths, actuator choice, and a multi-DOF articulated spine optimized together with the "
+            "control policy — with the kinematic chain derived from measured dog locomotion rather than "
+            "guessed.",
+      novelty="The premise is already confirmed: <b>S-Cheetah</b> (May 2026) built a 3-DOF bio-inspired active "
+              "spine and showed it comprehensively improves agility — 6.9 m/s on a rotary gallop, 7.2 rad/s "
+              "turning, and emergent aerial self-righting. So 'add a spine' is no longer the contribution, and "
+              "the follow-up work has already found the mechanism: it is the <b>phase relationship between "
+              "spinal motion and limb support</b>, with asymmetric stiffness, that sets high-speed "
+              "performance.<br><br>What nobody has done is the part you named: <b>derive the spine's structure "
+              "from the animal instead of assuming it</b>. Every spined quadruped in the literature has a "
+              "hand-chosen DOF count, joint placement and stiffness. DogMo now provides 1,200 multi-view RGB-D "
+              "sequences of 10 real dogs, and BARC/CORGI/Animal-Avatars reconstruct 3D shape and motion from "
+              "ordinary footage. That makes a genuinely new question answerable: fit a variable-DOF trunk model "
+              "to measured canine motion, ask how many joints and what stiffness the data actually supports, "
+              "and co-design the robot against <em>that</em> rather than against intuition. Two falsifiable "
+              "outputs — the DOF count the data justifies (is 3 right, or is it 2, or 5?), and whether a "
+              "data-derived spine beats S-Cheetah's hand-designed one at matched mass and actuator budget."),
  dict(id="agentic-physical", title="Agentic physical robot",
       merged=["Agentic physical robot"], project="iris", trees=["il","systems"],
       pitch="The software-agent loop — plan, call skills, observe, replan — running on a physical body.",
@@ -275,16 +298,24 @@ IDEAS = [
       merged=["Transformer robot — car to humanoid using RL, hardware build end to end, balancing and walking "
               "in humanoid form, transformation policy, fall and stand-up, few policies on board"],
       project="", trees=["systems","rl"],
-      pitch="Build the robot and the controller together: a machine that drives as a wheeled vehicle, stands "
-            "up into a humanoid, walks, falls, recovers — with a handful of policies running on board.",
-      novelty="X2-N (April 2026) already built a transformable wheel-legged humanoid with RL whole-body "
-              "control, so the mechanism and the mode-switch are taken. Two things are not. First, the "
-              "<b>policy budget</b>: how few on-board policies cover driving, walking, transforming, falling "
-              "and standing up — and what is lost by merging them, measured, rather than assumed. Second, and "
-              "more interesting, <b>transformation as a recovery action</b>: a fallen humanoid that folds "
-              "into its wheeled form to right itself, instead of learning a get-up policy for every fallen "
-              "posture. That reframes the morphology change from a feature into a controller primitive, and "
-              "no getting-up paper has it."),
+      pitch="A machine that drives as a car — chassis low, wheels down, body panels closed — and then unfolds "
+            "into a walking biped. Not a wheel-legged robot with wheels on its feet: a genuine change of "
+            "topology, where the chassis becomes the torso and structural panels become limbs.",
+      novelty="This is much harder than the wheel-legged robots it gets confused with, for five concrete "
+              "reasons: the <b>kinematic tree changes</b> rather than the joint angles; the centre of mass "
+              "moves through roughly 3–4× in height and the inertia tensor by an order of magnitude; the "
+              "transition passes through statically unstable configurations with a changing contact set "
+              "(four wheels → multi-contact → two feet); actuators must do double duty, since driving wants "
+              "high-speed/low-torque and standing wants the opposite; and members reverse role, so an "
+              "aerodynamic panel becomes load-bearing.<br><br>The real machines exist — J-deite RIDE converts "
+              "in about <b>one minute</b> with a scripted quasi-static sequence, Letrons does not walk at all, "
+              "Robosen does it automatically at toy scale. Every one of them scripts the transformation "
+              "open-loop. So the claim is: <b>a closed-loop, morphology-conditioned policy that controls the "
+              "robot continuously through the topology change</b> — balance maintained throughout, abortable "
+              "and reversible mid-transformation, and fast enough to be dynamic (target: under two seconds, "
+              "against J-deite's sixty). The stronger version, which nobody has: <b>transformation as a "
+              "recovery primitive</b> — a fallen humanoid that folds into car form to right itself, instead of "
+              "learning a get-up policy for every fallen posture."),
  dict(id="robot-dj", title="Robot DJ: turntablism with audio as a first-class modality",
       merged=["Robot DJ using a turntable — audio as a modality, force, tactile, dexterous hand"],
       project="geodex", trees=["il","systems"],

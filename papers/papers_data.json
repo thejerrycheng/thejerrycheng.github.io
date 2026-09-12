@@ -2,8 +2,8 @@
  "meta": {
   "generated": "2026-09-12",
   "counts": {
-   "total": 508,
-   "curated": 322,
+   "total": 525,
+   "curated": 339,
    "library": 197,
    "attached": 63,
    "dropped": 35
@@ -265,7 +265,7 @@
      "systems"
     ],
     "pitch": "Capture a scene egocentrically, rebuild it as something a simulator can step, train inside it, and deploy back.",
-    "novelty": "EgoEngine and Video2Sim2Real both build the loop and run it <b>once</b>. Close it: feed the real-world failures back into the reconstruction and the dynamics model, iterate, and report geometry error, dynamics gap and task success as functions of iteration count. Second claim: how many reconstructed scenes before the policy stops needing a new one."
+    "novelty": "EgoEngine and Video2Sim2Real both build this loop and run it <b>exactly once</b> — capture, reconstruct, train, deploy, report success. Three claims follow from that, in increasing order of value.<br><br><b>(1) Close the loop.</b> Feed real-world failures back into the reconstruction and the dynamics model, iterate, and report geometry error, sim-real dynamics gap and task success as functions of <em>iteration count</em>. ASAP gives you the correction mechanism; nobody has run it round more than once.<br><br><b>(2) Attribute the residual error.</b> When a real2sim2real policy fails, no paper says whether the geometry, the dynamics or the rendering was at fault — they report end-to-end success and stop. An ablation that holds two of the three at ground truth and varies the third gives the field its error budget, and it is the thing every practitioner actually wants to know before investing in reconstruction.<br><br><b>(3) The scene-count curve.</b> These systems build a twin of <em>the</em> kitchen. How many reconstructed scenes before the policy stops needing a new one? That number decides whether real2sim2real is a scalable method or an expensive way to overfit to one room, and nobody has measured it."
    },
    {
     "id": "rl-post-training",
@@ -310,17 +310,18 @@
    },
    {
     "id": "codesign-dog-rl",
-    "title": "End-to-end co-design of a fast-running quadruped with RL in the loop",
+    "title": "Co-design of a fast quadruped with a flexible spine, from dog video",
     "merged": [
-     "Codesign a dog that run fast with rl in the loop - completely end to end"
+     "Codesign a dog that run fast with rl in the loop - completely end to end",
+     "Add a 3-DOF torso/spine for a flexible body; co-design the kinematic chain from real dog running videos"
     ],
     "project": "",
     "trees": [
      "systems",
      "rl"
     ],
-    "pitch": "Link lengths, gear ratios, actuator choice and control policy optimized together, with top speed as the single objective.",
-    "novelty": "Co-design papers report simulated performance and stop. Build the winner and report the <b>design sim-to-real gap</b> — how much of a co-designed morphology's simulated advantage survives fabrication, decomposed into actuator, structural compliance and contact. That number does not exist in the literature and everyone doing co-design needs it."
+    "pitch": "Link lengths, actuator choice, and a multi-DOF articulated spine optimized together with the control policy — with the kinematic chain derived from measured dog locomotion rather than guessed.",
+    "novelty": "The premise is already confirmed: <b>S-Cheetah</b> (May 2026) built a 3-DOF bio-inspired active spine and showed it comprehensively improves agility — 6.9 m/s on a rotary gallop, 7.2 rad/s turning, and emergent aerial self-righting. So 'add a spine' is no longer the contribution, and the follow-up work has already found the mechanism: it is the <b>phase relationship between spinal motion and limb support</b>, with asymmetric stiffness, that sets high-speed performance.<br><br>What nobody has done is the part you named: <b>derive the spine's structure from the animal instead of assuming it</b>. Every spined quadruped in the literature has a hand-chosen DOF count, joint placement and stiffness. DogMo now provides 1,200 multi-view RGB-D sequences of 10 real dogs, and BARC/CORGI/Animal-Avatars reconstruct 3D shape and motion from ordinary footage. That makes a genuinely new question answerable: fit a variable-DOF trunk model to measured canine motion, ask how many joints and what stiffness the data actually supports, and co-design the robot against <em>that</em> rather than against intuition. Two falsifiable outputs — the DOF count the data justifies (is 3 right, or is it 2, or 5?), and whether a data-derived spine beats S-Cheetah's hand-designed one at matched mass and actuator budget."
    },
    {
     "id": "agentic-physical",
@@ -484,8 +485,8 @@
      "systems",
      "rl"
     ],
-    "pitch": "Build the robot and the controller together: a machine that drives as a wheeled vehicle, stands up into a humanoid, walks, falls, recovers — with a handful of policies running on board.",
-    "novelty": "X2-N (April 2026) already built a transformable wheel-legged humanoid with RL whole-body control, so the mechanism and the mode-switch are taken. Two things are not. First, the <b>policy budget</b>: how few on-board policies cover driving, walking, transforming, falling and standing up — and what is lost by merging them, measured, rather than assumed. Second, and more interesting, <b>transformation as a recovery action</b>: a fallen humanoid that folds into its wheeled form to right itself, instead of learning a get-up policy for every fallen posture. That reframes the morphology change from a feature into a controller primitive, and no getting-up paper has it."
+    "pitch": "A machine that drives as a car — chassis low, wheels down, body panels closed — and then unfolds into a walking biped. Not a wheel-legged robot with wheels on its feet: a genuine change of topology, where the chassis becomes the torso and structural panels become limbs.",
+    "novelty": "This is much harder than the wheel-legged robots it gets confused with, for five concrete reasons: the <b>kinematic tree changes</b> rather than the joint angles; the centre of mass moves through roughly 3–4× in height and the inertia tensor by an order of magnitude; the transition passes through statically unstable configurations with a changing contact set (four wheels → multi-contact → two feet); actuators must do double duty, since driving wants high-speed/low-torque and standing wants the opposite; and members reverse role, so an aerodynamic panel becomes load-bearing.<br><br>The real machines exist — J-deite RIDE converts in about <b>one minute</b> with a scripted quasi-static sequence, Letrons does not walk at all, Robosen does it automatically at toy scale. Every one of them scripts the transformation open-loop. So the claim is: <b>a closed-loop, morphology-conditioned policy that controls the robot continuously through the topology change</b> — balance maintained throughout, abortable and reversible mid-transformation, and fast enough to be dynamic (target: under two seconds, against J-deite's sixty). The stronger version, which nobody has: <b>transformation as a recovery primitive</b> — a fallen humanoid that folds into car form to right itself, instead of learning a get-up policy for every fallen posture."
    },
    {
     "id": "robot-dj",
@@ -1364,6 +1365,61 @@
    ]
   },
   {
+   "id": "spine-phase",
+   "title": "Phase Relationship between Spinal Motion and Limb Support Determines High-speed Running Performance in a Cheetah Model with Asymmetric Spinal Stiffness",
+   "tree": "rl",
+   "branch": "locomotion",
+   "authors": [
+    "Tomoya Kamimura",
+    "Yuya Oshita",
+    "Mau Adachi",
+    "Yuichi Ambe",
+    "Akihito Sano",
+    "Naomi Wada",
+    "Fumitoshi Matsuno",
+    "Shinya Aoi"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-04-01",
+   "topics": [
+    "spinal motion phase",
+    "asymmetric stiffness",
+    "high-speed running"
+   ],
+   "paradigm": [
+    "control"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "codesign-dog-rl"
+   ],
+   "related": [
+    "coros-codesign",
+    "mit-cheetah",
+    "s-cheetah",
+    "twisting-waist"
+   ],
+   "arxiv": "2604.00329",
+   "doi": "10.48550/arxiv.2604.00329",
+   "code": "",
+   "site": "",
+   "note": "The mechanism paper: it is the <b>phase relationship</b> between spinal motion and limb support — not spinal range of motion — that determines high-speed running performance, with asymmetric spinal stiffness. This is the variable a co-design search should actually be optimizing, and it is the kind of insight that tells you what to parameterise.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Cheetahs are characterized by large spinal flexion and extension during high-speed running, yet the dynamical role of the phase relationship between spinal motion and limb support remains unclear. We aimed to clarify how this phase relationship affects running performance, focusing on the effect of asymmetric spinal stiffness. Using a simple planar cheetah model with asymmetric torsional spinal stiffness, we numerically searched for periodic bounding solutions over a range of stiffness parameters and compared their ground reaction forces, horizontal velocities, and stability. We obtained both cheetah-like solutions, in which the spine extends after hindlimb liftoff and flexes after forelimb liftoff, and non-cheetah-like solutions, in which the spine flexes after hindlimb liftoff and extends after forelimb liftoff. Under asymmetric spinal stiffness, cheetah-like solutions reduced ground reaction forces while maintaining horizontal velocity more effectively than non-cheetah-like solutions. The phase relationship between spinal motion and stance timing is a key determinant of high-speed running performance. These findings provide a dynamical understanding of cheetah locomotion and suggest design principles for spined legged robots.",
+   "source": "curated",
+   "first_author": "Tomoya Kamimura",
+   "url": "https://arxiv.org/abs/2604.00329",
+   "fig": "figures/spine-phase.webp"
+  },
+  {
    "id": "realdexumi",
    "title": "RealDexUMI: A Wearable Universal Manipulation Interface for Dexterous Robot Learning",
    "tree": "systems",
@@ -1565,6 +1621,63 @@
    ]
   },
   {
+   "id": "s-cheetah",
+   "title": "S-Cheetah: A Novel Quadrupedal Robot with a 3-DOF Active Spine Learning Agile Locomotion",
+   "tree": "systems",
+   "branch": "codesign",
+   "authors": [
+    "Zimu Li",
+    "Weibang Bai"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-05-27",
+   "topics": [
+    "3-DOF active spine",
+    "rotary gallop",
+    "RL locomotion"
+   ],
+   "paradigm": [
+    "hardware",
+    "RL"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "codesign-dog-rl"
+   ],
+   "related": [
+    "dogmo",
+    "dyret",
+    "mit-cheetah",
+    "spine-phase",
+    "transform2act",
+    "twisting-waist"
+   ],
+   "arxiv": "2605.27909",
+   "doi": "10.48550/arxiv.2605.27909",
+   "code": "",
+   "site": "",
+   "note": "A quadruped with a bio-inspired serial <b>3-DOF active spine</b> giving tri-axial rotation, trained with RL: 6.9 m/s peak speed on a rotary G2 gallop, 7.2 rad/s in-place turning, and emergent feline aerial self-righting. This is the flexible-torso idea, built and measured, in May 2026. It also settles the premise — the spine does help, comprehensively — so the open question is no longer <em>whether</em> but <em>which</em> spine.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "The biological spine of quadrupeds enables sagittal flexion/extension, lateral bending, and axial rotation, playing a crucial role in highly agile and dexterous locomotion. While numerous studies have integrated active spinal joints into quadrupedal robots to enhance agility, most designs simplify control complexity by reducing spinal degrees of freedom (DOF), failing to achieve the spatial tri-axial rotation characteristic of biological spines. Consequently, replicating a multi-DOF biomimetic spine and effectively leveraging it to empower the agile locomotion of quadrupedal robots remains a significant research challenge. In this study, we present S-Cheetah, a quadrupedal robot featuring a 3-DOF bio-inspired serial active spine capable of biomimetic spatial tri-axial rotation. To empower the robot to fully utilize this active spine, we developed a specialized reinforcement learning framework to actively promote the engagement of the introduced spine and maximize the robot's locomotive capabilities by integrating an acceleration curriculum learning strategy with tailored reward functions, such as a gallop gait reward, a spine undulation reward, and a spine steering reward. Experimental results demonstrate that S-Cheetah can achieve a peak speed of 6.9 m/s using the rotary G2 gallop gait and an in-place turning rate of 7.2 rad/s. Besides, the system exhibits an emergent, feline-inspired aerial self-righting capability, allowing it to land stably on four feet from arbitrary orientations during free fall. Finally, through extensive evaluations across diverse locomotion tasks, we prove that the introduction of the proposed 3-DOF spine comprehensively enhances the locomotive agility of quadrupedal robots. Project website: himmy-robotics.github.io/scheetah",
+   "source": "curated",
+   "first_author": "Zimu Li",
+   "url": "https://arxiv.org/abs/2605.27909",
+   "fig": "figures/s-cheetah.webp",
+   "figs": [
+    "figures/s-cheetah-1.webp",
+    "figures/s-cheetah-2.webp",
+    "figures/s-cheetah-3.webp"
+   ]
+  },
+  {
    "id": "ume",
    "title": "Universal Manipulation Exoskeleton: Learning Compliant Whole-body Policies with Real-time Torque Feedback",
    "tree": "systems",
@@ -1745,11 +1858,14 @@
    ],
    "related": [
     "berkeley-humanoid-lite",
+    "changing-morph-dyn",
     "dyret",
     "getup-morphologies",
     "humanup",
+    "jdeite",
     "reconfig-wheelleg",
-    "swheg"
+    "swheg",
+    "var-topology-truss"
    ],
    "arxiv": "2604.21541",
    "doi": "10.48550/arxiv.2604.21541",
@@ -2578,6 +2694,75 @@
    ]
   },
   {
+   "id": "dogmo",
+   "title": "DogMo: A Large-Scale Multi-View RGB-D Dataset for 4D Canine Motion Recovery",
+   "tree": "il",
+   "branch": "human-video",
+   "authors": [
+    "Wang",
+    "Zan",
+    "Chen",
+    "Siyu",
+    "Mo",
+    "Luya",
+    "Gao",
+    "Xinfeng",
+    "Shen",
+    "Yuxin",
+    "Ding",
+    "Lebin",
+    "Liang",
+    "Wei"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-10-28",
+   "topics": [
+    "4D canine motion",
+    "multi-view RGB-D",
+    "1.2k sequences"
+   ],
+   "paradigm": [
+    "dataset"
+   ],
+   "method": [],
+   "projects": [
+    "r2s2r"
+   ],
+   "ideas": [
+    "codesign-dog-rl",
+    "third-person"
+   ],
+   "related": [
+    "animal-avatars",
+    "barc",
+    "corgi",
+    "hsmal",
+    "s-cheetah"
+   ],
+   "arxiv": "2510.24117",
+   "doi": "10.48550/arxiv.2510.24117",
+   "code": "",
+   "site": "",
+   "note": "1,200 motion sequences from 10 dogs, multi-view RGB-D with real 3D — the first dog dataset with enough fidelity to measure how a real animal's trunk actually bends while running. If you want to derive a spine from data rather than assume one, this is the measurement.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "We present DogMo, a large-scale multi-view RGB-D video dataset capturing diverse canine movements for the task of motion recovery from images. DogMo comprises 1.2k motion sequences collected from 10 unique dogs, offering rich variation in both motion and breed. It addresses key limitations of existing dog motion datasets, including the lack of multi-view and real 3D data, as well as limited scale and diversity. Leveraging DogMo, we establish four motion recovery benchmark settings that support systematic evaluation across monocular and multi-view, RGB and RGB-D inputs. To facilitate accurate motion recovery, we further introduce a three-stage, instance-specific optimization pipeline that fits the SMAL model to the motion sequences. Our method progressively refines body shape and pose through coarse alignment, dense correspondence supervision, and temporal regularization. Our dataset and method provide a principled foundation for advancing research in dog motion recovery and open up new directions at the intersection of computer vision, computer graphics, and animal behavior modeling.",
+   "source": "curated",
+   "first_author": "Wang",
+   "url": "https://arxiv.org/abs/2510.24117",
+   "fig": "figures/dogmo.webp",
+   "figs": [
+    "figures/dogmo-1.webp",
+    "figures/dogmo-2.webp"
+   ]
+  },
+  {
    "id": "dreamgen",
    "title": "DreamGen: Unlocking Generalization in Robot Learning through Video World Models",
    "tree": "il",
@@ -2747,6 +2932,53 @@
     "figures/egomimic-2.webp",
     "figures/egomimic-3.webp"
    ]
+  },
+  {
+   "id": "changing-morph-dyn",
+   "title": "Fast and Modular Whole-Body Lagrangian Dynamics of Legged Robots with Changing Morphology",
+   "tree": "systems",
+   "branch": "codesign",
+   "authors": [],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "Nonlinear Dynamics",
+   "venue_type": "journal",
+   "year": 2025,
+   "date": "2025-04-23",
+   "topics": [
+    "whole-body dynamics under changing morphology",
+    "modular assembly"
+   ],
+   "paradigm": [
+    "control"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "transformer-robot"
+   ],
+   "related": [
+    "gcnt",
+    "jdeite",
+    "morph-hypernet",
+    "opt-legged-control",
+    "var-topology-truss",
+    "x2n"
+   ],
+   "arxiv": "2504.16383",
+   "doi": "",
+   "code": "",
+   "site": "",
+   "note": "Closed-form, singularity-free whole-body Lagrangian dynamics for legged robots whose <b>morphology changes</b> — each limb modelled independently (Boltzmann-Hamel equations plus screw theory) and reassembled according to the robot's current configuration, so you do not re-derive the dynamics per mode. For a machine with a different kinematic tree in car form and robot form, this is the modelling tool. Author list not yet verified against the arXiv record — check before citing.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "",
+   "source": "curated",
+   "first_author": "",
+   "url": "https://arxiv.org/abs/2504.16383",
+   "fig": "figures/changing-morph-dyn.webp"
   },
   {
    "id": "groot-n1",
@@ -3318,7 +3550,9 @@
    "related": [
     "cross-humanoid-wbc",
     "dyret",
+    "gcnt",
     "humanup",
+    "morph-hypernet",
     "unirelo",
     "x2n"
    ],
@@ -4325,6 +4559,7 @@
     "third-person"
    ],
    "related": [
+    "animal-avatars",
     "asap",
     "deepmimic",
     "egoengine",
@@ -5170,6 +5405,7 @@
    ],
    "related": [
     "av-contact",
+    "dj-mix-analysis",
     "maniwav",
     "r3m",
     "sonicsense",
@@ -5370,6 +5606,7 @@
     "audio-vla",
     "av-contact",
     "dexumi",
+    "dj-mix-analysis",
     "hearing-touch",
     "see-hear-feel",
     "sonicsense",
@@ -7322,6 +7559,56 @@
    ]
   },
   {
+   "id": "robosen",
+   "title": "Robosen auto-converting Transformers (Optimus Prime, Grimlock)",
+   "tree": "systems",
+   "branch": "codesign",
+   "authors": [
+    "Robosen Robotics"
+   ],
+   "corresponding": [],
+   "institutions": [
+    "Robosen Robotics",
+    "Hasbro"
+   ],
+   "lab": "Robosen",
+   "venue": "commercial",
+   "venue_type": "industry",
+   "year": 2022,
+   "date": "2022-01-01",
+   "topics": [
+    "auto-converting bipedal robot",
+    "high servo count",
+    "consumer scale"
+   ],
+   "paradigm": [
+    "hardware"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "transformer-robot"
+   ],
+   "related": [
+    "berkeley-humanoid-lite",
+    "jdeite",
+    "letrons",
+    "toddlerbot"
+   ],
+   "arxiv": "",
+   "doi": "",
+   "code": "",
+   "site": "https://us.robosen.com/",
+   "note": "The most under-rated engineering reference here: a consumer product that converts <b>automatically</b> between a walking biped and a vehicle, with 34 servos and no human in the loop. At ~0.5 m it is the scale a PhD can actually iterate on, and it proves the mechanism is tractable when you stop trying to build it at 4 m. Closed-source and scripted — but the packaging is a masterclass.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "",
+   "source": "curated",
+   "first_author": "Robosen Robotics",
+   "url": "https://us.robosen.com/"
+  },
+  {
    "id": "mappo",
    "title": "The Surprising Effectiveness of PPO in Cooperative, Multi-Agent Games",
    "tree": "rl",
@@ -7431,10 +7718,12 @@
     "derl",
     "dinev-codesign",
     "dyret",
+    "gcnt",
     "hardware-as-policy",
     "meta-rl-legged",
     "neural-graph-evo",
     "robogrammar",
+    "s-cheetah",
     "taskagnostic-morph"
    ],
    "arxiv": "2110.03659",
@@ -7683,6 +7972,7 @@
    "related": [
     "codesign-rl",
     "evogym",
+    "morph-hypernet",
     "neural-graph-evo",
     "sims1994",
     "taskagnostic-morph",
@@ -7943,6 +8233,7 @@
     "getup-morphologies",
     "meta-rl-legged",
     "mit-cheetah",
+    "s-cheetah",
     "text2robot",
     "transform2act",
     "x2n"
@@ -7959,6 +8250,60 @@
    "source": "curated",
    "first_author": "Tønnes F. Nygaard",
    "url": "https://doi.org/10.1038/s42256-021-00320-3"
+  },
+  {
+   "id": "dj-mix-analysis",
+   "title": "A Computational Analysis of Real-World DJ Mixes using Mix-To-Track Subsequence Alignment",
+   "tree": "il",
+   "branch": "tactile-learn",
+   "authors": [
+    "Tae‐Jun Kim",
+    "Minsuk Choi",
+    "Evan Sacks",
+    "Yi‐Hsuan Yang",
+    "Juhan Nam"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2020,
+   "date": "2020-08-24",
+   "topics": [
+    "DJ mix analysis",
+    "mix-to-track alignment",
+    "cue points and transitions"
+   ],
+   "paradigm": [
+    "audio"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "robot-dj"
+   ],
+   "related": [
+    "audio-vla",
+    "hearing-touch",
+    "maniwav"
+   ],
+   "arxiv": "2008.10267",
+   "doi": "10.48550/arxiv.2008.10267",
+   "code": "",
+   "site": "",
+   "note": "ISMIR 2020. Aligns a real DJ mix back to its source tracks to recover cue points, transition length, mix segmentation and the musical changes the DJ made. This is where the <b>evaluation metrics</b> for a robot DJ come from — it is the only literature that quantifies what a DJ actually did, rather than whether a listener liked it.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "A DJ mix is a sequence of music tracks concatenated seamlessly, typically rendered for audiences in a live setting by a DJ on stage. As a DJ mix is produced in a studio or the live version is recorded for music streaming services, computational methods to analyze DJ mixes, for example, extracting track information or understanding DJ techniques, have drawn research interests. Many of previous works are, however, limited to identifying individual tracks in a mix or segmenting it, and the sizes of the datasets are usually small. In this paper, we provide an in-depth analysis of DJ music by aligning a mix to its original music tracks. We set up the subsequence alignment such that the audio features are less sensitive to the tempo or key change of the original track in a mix. This approach provides temporally tight mix-to-track matching from which we can obtain cue-points, transition length, mix segmentation, and musical changes in DJ performance. Using 1,557 mixes from 1001Tracklists including 13,728 tracks and 20,765 transitions, we conduct the proposed analysis and show a wide range of statistics, which may elucidate the creative process of DJ music making.",
+   "source": "curated",
+   "first_author": "Tae‐Jun Kim",
+   "url": "https://arxiv.org/abs/2008.10267",
+   "fig": "figures/dj-mix-analysis.webp",
+   "figs": [
+    "figures/dj-mix-analysis-1.webp"
+   ]
   },
   {
    "id": "hardware-as-policy",
@@ -8249,6 +8594,8 @@
    "related": [
     "anymal-hwangbo",
     "dyret",
+    "s-cheetah",
+    "spine-phase",
     "swheg",
     "unitree-g1"
    ],
@@ -8340,6 +8687,59 @@
    "figs": [
     "figures/deepmimic-1.webp"
    ]
+  },
+  {
+   "id": "jdeite",
+   "title": "J-deite RIDE: a 4 m rideable humanoid that transforms into a car",
+   "tree": "systems",
+   "branch": "codesign",
+   "authors": [
+    "Kenji Ishida (BRAVE ROBOTICS)",
+    "Asratec",
+    "Sansei Technologies"
+   ],
+   "corresponding": [],
+   "institutions": [
+    "BRAVE ROBOTICS",
+    "Asratec",
+    "Sansei Technologies"
+   ],
+   "lab": "BRAVE ROBOTICS",
+   "venue": "industry",
+   "venue_type": "industry",
+   "year": 2018,
+   "date": "2018-04-26",
+   "topics": [
+    "car-humanoid transformation",
+    "topology change",
+    "rideable"
+   ],
+   "paradigm": [
+    "hardware"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "transformer-robot"
+   ],
+   "related": [
+    "changing-morph-dyn",
+    "letrons",
+    "robosen",
+    "x2n"
+   ],
+   "arxiv": "",
+   "doi": "",
+   "code": "",
+   "site": "https://braverobotics.com/en/2018/04/26/j-deite-ride-release/",
+   "note": "The only real car ↔ humanoid robot at scale: 4 m tall, carries two people, drives at 60 kph on wheels, walks as a biped, and converts in about <b>one minute</b> using Asratec's V-Sido controller. Read it as the existence proof and as the benchmark to beat — the transformation is quasi-static and scripted, and the bipedal walking is slow and statically stable. Everything interesting about learned control is untouched.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "",
+   "source": "curated",
+   "first_author": "Kenji Ishida (BRAVE ROBOTICS)",
+   "url": "https://braverobotics.com/en/2018/04/26/j-deite-ride-release/"
   },
   {
    "id": "dactyl",
@@ -9030,6 +9430,57 @@
    "figs": [
     "figures/aero-hand-1.webp"
    ]
+  },
+  {
+   "id": "corgi",
+   "title": "CORGI: Consistency-Aware 3D Dog Reconstruction from a Single Image in the Wild",
+   "tree": "il",
+   "branch": "human-video",
+   "authors": [
+    "Yuxiao Wu",
+    "Weile Li",
+    "B X Zhu",
+    "Yumeng Liu",
+    "Youcheng Cai",
+    "Ligang Liu"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-07-01",
+   "topics": [
+    "consistency-aware 3D dog reconstruction",
+    "single image"
+   ],
+   "paradigm": [
+    "representation learning"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "codesign-dog-rl"
+   ],
+   "related": [
+    "animal-avatars",
+    "barc",
+    "dogmo"
+   ],
+   "arxiv": "2607.00321",
+   "doi": "10.48550/arxiv.2607.00321",
+   "code": "",
+   "site": "",
+   "note": "2026 single-image 3D dog reconstruction with explicit consistency handling. Together with DogMo it makes 'build the robot from dog footage' a data problem rather than an aspiration.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Reconstructing high-fidelity 3D models of highly articulated animals, such as dogs, from a single in-the-wild image remains a formidable challenge. In this paper, we introduce CORGI, a novel framework for consistency-aware 3D dog reconstruction from a single unconstrained image that completely eliminates the need for 3D supervision. To overcome generative inconsistencies and the lack of multi-view capture, our pipeline introduces three core components. First, we propose a Canonical-Driven Orbital Generation (CDOG) strategy, utilizing specialized Canonical and Orbit LoRAs to normalize arbitrary input poses and synthesize reliable 360-degree video observations. Second, we design a Consistency-aware Deformable 3DGS (CA-3DGS) module that anchors on a D-SMAL prior, explicitly modeling per-view generative errors through dedicated neural deformation fields to learn accurate vertex-level displacements. Finally, to eliminate structural distortions and recover high-frequency details, we introduce a self-supervised Deformation-Conditioned Generative Repair (DCGR) module. Extensive experiments demonstrate that CORGI achieves state-of-the-art performance, generalizing seamlessly across diverse dog breeds to produce geometrically accurate, visually coherent, and fully animatable 3D assets ready for downstream applications.",
+   "source": "curated",
+   "first_author": "Yuxiao Wu",
+   "url": "https://arxiv.org/abs/2607.00321",
+   "fig": "figures/corgi.webp"
   },
   {
    "id": "force-grasp-s2r",
@@ -10895,6 +11346,7 @@
     "chorus",
     "crossformer",
     "exbody2",
+    "gcnt",
     "getup-morphologies",
     "hugwbc"
    ],
@@ -11960,6 +12412,7 @@
     "tactile-wm"
    ],
    "related": [
+    "dj-mix-analysis",
     "dream-tac",
     "maniwav",
     "openvla",
@@ -12430,6 +12883,7 @@
    ],
    "related": [
     "berkeley-humanoid",
+    "robosen",
     "so100",
     "toddlerbot",
     "x2n"
@@ -13020,6 +13474,63 @@
    "figs": [
     "figures/openvla-oft-1.webp",
     "figures/openvla-oft-2.webp"
+   ]
+  },
+  {
+   "id": "gcnt",
+   "title": "GCNT: Graph-Based Transformer Policies for Morphology-Agnostic Reinforcement Learning",
+   "tree": "rl",
+   "branch": "foundations",
+   "authors": [
+    "Yingbo Luo",
+    "Meibao Yao",
+    "Xueming Xiao"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-05-21",
+   "topics": [
+    "morphology-agnostic policy",
+    "graph transformer",
+    "zero-shot to unseen bodies"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "transformer-robot",
+    "codesign-dex-agentic"
+   ],
+   "related": [
+    "changing-morph-dyn",
+    "cross-humanoid-wbc",
+    "getup-morphologies",
+    "morph-hypernet",
+    "transform2act"
+   ],
+   "arxiv": "2505.15211",
+   "doi": "10.48550/arxiv.2505.15211",
+   "code": "",
+   "site": "",
+   "note": "A GCN-plus-transformer policy that accepts an arbitrary number of modules and generalises zero-shot to morphologies it never saw. The architecture answer to 'one policy, changing body' — which is exactly what a transforming robot needs, since its body is a different graph before and after.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Training a universal controller for robots with different morphologies is a promising research trend, since it can significantly enhance the robustness and resilience of the robotic system. However, diverse morphologies can yield different dimensions of state space and action space, making it difficult to comply with traditional policy networks. Existing methods address this issue by modularizing the robot configuration, while do not adequately extract and utilize the overall morphological information, which has been proven crucial for training a universal controller. To this end, we propose GCNT, a morphology-agnostic policy network based on improved Graph Convolutional Network (GCN) and Transformer. It exploits the fact that GCN and Transformer can handle arbitrary number of modules to achieve compatibility with diverse morphologies. Our key insight is that the GCN is able to efficiently extract morphology information of robots, while Transformer ensures that it is fully utilized by allowing each node of the robot to communicate this information directly. Experimental results show that our method can generate resilient locomotion behaviors for robots with different configurations, including zero-shot generalization to robot morphologies not seen during training. In particular, GCNT achieved the best performance on 8 tasks in the 2 standard benchmarks.",
+   "source": "curated",
+   "first_author": "Yingbo Luo",
+   "url": "https://arxiv.org/abs/2505.15211",
+   "fig": "figures/gcnt.webp",
+   "figs": [
+    "figures/gcnt-1.webp",
+    "figures/gcnt-2.webp",
+    "figures/gcnt-3.webp"
    ]
   },
   {
@@ -14396,7 +14907,8 @@
    "ideas": [],
    "related": [
     "berkeley-humanoid",
-    "berkeley-humanoid-lite"
+    "berkeley-humanoid-lite",
+    "robosen"
    ],
    "arxiv": "2502.00893",
    "doi": "",
@@ -14922,6 +15434,64 @@
    ]
   },
   {
+   "id": "twisting-waist",
+   "title": "A Robust Quadruped Robot with Twisting Waist for Flexible Motions",
+   "tree": "systems",
+   "branch": "codesign",
+   "authors": [
+    "Quancheng Qian",
+    "Xiaoyi Wei",
+    "Zonghao Zhang",
+    "Jiaxin Tu",
+    "Yueqi Zhang",
+    "Taixian Hou",
+    "Xiaofei Gao",
+    "Peng Zhai",
+    "Lihua Zhang"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-10-08",
+   "topics": [
+    "twisting waist",
+    "quadruped flexibility"
+   ],
+   "paradigm": [
+    "hardware"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "codesign-dog-rl"
+   ],
+   "related": [
+    "s-cheetah",
+    "spine-phase"
+   ],
+   "arxiv": "2410.05884",
+   "doi": "10.48550/arxiv.2410.05884",
+   "code": "",
+   "site": "",
+   "note": "A single twisting waist joint rather than a full spine — the minimal version of the same idea, and a useful data point on how much of the benefit one DOF buys.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "The waist plays a crucial role in the agile movement of many animals in nature. It provides the torso with additional degrees of freedom and flexibility, inspiring researchers to incorporate this biological feature into robotic structures to enhance robot locomotion. This paper presents a cost-effective and low-complexity waist mechanism integrated into the structure of the open-source robot solo8, adding a new degree of freedom (DOF) to its torso. We refer to this novel robot as solo9. Additionally, we propose a full-body control method for the waist-equipped quadruped robot based on generative adversarial imitation learning (GAIL). During training, the discriminator is used as input for iterative optimization of the policy and dataset, enabling solo9 to achieve flexible steering maneuvers across various gaits. Extensive tests of solo9's steering capabilities, terrain adaptability, and robustness are conducted in both simulation and real-world scenarios, with detailed comparisons to solo8 and solo12, demonstrating the effectiveness of the control algorithm and the advantages of the waist mechanism.",
+   "source": "curated",
+   "first_author": "Quancheng Qian",
+   "url": "https://arxiv.org/abs/2410.05884",
+   "fig": "figures/twisting-waist.webp",
+   "figs": [
+    "figures/twisting-waist-1.webp",
+    "figures/twisting-waist-2.webp",
+    "figures/twisting-waist-3.webp"
+   ]
+  },
+  {
    "id": "aloha2",
    "title": "ALOHA 2: An Enhanced Low-Cost Hardware for Bimanual Teleoperation",
    "tree": "systems",
@@ -15101,6 +15671,61 @@
    ]
   },
   {
+   "id": "animal-avatars",
+   "title": "Animal Avatars: Reconstructing Animatable 3D Animals from Casual Videos",
+   "tree": "il",
+   "branch": "human-video",
+   "authors": [
+    "Remy Sabathier",
+    "Niloy J. Mitra",
+    "David R. Novotny"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-03-25",
+   "topics": [
+    "animatable 3D animals from casual video"
+   ],
+   "paradigm": [
+    "representation learning"
+   ],
+   "method": [],
+   "projects": [
+    "r2s2r"
+   ],
+   "ideas": [
+    "codesign-dog-rl",
+    "third-person"
+   ],
+   "related": [
+    "barc",
+    "corgi",
+    "dogmo",
+    "hsmal",
+    "videomimic"
+   ],
+   "arxiv": "2403.17103",
+   "doi": "10.48550/arxiv.2403.17103",
+   "code": "",
+   "site": "",
+   "note": "Animatable 3D animals reconstructed from casual video — the pipeline that turns YouTube footage of a running dog into something with joints you can measure.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "We present a method to build animatable dog avatars from monocular videos. This is challenging as animals display a range of (unpredictable) non-rigid movements and have a variety of appearance details (e.g., fur, spots, tails). We develop an approach that links the video frames via a 4D solution that jointly solves for animal's pose variation, and its appearance (in a canonical pose). To this end, we significantly improve the quality of template-based shape fitting by endowing the SMAL parametric model with Continuous Surface Embeddings, which brings image-to-mesh reprojection constaints that are denser, and thus stronger, than the previously used sparse semantic keypoint correspondences. To model appearance, we propose an implicit duplex-mesh texture that is defined in the canonical pose, but can be deformed using SMAL pose coefficients and later rendered to enforce a photometric compatibility with the input video frames. On the challenging CoP3D and APTv2 datasets, we demonstrate superior results (both in terms of pose estimates and predicted appearance) to existing template-free (RAC) and template-based approaches (BARC, BITE).",
+   "source": "curated",
+   "first_author": "Remy Sabathier",
+   "url": "https://arxiv.org/abs/2403.17103",
+   "fig": "figures/animal-avatars.webp",
+   "figs": [
+    "figures/animal-avatars-1.webp"
+   ]
+  },
+  {
    "id": "berkeley-humanoid",
    "title": "Berkeley Humanoid: A Research Platform for Learning-based Control",
    "tree": "systems",
@@ -15274,6 +15899,59 @@
    "figs": [
     "figures/consistency-policy-1.webp"
    ]
+  },
+  {
+   "id": "morph-hypernet",
+   "title": "Distilling Morphology-Conditioned Hypernetworks for Efficient Universal Morphology Control",
+   "tree": "rl",
+   "branch": "foundations",
+   "authors": [
+    "Xiong Zheng",
+    "Risto Vuorio",
+    "Jacob Beck",
+    "Matthieu Zimmer",
+    "Shao Kun",
+    "Shimon Whiteson"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-02-09",
+   "topics": [
+    "morphology-conditioned hypernetwork",
+    "universal morphology control"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "transformer-robot",
+    "codesign-dex-agentic"
+   ],
+   "related": [
+    "changing-morph-dyn",
+    "derl",
+    "gcnt",
+    "getup-morphologies"
+   ],
+   "arxiv": "2402.06570",
+   "doi": "10.48550/arxiv.2402.06570",
+   "code": "",
+   "site": "",
+   "note": "Distils morphology-conditioned hypernetworks so one network emits the weights for whatever body it is given. Cheaper at inference than a graph transformer, which matters when the policy has to run on the robot.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Learning a universal policy across different robot morphologies can significantly improve learning efficiency and enable zero-shot generalization to unseen morphologies. However, learning a highly performant universal policy requires sophisticated architectures like transformers (TF) that have larger memory and computational cost than simpler multi-layer perceptrons (MLP). To achieve both good performance like TF and high efficiency like MLP at inference time, we propose HyperDistill, which consists of: (1) A morphology-conditioned hypernetwork (HN) that generates robot-wise MLP policies, and (2) A policy distillation approach that is essential for successful training. We show that on UNIMAL, a benchmark with hundreds of diverse morphologies, HyperDistill performs as well as a universal TF teacher policy on both training and unseen test robots, but reduces model size by 6-14 times, and computational cost by 67-160 times in different environments. Our analysis attributes the efficiency advantage of HyperDistill at inference time to knowledge decoupling, i.e., the ability to decouple inter-task and intra-task knowledge, a general principle that could also be applied to improve inference efficiency in other domains.",
+   "source": "curated",
+   "first_author": "Xiong Zheng",
+   "url": "https://arxiv.org/abs/2402.06570",
+   "fig": "figures/morph-hypernet.webp"
   },
   {
    "id": "dreureka",
@@ -17616,6 +18294,7 @@
    "related": [
     "coros-codesign",
     "diff-contact-design",
+    "opt-legged-control",
     "transform2act"
    ],
    "arxiv": "2103.04660",
@@ -17693,6 +18372,61 @@
    "fig": "figures/ase.webp",
    "figs": [
     "figures/ase-1.webp"
+   ]
+  },
+  {
+   "id": "barc",
+   "title": "BARC: Learning to Regress 3D Dog Shape from Images by Exploiting Breed Information",
+   "tree": "il",
+   "branch": "human-video",
+   "authors": [
+    "Nadine Rueegg",
+    "Silvia Zuffi",
+    "Konrad Schindler",
+    "Michael J. Black"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2022,
+   "date": "2022-03-29",
+   "topics": [
+    "3D dog shape regression",
+    "breed priors"
+   ],
+   "paradigm": [
+    "representation learning"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "codesign-dog-rl"
+   ],
+   "related": [
+    "animal-avatars",
+    "corgi",
+    "dogmo",
+    "hsmal"
+   ],
+   "arxiv": "2203.15536",
+   "doi": "10.48550/arxiv.2203.15536",
+   "code": "",
+   "site": "",
+   "note": "Regresses 3D dog shape from ordinary images using breed information as a prior. The shape half of 'measure the animal' — you need body proportions before you can scale a kinematic chain to them.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Our goal is to recover the 3D shape and pose of dogs from a single image. This is a challenging task because dogs exhibit a wide range of shapes and appearances, and are highly articulated. Recent work has proposed to directly regress the SMAL animal model, with additional limb scale parameters, from images. Our method, called BARC (Breed-Augmented Regression using Classification), goes beyond prior work in several important ways. First, we modify the SMAL shape space to be more appropriate for representing dog shape. But, even with a better shape model, the problem of regressing dog shape from an image is still challenging because we lack paired images with 3D ground truth. To compensate for the lack of paired data, we formulate novel losses that exploit information about dog breeds. In particular, we exploit the fact that dogs of the same breed have similar body shapes. We formulate a novel breed similarity loss consisting of two parts: One term encourages the shape of dogs from the same breed to be more similar than dogs of different breeds. The second one, a breed classification loss, helps to produce recognizable breed-specific shapes. Through ablation studies, we find that our breed losses significantly improve shape accuracy over a baseline without them. We also compare BARC qualitatively to WLDO with a perceptual study and find that our approach produces dogs that are significantly more realistic. This work shows that a-priori information about genetic similarity can help to compensate for the lack of 3D training data. This concept may be applicable to other animal species or groups of species. Our code is publicly available for research purposes at https://barc.is.tue.mpg.de/.",
+   "source": "curated",
+   "first_author": "Nadine Rueegg",
+   "url": "https://arxiv.org/abs/2203.15536",
+   "fig": "figures/barc.webp",
+   "figs": [
+    "figures/barc-1.webp",
+    "figures/barc-2.webp",
+    "figures/barc-3.webp"
    ]
   },
   {
@@ -18066,6 +18800,64 @@
    ]
   },
   {
+   "id": "opt-legged-control",
+   "title": "Optimization-Based Control for Dynamic Legged Robots",
+   "tree": "rl",
+   "branch": "locomotion",
+   "authors": [
+    "Patrick M. Wensing",
+    "Michael Posa",
+    "Yue Hu",
+    "Adrien Escande",
+    "Nicolas Mansard",
+    "Andrea Del Prete"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2022,
+   "date": "2022-11-21",
+   "topics": [
+    "optimization-based control",
+    "dynamic legged robots",
+    "survey"
+   ],
+   "paradigm": [
+    "control"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "transformer-robot"
+   ],
+   "related": [
+    "changing-morph-dyn",
+    "coros-codesign",
+    "dinev-codesign"
+   ],
+   "arxiv": "2211.11644",
+   "doi": "10.48550/arxiv.2211.11644",
+   "code": "",
+   "site": "",
+   "note": "Survey of optimization-based control for dynamic legged robots. The model-based half you will need for the transformation manoeuvre, where you have a good model and only a couple of seconds of trajectory to plan.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "In a world designed for legs, quadrupeds, bipeds, and humanoids have the opportunity to impact emerging robotics applications from logistics, to agriculture, to home assistance. The goal of this survey is to cover the recent progress toward these applications that has been driven by model-based optimization for the real-time generation and control of movement. The majority of the research community has converged on the idea of generating locomotion control laws by solving an optimal control problem (OCP) in either a model-based or data-driven manner. However, solving the most general of these problems online remains intractable due to complexities from intermittent unidirectional contacts with the environment, and from the many degrees of freedom of legged robots. This survey covers methods that have been pursued to make these OCPs computationally tractable, with specific focus on how environmental contacts are treated, how the model can be simplified, and how these choices affect the numerical solution methods employed. The survey focuses on model-based optimization, covering its recent use in a stand alone fashion, and suggesting avenues for combination with learning-based formulations to further accelerate progress in this growing field.",
+   "source": "curated",
+   "first_author": "Patrick M. Wensing",
+   "url": "https://arxiv.org/abs/2211.11644",
+   "fig": "figures/opt-legged-control.webp",
+   "figs": [
+    "figures/opt-legged-control-1.webp",
+    "figures/opt-legged-control-2.webp"
+   ]
+  },
+  {
    "id": "real2sim",
    "title": "Planar Robot Casting with Real2Sim2Real Self-Supervised Learning",
    "tree": "rl",
@@ -18167,6 +18959,7 @@
    "related": [
     "mit-cheetah",
     "reconfig-wheelleg",
+    "var-topology-truss",
     "x2n"
    ],
    "arxiv": "2210.15126",
@@ -18428,6 +19221,54 @@
     "figures/implicit-bc-2.webp",
     "figures/implicit-bc-3.webp"
    ]
+  },
+  {
+   "id": "var-topology-truss",
+   "title": "Motion Planning for Variable Topology Trusses: Reconfiguration and Locomotion",
+   "tree": "systems",
+   "branch": "codesign",
+   "authors": [
+    "Chao Liu",
+    "Sencheng Yu",
+    "Mark Yim"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2021,
+   "date": "2021-07-31",
+   "topics": [
+    "variable topology truss",
+    "reconfiguration and locomotion planning"
+   ],
+   "paradigm": [
+    "planning"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "transformer-robot"
+   ],
+   "related": [
+    "changing-morph-dyn",
+    "swheg",
+    "x2n"
+   ],
+   "arxiv": "2108.00309",
+   "doi": "10.48550/arxiv.2108.00309",
+   "code": "",
+   "site": "",
+   "note": "Motion planning for trusses that change their <b>connection topology</b>, not just their joint angles. The closest existing formal treatment of reconfiguration where members change role — which is the abstract version of a body panel becoming a limb.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Truss robots are highly redundant parallel robotic systems that can be applied in a variety of scenarios. The variable topology truss (VTT) is a class of modular truss robots. As self-reconfigurable modular robots, a VTT is composed of many edge modules that can be rearranged into various structures depending on the task. These robots change their shape by not only controlling joint positions as with fixed morphology robots, but also reconfiguring the connectivity between truss members in order to change their topology. The motion planning problem for VTT robots is difficult due to their varying morphology, high dimensionality, the high likelihood for self-collision, and complex motion constraints. In this paper, a new motion planning framework to dramatically alter the structure of a VTT is presented. It can also be used to solve locomotion tasks that are much more efficient compared with previous work. Several test scenarios are used to show its effectiveness. Supplementary materials are available at https://www.modlabupenn.org/vtt-motion-planning/.",
+   "source": "curated",
+   "first_author": "Chao Liu",
+   "url": "https://arxiv.org/abs/2108.00309",
+   "fig": "figures/var-topology-truss.webp"
   },
   {
    "id": "reskin",
@@ -19033,7 +19874,9 @@
    "related": [
     "diff-contact-design",
     "dinev-codesign",
-    "disney-bdx"
+    "disney-bdx",
+    "opt-legged-control",
+    "spine-phase"
    ],
    "arxiv": "",
    "doi": "10.1177/0278364918771172",
@@ -28044,6 +28887,67 @@
    "fig": "figures/x-specializingversatileskilllibrariesusing.webp"
   },
   {
+   "id": "hsmal",
+   "title": "hSMAL: Detailed Horse Shape and Pose Reconstruction for Motion Pattern Recognition",
+   "tree": "il",
+   "branch": "human-video",
+   "authors": [
+    "Ci Li",
+    "Nima Ghorbani",
+    "Sofia Broomé",
+    "Maheen Rashid",
+    "Michael J. Black",
+    "Elin Hernlund",
+    "Hedvig Kjellström",
+    "Silvia Zuffi"
+   ],
+   "corresponding": [],
+   "institutions": [
+    "KTH Royal Institute of Technology",
+    "Max Planck Society",
+    "National Research Council",
+    "Swedish University of Agricultural Sciences"
+   ],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2021,
+   "date": "2021-06-18",
+   "topics": [
+    "horse shape and pose",
+    "motion pattern recognition"
+   ],
+   "paradigm": [
+    "representation learning"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "codesign-dog-rl"
+   ],
+   "related": [
+    "animal-avatars",
+    "barc",
+    "dogmo"
+   ],
+   "arxiv": "2106.10102",
+   "doi": "10.48550/arxiv.2106.10102",
+   "code": "",
+   "site": "",
+   "note": "The horse instance of the SMAL family. Useful mainly as evidence that the parametric-quadruped approach generalises across species, which matters if you want to co-design for a morphology between a dog and a cheetah.",
+   "stars": 1,
+   "curated": true,
+   "local": "",
+   "abstract": "In this paper we present our preliminary work on model-based behavioral analysis of horse motion. Our approach is based on the SMAL model, a 3D articulated statistical model of animal shape. We define a novel SMAL model for horses based on a new template, skeleton and shape space learned from $37$ horse toys. We test the accuracy of our hSMAL model in reconstructing a horse from 3D mocap data and images. We apply the hSMAL model to the problem of lameness detection from video, where we fit the model to images to recover 3D pose and train an ST-GCN network on pose data. A comparison with the same network trained on mocap points illustrates the benefit of our approach.",
+   "source": "curated",
+   "first_author": "Ci Li",
+   "url": "https://arxiv.org/abs/2106.10102",
+   "fig": "figures/hsmal.webp",
+   "figs": [
+    "figures/hsmal-1.webp"
+   ]
+  },
+  {
    "id": "x-imagebaseddeepreinforcementlearningforau",
    "title": "Image-based Deep Reinforcement Learning for Autonomous Lunar Landing",
    "tree": "rl",
@@ -28459,6 +29363,52 @@
    "local": "~/Desktop/papers/Archieve/Humaniod Benchmark/cable_arm_Yong-Jae Kim 2015.pdf",
    "source": "library",
    "fig": "figures/x-anthropomorphiclowinertiahighstiffnessma.webp"
+  },
+  {
+   "id": "letrons",
+   "title": "Letrons: a drivable BMW that converts into a 4.5 m robot",
+   "tree": "systems",
+   "branch": "codesign",
+   "authors": [
+    "Letvision (Levent Erenler)"
+   ],
+   "corresponding": [],
+   "institutions": [
+    "Letvision"
+   ],
+   "lab": "Letvision",
+   "venue": "industry",
+   "venue_type": "industry",
+   "year": 2016,
+   "date": "2016-09-01",
+   "topics": [
+    "car-robot conversion",
+    "show robot"
+   ],
+   "paradigm": [
+    "hardware"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "transformer-robot"
+   ],
+   "related": [
+    "jdeite",
+    "robosen"
+   ],
+   "arxiv": "",
+   "doi": "",
+   "code": "",
+   "site": "https://www.letrons.com/",
+   "note": "Twelve engineers, eight months, a real BMW that stands up and articulates its arms and fingers — but it <b>does not walk</b>, and it is remote-operated. Useful as a mechanical-packaging reference and as a reminder of where the difficulty actually sits: standing up is not the hard part, balancing and walking afterwards is.",
+   "stars": 1,
+   "curated": true,
+   "local": "",
+   "abstract": "",
+   "source": "curated",
+   "first_author": "Letvision (Levent Erenler)",
+   "url": "https://www.letrons.com/"
   },
   {
    "id": "x-biomedresearchinternational",

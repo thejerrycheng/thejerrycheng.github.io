@@ -219,7 +219,7 @@ html[data-theme="night"] .pcard .pven{ color:#151820; }
 /* ---------- drawer ---------- */
 .scrim{ position:fixed; inset:0; background:rgba(21,24,32,.45); opacity:0; pointer-events:none; transition:.28s; z-index:1100 }
 .scrim.on{ opacity:1; pointer-events:auto }
-.drawer{ position:fixed; right:0; top:0; bottom:0; width:min(680px,100%); background:var(--bone); z-index:1101;
+.drawer{ position:fixed; right:0; top:0; bottom:0; width:min(860px,100%); background:var(--bone); z-index:1101;
   transform:translateX(100%); transition:transform .4s var(--ease-out); overflow-y:auto;
   border-left:var(--line-w) solid var(--line); box-shadow:-8px 0 0 var(--sh-c) }
 .drawer.on{ transform:none }
@@ -279,6 +279,16 @@ html[data-theme="night"] .dvenue{ color:#151820 }
   border-radius:var(--radius-sm); box-shadow:var(--sh-xs); padding:15px 17px; margin:18px 0 }
 .rv .callout p:last-child{ margin-bottom:0 }
 .rv .callout .cl{ font-family:var(--font-comic); font-size:13px; letter-spacing:.09em; text-transform:uppercase; color:var(--hi); margin:0 0 7px }
+.rv .figbox{ background:var(--panel); border:var(--line-w) solid var(--line); border-radius:var(--radius-sm);
+  box-shadow:var(--sh-xs); padding:14px; margin:18px 0; overflow-x:auto }
+.rv .figbox svg{ width:100%; min-width:600px; height:auto; display:block }
+.rv .figcap{ font-family:var(--font-mono); font-size:11px; color:var(--ash); line-height:1.5; margin:10px 2px 0 }
+.rv .tier{ border:1.5px solid var(--line-soft); border-left:5px solid var(--imp); border-radius:var(--radius-sm);
+  background:var(--panel); padding:13px 16px; margin:12px 0 }
+.rv .tier > h4{ font-family:var(--font-comic); font-size:13.5px; letter-spacing:.07em; text-transform:uppercase;
+  color:var(--imp); margin:0 0 9px }
+.rv .tier ul{ margin:0; padding-left:18px }
+.rv .tier li{ font-size:14.2px; line-height:1.56; margin-bottom:7px }
 .readlist{ display:grid; gap:1px; margin:10px 0 4px }
 .readlist .rl{ display:grid; grid-template-columns:26px 1fr; gap:11px; padding:9px; border-radius:var(--radius-sm);
   cursor:pointer; transition:background .15s ease; align-items:baseline }
@@ -1382,6 +1392,15 @@ function openIdea(id, push=true){
     if(rv.state)   body += `<h3>Where the field is</h3>${refLink(rv.state)}`;
     if(rv.threads) body += `<h3>The threads</h3><ul>${rv.threads.map(t=>`<li>${refLink(t)}</li>`).join("")}</ul>`;
     if(rv.gap)     body += `<div class="callout"><p class="cl">The opening</p>${refLink(rv.gap)}</div>`;
+    if(rv.diagram){
+      body += `<h3>${esc(rv.diagram.title||"System flow")}</h3><div class="figbox">${rv.diagram.svg}</div>`;
+      if(rv.diagram.caption) body += `<p class="figcap">${esc(rv.diagram.caption)}</p>`;
+    }
+    if(rv.metrics){
+      body += `<h3>${esc(rv.metrics.title||"Metrics")}</h3>` + (rv.metrics.tiers||[]).map(t=>
+        `<div class="tier"><h4>${esc(t.name)}</h4><ul>${
+          (t.items||[]).map(x=>`<li>${refLink(x)}</li>`).join("")}</ul></div>`).join("");
+    }
     if(rv.plan)    body += `<h3>A first experiment</h3><ul>${rv.plan.map(t=>`<li>${refLink(t)}</li>`).join("")}</ul>`;
     if(rv.risks)   body += `<h3>What could sink it</h3><ul>${rv.risks.map(t=>`<li>${refLink(t)}</li>`).join("")}</ul>`;
     if(rv.read && rv.read.length){

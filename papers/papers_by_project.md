@@ -1,18 +1,19 @@
 # Paper Atlas — papers by project
 
-_508 papers · generated 2026-09-12_
+_525 papers · generated 2026-09-12_
 
 
 ## CURRENT PROJECTS
 
 - MABEL — Mobile bimanual humanoid
-  - Reading  (100)
-    - Reinforcement Learning  (38)
-      - Locomotion  (11)
+  - Reading  (101)
+    - Reinforcement Learning  (39)
+      - Locomotion  (12)
         - [Learning agile and dynamic motor skills for legged robots](https://arxiv.org/abs/1901.08652)  `Science Robotics 2019`
         - [Learning Quadrupedal Locomotion over Challenging Terrain](https://arxiv.org/abs/2010.11251)  `Science Robotics 2020`
         - [Learning to Walk in Minutes Using Massively Parallel Deep Reinforcement Learning](https://arxiv.org/abs/2109.11978)  `CoRL 2021`
         - [RMA: Rapid Motor Adaptation for Legged Robots](https://arxiv.org/abs/2107.04034)  `RSS 2021`
+        - [Optimization-Based Control for Dynamic Legged Robots](https://arxiv.org/abs/2211.11644)  `arXiv 2022`
         - [Real-World Humanoid Locomotion with Reinforcement Learning](https://arxiv.org/abs/2303.03381)  `Science Robotics 2024`
         - [A Unified and General Humanoid Whole-Body Controller for Versatile Locomotion](https://arxiv.org/abs/2502.03206)  `arXiv 2025`
         - [Booster Gym: An End-to-End Reinforcement Learning Framework for Humanoid Robot Locomotion](https://doi.org/10.1007/978-981-95-6825-3_19)  `Lecture Notes in Electrical Engineering 2025`
@@ -321,7 +322,7 @@ _508 papers · generated 2026-09-12_
     - Multi-robot collaboration & multi-agent RL
     - Human-robot interaction & collaboration tasks
 - Real2Sim2Real — Egocentric capture → sim → policy
-  - Reading  (78)
+  - Reading  (80)
     - Reinforcement Learning  (21)
       - Locomotion  (2)
         - [RMA: Rapid Motor Adaptation for Legged Robots](https://arxiv.org/abs/2107.04034)  `RSS 2021`
@@ -349,7 +350,7 @@ _508 papers · generated 2026-09-12_
         - [DexSim2Real: Foundation Model-Guided Sim-to-Real Transfer for Generalizable Dexterous Manipulation](https://arxiv.org/abs/2605.05241)  `arXiv 2026`
         - [R2S-EGO: Dual-Proxy Refinement for Sparse-Capture Real-to-Sim](https://arxiv.org/abs/2608.06827)  `arXiv 2026`
         - [Video2Sim2Real: Full-Stack Autonomous Dexterous Skill Acquisition from a Single Human Video](https://arxiv.org/abs/2606.08828)  `arXiv 2026`
-    - Imitation Learning  (39)
+    - Imitation Learning  (41)
       - Vision-Language-Action models  (5)
         - [Humanoid Policy ~ Human Policy](https://arxiv.org/abs/2503.13441)  `CoRL 2025`
         - [Slot-Level Robotic Placement via Visual Imitation from Single Human Video](https://arxiv.org/abs/2504.01959)  `arXiv 2025`
@@ -364,13 +365,15 @@ _508 papers · generated 2026-09-12_
         - [$ω$-0: A Latent Predictive World Action Model for Concurrent Humanoid Loco-Manipulation](https://arxiv.org/abs/2608.06375)  `arXiv 2026`
         - [Being-H0.7: A Latent World-Action Model from Egocentric Videos](https://arxiv.org/abs/2605.00078)  `arXiv 2026`
         - [JoyAI-RA 0.5: Scaling Robot Manipulation Learning via Dual Action Alignment](https://arxiv.org/abs/2608.05674)  `arXiv 2026`
-      - Learning from human video  (25)
+      - Learning from human video  (27)
         - [DexMV: Imitation Learning for Dexterous Manipulation from Human Videos](https://arxiv.org/abs/2108.05877)  `ECCV 2022`
         - [Ego4D: Around the World in 3,000 Hours of Egocentric Video](https://arxiv.org/abs/2110.07058)  `CVPR 2022`
         - [R3M: A Universal Visual Representation for Robot Manipulation](https://arxiv.org/abs/2203.12601)  `CoRL 2022`
         - [VideoDex: Learning Dexterity from Internet Videos](https://arxiv.org/abs/2212.04498)  `CoRL 2022`
         - [Ego-Exo4D: Understanding Skilled Human Activity from First- and Third-Person Perspectives](https://research-information.bris.ac.uk/en/publications/52745b26-defc-438a-9da8-fc779020c594)  `CVPR 2023`
         - [MimicPlay: Long-Horizon Imitation Learning by Watching Human Play](https://arxiv.org/abs/2302.12422)  `CoRL 2023`
+        - [Animal Avatars: Reconstructing Animatable 3D Animals from Casual Videos](https://arxiv.org/abs/2403.17103)  `arXiv 2024`
+        - [DogMo: A Large-Scale Multi-View RGB-D Dataset for 4D Canine Motion Recovery](https://arxiv.org/abs/2510.24117)  `arXiv 2025`
         - [EgoDemoGen: Egocentric Demonstration Generation for Viewpoint Generalization in Robotic Manipulation](https://arxiv.org/abs/2509.22578)  `arXiv 2025`
         - [EgoMimic: Scaling Imitation Learning via Egocentric Video](https://arxiv.org/abs/2410.24221)  `ICRA 2025`
         - [H-RDT: Human Manipulation Enhanced Bimanual Robotic Manipulation](https://arxiv.org/abs/2507.23523)  `arXiv 2025`
@@ -810,6 +813,8 @@ _508 papers · generated 2026-09-12_
   - [RoboGrammar: Graph Grammar for Terrain-Optimized Robot Design](https://doi.org/10.1145/3414685.3417831)  `SIGGRAPH Asia 2020`
   - [Evolving Virtual Creatures](https://doi.org/10.1145/3596711.3596785)  `SIGGRAPH 1994`
   - [RF-Agent: Automated Reward Function Design via Language Agent Tree Search](https://arxiv.org/abs/2602.23876)  `arXiv 2026`
+  - [GCNT: Graph-Based Transformer Policies for Morphology-Agnostic Reinforcement Learning](https://arxiv.org/abs/2505.15211)  `arXiv 2025`
+  - [Distilling Morphology-Conditioned Hypernetworks for Efficient Universal Morphology Control](https://arxiv.org/abs/2402.06570)  `arXiv 2024`
   - [DrEureka: Language Model Guided Sim-To-Real Transfer](https://arxiv.org/abs/2406.01967)  `RSS 2024`
   - [RoboMorph: Evolving Robot Morphology using Large Language Models](https://arxiv.org/abs/2407.08626)  `arXiv 2024`
   - [The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery](https://arxiv.org/abs/2408.06292)  `arXiv 2024`
@@ -826,8 +831,6 @@ _508 papers · generated 2026-09-12_
   - [TurboMPC: Fast, Scalable, and Differentiable Model Predictive Control on the GPU](https://arxiv.org/abs/2606.24039)  `arXiv 2026`
   - [When Does Legacy Data Start to Help? Emergent Transfer in Cross-Configuration Robot Learning](https://arxiv.org/abs/2607.25593)  `arXiv 2026`
   - [Morphologically Symmetric Reinforcement Learning for Ambidextrous Bimanual Manipulation](https://arxiv.org/abs/2505.05287)  `CoRL 2025`
-  - [TrajBooster: Boosting Humanoid Whole-Body Manipulation via Trajectory-Centric Learning](https://arxiv.org/abs/2509.11839)  `IEEE Humanoids 2025`
-  - [Task2Morph: Differentiable Task-Inspired Framework for Contact-Aware Robot Design](https://doi.org/10.1109/iros55552.2023.10341360)  `IROS 2023`
 - Agentic auto-research for dexterous manipulation  [GeoDex]
   - [HARBOR: A Harness Framework for Agentic Robot Reinforcement Learning](https://arxiv.org/abs/2606.08610)  `arXiv 2026`
   - [Cosmos-Reason1: From Physical Common Sense To Embodied Reasoning](https://arxiv.org/abs/2503.15558)  `arXiv 2025`
@@ -840,8 +843,11 @@ _508 papers · generated 2026-09-12_
   - [Decentralized LLM-Driven Coordination of Acoustic Robots for Contactless Object Manipulation](https://arxiv.org/abs/2605.29378)  `arXiv 2026`
   - [RoboReact: Agentic Skill Distillation from Generated Egocentric Videos for Generalizable Whole-Body Manipulation](https://arxiv.org/abs/2608.03387)  `IEEE Humanoids 2026`
   - [Task-Oriented Robot-Human Handovers on Legged Manipulators](https://arxiv.org/abs/2602.05760)  `arXiv 2026`
-- End-to-end co-design of a fast-running quadruped with RL in the loop
+- Co-design of a fast quadruped with a flexible spine, from dog video
+  - [Phase Relationship between Spinal Motion and Limb Support Determines High-speed Running Performance in a Cheetah Model with Asymmetric Spinal Stiffness](https://arxiv.org/abs/2604.00329)  `arXiv 2026`
+  - [S-Cheetah: A Novel Quadrupedal Robot with a 3-DOF Active Spine Learning Agile Locomotion](https://arxiv.org/abs/2605.27909)  `arXiv 2026`
   - [X2-N: A Transformable Wheel-legged Humanoid Robot with Dual-mode Locomotion and Manipulation](https://arxiv.org/abs/2604.21541)  `arXiv 2026`
+  - [DogMo: A Large-Scale Multi-View RGB-D Dataset for 4D Canine Motion Recovery](https://arxiv.org/abs/2510.24117)  `arXiv 2025`
   - [Text2Robot: Evolutionary Robot Design from Text Descriptions](https://arxiv.org/abs/2406.19963)  `ICRA 2025`
   - [Transform2Act: Learning a Transform-and-Control Policy for Efficient Agent Design](https://arxiv.org/abs/2110.03659)  `ICLR 2022`
   - [Embodied Intelligence via Learning and Evolution](https://doi.org/10.1038/s41467-021-25874-z)  `Nature Communications 2021`
@@ -849,12 +855,17 @@ _508 papers · generated 2026-09-12_
   - [RoboGrammar: Graph Grammar for Terrain-Optimized Robot Design](https://doi.org/10.1145/3414685.3417831)  `SIGGRAPH Asia 2020`
   - [MIT Mini Cheetah: A Platform for Pushing the Limits of Dynamic Quadruped Control](https://doi.org/10.1109/icra.2019.8793865)  `ICRA 2019`
   - [Evolving Virtual Creatures](https://doi.org/10.1145/3596711.3596785)  `SIGGRAPH 1994`
+  - [CORGI: Consistency-Aware 3D Dog Reconstruction from a Single Image in the Wild](https://arxiv.org/abs/2607.00321)  `arXiv 2026`
   - [Demonstrating Berkeley Humanoid Lite: An Open-source, Accessible, and Customizable 3D-printed Humanoid Robot](https://arxiv.org/abs/2504.17249)  `arXiv 2025`
+  - [A Robust Quadruped Robot with Twisting Waist for Flexible Motions](https://arxiv.org/abs/2410.05884)  `arXiv 2024`
+  - [Animal Avatars: Reconstructing Animatable 3D Animals from Casual Videos](https://arxiv.org/abs/2403.17103)  `arXiv 2024`
   - [A Versatile Co-Design Approach For Dynamic Legged Robots](https://arxiv.org/abs/2103.04660)  `ICRA 2022`
+  - [BARC: Learning to Regress 3D Dog Shape from Images by Exploiting Breed Information](https://arxiv.org/abs/2203.15536)  `arXiv 2022`
   - [Evolution Gym: A Large-Scale Benchmark for Evolving Soft Robots](https://proceedings.neurips.cc/paper/2021/file/118921efba23fc329e6560b27861f0c2-Paper.pdf)  `NeurIPS Datasets & Benchmarks 2022`
   - [Meta Reinforcement Learning for Optimal Design of Legged Robots](https://arxiv.org/abs/2210.02750)  `IEEE RA-L 2022`
   - [Jointly Learning to Construct and Control Agents using Deep Reinforcement Learning](https://arxiv.org/abs/1801.01432)  `ICRA 2019`
   - [Computational co-optimization of design parameters and motion trajectories for robotic systems](https://doi.org/10.1177/0278364918771172)  `IJRR 2018`
+  - [hSMAL: Detailed Horse Shape and Pose Reconstruction for Motion Pattern Recognition](https://arxiv.org/abs/2106.10102)  `arXiv 2021`
 - Agentic physical robot  [IRIS / MPR]
   - [HARBOR: A Harness Framework for Agentic Robot Reinforcement Learning](https://arxiv.org/abs/2606.08610)  `arXiv 2026`
   - [Cosmos-Reason1: From Physical Common Sense To Embodied Reasoning](https://arxiv.org/abs/2503.15558)  `arXiv 2025`
@@ -1031,6 +1042,7 @@ _508 papers · generated 2026-09-12_
   - [EgoScale: Scaling Dexterous Manipulation with Diverse Egocentric Human Data](https://arxiv.org/abs/2602.16710)  `arXiv 2026`
   - [HumanEgo: Zero-Shot Robot Learning from Minutes of Human Egocentric Videos](https://arxiv.org/abs/2605.24934)  `arXiv 2026`
   - [Robot Learning from Human Videos: A Survey](https://arxiv.org/abs/2604.27621)  `arXiv 2026`
+  - [DogMo: A Large-Scale Multi-View RGB-D Dataset for 4D Canine Motion Recovery](https://arxiv.org/abs/2510.24117)  `arXiv 2025`
   - [Humanoid Policy ~ Human Policy](https://arxiv.org/abs/2503.13441)  `CoRL 2025`
   - [Phantom: Training Robots Without Robots Using Only Human Videos](https://arxiv.org/abs/2503.00779)  `arXiv 2025`
   - [Visual Imitation Enables Contextual Humanoid Control](https://arxiv.org/abs/2505.03729)  `arXiv 2025`
@@ -1038,6 +1050,7 @@ _508 papers · generated 2026-09-12_
   - [Learning Human-Intention Priors from Large-Scale Human Demonstrations for Robotic Manipulation](https://arxiv.org/abs/2604.24681)  `arXiv 2026`
   - [Skild AI: scaling to 100,000 hours and one-shot video imitation](https://www.skild.ai/)  `company blog 2026`
   - [EgoDemoGen: Egocentric Demonstration Generation for Viewpoint Generalization in Robotic Manipulation](https://arxiv.org/abs/2509.22578)  `arXiv 2025`
+  - [Animal Avatars: Reconstructing Animatable 3D Animals from Casual Videos](https://arxiv.org/abs/2403.17103)  `arXiv 2024`
   - [Vid2Robot: End-to-end Video-conditioned Policy Learning with Cross-Attention Transformers](https://arxiv.org/abs/2403.12943)  `RSS 2024`
   - [MimicPlay: Long-Horizon Imitation Learning by Watching Human Play](https://arxiv.org/abs/2302.12422)  `CoRL 2023`
 - Human-robot interaction & collaboration tasks  [M2]
@@ -1087,18 +1100,27 @@ _508 papers · generated 2026-09-12_
   - [Quasi-Direct Drive for Low-Cost Compliant Robotic Manipulation](https://doi.org/10.1109/icra.2019.8794236)  `ICRA 2019`
 - Transformer robot: car ↔ humanoid, end to end
   - [X2-N: A Transformable Wheel-legged Humanoid Robot with Dual-mode Locomotion and Manipulation](https://arxiv.org/abs/2604.21541)  `arXiv 2026`
+  - [Fast and Modular Whole-Body Lagrangian Dynamics of Legged Robots with Changing Morphology](https://arxiv.org/abs/2504.16383)  `Nonlinear Dynamics 2025`
   - [Learning Getting-Up Policies for Real-World Humanoid Robots](https://arxiv.org/abs/2502.12152)  `arXiv 2025`
   - [Learning to Get Up Across Morphologies: Zero-Shot Recovery with a Unified Humanoid Policy](https://arxiv.org/abs/2512.12230)  `arXiv 2025`
+  - [Robosen auto-converting Transformers (Optimus Prime, Grimlock)](https://us.robosen.com/)  `commercial 2022`
+  - [J-deite RIDE: a 4 m rideable humanoid that transforms into a car](https://braverobotics.com/en/2018/04/26/j-deite-ride-release/)  `industry 2018`
   - [A Kung Fu Athlete Bot That Can Do It All Day: Highly Dynamic, Balance-Challenging Motion Dataset and Autonomous Fall-Resilient Tracking](https://arxiv.org/abs/2602.13656)  `arXiv 2026`
   - [StableMimic: Smooth Human-Like Recovery for Humanoid Motion Tracking - Learning Beyond the Tracking Distribution for Structured Post-Fall Behavior](https://arxiv.org/abs/2608.02385)  `arXiv 2026`
   - [UniReLo: Learning a Unified Humanoid Policy from Fall Recovery to Locomotion across Diverse Terrains](https://arxiv.org/abs/2606.08922)  `arXiv 2026`
+  - [GCNT: Graph-Based Transformer Policies for Morphology-Agnostic Reinforcement Learning](https://arxiv.org/abs/2505.15211)  `arXiv 2025`
   - [Unified Humanoid Fall-Safety Policy from a Few Demonstrations](https://arxiv.org/abs/2511.07407)  `arXiv 2025`
+  - [Distilling Morphology-Conditioned Hypernetworks for Efficient Universal Morphology Control](https://arxiv.org/abs/2402.06570)  `arXiv 2024`
+  - [Optimization-Based Control for Dynamic Legged Robots](https://arxiv.org/abs/2211.11644)  `arXiv 2022`
   - [SWheg: A Wheel-Leg Transformable Robot With Minimalist Actuator Realization](https://arxiv.org/abs/2210.15126)  `arXiv 2022`
+  - [Motion Planning for Variable Topology Trusses: Reconfiguration and Locomotion](https://arxiv.org/abs/2108.00309)  `arXiv 2021`
   - [A Reconfigured Wheel-Legged Robot for Enhanced Steering and Adaptability](https://arxiv.org/abs/2507.22345)  `arXiv 2025`
+  - [Letrons: a drivable BMW that converts into a 4.5 m robot](https://www.letrons.com/)  `industry 2016`
 - Robot DJ: turntablism with audio as a first-class modality  [GeoDex]
   - [Hearing Touch: Audio-Visual Pretraining for Contact-Rich Manipulation](https://arxiv.org/abs/2405.08576)  `arXiv 2024`
   - [ManiWAV: Learning Robot Manipulation from In-the-Wild Audio-Visual Data](https://arxiv.org/abs/2406.19464)  `arXiv 2024`
   - [SonicSense: Object Perception from In-Hand Acoustic Vibration](https://arxiv.org/abs/2406.17932)  `arXiv 2024`
+  - [A Computational Analysis of Real-World DJ Mixes using Mix-To-Track Subsequence Alignment](https://arxiv.org/abs/2008.10267)  `arXiv 2020`
   - [Audio-VLA: Adding Contact Audio Perception to Vision-Language-Action Model for Robotic Manipulation](https://arxiv.org/abs/2511.09958)  `arXiv 2025`
   - [MicCheck: Repurposing Off-the-Shelf Pin Microphones for Easy and Low-Cost Contact Sensing](https://arxiv.org/abs/2511.18299)  `arXiv 2025`
   - [VibeCheck: Using Active Acoustic Tactile Sensing for Contact-Rich Manipulation](https://arxiv.org/abs/2504.15535)  `arXiv 2025`
@@ -1108,8 +1130,8 @@ _508 papers · generated 2026-09-12_
 
 ## THE THREE TREES
 
-- Reinforcement Learning  (171)
-  - Algorithmic foundations  (8)
+- Reinforcement Learning  (175)
+  - Algorithmic foundations  (10)
     - [Human-level control through deep reinforcement learning](https://doi.org/10.1038/nature14236)  `Nature 2015`
     - [Trust Region Policy Optimization](http://proceedings.mlr.press/v37/schulman15.pdf)  `ICML 2015`
     - [Proximal Policy Optimization Algorithms](https://arxiv.org/abs/1707.06347)  `arXiv 2017`
@@ -1117,8 +1139,10 @@ _508 papers · generated 2026-09-12_
     - [An Introduction to Deep Reinforcement Learning](https://doi.org/10.1561/2200000071)  `Foundations and Trends® in Machine Learning 2018`
     - [Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor](https://arxiv.org/abs/1801.01290)  `ICML 2018`
     - [Image-based Deep Reinforcement Learning for Autonomous Lunar Landing](https://doi.org/10.2514/6.2020-1910)  `AIAA Scitech 2020 Forum 2020`
+    - [Distilling Morphology-Conditioned Hypernetworks for Efficient Universal Morphology Control](https://arxiv.org/abs/2402.06570)  `arXiv 2024`
+    - [GCNT: Graph-Based Transformer Policies for Morphology-Agnostic Reinforcement Learning](https://arxiv.org/abs/2505.15211)  `arXiv 2025`
     - [Morphologically Symmetric Reinforcement Learning for Ambidextrous Bimanual Manipulation](https://arxiv.org/abs/2505.05287)  `CoRL 2025`
-  - Locomotion  (31)
+  - Locomotion  (33)
     - [Delayed Output Feedback Control for Gait Assistance With a Robotic Hip Exoskeleton](https://doi.org/10.1109/tro.2019.2913318)  `IEEE T-RO 2019`
     - [Learning agile and dynamic motor skills for legged robots](https://arxiv.org/abs/1901.08652)  `Science Robotics 2019`
     - [Learning Quadrupedal Locomotion over Challenging Terrain](https://arxiv.org/abs/2010.11251)  `Science Robotics 2020`
@@ -1126,6 +1150,7 @@ _508 papers · generated 2026-09-12_
     - [Learning to Walk in Minutes Using Massively Parallel Deep Reinforcement Learning](https://arxiv.org/abs/2109.11978)  `CoRL 2021`
     - [RMA: Rapid Motor Adaptation for Legged Robots](https://arxiv.org/abs/2107.04034)  `RSS 2021`
     - [Learning robust perceptive locomotion for quadrupedal robots in the wild](https://arxiv.org/abs/2201.08117)  `Science Robotics 2022`
+    - [Optimization-Based Control for Dynamic Legged Robots](https://arxiv.org/abs/2211.11644)  `arXiv 2022`
     - [ANYmal Parkour: Learning Agile Navigation for Quadrupedal Robots](https://arxiv.org/abs/2306.14874)  `Science Robotics 2024`
     - [Extreme Parkour with Legged Robots](https://arxiv.org/abs/2309.14341)  `ICRA 2024`
     - [Integrating Model-Based Footstep Planning with Model-Free Reinforcement Learning for Dynamic Legged Locomotion](https://arxiv.org/abs/2408.02662)  `arXiv 2024`
@@ -1145,6 +1170,7 @@ _508 papers · generated 2026-09-12_
     - [KILVO: Kinematic-Inertial-LiDAR-Visual Odometry with Robust Multimodal Adaptation for Humanoid Robots](https://doi.org/10.1109/tmech.2026.3721778)  `IEEE/ASME T-Mech 2026`
     - [Learning Agile Navigation in Crowded Environments for Quadruped Robots](https://arxiv.org/abs/2607.15036)  `arXiv 2026`
     - [Multi-Robot Box Transport over Different Surfaces with Decentralized Role-based Proportional Control](https://arxiv.org/abs/2605.26430)  `arXiv 2026`
+    - [Phase Relationship between Spinal Motion and Limb Support Determines High-speed Running Performance in a Cheetah Model with Asymmetric Spinal Stiffness](https://arxiv.org/abs/2604.00329)  `arXiv 2026`
     - [Scalable and General Whole-Body Control for Cross-Humanoid Locomotion](https://arxiv.org/abs/2602.05791)  `arXiv 2026`
     - [Tac4Loco: Learning Spatiotemporal Plantar Pressure Representations for Humanoid Locomotion](https://arxiv.org/abs/2608.15766)  `IEEE Humanoids 2026`
     - [Teleopit: A Full-Embodiment Humanoid Teleoperation System](https://arxiv.org/abs/2608.01834)  `arXiv 2026`
@@ -1289,7 +1315,7 @@ _508 papers · generated 2026-09-12_
     - [R2S-EGO: Dual-Proxy Refinement for Sparse-Capture Real-to-Sim](https://arxiv.org/abs/2608.06827)  `arXiv 2026`
     - [SimWeaver: Zero-Shot RGB Sim-to-Real for Deformable Manipulation](https://arxiv.org/abs/2606.15338)  `arXiv 2026`
     - [Video2Sim2Real: Full-Stack Autonomous Dexterous Skill Acquisition from a Single Human Video](https://arxiv.org/abs/2606.08828)  `arXiv 2026`
-- Imitation Learning  (144)
+- Imitation Learning  (150)
   - Foundations of imitation  (5)
     - [A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning](https://arxiv.org/abs/1011.0686)  `AISTATS 2010`
     - [Generative Adversarial Imitation Learning](https://arxiv.org/abs/1606.03476)  `NeurIPS 2016`
@@ -1386,7 +1412,9 @@ _508 papers · generated 2026-09-12_
     - [Tactile-WAM: Touch-Aware World Action Model with Tactile Asymmetric Attention](https://arxiv.org/abs/2606.26663)  `arXiv 2026`
     - [VT-WAM: Visual-Tactile World Action Model for Contact-Rich Manipulation](https://arxiv.org/abs/2607.02503)  `arXiv 2026`
     - [A review of learning-­based dynamics models for robotic manipulation](https://doi.org/10.1126/scirobotics.adt1497)  `Science Robotics`
-  - Learning from human video  (26)
+  - Learning from human video  (31)
+    - [hSMAL: Detailed Horse Shape and Pose Reconstruction for Motion Pattern Recognition](https://arxiv.org/abs/2106.10102)  `arXiv 2021`
+    - [BARC: Learning to Regress 3D Dog Shape from Images by Exploiting Breed Information](https://arxiv.org/abs/2203.15536)  `arXiv 2022`
     - [DexMV: Imitation Learning for Dexterous Manipulation from Human Videos](https://arxiv.org/abs/2108.05877)  `ECCV 2022`
     - [Ego4D: Around the World in 3,000 Hours of Egocentric Video](https://arxiv.org/abs/2110.07058)  `CVPR 2022`
     - [R3M: A Universal Visual Representation for Robot Manipulation](https://arxiv.org/abs/2203.12601)  `CoRL 2022`
@@ -1394,6 +1422,8 @@ _508 papers · generated 2026-09-12_
     - [Ego-Exo4D: Understanding Skilled Human Activity from First- and Third-Person Perspectives](https://research-information.bris.ac.uk/en/publications/52745b26-defc-438a-9da8-fc779020c594)  `CVPR 2023`
     - [MimicPlay: Long-Horizon Imitation Learning by Watching Human Play](https://arxiv.org/abs/2302.12422)  `CoRL 2023`
     - [VIP: Towards Universal Visual Reward and Representation via Value-Implicit Pre-Training](https://arxiv.org/abs/2210.00030)  `ICLR 2023`
+    - [Animal Avatars: Reconstructing Animatable 3D Animals from Casual Videos](https://arxiv.org/abs/2403.17103)  `arXiv 2024`
+    - [DogMo: A Large-Scale Multi-View RGB-D Dataset for 4D Canine Motion Recovery](https://arxiv.org/abs/2510.24117)  `arXiv 2025`
     - [EgoDemoGen: Egocentric Demonstration Generation for Viewpoint Generalization in Robotic Manipulation](https://arxiv.org/abs/2509.22578)  `arXiv 2025`
     - [EgoMimic: Scaling Imitation Learning via Egocentric Video](https://arxiv.org/abs/2410.24221)  `ICRA 2025`
     - [H-RDT: Human Manipulation Enhanced Bimanual Robotic Manipulation](https://arxiv.org/abs/2507.23523)  `arXiv 2025`
@@ -1402,6 +1432,7 @@ _508 papers · generated 2026-09-12_
     - [ACE-Ego-0: Unifying Egocentric Human and Robotic Data for VLA Pretraining](https://arxiv.org/abs/2606.17200)  `arXiv 2026`
     - [ACE-Ego-Hand: Repurposing Video Diffusion Models for Occlusion-Robust Egocentric 3D Hand Motion Recovery](https://arxiv.org/abs/2608.20308)  `arXiv 2026`
     - [AgenticFocus: Object-Preserving Mixed Reality Synthesis from Human FPV Video for Dexterous Humanoid Learning](https://arxiv.org/abs/2607.08857)  `IEEE Humanoids 2026`
+    - [CORGI: Consistency-Aware 3D Dog Reconstruction from a Single Image in the Wild](https://arxiv.org/abs/2607.00321)  `arXiv 2026`
     - [Do as I Do: Dexterous Manipulation Data from Everyday Human Videos](https://arxiv.org/abs/2606.19333)  `arXiv 2026`
     - [Ego2Robot: Scalable Robot Data Synthesis from Egocentric Human Data](https://arxiv.org/abs/2608.02580)  `arXiv 2026`
     - [EgoEngine: From Egocentric Human Videos to High-Fidelity Dexterous Robot Demonstrations](https://arxiv.org/abs/2606.12604)  `arXiv 2026`
@@ -1437,13 +1468,14 @@ _508 papers · generated 2026-09-12_
     - [DROID: A Large-Scale In-The-Wild Robot Manipulation Dataset](https://arxiv.org/abs/2403.12945)  `RSS 2024`
     - [AgiBot World Colosseo: A Large-scale Manipulation Platform for Scalable and Intelligent Embodied Systems](https://arxiv.org/abs/2503.06669)  `arXiv 2025`
     - [Open-AoE: An Open Egocentric Manipulation Dataset and Toolchain for Embodied Learning](https://arxiv.org/abs/2607.14183)  `arXiv 2026`
-  - Tactile & contact learning  (5)
+  - Tactile & contact learning  (6)
+    - [A Computational Analysis of Real-World DJ Mixes using Mix-To-Track Subsequence Alignment](https://arxiv.org/abs/2008.10267)  `arXiv 2020`
     - [See, Hear, and Feel: Smart Sensory Fusion for Robotic Manipulation](https://arxiv.org/abs/2212.03858)  `arXiv 2022`
     - [Hearing Touch: Audio-Visual Pretraining for Contact-Rich Manipulation](https://arxiv.org/abs/2405.08576)  `arXiv 2024`
     - [ManiWAV: Learning Robot Manipulation from In-the-Wild Audio-Visual Data](https://arxiv.org/abs/2406.19464)  `arXiv 2024`
     - [Visual-auditory Extrinsic Contact Estimation](https://arxiv.org/abs/2409.14608)  `arXiv 2024`
     - [EgoEMG: A Multimodal Egocentric Dataset with Bilateral EMG and Vision for Hand Pose Estimation](https://arxiv.org/abs/2605.05712)  `arXiv 2026`
-- Hardware & Systems  (193)
+- Hardware & Systems  (200)
   - Open-source arms & bimanual  (12)
     - [Quasi-Direct Drive for Low-Cost Compliant Robotic Manipulation](https://doi.org/10.1109/icra.2019.8794236)  `ICRA 2019`
     - [ALOHA: A Low-cost Open-source Hardware System for Bimanual Teleoperation](https://tonyzhaozh.github.io/aloha/)  `RSS 2023`
@@ -1524,10 +1556,12 @@ _508 papers · generated 2026-09-12_
     - Task-Agnostic and Device-Agnostic Exoskeleton Control via Reinforcement Learning and Mixture of Experts  `IEEE T-RO 2026`
     - Design and Modeling of Bio-Inspired Shoulder Exoskeleton with Cable-Driven Quasi-Direct Drive Actuation: Misalignment Compensation and Interference Mitigation  `IEEE T-RO`
     - End-to-End Assistive Torque Control for Lower-Limb Exoskeleton via Sim-to-Real Reinforcement Learning and Curriculum Learning  `IEEE T-RO`
-  - Co-design & morphology  (23)
+  - Co-design & morphology  (30)
     - [Evolving Virtual Creatures](https://doi.org/10.1145/3596711.3596785)  `SIGGRAPH 1994`
     - [Automatic design and manufacture of robotic lifeforms](https://doi.org/10.1038/35023115)  `Nature 2000`
+    - [Letrons: a drivable BMW that converts into a 4.5 m robot](https://www.letrons.com/)  `industry 2016`
     - [Computational co-optimization of design parameters and motion trajectories for robotic systems](https://doi.org/10.1177/0278364918771172)  `IJRR 2018`
+    - [J-deite RIDE: a 4 m rideable humanoid that transforms into a car](https://braverobotics.com/en/2018/04/26/j-deite-ride-release/)  `industry 2018`
     - [Jointly Learning to Construct and Control Agents using Deep Reinforcement Learning](https://arxiv.org/abs/1801.01432)  `ICRA 2019`
     - [Neural Graph Evolution: Towards Efficient Automatic Robot Design](https://arxiv.org/abs/1906.05370)  `ICLR 2019`
     - [Fit2Form: 3D Generative Model for Robot Gripper Form Design](https://arxiv.org/abs/2011.06498)  `CoRL 2020`
@@ -1535,18 +1569,23 @@ _508 papers · generated 2026-09-12_
     - [RoboGrammar: Graph Grammar for Terrain-Optimized Robot Design](https://doi.org/10.1145/3414685.3417831)  `SIGGRAPH Asia 2020`
     - [An End-to-End Differentiable Framework for Contact-Aware Robot Design](https://arxiv.org/abs/2107.07501)  `RSS 2021`
     - [Embodied Intelligence via Learning and Evolution](https://doi.org/10.1038/s41467-021-25874-z)  `Nature Communications 2021`
+    - [Motion Planning for Variable Topology Trusses: Reconfiguration and Locomotion](https://arxiv.org/abs/2108.00309)  `arXiv 2021`
     - [Real-world embodied AI through a morphologically adaptive quadruped robot](https://doi.org/10.1038/s42256-021-00320-3)  `Nature Machine Intelligence 2021`
     - [Task-Agnostic Morphology Evolution](https://arxiv.org/abs/2102.13100)  `ICLR 2021`
     - [A Versatile Co-Design Approach For Dynamic Legged Robots](https://arxiv.org/abs/2103.04660)  `ICRA 2022`
     - [Evolution Gym: A Large-Scale Benchmark for Evolving Soft Robots](https://proceedings.neurips.cc/paper/2021/file/118921efba23fc329e6560b27861f0c2-Paper.pdf)  `NeurIPS Datasets & Benchmarks 2022`
     - [Meta Reinforcement Learning for Optimal Design of Legged Robots](https://arxiv.org/abs/2210.02750)  `IEEE RA-L 2022`
+    - [Robosen auto-converting Transformers (Optimus Prime, Grimlock)](https://us.robosen.com/)  `commercial 2022`
     - [SWheg: A Wheel-Leg Transformable Robot With Minimalist Actuator Realization](https://arxiv.org/abs/2210.15126)  `arXiv 2022`
     - [Transform2Act: Learning a Transform-and-Control Policy for Efficient Agent Design](https://arxiv.org/abs/2110.03659)  `ICLR 2022`
     - [DiffuseBot: Breeding Soft Robots With Physics-Augmented Generative Diffusion Models](https://arxiv.org/abs/2311.17053)  `NeurIPS 2023`
     - [Task2Morph: Differentiable Task-Inspired Framework for Contact-Aware Robot Design](https://doi.org/10.1109/iros55552.2023.10341360)  `IROS 2023`
+    - [A Robust Quadruped Robot with Twisting Waist for Flexible Motions](https://arxiv.org/abs/2410.05884)  `arXiv 2024`
     - [RoboMorph: Evolving Robot Morphology using Large Language Models](https://arxiv.org/abs/2407.08626)  `arXiv 2024`
     - [A Reconfigured Wheel-Legged Robot for Enhanced Steering and Adaptability](https://arxiv.org/abs/2507.22345)  `arXiv 2025`
+    - [Fast and Modular Whole-Body Lagrangian Dynamics of Legged Robots with Changing Morphology](https://arxiv.org/abs/2504.16383)  `Nonlinear Dynamics 2025`
     - [Text2Robot: Evolutionary Robot Design from Text Descriptions](https://arxiv.org/abs/2406.19963)  `ICRA 2025`
+    - [S-Cheetah: A Novel Quadrupedal Robot with a 3-DOF Active Spine Learning Agile Locomotion](https://arxiv.org/abs/2605.27909)  `arXiv 2026`
     - [X2-N: A Transformable Wheel-legged Humanoid Robot with Dual-mode Locomotion and Manipulation](https://arxiv.org/abs/2604.21541)  `arXiv 2026`
   - Simulators & benchmarks  (30)
     - [MuJoCo: A Physics Engine for Model-Based Control](https://doi.org/10.1109/iros.2012.6386109)  `IROS 2012`
