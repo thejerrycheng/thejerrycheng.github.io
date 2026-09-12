@@ -535,3 +535,125 @@ D("assembly101","2203.14712",cat="exo",org="academia",
   hours="513 h", eps="4,321 videos", tasks="101 toy vehicles · 1M fine-grained segments", scenes="lab",
   subj="53 participants", embod="human (ego + exo)", site="https://assembly-101.github.io/",
   note="Both viewpoints and 18M hand poses — a good testbed for the ego-versus-exo comparison at task level.")
+
+# ══════════════════════ THE MILLION-HOUR TIER (2025-26) ══════════════════════
+# Egocentric capture crossed from "thousands of hours" to "a million" inside about
+# six months. These are the releases that did it.
+D("egocentric1m","",name="Egocentric-1M",cat="ego",org="industry",
+  one="Roughly one million hours of factory-floor egocentric video — larger than every prior egocentric dataset combined, released open under Apache 2.0.",
+  device="Build AI custom head-mounted glasses",
+  modal="RGB (streamable, no full download required)",
+  hours="~1,000,000 h", eps="10.8 billion frames", tasks="assembly, sorting, packaging, machining",
+  scenes="real production floors, Southeast Asia", subj="14,228 factory workers",
+  embod="human", site="https://huggingface.co/datasets/builddotai/Egocentric-1M",
+  year=2026, date="2026-04-08",
+  note="Build AI's scaling ladder went 10K hours (Nov 2025) → 100K (Dec 2025) → 1M (Apr 2026). The framing "
+       "to hold onto: this is industrial repetitive labour, not household diversity, so it is enormous and "
+       "narrow at the same time. Whether that narrowness matters is an open empirical question and a very "
+       "cheap one to test.")
+D("egocentric100k","",name="Egocentric-100K",cat="ego",org="industry",
+  one="The 100,000-hour rung of Build AI's ladder — the release that made million-hour egocentric look inevitable.",
+  device="Build AI head-mounted glasses", modal="RGB",
+  hours="100,000 h", eps="—", tasks="industrial manual work", scenes="factory floors", subj="—",
+  embod="human", site="https://huggingface.co/datasets/builddotai/Egocentric-100K",
+  year=2025, date="2025-12-01")
+D("egocentric10k","",name="Egocentric-10K",cat="ego",org="industry",
+  one="The first rung: 10,000 hours of factory egocentric video, November 2025.",
+  device="Build AI head-mounted glasses", modal="RGB",
+  hours="10,000 h", eps="—", tasks="industrial manual work", scenes="factory floors", subj="—",
+  embod="human", site="https://huggingface.co/datasets/builddotai/Egocentric-10K",
+  year=2025, date="2025-11-01")
+D("xperience10m","",name="Xperience-10M",cat="ego",org="industry",
+  one="Ten thousand hours of egocentric recording with six synchronised RGB streams, stereo depth, SLAM pose and full hand-plus-body motion capture — roughly a petabyte.",
+  device="Ropedia multi-camera capture rig",
+  modal="6× RGB, audio, stereo depth, camera pose/SLAM, hand mocap, full-body mocap, IMU, hierarchical language",
+  hours="10,000 h", eps="10M experiences · 2.88B RGB + 720M depth + 576M pose/mocap frames",
+  tasks="hierarchical task/sub-task annotation", scenes="—", subj="—",
+  embod="human", site="https://huggingface.co/datasets/ropedia-ai/xperience-10m",
+  year=2026, date="2026-01-01",
+  note="The richest egocentric annotation stack that exists — depth, SLAM and mocap all synchronised. Where "
+       "Egocentric-1M has scale and nothing else, this has everything a real-to-sim or retargeting pipeline "
+       "needs. If you only adopt one corpus for the Real2Sim2Real project, it is probably this one.")
+D("humannet","2605.06747",cat="ego",org="industry",
+  one="A human-centric video learning stack built to scale to one million hours, with controlled VLA ablations on the value of the data.",
+  device="aggregated human video", modal="RGB, language, action labels",
+  hours="1,000,000 h (stated)", eps="—", tasks="—", scenes="—", subj="—",
+  embod="human → robot", site="https://arxiv.org/abs/2605.06747",
+  note="Read it for the ablation rather than the corpus: it is one of the few papers that isolates what an "
+       "extra order of magnitude of human video actually buys a VLA. Caveat: the million-hour figure is the "
+       "paper's stated scale — its controlled ablations run at far smaller sizes, so treat the headline as a "
+       "design target rather than a corpus you can download today.")
+D("egoscale","2602.16710",cat="ego",org="industry",
+  one="NVIDIA GEAR's scaling study: a VLA trained on 20,854 hours of action-labelled egocentric human video, with a measured log-linear scaling law.",
+  device="aggregated egocentric + retargeting pipeline",
+  modal="RGB, wrist motion, retargeted dexterous hand actions",
+  hours="20,854 h", eps="—", tasks="dexterous manipulation", scenes="—", subj="—",
+  embod="human → dexterous robot", site="https://research.nvidia.com/labs/gear/egoscale/",
+  note="The most important number in this table for your ego-dexterity idea: validation loss falls log-linearly "
+       "with human data scale, and that loss correlates with real-robot performance. It turns 'more human video "
+       "helps' from a hope into a predictable curve.")
+D("ego2robot","2608.02580",cat="ego",org="academia",
+  one="A pipeline that converts egocentric human video into robot training data, producing 18,561 hours across 15 robot morphologies — the largest ego-to-robot corpus to date.",
+  device="egocentric video → retargeting → visual synthesis",
+  modal="RGB (synthesised robot arm), retargeted actions",
+  hours="18,561 h", eps="—", tasks="manipulation", scenes="curated + in-the-wild", subj="15 robot morphologies",
+  embod="15 robot morphologies", site="https://arxiv.org/abs/2608.02580",
+  note="The other half of the million-hour story: raw human hours are useless until something turns them into "
+       "actions. Action retargeting + robot-arm visual synthesis + multi-level quality curation is the recipe.")
+D("egolive","2604.23570",cat="ego",org="industry",
+  one="Large-scale egocentric capture from real-world human tasks, positioned on breadth of semantic coverage rather than raw hours.",
+  device="head-mounted capture", modal="RGB, task annotations",
+  hours="—", eps="—", tasks="real-world human tasks", scenes="in-the-wild", subj="—",
+  embod="human", site="https://arxiv.org/abs/2604.23570",
+  note="Argues that the long tail of semantics matters more than hour count, and benchmarks itself against "
+       "EgoDex and Xperience-10M on exactly that. Worth reading as the counter-argument to pure scaling.")
+D("aceego0","2606.17200",cat="ego",org="academia",
+  one="A VLA pretraining framework that mixes robot, simulation and pseudo-action-labelled egocentric human data in one recipe.",
+  device="aggregated", modal="RGB, robot actions, pseudo-action labels",
+  hours="4.53K h robot+sim · 1.48K h human", eps="—", tasks="manipulation", scenes="—", subj="—",
+  embod="multiple", site="https://arxiv.org/abs/2606.17200",
+  note="The mixing ratio between robot, sim and human data is the real content here — the question everyone "
+       "training a VLA has to answer and almost nobody reports.")
+D("egokit","2605.16797",cat="ego",org="academia",
+  one="An open, low-cost toolkit for collecting egocentric data across heterogeneous devices, including XR headsets with 26-joint hand tracking.",
+  device="phones, action cams, XR headsets (unified)",
+  modal="RGB, head pose, OpenXR 26-joint hand tracking",
+  hours="—", eps="—", tasks="—", scenes="—", subj="—",
+  embod="human", site="https://arxiv.org/abs/2605.16797",
+  note="If you want to run your own egocentric collection rather than consume someone else's, this is the "
+       "cheapest credible starting point.")
+D("humanego","2605.24934",cat="ego",org="academia",
+  one="The opposite bet from scaling: zero-shot robot learning from as little as 30 minutes of human egocentric video per task.",
+  device="head-mounted camera", modal="RGB, hand pose",
+  hours="0.5 h per task", eps="—", tasks="4 real-world tasks", scenes="—", subj="—",
+  embod="robot arm", site="https://arxiv.org/abs/2605.24934",
+  note="92.5% success from 30 minutes of human video, beating matched-time robot teleoperation by 41%. The "
+       "sharpest counterpoint in this whole table to the million-hour thesis — worth taking seriously before "
+       "you commit to a collection campaign.")
+D("hrdt","2507.23523",cat="ego",org="academia",
+  one="Bimanual manipulation improved by pretraining on large-scale egocentric human video with paired 3D hand poses.",
+  device="aggregated egocentric + bimanual robot", modal="RGB, 3D hand pose, robot actions",
+  hours="—", eps="—", tasks="bimanual manipulation", scenes="sim + real", subj="—",
+  embod="bimanual", site="https://arxiv.org/abs/2507.23523")
+D("egoemg","2605.05712",cat="ego",org="academia",
+  one="Egocentric video paired with bilateral wrist EMG — muscle activity as a modality vision cannot see.",
+  device="2× 8-channel wrist EMG @2 kHz, IMU, ego RGB, external RGB-D, mocap",
+  modal="EMG, IMU, RGB, RGB-D, hand mocap",
+  hours="10+ h", eps="—", tasks="60 gesture classes (30 single-hand, 30 bimanual)", scenes="lab",
+  subj="41 participants", embod="human", site="https://arxiv.org/abs/2605.05712",
+  note="Unusual and under-explored: EMG carries intent and force before motion is visible, which is exactly "
+       "the gap a vision-only world model has.")
+D("egoexo-handrig","2510.02601",cat="ego",org="industry",
+  one="In-the-wild 3D hand tracking from a mobile multi-camera ego-exo rig, built to get ground truth outside the lab.",
+  device="mobile multi-camera ego+exo rig", modal="RGB multi-view, 3D hand pose",
+  hours="—", eps="—", tasks="hand tracking", scenes="in-the-wild", subj="—",
+  embod="human", site="https://arxiv.org/abs/2510.02601")
+D("agibot2026","",name="AgiBot World 2026",cat="robot",org="industry",
+  one="AgiBot's 2026 release, aimed at reinforcement learning rather than imitation: real-world trajectories across industrial and household tasks.",
+  device="AgiBot fleet, teleoperation", modal="RGB-D, proprioception, reward/task annotations",
+  hours="—", eps="11,430 real-world trajectories", tasks="14 industrial and household tasks", scenes="—",
+  subj="—", embod="AgiBot G1", site="https://agibot-world.com/",
+  year=2026, date="2026-04-01",
+  note="Small next to the original million-trajectory AgiBot World, and deliberately so — it is structured for "
+       "RL, which almost no large robot dataset is. Released with Shanghai AI Lab and the National-Local "
+       "Humanoid Robotics Innovation Centre.")

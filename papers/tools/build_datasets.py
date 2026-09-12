@@ -45,13 +45,13 @@ for r in DS.ROWS:
     ax=r.get("arxiv","")
     meta = DP.get(ax) or {}
     pdb  = BY_AX.get(ax) or {}
-    title   = meta.get("title") or pdb.get("title") or r["id"]
+    title   = meta.get("title") or pdb.get("title") or r.get("name") or r["id"]
     authors = meta.get("authors") or pdb.get("authors") or []
-    date    = meta.get("published") or pdb.get("date") or ""
-    year    = int(date[:4]) if date[:4].isdigit() else None
-    insts   = pdb.get("institutions") or []
+    date    = r.get("date") or meta.get("published") or pdb.get("date") or ""
+    year    = r.get("year") or (int(date[:4]) if date[:4].isdigit() else None)
+    insts   = meta.get("institutions") or pdb.get("institutions") or []
     rows.append(dict(
-      id=r["id"], name=title.split(":")[0].strip(), title=title,
+      id=r["id"], name=r.get("name") or title.split(":")[0].strip(), title=title,
       cat=r["cat"], org=r["org"], one=r["one"],
       device=r.get("device",""), modal=r.get("modal",""),
       hours=r.get("hours","—"), eps=r.get("eps","—"), tasks=r.get("tasks","—"),
@@ -84,7 +84,17 @@ for x in rows:
     ex=[f"figures/ds-{x['id']}-{i}.webp" for i in (1,2,3) if f"ds-{x['id']}-{i}.webp" in have]
     if ex: x["figs"]=ex
 
-rows.sort(key=lambda x:(ORDER.index(x["cat"]), -(x["year"] or 0), x["name"]))
+def hnum(h):
+    """parse the hours string into a sortable number"""
+    if not h or h=="—": return -1
+    m=re.search(r"([\d,.]+)\s*([KkMm]?)", h.replace(",",""))
+    if not m: return -1
+    try: v=float(m.group(1))
+    except ValueError: return -1
+    return v*{"k":1e3,"K":1e3,"m":1e6,"M":1e6}.get(m.group(2),1)
+for x in rows: x["hours_num"]=hnum(x["hours"])
+# biggest first inside each category, then newest
+rows.sort(key=lambda x:(ORDER.index(x["cat"]), -x["hours_num"], -(x["year"] or 0), x["name"]))
 out=dict(meta=dict(generated=time.strftime("%Y-%m-%d"), total=len(rows),
                    categories={k:dict(name=v[0], blurb=v[1]) for k,v in CATS.items()},
                    order=ORDER),

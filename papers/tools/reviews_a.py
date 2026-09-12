@@ -205,6 +205,22 @@ R["ego-dex"] = dict(
  paint the robot in, then train ordinary BC on the edited frames, with <em>zero</em> robot demonstrations.
  [[dexumi]] splits the difference with a wearable hand exoskeleton for kinematics plus video inpainting for
  appearance.</p>
+ <p><b>And then the data got two orders of magnitude bigger.</b> Between November 2025 and April 2026,
+ egocentric capture went from thousands of hours to a million: Build AI's Egocentric-1M
+ (~1,000,000 h, 14,228 factory workers, 10.8 billion frames, Apache 2.0 on Hugging Face) after a
+ 10K → 100K → 1M ladder in five months, and Ropedia's Xperience-10M (10,000 h but with six synchronised
+ RGB streams, stereo depth, SLAM pose and full hand-plus-body mocap — roughly a petabyte). See the Datasets
+ tab for the full table.</p>
+ <p><b>More importantly, the scaling question stopped being rhetorical.</b> [[egoscale]] (NVIDIA GEAR) trains
+ a VLA on <b>20,854 hours</b> of action-labelled egocentric video and reports a <b>log-linear scaling law</b>
+ between human data scale and validation loss, with that loss correlating with real-robot success. [[ego2robot]]
+ supplies the missing conversion step — retarget, synthesise the robot into the pixels, curate — producing
+ 18,561 hours of robot training data across 15 morphologies. [[humannet]] pushes at the million-hour regime
+ directly, and [[ace-ego-0]] reports the robot/sim/human mixing ratio almost nobody else publishes.</p>
+ <p><b>But read [[humanego]] before you believe any of it.</b> Thirty minutes of human video per task gives
+ 92.5% success across four real tasks — beating matched-time robot teleoperation by 41%. If half an hour is
+ enough for a task, then a million hours is buying <em>generality</em>, not competence, and those are very
+ different research programmes.</p>
  <p><b>The area is now crowded and moving fast.</b> Your own M2 library already holds [[human-video-survey]]
  (2026), [[do-as-i-do]], [[simdex]] and [[c2dex]]. A live search adds [[egoengine]] (egocentric video to a
  simulatable scene to dexterous demonstrations), [[video2sim2real]] (one human video to a dexterous skill,
@@ -226,7 +242,15 @@ R["ego-dex"] = dict(
  ],
  gap="""<p>Given how crowded this has become, the defensible angle is not "learn dexterity from ego video" but
  <b>a controlled comparison of the three gap-closing strategies on the same hand, the same tasks and the same
- human data</b>. Nobody has run that. Every paper advocates its own strategy against weak versions of the
+ human data</b>. Nobody has run that — and the 2026 scaling results make it more valuable, not less, because
+ [[egoscale]] tells you the curve exists without telling you <em>which transfer mechanism</em> that curve is
+ a property of.</p>
+ <p>There is a second, sharper opening the million-hour releases opened up: <b>nobody has characterised what
+ kind of hours matter</b>. Egocentric-1M is a million hours of repetitive industrial labour; Xperience-10M is
+ ten thousand hours with full mocap; [[humanego]] gets most of the way there on thirty minutes. Diversity,
+ annotation depth and raw volume are three different axes and the field is currently conflating them.
+ A study that holds total hours fixed and varies only diversity, or only annotation depth, would be cited
+ by everyone building a capture programme. Every paper advocates its own strategy against weak versions of the
  others, so the field genuinely does not know whether hardware adapters, pixel editing or shared
  representations win, or under what conditions.</p>
  <p>You are unusually well placed to run it: GeoDex gives you the hand, [[egoexo4d]] gives you paired data,
@@ -268,4 +292,9 @@ R["ego-dex"] = dict(
   dict(id="egoengine", why="2026. Egocentric video to a simulatable scene to dexterous demos — the pipeline, already built."),
   dict(id="realdexumi", why="2026. A wearable UMI for dexterous hands; the capture hardware is no longer the contribution."),
   dict(id="egodemogen", why="Cheap viewpoint augmentation any ego pipeline should include."),
+  dict(id="egoscale", why="The scaling law. 20,854 hours, log-linear validation loss, correlated with real-robot success. Read this before planning any collection."),
+  dict(id="ego2robot", why="How a million human hours become robot actions — retarget, synthesise, curate. 18,561 h across 15 morphologies."),
+  dict(id="humanego", why="The counterargument: 30 minutes per task, 92.5% success, beating matched-time teleop. Take it seriously."),
+  dict(id="ace-ego-0", why="The robot/sim/human mixing ratio, actually reported."),
+  dict(id="egokit", why="If you collect your own rather than consume someone else's."),
  ])

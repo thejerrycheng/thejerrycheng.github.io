@@ -23,6 +23,11 @@ R["real2sim2real-ego"] = dict(
  <p><b>The humanoid version came earlier.</b> [[videomimic]] reconstructs both the human motion and the
  terrain from ordinary video and trains a terrain-aware humanoid policy in the reconstruction. It is the
  cleanest demonstration that reconstructing the <em>scene</em>, not just the human, is what makes this work.</p>
+ <p><b>And the capture side just got a purpose-built substrate.</b> Ropedia's Xperience-10M pairs 10,000 hours
+ of egocentric video with stereo depth, SLAM camera pose and full hand-plus-body motion capture, all
+ synchronised — which is exactly the annotation stack a reconstruction pipeline otherwise has to estimate.
+ [[egokit]] is the open toolkit if you would rather record your own. Between them, the input side of this
+ project is no longer the hard part; the reconstruction and the loop closure are. See the Datasets tab.</p>
  <p><b>Real-to-sim is also being used for evaluation, not just training.</b> [[polaris]] builds twins so
  generalist policies can be benchmarked cheaply and reproducibly. That is a lower-risk use of the same
  machinery and worth adopting regardless of what your training story ends up being.</p>
@@ -81,6 +86,8 @@ R["real2sim2real-ego"] = dict(
   dict(id="hil-serl", why="If the RL fine-tuning stage is on real hardware, this is the sample budget to beat."),
   dict(id="real2sim", why="The original, simplest statement of the loop. Short; read for framing."),
   dict(id="simweaver", why="The rendering half of the gap, on deformables where it is worst."),
+  dict(id="egokit", why="The open capture toolkit, if you record your own egocentric input."),
+  dict(id="egoscale", why="What the downstream policy can be expected to gain per hour of human data."),
  ])
 
 R["rl-post-training"] = dict(
@@ -205,7 +212,13 @@ R["wam-umi-gloves"] = dict(
   """<b>The cheap first step.</b> [[flare]] — add a future-latent prediction loss to a policy you already
   have, and see whether it buys anything before building a world model.""",
  ],
- gap="""<p>The opening is the property UMI data has that robot-teleop data does not: <b>it is collected in
+ gap="""<p>One caveat first, because it reframes the whole idea: <b>raw egocentric hours are no longer scarce</b>.
+ Build AI's Egocentric-1M is a million hours, Ropedia's Xperience-10M ships full mocap and depth, and
+ [[egoscale]] has already measured the log-linear return on 20,854 action-labelled hours. What UMI capture
+ still has that none of those have is <b>a clean, physically-grounded action track</b> — gripper pose and
+ width recorded at capture time rather than inferred after the fact by [[ego2robot]]-style retargeting.
+ That, not volume, is now the argument.</p>
+ <p>The opening is the property UMI data has that robot-teleop data does not: <b>it is collected in
  hundreds of different real scenes, cheaply</b>. Every world-action model published so far is trained on
  data from a handful of lab environments, which is exactly the regime where a world model's main selling
  point — generalizing the dynamics rather than the policy — cannot be tested.</p>
@@ -247,6 +260,8 @@ R["wam-umi-gloves"] = dict(
   dict(id="robocurate", why="Verifying generated trajectories are executable. The filter DreamGen needs."),
   dict(id="oa-wam", why="Object-addressable WAM — structure that keeps long rollouts from degrading."),
   dict(id="dyna2", why="Unaudited, but an unsaturated scaling curve on human rather than robot data. The shape is the point."),
+  dict(id="egoscale", why="The human-data scaling law your UMI corpus will be measured against."),
+  dict(id="ego2robot", why="The retargeting alternative to UMI's recorded action track — know what you are beating."),
   dict(id="sunday-gelato", why="Competitive intelligence: the commercial version of this thesis."),
  ])
 

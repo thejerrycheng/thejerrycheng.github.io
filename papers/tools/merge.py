@@ -3,7 +3,7 @@
 import json, os, re, sys, unicodedata, datetime
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import schema, curated_rl, curated_il, curated_sys, curated_recent
+import schema, curated_rl, curated_il, curated_sys, curated_recent, curated_ego
 
 HARVEST = "/private/tmp/claude-501/-Users-jerrycheng-Desktop/bfd64d9a-4eab-4216-ade8-f0b0cd1137d7/scratchpad/harvest"
 OUT = os.path.join(os.path.dirname(HERE), "papers_data.json")
@@ -20,7 +20,7 @@ def splitlist(s):
 
 # ------------------------------------------------------------------ curated
 CUR = {}
-for mod in (curated_rl, curated_il, curated_sys, curated_recent):
+for mod in (curated_rl, curated_il, curated_sys, curated_recent, curated_ego):
     for r in mod.ROWS:
         rec = dict(
             id=r["id"], title=r["title"], tree=r["tree"], branch=r.get("br",""),

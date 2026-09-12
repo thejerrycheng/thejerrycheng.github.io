@@ -560,6 +560,11 @@ table.ds .dsyear{ font-family:var(--font-mono); font-size:10.5px; color:var(--as
 table.ds .dsone{ font-size:12.2px; color:var(--ink-soft); line-height:1.4; max-width:390px }
 table.ds .c-scale{ font-family:var(--font-mono); font-size:11.5px; color:var(--ink); white-space:nowrap; line-height:1.7 }
 table.ds .c-scale b{ color:var(--imp); font-weight:700 }
+table.ds tr.big .c-scale b{ background:var(--pop); color:#151820; border:1.2px solid var(--line);
+  border-radius:3px; padding:1px 5px; display:inline-block }
+table.ds tr.big .dsname::after{ content:"MEGA"; font-family:var(--font-mono); font-size:8.5px; font-weight:700;
+  letter-spacing:.06em; background:var(--rust); color:#FFF6E4; border:1.2px solid var(--line);
+  border-radius:3px; padding:1px 4px; margin-left:6px; vertical-align:2px }
 table.ds .c-dev, table.ds .c-mod{ font-size:11.8px; color:var(--ink-soft); line-height:1.4; max-width:170px }
 table.ds .c-emb{ font-size:11.8px; color:var(--ink-soft); max-width:130px }
 table.ds .c-lnk{ white-space:nowrap }
@@ -1144,8 +1149,13 @@ function buildDatasets(){
   };
   $("#dsQ").addEventListener("input", e=>{ DSS.q=norm(e.target.value); renderDatasets(); });
   $("#dsSort").addEventListener("change", e=>{ DSS.sort=e.target.value; renderDatasets(); });
-  $("#dsLede").textContent =
-    `${rows.length} open datasets — ${rows.filter(d=>d.org!=="academia").length} with industry or consortium behind them. `
+  const mega = rows.filter(d=>(d.hours_num||0)>=10000);
+  const biggest = rows.reduce((a,b)=>((b.hours_num||0)>(a.hours_num||0)?b:a), rows[0]);
+  $("#dsLede").innerHTML =
+    `${rows.length} open datasets — ${rows.filter(d=>d.org!=="academia").length} with industry or a consortium `
+    + `behind them. Sorted biggest-first inside each category. `
+    + `<b>${mega.length}</b> now exceed 10,000 hours, topping out at <b>${esc(biggest.name)}</b> `
+    + `(${esc(biggest.hours)}) — egocentric capture went from thousands of hours to a million inside about six months. `
     + `Every figure is taken from the dataset's own paper; every project link was checked over the network.`;
 }
 function dsPass(d){
@@ -1167,7 +1177,8 @@ function dsRow(d){
   const links=[];
   if(d.site)  links.push(`<a href="${esc(d.site)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Data</a>`);
   if(d.paper) links.push(`<a href="${esc(d.paper)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Paper</a>`);
-  return `<tr data-ds="${esc(d.id)}">
+  const big = (d.hours_num||0) >= 10000;
+  return `<tr class="${big?"big":""}" data-ds="${esc(d.id)}">
     <td class="c-fig">${d.fig?`<img src="${esc(d.fig)}" alt="" loading="lazy" decoding="async">`
                             :`<span class="nofig">no fig</span>`}</td>
     <td><div class="dsname">${esc(d.name)}<span class="orgtag org-${esc(d.org)}">${esc(d.org)}</span></div>

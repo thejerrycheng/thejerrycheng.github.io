@@ -2,8 +2,8 @@
  "meta": {
   "generated": "2026-09-11",
   "counts": {
-   "total": 445,
-   "curated": 257,
+   "total": 454,
+   "curated": 266,
    "library": 199,
    "attached": 61,
    "dropped": 35
@@ -494,6 +494,7 @@
     "dex-retargeting",
     "dexmv",
     "dexpilot",
+    "ego2robot",
     "x-op"
    ],
    "arxiv": "2608.07045",
@@ -554,6 +555,7 @@
    ],
    "related": [
     "dexskin",
+    "egoemg",
     "oa-wam",
     "omnivta",
     "tacforesight",
@@ -576,6 +578,78 @@
    "fig": "figures/dream-tac.webp",
    "figs": [
     "figures/dream-tac-1.webp"
+   ]
+  },
+  {
+   "id": "ego2robot",
+   "title": "Ego2Robot: Scalable Robot Data Synthesis from Egocentric Human Data",
+   "tree": "il",
+   "branch": "human-video",
+   "authors": [
+    "Ye Wang",
+    "Pei Lin",
+    "Xiong-Hui Chen",
+    "Haoqi Yuan",
+    "Zhixuan Liang",
+    "Yiyang Huang",
+    "Anzhe Chen",
+    "Zixing Lei",
+    "Jie Zhang",
+    "Tao Zhang",
+    "Haoyang Li",
+    "Tong Zhang",
+    "Chenxi Xiao",
+    "Ziyuan Jiao",
+    "Qin Jin"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-08-03",
+   "topics": [
+    "ego-to-robot synthesis",
+    "action retargeting",
+    "data curation"
+   ],
+   "paradigm": [
+    "IL"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "r2s2r"
+   ],
+   "ideas": [
+    "ego-dex",
+    "third-person",
+    "learned-retargeting"
+   ],
+   "related": [
+    "c2dex",
+    "dexumi",
+    "egoscale",
+    "humannet",
+    "phantom",
+    "simdex"
+   ],
+   "arxiv": "2608.02580",
+   "doi": "10.48550/arxiv.2608.02580",
+   "code": "",
+   "site": "",
+   "note": "The conversion step that makes a million hours of human video usable: retarget the actions, synthesise the robot arm into the pixels, and curate at multiple levels of quality. Produces <b>18,561 hours</b> of robot training data across 15 morphologies — the largest ego-to-robot corpus published. Raw human hours are worthless until something does this; read it as the other half of EgoScale.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Learning generalizable robot manipulation policies requires large-scale and diverse demonstration data. Egocentric human manipulation videos offer rich scene and task diversity, and prior work has shown that retargeting and rendering such videos into robot-format data can yield effective per-task policies at small scale. However, whether this approach can provide pretraining benefits for vision-language-action models at scale remains unexplored. We present \\textbf{Ego2Robot}, a scalable pipeline that converts egocentric human manipulation videos into robot training data through action retargeting, robot-arm visual synthesis, and multi-level quality curation. Ego2Robot supports both curated datasets and in-the-wild videos, producing 18,561 hours of robot training data spanning 15 robot morphologies, making it the largest ego-to-robot dataset to date. To evaluate generalization, we extend RoboTwin2.0 with disentangled perturbation axes covering visual appearance, scene layout, embodiment morphology, and task semantics. Experiments show that joint pretraining on Ego2Robot-synthesized and robot data consistently improves out-of-distribution generalization across multiple perturbation types, with benefits validated on real-robot deployment. Project page: https://www-ye.github.io/ego2robot_blog/",
+   "source": "curated",
+   "first_author": "Ye Wang",
+   "url": "https://arxiv.org/abs/2608.02580",
+   "fig": "figures/ego2robot.webp",
+   "figs": [
+    "figures/ego2robot-1.webp"
    ]
   },
   {
@@ -643,6 +717,86 @@
    "fig": "figures/egoengine.webp"
   },
   {
+   "id": "egoscale",
+   "title": "EgoScale: Scaling Dexterous Manipulation with Diverse Egocentric Human Data",
+   "tree": "il",
+   "branch": "human-video",
+   "authors": [
+    "Ruijie Zheng",
+    "Dantong Niu",
+    "Yuqi Xie",
+    "Jing Wang",
+    "Mengda Xu",
+    "Yunfan Jiang",
+    "Fernando Castañeda",
+    "Fengyuan Hu",
+    "You Liang Tan",
+    "Letian Fu",
+    "Trevor Darrell",
+    "Furong Huang",
+    "Yuke Zhu",
+    "Danfei Xu",
+    "Linxi Fan"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-02-18",
+   "topics": [
+    "egocentric scaling law",
+    "dexterous manipulation",
+    "action-labelled human video"
+   ],
+   "paradigm": [
+    "IL",
+    "VLA",
+    "flow matching"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "r2s2r",
+    "wam-tactile"
+   ],
+   "ideas": [
+    "ego-dex",
+    "wam-umi-gloves",
+    "third-person"
+   ],
+   "related": [
+    "ace-ego-0",
+    "dreamgen",
+    "ego2robot",
+    "egolive",
+    "egomimic",
+    "hrdt",
+    "humanego",
+    "humannet",
+    "humanoid-policy",
+    "phantom",
+    "r3m"
+   ],
+   "arxiv": "2602.16710",
+   "doi": "10.48550/arxiv.2602.16710",
+   "code": "",
+   "site": "",
+   "note": "The scaling result the human-data thesis needed. NVIDIA GEAR trains a flow-based VLA on <b>20,854 hours</b> of action-labelled egocentric human video — 20× any prior effort — and finds a <b>log-linear scaling law</b> between human data scale and validation loss, with that loss correlating with real-robot performance. Before this, 'more human video helps' was a hope. Now it is a curve you can budget against. Two-stage: pretrain on human video with wrist motion and retargeted hand actions, then a light mid-training stage on aligned human-robot play data.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Human behavior is among the most scalable sources of data for learning physical intelligence, yet how to effectively leverage it for dexterous manipulation remains unclear. While prior work demonstrates human to robot transfer in constrained settings, it is unclear whether large scale human data can support fine grained, high degree of freedom dexterous manipulation. We present EgoScale, a human to dexterous manipulation transfer framework built on large scale egocentric human data. We train a Vision Language Action (VLA) model on over 20,854 hours of action labeled egocentric human video, more than 20 times larger than prior efforts, and uncover a log linear scaling law between human data scale and validation loss. This validation loss strongly correlates with downstream real robot performance, establishing large scale human data as a predictable supervision source. Beyond scale, we introduce a simple two stage transfer recipe: large scale human pretraining followed by lightweight aligned human robot mid training. This enables strong long horizon dexterous manipulation and one shot task adaptation with minimal robot supervision. Our final policy improves average success rate by 54% over a no pretraining baseline using a 22 DoF dexterous robotic hand, and transfers effectively to robots with lower DoF hands, indicating that large scale human motion provides a reusable, embodiment agnostic motor prior.",
+   "source": "curated",
+   "first_author": "Ruijie Zheng",
+   "url": "https://arxiv.org/abs/2602.16710",
+   "fig": "figures/egoscale.webp",
+   "figs": [
+    "figures/egoscale-1.webp"
+   ]
+  },
+  {
    "id": "harbor",
    "title": "HARBOR: A Harness Framework for Agentic Robot Reinforcement Learning",
    "tree": "systems",
@@ -704,6 +858,67 @@
    "fig": "figures/harbor.webp",
    "figs": [
     "figures/harbor-1.webp"
+   ]
+  },
+  {
+   "id": "humanego",
+   "title": "HumanEgo: Zero-Shot Robot Learning from Minutes of Human Egocentric Videos",
+   "tree": "il",
+   "branch": "human-video",
+   "authors": [
+    "Zhi",
+    "Botao He",
+    "Kelin Yu",
+    "Seungjae Lee",
+    "Ruohan Gao",
+    "Furong Huang",
+    "Yiannis Aloimonos"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-05-24",
+   "topics": [
+    "few-minute human video",
+    "zero-shot transfer",
+    "sample efficiency"
+   ],
+   "paradigm": [
+    "IL"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "r2s2r"
+   ],
+   "ideas": [
+    "ego-dex",
+    "third-person"
+   ],
+   "related": [
+    "egomimic",
+    "egoscale",
+    "one-demo",
+    "phantom"
+   ],
+   "arxiv": "2605.24934",
+   "doi": "10.48550/arxiv.2605.24934",
+   "code": "",
+   "site": "",
+   "note": "The sharpest counterpoint to the scaling thesis in this whole library. <b>30 minutes</b> of human egocentric video per task gives 92.5% average success across four real tasks — 75% with only 15 minutes — and beats matched-time robot teleoperation by 41%. If a half-hour is enough, the argument for a million-hour campaign is about generality, not about any single task. Read it before committing to collection.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Human egocentric video captures rich manipulation demonstrations without any robot hardware, yet transferring these skills to robots remains challenging due to the embodiment gap between human and robot in both visual appearance and kinematics. We present HumanEgo, a framework that bridges the embodiment gap by lifting each human demonstration to an entity-level representation of hand-object interaction, and training a flow matching policy with dense auxiliary objectives that amplify supervision from every trajectory. HumanEgo is robot-data-free, hardware-agnostic, data-efficient, and zero-shot human-to-robot transferable. With only 30 minutes of human videos per task, HumanEgo achieves 92.5% average success across four real-world tasks (75% with just 15 minutes), outperforms matched-time robot teleoperation by 41%, and robustly transfers zero-shot across novel robots, cameras, and environments. We release HumanEgo as an easy-to-use, open-source framework for learning robot policies directly from human data: https://github.com/TX-Leo/HumanEgo",
+   "source": "curated",
+   "first_author": "Zhi",
+   "url": "https://arxiv.org/abs/2605.24934",
+   "fig": "figures/humanego.webp",
+   "figs": [
+    "figures/humanego-1.webp"
    ]
   },
   {
@@ -1538,6 +1753,7 @@
     "bunny-visionpro",
     "dexcap",
     "dexumi",
+    "egoemg",
     "orca-hand",
     "ruka"
    ],
@@ -1606,6 +1822,7 @@
     "anyskin",
     "digit",
     "dream-tac",
+    "egoemg",
     "gelsight",
     "mm-hand",
     "omnitactune",
@@ -1683,6 +1900,7 @@
     "airexo",
     "dexcap",
     "doglove",
+    "ego2robot",
     "egosteer",
     "fast-umi",
     "mimic-robotics",
@@ -1773,11 +1991,14 @@
     "auto-research-wm"
    ],
    "related": [
+    "ace-ego-0",
     "cosmos",
+    "egoscale",
     "genie",
     "gr2",
     "groot-n1",
     "groot-n15",
+    "humannet",
     "robocurate",
     "vjepa2"
    ],
@@ -1851,8 +2072,11 @@
     "ego4d",
     "egodemogen",
     "egoengine",
+    "egokit",
+    "egoscale",
     "egosteer",
     "human-video-survey",
+    "humanego",
     "humanoid-policy",
     "mimicplay",
     "phantom",
@@ -2120,9 +2344,11 @@
     "third-person"
    ],
    "related": [
+    "ace-ego-0",
     "ego4d",
     "egoexo4d",
     "egomimic",
+    "egoscale",
     "groot-n1",
     "phantom"
    ],
@@ -2511,9 +2737,12 @@
    "related": [
     "dexumi",
     "do-as-i-do",
+    "ego2robot",
     "egoengine",
     "egomimic",
+    "egoscale",
     "human-video-survey",
+    "humanego",
     "humanoid-policy",
     "mimicplay"
    ],
@@ -2652,6 +2881,7 @@
     "rl-post-training"
    ],
    "related": [
+    "ace-ego-0",
     "dlr-vla",
     "expo-ft",
     "hil-serl",
@@ -3159,6 +3389,7 @@
    "related": [
     "dexskin",
     "digit",
+    "egoemg",
     "gelsight",
     "reskin",
     "robotacdex",
@@ -3357,6 +3588,7 @@
     "dexmv",
     "dexumi",
     "doglove",
+    "egokit",
     "egomimic",
     "realdexumi",
     "ruka",
@@ -4330,6 +4562,7 @@
     "dexumi",
     "dp",
     "droid",
+    "egokit",
     "fast-umi",
     "gello",
     "mobile-aloha",
@@ -4801,6 +5034,7 @@
     "aloha2",
     "alohaunleashed",
     "dp",
+    "hrdt",
     "implicit-bc",
     "mobile-aloha",
     "openvla-oft",
@@ -5175,6 +5409,7 @@
    ],
    "related": [
     "egoexo4d",
+    "egolive",
     "egomimic",
     "human-video-survey",
     "humanoid-policy",
@@ -5303,6 +5538,7 @@
    ],
    "related": [
     "ego4d",
+    "egoscale",
     "vip",
     "vjepa2"
    ],
@@ -6845,6 +7081,70 @@
    "url": "https://doi.org/10.1145/3596711.3596785"
   },
   {
+   "id": "ace-ego-0",
+   "title": "ACE-Ego-0: Unifying Egocentric Human and Robotic Data for VLA Pretraining",
+   "tree": "il",
+   "branch": "human-video",
+   "authors": [
+    "Hao Li",
+    "Ganlong Zhao",
+    "Yufei Liu",
+    "Haotian Hou",
+    "Guoquan Ye",
+    "Tongyan Fang",
+    "Chunxiao Liu",
+    "Sicong Huang",
+    "Jianbo Liu",
+    "Xiaogang Wang",
+    "Hongsheng Li"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-06-15",
+   "topics": [
+    "unified pretraining",
+    "robot + sim + human data mixing"
+   ],
+   "paradigm": [
+    "VLA"
+   ],
+   "method": [],
+   "projects": [
+    "r2s2r"
+   ],
+   "ideas": [
+    "ego-dex",
+    "rl-post-training"
+   ],
+   "related": [
+    "dreamgen",
+    "egoscale",
+    "humanoid-policy",
+    "pld"
+   ],
+   "arxiv": "2606.17200",
+   "doi": "10.48550/arxiv.2606.17200",
+   "code": "",
+   "site": "",
+   "note": "Mixes 4.53K hours of robot and simulation data with 1.48K hours of pseudo-action-labelled egocentric human data in one pretraining recipe. The mixing ratio between the three sources is the question every VLA team faces and almost nobody reports; this one does.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Vision-Language-Action (VLA) models benefit from large-scale and diverse embodied data, yet scaling robot trajectory collection is costly and labor-intensive. Recent advances show that large-scale egocentric human videos provide complementary real-world supervision in pretraining. However, joint training on human and robot data remains challenging due to divergences in action spaces, embodiment structures, temporal dynamics, and supervision quality. We introduce ACE-EGO-0, a unified VLA pretraining framework jointly leveraging heterogeneous data sources. To extract large-scale pretraining supervision from egocentric human videos, we build a scalable egocentric video-to-action pipeline that converts raw human videos into robot-format pseudo-action trajectories. To make these labels comparable with robot demonstrations, ACE-EGO-0 uses a unified action representation based on camera-space actions, morphology conditioning, and time-aligned action chunking. To robustly leverage noisy pseudo-action supervision from egocentric human videos, we formulate a reliability-aware training objective with a human auxiliary loss that concentrates supervision on reliable signals. We instantiate ACE-EGO-0 on 4.53K hours of robot and simulation data, together with 1.48K hours of pseudo-action-labeled egocentric human data. Experiments show that incorporating large-scale human supervision under reliability-aware weighting consistently improves both unified joint pretraining and supervised fine-tuning. ACE-EGO-0 achieves state-of-the-art performance on RoboCasa GR1 TableTop and RoboTwin 2.0, while demonstrating strong transfer to real-world bimanual manipulation.",
+   "source": "curated",
+   "first_author": "Hao Li",
+   "url": "https://arxiv.org/abs/2606.17200",
+   "fig": "figures/ace-ego-0.webp",
+   "figs": [
+    "figures/ace-ego-0-1.webp",
+    "figures/ace-ego-0-2.webp"
+   ]
+  },
+  {
    "id": "aero-hand",
    "title": "Aero Hand Open: A Simulation-Ready Tendon-Driven Hand for Dexterous Manipulation Learning",
    "tree": "systems",
@@ -7295,6 +7595,215 @@
    "fig": "figures/expo-ft.webp"
   },
   {
+   "id": "egoemg",
+   "title": "EgoEMG: A Multimodal Egocentric Dataset with Bilateral EMG and Vision for Hand Pose Estimation",
+   "tree": "il",
+   "branch": "tactile-learn",
+   "authors": [
+    "Ziheng Xi",
+    "Jiayi Yu",
+    "Yitao Wang",
+    "Yanbo Duan",
+    "Jianjiang Feng",
+    "Jie Zhou"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-05-07",
+   "topics": [
+    "EMG",
+    "egocentric",
+    "hand pose",
+    "intent"
+   ],
+   "paradigm": [
+    "dataset"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "r2s2r",
+    "wam-tactile"
+   ],
+   "ideas": [
+    "tactile-wm",
+    "ego-dex"
+   ],
+   "related": [
+    "anyskin",
+    "dexskin",
+    "doglove",
+    "dream-tac"
+   ],
+   "arxiv": "2605.05712",
+   "doi": "10.48550/arxiv.2605.05712",
+   "code": "",
+   "site": "",
+   "note": "Bilateral 8-channel wrist EMG at 2 kHz paired with egocentric video, RGB-D and hand mocap, over 41 participants and 60 gestures. EMG carries force and intent <em>before</em> motion is visible, which is precisely the blind spot of a vision-only world model. Under-explored and cheap to instrument.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Surface electromyography (sEMG) records muscle activity during hand movement and can be decoded to recover detailed hand articulation. EMG and egocentric vision are complementary for hand sensing: EMG captures fine-grained finger articulation even under occlusion and poor lighting, while vision provides global hand configuration. However, no existing dataset synchronizes both modalities. We present EgoEMG, a multimodal egocentric dataset for bimanual hand pose estimation. EgoEMG includes bilateral wristband EMG with 16 total channels (8 per wrist) sampled at 2 kHz, 120 Hz IMU, egocentric wide-angle RGB video, external RGB-D video, and mocap-derived hand motion with wrist articulation angles. The dataset covers 41 participants performing 60 gesture classes, including 30 single-hand gestures and 30 bimanual gestures, totaling more than 10 hours of recording. We also introduce a benchmark with three tasks -- EMG-to-pose, vision-to-pose, and EMG+vision fusion -- under a shared joint-angle prediction target and common generalization split axes (cross-gesture, cross-user, and combined). As baselines, we evaluate EMGFormer for EMG-to-pose and generic ResNet/ViT backbones for vision-to-pose. We further study a residual fusion architecture that improves over matched lightweight vision-only baselines. Together, EgoEMG and its benchmark establish a foundation for future research on multimodal hand pose estimation with EMG and vision.",
+   "source": "curated",
+   "first_author": "Ziheng Xi",
+   "url": "https://arxiv.org/abs/2605.05712",
+   "fig": "figures/egoemg.webp",
+   "figs": [
+    "figures/egoemg-1.webp",
+    "figures/egoemg-2.webp"
+   ]
+  },
+  {
+   "id": "egokit",
+   "title": "EgoKit: Towards Unified Low-Cost Egocentric Data Collection with Heterogeneous Devices",
+   "tree": "systems",
+   "branch": "interfaces",
+   "authors": [
+    "Liuchuan Yu",
+    "Erdem Murat",
+    "Beichen Wang",
+    "Yan Zeng",
+    "Tingting Luo",
+    "Huizhen Zhou",
+    "Shanghao Li",
+    "Huining Feng",
+    "Zhigen Zhao",
+    "Ning Yang",
+    "Ke Jing",
+    "Yunhao Liu",
+    "Ruoya Sheng"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-05-16",
+   "topics": [
+    "low-cost egocentric capture",
+    "heterogeneous devices",
+    "open toolkit"
+   ],
+   "paradigm": [
+    "hardware"
+   ],
+   "method": [],
+   "projects": [
+    "r2s2r"
+   ],
+   "ideas": [
+    "ego-dex"
+   ],
+   "related": [
+    "dexcap",
+    "egomimic",
+    "open-aoe",
+    "umi"
+   ],
+   "arxiv": "2605.16797",
+   "doi": "10.48550/arxiv.2605.16797",
+   "code": "",
+   "site": "",
+   "note": "A unified low-cost toolkit for egocentric collection across phones, action cameras and XR headsets, logging head pose and OpenXR 26-joint hand tracking alongside video. If you run your own capture rather than consuming someone else's corpus, start here.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Egocentric video is increasingly used as a data source for robot learning, activity understanding, and embodied AI research, but collecting it at scale remains fragmented in practice: each candidate host device, such as an Android phone, iPhone, iPad, smart glasses, or extended reality (XR) headset, exposes a different SDK, a different policy on raw camera access, and different limitations on external USB cameras and on-device tracking. Synchronized ego-view and wrist-view capture is therefore typically obtained by either committing to a single proprietary platform or building one-off rigs that do not transfer across devices. To address this gap, we present EgoKit, a toolkit that exposes the same egocentric recording workflow across six heterogeneous host devices. Across all supported devices, EgoKit presents the same recording interaction and produces locally stored video with a uniform log format; on XR headsets, it additionally logs head pose and OpenXR-standard 26-joint hand tracking aligned to the video streams. The companion accessories, including two wrist cameras with mounts, a head strap, and a USB-C hub, add wrist-view capture to any supported host without custom hardware fabrication. EgoKit is available at \\url{https://egokit.chuange.org/}.",
+   "source": "curated",
+   "first_author": "Liuchuan Yu",
+   "url": "https://arxiv.org/abs/2605.16797",
+   "fig": "figures/egokit.webp",
+   "figs": [
+    "figures/egokit-1.webp",
+    "figures/egokit-2.webp",
+    "figures/egokit-3.webp"
+   ]
+  },
+  {
+   "id": "egolive",
+   "title": "EgoLive: A Large-Scale Egocentric Dataset from Real-World Human Tasks",
+   "tree": "il",
+   "branch": "human-video",
+   "authors": [
+    "Yihang Li",
+    "Xuelong Wei",
+    "Jingzhou Luo",
+    "Yingjing Xiao",
+    "Yibo Bai",
+    "Guangyuan Zhou",
+    "Teng Zou",
+    "Chenguang Gui",
+    "Jiajun Wen",
+    "He Zhang",
+    "Kangliang Chen",
+    "Xing Pan",
+    "Shuaiyan Liu",
+    "Daming Wang",
+    "Tao An",
+    "Jiayi Li",
+    "Shibo Jin",
+    "Wanwan Zhang",
+    "Tianyu Wang",
+    "Boren Wei",
+    "Zhixuan Huang",
+    "Fangsheng Liu",
+    "Ruodai Li",
+    "Hui Zhang",
+    "Anson Li",
+    "Yicheng Gong",
+    "Peng Cao",
+    "Jiaming Liang",
+    "Liang Lin"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-04-26",
+   "topics": [
+    "egocentric dataset",
+    "semantic coverage",
+    "long tail"
+   ],
+   "paradigm": [
+    "dataset"
+   ],
+   "method": [],
+   "projects": [
+    "r2s2r"
+   ],
+   "ideas": [
+    "ego-dex"
+   ],
+   "related": [
+    "ego4d",
+    "egoscale"
+   ],
+   "arxiv": "2604.23570",
+   "doi": "10.48550/arxiv.2604.23570",
+   "code": "",
+   "site": "",
+   "note": "Argues that the long tail of semantic coverage matters more than hour count, and benchmarks itself against EgoDex and Xperience-10M on exactly that axis. The useful corrective to a table sorted by hours.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "The advancement of robot learning is currently hindered by the scarcity of large-scale, high-quality datasets. While established data collection methods such as teleoperation and universal manipulation interfaces dominate current datasets, they suffer from inherent limitations in scalability and real-world deployability. Human egocentric video collection, by contrast, has emerged as a promising approach to enable scalable, natural and in-the-wild data collection. As such, we present EgoLive, a large-scale, high-quality egocentric dataset designed explicitly for robot manipulation learning. EgoLive establishes three distinctive technical advantages over existing egocentric datasets: first, it represents the largest open-source annotated egocentric dataset focused on real-world task-oriented human routines to date; second, it delivers leading data quality via a customized head-mounted capture device and comprehensive high-precision multi-modal annotations; third, all data is collected exclusively in unconstrained real-world scenarios and encompasses vertical field human working data, including home service, retail, and other practical work scenarios, providing superior diversity and ecological validity. With the introduction of EgoLive, we aim to provide the research community with a scalable, high-quality dataset that accelerates breakthroughs in generalizable robotic models and facilitates the real-world deployment of robot systems.",
+   "source": "curated",
+   "first_author": "Yihang Li",
+   "url": "https://arxiv.org/abs/2604.23570",
+   "fig": "figures/egolive.webp",
+   "figs": [
+    "figures/egolive-1.webp"
+   ]
+  },
+  {
    "id": "egosteer",
    "title": "EgoSteer: A Full-Stack System Towards Steerable Dexterous Manipulation from Egocentric Videos",
    "tree": "systems",
@@ -7351,6 +7860,60 @@
    "figs": [
     "figures/egosteer-1.webp",
     "figures/egosteer-2.webp"
+   ]
+  },
+  {
+   "id": "humannet",
+   "title": "HumanNet: Scaling Human-centric Video Learning to One Million Hours",
+   "tree": "il",
+   "branch": "human-video",
+   "authors": [
+    "Yufan Deng",
+    "Daquan Zhou"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-05-07",
+   "topics": [
+    "human-centric video learning",
+    "million-hour scale"
+   ],
+   "paradigm": [
+    "IL",
+    "VLA"
+   ],
+   "method": [],
+   "projects": [
+    "r2s2r"
+   ],
+   "ideas": [
+    "ego-dex"
+   ],
+   "related": [
+    "dreamgen",
+    "ego2robot",
+    "egoscale"
+   ],
+   "arxiv": "2605.06747",
+   "doi": "10.48550/arxiv.2605.06747",
+   "code": "",
+   "site": "",
+   "note": "Aimed explicitly at the million-hour regime, with controlled VLA ablations isolating what an extra order of magnitude of human video actually buys. The ablation is the useful part — very few papers separate the value of scale from the value of everything else they changed.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Progress in embodied intelligence increasingly depends on scalable data infrastructure. While vision and language have scaled with internet corpora, learning physical interaction remains constrained by the lack of large, diverse, and richly annotated human activity data. We present HumanNet, a one-million-hour human-centric video corpus that captures how humans interact with the physical world at scale. HumanNet spans both first-person and third-person perspectives and covers fine-grained activities, human-object interactions, tool use, and long-horizon behaviors across diverse real-world environments. Beyond raw video, the dataset provides interaction-centric annotations, including captions, motion descriptions, and hand and body-related signals, enabling motion-aware and interaction-aware learning. Beyond scale, HumanNet introduces a systematic data curation paradigm for embodied learning, where human-centric filtering, temporal structuring, viewpoint diversity, and annotation enrichment are treated as first-class design principles. This design transforms unstructured internet video into a scalable substrate for representation learning, activity understanding, motion generation, and human-to-robot transfer. We conduct a first-step validation on the value of this design through controlled vision-language-action ablation: under a fixed set of validation data, continued training from the Qwen VLM model with 1000 hours of egocentric video drawn from HumanNet surpasses the continued training with 100 hours of real-robot data from Magic Cobot, indicating that egocentric human video could be a scalable and cost-effective substitute for robot data. By building this project, we aim to explore the opportunity to scale embodied foundation models using human-centric videos, rather than relying solely on robot-specific data.",
+   "source": "curated",
+   "first_author": "Yufan Deng",
+   "url": "https://arxiv.org/abs/2605.06747",
+   "fig": "figures/humannet.webp",
+   "figs": [
+    "figures/humannet-1.webp",
+    "figures/humannet-2.webp"
    ]
   },
   {
@@ -7802,6 +8365,7 @@
    "related": [
     "dp",
     "egodemogen",
+    "humanego",
     "icrt",
     "umi"
    ],
@@ -7859,6 +8423,7 @@
    "related": [
     "ego4d",
     "egoexo4d",
+    "egokit",
     "human-video-survey",
     "umi"
    ],
@@ -8193,6 +8758,7 @@
    ],
    "related": [
     "do-as-i-do",
+    "ego2robot",
     "egomimic",
     "human-video-survey"
    ],
@@ -10042,6 +10608,65 @@
    "url": "https://deepmind.google/discover/blog/genie-3-a-new-frontier-for-world-models/"
   },
   {
+   "id": "hrdt",
+   "title": "H-RDT: Human Manipulation Enhanced Bimanual Robotic Manipulation",
+   "tree": "il",
+   "branch": "human-video",
+   "authors": [
+    "Hongzhe Bi",
+    "Lingxuan Wu",
+    "Tianwei Lin",
+    "Hengkai Tan",
+    "Zhizhong Su",
+    "Hang Su",
+    "Jun Zhu"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-07-31",
+   "topics": [
+    "human video pretraining",
+    "bimanual manipulation"
+   ],
+   "paradigm": [
+    "IL",
+    "diffusion"
+   ],
+   "method": [],
+   "projects": [
+    "mabel",
+    "r2s2r"
+   ],
+   "ideas": [
+    "ego-dex"
+   ],
+   "related": [
+    "act",
+    "egoscale",
+    "rdt1b"
+   ],
+   "arxiv": "2507.23523",
+   "doi": "10.48550/arxiv.2507.23523",
+   "code": "",
+   "site": "",
+   "note": "Egocentric human video with paired 3D hand poses as a behavioural prior for bimanual robot manipulation. Relevant to MABEL specifically — bimanual is where human priors should transfer best and where robot data is scarcest.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Imitation learning for robotic manipulation faces a fundamental challenge: the scarcity of large-scale, high-quality robot demonstration data. Recent robotic foundation models often pre-train on cross-embodiment robot datasets to increase data scale, while they face significant limitations as the diverse morphologies and action spaces across different robot embodiments make unified training challenging. In this paper, we present H-RDT (Human to Robotics Diffusion Transformer), a novel approach that leverages human manipulation data to enhance robot manipulation capabilities. Our key insight is that large-scale egocentric human manipulation videos with paired 3D hand pose annotations provide rich behavioral priors that capture natural manipulation strategies and can benefit robotic policy learning. We introduce a two-stage training paradigm: (1) pre-training on large-scale egocentric human manipulation data, and (2) cross-embodiment fine-tuning on robot-specific data with modular action encoders and decoders. Built on a diffusion transformer architecture with 2B parameters, H-RDT uses flow matching to model complex action distributions. Extensive evaluations encompassing both simulation and real-world experiments, single-task and multitask scenarios, as well as few-shot learning and robustness assessments, demonstrate that H-RDT outperforms training from scratch and existing state-of-the-art methods, including Pi0 and RDT, achieving significant improvements of 13.9% and 40.5% over training from scratch in simulation and real-world experiments, respectively. The results validate our core hypothesis that human manipulation data can serve as a powerful foundation for learning bimanual robotic manipulation policies.",
+   "source": "curated",
+   "first_author": "Hongzhe Bi",
+   "url": "https://arxiv.org/abs/2507.23523",
+   "fig": "figures/hrdt.webp",
+   "figs": [
+    "figures/hrdt-1.webp"
+   ]
+  },
+  {
    "id": "h2compact",
    "title": "H2-COMPACT: Human-Humanoid Co-Manipulation via Adaptive Contact Trajectory Policies",
    "tree": "rl",
@@ -10667,6 +11292,7 @@
    "related": [
     "act",
     "groot-n1",
+    "hrdt",
     "pi0"
    ],
    "arxiv": "2410.07864",

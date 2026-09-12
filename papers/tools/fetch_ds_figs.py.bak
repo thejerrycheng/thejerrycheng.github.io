@@ -18,12 +18,12 @@ for i,r in enumerate(todo):
             raw=urllib.request.urlopen(urllib.request.Request(
                 f"https://arxiv.org/pdf/{r['arxiv']}",
                 headers={"User-Agent":"paper-atlas/1.0 (mailto:jerrychengh990427@gmail.com)"}),
-                timeout=120).read()
+                timeout=90).read()
             if len(raw)<40000 or not raw[:5].startswith(b"%PDF"): raise ValueError("not a pdf")
             open(pdf,"wb").write(raw)
         except Exception:
-            fail+=1; time.sleep(7.0); continue
-        time.sleep(7.0)
+            fail+=1; time.sleep(3.2); continue
+        time.sleep(3.2)
     try: hero,figs = extract(pdf, "ds-"+r["id"], 2)
     except Exception: hero,figs=None,[]
     if hero:

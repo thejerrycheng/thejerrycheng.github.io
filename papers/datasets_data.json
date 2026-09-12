@@ -1,7 +1,7 @@
 {
  "meta": {
   "generated": "2026-09-11",
-  "total": 86,
+  "total": 101,
   "categories": {
    "ego": {
     "name": "Egocentric human",
@@ -63,6 +63,395 @@
   ]
  },
  "datasets": [
+  {
+   "id": "egocentric1m",
+   "name": "Egocentric-1M",
+   "title": "Egocentric-1M",
+   "cat": "ego",
+   "org": "industry",
+   "one": "Roughly one million hours of factory-floor egocentric video — larger than every prior egocentric dataset combined, released open under Apache 2.0.",
+   "device": "Build AI custom head-mounted glasses",
+   "modal": "RGB (streamable, no full download required)",
+   "hours": "~1,000,000 h",
+   "eps": "10.8 billion frames",
+   "tasks": "assembly, sorting, packaging, machining",
+   "scenes": "real production floors, Southeast Asia",
+   "subj": "14,228 factory workers",
+   "embod": "human",
+   "note": "Build AI's scaling ladder went 10K hours (Nov 2025) → 100K (Dec 2025) → 1M (Apr 2026). The framing to hold onto: this is industrial repetitive labour, not household diversity, so it is enormous and narrow at the same time. Whether that narrowness matters is an open empirical question and a very cheap one to test.",
+   "arxiv": "",
+   "authors": [],
+   "year": 2026,
+   "date": "2026-04-08",
+   "institutions": [],
+   "paper": "",
+   "site": "https://huggingface.co/datasets/builddotai/Egocentric-1M",
+   "fig": "",
+   "hours_num": 1000000.0
+  },
+  {
+   "id": "humannet",
+   "name": "HumanNet",
+   "title": "HumanNet: Scaling Human-centric Video Learning to One Million Hours",
+   "cat": "ego",
+   "org": "industry",
+   "one": "A human-centric video learning stack built to scale to one million hours, with controlled VLA ablations on the value of the data.",
+   "device": "aggregated human video",
+   "modal": "RGB, language, action labels",
+   "hours": "1,000,000 h (stated)",
+   "eps": "—",
+   "tasks": "—",
+   "scenes": "—",
+   "subj": "—",
+   "embod": "human → robot",
+   "note": "Read it for the ablation rather than the corpus: it is one of the few papers that isolates what an extra order of magnitude of human video actually buys a VLA. Caveat: the million-hour figure is the paper's stated scale — its controlled ablations run at far smaller sizes, so treat the headline as a design target rather than a corpus you can download today.",
+   "arxiv": "2605.06747",
+   "authors": [
+    "Yufan Deng",
+    "Daquan Zhou"
+   ],
+   "year": 2026,
+   "date": "2026-05-07",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2605.06747",
+   "site": "https://arxiv.org/abs/2605.06747",
+   "fig": "figures/ds-humannet.webp",
+   "figs": [
+    "figures/ds-humannet-1.webp",
+    "figures/ds-humannet-2.webp"
+   ],
+   "hours_num": 1000000.0
+  },
+  {
+   "id": "egocentric100k",
+   "name": "Egocentric-100K",
+   "title": "Egocentric-100K",
+   "cat": "ego",
+   "org": "industry",
+   "one": "The 100,000-hour rung of Build AI's ladder — the release that made million-hour egocentric look inevitable.",
+   "device": "Build AI head-mounted glasses",
+   "modal": "RGB",
+   "hours": "100,000 h",
+   "eps": "—",
+   "tasks": "industrial manual work",
+   "scenes": "factory floors",
+   "subj": "—",
+   "embod": "human",
+   "note": "",
+   "arxiv": "",
+   "authors": [],
+   "year": 2025,
+   "date": "2025-12-01",
+   "institutions": [],
+   "paper": "",
+   "site": "https://huggingface.co/datasets/builddotai/Egocentric-100K",
+   "fig": "",
+   "hours_num": 100000.0
+  },
+  {
+   "id": "egoscale",
+   "name": "EgoScale",
+   "title": "EgoScale: Scaling Dexterous Manipulation with Diverse Egocentric Human Data",
+   "cat": "ego",
+   "org": "industry",
+   "one": "NVIDIA GEAR's scaling study: a VLA trained on 20,854 hours of action-labelled egocentric human video, with a measured log-linear scaling law.",
+   "device": "aggregated egocentric + retargeting pipeline",
+   "modal": "RGB, wrist motion, retargeted dexterous hand actions",
+   "hours": "20,854 h",
+   "eps": "—",
+   "tasks": "dexterous manipulation",
+   "scenes": "—",
+   "subj": "—",
+   "embod": "human → dexterous robot",
+   "note": "The most important number in this table for your ego-dexterity idea: validation loss falls log-linearly with human data scale, and that loss correlates with real-robot performance. It turns 'more human video helps' from a hope into a predictable curve.",
+   "arxiv": "2602.16710",
+   "authors": [
+    "Ruijie Zheng",
+    "Dantong Niu",
+    "Yuqi Xie",
+    "Jing Wang",
+    "Mengda Xu",
+    "Yunfan Jiang",
+    "Fernando Castañeda",
+    "Fengyuan Hu",
+    "You Liang Tan",
+    "Letian Fu",
+    "Trevor Darrell",
+    "Furong Huang",
+    "Yuke Zhu",
+    "Danfei Xu",
+    "Linxi Fan"
+   ],
+   "year": 2026,
+   "date": "2026-02-18",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2602.16710",
+   "site": "https://research.nvidia.com/labs/gear/egoscale/",
+   "fig": "figures/ds-egoscale.webp",
+   "figs": [
+    "figures/ds-egoscale-1.webp"
+   ],
+   "hours_num": 20854.0
+  },
+  {
+   "id": "ego2robot",
+   "name": "Ego2Robot",
+   "title": "Ego2Robot: Scalable Robot Data Synthesis from Egocentric Human Data",
+   "cat": "ego",
+   "org": "academia",
+   "one": "A pipeline that converts egocentric human video into robot training data, producing 18,561 hours across 15 robot morphologies — the largest ego-to-robot corpus to date.",
+   "device": "egocentric video → retargeting → visual synthesis",
+   "modal": "RGB (synthesised robot arm), retargeted actions",
+   "hours": "18,561 h",
+   "eps": "—",
+   "tasks": "manipulation",
+   "scenes": "curated + in-the-wild",
+   "subj": "15 robot morphologies",
+   "embod": "15 robot morphologies",
+   "note": "The other half of the million-hour story: raw human hours are useless until something turns them into actions. Action retargeting + robot-arm visual synthesis + multi-level quality curation is the recipe.",
+   "arxiv": "2608.02580",
+   "authors": [
+    "Ye Wang",
+    "Pei Lin",
+    "Xiong-Hui Chen",
+    "Haoqi Yuan",
+    "Zhixuan Liang",
+    "Yiyang Huang",
+    "Anzhe Chen",
+    "Zixing Lei",
+    "Jie Zhang",
+    "Tao Zhang",
+    "Haoyang Li",
+    "Tong Zhang",
+    "Chenxi Xiao",
+    "Ziyuan Jiao",
+    "Qin Jin"
+   ],
+   "year": 2026,
+   "date": "2026-08-03",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2608.02580",
+   "site": "https://arxiv.org/abs/2608.02580",
+   "fig": "figures/ds-ego2robot.webp",
+   "figs": [
+    "figures/ds-ego2robot-1.webp"
+   ],
+   "hours_num": 18561.0
+  },
+  {
+   "id": "xperience10m",
+   "name": "Xperience-10M",
+   "title": "Xperience-10M",
+   "cat": "ego",
+   "org": "industry",
+   "one": "Ten thousand hours of egocentric recording with six synchronised RGB streams, stereo depth, SLAM pose and full hand-plus-body motion capture — roughly a petabyte.",
+   "device": "Ropedia multi-camera capture rig",
+   "modal": "6× RGB, audio, stereo depth, camera pose/SLAM, hand mocap, full-body mocap, IMU, hierarchical language",
+   "hours": "10,000 h",
+   "eps": "10M experiences · 2.88B RGB + 720M depth + 576M pose/mocap frames",
+   "tasks": "hierarchical task/sub-task annotation",
+   "scenes": "—",
+   "subj": "—",
+   "embod": "human",
+   "note": "The richest egocentric annotation stack that exists — depth, SLAM and mocap all synchronised. Where Egocentric-1M has scale and nothing else, this has everything a real-to-sim or retargeting pipeline needs. If you only adopt one corpus for the Real2Sim2Real project, it is probably this one.",
+   "arxiv": "",
+   "authors": [],
+   "year": 2026,
+   "date": "2026-01-01",
+   "institutions": [],
+   "paper": "",
+   "site": "https://huggingface.co/datasets/ropedia-ai/xperience-10m",
+   "fig": "",
+   "hours_num": 10000.0
+  },
+  {
+   "id": "egocentric10k",
+   "name": "Egocentric-10K",
+   "title": "Egocentric-10K",
+   "cat": "ego",
+   "org": "industry",
+   "one": "The first rung: 10,000 hours of factory egocentric video, November 2025.",
+   "device": "Build AI head-mounted glasses",
+   "modal": "RGB",
+   "hours": "10,000 h",
+   "eps": "—",
+   "tasks": "industrial manual work",
+   "scenes": "factory floors",
+   "subj": "—",
+   "embod": "human",
+   "note": "",
+   "arxiv": "",
+   "authors": [],
+   "year": 2025,
+   "date": "2025-11-01",
+   "institutions": [],
+   "paper": "",
+   "site": "https://huggingface.co/datasets/builddotai/Egocentric-10K",
+   "fig": "",
+   "hours_num": 10000.0
+  },
+  {
+   "id": "aceego0",
+   "name": "ACE-Ego-0",
+   "title": "ACE-Ego-0: Unifying Egocentric Human and Robotic Data for VLA Pretraining",
+   "cat": "ego",
+   "org": "academia",
+   "one": "A VLA pretraining framework that mixes robot, simulation and pseudo-action-labelled egocentric human data in one recipe.",
+   "device": "aggregated",
+   "modal": "RGB, robot actions, pseudo-action labels",
+   "hours": "4.53K h robot+sim · 1.48K h human",
+   "eps": "—",
+   "tasks": "manipulation",
+   "scenes": "—",
+   "subj": "—",
+   "embod": "multiple",
+   "note": "The mixing ratio between robot, sim and human data is the real content here — the question everyone training a VLA has to answer and almost nobody reports.",
+   "arxiv": "2606.17200",
+   "authors": [
+    "Hao Li",
+    "Ganlong Zhao",
+    "Yufei Liu",
+    "Haotian Hou",
+    "Guoquan Ye",
+    "Tongyan Fang",
+    "Chunxiao Liu",
+    "Sicong Huang",
+    "Jianbo Liu",
+    "Xiaogang Wang",
+    "Hongsheng Li"
+   ],
+   "year": 2026,
+   "date": "2026-06-15",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2606.17200",
+   "site": "https://arxiv.org/abs/2606.17200",
+   "fig": "figures/ds-aceego0.webp",
+   "figs": [
+    "figures/ds-aceego0-1.webp",
+    "figures/ds-aceego0-2.webp"
+   ],
+   "hours_num": 4530.0
+  },
+  {
+   "id": "ego4d",
+   "name": "Ego4D",
+   "title": "Ego4D: Around the World in 3,000 Hours of Egocentric Video",
+   "cat": "ego",
+   "org": "consortium",
+   "one": "The foundational egocentric corpus: daily-life video from 931 wearers in 9 countries, with benchmark suites for memory, forecasting and social understanding.",
+   "device": "Head-mounted cameras (Vuzix, GoPro, Aria, Weeview, Pupil)",
+   "modal": "RGB, audio, 3D scans, eye gaze, IMU, stereo (subset)",
+   "hours": "3,670 h",
+   "eps": "3,670 h of video",
+   "tasks": "hundreds of scenarios",
+   "scenes": "74 locations",
+   "subj": "931 wearers",
+   "embod": "human",
+   "note": "The substrate under almost every 'learn from human video' result. No native hand-pose labels — that gap is why EgoDex and OpenEgo exist.",
+   "arxiv": "2110.07058",
+   "authors": [
+    "Kristen Grauman",
+    "Andrew Westbury",
+    "Eugene Byrne",
+    "Zachary Chavis",
+    "Antonino Furnari",
+    "Rohit Girdhar",
+    "Jackson Hamburger",
+    "Hao Jiang",
+    "Miao Liu",
+    "Xingyu Liu",
+    "Miguel Martin",
+    "Tushar Nagarajan",
+    "Ilija Radosavovic",
+    "Santhosh Kumar Ramakrishnan",
+    "Fiona Ryan",
+    "Jayant Sharma",
+    "Michael Wray",
+    "Mengmeng Xu",
+    "Eric Zhongcong Xu",
+    "Chen Zhao",
+    "Siddhant Bansal",
+    "Dhruv Batra",
+    "Vincent Cartillier",
+    "Sean Crane",
+    "Tien Do",
+    "Morrie Doulaty",
+    "Akshay Erapalli",
+    "Christoph Feichtenhofer",
+    "Adriano Fragomeni",
+    "Qichen Fu",
+    "Abrham Gebreselasie",
+    "Cristina Gonzalez",
+    "James Hillis",
+    "Xuhua Huang",
+    "Yifei Huang",
+    "Wenqi Jia",
+    "Weslie Khoo",
+    "Jachym Kolar",
+    "Satwik Kottur",
+    "Anurag Kumar",
+    "Federico Landini",
+    "Chao Li",
+    "Yanghao Li",
+    "Zhenqiang Li",
+    "Karttikeya Mangalam",
+    "Raghava Modhugu",
+    "Jonathan Munro",
+    "Tullie Murrell",
+    "Takumi Nishiyasu",
+    "Will Price",
+    "Paola Ruiz Puentes",
+    "Merey Ramazanova",
+    "Leda Sari",
+    "Kiran Somasundaram",
+    "Audrey Southerland",
+    "Yusuke Sugano",
+    "Ruijie Tao",
+    "Minh Vo",
+    "Yuchen Wang",
+    "Xindi Wu",
+    "Takuma Yagi",
+    "Ziwei Zhao",
+    "Yunyi Zhu",
+    "Pablo Arbelaez",
+    "David Crandall",
+    "Dima Damen",
+    "Giovanni Maria Farinella",
+    "Christian Fuegen",
+    "Bernard Ghanem",
+    "Vamsi Krishna Ithapu",
+    "C. V. Jawahar",
+    "Hanbyul Joo",
+    "Kris Kitani",
+    "Haizhou Li",
+    "Richard Newcombe",
+    "Aude Oliva",
+    "Hyun Soo Park",
+    "James M. Rehg",
+    "Yoichi Sato",
+    "Jianbo Shi",
+    "Mike Zheng Shou",
+    "Antonio Torralba",
+    "Lorenzo Torresani",
+    "Mingfei Yan",
+    "Jitendra Malik"
+   ],
+   "year": 2021,
+   "date": "2021-10-13",
+   "institutions": [
+    "Meta AI",
+    "UT Austin",
+    "88 institutions"
+   ],
+   "paper": "https://arxiv.org/abs/2110.07058",
+   "site": "https://ego4d-data.org/",
+   "fig": "figures/ds-ego4d.webp",
+   "figs": [
+    "figures/ds-ego4d-1.webp",
+    "figures/ds-ego4d-2.webp"
+   ],
+   "hours_num": 3670.0
+  },
   {
    "id": "egoverse",
    "name": "EgoVerse",
@@ -131,377 +520,8 @@
    "figs": [
     "figures/ds-egoverse-1.webp",
     "figures/ds-egoverse-2.webp"
-   ]
-  },
-  {
-   "id": "egodex",
-   "name": "EgoDex",
-   "title": "EgoDex: Learning Dexterous Manipulation from Large-Scale Egocentric Video",
-   "cat": "ego",
-   "org": "industry",
-   "one": "Apple's large-scale egocentric video with paired 3D hand and finger tracking captured at record time, aimed squarely at dexterous manipulation.",
-   "device": "Apple Vision Pro",
-   "modal": "RGB 1080p/30 Hz, 3D hand + finger pose, camera pose",
-   "hours": "829 h",
-   "eps": "338K episodes",
-   "tasks": "194 tasks",
-   "scenes": "—",
-   "subj": "—",
-   "embod": "human",
-   "note": "Solves Ego4D's biggest gap — native, accurate hand pose at scale. The most useful single corpus for the ego-dexterity idea.",
-   "arxiv": "2505.11709",
-   "authors": [
-    "Ryan Hoque",
-    "Peide Huang",
-    "David J. Yoon",
-    "Mouli Sivapurapu",
-    "Jian Zhang"
    ],
-   "year": 2025,
-   "date": "2025-05-16",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2505.11709",
-   "site": "https://github.com/apple/ml-egodex",
-   "fig": "figures/ds-egodex.webp",
-   "figs": [
-    "figures/ds-egodex-1.webp",
-    "figures/ds-egodex-2.webp"
-   ]
-  },
-  {
-   "id": "egovla",
-   "name": "EgoVLA",
-   "title": "EgoVLA: Learning Vision-Language-Action Models from Egocentric Human Videos",
-   "cat": "ego",
-   "org": "academia",
-   "one": "Not a dataset but the reference recipe: train a VLA on egocentric human video, then transfer it to a robot.",
-   "device": "—",
-   "modal": "RGB, hand pose",
-   "hours": "—",
-   "eps": "—",
-   "tasks": "—",
-   "scenes": "—",
-   "subj": "—",
-   "embod": "human → robot",
-   "note": "Read alongside the ego datasets — it tells you what preprocessing they actually need to be usable.",
-   "arxiv": "2507.12440",
-   "authors": [
-    "Ruihan Yang",
-    "Qinxi Yu",
-    "Yecheng Wu",
-    "Rui Yan",
-    "Borui Li",
-    "An-Chieh Cheng",
-    "Xueyan Zou",
-    "Yunhao Fang",
-    "Xuxin Cheng",
-    "Ri-Zhao Qiu",
-    "Hongxu Yin",
-    "Sifei Liu",
-    "Song Han",
-    "Yao Lu",
-    "Xiaolong Wang"
-   ],
-   "year": 2025,
-   "date": "2025-07-16",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2507.12440",
-   "site": "https://arxiv.org/abs/2507.12440",
-   "fig": "figures/ds-egovla.webp",
-   "figs": [
-    "figures/ds-egovla-1.webp",
-    "figures/ds-egovla-2.webp"
-   ]
-  },
-  {
-   "id": "openego",
-   "name": "OpenEgo",
-   "title": "OpenEgo: A Large-Scale Multimodal Egocentric Dataset for Dexterous Manipulation",
-   "cat": "ego",
-   "org": "academia",
-   "one": "Six public egocentric datasets unified into one schema with hand-pose and manipulation annotations.",
-   "device": "mixed (aggregated)",
-   "modal": "RGB, 3D hand pose, language",
-   "hours": "1,107 h",
-   "eps": "—",
-   "tasks": "290 manipulation tasks",
-   "scenes": "600+ environments",
-   "subj": "—",
-   "embod": "human",
-   "note": "Aggregation, not new capture — but the harmonised schema saves weeks of data engineering.",
-   "arxiv": "2509.05513",
-   "authors": [
-    "Ahad Jawaid",
-    "Yu Xiang"
-   ],
-   "year": 2025,
-   "date": "2025-09-05",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2509.05513",
-   "site": "https://arxiv.org/abs/2509.05513",
-   "fig": "figures/ds-openego.webp"
-  },
-  {
-   "id": "aea",
-   "name": "Aria Everyday Activities Dataset",
-   "title": "Aria Everyday Activities Dataset",
-   "cat": "ego",
-   "org": "industry",
-   "one": "Everyday activity sequences from Aria glasses with globally aligned 3D trajectories, gaze and speech.",
-   "device": "Project Aria glasses",
-   "modal": "RGB, SLAM, eye gaze, point cloud, speech transcript",
-   "hours": "—",
-   "eps": "143 sequences",
-   "tasks": "daily activity",
-   "scenes": "5 indoor locations",
-   "subj": "multiple wearers",
-   "embod": "human",
-   "note": "Small but the cleanest machine-perception annotations of the Aria family.",
-   "arxiv": "2402.13349",
-   "authors": [
-    "Zhaoyang Lv",
-    "Nicholas Charron",
-    "Pierre Moulon",
-    "Alexander Gamino",
-    "Cheng Peng",
-    "Chris Sweeney",
-    "Edward Miller",
-    "Huixuan Tang",
-    "Jeff Meissner",
-    "Jing Dong",
-    "Kiran Somasundaram",
-    "Luis Pesqueira",
-    "Mark Schwesinger",
-    "Omkar Parkhi",
-    "Qiao Gu",
-    "Renzo De Nardi",
-    "Shangyi Cheng",
-    "Steve Saarinen",
-    "Vijay Baiyya",
-    "Yuyang Zou",
-    "Richard Newcombe",
-    "Jakob Julian Engel",
-    "Xiaqing Pan",
-    "Carl Ren"
-   ],
-   "year": 2024,
-   "date": "2024-02-20",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2402.13349",
-   "site": "https://www.projectaria.com/datasets/aea/",
-   "fig": "figures/ds-aea.webp",
-   "figs": [
-    "figures/ds-aea-1.webp",
-    "figures/ds-aea-2.webp"
-   ]
-  },
-  {
-   "id": "egoexolearn",
-   "name": "EgoExoLearn",
-   "title": "EgoExoLearn: A Dataset for Bridging Asynchronous Ego- and Exo-centric View of Procedural Activities in Real World",
-   "cat": "ego",
-   "org": "academia",
-   "one": "Asynchronous ego and exo video of the same procedures — humans watching a demonstration and then doing the task themselves.",
-   "device": "Head-mounted camera + fixed demonstration video",
-   "modal": "RGB, gaze, audio, procedure annotations",
-   "hours": "120 h",
-   "eps": "—",
-   "tasks": "daily + laboratory procedures",
-   "scenes": "daily life + labs",
-   "subj": "—",
-   "embod": "human",
-   "note": "Asynchronous rather than simultaneous ego/exo — closer to how a robot would actually learn by watching.",
-   "arxiv": "2403.16182",
-   "authors": [
-    "Yifei Huang",
-    "Guo Chen",
-    "Jilan Xu",
-    "Mingfang Zhang",
-    "Lijin Yang",
-    "Baoqi Pei",
-    "Hongjie Zhang",
-    "Lu Dong",
-    "Yali Wang",
-    "Limin Wang",
-    "Yu Qiao"
-   ],
-   "year": 2024,
-   "date": "2024-03-24",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2403.16182",
-   "site": "https://github.com/OpenGVLab/EgoExoLearn",
-   "fig": "figures/ds-egoexolearn.webp",
-   "figs": [
-    "figures/ds-egoexolearn-1.webp",
-    "figures/ds-egoexolearn-2.webp"
-   ]
-  },
-  {
-   "id": "egovid",
-   "name": "EgoVid-5M",
-   "title": "EgoVid-5M: A Large-Scale Video-Action Dataset for Egocentric Video Generation",
-   "cat": "ego",
-   "org": "academia",
-   "one": "Five million egocentric clips curated specifically for training egocentric video generation with action conditioning.",
-   "device": "curated from existing corpora",
-   "modal": "RGB, kinematic action labels, text",
-   "hours": "—",
-   "eps": "5M clips",
-   "tasks": "—",
-   "scenes": "—",
-   "subj": "—",
-   "embod": "human",
-   "note": "If you want to train a world model on the ego stream, this is the pre-curated pretraining set.",
-   "arxiv": "2411.08380",
-   "authors": [
-    "Xiaofeng Wang",
-    "Kang Zhao",
-    "Feng Liu",
-    "Jiayu Wang",
-    "Guosheng Zhao",
-    "Xiaoyi Bao",
-    "Zheng Zhu",
-    "Yingya Zhang",
-    "Xingang Wang"
-   ],
-   "year": 2024,
-   "date": "2024-11-13",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2411.08380",
-   "site": "https://egovid.github.io/",
-   "fig": "figures/ds-egovid.webp",
-   "figs": [
-    "figures/ds-egovid-1.webp",
-    "figures/ds-egovid-2.webp"
-   ]
-  },
-  {
-   "id": "hot3d",
-   "name": "HOT3D",
-   "title": "HOT3D: Hand and Object Tracking in 3D from Egocentric Multi-View Videos",
-   "cat": "ego",
-   "org": "industry",
-   "one": "Egocentric multi-view hand and object tracking in 3D, with laser-scanned object models and ground-truth poses.",
-   "device": "Project Aria + Quest 3",
-   "modal": "RGB, monochrome, 3D hand pose, object 6D pose, eye gaze",
-   "hours": "13.9 h (833 min)",
-   "eps": "3.7M+ images",
-   "tasks": "hand-object tracking",
-   "scenes": "—",
-   "subj": "19 subjects",
-   "embod": "human",
-   "note": "The precision benchmark for egocentric hand-object tracking — use it to validate your pose pipeline before trusting it on Ego4D.",
-   "arxiv": "2411.19167",
-   "authors": [
-    "Prithviraj Banerjee",
-    "Sindi Shkodrani",
-    "Pierre Moulon",
-    "Shreyas Hampali",
-    "Shangchen Han",
-    "Fan Zhang",
-    "Linguang Zhang",
-    "Jade Fountain",
-    "Edward Miller",
-    "Selen Basol",
-    "Richard Newcombe",
-    "Robert Wang",
-    "Jakob Julian Engel",
-    "Tomas Hodan"
-   ],
-   "year": 2024,
-   "date": "2024-11-28",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2411.19167",
-   "site": "https://facebookresearch.github.io/hot3d/",
-   "fig": "figures/ds-hot3d.webp",
-   "figs": [
-    "figures/ds-hot3d-1.webp",
-    "figures/ds-hot3d-2.webp"
-   ]
-  },
-  {
-   "id": "nymeria",
-   "name": "Nymeria",
-   "title": "Nymeria: A Massive Collection of Multimodal Egocentric Daily Motion in the Wild",
-   "cat": "ego",
-   "org": "industry",
-   "one": "Egocentric daily motion in the wild with full-body ground truth — the largest paired ego-video-plus-motion-capture collection.",
-   "device": "Project Aria glasses + wrist Aria + XSens body suit",
-   "modal": "RGB, SLAM, eye gaze, IMU, full-body 3D motion, language narration",
-   "hours": "300 h",
-   "eps": "1,200 sequences · 399 km travelled",
-   "tasks": "daily activity",
-   "scenes": "50 locations",
-   "subj": "264 participants",
-   "embod": "human",
-   "note": "The body-motion counterpart to Ego4D. If you want humanoid whole-body targets from ego video, this is the supervision.",
-   "arxiv": "2406.09905",
-   "authors": [
-    "Lingni Ma",
-    "Yuting Ye",
-    "Fangzhou Hong",
-    "Vladimir Guzov",
-    "Yifeng Jiang",
-    "Rowan Postyeni",
-    "Luis Pesqueira",
-    "Alexander Gamino",
-    "Vijay Baiyya",
-    "Hyo Jin Kim",
-    "Kevin Bailey",
-    "David Soriano Fosas",
-    "C. Karen Liu",
-    "Ziwei Liu",
-    "Jakob Engel",
-    "Renzo De Nardi",
-    "Richard Newcombe"
-   ],
-   "year": 2024,
-   "date": "2024-06-14",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2406.09905",
-   "site": "https://www.projectaria.com/datasets/nymeria/",
-   "fig": "figures/ds-nymeria.webp",
-   "figs": [
-    "figures/ds-nymeria-1.webp"
-   ]
-  },
-  {
-   "id": "epicfields",
-   "name": "EPIC Fields",
-   "title": "EPIC Fields: Marrying 3D Geometry and Video Understanding",
-   "cat": "ego",
-   "org": "academia",
-   "one": "EPIC-KITCHENS re-registered in 3D — camera poses and neural-rendering-ready reconstructions for 96% of its videos.",
-   "device": "Head-mounted GoPro + COLMAP reconstruction",
-   "modal": "RGB, camera poses, 3D geometry",
-   "hours": "99 h",
-   "eps": "19M registered frames",
-   "tasks": "—",
-   "scenes": "45 kitchens",
-   "subj": "—",
-   "embod": "human",
-   "note": "Directly relevant to real-to-sim: it is egocentric video already solved for geometry.",
-   "arxiv": "2306.08731",
-   "authors": [
-    "Vadim Tschernezki",
-    "Ahmad Darkhalil",
-    "Zhifan Zhu",
-    "David Fouhey",
-    "Iro Laina",
-    "Diane Larlus",
-    "Dima Damen",
-    "Andrea Vedaldi"
-   ],
-   "year": 2023,
-   "date": "2023-06-14",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2306.08731",
-   "site": "https://epic-kitchens.github.io/epic-fields/",
-   "fig": "figures/ds-epicfields.webp",
-   "figs": [
-    "figures/ds-epicfields-1.webp",
-    "figures/ds-epicfields-2.webp"
-   ]
+   "hours_num": 1362.0
   },
   {
    "id": "egoexo4d",
@@ -634,7 +654,683 @@
    "fig": "figures/ds-egoexo4d.webp",
    "figs": [
     "figures/ds-egoexo4d-1.webp"
-   ]
+   ],
+   "hours_num": 1286.0
+  },
+  {
+   "id": "openego",
+   "name": "OpenEgo",
+   "title": "OpenEgo: A Large-Scale Multimodal Egocentric Dataset for Dexterous Manipulation",
+   "cat": "ego",
+   "org": "academia",
+   "one": "Six public egocentric datasets unified into one schema with hand-pose and manipulation annotations.",
+   "device": "mixed (aggregated)",
+   "modal": "RGB, 3D hand pose, language",
+   "hours": "1,107 h",
+   "eps": "—",
+   "tasks": "290 manipulation tasks",
+   "scenes": "600+ environments",
+   "subj": "—",
+   "embod": "human",
+   "note": "Aggregation, not new capture — but the harmonised schema saves weeks of data engineering.",
+   "arxiv": "2509.05513",
+   "authors": [
+    "Ahad Jawaid",
+    "Yu Xiang"
+   ],
+   "year": 2025,
+   "date": "2025-09-05",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2509.05513",
+   "site": "https://arxiv.org/abs/2509.05513",
+   "fig": "figures/ds-openego.webp",
+   "hours_num": 1107.0
+  },
+  {
+   "id": "egodex",
+   "name": "EgoDex",
+   "title": "EgoDex: Learning Dexterous Manipulation from Large-Scale Egocentric Video",
+   "cat": "ego",
+   "org": "industry",
+   "one": "Apple's large-scale egocentric video with paired 3D hand and finger tracking captured at record time, aimed squarely at dexterous manipulation.",
+   "device": "Apple Vision Pro",
+   "modal": "RGB 1080p/30 Hz, 3D hand + finger pose, camera pose",
+   "hours": "829 h",
+   "eps": "338K episodes",
+   "tasks": "194 tasks",
+   "scenes": "—",
+   "subj": "—",
+   "embod": "human",
+   "note": "Solves Ego4D's biggest gap — native, accurate hand pose at scale. The most useful single corpus for the ego-dexterity idea.",
+   "arxiv": "2505.11709",
+   "authors": [
+    "Ryan Hoque",
+    "Peide Huang",
+    "David J. Yoon",
+    "Mouli Sivapurapu",
+    "Jian Zhang"
+   ],
+   "year": 2025,
+   "date": "2025-05-16",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2505.11709",
+   "site": "https://github.com/apple/ml-egodex",
+   "fig": "figures/ds-egodex.webp",
+   "figs": [
+    "figures/ds-egodex-1.webp",
+    "figures/ds-egodex-2.webp"
+   ],
+   "hours_num": 829.0
+  },
+  {
+   "id": "nymeria",
+   "name": "Nymeria",
+   "title": "Nymeria: A Massive Collection of Multimodal Egocentric Daily Motion in the Wild",
+   "cat": "ego",
+   "org": "industry",
+   "one": "Egocentric daily motion in the wild with full-body ground truth — the largest paired ego-video-plus-motion-capture collection.",
+   "device": "Project Aria glasses + wrist Aria + XSens body suit",
+   "modal": "RGB, SLAM, eye gaze, IMU, full-body 3D motion, language narration",
+   "hours": "300 h",
+   "eps": "1,200 sequences · 399 km travelled",
+   "tasks": "daily activity",
+   "scenes": "50 locations",
+   "subj": "264 participants",
+   "embod": "human",
+   "note": "The body-motion counterpart to Ego4D. If you want humanoid whole-body targets from ego video, this is the supervision.",
+   "arxiv": "2406.09905",
+   "authors": [
+    "Lingni Ma",
+    "Yuting Ye",
+    "Fangzhou Hong",
+    "Vladimir Guzov",
+    "Yifeng Jiang",
+    "Rowan Postyeni",
+    "Luis Pesqueira",
+    "Alexander Gamino",
+    "Vijay Baiyya",
+    "Hyo Jin Kim",
+    "Kevin Bailey",
+    "David Soriano Fosas",
+    "C. Karen Liu",
+    "Ziwei Liu",
+    "Jakob Engel",
+    "Renzo De Nardi",
+    "Richard Newcombe"
+   ],
+   "year": 2024,
+   "date": "2024-06-14",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2406.09905",
+   "site": "https://www.projectaria.com/datasets/nymeria/",
+   "fig": "figures/ds-nymeria.webp",
+   "figs": [
+    "figures/ds-nymeria-1.webp"
+   ],
+   "hours_num": 300.0
+  },
+  {
+   "id": "egoexolearn",
+   "name": "EgoExoLearn",
+   "title": "EgoExoLearn: A Dataset for Bridging Asynchronous Ego- and Exo-centric View of Procedural Activities in Real World",
+   "cat": "ego",
+   "org": "academia",
+   "one": "Asynchronous ego and exo video of the same procedures — humans watching a demonstration and then doing the task themselves.",
+   "device": "Head-mounted camera + fixed demonstration video",
+   "modal": "RGB, gaze, audio, procedure annotations",
+   "hours": "120 h",
+   "eps": "—",
+   "tasks": "daily + laboratory procedures",
+   "scenes": "daily life + labs",
+   "subj": "—",
+   "embod": "human",
+   "note": "Asynchronous rather than simultaneous ego/exo — closer to how a robot would actually learn by watching.",
+   "arxiv": "2403.16182",
+   "authors": [
+    "Yifei Huang",
+    "Guo Chen",
+    "Jilan Xu",
+    "Mingfang Zhang",
+    "Lijin Yang",
+    "Baoqi Pei",
+    "Hongjie Zhang",
+    "Lu Dong",
+    "Yali Wang",
+    "Limin Wang",
+    "Yu Qiao"
+   ],
+   "year": 2024,
+   "date": "2024-03-24",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2403.16182",
+   "site": "https://github.com/OpenGVLab/EgoExoLearn",
+   "fig": "figures/ds-egoexolearn.webp",
+   "figs": [
+    "figures/ds-egoexolearn-1.webp",
+    "figures/ds-egoexolearn-2.webp"
+   ],
+   "hours_num": 120.0
+  },
+  {
+   "id": "epic100",
+   "name": "Rescaling Egocentric Vision",
+   "title": "Rescaling Egocentric Vision",
+   "cat": "ego",
+   "org": "academia",
+   "one": "Long-term unscripted kitchen activity from head-mounted cameras, densely annotated with fine-grained actions.",
+   "device": "Head-mounted GoPro",
+   "modal": "RGB, audio, action segments",
+   "hours": "100 h",
+   "eps": "700 videos · 20M frames",
+   "tasks": "90K action segments",
+   "scenes": "45 kitchens",
+   "subj": "45 participants",
+   "embod": "human",
+   "note": "The precision standard for egocentric action annotation; small next to Ego4D but far more densely labelled.",
+   "arxiv": "2006.13256",
+   "authors": [
+    "Dima Damen",
+    "Hazel Doughty",
+    "Giovanni Maria Farinella",
+    "Antonino Furnari",
+    "Evangelos Kazakos",
+    "Jian Ma",
+    "Davide Moltisanti",
+    "Jonathan Munro",
+    "Toby Perrett",
+    "Will Price",
+    "Michael Wray"
+   ],
+   "year": 2020,
+   "date": "2020-06-23",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2006.13256",
+   "site": "https://epic-kitchens.github.io/",
+   "fig": "figures/ds-epic100.webp",
+   "figs": [
+    "figures/ds-epic100-1.webp",
+    "figures/ds-epic100-2.webp"
+   ],
+   "hours_num": 100.0
+  },
+  {
+   "id": "epicfields",
+   "name": "EPIC Fields",
+   "title": "EPIC Fields: Marrying 3D Geometry and Video Understanding",
+   "cat": "ego",
+   "org": "academia",
+   "one": "EPIC-KITCHENS re-registered in 3D — camera poses and neural-rendering-ready reconstructions for 96% of its videos.",
+   "device": "Head-mounted GoPro + COLMAP reconstruction",
+   "modal": "RGB, camera poses, 3D geometry",
+   "hours": "99 h",
+   "eps": "19M registered frames",
+   "tasks": "—",
+   "scenes": "45 kitchens",
+   "subj": "—",
+   "embod": "human",
+   "note": "Directly relevant to real-to-sim: it is egocentric video already solved for geometry.",
+   "arxiv": "2306.08731",
+   "authors": [
+    "Vadim Tschernezki",
+    "Ahmad Darkhalil",
+    "Zhifan Zhu",
+    "David Fouhey",
+    "Iro Laina",
+    "Diane Larlus",
+    "Dima Damen",
+    "Andrea Vedaldi"
+   ],
+   "year": 2023,
+   "date": "2023-06-14",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2306.08731",
+   "site": "https://epic-kitchens.github.io/epic-fields/",
+   "fig": "figures/ds-epicfields.webp",
+   "figs": [
+    "figures/ds-epicfields-1.webp",
+    "figures/ds-epicfields-2.webp"
+   ],
+   "hours_num": 99.0
+  },
+  {
+   "id": "hot3d",
+   "name": "HOT3D",
+   "title": "HOT3D: Hand and Object Tracking in 3D from Egocentric Multi-View Videos",
+   "cat": "ego",
+   "org": "industry",
+   "one": "Egocentric multi-view hand and object tracking in 3D, with laser-scanned object models and ground-truth poses.",
+   "device": "Project Aria + Quest 3",
+   "modal": "RGB, monochrome, 3D hand pose, object 6D pose, eye gaze",
+   "hours": "13.9 h (833 min)",
+   "eps": "3.7M+ images",
+   "tasks": "hand-object tracking",
+   "scenes": "—",
+   "subj": "19 subjects",
+   "embod": "human",
+   "note": "The precision benchmark for egocentric hand-object tracking — use it to validate your pose pipeline before trusting it on Ego4D.",
+   "arxiv": "2411.19167",
+   "authors": [
+    "Prithviraj Banerjee",
+    "Sindi Shkodrani",
+    "Pierre Moulon",
+    "Shreyas Hampali",
+    "Shangchen Han",
+    "Fan Zhang",
+    "Linguang Zhang",
+    "Jade Fountain",
+    "Edward Miller",
+    "Selen Basol",
+    "Richard Newcombe",
+    "Robert Wang",
+    "Jakob Julian Engel",
+    "Tomas Hodan"
+   ],
+   "year": 2024,
+   "date": "2024-11-28",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2411.19167",
+   "site": "https://facebookresearch.github.io/hot3d/",
+   "fig": "figures/ds-hot3d.webp",
+   "figs": [
+    "figures/ds-hot3d-1.webp",
+    "figures/ds-hot3d-2.webp"
+   ],
+   "hours_num": 13.9
+  },
+  {
+   "id": "egoemg",
+   "name": "EgoEMG",
+   "title": "EgoEMG: A Multimodal Egocentric Dataset with Bilateral EMG and Vision for Hand Pose Estimation",
+   "cat": "ego",
+   "org": "academia",
+   "one": "Egocentric video paired with bilateral wrist EMG — muscle activity as a modality vision cannot see.",
+   "device": "2× 8-channel wrist EMG @2 kHz, IMU, ego RGB, external RGB-D, mocap",
+   "modal": "EMG, IMU, RGB, RGB-D, hand mocap",
+   "hours": "10+ h",
+   "eps": "—",
+   "tasks": "60 gesture classes (30 single-hand, 30 bimanual)",
+   "scenes": "lab",
+   "subj": "41 participants",
+   "embod": "human",
+   "note": "Unusual and under-explored: EMG carries intent and force before motion is visible, which is exactly the gap a vision-only world model has.",
+   "arxiv": "2605.05712",
+   "authors": [
+    "Ziheng Xi",
+    "Jiayi Yu",
+    "Yitao Wang",
+    "Yanbo Duan",
+    "Jianjiang Feng",
+    "Jie Zhou"
+   ],
+   "year": 2026,
+   "date": "2026-05-07",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2605.05712",
+   "site": "https://arxiv.org/abs/2605.05712",
+   "fig": "figures/ds-egoemg.webp",
+   "figs": [
+    "figures/ds-egoemg-1.webp",
+    "figures/ds-egoemg-2.webp"
+   ],
+   "hours_num": 10.0
+  },
+  {
+   "id": "humanego",
+   "name": "HumanEgo",
+   "title": "HumanEgo: Zero-Shot Robot Learning from Minutes of Human Egocentric Videos",
+   "cat": "ego",
+   "org": "academia",
+   "one": "The opposite bet from scaling: zero-shot robot learning from as little as 30 minutes of human egocentric video per task.",
+   "device": "head-mounted camera",
+   "modal": "RGB, hand pose",
+   "hours": "0.5 h per task",
+   "eps": "—",
+   "tasks": "4 real-world tasks",
+   "scenes": "—",
+   "subj": "—",
+   "embod": "robot arm",
+   "note": "92.5% success from 30 minutes of human video, beating matched-time robot teleoperation by 41%. The sharpest counterpoint in this whole table to the million-hour thesis — worth taking seriously before you commit to a collection campaign.",
+   "arxiv": "2605.24934",
+   "authors": [
+    "Zhi",
+    "Botao He",
+    "Kelin Yu",
+    "Seungjae Lee",
+    "Ruohan Gao",
+    "Furong Huang",
+    "Yiannis Aloimonos"
+   ],
+   "year": 2026,
+   "date": "2026-05-24",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2605.24934",
+   "site": "https://arxiv.org/abs/2605.24934",
+   "fig": "figures/ds-humanego.webp",
+   "figs": [
+    "figures/ds-humanego-1.webp"
+   ],
+   "hours_num": 0.5
+  },
+  {
+   "id": "egokit",
+   "name": "EgoKit",
+   "title": "EgoKit: Towards Unified Low-Cost Egocentric Data Collection with Heterogeneous Devices",
+   "cat": "ego",
+   "org": "academia",
+   "one": "An open, low-cost toolkit for collecting egocentric data across heterogeneous devices, including XR headsets with 26-joint hand tracking.",
+   "device": "phones, action cams, XR headsets (unified)",
+   "modal": "RGB, head pose, OpenXR 26-joint hand tracking",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "—",
+   "scenes": "—",
+   "subj": "—",
+   "embod": "human",
+   "note": "If you want to run your own egocentric collection rather than consume someone else's, this is the cheapest credible starting point.",
+   "arxiv": "2605.16797",
+   "authors": [
+    "Liuchuan Yu",
+    "Erdem Murat",
+    "Beichen Wang",
+    "Yan Zeng",
+    "Tingting Luo",
+    "Huizhen Zhou",
+    "Shanghao Li",
+    "Huining Feng",
+    "Zhigen Zhao",
+    "Ning Yang",
+    "Ke Jing",
+    "Yunhao Liu",
+    "Ruoya Sheng"
+   ],
+   "year": 2026,
+   "date": "2026-05-16",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2605.16797",
+   "site": "https://arxiv.org/abs/2605.16797",
+   "fig": "figures/ds-egokit.webp",
+   "figs": [
+    "figures/ds-egokit-1.webp",
+    "figures/ds-egokit-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "egolive",
+   "name": "EgoLive",
+   "title": "EgoLive: A Large-Scale Egocentric Dataset from Real-World Human Tasks",
+   "cat": "ego",
+   "org": "industry",
+   "one": "Large-scale egocentric capture from real-world human tasks, positioned on breadth of semantic coverage rather than raw hours.",
+   "device": "head-mounted capture",
+   "modal": "RGB, task annotations",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "real-world human tasks",
+   "scenes": "in-the-wild",
+   "subj": "—",
+   "embod": "human",
+   "note": "Argues that the long tail of semantics matters more than hour count, and benchmarks itself against EgoDex and Xperience-10M on exactly that. Worth reading as the counter-argument to pure scaling.",
+   "arxiv": "2604.23570",
+   "authors": [
+    "Yihang Li",
+    "Xuelong Wei",
+    "Jingzhou Luo",
+    "Yingjing Xiao",
+    "Yibo Bai",
+    "Guangyuan Zhou",
+    "Teng Zou",
+    "Chenguang Gui",
+    "Jiajun Wen",
+    "He Zhang",
+    "Kangliang Chen",
+    "Xing Pan",
+    "Shuaiyan Liu",
+    "Daming Wang",
+    "Tao An",
+    "Jiayi Li",
+    "Shibo Jin",
+    "Wanwan Zhang",
+    "Tianyu Wang",
+    "Boren Wei",
+    "Zhixuan Huang",
+    "Fangsheng Liu",
+    "Ruodai Li",
+    "Hui Zhang",
+    "Anson Li",
+    "Yicheng Gong",
+    "Peng Cao",
+    "Jiaming Liang",
+    "Liang Lin"
+   ],
+   "year": 2026,
+   "date": "2026-04-26",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2604.23570",
+   "site": "https://arxiv.org/abs/2604.23570",
+   "fig": "figures/ds-egolive.webp",
+   "figs": [
+    "figures/ds-egolive-1.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "egoexo-handrig",
+   "name": "Ego-Exo 3D Hand Tracking in the Wild with a Mobile Multi-Camera Rig",
+   "title": "Ego-Exo 3D Hand Tracking in the Wild with a Mobile Multi-Camera Rig",
+   "cat": "ego",
+   "org": "industry",
+   "one": "In-the-wild 3D hand tracking from a mobile multi-camera ego-exo rig, built to get ground truth outside the lab.",
+   "device": "mobile multi-camera ego+exo rig",
+   "modal": "RGB multi-view, 3D hand pose",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "hand tracking",
+   "scenes": "in-the-wild",
+   "subj": "—",
+   "embod": "human",
+   "note": "",
+   "arxiv": "2510.02601",
+   "authors": [
+    "Patrick Rim",
+    "Kun He",
+    "Kevin R. Harris",
+    "Braden Copple",
+    "Shangchen Han",
+    "Sizhe An",
+    "Ivan Shugurov",
+    "Tomáš Hodaň",
+    "Wen He",
+    "Xu Xie"
+   ],
+   "year": 2025,
+   "date": "2025-10-02",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2510.02601",
+   "site": "https://arxiv.org/abs/2510.02601",
+   "fig": "figures/ds-egoexo-handrig.webp",
+   "figs": [
+    "figures/ds-egoexo-handrig-1.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "egovla",
+   "name": "EgoVLA",
+   "title": "EgoVLA: Learning Vision-Language-Action Models from Egocentric Human Videos",
+   "cat": "ego",
+   "org": "academia",
+   "one": "Not a dataset but the reference recipe: train a VLA on egocentric human video, then transfer it to a robot.",
+   "device": "—",
+   "modal": "RGB, hand pose",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "—",
+   "scenes": "—",
+   "subj": "—",
+   "embod": "human → robot",
+   "note": "Read alongside the ego datasets — it tells you what preprocessing they actually need to be usable.",
+   "arxiv": "2507.12440",
+   "authors": [
+    "Ruihan Yang",
+    "Qinxi Yu",
+    "Yecheng Wu",
+    "Rui Yan",
+    "Borui Li",
+    "An-Chieh Cheng",
+    "Xueyan Zou",
+    "Yunhao Fang",
+    "Xuxin Cheng",
+    "Ri-Zhao Qiu",
+    "Hongxu Yin",
+    "Sifei Liu",
+    "Song Han",
+    "Yao Lu",
+    "Xiaolong Wang"
+   ],
+   "year": 2025,
+   "date": "2025-07-16",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2507.12440",
+   "site": "https://arxiv.org/abs/2507.12440",
+   "fig": "figures/ds-egovla.webp",
+   "figs": [
+    "figures/ds-egovla-1.webp",
+    "figures/ds-egovla-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "hrdt",
+   "name": "H-RDT",
+   "title": "H-RDT: Human Manipulation Enhanced Bimanual Robotic Manipulation",
+   "cat": "ego",
+   "org": "academia",
+   "one": "Bimanual manipulation improved by pretraining on large-scale egocentric human video with paired 3D hand poses.",
+   "device": "aggregated egocentric + bimanual robot",
+   "modal": "RGB, 3D hand pose, robot actions",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "bimanual manipulation",
+   "scenes": "sim + real",
+   "subj": "—",
+   "embod": "bimanual",
+   "note": "",
+   "arxiv": "2507.23523",
+   "authors": [
+    "Hongzhe Bi",
+    "Lingxuan Wu",
+    "Tianwei Lin",
+    "Hengkai Tan",
+    "Zhizhong Su",
+    "Hang Su",
+    "Jun Zhu"
+   ],
+   "year": 2025,
+   "date": "2025-07-31",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2507.23523",
+   "site": "https://arxiv.org/abs/2507.23523",
+   "fig": "figures/ds-hrdt.webp",
+   "figs": [
+    "figures/ds-hrdt-1.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "aea",
+   "name": "Aria Everyday Activities Dataset",
+   "title": "Aria Everyday Activities Dataset",
+   "cat": "ego",
+   "org": "industry",
+   "one": "Everyday activity sequences from Aria glasses with globally aligned 3D trajectories, gaze and speech.",
+   "device": "Project Aria glasses",
+   "modal": "RGB, SLAM, eye gaze, point cloud, speech transcript",
+   "hours": "—",
+   "eps": "143 sequences",
+   "tasks": "daily activity",
+   "scenes": "5 indoor locations",
+   "subj": "multiple wearers",
+   "embod": "human",
+   "note": "Small but the cleanest machine-perception annotations of the Aria family.",
+   "arxiv": "2402.13349",
+   "authors": [
+    "Zhaoyang Lv",
+    "Nicholas Charron",
+    "Pierre Moulon",
+    "Alexander Gamino",
+    "Cheng Peng",
+    "Chris Sweeney",
+    "Edward Miller",
+    "Huixuan Tang",
+    "Jeff Meissner",
+    "Jing Dong",
+    "Kiran Somasundaram",
+    "Luis Pesqueira",
+    "Mark Schwesinger",
+    "Omkar Parkhi",
+    "Qiao Gu",
+    "Renzo De Nardi",
+    "Shangyi Cheng",
+    "Steve Saarinen",
+    "Vijay Baiyya",
+    "Yuyang Zou",
+    "Richard Newcombe",
+    "Jakob Julian Engel",
+    "Xiaqing Pan",
+    "Carl Ren"
+   ],
+   "year": 2024,
+   "date": "2024-02-20",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2402.13349",
+   "site": "https://www.projectaria.com/datasets/aea/",
+   "fig": "figures/ds-aea.webp",
+   "figs": [
+    "figures/ds-aea-1.webp",
+    "figures/ds-aea-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "egovid",
+   "name": "EgoVid-5M",
+   "title": "EgoVid-5M: A Large-Scale Video-Action Dataset for Egocentric Video Generation",
+   "cat": "ego",
+   "org": "academia",
+   "one": "Five million egocentric clips curated specifically for training egocentric video generation with action conditioning.",
+   "device": "curated from existing corpora",
+   "modal": "RGB, kinematic action labels, text",
+   "hours": "—",
+   "eps": "5M clips",
+   "tasks": "—",
+   "scenes": "—",
+   "subj": "—",
+   "embod": "human",
+   "note": "If you want to train a world model on the ego stream, this is the pre-curated pretraining set.",
+   "arxiv": "2411.08380",
+   "authors": [
+    "Xiaofeng Wang",
+    "Kang Zhao",
+    "Feng Liu",
+    "Jiayu Wang",
+    "Guosheng Zhao",
+    "Xiaoyi Bao",
+    "Zheng Zhu",
+    "Yingya Zhang",
+    "Xingang Wang"
+   ],
+   "year": 2024,
+   "date": "2024-11-13",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2411.08380",
+   "site": "https://egovid.github.io/",
+   "fig": "figures/ds-egovid.webp",
+   "figs": [
+    "figures/ds-egovid-1.webp",
+    "figures/ds-egovid-2.webp"
+   ],
+   "hours_num": -1
   },
   {
    "id": "aria",
@@ -738,7 +1434,8 @@
    "figs": [
     "figures/ds-aria-1.webp",
     "figures/ds-aria-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "hoi4d",
@@ -778,126 +1475,8 @@
    "figs": [
     "figures/ds-hoi4d-1.webp",
     "figures/ds-hoi4d-2.webp"
-   ]
-  },
-  {
-   "id": "ego4d",
-   "name": "Ego4D",
-   "title": "Ego4D: Around the World in 3,000 Hours of Egocentric Video",
-   "cat": "ego",
-   "org": "consortium",
-   "one": "The foundational egocentric corpus: daily-life video from 931 wearers in 9 countries, with benchmark suites for memory, forecasting and social understanding.",
-   "device": "Head-mounted cameras (Vuzix, GoPro, Aria, Weeview, Pupil)",
-   "modal": "RGB, audio, 3D scans, eye gaze, IMU, stereo (subset)",
-   "hours": "3,670 h",
-   "eps": "3,670 h of video",
-   "tasks": "hundreds of scenarios",
-   "scenes": "74 locations",
-   "subj": "931 wearers",
-   "embod": "human",
-   "note": "The substrate under almost every 'learn from human video' result. No native hand-pose labels — that gap is why EgoDex and OpenEgo exist.",
-   "arxiv": "2110.07058",
-   "authors": [
-    "Kristen Grauman",
-    "Andrew Westbury",
-    "Eugene Byrne",
-    "Zachary Chavis",
-    "Antonino Furnari",
-    "Rohit Girdhar",
-    "Jackson Hamburger",
-    "Hao Jiang",
-    "Miao Liu",
-    "Xingyu Liu",
-    "Miguel Martin",
-    "Tushar Nagarajan",
-    "Ilija Radosavovic",
-    "Santhosh Kumar Ramakrishnan",
-    "Fiona Ryan",
-    "Jayant Sharma",
-    "Michael Wray",
-    "Mengmeng Xu",
-    "Eric Zhongcong Xu",
-    "Chen Zhao",
-    "Siddhant Bansal",
-    "Dhruv Batra",
-    "Vincent Cartillier",
-    "Sean Crane",
-    "Tien Do",
-    "Morrie Doulaty",
-    "Akshay Erapalli",
-    "Christoph Feichtenhofer",
-    "Adriano Fragomeni",
-    "Qichen Fu",
-    "Abrham Gebreselasie",
-    "Cristina Gonzalez",
-    "James Hillis",
-    "Xuhua Huang",
-    "Yifei Huang",
-    "Wenqi Jia",
-    "Weslie Khoo",
-    "Jachym Kolar",
-    "Satwik Kottur",
-    "Anurag Kumar",
-    "Federico Landini",
-    "Chao Li",
-    "Yanghao Li",
-    "Zhenqiang Li",
-    "Karttikeya Mangalam",
-    "Raghava Modhugu",
-    "Jonathan Munro",
-    "Tullie Murrell",
-    "Takumi Nishiyasu",
-    "Will Price",
-    "Paola Ruiz Puentes",
-    "Merey Ramazanova",
-    "Leda Sari",
-    "Kiran Somasundaram",
-    "Audrey Southerland",
-    "Yusuke Sugano",
-    "Ruijie Tao",
-    "Minh Vo",
-    "Yuchen Wang",
-    "Xindi Wu",
-    "Takuma Yagi",
-    "Ziwei Zhao",
-    "Yunyi Zhu",
-    "Pablo Arbelaez",
-    "David Crandall",
-    "Dima Damen",
-    "Giovanni Maria Farinella",
-    "Christian Fuegen",
-    "Bernard Ghanem",
-    "Vamsi Krishna Ithapu",
-    "C. V. Jawahar",
-    "Hanbyul Joo",
-    "Kris Kitani",
-    "Haizhou Li",
-    "Richard Newcombe",
-    "Aude Oliva",
-    "Hyun Soo Park",
-    "James M. Rehg",
-    "Yoichi Sato",
-    "Jianbo Shi",
-    "Mike Zheng Shou",
-    "Antonio Torralba",
-    "Lorenzo Torresani",
-    "Mingfei Yan",
-    "Jitendra Malik"
    ],
-   "year": 2021,
-   "date": "2021-10-13",
-   "institutions": [
-    "Meta AI",
-    "UT Austin",
-    "88 institutions"
-   ],
-   "paper": "https://arxiv.org/abs/2110.07058",
-   "site": "https://ego4d-data.org/",
-   "fig": "figures/ds-ego4d.webp",
-   "figs": [
-    "figures/ds-ego4d-1.webp",
-    "figures/ds-ego4d-2.webp"
-   ]
+   "hours_num": -1
   },
   {
    "id": "egobody",
@@ -931,7 +1510,8 @@
    "institutions": [],
    "paper": "https://arxiv.org/abs/2112.07642",
    "site": "https://sanweiliti.github.io/egobody/egobody.html",
-   "fig": "figures/ds-egobody.webp"
+   "fig": "figures/ds-egobody.webp",
+   "hours_num": -1
   },
   {
    "id": "h2o-ego",
@@ -965,150 +1545,8 @@
    "fig": "figures/ds-h2o-ego.webp",
    "figs": [
     "figures/ds-h2o-ego-1.webp"
-   ]
-  },
-  {
-   "id": "epic100",
-   "name": "Rescaling Egocentric Vision",
-   "title": "Rescaling Egocentric Vision",
-   "cat": "ego",
-   "org": "academia",
-   "one": "Long-term unscripted kitchen activity from head-mounted cameras, densely annotated with fine-grained actions.",
-   "device": "Head-mounted GoPro",
-   "modal": "RGB, audio, action segments",
-   "hours": "100 h",
-   "eps": "700 videos · 20M frames",
-   "tasks": "90K action segments",
-   "scenes": "45 kitchens",
-   "subj": "45 participants",
-   "embod": "human",
-   "note": "The precision standard for egocentric action annotation; small next to Ego4D but far more densely labelled.",
-   "arxiv": "2006.13256",
-   "authors": [
-    "Dima Damen",
-    "Hazel Doughty",
-    "Giovanni Maria Farinella",
-    "Antonino Furnari",
-    "Evangelos Kazakos",
-    "Jian Ma",
-    "Davide Moltisanti",
-    "Jonathan Munro",
-    "Toby Perrett",
-    "Will Price",
-    "Michael Wray"
    ],
-   "year": 2020,
-   "date": "2020-06-23",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2006.13256",
-   "site": "https://epic-kitchens.github.io/",
-   "fig": "figures/ds-epic100.webp",
-   "figs": [
-    "figures/ds-epic100-1.webp",
-    "figures/ds-epic100-2.webp"
-   ]
-  },
-  {
-   "id": "openaoe",
-   "name": "Open-AoE",
-   "title": "Open-AoE: An Open Egocentric Manipulation Dataset and Toolchain for Embodied Learning",
-   "cat": "umi",
-   "org": "academia",
-   "one": "An open egocentric manipulation dataset shipped with its capture toolchain rather than as a frozen release.",
-   "device": "egocentric capture rig (open toolchain)",
-   "modal": "RGB, hand pose, action",
-   "hours": "—",
-   "eps": "—",
-   "tasks": "manipulation",
-   "scenes": "—",
-   "subj": "—",
-   "embod": "human → robot",
-   "note": "The toolchain is the valuable half — it means you can extend it rather than only consume it.",
-   "arxiv": "2607.14183",
-   "authors": [
-    "(see PDF)"
-   ],
-   "year": 2026,
-   "date": "2026-07-14",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2607.14183",
-   "site": "https://arxiv.org/abs/2607.14183",
-   "fig": "figures/ds-openaoe.webp",
-   "figs": [
-    "figures/ds-openaoe-1.webp",
-    "figures/ds-openaoe-2.webp"
-   ]
-  },
-  {
-   "id": "realdexumi",
-   "name": "RealDexUMI",
-   "title": "RealDexUMI: A Wearable Universal Manipulation Interface for Dexterous Robot Learning",
-   "cat": "umi",
-   "org": "academia",
-   "one": "A wearable universal manipulation interface built specifically for dexterous robot learning.",
-   "device": "Wearable UMI (dexterous)",
-   "modal": "RGB, hand pose, EE pose",
-   "hours": "—",
-   "eps": "—",
-   "tasks": "dexterous manipulation",
-   "scenes": "in-the-wild",
-   "subj": "—",
-   "embod": "dexterous hand",
-   "note": "",
-   "arxiv": "2606.06033",
-   "authors": [
-    "Chaoyi Xu",
-    "Yixuan Jiang",
-    "Jiahui Huan",
-    "Yuhui Fu",
-    "Haoyu Zhou",
-    "Weitian Yuan",
-    "Jiayi Yu",
-    "Wanpeng Zhang",
-    "Haoqi Yuan",
-    "Zongqing Lu"
-   ],
-   "year": 2026,
-   "date": "2026-06-04",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2606.06033",
-   "site": "https://arxiv.org/abs/2606.06033",
-   "fig": "figures/ds-realdexumi.webp",
-   "figs": [
-    "figures/ds-realdexumi-1.webp",
-    "figures/ds-realdexumi-2.webp"
-   ]
-  },
-  {
-   "id": "ume-data",
-   "name": "Universal Manipulation Exoskeleton",
-   "title": "Universal Manipulation Exoskeleton: Learning Compliant Whole-body Policies with Real-time Torque Feedback",
-   "cat": "umi",
-   "org": "academia",
-   "one": "Whole-body exoskeleton capture with compliance — the force dimension UMI-style rigs leave out.",
-   "device": "Universal Manipulation Exoskeleton",
-   "modal": "RGB, joint state, contact force, whole-body pose",
-   "hours": "—",
-   "eps": "—",
-   "tasks": "compliant whole-body manipulation",
-   "scenes": "—",
-   "subj": "—",
-   "embod": "humanoid / mobile manipulator",
-   "note": "",
-   "arxiv": "2606.14218",
-   "authors": [
-    "(see PDF)"
-   ],
-   "year": 2026,
-   "date": "2026-06-14",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2606.14218",
-   "site": "https://arxiv.org/abs/2606.14218",
-   "fig": "figures/ds-ume-data.webp",
-   "figs": [
-    "figures/ds-ume-data-1.webp",
-    "figures/ds-ume-data-2.webp"
-   ]
+   "hours_num": -1
   },
   {
    "id": "yubi",
@@ -1156,7 +1594,113 @@
    "fig": "figures/ds-yubi.webp",
    "figs": [
     "figures/ds-yubi-1.webp"
-   ]
+   ],
+   "hours_num": 8434.0
+  },
+  {
+   "id": "openaoe",
+   "name": "Open-AoE",
+   "title": "Open-AoE: An Open Egocentric Manipulation Dataset and Toolchain for Embodied Learning",
+   "cat": "umi",
+   "org": "academia",
+   "one": "An open egocentric manipulation dataset shipped with its capture toolchain rather than as a frozen release.",
+   "device": "egocentric capture rig (open toolchain)",
+   "modal": "RGB, hand pose, action",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "manipulation",
+   "scenes": "—",
+   "subj": "—",
+   "embod": "human → robot",
+   "note": "The toolchain is the valuable half — it means you can extend it rather than only consume it.",
+   "arxiv": "2607.14183",
+   "authors": [
+    "(see PDF)"
+   ],
+   "year": 2026,
+   "date": "2026-07-14",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2607.14183",
+   "site": "https://arxiv.org/abs/2607.14183",
+   "fig": "figures/ds-openaoe.webp",
+   "figs": [
+    "figures/ds-openaoe-1.webp",
+    "figures/ds-openaoe-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "realdexumi",
+   "name": "RealDexUMI",
+   "title": "RealDexUMI: A Wearable Universal Manipulation Interface for Dexterous Robot Learning",
+   "cat": "umi",
+   "org": "academia",
+   "one": "A wearable universal manipulation interface built specifically for dexterous robot learning.",
+   "device": "Wearable UMI (dexterous)",
+   "modal": "RGB, hand pose, EE pose",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "dexterous manipulation",
+   "scenes": "in-the-wild",
+   "subj": "—",
+   "embod": "dexterous hand",
+   "note": "",
+   "arxiv": "2606.06033",
+   "authors": [
+    "Chaoyi Xu",
+    "Yixuan Jiang",
+    "Jiahui Huan",
+    "Yuhui Fu",
+    "Haoyu Zhou",
+    "Weitian Yuan",
+    "Jiayi Yu",
+    "Wanpeng Zhang",
+    "Haoqi Yuan",
+    "Zongqing Lu"
+   ],
+   "year": 2026,
+   "date": "2026-06-04",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2606.06033",
+   "site": "https://arxiv.org/abs/2606.06033",
+   "fig": "figures/ds-realdexumi.webp",
+   "figs": [
+    "figures/ds-realdexumi-1.webp",
+    "figures/ds-realdexumi-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "ume-data",
+   "name": "Universal Manipulation Exoskeleton",
+   "title": "Universal Manipulation Exoskeleton: Learning Compliant Whole-body Policies with Real-time Torque Feedback",
+   "cat": "umi",
+   "org": "academia",
+   "one": "Whole-body exoskeleton capture with compliance — the force dimension UMI-style rigs leave out.",
+   "device": "Universal Manipulation Exoskeleton",
+   "modal": "RGB, joint state, contact force, whole-body pose",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "compliant whole-body manipulation",
+   "scenes": "—",
+   "subj": "—",
+   "embod": "humanoid / mobile manipulator",
+   "note": "",
+   "arxiv": "2606.14218",
+   "authors": [
+    "(see PDF)"
+   ],
+   "year": 2026,
+   "date": "2026-06-14",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2606.14218",
+   "site": "https://arxiv.org/abs/2606.14218",
+   "fig": "figures/ds-ume-data.webp",
+   "figs": [
+    "figures/ds-ume-data-1.webp",
+    "figures/ds-ume-data-2.webp"
+   ],
+   "hours_num": -1
   },
   {
    "id": "dexumi-data",
@@ -1198,7 +1742,8 @@
    "figs": [
     "figures/ds-dexumi-data-1.webp",
     "figures/ds-dexumi-data-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "fastumi100k",
@@ -1245,7 +1790,8 @@
    "figs": [
     "figures/ds-fastumi100k-1.webp",
     "figures/ds-fastumi100k-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "umi-data",
@@ -1287,230 +1833,8 @@
    "figs": [
     "figures/ds-umi-data-1.webp",
     "figures/ds-umi-data-2.webp"
-   ]
-  },
-  {
-   "id": "airexo2",
-   "name": "AirExo-2",
-   "title": "AirExo-2: Scaling up Generalizable Robotic Imitation Learning with Low-Cost Exoskeletons",
-   "cat": "teleop",
-   "org": "academia",
-   "one": "In-the-wild demonstrations from a low-cost exoskeleton, designed to transfer without robot data.",
-   "device": "AirExo-2 exoskeleton",
-   "modal": "RGB-D, joint state",
-   "hours": "—",
-   "eps": "—",
-   "tasks": "generalisable manipulation",
-   "scenes": "in-the-wild",
-   "subj": "—",
-   "embod": "dual-arm",
-   "note": "The main competitor framing for UME-style exoskeleton capture.",
-   "arxiv": "2503.03081",
-   "authors": [
-    "Hongjie Fang",
-    "Chenxi Wang",
-    "Yiming Wang",
-    "Jingjing Chen",
-    "Shangning Xia",
-    "Jun Lv",
-    "Hao-Shu Fang",
-    "Cewu Lu"
    ],
-   "year": 2025,
-   "date": "2025-03-05",
-   "institutions": [
-    "Shanghai Jiao Tong University"
-   ],
-   "paper": "https://arxiv.org/abs/2503.03081",
-   "site": "https://airexo.tech/airexo2/",
-   "fig": "figures/ds-airexo2.webp",
-   "figs": [
-    "figures/ds-airexo2-1.webp",
-    "figures/ds-airexo2-2.webp"
-   ]
-  },
-  {
-   "id": "dexcap-data",
-   "name": "DexCap",
-   "title": "DexCap: Scalable and Portable Mocap Data Collection System for Dexterous Manipulation",
-   "cat": "teleop",
-   "org": "academia",
-   "one": "Portable glove-plus-SLAM mocap for dexterous manipulation, collected without a robot in the loop.",
-   "device": "Rokoko glove + LiDAR chest rig + SLAM",
-   "modal": "RGB-D, finger joint angles, 6-DoF wrist pose, point cloud",
-   "hours": "—",
-   "eps": "—",
-   "tasks": "dexterous manipulation",
-   "scenes": "in-the-wild",
-   "subj": "—",
-   "embod": "LEAP hand + Franka",
-   "note": "The most direct hardware precedent for a world-action model from glove capture.",
-   "arxiv": "2403.07788",
-   "authors": [
-    "Chen Wang",
-    "Haochen Shi",
-    "Weizhuo Wang",
-    "Ruohan Zhang",
-    "Li Fei-Fei",
-    "C. Karen Liu"
-   ],
-   "year": 2024,
-   "date": "2024-03-12",
-   "institutions": [
-    "Stanford University"
-   ],
-   "paper": "https://arxiv.org/abs/2403.07788",
-   "site": "https://dex-cap.github.io/",
-   "fig": "figures/ds-dexcap-data.webp",
-   "figs": [
-    "figures/ds-dexcap-data-1.webp",
-    "figures/ds-dexcap-data-2.webp"
-   ]
-  },
-  {
-   "id": "humanplus",
-   "name": "HumanPlus",
-   "title": "HumanPlus: Humanoid Shadowing and Imitation from Humans",
-   "cat": "teleop",
-   "org": "academia",
-   "one": "Humanoid shadowing from a single RGB camera, plus the imitation data it produces on a 33-DoF humanoid.",
-   "device": "single RGB camera (shadowing) + 40 h of human mocap",
-   "modal": "RGB, whole-body pose, joint state",
-   "hours": "—",
-   "eps": "40 demos per skill",
-   "tasks": "wearing shoes, warehouse unloading, folding, typing",
-   "scenes": "lab",
-   "subj": "—",
-   "embod": "33-DoF custom humanoid",
-   "note": "",
-   "arxiv": "2406.10454",
-   "authors": [
-    "Zipeng Fu",
-    "Qingqing Zhao",
-    "Qi Wu",
-    "Gordon Wetzstein",
-    "Chelsea Finn"
-   ],
-   "year": 2024,
-   "date": "2024-06-15",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2406.10454",
-   "site": "https://humanoid-ai.github.io/",
-   "fig": "figures/ds-humanplus.webp",
-   "figs": [
-    "figures/ds-humanplus-1.webp",
-    "figures/ds-humanplus-2.webp"
-   ]
-  },
-  {
-   "id": "mobile-aloha-data",
-   "name": "Mobile ALOHA",
-   "title": "Mobile ALOHA: Learning Bimanual Mobile Manipulation with Low-Cost Whole-Body Teleoperation",
-   "cat": "teleop",
-   "org": "academia",
-   "one": "Mobile bimanual demonstrations with whole-body teleoperation, plus the co-training result that static data lifts mobile performance.",
-   "device": "Mobile ALOHA (tethered whole-body teleop)",
-   "modal": "RGB 4-camera, joint + base velocity",
-   "hours": "—",
-   "eps": "50 demos per task",
-   "tasks": "7 mobile manipulation tasks",
-   "scenes": "real home/kitchen",
-   "subj": "—",
-   "embod": "Mobile ALOHA",
-   "note": "The co-training finding — up to 90% improvement from static data — is the reusable result, not the dataset.",
-   "arxiv": "2401.02117",
-   "authors": [
-    "Zipeng Fu",
-    "Tony Z. Zhao",
-    "Chelsea Finn"
-   ],
-   "year": 2024,
-   "date": "2024-01-04",
-   "institutions": [
-    "Stanford University"
-   ],
-   "paper": "https://arxiv.org/abs/2401.02117",
-   "site": "https://mobile-aloha.github.io/",
-   "fig": "figures/ds-mobile-aloha-data.webp",
-   "figs": [
-    "figures/ds-mobile-aloha-data-1.webp"
-   ]
-  },
-  {
-   "id": "television",
-   "name": "Open-TeleVision",
-   "title": "Open-TeleVision: Teleoperation with Immersive Active Visual Feedback",
-   "cat": "teleop",
-   "org": "academia",
-   "one": "Open-source immersive VR teleoperation with active stereo vision — cheap, high-quality bimanual demonstrations.",
-   "device": "VR headset + active stereo head",
-   "modal": "stereo RGB, hand/arm pose, robot state",
-   "hours": "—",
-   "eps": "—",
-   "tasks": "bimanual dexterous",
-   "scenes": "lab",
-   "subj": "—",
-   "embod": "H1 / GR-1 / bimanual arms",
-   "note": "",
-   "arxiv": "2407.01512",
-   "authors": [
-    "Xuxin Cheng",
-    "Jialong Li",
-    "Shiqi Yang",
-    "Ge Yang",
-    "Xiaolong Wang"
-   ],
-   "year": 2024,
-   "date": "2024-07-01",
-   "institutions": [
-    "UC San Diego",
-    "MIT"
-   ],
-   "paper": "https://arxiv.org/abs/2407.01512",
-   "site": "https://robot-tv.github.io/",
-   "fig": "figures/ds-television.webp",
-   "figs": [
-    "figures/ds-television-1.webp",
-    "figures/ds-television-2.webp"
-   ]
-  },
-  {
-   "id": "aloha-data",
-   "name": "Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware",
-   "title": "Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware",
-   "cat": "teleop",
-   "org": "academia",
-   "one": "Fine-grained bimanual demonstrations from the low-cost leader-follower rig that made bimanual IL reproducible.",
-   "device": "ALOHA leader-follower (ViperX/WidowX)",
-   "modal": "RGB 4-camera, joint positions",
-   "hours": "—",
-   "eps": "~50 demos per task",
-   "tasks": "6 fine-grained tasks",
-   "scenes": "lab",
-   "subj": "—",
-   "embod": "ViperX 6-DoF bimanual",
-   "note": "Tiny, and that is the point — 50 demos per task was enough for threading a zip tie.",
-   "arxiv": "2304.13705",
-   "authors": [
-    "Tony Z. Zhao",
-    "Vikash Kumar",
-    "Sergey Levine",
-    "Chelsea Finn"
-   ],
-   "year": 2023,
-   "date": "2023-04-23",
-   "institutions": [
-    "Stanford University",
-    "UC Berkeley",
-    "Meta AI"
-   ],
-   "paper": "https://arxiv.org/abs/2304.13705",
-   "site": "https://tonyzhaozh.github.io/aloha/",
-   "fig": "figures/ds-aloha-data.webp",
-   "figs": [
-    "figures/ds-aloha-data-1.webp",
-    "figures/ds-aloha-data-2.webp"
-   ]
+   "hours_num": -1
   },
   {
    "id": "roboturk",
@@ -1552,7 +1876,237 @@
    "figs": [
     "figures/ds-roboturk-1.webp",
     "figures/ds-roboturk-2.webp"
-   ]
+   ],
+   "hours_num": 137.5
+  },
+  {
+   "id": "airexo2",
+   "name": "AirExo-2",
+   "title": "AirExo-2: Scaling up Generalizable Robotic Imitation Learning with Low-Cost Exoskeletons",
+   "cat": "teleop",
+   "org": "academia",
+   "one": "In-the-wild demonstrations from a low-cost exoskeleton, designed to transfer without robot data.",
+   "device": "AirExo-2 exoskeleton",
+   "modal": "RGB-D, joint state",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "generalisable manipulation",
+   "scenes": "in-the-wild",
+   "subj": "—",
+   "embod": "dual-arm",
+   "note": "The main competitor framing for UME-style exoskeleton capture.",
+   "arxiv": "2503.03081",
+   "authors": [
+    "Hongjie Fang",
+    "Chenxi Wang",
+    "Yiming Wang",
+    "Jingjing Chen",
+    "Shangning Xia",
+    "Jun Lv",
+    "Hao-Shu Fang",
+    "Cewu Lu"
+   ],
+   "year": 2025,
+   "date": "2025-03-05",
+   "institutions": [
+    "Shanghai Jiao Tong University"
+   ],
+   "paper": "https://arxiv.org/abs/2503.03081",
+   "site": "https://airexo.tech/airexo2/",
+   "fig": "figures/ds-airexo2.webp",
+   "figs": [
+    "figures/ds-airexo2-1.webp",
+    "figures/ds-airexo2-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "dexcap-data",
+   "name": "DexCap",
+   "title": "DexCap: Scalable and Portable Mocap Data Collection System for Dexterous Manipulation",
+   "cat": "teleop",
+   "org": "academia",
+   "one": "Portable glove-plus-SLAM mocap for dexterous manipulation, collected without a robot in the loop.",
+   "device": "Rokoko glove + LiDAR chest rig + SLAM",
+   "modal": "RGB-D, finger joint angles, 6-DoF wrist pose, point cloud",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "dexterous manipulation",
+   "scenes": "in-the-wild",
+   "subj": "—",
+   "embod": "LEAP hand + Franka",
+   "note": "The most direct hardware precedent for a world-action model from glove capture.",
+   "arxiv": "2403.07788",
+   "authors": [
+    "Chen Wang",
+    "Haochen Shi",
+    "Weizhuo Wang",
+    "Ruohan Zhang",
+    "Li Fei-Fei",
+    "C. Karen Liu"
+   ],
+   "year": 2024,
+   "date": "2024-03-12",
+   "institutions": [
+    "Stanford University"
+   ],
+   "paper": "https://arxiv.org/abs/2403.07788",
+   "site": "https://dex-cap.github.io/",
+   "fig": "figures/ds-dexcap-data.webp",
+   "figs": [
+    "figures/ds-dexcap-data-1.webp",
+    "figures/ds-dexcap-data-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "humanplus",
+   "name": "HumanPlus",
+   "title": "HumanPlus: Humanoid Shadowing and Imitation from Humans",
+   "cat": "teleop",
+   "org": "academia",
+   "one": "Humanoid shadowing from a single RGB camera, plus the imitation data it produces on a 33-DoF humanoid.",
+   "device": "single RGB camera (shadowing) + 40 h of human mocap",
+   "modal": "RGB, whole-body pose, joint state",
+   "hours": "—",
+   "eps": "40 demos per skill",
+   "tasks": "wearing shoes, warehouse unloading, folding, typing",
+   "scenes": "lab",
+   "subj": "—",
+   "embod": "33-DoF custom humanoid",
+   "note": "",
+   "arxiv": "2406.10454",
+   "authors": [
+    "Zipeng Fu",
+    "Qingqing Zhao",
+    "Qi Wu",
+    "Gordon Wetzstein",
+    "Chelsea Finn"
+   ],
+   "year": 2024,
+   "date": "2024-06-15",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2406.10454",
+   "site": "https://humanoid-ai.github.io/",
+   "fig": "figures/ds-humanplus.webp",
+   "figs": [
+    "figures/ds-humanplus-1.webp",
+    "figures/ds-humanplus-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "mobile-aloha-data",
+   "name": "Mobile ALOHA",
+   "title": "Mobile ALOHA: Learning Bimanual Mobile Manipulation with Low-Cost Whole-Body Teleoperation",
+   "cat": "teleop",
+   "org": "academia",
+   "one": "Mobile bimanual demonstrations with whole-body teleoperation, plus the co-training result that static data lifts mobile performance.",
+   "device": "Mobile ALOHA (tethered whole-body teleop)",
+   "modal": "RGB 4-camera, joint + base velocity",
+   "hours": "—",
+   "eps": "50 demos per task",
+   "tasks": "7 mobile manipulation tasks",
+   "scenes": "real home/kitchen",
+   "subj": "—",
+   "embod": "Mobile ALOHA",
+   "note": "The co-training finding — up to 90% improvement from static data — is the reusable result, not the dataset.",
+   "arxiv": "2401.02117",
+   "authors": [
+    "Zipeng Fu",
+    "Tony Z. Zhao",
+    "Chelsea Finn"
+   ],
+   "year": 2024,
+   "date": "2024-01-04",
+   "institutions": [
+    "Stanford University"
+   ],
+   "paper": "https://arxiv.org/abs/2401.02117",
+   "site": "https://mobile-aloha.github.io/",
+   "fig": "figures/ds-mobile-aloha-data.webp",
+   "figs": [
+    "figures/ds-mobile-aloha-data-1.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "television",
+   "name": "Open-TeleVision",
+   "title": "Open-TeleVision: Teleoperation with Immersive Active Visual Feedback",
+   "cat": "teleop",
+   "org": "academia",
+   "one": "Open-source immersive VR teleoperation with active stereo vision — cheap, high-quality bimanual demonstrations.",
+   "device": "VR headset + active stereo head",
+   "modal": "stereo RGB, hand/arm pose, robot state",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "bimanual dexterous",
+   "scenes": "lab",
+   "subj": "—",
+   "embod": "H1 / GR-1 / bimanual arms",
+   "note": "",
+   "arxiv": "2407.01512",
+   "authors": [
+    "Xuxin Cheng",
+    "Jialong Li",
+    "Shiqi Yang",
+    "Ge Yang",
+    "Xiaolong Wang"
+   ],
+   "year": 2024,
+   "date": "2024-07-01",
+   "institutions": [
+    "UC San Diego",
+    "MIT"
+   ],
+   "paper": "https://arxiv.org/abs/2407.01512",
+   "site": "https://robot-tv.github.io/",
+   "fig": "figures/ds-television.webp",
+   "figs": [
+    "figures/ds-television-1.webp",
+    "figures/ds-television-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "aloha-data",
+   "name": "Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware",
+   "title": "Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware",
+   "cat": "teleop",
+   "org": "academia",
+   "one": "Fine-grained bimanual demonstrations from the low-cost leader-follower rig that made bimanual IL reproducible.",
+   "device": "ALOHA leader-follower (ViperX/WidowX)",
+   "modal": "RGB 4-camera, joint positions",
+   "hours": "—",
+   "eps": "~50 demos per task",
+   "tasks": "6 fine-grained tasks",
+   "scenes": "lab",
+   "subj": "—",
+   "embod": "ViperX 6-DoF bimanual",
+   "note": "Tiny, and that is the point — 50 demos per task was enough for threading a zip tie.",
+   "arxiv": "2304.13705",
+   "authors": [
+    "Tony Z. Zhao",
+    "Vikash Kumar",
+    "Sergey Levine",
+    "Chelsea Finn"
+   ],
+   "year": 2023,
+   "date": "2023-04-23",
+   "institutions": [
+    "Stanford University",
+    "UC Berkeley",
+    "Meta AI"
+   ],
+   "paper": "https://arxiv.org/abs/2304.13705",
+   "site": "https://tonyzhaozh.github.io/aloha/",
+   "fig": "figures/ds-aloha-data.webp",
+   "figs": [
+    "figures/ds-aloha-data-1.webp",
+    "figures/ds-aloha-data-2.webp"
+   ],
+   "hours_num": -1
   },
   {
    "id": "qwen-robotmanip",
@@ -1604,92 +2158,8 @@
    "fig": "figures/ds-qwen-robotmanip.webp",
    "figs": [
     "figures/ds-qwen-robotmanip-1.webp"
-   ]
-  },
-  {
-   "id": "agibot",
-   "name": "AgiBot World Colosseo",
-   "title": "AgiBot World Colosseo: A Large-scale Manipulation Platform for Scalable and Intelligent Embodied Systems",
-   "cat": "robot",
-   "org": "industry",
-   "one": "A million-plus trajectories from a fleet of 100+ identical humanoid mobile manipulators — uniformity as the design principle.",
-   "device": "AgiBot G1 fleet, teleoperation",
-   "modal": "RGB-D, proprioception, tactile (subset), language",
-   "hours": "—",
-   "eps": "1M+ trajectories",
-   "tasks": "217 tasks",
-   "scenes": "106 scenes · 5 deployment settings",
-   "subj": "—",
-   "embod": "AgiBot G1",
-   "note": "The industrial answer to DROID: hardware uniformity instead of institutional diversity. Which bet is right is still open.",
-   "arxiv": "2503.06669",
-   "authors": [
-    "AgiBot-World-Contributors",
-    "Qingwen Bu",
-    "Jisong Cai",
-    "Li Chen",
-    "Xiuqi Cui",
-    "Yan Ding",
-    "Siyuan Feng",
-    "Shenyuan Gao",
-    "Xindong He",
-    "Xuan Hu",
-    "Xu Huang",
-    "Shu Jiang",
-    "Yuxin Jiang",
-    "Cheng Jing",
-    "Hongyang Li",
-    "Jialu Li",
-    "Chiming Liu",
-    "Yi Liu",
-    "Yuxiang Lu",
-    "Jianlan Luo",
-    "Ping Luo",
-    "Yao Mu",
-    "Yuehan Niu",
-    "Yixuan Pan",
-    "Jiangmiao Pang",
-    "Yu Qiao",
-    "Guanghui Ren",
-    "Cheng Ruan",
-    "Jiaqi Shan",
-    "Yongjian Shen",
-    "Chengshi Shi",
-    "Mingkang Shi",
-    "Modi Shi",
-    "Chonghao Sima",
-    "Jianheng Song",
-    "Huijie Wang",
-    "Wenhao Wang",
-    "Dafeng Wei",
-    "Chengen Xie",
-    "Guo Xu",
-    "Junchi Yan",
-    "Cunbiao Yang",
-    "Lei Yang",
-    "Shukai Yang",
-    "Maoqing Yao",
-    "Jia Zeng",
-    "Chi Zhang",
-    "Qinglin Zhang",
-    "Bin Zhao",
-    "Chengyue Zhao",
-    "Jiaqi Zhao",
-    "Jianchao Zhu"
    ],
-   "year": 2025,
-   "date": "2025-03-09",
-   "institutions": [
-    "AgiBot",
-    "Shanghai AI Laboratory"
-   ],
-   "paper": "https://arxiv.org/abs/2503.06669",
-   "site": "https://agibot-world.com/",
-   "fig": "figures/ds-agibot.webp",
-   "figs": [
-    "figures/ds-agibot-1.webp",
-    "figures/ds-agibot-2.webp"
-   ]
+   "hours_num": 38100.0
   },
   {
    "id": "galaxea",
@@ -1728,165 +2198,8 @@
    "fig": "figures/ds-galaxea.webp",
    "figs": [
     "figures/ds-galaxea-1.webp"
-   ]
-  },
-  {
-   "id": "robocoin",
-   "name": "RoboCOIN",
-   "title": "RoboCOIN: An Open-Sourced Bimanual Robotic Data Collection for Integrated Manipulation",
-   "cat": "robot",
-   "org": "consortium",
-   "one": "Large-scale bimanual manipulation across 15 robot platforms, categorised by the type of two-arm coordination required.",
-   "device": "15 robot platforms, teleoperation",
-   "modal": "RGB multi-view, proprioception, language",
-   "hours": "—",
-   "eps": "180,000+ demonstrations",
-   "tasks": "421 bimanual tasks · 39 coordination types",
-   "scenes": "16 environments",
-   "subj": "432 objects",
-   "embod": "15 bimanual platforms",
-   "note": "The taxonomy of 39 bimanual coordination actions is genuinely useful — it is the closest thing to a vocabulary for two-arm collaboration.",
-   "arxiv": "2511.17441",
-   "authors": [
-    "Shihan Wu",
-    "Xuecheng Liu",
-    "Shaoxuan Xie",
-    "Pengwei Wang",
-    "Xinghang Li",
-    "Bowen Yang",
-    "Zhe Li",
-    "Kai Zhu",
-    "Hongyu Wu",
-    "Yiheng Liu",
-    "Zhaoye Long",
-    "Runtian Xu",
-    "Yue Wang",
-    "Chong Liu",
-    "Dihan Wang",
-    "Ziqiang Ni",
-    "Xiang Yang",
-    "You Liu",
-    "Ruoxuan Feng",
-    "Lei Zhang",
-    "Denghang Huang",
-    "Chenghao Jin",
-    "Anlan Yin",
-    "Xinlong Wang",
-    "Zhenguo Sun",
-    "Junkai Zhao",
-    "Mengfei Du",
-    "Mingyu Cao",
-    "Xiansheng Chen",
-    "Hongyang Cheng",
-    "Xiaojie Zhang",
-    "Yankai Fu",
-    "Ning Chen",
-    "Cheng Chi",
-    "Sixiang Chen",
-    "Huaihai Lyu",
-    "Xiaoshuai Hao",
-    "Yequan Wang",
-    "Bo Lei",
-    "Dong Liu",
-    "Xi Yang",
-    "Yance Jiao",
-    "Tengfei Pan",
-    "Yunyan Zhang",
-    "Songjing Wang",
-    "Ziqian Zhang",
-    "Xu Liu",
-    "Ji Zhang",
-    "Caowei Meng",
-    "Zhizheng Zhang",
-    "Jiyang Gao",
-    "Song Wang",
-    "Xiaokun Leng",
-    "Zhiqiang Xie",
-    "Zhenzhen Zhou",
-    "Peng Huang",
-    "Wu Yang",
-    "Yandong Guo",
-    "Yichao Zhu",
-    "Suibing Zheng",
-    "Hao Cheng",
-    "Xinmin Ding",
-    "Yang Yue",
-    "Huanqian Wang",
-    "Chi Chen",
-    "Jingrui Pang",
-    "YuXi Qian",
-    "Haoran Geng",
-    "Lianli Gao",
-    "Haiyuan Li",
-    "Bin Fang",
-    "Gao Huang",
-    "Yaodong Yang",
-    "Hao Dong",
-    "He Wang",
-    "Hang Zhao",
-    "Yadong Mu",
-    "Di Hu",
-    "Hao Zhao",
-    "Tiejun Huang",
-    "Shanghang Zhang",
-    "Yonghua Lin",
-    "Zhongyuan Wang",
-    "Guocai Yao"
    ],
-   "year": 2025,
-   "date": "2025-11-21",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2511.17441",
-   "site": "https://arxiv.org/abs/2511.17441",
-   "fig": "figures/ds-robocoin.webp",
-   "figs": [
-    "figures/ds-robocoin-1.webp",
-    "figures/ds-robocoin-2.webp"
-   ]
-  },
-  {
-   "id": "ario",
-   "name": "All Robots in One",
-   "title": "All Robots in One: A New Standard and Unified Dataset for Versatile, General-Purpose Embodied Agents",
-   "cat": "robot",
-   "org": "consortium",
-   "one": "A unified standard plus the largest aggregated embodied dataset — roughly 3 million episodes across 258 series.",
-   "device": "mixed (aggregated + new collection)",
-   "modal": "RGB-D, proprioception, language, tactile (partial)",
-   "hours": "—",
-   "eps": "~3M episodes",
-   "tasks": "321,064 tasks",
-   "scenes": "—",
-   "subj": "—",
-   "embod": "many",
-   "note": "Enormous, and the data-format standard is the more durable contribution.",
-   "arxiv": "2408.10899",
-   "authors": [
-    "Zhiqiang Wang",
-    "Hao Zheng",
-    "Yunshuang Nie",
-    "Wenjun Xu",
-    "Qingwei Wang",
-    "Hua Ye",
-    "Zhe Li",
-    "Kaidong Zhang",
-    "Xuewen Cheng",
-    "Wanxi Dong",
-    "Chang Cai",
-    "Liang Lin",
-    "Feng Zheng",
-    "Xiaodan Liang"
-   ],
-   "year": 2024,
-   "date": "2024-08-20",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2408.10899",
-   "site": "https://imaei.github.io/project_pages/ario/",
-   "fig": "figures/ds-ario.webp",
-   "figs": [
-    "figures/ds-ario-1.webp",
-    "figures/ds-ario-2.webp"
-   ]
+   "hours_num": 500.0
   },
   {
    "id": "droid",
@@ -2021,7 +2334,280 @@
    "figs": [
     "figures/ds-droid-1.webp",
     "figures/ds-droid-2.webp"
-   ]
+   ],
+   "hours_num": 350.0
+  },
+  {
+   "id": "agibot2026",
+   "name": "AgiBot World 2026",
+   "title": "AgiBot World 2026",
+   "cat": "robot",
+   "org": "industry",
+   "one": "AgiBot's 2026 release, aimed at reinforcement learning rather than imitation: real-world trajectories across industrial and household tasks.",
+   "device": "AgiBot fleet, teleoperation",
+   "modal": "RGB-D, proprioception, reward/task annotations",
+   "hours": "—",
+   "eps": "11,430 real-world trajectories",
+   "tasks": "14 industrial and household tasks",
+   "scenes": "—",
+   "subj": "—",
+   "embod": "AgiBot G1",
+   "note": "Small next to the original million-trajectory AgiBot World, and deliberately so — it is structured for RL, which almost no large robot dataset is. Released with Shanghai AI Lab and the National-Local Humanoid Robotics Innovation Centre.",
+   "arxiv": "",
+   "authors": [],
+   "year": 2026,
+   "date": "2026-04-01",
+   "institutions": [],
+   "paper": "",
+   "site": "https://agibot-world.com/",
+   "fig": "",
+   "hours_num": -1
+  },
+  {
+   "id": "agibot",
+   "name": "AgiBot World Colosseo",
+   "title": "AgiBot World Colosseo: A Large-scale Manipulation Platform for Scalable and Intelligent Embodied Systems",
+   "cat": "robot",
+   "org": "industry",
+   "one": "A million-plus trajectories from a fleet of 100+ identical humanoid mobile manipulators — uniformity as the design principle.",
+   "device": "AgiBot G1 fleet, teleoperation",
+   "modal": "RGB-D, proprioception, tactile (subset), language",
+   "hours": "—",
+   "eps": "1M+ trajectories",
+   "tasks": "217 tasks",
+   "scenes": "106 scenes · 5 deployment settings",
+   "subj": "—",
+   "embod": "AgiBot G1",
+   "note": "The industrial answer to DROID: hardware uniformity instead of institutional diversity. Which bet is right is still open.",
+   "arxiv": "2503.06669",
+   "authors": [
+    "AgiBot-World-Contributors",
+    "Qingwen Bu",
+    "Jisong Cai",
+    "Li Chen",
+    "Xiuqi Cui",
+    "Yan Ding",
+    "Siyuan Feng",
+    "Shenyuan Gao",
+    "Xindong He",
+    "Xuan Hu",
+    "Xu Huang",
+    "Shu Jiang",
+    "Yuxin Jiang",
+    "Cheng Jing",
+    "Hongyang Li",
+    "Jialu Li",
+    "Chiming Liu",
+    "Yi Liu",
+    "Yuxiang Lu",
+    "Jianlan Luo",
+    "Ping Luo",
+    "Yao Mu",
+    "Yuehan Niu",
+    "Yixuan Pan",
+    "Jiangmiao Pang",
+    "Yu Qiao",
+    "Guanghui Ren",
+    "Cheng Ruan",
+    "Jiaqi Shan",
+    "Yongjian Shen",
+    "Chengshi Shi",
+    "Mingkang Shi",
+    "Modi Shi",
+    "Chonghao Sima",
+    "Jianheng Song",
+    "Huijie Wang",
+    "Wenhao Wang",
+    "Dafeng Wei",
+    "Chengen Xie",
+    "Guo Xu",
+    "Junchi Yan",
+    "Cunbiao Yang",
+    "Lei Yang",
+    "Shukai Yang",
+    "Maoqing Yao",
+    "Jia Zeng",
+    "Chi Zhang",
+    "Qinglin Zhang",
+    "Bin Zhao",
+    "Chengyue Zhao",
+    "Jiaqi Zhao",
+    "Jianchao Zhu"
+   ],
+   "year": 2025,
+   "date": "2025-03-09",
+   "institutions": [
+    "AgiBot",
+    "Shanghai AI Laboratory"
+   ],
+   "paper": "https://arxiv.org/abs/2503.06669",
+   "site": "https://agibot-world.com/",
+   "fig": "figures/ds-agibot.webp",
+   "figs": [
+    "figures/ds-agibot-1.webp",
+    "figures/ds-agibot-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "robocoin",
+   "name": "RoboCOIN",
+   "title": "RoboCOIN: An Open-Sourced Bimanual Robotic Data Collection for Integrated Manipulation",
+   "cat": "robot",
+   "org": "consortium",
+   "one": "Large-scale bimanual manipulation across 15 robot platforms, categorised by the type of two-arm coordination required.",
+   "device": "15 robot platforms, teleoperation",
+   "modal": "RGB multi-view, proprioception, language",
+   "hours": "—",
+   "eps": "180,000+ demonstrations",
+   "tasks": "421 bimanual tasks · 39 coordination types",
+   "scenes": "16 environments",
+   "subj": "432 objects",
+   "embod": "15 bimanual platforms",
+   "note": "The taxonomy of 39 bimanual coordination actions is genuinely useful — it is the closest thing to a vocabulary for two-arm collaboration.",
+   "arxiv": "2511.17441",
+   "authors": [
+    "Shihan Wu",
+    "Xuecheng Liu",
+    "Shaoxuan Xie",
+    "Pengwei Wang",
+    "Xinghang Li",
+    "Bowen Yang",
+    "Zhe Li",
+    "Kai Zhu",
+    "Hongyu Wu",
+    "Yiheng Liu",
+    "Zhaoye Long",
+    "Runtian Xu",
+    "Yue Wang",
+    "Chong Liu",
+    "Dihan Wang",
+    "Ziqiang Ni",
+    "Xiang Yang",
+    "You Liu",
+    "Ruoxuan Feng",
+    "Lei Zhang",
+    "Denghang Huang",
+    "Chenghao Jin",
+    "Anlan Yin",
+    "Xinlong Wang",
+    "Zhenguo Sun",
+    "Junkai Zhao",
+    "Mengfei Du",
+    "Mingyu Cao",
+    "Xiansheng Chen",
+    "Hongyang Cheng",
+    "Xiaojie Zhang",
+    "Yankai Fu",
+    "Ning Chen",
+    "Cheng Chi",
+    "Sixiang Chen",
+    "Huaihai Lyu",
+    "Xiaoshuai Hao",
+    "Yequan Wang",
+    "Bo Lei",
+    "Dong Liu",
+    "Xi Yang",
+    "Yance Jiao",
+    "Tengfei Pan",
+    "Yunyan Zhang",
+    "Songjing Wang",
+    "Ziqian Zhang",
+    "Xu Liu",
+    "Ji Zhang",
+    "Caowei Meng",
+    "Zhizheng Zhang",
+    "Jiyang Gao",
+    "Song Wang",
+    "Xiaokun Leng",
+    "Zhiqiang Xie",
+    "Zhenzhen Zhou",
+    "Peng Huang",
+    "Wu Yang",
+    "Yandong Guo",
+    "Yichao Zhu",
+    "Suibing Zheng",
+    "Hao Cheng",
+    "Xinmin Ding",
+    "Yang Yue",
+    "Huanqian Wang",
+    "Chi Chen",
+    "Jingrui Pang",
+    "YuXi Qian",
+    "Haoran Geng",
+    "Lianli Gao",
+    "Haiyuan Li",
+    "Bin Fang",
+    "Gao Huang",
+    "Yaodong Yang",
+    "Hao Dong",
+    "He Wang",
+    "Hang Zhao",
+    "Yadong Mu",
+    "Di Hu",
+    "Hao Zhao",
+    "Tiejun Huang",
+    "Shanghang Zhang",
+    "Yonghua Lin",
+    "Zhongyuan Wang",
+    "Guocai Yao"
+   ],
+   "year": 2025,
+   "date": "2025-11-21",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2511.17441",
+   "site": "https://arxiv.org/abs/2511.17441",
+   "fig": "figures/ds-robocoin.webp",
+   "figs": [
+    "figures/ds-robocoin-1.webp",
+    "figures/ds-robocoin-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "ario",
+   "name": "All Robots in One",
+   "title": "All Robots in One: A New Standard and Unified Dataset for Versatile, General-Purpose Embodied Agents",
+   "cat": "robot",
+   "org": "consortium",
+   "one": "A unified standard plus the largest aggregated embodied dataset — roughly 3 million episodes across 258 series.",
+   "device": "mixed (aggregated + new collection)",
+   "modal": "RGB-D, proprioception, language, tactile (partial)",
+   "hours": "—",
+   "eps": "~3M episodes",
+   "tasks": "321,064 tasks",
+   "scenes": "—",
+   "subj": "—",
+   "embod": "many",
+   "note": "Enormous, and the data-format standard is the more durable contribution.",
+   "arxiv": "2408.10899",
+   "authors": [
+    "Zhiqiang Wang",
+    "Hao Zheng",
+    "Yunshuang Nie",
+    "Wenjun Xu",
+    "Qingwei Wang",
+    "Hua Ye",
+    "Zhe Li",
+    "Kaidong Zhang",
+    "Xuewen Cheng",
+    "Wanxi Dong",
+    "Chang Cai",
+    "Liang Lin",
+    "Feng Zheng",
+    "Xiaodan Liang"
+   ],
+   "year": 2024,
+   "date": "2024-08-20",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2408.10899",
+   "site": "https://imaei.github.io/project_pages/ario/",
+   "fig": "figures/ds-ario.webp",
+   "figs": [
+    "figures/ds-ario-1.webp",
+    "figures/ds-ario-2.webp"
+   ],
+   "hours_num": -1
   },
   {
    "id": "fmb",
@@ -2059,7 +2645,8 @@
    "figs": [
     "figures/ds-fmb-1.webp",
     "figures/ds-fmb-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "robomind",
@@ -2125,7 +2712,8 @@
    "fig": "figures/ds-robomind.webp",
    "figs": [
     "figures/ds-robomind-1.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "bridgev2",
@@ -2173,7 +2761,8 @@
    "figs": [
     "figures/ds-bridgev2-1.webp",
     "figures/ds-bridgev2-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "oxe",
@@ -2499,7 +3088,8 @@
    "figs": [
     "figures/ds-oxe-1.webp",
     "figures/ds-oxe-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "rh20t",
@@ -2537,7 +3127,8 @@
    "figs": [
     "figures/ds-rh20t-1.webp",
     "figures/ds-rh20t-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "roboagent",
@@ -2573,7 +3164,8 @@
    "figs": [
     "figures/ds-roboagent-1.webp",
     "figures/ds-roboagent-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "bcz",
@@ -2611,7 +3203,8 @@
    "figs": [
     "figures/ds-bcz-1.webp",
     "figures/ds-bcz-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "langtable",
@@ -2649,7 +3242,8 @@
    "figs": [
     "figures/ds-langtable-1.webp",
     "figures/ds-langtable-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "rt1data",
@@ -2731,7 +3325,8 @@
    "fig": "figures/ds-rt1data.webp",
    "figs": [
     "figures/ds-rt1data-1.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "robonet",
@@ -2769,7 +3364,8 @@
    "fig": "figures/ds-robonet.webp",
    "figs": [
     "figures/ds-robonet-1.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "dexgraspnet2",
@@ -2807,7 +3403,8 @@
    "figs": [
     "figures/ds-dexgraspnet2-1.webp",
     "figures/ds-dexgraspnet2-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "oakink2",
@@ -2845,7 +3442,8 @@
    "figs": [
     "figures/ds-oakink2-1.webp",
     "figures/ds-oakink2-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "taco",
@@ -2883,7 +3481,8 @@
    "figs": [
     "figures/ds-taco-1.webp",
     "figures/ds-taco-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "dexart",
@@ -2917,7 +3516,8 @@
    "figs": [
     "figures/ds-dexart-1.webp",
     "figures/ds-dexart-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "arctic",
@@ -2953,7 +3553,8 @@
    "fig": "figures/ds-arctic.webp",
    "figs": [
     "figures/ds-arctic-1.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "dexgraspnet",
@@ -2990,7 +3591,8 @@
    "figs": [
     "figures/ds-dexgraspnet-1.webp",
     "figures/ds-dexgraspnet-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "dexycb",
@@ -3032,7 +3634,8 @@
    "figs": [
     "figures/ds-dexycb-1.webp",
     "figures/ds-dexycb-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "grab",
@@ -3062,7 +3665,8 @@
    "institutions": [],
    "paper": "https://arxiv.org/abs/2008.11200",
    "site": "https://grab.is.tue.mpg.de/",
-   "fig": "figures/ds-grab.webp"
+   "fig": "figures/ds-grab.webp",
+   "hours_num": -1
   },
   {
    "id": "robotacdex",
@@ -3095,7 +3699,8 @@
    "figs": [
     "figures/ds-robotacdex-1.webp",
     "figures/ds-robotacdex-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "tvl",
@@ -3135,7 +3740,8 @@
    "figs": [
     "figures/ds-tvl-1.webp",
     "figures/ds-tvl-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "sparsh",
@@ -3175,7 +3781,8 @@
    "fig": "figures/ds-sparsh.webp",
    "figs": [
     "figures/ds-sparsh-1.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "tlv",
@@ -3207,7 +3814,8 @@
    "institutions": [],
    "paper": "https://arxiv.org/abs/2403.09813",
    "site": "https://arxiv.org/abs/2403.09813",
-   "fig": "figures/ds-tlv.webp"
+   "fig": "figures/ds-tlv.webp",
+   "hours_num": -1
   },
   {
    "id": "objectfolder-real",
@@ -3245,7 +3853,8 @@
    "figs": [
     "figures/ds-objectfolder-real-1.webp",
     "figures/ds-objectfolder-real-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "objectfolder2",
@@ -3283,7 +3892,8 @@
    "figs": [
     "figures/ds-objectfolder2-1.webp",
     "figures/ds-objectfolder2-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "touchandgo",
@@ -3318,116 +3928,8 @@
    "fig": "figures/ds-touchandgo.webp",
    "figs": [
     "figures/ds-touchandgo-1.webp"
-   ]
-  },
-  {
-   "id": "r2handoversim",
-   "name": "R2HandoverSim",
-   "title": "R2HandoverSim: A Simulation Framework and Benchmark for Robot-to-Human Object Handovers",
-   "cat": "hri",
-   "org": "academia",
-   "one": "The reverse direction: a simulation benchmark for robot-to-human handovers, which had no standard protocol.",
-   "device": "simulation",
-   "modal": "RGB-D, hand + object pose",
-   "hours": "—",
-   "eps": "—",
-   "tasks": "robot-to-human handover",
-   "scenes": "sim",
-   "subj": "—",
-   "embod": "arm + gripper",
-   "note": "",
-   "arxiv": "2606.21011",
-   "authors": [
-    "Hanxin Zhang",
-    "Abdulqader Dhafer",
-    "Hongbiao Dong",
-    "Zhou Daniel Hao"
    ],
-   "year": 2026,
-   "date": "2026-06-19",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2606.21011",
-   "site": "https://arxiv.org/abs/2606.21011",
-   "fig": "figures/ds-r2handoversim.webp",
-   "figs": [
-    "figures/ds-r2handoversim-1.webp",
-    "figures/ds-r2handoversim-2.webp"
-   ]
-  },
-  {
-   "id": "dexh2r",
-   "name": "DexH2R",
-   "title": "DexH2R: A Benchmark for Dynamic Dexterous Grasping in Human-to-Robot Handover",
-   "cat": "hri",
-   "org": "academia",
-   "one": "Real-world human-to-robot handovers on a dexterous hand, with dense frame-level annotation.",
-   "device": "dexterous robotic hand + multi-camera",
-   "modal": "RGB-D, hand + object pose, robot state",
-   "hours": "—",
-   "eps": "4,282 handover trials · 456K frames",
-   "tasks": "dynamic handover",
-   "scenes": "lab",
-   "subj": "39 participants · 56 objects",
-   "embod": "dexterous hand",
-   "note": "The largest real handover dataset on a multi-finger hand — the physical-HRI data that barely exists elsewhere.",
-   "arxiv": "2506.23152",
-   "authors": [
-    "Youzhuo Wang",
-    "Jiayi Ye",
-    "Chuyang Xiao",
-    "Yiming Zhong",
-    "Heng Tao",
-    "Hang Yu",
-    "Yumeng Liu",
-    "Jingyi Yu",
-    "Yuexin Ma"
-   ],
-   "year": 2025,
-   "date": "2025-06-29",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2506.23152",
-   "site": "https://arxiv.org/abs/2506.23152",
-   "fig": "figures/ds-dexh2r.webp",
-   "figs": [
-    "figures/ds-dexh2r-1.webp",
-    "figures/ds-dexh2r-2.webp"
-   ]
-  },
-  {
-   "id": "thormagni",
-   "name": "THÖR-MAGNI",
-   "title": "THÖR-MAGNI: A Large-scale Indoor Motion Capture Recording of Human Movement and Robot Interaction",
-   "cat": "hri",
-   "org": "academia",
-   "one": "Large-scale indoor motion capture of humans moving and interacting with robots in a shared workspace.",
-   "device": "Qualisys mocap + robot + eye-tracking glasses",
-   "modal": "6-DoF human trajectories, robot trajectories, gaze, video",
-   "hours": "3.5 h",
-   "eps": "—",
-   "tasks": "shared-space navigation + interaction",
-   "scenes": "indoor lab",
-   "subj": "40 participants",
-   "embod": "differential-drive + mobile manipulator",
-   "note": "One of very few datasets with millimetre-accurate ground truth for both the human and the robot — the right substrate for measuring who adapts to whom.",
-   "arxiv": "2403.09285",
-   "authors": [
-    "Tim Schreiter",
-    "Tiago Rodrigues de Almeida",
-    "Yufei Zhu",
-    "Eduardo Gutierrez Maestro",
-    "Lucas Morillo-Mendez",
-    "Andrey Rudenko",
-    "Luigi Palmieri",
-    "Tomasz P. Kucner",
-    "Martin Magnusson",
-    "Achim J. Lilienthal"
-   ],
-   "year": 2024,
-   "date": "2024-03-14",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2403.09285",
-   "site": "http://thor.oru.se/",
-   "fig": "figures/ds-thormagni.webp"
+   "hours_num": -1
   },
   {
    "id": "musohu",
@@ -3462,45 +3964,8 @@
    "figs": [
     "figures/ds-musohu-1.webp",
     "figures/ds-musohu-2.webp"
-   ]
-  },
-  {
-   "id": "handoversim",
-   "name": "HandoverSim",
-   "title": "HandoverSim: A Simulation Framework and Benchmark for Human-to-Robot Object Handovers",
-   "cat": "hri",
-   "org": "industry",
-   "one": "Simulation benchmark for human-to-robot handovers, driven by DexYCB human motion.",
-   "device": "simulation (DexYCB-driven human)",
-   "modal": "RGB-D, hand + object pose",
-   "hours": "—",
-   "eps": "1,000 handover scenarios",
-   "tasks": "human-to-robot handover",
-   "scenes": "sim",
-   "subj": "—",
-   "embod": "Panda + gripper",
-   "note": "NVIDIA. The standard evaluation protocol for handovers, and the reason later handover work is comparable at all.",
-   "arxiv": "2205.09747",
-   "authors": [
-    "Yu-Wei Chao",
-    "Chris Paxton",
-    "Yu Xiang",
-    "Wei Yang",
-    "Balakumar Sundaralingam",
-    "Tao Chen",
-    "Adithyavairavan Murali",
-    "Maya Cakmak",
-    "Dieter Fox"
    ],
-   "year": 2022,
-   "date": "2022-05-19",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2205.09747",
-   "site": "https://handover-sim.github.io/",
-   "fig": "figures/ds-handoversim.webp",
-   "figs": [
-    "figures/ds-handoversim-1.webp"
-   ]
+   "hours_num": 20.0
   },
   {
    "id": "scand",
@@ -3539,42 +4004,45 @@
    "figs": [
     "figures/ds-scand-1.webp",
     "figures/ds-scand-2.webp"
-   ]
+   ],
+   "hours_num": 8.7
   },
   {
-   "id": "jrdbact",
-   "name": "JRDB-Act",
-   "title": "JRDB-Act: A Large-scale Dataset for Spatio-temporal Action, Social Group and Activity Detection",
+   "id": "thormagni",
+   "name": "THÖR-MAGNI",
+   "title": "THÖR-MAGNI: A Large-scale Indoor Motion Capture Recording of Human Movement and Robot Interaction",
    "cat": "hri",
    "org": "academia",
-   "one": "JRDB extended with spatio-temporal action, social grouping and activity labels.",
-   "device": "JackRabbot",
-   "modal": "360° RGB, 3D, action + social group labels",
-   "hours": "—",
-   "eps": "2.8M action labels",
-   "tasks": "action + social group detection",
-   "scenes": "campus",
-   "subj": "—",
-   "embod": "JackRabbot",
-   "note": "",
-   "arxiv": "2106.08827",
+   "one": "Large-scale indoor motion capture of humans moving and interacting with robots in a shared workspace.",
+   "device": "Qualisys mocap + robot + eye-tracking glasses",
+   "modal": "6-DoF human trajectories, robot trajectories, gaze, video",
+   "hours": "3.5 h",
+   "eps": "—",
+   "tasks": "shared-space navigation + interaction",
+   "scenes": "indoor lab",
+   "subj": "40 participants",
+   "embod": "differential-drive + mobile manipulator",
+   "note": "One of very few datasets with millimetre-accurate ground truth for both the human and the robot — the right substrate for measuring who adapts to whom.",
+   "arxiv": "2403.09285",
    "authors": [
-    "Mahsa Ehsanpour",
-    "Fatemeh Saleh",
-    "Silvio Savarese",
-    "Ian Reid",
-    "Hamid Rezatofighi"
+    "Tim Schreiter",
+    "Tiago Rodrigues de Almeida",
+    "Yufei Zhu",
+    "Eduardo Gutierrez Maestro",
+    "Lucas Morillo-Mendez",
+    "Andrey Rudenko",
+    "Luigi Palmieri",
+    "Tomasz P. Kucner",
+    "Martin Magnusson",
+    "Achim J. Lilienthal"
    ],
-   "year": 2021,
-   "date": "2021-06-16",
+   "year": 2024,
+   "date": "2024-03-14",
    "institutions": [],
-   "paper": "https://arxiv.org/abs/2106.08827",
-   "site": "https://jrdb.erc.monash.edu/dataset/activity",
-   "fig": "figures/ds-jrdbact.webp",
-   "figs": [
-    "figures/ds-jrdbact-1.webp",
-    "figures/ds-jrdbact-2.webp"
-   ]
+   "paper": "https://arxiv.org/abs/2403.09285",
+   "site": "http://thor.oru.se/",
+   "fig": "figures/ds-thormagni.webp",
+   "hours_num": 3.5
   },
   {
    "id": "jrdb",
@@ -3612,7 +4080,158 @@
    "figs": [
     "figures/ds-jrdb-1.webp",
     "figures/ds-jrdb-2.webp"
-   ]
+   ],
+   "hours_num": 1.07
+  },
+  {
+   "id": "r2handoversim",
+   "name": "R2HandoverSim",
+   "title": "R2HandoverSim: A Simulation Framework and Benchmark for Robot-to-Human Object Handovers",
+   "cat": "hri",
+   "org": "academia",
+   "one": "The reverse direction: a simulation benchmark for robot-to-human handovers, which had no standard protocol.",
+   "device": "simulation",
+   "modal": "RGB-D, hand + object pose",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "robot-to-human handover",
+   "scenes": "sim",
+   "subj": "—",
+   "embod": "arm + gripper",
+   "note": "",
+   "arxiv": "2606.21011",
+   "authors": [
+    "Hanxin Zhang",
+    "Abdulqader Dhafer",
+    "Hongbiao Dong",
+    "Zhou Daniel Hao"
+   ],
+   "year": 2026,
+   "date": "2026-06-19",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2606.21011",
+   "site": "https://arxiv.org/abs/2606.21011",
+   "fig": "figures/ds-r2handoversim.webp",
+   "figs": [
+    "figures/ds-r2handoversim-1.webp",
+    "figures/ds-r2handoversim-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "dexh2r",
+   "name": "DexH2R",
+   "title": "DexH2R: A Benchmark for Dynamic Dexterous Grasping in Human-to-Robot Handover",
+   "cat": "hri",
+   "org": "academia",
+   "one": "Real-world human-to-robot handovers on a dexterous hand, with dense frame-level annotation.",
+   "device": "dexterous robotic hand + multi-camera",
+   "modal": "RGB-D, hand + object pose, robot state",
+   "hours": "—",
+   "eps": "4,282 handover trials · 456K frames",
+   "tasks": "dynamic handover",
+   "scenes": "lab",
+   "subj": "39 participants · 56 objects",
+   "embod": "dexterous hand",
+   "note": "The largest real handover dataset on a multi-finger hand — the physical-HRI data that barely exists elsewhere.",
+   "arxiv": "2506.23152",
+   "authors": [
+    "Youzhuo Wang",
+    "Jiayi Ye",
+    "Chuyang Xiao",
+    "Yiming Zhong",
+    "Heng Tao",
+    "Hang Yu",
+    "Yumeng Liu",
+    "Jingyi Yu",
+    "Yuexin Ma"
+   ],
+   "year": 2025,
+   "date": "2025-06-29",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2506.23152",
+   "site": "https://arxiv.org/abs/2506.23152",
+   "fig": "figures/ds-dexh2r.webp",
+   "figs": [
+    "figures/ds-dexh2r-1.webp",
+    "figures/ds-dexh2r-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "handoversim",
+   "name": "HandoverSim",
+   "title": "HandoverSim: A Simulation Framework and Benchmark for Human-to-Robot Object Handovers",
+   "cat": "hri",
+   "org": "industry",
+   "one": "Simulation benchmark for human-to-robot handovers, driven by DexYCB human motion.",
+   "device": "simulation (DexYCB-driven human)",
+   "modal": "RGB-D, hand + object pose",
+   "hours": "—",
+   "eps": "1,000 handover scenarios",
+   "tasks": "human-to-robot handover",
+   "scenes": "sim",
+   "subj": "—",
+   "embod": "Panda + gripper",
+   "note": "NVIDIA. The standard evaluation protocol for handovers, and the reason later handover work is comparable at all.",
+   "arxiv": "2205.09747",
+   "authors": [
+    "Yu-Wei Chao",
+    "Chris Paxton",
+    "Yu Xiang",
+    "Wei Yang",
+    "Balakumar Sundaralingam",
+    "Tao Chen",
+    "Adithyavairavan Murali",
+    "Maya Cakmak",
+    "Dieter Fox"
+   ],
+   "year": 2022,
+   "date": "2022-05-19",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2205.09747",
+   "site": "https://handover-sim.github.io/",
+   "fig": "figures/ds-handoversim.webp",
+   "figs": [
+    "figures/ds-handoversim-1.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "jrdbact",
+   "name": "JRDB-Act",
+   "title": "JRDB-Act: A Large-scale Dataset for Spatio-temporal Action, Social Group and Activity Detection",
+   "cat": "hri",
+   "org": "academia",
+   "one": "JRDB extended with spatio-temporal action, social grouping and activity labels.",
+   "device": "JackRabbot",
+   "modal": "360° RGB, 3D, action + social group labels",
+   "hours": "—",
+   "eps": "2.8M action labels",
+   "tasks": "action + social group detection",
+   "scenes": "campus",
+   "subj": "—",
+   "embod": "JackRabbot",
+   "note": "",
+   "arxiv": "2106.08827",
+   "authors": [
+    "Mahsa Ehsanpour",
+    "Fatemeh Saleh",
+    "Silvio Savarese",
+    "Ian Reid",
+    "Hamid Rezatofighi"
+   ],
+   "year": 2021,
+   "date": "2021-06-16",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2106.08827",
+   "site": "https://jrdb.erc.monash.edu/dataset/activity",
+   "fig": "figures/ds-jrdbact.webp",
+   "figs": [
+    "figures/ds-jrdbact-1.webp",
+    "figures/ds-jrdbact-2.webp"
+   ],
+   "hours_num": -1
   },
   {
    "id": "hribench",
@@ -3648,7 +4267,8 @@
    "figs": [
     "figures/ds-hribench-1.webp",
     "figures/ds-hribench-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "humanthor",
@@ -3684,7 +4304,8 @@
    "figs": [
     "figures/ds-humanthor-1.webp",
     "figures/ds-humanthor-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "assembly101",
@@ -3721,7 +4342,8 @@
    "figs": [
     "figures/ds-assembly101-1.webp",
     "figures/ds-assembly101-2.webp"
-   ]
+   ],
+   "hours_num": 513.0
   },
   {
    "id": "howto100m",
@@ -3756,7 +4378,8 @@
    "fig": "figures/ds-howto100m.webp",
    "figs": [
     "figures/ds-howto100m-1.webp"
-   ]
+   ],
+   "hours_num": 15.0
   },
   {
    "id": "ssv2",
@@ -3799,7 +4422,44 @@
    "fig": "figures/ds-ssv2.webp",
    "figs": [
     "figures/ds-ssv2-1.webp"
-   ]
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "amass",
+   "name": "AMASS",
+   "title": "AMASS: Archive of Motion Capture as Surface Shapes",
+   "cat": "motion",
+   "org": "academia",
+   "one": "Fifteen optical mocap datasets unified into one SMPL body parameterisation — the backbone of humanoid motion imitation.",
+   "device": "optical marker-based mocap (15 sources)",
+   "modal": "SMPL body pose + shape",
+   "hours": "40+ h",
+   "eps": "11,000+ motions",
+   "tasks": "—",
+   "scenes": "mocap studios",
+   "subj": "300+ subjects",
+   "embod": "human (retargetable)",
+   "note": "Everything from DeepMimic descendants through PHC, H2O and HOVER is trained on retargeted AMASS.",
+   "arxiv": "1904.03278",
+   "authors": [
+    "Naureen Mahmood",
+    "Nima Ghorbani",
+    "Nikolaus F. Troje",
+    "Gerard Pons-Moll",
+    "Michael J. Black"
+   ],
+   "year": 2019,
+   "date": "2019-04-05",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/1904.03278",
+   "site": "https://amass.is.tue.mpg.de/",
+   "fig": "figures/ds-amass.webp",
+   "figs": [
+    "figures/ds-amass-1.webp",
+    "figures/ds-amass-2.webp"
+   ],
+   "hours_num": 40.0
   },
   {
    "id": "humanoidx",
@@ -3839,7 +4499,8 @@
    "figs": [
     "figures/ds-humanoidx-1.webp",
     "figures/ds-humanoidx-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "motionx",
@@ -3876,42 +4537,8 @@
    "figs": [
     "figures/ds-motionx-1.webp",
     "figures/ds-motionx-2.webp"
-   ]
-  },
-  {
-   "id": "amass",
-   "name": "AMASS",
-   "title": "AMASS: Archive of Motion Capture as Surface Shapes",
-   "cat": "motion",
-   "org": "academia",
-   "one": "Fifteen optical mocap datasets unified into one SMPL body parameterisation — the backbone of humanoid motion imitation.",
-   "device": "optical marker-based mocap (15 sources)",
-   "modal": "SMPL body pose + shape",
-   "hours": "40+ h",
-   "eps": "11,000+ motions",
-   "tasks": "—",
-   "scenes": "mocap studios",
-   "subj": "300+ subjects",
-   "embod": "human (retargetable)",
-   "note": "Everything from DeepMimic descendants through PHC, H2O and HOVER is trained on retargeted AMASS.",
-   "arxiv": "1904.03278",
-   "authors": [
-    "Naureen Mahmood",
-    "Nima Ghorbani",
-    "Nikolaus F. Troje",
-    "Gerard Pons-Moll",
-    "Michael J. Black"
    ],
-   "year": 2019,
-   "date": "2019-04-05",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/1904.03278",
-   "site": "https://amass.is.tue.mpg.de/",
-   "fig": "figures/ds-amass.webp",
-   "figs": [
-    "figures/ds-amass-1.webp",
-    "figures/ds-amass-2.webp"
-   ]
+   "hours_num": -1
   },
   {
    "id": "roboverse",
@@ -3978,7 +4605,8 @@
    "figs": [
     "figures/ds-roboverse-1.webp",
     "figures/ds-roboverse-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "behavior1k",
@@ -4043,7 +4671,8 @@
    "figs": [
     "figures/ds-behavior1k-1.webp",
     "figures/ds-behavior1k-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "humanoidbench",
@@ -4080,7 +4709,8 @@
    "figs": [
     "figures/ds-humanoidbench-1.webp",
     "figures/ds-humanoidbench-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "maniskill3",
@@ -4118,7 +4748,8 @@
    "figs": [
     "figures/ds-maniskill3-1.webp",
     "figures/ds-maniskill3-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "robocasa",
@@ -4159,7 +4790,8 @@
    "figs": [
     "figures/ds-robocasa-1.webp",
     "figures/ds-robocasa-2.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "libero",
@@ -4197,7 +4829,8 @@
    "fig": "figures/ds-libero.webp",
    "figs": [
     "figures/ds-libero-1.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "calvin",
@@ -4230,7 +4863,8 @@
    "fig": "figures/ds-calvin.webp",
    "figs": [
     "figures/ds-calvin-1.webp"
-   ]
+   ],
+   "hours_num": -1
   },
   {
    "id": "metaworld",
@@ -4269,7 +4903,8 @@
    "fig": "figures/ds-metaworld.webp",
    "figs": [
     "figures/ds-metaworld-1.webp"
-   ]
+   ],
+   "hours_num": -1
   }
  ]
 }
