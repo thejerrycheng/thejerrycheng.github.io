@@ -5,10 +5,19 @@ import json, os, re, sys
 HERE=os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0,HERE)
 ROOT=os.path.dirname(HERE)
 import reviews_a, reviews_b, reviews_c, reviews_d
+import idea_diagrams
 import schema
 
 R={}
 for m in (reviews_a, reviews_b, reviews_c, reviews_d): R.update(m.R)
+
+# attach a pipeline diagram to every idea that does not already hand-author one
+ndia = 0
+for k, d in idea_diagrams.D.items():
+    if k in R and not R[k].get("diagram"):
+        R[k]["diagram"] = d; ndia += 1
+print(f"pipeline diagrams attached : {ndia} generated + "
+      f"{sum(1 for v in R.values() if v.get('diagram')) - ndia} hand-authored")
 
 db=json.load(open(os.path.join(ROOT,"papers_data.json")))
 ids={p["id"] for p in db["papers"]}

@@ -238,8 +238,16 @@ R["codesign-dog-rl"] = dict(
   """<b>Real-world morphology change.</b> [[dyret]], and [[text2robot]] for the fast generative path to a
   printable quadruped.""",
  ],
- gap="""<p>Given [[s-cheetah]], the open question is no longer <em>whether</em> a spine helps but <b>which
- spine</b> — and that is exactly where your framing has purchase.</p>
+ gap="""<p>Three things are open, and you can take all three. Together they make a far stronger project than
+ any one of them alone.</p>
+ <p><b>1. Nobody has galloped an actuated multi-DOF spine on real hardware.</b> This is the headline, and it
+ exists because [[s-cheetah]] is simulation-only — it says so: <em>“this study currently focuses on the design
+ and simulation phases prior to hardware deployment”</em>. A serial 3-DOF trunk is precisely where sim-to-real
+ should break: backlash accumulating through three series joints, structural compliance under gallop-scale
+ loads, torque density at the claimed 50 N·m, and — the one that usually decides it — the mass penalty of three
+ trunk actuators on a robot whose entire purpose is acceleration. Build it, measure it, and report how much of
+ the simulated advantage survives fabrication. That number is a contribution whichever way it comes out, and it
+ is the same “design sim-to-real gap” the co-design literature has never reported.</p>
  <p><b>2. Co-design the whole kinematic chain, not just the spine.</b> Link-length optimization on its own is
  standard co-design — [[transform2act]], [[derl]] and [[robogrammar]] all do it. A multi-DOF spine on its own is
  now S-Cheetah's. What nobody has done is optimize <b>segment lengths jointly with spine DOF count, joint
