@@ -426,6 +426,7 @@ html.js .cover-photo { animation: rise 1s var(--ease-out) .25s both; }
    HOME — about panel, the MABEL feature, sneak peeks
    ============================================================================= */
 .about-panel .lead { font-size: 16.5px; line-height: 1.62; }
+.about-panel .lead + .lead { margin-top: 14px; }
 .about-panel .lead a, .vision a, .lead a { color: var(--link); font-weight: 600; text-decoration: none; }
 .about-panel .lead a:hover, .vision a:hover, .lead a:hover { text-decoration: underline; }
 .subhead { font-family: var(--font-comic); font-size: 19px; letter-spacing: .1em; text-transform: uppercase; color: var(--imp); margin: 26px 0 12px; }
