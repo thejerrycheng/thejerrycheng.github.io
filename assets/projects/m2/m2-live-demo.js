@@ -141,6 +141,7 @@
   }
   function onMessage(data) {
     if (data.type === 'hello') {
+      if (data.controller?.grasp_model !== 'contact') { disconnect('Physical-contact controller unavailable.'); return; }
       if (data.protocol !== 1) { disconnect('The demo server needs an interface update.'); return; }
       connected = true; connecting = false; clearTimeout(connectTimer);
       role = data.role === 'controller' ? 'controller' : 'spectator';
@@ -256,6 +257,7 @@
       const endpoint = await response.json();
       if (identity !== generation) return;
       if (!endpoint.enabled || !endpoint.url) throw new Error(endpoint.message || 'The simulation server is offline. Recorded trials remain available below.');
+      if (endpoint.grasp_model !== 'contact') throw new Error('Physical-contact controller unavailable.');
       if (endpoint.schema_version !== 1) throw new Error('The live demo configuration needs an update.');
       const url = new URL(endpoint.url);
       const local = ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
