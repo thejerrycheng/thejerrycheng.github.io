@@ -1,0 +1,7 @@
+#complex-planner .complex-planner-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 22px; align-items: start; }
+#complex-planner video { width: 100%; display: block; border-radius: 12px; background: #d8d2c4; }
+#complex-planner-plot { min-height: 390px; border: 1px solid color-mix(in srgb, currentColor 16%, transparent); border-radius: 12px; }
+#complex-planner-scenes { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+#complex-planner-scenes button { border: 1px solid color-mix(in srgb, currentColor 24%, transparent); border-radius: 999px; background: transparent; color: inherit; padding: 8px 12px; cursor: pointer; }
+#complex-planner-scenes button[aria-pressed="true"] { background: #e89916; border-color: #e89916; color: #20170b; }
+@media (max-width: 760px) { #complex-planner .complex-planner-grid { grid-template-columns: 1fr; } #complex-planner-plot { min-height: 300px; } }
