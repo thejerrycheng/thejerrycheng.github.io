@@ -175,28 +175,33 @@ IDEAS = [
               "in-hand rotation is simply not diagnosable. Give it contact and trajectory <b>traces</b> — "
               "the thumb lost purchase at 40% of the rollout — and measure agent-iterations-to-target against "
               "a human researcher on the same task."),
- dict(id="codesign-dog-rl", title="Co-design of a fast quadruped with a flexible spine, from dog video",
+ dict(id="codesign-dog-rl", title="Co-design of a fast quadruped with a flexible spine — and build it",
       merged=["Codesign a dog that run fast with rl in the loop - completely end to end",
-              "Add a 3-DOF torso/spine for a flexible body; co-design the kinematic chain from real dog "
-              "running videos"],
+              "Add a 3-DOF torso/spine for a flexible body; co-design the kinematic chain lengths from real "
+              "dog running videos; build the hardware"],
       project="", trees=["systems","rl"],
-      pitch="Link lengths, actuator choice, and a multi-DOF articulated spine optimized together with the "
-            "control policy — with the kinematic chain derived from measured dog locomotion rather than "
-            "guessed.",
-      novelty="The premise is already confirmed: <b>S-Cheetah</b> (May 2026) built a 3-DOF bio-inspired active "
-              "spine and showed it comprehensively improves agility — 6.9 m/s on a rotary gallop, 7.2 rad/s "
-              "turning, and emergent aerial self-righting. So 'add a spine' is no longer the contribution, and "
-              "the follow-up work has already found the mechanism: it is the <b>phase relationship between "
-              "spinal motion and limb support</b>, with asymmetric stiffness, that sets high-speed "
-              "performance.<br><br>What nobody has done is the part you named: <b>derive the spine's structure "
-              "from the animal instead of assuming it</b>. Every spined quadruped in the literature has a "
-              "hand-chosen DOF count, joint placement and stiffness. DogMo now provides 1,200 multi-view RGB-D "
-              "sequences of 10 real dogs, and BARC/CORGI/Animal-Avatars reconstruct 3D shape and motion from "
-              "ordinary footage. That makes a genuinely new question answerable: fit a variable-DOF trunk model "
-              "to measured canine motion, ask how many joints and what stiffness the data actually supports, "
-              "and co-design the robot against <em>that</em> rather than against intuition. Two falsifiable "
-              "outputs — the DOF count the data justifies (is 3 right, or is it 2, or 5?), and whether a "
-              "data-derived spine beats S-Cheetah's hand-designed one at matched mass and actuator budget."),
+      pitch="Segment lengths, actuator choice and a multi-DOF articulated spine optimized jointly with the "
+            "control policy — grounded in measured dog locomotion, and then actually fabricated.",
+      novelty="The nearest work, <b>S-Cheetah</b> (May 2026), is <b>simulation-only</b> — it says so: "
+              "\u201cthis study currently focuses on the design and simulation phases prior to hardware "
+              "deployment\u201d. Its 6.9 m/s and 7.2 rad/s are Isaac Sim numbers, and its 20 kg / 625 mm / "
+              "50 N\u00b7m spine figures are design parameters, not measurements. That leaves three distinct "
+              "claims open, and you can take all three.<br><br><b>1. Build it.</b> No actuated multi-DOF "
+              "spine has been galloped on real hardware. A serial 3-DOF spine is exactly where sim-to-real "
+              "breaks — backlash, structural compliance under gallop loads, torque density at 50 N\u00b7m, and "
+              "the mass penalty of three trunk actuators on a running robot. Reporting <em>how much of the "
+              "simulated advantage survives fabrication</em> is a real result whichever way it "
+              "comes out.<br><br><b>2. Co-design the chain, not just the spine.</b> Link-length optimization "
+              "alone is standard co-design; a multi-DOF spine alone is now S-Cheetah's. Nobody has optimized "
+              "<b>segment lengths jointly with spine DOF count, joint placement and stiffness</b> — and the "
+              "coupling is real, because the follow-up work shows performance is set by the "
+              "<em>spine\u2013limb phase relationship</em>, which depends on both limb and trunk "
+              "geometry.<br><br><b>3. Ground it in the animal.</b> Every spined quadruped has hand-chosen "
+              "proportions. DogMo now gives 1,200 multi-view RGB-D sequences from 10 real dogs, and "
+              "BARC/CORGI/Animal-Avatars recover shape and motion from ordinary footage — so limb ratios and "
+              "trunk bending become measurements. Two falsifiable outputs: the DOF count and segment ratios "
+              "the data actually supports, and a head-to-head against a hand-designed spine at matched mass "
+              "and actuator budget."),
  dict(id="agentic-physical", title="Agentic physical robot",
       merged=["Agentic physical robot"], project="iris", trees=["il","systems"],
       pitch="The software-agent loop — plan, call skills, observe, replan — running on a physical body.",

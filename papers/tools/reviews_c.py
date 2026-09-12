@@ -198,11 +198,18 @@ R["codesign-dog-rl"] = dict(
  length.</p>
  <p>And the framing you landed on — <em>derive the kinematic chain from real dog footage</em> — is what turns
  this from a co-design exercise into a question about animals that a robot can answer.</p>""",
- state="""<p><b>The spine question has just been answered empirically.</b> [[s-cheetah]] (May 2026) is a
- quadruped with a bio-inspired serial <b>3-DOF active spine</b> giving tri-axial rotation, trained with RL:
- 6.9 m/s peak speed on a rotary G2 gallop, 7.2 rad/s in-place turning, and emergent feline aerial
- self-righting. Its conclusion is unambiguous — the 3-DOF spine comprehensively improves agility. So the
- premise of your idea is confirmed rather than open, and 'add a spine' is no longer a contribution.</p>
+ state="""<p><b>The nearest work is [[s-cheetah]] (May 2026) — and it is simulation-only.</b> It presents a quadruped
+ with a bio-inspired serial 3-DOF active spine giving tri-axial rotation, trained with RL, reporting 6.9 m/s on
+ a rotary G2 gallop, 7.2 rad/s in-place turning, and emergent feline aerial self-righting. But the paper states
+ plainly that it <em>“currently focuses on the design and simulation phases prior to hardware deployment”</em>:
+ training is in Isaac Sim with a MuJoCo cross-check, both headline numbers are simulated, and the 20 kg /
+ 625 mm / 33.5 N·m leg / 50 N·m spine figures are <b>design parameters, not measurements</b>.</p>
+ <p>That distinction matters enormously for what is left to do. S-Cheetah establishes the <em>hypothesis</em>
+ that a 3-DOF spine helps, at simulated scale, with hand-chosen proportions. It does not establish that the
+ advantage survives fabrication — and 6.9 m/s is fast enough to be suspicious: MIT Cheetah 2 reached roughly
+ 6 m/s on real hardware and Cheetah 3 about 3 m/s, both without an actuated trunk. Free-fall aerial righting
+ from arbitrary orientations is likewise exactly the kind of behaviour that depends on inertia and actuator
+ bandwidth being modelled correctly.</p>
  <p><b>The mechanism behind it has also been identified.</b> [[spine-phase]] shows that high-speed running
  performance is set by the <b>phase relationship between spinal motion and limb support</b>, under asymmetric
  spinal stiffness — not by spinal range of motion. That is a gift for a co-design study, because it tells you
@@ -233,12 +240,20 @@ R["codesign-dog-rl"] = dict(
  ],
  gap="""<p>Given [[s-cheetah]], the open question is no longer <em>whether</em> a spine helps but <b>which
  spine</b> — and that is exactly where your framing has purchase.</p>
- <p><b>Derive the trunk from the animal, do not assume it.</b> Every spined quadruped in the literature has a
+ <p><b>2. Co-design the whole kinematic chain, not just the spine.</b> Link-length optimization on its own is
+ standard co-design — [[transform2act]], [[derl]] and [[robogrammar]] all do it. A multi-DOF spine on its own is
+ now S-Cheetah's. What nobody has done is optimize <b>segment lengths jointly with spine DOF count, joint
+ placement and stiffness</b>, and the coupling is not incidental: [[spine-phase]] shows performance is set by
+ the phase relationship between spinal motion and limb support, which is a function of <em>both</em> trunk and
+ limb geometry. Optimizing one with the other fixed is optimizing a projection of the real problem. This is
+ also where [[meta-rl-legged]]'s design-conditioned policy stops being a convenience and becomes necessary —
+ the joint space is far larger.</p>
+ <p><b>3. Derive the trunk from the animal, do not assume it.</b> Every spined quadruped in the literature has a
  hand-chosen DOF count, hand-chosen joint placement and hand-tuned stiffness. [[s-cheetah]] picked three DOF
  because a cheetah's spine rotates about three axes; that is a reasonable argument, not a measurement.
  [[dogmo]] now makes the measurement possible: fit a variable-DOF trunk model to real canine motion and ask how
  many joints the data actually supports, where they sit, and what stiffness profile reproduces the observed
- bending. Then co-design the robot against that.</p>
+ bending — and take the limb segment ratios from the same footage. Then co-design against that.</p>
  <p>Two falsifiable outputs, both novel:</p>
  <ul>
  <li><b>The DOF count the data justifies.</b> Is three right? Model selection on real dog motion will give a
@@ -248,9 +263,9 @@ R["codesign-dog-rl"] = dict(
  robot and race them. If the derived one wins, biomimetic measurement beats intuition; if it does not, that is
  an equally interesting and much-needed negative result.</li>
  </ul>
- <p>And the claim that carries over from the original framing: <b>report the design sim-to-real gap</b>. How
- much of a co-designed morphology's simulated advantage survives fabrication, decomposed into actuator,
- structural compliance and contact. That number does not exist in the literature.</p>""",
+ <p>A note on scope, because all three at once is a lot: the hardware claim (1) is the one that cannot be
+ scooped by a simulation paper, and it is the one that makes (2) and (3) credible rather than another
+ simulated morphology search. If you only do one, do that one.</p>""",
  plan=[
   """Start from [[dogmo]]. Fit a trunk model with a variable number of joints to the measured motion and do
   honest model selection — this is a week of work and it determines the whole design.""",
@@ -261,10 +276,18 @@ R["codesign-dog-rl"] = dict(
   parallel training. Otherwise every design evaluation costs an RL run.""",
   """Optimize against [[spine-phase]]'s finding — make the spine-limb phase relationship an explicit term
   rather than hoping RL discovers it.""",
-  """Build two: the data-derived spine and an [[s-cheetah]]-style hand-designed 3-DOF one, matched on mass and
-  actuators. Measure top speed, turning rate, and cost of transport.""",
-  """Report the design sim-to-real gap with the discrepancy decomposed. And report the aerial-righting
-  behaviour — [[s-cheetah]] found it emerges, which is a nice reproducibility check.""",
+  """<b>Build it, and build small.</b> S-Cheetah's design point is 20 kg and 625 mm; a 5\u20138 kg version on
+  off-the-shelf quasi-direct-drive actuators ([[mit-cheetah]] lineage, or the [[berkeley-humanoid-lite]]
+  printed-gearbox approach) is far more iterable and still galloping-capable. Design the spine for
+  <em>serviceability</em> — you will be replacing it.""",
+  """Instrument the trunk from the start: joint torque, deflection under load, and a way to lock the spine
+  rigid. A lockable spine gives you the cleanest possible ablation on the same hardware — same mass, same
+  actuators, spine on versus spine off.""",
+  """Build two spines if you can: the data-derived one and an [[s-cheetah]]-style hand-designed 3-DOF one,
+  matched on mass and actuators. Measure top speed, turning rate, and cost of transport.""",
+  """<b>Report the design sim-to-real gap</b> with the discrepancy decomposed into actuator bandwidth,
+  structural compliance and contact. Also try to reproduce the simulated aerial-righting behaviour — it is a
+  sharp test of whether the inertia model was right, and a clean negative result if it is not.""",
  ],
  risks=[
   """<b>The optimizer exploits the simulator.</b> Guaranteed at some level, and a compliant spine gives it more
@@ -278,6 +301,13 @@ R["codesign-dog-rl"] = dict(
   for a third of the cost.""",
   """<b>Fabrication is slow.</b> This is what turns a six-month project into eighteen. Printable, off-the-shelf
   actuators, and [[text2robot]]'s pipeline if you want a fast first article.""",
+  """<b>The simulated advantage may not survive.</b> Three series joints accumulate backlash, and a compliant
+  trunk under gallop loads is the worst case for a rigid-body simulator. Treat \u201cthe spine does not help on
+  real hardware at this scale\u201d as a legitimate outcome and design the experiment so that result is
+  publishable \u2014 the lockable-spine ablation is what makes it so.""",
+  """<b>Someone else builds it first.</b> S-Cheetah's authors say hardware deployment is future work, so
+  assume they are doing it. Your differentiators are the data-derived structure and the joint
+  length-plus-spine co-design, neither of which they have signalled.""",
  ],
  read=[
   dict(id="s-cheetah", why="Read first. A 3-DOF active spine, RL-trained, 6.9 m/s — your premise, already built and measured."),

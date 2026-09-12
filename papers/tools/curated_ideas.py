@@ -204,10 +204,13 @@ NP("robosen","Robosen auto-converting Transformers (Optimus Prime, Grimlock)",
 SPINE = {
 "2605.27909":("s-cheetah","systems","codesign","3-DOF active spine, rotary gallop, RL locomotion","hardware, RL",
   "codesign-dog-rl","",3,
-  "A quadruped with a bio-inspired serial <b>3-DOF active spine</b> giving tri-axial rotation, trained with RL: "
-  "6.9 m/s peak speed on a rotary G2 gallop, 7.2 rad/s in-place turning, and emergent feline aerial self-righting. "
-  "This is the flexible-torso idea, built and measured, in May 2026. It also settles the premise — the spine does "
-  "help, comprehensively — so the open question is no longer <em>whether</em> but <em>which</em> spine.",
+  "A quadruped with a bio-inspired serial <b>3-DOF active spine</b> giving tri-axial rotation, trained with RL, "
+  "reporting 6.9 m/s on a rotary G2 gallop, 7.2 rad/s in-place turning, and emergent feline aerial self-righting. "
+  "<b>Important caveat: it is simulation-only.</b> The paper states it \u201ccurrently focuses on the design and "
+  "simulation phases prior to hardware deployment\u201d; both headline numbers were measured in Isaac Sim and then "
+  "checked in MuJoCo, and the 20 kg / 625 mm / 33.5 N\u00b7m leg / 50 N\u00b7m spine figures are design parameters "
+  "rather than measurements. So it establishes the <em>hypothesis</em> that a 3-DOF spine helps, at simulated scale, "
+  "and leaves the hardware, the sim-to-real gap, and the choice of spine structure entirely open.",
   "twisting-waist,spine-phase,mit-cheetah,dyret,transform2act"),
 "2410.05884":("twisting-waist","systems","codesign","twisting waist, quadruped flexibility","hardware",
   "codesign-dog-rl","",2,

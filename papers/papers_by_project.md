@@ -843,7 +843,7 @@ _525 papers · generated 2026-09-12_
   - [Decentralized LLM-Driven Coordination of Acoustic Robots for Contactless Object Manipulation](https://arxiv.org/abs/2605.29378)  `arXiv 2026`
   - [RoboReact: Agentic Skill Distillation from Generated Egocentric Videos for Generalizable Whole-Body Manipulation](https://arxiv.org/abs/2608.03387)  `IEEE Humanoids 2026`
   - [Task-Oriented Robot-Human Handovers on Legged Manipulators](https://arxiv.org/abs/2602.05760)  `arXiv 2026`
-- Co-design of a fast quadruped with a flexible spine, from dog video
+- Co-design of a fast quadruped with a flexible spine — and build it
   - [Phase Relationship between Spinal Motion and Limb Support Determines High-speed Running Performance in a Cheetah Model with Asymmetric Spinal Stiffness](https://arxiv.org/abs/2604.00329)  `arXiv 2026`
   - [S-Cheetah: A Novel Quadrupedal Robot with a 3-DOF Active Spine Learning Agile Locomotion](https://arxiv.org/abs/2605.27909)  `arXiv 2026`
   - [X2-N: A Transformable Wheel-legged Humanoid Robot with Dual-mode Locomotion and Manipulation](https://arxiv.org/abs/2604.21541)  `arXiv 2026`
