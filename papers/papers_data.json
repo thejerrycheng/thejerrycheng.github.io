@@ -1,11 +1,11 @@
 {
  "meta": {
-  "generated": "2026-09-11",
+  "generated": "2026-09-12",
   "counts": {
-   "total": 462,
-   "curated": 274,
-   "library": 199,
-   "attached": 61,
+   "total": 508,
+   "curated": 322,
+   "library": 197,
+   "attached": 63,
    "dropped": 35
   },
   "trees": {
@@ -221,7 +221,8 @@
     "trees": [
      "rl"
     ],
-    "pitch": "Two or more mobile manipulators that plan and act as one system — cooperative transport, role emergence, decentralized execution under partial observability."
+    "pitch": "Two mobile manipulators carrying one rigid object, where the coupling — not the navigation — is the problem.",
+    "novelty": "Report the <b>internal wrench</b>, not just task success. Every learned cooperative-transport result reports whether the object arrived; none reports the squeeze the robots put on it when their state estimates disagree. Make that the headline metric, and show learned policies degrade more gracefully than MPC under injected pose drift."
    },
    {
     "id": "tactile-wm",
@@ -229,12 +230,13 @@
     "merged": [
      "Tactile robot learning world model"
     ],
-    "project": "geodex",
+    "project": "wam-tactile",
     "trees": [
      "il",
      "rl"
     ],
-    "pitch": "A world model whose observation space includes touch, so the prediction carries contact events and slip — the modality vision fundamentally cannot see."
+    "pitch": "A world model whose observation stream carries contact, so the prediction contains slip and jamming rather than only what a camera can see.",
+    "novelty": "Dream-Tac and the 2026 tactile-WAM cluster took the framing, but all of them evaluate on task success and all run on grippers. The claim left is <b>slip-prediction lead time on a 20+ DOF hand</b> — how many milliseconds before failure does the model see it coming, in the regime where the hand occludes its own contacts."
    },
    {
     "id": "ego-dex",
@@ -243,11 +245,12 @@
      "Ego centric video learning for dexterity",
      "Learn from ego centric view data"
     ],
-    "project": "geodex",
+    "project": "r2s2r",
     "trees": [
      "il"
     ],
-    "pitch": "Use first-person human hand video at internet scale as the pretraining substrate for dexterous policies, closing the hand-embodiment gap rather than sidestepping it."
+    "pitch": "First-person human hand video as the pretraining substrate for dexterous policies.",
+    "novelty": "EgoScale already measured the scaling law, so raw scale is settled. What nobody has done is hold total hours <b>fixed</b> and vary only one axis at a time — scene diversity, annotation depth, or transfer mechanism (exoskeleton adapter vs pixel inpainting vs shared representation) — on one hand and one task set. That ablation tells the field what kind of hours to buy, which is the question a million-hour release actually raised."
    },
    {
     "id": "real2sim2real-ego",
@@ -256,12 +259,13 @@
      "Real to sim to real using ego centric views and rl",
      "Real to sim to real"
     ],
-    "project": "geodex",
+    "project": "r2s2r",
     "trees": [
      "rl",
      "systems"
     ],
-    "pitch": "Reconstruct the scene from egocentric capture, rebuild it as a simulatable asset, train with RL inside it, and deploy back — with the ego view as the shared interface."
+    "pitch": "Capture a scene egocentrically, rebuild it as something a simulator can step, train inside it, and deploy back.",
+    "novelty": "EgoEngine and Video2Sim2Real both build the loop and run it <b>once</b>. Close it: feed the real-world failures back into the reconstruction and the dynamics model, iterate, and report geometry error, dynamics gap and task success as functions of iteration count. Second claim: how many reconstructed scenes before the policy stops needing a new one."
    },
    {
     "id": "rl-post-training",
@@ -274,7 +278,8 @@
      "rl",
      "il"
     ],
-    "pitch": "A pretrained VLA is a strong prior and a mediocre policy. RL post-training is the step that converts broad competence into task reliability."
+    "pitch": "Converting a pretrained VLA's broad competence into task reliability with on-robot RL.",
+    "novelty": "The methods have converged; the comparison has not. Nobody has answered the practitioner's question: <b>given one hour of robot time</b>, does residual RL, interactive post-training, or human-in-the-loop buy the most reliability — and on which task properties. Budget-matched, one base policy, reliability plotted against minutes rather than epochs."
    },
    {
     "id": "codesign-dex-agentic",
@@ -286,7 +291,8 @@
     "trees": [
      "systems"
     ],
-    "pitch": "Let an LLM agent drive the morphology search loop — propose a hand, build it in sim, train a policy, read the result, revise the design."
+    "pitch": "An agent that proposes a morphology, builds it in simulation, trains a policy, reads the result and revises.",
+    "novelty": "All published co-design optimizes locomotion or simple grippers, because the dexterity objective is contact behaviour — expensive, badly differentiable, and not summarised by a scalar. Run the loop on a <b>multi-finger hand with in-hand reorientation as the objective</b>, let the agent propose only structural changes while gradients handle the continuous parameters, and build the winner. An unbuilt co-design result is a simulation paper."
    },
    {
     "id": "auto-research-dex",
@@ -299,7 +305,8 @@
      "rl",
      "systems"
     ],
-    "pitch": "Point an agent at a dexterous task and let it run the research loop itself — write the reward, launch the training, read the curves, diagnose the failure, try again. The one on your list that is genuinely runnable this week."
+    "pitch": "Point an agent at a dexterous task and let it write the reward, launch the run, read the result and try again.",
+    "novelty": "HARBOR automated the simulated workflow, so the loop itself is taken. The gap is <b>diagnosis</b>: existing systems feed the agent scalar reward curves, from which a failed in-hand rotation is simply not diagnosable. Give it contact and trajectory <b>traces</b> — the thumb lost purchase at 40% of the rollout — and measure agent-iterations-to-target against a human researcher on the same task."
    },
    {
     "id": "codesign-dog-rl",
@@ -312,7 +319,8 @@
      "systems",
      "rl"
     ],
-    "pitch": "Joint optimization of link lengths, gear ratios, actuator choice and control policy, with top speed as the single end-to-end objective."
+    "pitch": "Link lengths, gear ratios, actuator choice and control policy optimized together, with top speed as the single objective.",
+    "novelty": "Co-design papers report simulated performance and stop. Build the winner and report the <b>design sim-to-real gap</b> — how much of a co-designed morphology's simulated advantage survives fabrication, decomposed into actuator, structural compliance and contact. That number does not exist in the literature and everyone doing co-design needs it."
    },
    {
     "id": "agentic-physical",
@@ -325,7 +333,8 @@
      "il",
      "systems"
     ],
-    "pitch": "An agent loop that plans, calls skills, observes, and replans on real hardware — the software-agent stack pointed at a physical body."
+    "pitch": "The software-agent loop — plan, call skills, observe, replan — running on a physical body.",
+    "novelty": "Dual-system VLAs already reason and act; what none of them do is <b>remember across attempts</b>. A robot that knows this drawer sticks, this mug is heavier than it looks, and that the last three grasps failed the same way, and conditions on that. The evaluation is a curve no current system has a positive slope on: success rate as a function of attempt number on the same task instance."
    },
    {
     "id": "rl-harness",
@@ -338,7 +347,8 @@
      "rl",
      "systems"
     ],
-    "pitch": "Build the real-world equivalent of an RL harness: a standing set of physical tasks with automatic reset, scoring and logging, so real-robot RL can actually be run at scale."
+    "pitch": "A standing set of physical tasks with automatic reset, scoring and logging, so real-robot RL can be run at scale.",
+    "novelty": "HARBOR automated the <b>simulated</b> workflow. The real-world harness is still bespoke per lab, and SERL is the only shared artefact. Build and release the physical version — printable fixtures, validated reward detection, and a <b>72-hour unattended failure log</b>, which is a more useful contribution than the learning curves."
    },
    {
     "id": "wam-umi-gloves",
@@ -347,11 +357,12 @@
      "World action model from UMI gloves",
      "UMI and world modeling - scale up"
     ],
-    "project": "mabel",
+    "project": "wam-tactile",
     "trees": [
      "il"
     ],
-    "pitch": "Scale UMI-style handheld/glove capture into the data source for a joint world-action model — predict the future and the action that causes it, from in-the-wild human data."
+    "pitch": "Scale UMI-style handheld capture into the data source for a joint world-action model.",
+    "novelty": "Hours are no longer scarce — Egocentric-1M has a million of them. UMI's remaining edge is a <b>physically grounded action track recorded at capture time</b> rather than retargeted afterwards. The experiment: same model, same hours, recorded actions vs Ego2Robot-style pseudo-actions. If recorded actions win, that is the argument for the whole UMI programme; if they do not, that is worth knowing before building more grippers."
    },
    {
     "id": "hand-22dof",
@@ -363,7 +374,8 @@
     "trees": [
      "systems"
     ],
-    "pitch": "A reproducible, high-DOF tendon hand in the spirit of the 1X Redwood hand — published BOM, routing, and a working learning stack on top."
+    "pitch": "A reproducible high-DOF tendon hand with a published BOM and a working learning stack.",
+    "novelty": "RUKA-v2 and the 21-DOF MM-Hand exist, so DOF count is not a contribution. Three things still are: <b>durability as a measured quantity</b> (cycles to tendon replacement, drift after N cycles, time to repair — only ORCA reports anything), <b>full-coverage touch designed in rather than retrofitted</b>, and a <b>MuJoCo model validated against measured tendon behaviour under load</b>. Build it as infrastructure; publish it when it has one of those."
    },
    {
     "id": "learned-retargeting",
@@ -375,7 +387,8 @@
     "trees": [
      "il"
     ],
-    "pitch": "Retargeting that optimizes for task-relevant contact (fingertips actually touching, box actually held) rather than joint-angle or keypoint distance."
+    "pitch": "Retargeting that optimizes for task-relevant contact rather than joint-angle or keypoint distance.",
+    "novelty": "C2Dex, GMR and Human2Humanoid now bound the obvious framings. What is missing is a <b>benchmark</b>: retargeting is always evaluated through downstream policy success, which confounds it with policy quality. Measure it directly — contact-set agreement, force-closure preservation, fingertip-contact recall against demonstrations with instrumented ground truth. Then the second claim: retargeting objectives <b>conditioned on the task segment</b>, since a precision pinch and a power grasp do not want the same cost function."
    },
    {
     "id": "mobile-dex-umi",
@@ -388,7 +401,8 @@
      "systems",
      "il"
     ],
-    "pitch": "A dexterous-hand UMI variant on a mobile base — the low-hanging combination of in-the-wild capture, multi-finger hardware, and whole-body reach."
+    "pitch": "A dexterous-hand UMI on a mobile base — in-the-wild capture, multi-finger hardware, whole-body reach.",
+    "novelty": "Every dexterous-UMI paper evaluates on a static arm; every mobile-manipulation paper uses a gripper. Nobody has closed the combination. The claim: <b>in-the-wild multi-finger demonstrations, collected with no robot present, executed on a mobile base in scenes the robot has never entered</b> — with Mobile ALOHA's co-training ablation rerun for dexterity, since the mobile data requirement may turn out to be small."
    },
    {
     "id": "wm-residual",
@@ -396,12 +410,13 @@
     "merged": [
      "World modeling with residual learning - giving physics or robot model or mujoco physics to speed up learning"
     ],
-    "project": "",
+    "project": "wam-tactile",
     "trees": [
      "il",
      "rl"
     ],
-    "pitch": "Give the world model a simulator or analytic robot model as its backbone and learn only the residual — far fewer samples, and physically plausible rollouts by construction."
+    "pitch": "Give the world model a simulator as its backbone and learn only the residual.",
+    "novelty": "Residual physics corrects a simulator to help a <b>policy</b> (actuator networks, ASAP's delta-action, DexNDM). World models learn dynamics from scratch. Nobody has built the hybrid: roll out MuJoCo, predict the residual, train the agent inside the sum. Two falsifiable claims — sample complexity at matched final performance, and <b>rollout divergence versus horizon</b>, where a physics-backed model should stay plausible far longer."
    },
    {
     "id": "auto-research-wm",
@@ -414,7 +429,8 @@
      "il",
      "systems"
     ],
-    "pitch": "An agent that forms hypotheses, tests them inside a learned world model, and only spends real-robot time on the survivors."
+    "pitch": "An agent that tests hypotheses inside a learned world model and spends real-robot time only on the survivors.",
+    "novelty": "The two literatures — agents that run experiments, and agents trained inside world models — do not cite each other. Join them and measure the only thing that matters: <b>robot-hours to reach the same conclusion, with and without model-based triage</b>. And report the false-negative rate, because a model that confidently rejects a hypothesis that would have worked is worse than no filter."
    },
    {
     "id": "third-person",
@@ -422,11 +438,12 @@
     "merged": [
      "Learn from third person view data"
     ],
-    "project": "iris",
+    "project": "r2s2r",
     "trees": [
      "il"
     ],
-    "pitch": "Exocentric human video — the most abundant demonstration data there is — with the viewpoint and embodiment gap handled explicitly."
+    "pitch": "Exocentric human video — the most abundant demonstration data there is — with the viewpoint gap handled explicitly.",
+    "novelty": "The field assumed egocentric is better because it matches a wrist camera, and stopped asking. Ego-Exo4D makes it testable: same task, same paired data, same policy class, <b>viewpoint as the only variable</b>, reported per task category. The expected answer — ego for fine manipulation, exo for whole-body and scene layout — is currently folklore, not a measurement."
    },
    {
     "id": "hri-collab",
@@ -439,7 +456,8 @@
      "rl",
      "il"
     ],
-    "pitch": "Physical collaboration with a person in the loop: intent inference, compliant co-manipulation, and handovers that do not require the human to adapt."
+    "pitch": "Physical collaboration with a person: intent inference, compliant co-manipulation, handovers.",
+    "novelty": "Physical-HRI papers report task success and a comfort survey. None report <b>who did the adapting</b> — and in most deployed systems it is the human, silently. Measure the division: trajectory deviation from solo behaviour, with a human-human baseline on the same task. Then show an intent-inference module shifts the burden back onto the robot. That is a novel measurement, not a novel controller."
    },
    {
     "id": "soft-sim2real",
@@ -452,11 +470,106 @@
      "rl",
      "systems"
     ],
-    "pitch": "Deformables are where sim-to-real breaks twice at once — the physics is wrong and the rendering is wrong. Attack both gaps together."
+    "pitch": "Deformables break sim-to-real twice — the physics is wrong and the rendering is wrong.",
+    "novelty": "Everyone attacks one gap and inherits the other. Run the <b>2×2</b>: real/sim physics crossed with real/sim rendering, using pixel-editing for the rendering axis and a learned delta model for the physics axis, on one task with a clean metric. The decomposition tells the field which gap to spend money on, and nobody has measured it. Add tactile as a fifth condition — for cloth and rope, touch disambiguates state that vision cannot."
+   },
+   {
+    "id": "transformer-robot",
+    "title": "Transformer robot: car ↔ humanoid, end to end",
+    "merged": [
+     "Transformer robot — car to humanoid using RL, hardware build end to end, balancing and walking in humanoid form, transformation policy, fall and stand-up, few policies on board"
+    ],
+    "project": "",
+    "trees": [
+     "systems",
+     "rl"
+    ],
+    "pitch": "Build the robot and the controller together: a machine that drives as a wheeled vehicle, stands up into a humanoid, walks, falls, recovers — with a handful of policies running on board.",
+    "novelty": "X2-N (April 2026) already built a transformable wheel-legged humanoid with RL whole-body control, so the mechanism and the mode-switch are taken. Two things are not. First, the <b>policy budget</b>: how few on-board policies cover driving, walking, transforming, falling and standing up — and what is lost by merging them, measured, rather than assumed. Second, and more interesting, <b>transformation as a recovery action</b>: a fallen humanoid that folds into its wheeled form to right itself, instead of learning a get-up policy for every fallen posture. That reframes the morphology change from a feature into a controller primitive, and no getting-up paper has it."
+   },
+   {
+    "id": "robot-dj",
+    "title": "Robot DJ: turntablism with audio as a first-class modality",
+    "merged": [
+     "Robot DJ using a turntable — audio as a modality, force, tactile, dexterous hand"
+    ],
+    "project": "geodex",
+    "trees": [
+     "il",
+     "systems"
+    ],
+    "pitch": "A dexterous hand on a turntable: scratching, cueing and beat-matching, with contact microphones, force and touch in the loop.",
+    "novelty": "Audio in robot learning is always an <em>extra observation</em> — ManiWAV, SonicSense, Audio-VLA all use sound to infer contact state. Turntablism is the first task where audio is also the <b>objective</b>: the policy's own output is the evaluation signal, so the reward and the observation live in the same modality and the loop can close without any external labeller. It also forces three things dexterity benchmarks avoid — regulating normal force against a <b>moving</b> surface, millisecond-scale timing where being early is as wrong as being late, and a task whose success a human can judge instantly. A hard, cheap, self-scoring benchmark for contact-rich dexterity."
    }
   ]
  },
  "papers": [
+  {
+   "id": "being-h07",
+   "title": "Being-H0.7: A Latent World-Action Model from Egocentric Videos",
+   "tree": "il",
+   "branch": "world-models",
+   "authors": [
+    "Hao Luo",
+    "Wanpeng Zhang",
+    "Yicheng Feng",
+    "Sipeng Zheng",
+    "Haiweng Xu",
+    "Chaoyi Xu",
+    "Ziheng Xi",
+    "Yuhui Fu",
+    "Zongqing Lu"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-04-30",
+   "topics": [
+    "latent world-action model",
+    "egocentric video pretraining"
+   ],
+   "paradigm": [
+    "world model",
+    "VLA"
+   ],
+   "method": [],
+   "projects": [
+    "mabel",
+    "r2s2r",
+    "wam-tactile"
+   ],
+   "ideas": [
+    "ego-dex",
+    "wam-umi-gloves",
+    "third-person"
+   ],
+   "related": [
+    "dream-tac",
+    "ego2robot",
+    "egoscale",
+    "motionwam",
+    "vjepa2"
+   ],
+   "arxiv": "2605.00078",
+   "doi": "10.48550/arxiv.2605.00078",
+   "code": "",
+   "site": "",
+   "note": "A latent world-action model learned from egocentric human video — the Being-H0 line moved from VLA pretraining to world-action modelling. This is the closest published system to your UMI-glove WAM idea and it works from ordinary human video rather than instrumented capture.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Visual-Language-Action models (VLAs) have advanced generalist robot control by mapping multimodal observations and language instructions directly to actions, but sparse action supervision often encourages shortcut mappings rather than representations of dynamics, contact, and task progress. Recent world-action models introduce future prediction through video rollouts, yet pixel-space prediction is a costly and indirect substrate for control, as it may model visual details irrelevant to action generation and introduces substantial training or inference overhead. We present Being-H0.7, a latent world-action model that brings future-aware reasoning into VLA-style policies without generating future frames. Being-H0.7 inserts learnable latent queries between perception and action as a compact reasoning interface, and trains them with a future-informed dual-branch design: a deployable prior branch infers latent states from the current context, while a training-only posterior branch replaces the queries with embeddings from future observations. Jointly aligning the two branches at the latent reasoning space leads the prior branch to reason future-aware, action-useful structure from current observations alone. At inference, Being-H0.7 discards the posterior branch and performs no visual rollout. Experiments across six simulation benchmarks and diverse real-world tasks show that Being-H0.7 achieves state-of-the-art or comparable performance, combining the predictive benefits of world models with the efficiency and deployability of direct VLA policies.",
+   "source": "curated",
+   "first_author": "Hao Luo",
+   "url": "https://arxiv.org/abs/2605.00078",
+   "fig": "figures/being-h07.webp",
+   "figs": [
+    "figures/being-h07-1.webp"
+   ]
+  },
   {
    "id": "c2dex",
    "title": "C2Dex: Contact-Consistent Reconstruction and Retargeting for Dexterous Manipulation from Monocular Video",
@@ -495,6 +608,9 @@
     "dexmv",
     "dexpilot",
     "ego2robot",
+    "gmr",
+    "human2humanoid",
+    "retarget-objectives",
     "x-op"
    ],
    "arxiv": "2608.07045",
@@ -549,11 +665,13 @@
    ],
    "related": [
     "climrs",
+    "cross-humanoid-wbc",
     "crossformer",
     "decentralized-aerial",
     "h2compact",
     "mappo",
-    "roco"
+    "roco",
+    "wholebodyvla"
    ],
    "arxiv": "2606.12352",
    "doi": "10.48550/arxiv.2606.12352",
@@ -616,8 +734,11 @@
     "wam-umi-gloves"
    ],
    "related": [
+    "audio-vla",
+    "being-h07",
     "dexskin",
     "egoemg",
+    "motionwam",
     "oa-wam",
     "omnivta",
     "tacforesight",
@@ -690,10 +811,12 @@
     "learned-retargeting"
    ],
    "related": [
+    "being-h07",
     "c2dex",
     "dexumi",
     "egoscale",
     "humannet",
+    "intention-priors",
     "phantom",
     "simdex"
    ],
@@ -830,6 +953,7 @@
    ],
    "related": [
     "ace-ego-0",
+    "being-h07",
     "dreamgen",
     "ego2robot",
     "egolive",
@@ -838,6 +962,7 @@
     "humanego",
     "humannet",
     "humanoid-policy",
+    "intention-priors",
     "phantom",
     "r3m"
    ],
@@ -924,6 +1049,63 @@
    ]
   },
   {
+   "id": "human2humanoid",
+   "title": "Human2Humanoid: Physics-Aware Cross-Morphology Motion Retargeting for Humanoid Robots",
+   "tree": "il",
+   "branch": "retargeting",
+   "authors": [
+    "Tianqi Huang",
+    "Feiyang Yuan",
+    "Junchi Gu",
+    "Shurui Fang",
+    "Xiaohu Zhang",
+    "Yu Wang",
+    "Wei Gao",
+    "Shiwu Zhang"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-06-02",
+   "topics": [
+    "physics-aware retargeting",
+    "cross-morphology"
+   ],
+   "paradigm": [
+    "teleop"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "learned-retargeting"
+   ],
+   "related": [
+    "c2dex",
+    "gmr",
+    "h2o",
+    "retarget-objectives",
+    "x-op"
+   ],
+   "arxiv": "2606.03476",
+   "doi": "10.48550/arxiv.2606.03476",
+   "code": "",
+   "site": "",
+   "note": "Physics-aware cross-morphology retargeting: respect dynamics, not just kinematics, when mapping a human onto a robot with different mass distribution. Together with [[gmr]] and [[c2dex]] this is now a real sub-field — and the three of them bound what is left of your learned-retargeting idea.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Retargeting human motion to humanoid robots is critical for teleoperation, imitation learning and human-robot interaction. However, it remains challenging because of substantial morphological discrepancies between humans and robots, including differences in skeletal topology, limb proportions and degrees of freedom, as well as the scarcity of paired motion data. This paper presents Human2Humanoid, an unsupervised motion retargeting framework that transfers human motions to humanoid robot behaviors with high fidelity. To bridge the domain gap under unpaired data, we adopt a CycleGAN-based architecture equipped with a skeleton-aware graph convolutional network to capture topology-dependent motion features. To address cross-domain scale mismatches, we introduce a morphology-invariant end-effector consistency loss that aligns normalized end-effector trajectories to preserve motion semantics across embodiments. To improve physical plausibility and reduce contact artifacts, we impose explicit physics-aware feasibility constraints to encourage reproduction of the contact patterns in the source motion. Experimental results show that the proposed method successfully retargets human motion to the Unitree G1 humanoid robot without paired data, and outperforms existing methods in both downstream controllability and physical feasibility.",
+   "source": "curated",
+   "first_author": "Tianqi Huang",
+   "url": "https://arxiv.org/abs/2606.03476",
+   "fig": "figures/human2humanoid.webp"
+  },
+  {
    "id": "humanego",
    "title": "HumanEgo: Zero-Shot Robot Learning from Minutes of Human Egocentric Videos",
    "tree": "il",
@@ -962,6 +1144,7 @@
     "third-person"
    ],
    "related": [
+    "demohlm",
     "egomimic",
     "egoscale",
     "one-demo",
@@ -982,6 +1165,76 @@
    "fig": "figures/humanego.webp",
    "figs": [
     "figures/humanego-1.webp"
+   ]
+  },
+  {
+   "id": "hmi-robotfree",
+   "title": "Humanoid Manipulation Interface: Humanoid Whole-Body Manipulation from Robot-Free Demonstrations",
+   "tree": "systems",
+   "branch": "interfaces",
+   "authors": [
+    "Ruiqian Nai",
+    "Boyuan Zheng",
+    "Junming Zhao",
+    "Haodong Zhu",
+    "Sicong Dai",
+    "Zunhao Chen",
+    "Yihang Hu",
+    "Yingdong Hu",
+    "Tong Zhang",
+    "Chuan Wen",
+    "Yang Gao"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-02-06",
+   "topics": [
+    "robot-free demonstrations",
+    "whole-body manipulation"
+   ],
+   "paradigm": [
+    "teleop",
+    "IL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel",
+    "wam-tactile"
+   ],
+   "ideas": [
+    "mobile-dex-umi",
+    "wam-umi-gloves",
+    "learned-retargeting"
+   ],
+   "related": [
+    "dexumi",
+    "homie",
+    "realdexumi",
+    "ume",
+    "umi",
+    "umi-on-legs"
+   ],
+   "arxiv": "2602.06643",
+   "doi": "10.48550/arxiv.2602.06643",
+   "code": "",
+   "site": "",
+   "note": "Humanoid Manipulation Interface — UMI's argument extended to the <b>whole body</b>: collect whole-body manipulation demonstrations with no robot present. This is the single most MABEL-relevant paper in this batch, and it is close enough to your mobile-dexterous-UMI idea that you should read it before writing that proposal.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Current approaches for humanoid whole-body manipulation, primarily relying on teleoperation or visual sim-to-real reinforcement learning, are hindered by hardware logistics and complex reward engineering. Consequently, demonstrated autonomous skills remain limited and are typically restricted to controlled environments. In this paper, we present the Humanoid Manipulation Interface (HuMI), a portable and efficient framework for learning diverse whole-body manipulation tasks across various environments. HuMI enables robot-free data collection by capturing rich whole-body motion using portable hardware. This data drives a hierarchical learning pipeline that translates human motions into dexterous and feasible humanoid skills. Extensive experiments across five whole-body tasks--including kneeling, squatting, tossing, walking, and bimanual manipulation--demonstrate that HuMI achieves a 3x increase in data collection efficiency compared to teleoperation and attains a 70% success rate in unseen environments.",
+   "source": "curated",
+   "first_author": "Ruiqian Nai",
+   "url": "https://arxiv.org/abs/2602.06643",
+   "fig": "figures/hmi-robotfree.webp",
+   "figs": [
+    "figures/hmi-robotfree-1.webp",
+    "figures/hmi-robotfree-2.webp",
+    "figures/hmi-robotfree-3.webp"
    ]
   },
   {
@@ -1049,6 +1302,68 @@
    ]
   },
   {
+   "id": "motionwam",
+   "title": "MotionWAM: Towards Foundation World Action Models for Real-Time Humanoid Loco-Manipulation",
+   "tree": "il",
+   "branch": "world-models",
+   "authors": [
+    "Jia Zheng (140297)",
+    "Teli Ma",
+    "Yudong Fan",
+    "Zifan Wang",
+    "Shuo Yang",
+    "Junwei Liang"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-06-08",
+   "topics": [
+    "foundation world-action model",
+    "real-time loco-manipulation"
+   ],
+   "paradigm": [
+    "world model",
+    "VLA"
+   ],
+   "method": [],
+   "projects": [
+    "mabel",
+    "wam-tactile"
+   ],
+   "ideas": [
+    "wam-umi-gloves",
+    "mobile-dex-umi"
+   ],
+   "related": [
+    "being-h07",
+    "decowam",
+    "dream-tac",
+    "mobilewam",
+    "vjepa2",
+    "wholebodyvla"
+   ],
+   "arxiv": "2606.09215",
+   "doi": "10.48550/arxiv.2606.09215",
+   "code": "",
+   "site": "",
+   "note": "A world-action model aimed at <b>real-time</b> humanoid loco-manipulation — the constraint most WAM work ducks, since a world model that needs 200 ms per step cannot close a balance loop. Read with [[decowam]] and [[mobilewam]].",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "World Action Models (WAMs) couple a video dynamics prior to the policy and have shown encouraging results on tabletop manipulation, but iterative denoising over high-dimensional video-action latents leaves them too slow for real-time humanoid loco-manipulation. The problem is compounded by the dominant hierarchical paradigm, in which a high-level manipulation policy controls only the upper body while a low-level controller tracks coarse base commands -- placing upper and lower body in inconsistent action spaces and reducing the legs to balance-preserving locomotion. We present MotionWAM, a real-time WAM that drives autonomous humanoid loco-manipulation from a single egocentric camera by conditioning the policy on the intermediate denoising features of a video world model. MotionWAM replaces the upper-lower split with a unified motion latent and predicts whole-body motion tokens that jointly cover locomotion, torso motion, height regulation, foot interaction, and hand manipulation in a single action space. A three-stage learning framework progressively adapts the video world model to egocentric visual dynamics and to the target humanoid embodiment. On nine real-world Unitree G1 tasks, MotionWAM runs in real time, substantially outperforms Vision-Language-Action (VLA) baselines fine-tuned on the same demonstrations by over 30% in overall success rate, and executes task-driven foot interaction that decoupled upper-lower policies cannot reach. Our results suggest that video-pretrained WAMs can be lifted from tabletop manipulation to coordinated, human-like whole-body humanoid control.",
+   "source": "curated",
+   "first_author": "Jia Zheng (140297)",
+   "url": "https://arxiv.org/abs/2606.09215",
+   "fig": "figures/motionwam.webp",
+   "figs": [
+    "figures/motionwam-1.webp"
+   ]
+  },
+  {
    "id": "realdexumi",
    "title": "RealDexUMI: A Wearable Universal Manipulation Interface for Dexterous Robot Learning",
    "tree": "systems",
@@ -1096,6 +1411,7 @@
    "related": [
     "dexcap",
     "dexumi",
+    "hmi-robotfree",
     "ume",
     "umi",
     "umi-on-legs",
@@ -1285,9 +1601,13 @@
    "related": [
     "airexo",
     "dexumi",
+    "exo-viha",
     "fast-umi",
+    "hmi-robotfree",
+    "homie",
     "realdexumi",
     "umi",
+    "wheeled-posforce",
     "wt-umi"
    ],
    "arxiv": "2606.14218",
@@ -1385,6 +1705,72 @@
    ]
   },
   {
+   "id": "x2n",
+   "title": "X2-N: A Transformable Wheel-legged Humanoid Robot with Dual-mode Locomotion and Manipulation",
+   "tree": "systems",
+   "branch": "codesign",
+   "authors": [
+    "Yan Ning",
+    "Xingzhou Chen",
+    "Delong Li",
+    "Hao Zhang",
+    "Hanfu Gai",
+    "Jinlei Zhao",
+    "Tongyuan Li",
+    "Cheng Zhang",
+    "Zhihui Peng",
+    "Ling Shi"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-04-23",
+   "topics": [
+    "transformable wheel-legged humanoid",
+    "dual-mode locomotion",
+    "RL whole-body control"
+   ],
+   "paradigm": [
+    "hardware",
+    "RL"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "transformer-robot",
+    "codesign-dog-rl"
+   ],
+   "related": [
+    "berkeley-humanoid-lite",
+    "dyret",
+    "getup-morphologies",
+    "humanup",
+    "reconfig-wheelleg",
+    "swheg"
+   ],
+   "arxiv": "2604.21541",
+   "doi": "10.48550/arxiv.2604.21541",
+   "code": "",
+   "site": "",
+   "note": "X2-N is a high-DoF robot that operates as both a humanoid and a wheel-legged vehicle and <b>transforms between them by joint reconfiguration</b>, with a single RL whole-body control framework covering hybrid locomotion, the transformation itself, and manipulation. This is your transformer-robot idea, built and published in April 2026. Read it first — it defines what is left to claim.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Wheel-legged robots combine the efficiency of wheeled locomotion with the versatility of legged systems, enabling rapid traversal over both continuous and discrete terrains. However, conventional designs typically employ fixed wheels as feet and limited degrees of freedom (DoFs) at the hips, resulting in reduced stability and mobility during legged locomotion compared to humanoids with flat feet. In addition, most existing platforms lack a full upper body with arms, which limits their ability to perform dexterous manipulation tasks. In this letter, we present X2-N, a high-DoF transformable robot with dual-mode locomotion and manipulation. X2-N can operate in both humanoid and wheel-legged forms and transform seamlessly between them through joint reconfiguration. We further propose a reinforcement learning (RL)-based whole-body control framework tailored to this morphology, enabling control across hybrid locomotion, transformation, and manipulation. We validate X2-N in a range of challenging locomotion and manipulation tasks, including dynamic skating-like motion, stair climbing, and package delivery. Results demonstrate high",
+   "source": "curated",
+   "first_author": "Yan Ning",
+   "url": "https://arxiv.org/abs/2604.21541",
+   "fig": "figures/x2n.webp",
+   "figs": [
+    "figures/x2n-1.webp",
+    "figures/x2n-2.webp",
+    "figures/x2n-3.webp"
+   ]
+  },
+  {
    "id": "pi06",
    "title": "$π^{*}_{0.6}$: a VLA That Learns From Experience",
    "tree": "il",
@@ -1420,6 +1806,7 @@
    "related": [
     "dyna",
     "dyna2",
+    "hand-in-loop",
     "hil-serl",
     "iRe-VLA",
     "pi0",
@@ -1517,6 +1904,130 @@
    ]
   },
   {
+   "id": "hugwbc",
+   "title": "A Unified and General Humanoid Whole-Body Controller for Versatile Locomotion",
+   "tree": "rl",
+   "branch": "locomotion",
+   "authors": [
+    "Yufei Xue",
+    "Wentao Dong",
+    "Minghuan Liu",
+    "Weinan Zhang",
+    "Jiangmiao Pang"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-02-05",
+   "topics": [
+    "unified whole-body controller",
+    "gait parameterisation",
+    "upper-body intervention"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "learned-retargeting"
+   ],
+   "related": [
+    "amo",
+    "cross-humanoid-wbc",
+    "exbody2",
+    "homie",
+    "hover",
+    "unirelo"
+   ],
+   "arxiv": "2502.03206",
+   "doi": "10.48550/arxiv.2502.03206",
+   "code": "",
+   "site": "",
+   "note": "One policy producing walking, running, jumping, standing and hopping with <b>tunable</b> frequency, swing height, body height, waist rotation and pitch — and it accepts real-time upper-body intervention from a teleoperator while holding the gait. That last property is what makes it a loco-manipulation controller rather than a locomotion one, and it is the interface MABEL wants underneath its arms.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Locomotion is a fundamental skill for humanoid robots. However, most existing works make locomotion a single, tedious, unextendable, and unconstrained movement. This limits the kinematic capabilities of humanoid robots. In contrast, humans possess versatile athletic abilities-running, jumping, hopping, and finely adjusting gait parameters such as frequency and foot height. In this paper, we investigate solutions to bring such versatility into humanoid locomotion and thereby propose HugWBC: a unified and general humanoid whole-body controller for versatile locomotion. By designing a general command space in the aspect of tasks and behaviors, along with advanced techniques like symmetrical loss and intervention training for learning a whole-body humanoid controlling policy in simulation, HugWBC enables real-world humanoid robots to produce various natural gaits, including walking, jumping, standing, and hopping, with customizable parameters such as frequency, foot swing height, further combined with different body height, waist rotation, and body pitch. Beyond locomotion, HugWBC also supports real-time interventions from external upper-body controllers like teleoperation, enabling loco-manipulation with precision under any locomotive behavior. Extensive experiments validate the high tracking accuracy and robustness of HugWBC with/without upper-body intervention for all commands, and we further provide an in-depth analysis of how the various commands affect humanoid movement and offer insights into the relationships between these commands. To our knowledge, HugWBC is the first humanoid whole-body controller that supports such versatile locomotion behaviors with high robustness and flexibility.",
+   "source": "curated",
+   "first_author": "Yufei Xue",
+   "url": "https://arxiv.org/abs/2502.03206",
+   "fig": "figures/hugwbc.webp",
+   "figs": [
+    "figures/hugwbc-1.webp",
+    "figures/hugwbc-2.webp",
+    "figures/hugwbc-3.webp"
+   ]
+  },
+  {
+   "id": "amo",
+   "title": "AMO: Adaptive Motion Optimization for Hyper-Dexterous Humanoid Whole-Body Control",
+   "tree": "rl",
+   "branch": "loco-manip",
+   "authors": [
+    "Jialong Li",
+    "Xuxin Cheng",
+    "Tianshu Huang",
+    "Shiqi Yang",
+    "Ri-Zhao Qiu",
+    "Xiaolong Wang"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-05-06",
+   "topics": [
+    "adaptive motion optimization",
+    "hyper-dexterous whole-body control"
+   ],
+   "paradigm": [
+    "RL",
+    "control"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "learned-retargeting",
+    "mobile-dex-umi"
+   ],
+   "related": [
+    "exbody2",
+    "falcon",
+    "handoff",
+    "hover",
+    "hugwbc",
+    "kinematics-multipolicy",
+    "resmimic"
+   ],
+   "arxiv": "2505.03738",
+   "doi": "10.48550/arxiv.2505.03738",
+   "code": "",
+   "site": "",
+   "note": "Sim-to-real RL fused with online trajectory optimization for real-time whole-body control on a 29-DoF Unitree G1, reporting a materially expanded workspace. The hybrid — learned policy for robustness, optimizer for reach — is the pragmatic answer when pure RL cannot hit the corner of the workspace.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Humanoid robots derive much of their dexterity from hyper-dexterous whole-body movements, enabling tasks that require a large operational workspace: such as picking objects off the ground. However, achieving these capabilities on real humanoids remains challenging due to their high degrees of freedom (DoF) and nonlinear dynamics. We propose Adaptive Motion Optimization (AMO), a framework that integrates sim-to-real reinforcement learning (RL) with trajectory optimization for real-time, adaptive whole-body control. To mitigate distribution bias in motion imitation RL, we construct a hybrid AMO dataset and train a network capable of robust, on-demand adaptation to potentially O.O.D. commands. We validate AMO in simulation and on a 29-DoF Unitree G1 humanoid robot, demonstrating superior stability and an expanded workspace compared to strong baselines. Finally, we show that AMO's consistent performance supports autonomous task execution via imitation learning, underscoring the system's versatility and robustness.",
+   "source": "curated",
+   "first_author": "Jialong Li",
+   "url": "https://arxiv.org/abs/2505.03738",
+   "fig": "figures/amo.webp",
+   "figs": [
+    "figures/amo-1.webp",
+    "figures/amo-2.webp"
+   ]
+  },
+  {
    "id": "asap",
    "title": "ASAP: Aligning Simulation and Real-World Physics for Learning Agile Humanoid Whole-Body Skills",
    "tree": "rl",
@@ -1571,10 +2082,13 @@
     "domain-rand",
     "dreureka",
     "real2sim",
+    "resmimic",
     "rma",
     "unitree-g1",
     "video2sim2real",
-    "videomimic"
+    "videomimic",
+    "wheeled-multistage",
+    "wheeled-payload"
    ],
    "arxiv": "2502.01143",
    "doi": "",
@@ -1592,6 +2106,68 @@
    "figs": [
     "figures/asap-1.webp",
     "figures/asap-2.webp"
+   ]
+  },
+  {
+   "id": "retarget-objectives",
+   "title": "Analyzing Key Objectives in Human-to-Robot Retargeting for Dexterous Manipulation",
+   "tree": "il",
+   "branch": "retargeting",
+   "authors": [
+    "Xin",
+    "Chendong",
+    "Mingrui Yu",
+    "Yongpeng Jiang",
+    "Zhefeng Zhang",
+    "Xiang Li"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-06-11",
+   "topics": [
+    "retargeting objectives",
+    "ablation",
+    "dexterous manipulation"
+   ],
+   "paradigm": [
+    "teleop"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "mabel"
+   ],
+   "ideas": [
+    "learned-retargeting"
+   ],
+   "related": [
+    "anyteleop",
+    "c2dex",
+    "dexpilot",
+    "gmr",
+    "human2humanoid"
+   ],
+   "arxiv": "2506.09384",
+   "doi": "10.48550/arxiv.2506.09384",
+   "code": "",
+   "site": "",
+   "note": "An ablation of what the retargeting objective should actually optimize for dexterous manipulation. This is the closest existing thing to the <b>benchmark</b> your learned-retargeting idea proposes — read it first and decide whether to extend it rather than start over.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Kinematic retargeting from human hands to robot hands is essential for transferring dexterity from humans to robots in manipulation teleoperation and imitation learning. However, due to mechanical differences between human and robot hands, completely reproducing human motions on robot hands is impossible. Existing works on retargeting incorporate various optimization objectives, focusing on different aspects of hand configuration. However, the lack of experimental comparative studies leaves the significance and effectiveness of these objectives unclear. This work aims to analyze these retargeting objectives for dexterous manipulation through extensive real-world comparative experiments. Specifically, we propose a comprehensive retargeting objective formulation that integrates intuitively crucial factors appearing in recent approaches. The significance of each factor is evaluated through experimental ablation studies on the full objective in kinematic posture retargeting and real-world teleoperated manipulation tasks. Experimental results and conclusions provide valuable insights for designing more accurate and effective retargeting algorithms for real-world dexterous manipulation.",
+   "source": "curated",
+   "first_author": "Xin",
+   "url": "https://arxiv.org/abs/2506.09384",
+   "fig": "figures/retarget-objectives.webp",
+   "figs": [
+    "figures/retarget-objectives-1.webp",
+    "figures/retarget-objectives-2.webp",
+    "figures/retarget-objectives-3.webp"
    ]
   },
   {
@@ -1751,6 +2327,7 @@
     "groot-n15",
     "groot-n16",
     "pi05",
+    "spatial-brain",
     "voyager"
    ],
    "arxiv": "2503.15558",
@@ -1817,6 +2394,7 @@
     "dexcap",
     "dexumi",
     "egoemg",
+    "exo-viha",
     "orca-hand",
     "ruka"
    ],
@@ -1883,14 +2461,17 @@
    ],
    "related": [
     "anyskin",
+    "av-contact",
     "digit",
     "dream-tac",
     "egoemg",
     "gelsight",
     "mm-hand",
     "omnitactune",
+    "robot-synesthesia",
     "robotacdex",
-    "rotate-without-seeing"
+    "rotate-without-seeing",
+    "sonicsense"
    ],
    "arxiv": "",
    "doi": "",
@@ -1960,12 +2541,15 @@
     "ego-dex"
    ],
    "related": [
+    "ace-teleop",
     "airexo",
     "dexcap",
     "doglove",
     "ego2robot",
     "egosteer",
     "fast-umi",
+    "hmi-robotfree",
+    "maniwav",
     "mimic-robotics",
     "phantom",
     "realdexumi",
@@ -2213,8 +2797,10 @@
     "humanoid-policy",
     "pi0",
     "rdt1b",
+    "spatial-brain",
     "unitree-g1",
-    "vlm4vla"
+    "vlm4vla",
+    "wholebodyvla"
    ],
    "arxiv": "2503.14734",
    "doi": "",
@@ -2290,6 +2876,75 @@
    ]
   },
   {
+   "id": "homie",
+   "title": "HOMIE: Humanoid Loco-Manipulation with Isomorphic Exoskeleton Cockpit",
+   "tree": "systems",
+   "branch": "interfaces",
+   "authors": [
+    "Qingwei Ben",
+    "Jia",
+    "Feiyu",
+    "Jia Zeng",
+    "Junting Dong",
+    "Dahua Lin",
+    "Jiangmiao Pang"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-02-18",
+   "topics": [
+    "isomorphic exoskeleton cockpit",
+    "pedal locomotion",
+    "data flywheel"
+   ],
+   "paradigm": [
+    "teleop",
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "exo",
+    "mabel"
+   ],
+   "ideas": [
+    "learned-retargeting",
+    "mobile-dex-umi"
+   ],
+   "related": [
+    "ace-teleop",
+    "exo-viha",
+    "hmi-robotfree",
+    "hover",
+    "hugwbc",
+    "omnih2o",
+    "telemoma",
+    "twist",
+    "ume"
+   ],
+   "arxiv": "2502.13013",
+   "doi": "10.48550/arxiv.2502.13013",
+   "code": "",
+   "site": "",
+   "note": "The most complete teleoperation cockpit published: an RL body policy driven by a <b>pedal</b>, an isomorphic exoskeleton arm, and motion gloves for the hands — one operator, whole robot. The pedal is the design insight worth stealing: it frees both arms for manipulation while still giving continuous locomotion command, which every VR-based humanoid teleop rig struggles with. Open-sourced as OpenHomie.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Generalizable humanoid loco-manipulation poses significant challenges, requiring coordinated whole-body control and precise, contact-rich object manipulation. To address this, this paper introduces HOMIE, a semi-autonomous teleoperation system that combines a reinforcement learning policy for body control mapped to a pedal, an isomorphic exoskeleton arm for arm control, and motion-sensing gloves for hand control, forming a unified cockpit to freely operate humanoids and establish a data flywheel. The policy incorporates novel designs, including an upper-body pose curriculum, a height-tracking reward, and symmetry utilization. These features enable the system to perform walking and squatting to specific heights while seamlessly adapting to arbitrary upper-body poses. The exoskeleton, by eliminating the reliance on inverse dynamics, delivers faster and more precise arm control. The gloves utilize Hall sensors instead of servos, allowing even compact devices to achieve 15 or more degrees of freedom and freely adapt to any model of dexterous hands. Compared to previous teleoperation systems, HOMIE stands out for its exceptional efficiency, completing tasks in half the time; its expanded working range, allowing users to freely reach high and low areas as well as interact with any objects; and its affordability, with a price of just $500. The system is fully open-source, demos and code can be found in our https://homietele.github.io/.",
+   "source": "curated",
+   "first_author": "Qingwei Ben",
+   "url": "https://arxiv.org/abs/2502.13013",
+   "fig": "figures/homie.webp",
+   "figs": [
+    "figures/homie-1.webp",
+    "figures/homie-2.webp",
+    "figures/homie-3.webp"
+   ]
+  },
+  {
    "id": "hover",
    "title": "HOVER: Versatile Neural Whole-Body Controller for Humanoid Robots",
    "tree": "il",
@@ -2338,10 +2993,19 @@
     "learned-retargeting"
    ],
    "related": [
+    "adaptive-tracking",
+    "amo",
     "exbody",
+    "exbody2",
+    "gmr",
     "h2o",
+    "handoff",
+    "homie",
+    "hugwbc",
     "maskedmimic",
     "omnih2o",
+    "twist",
+    "unirelo",
     "unitree-g1",
     "x-op"
    ],
@@ -2413,6 +3077,7 @@
     "egomimic",
     "egoscale",
     "groot-n1",
+    "intention-priors",
     "phantom"
    ],
    "arxiv": "2503.13441",
@@ -2561,6 +3226,115 @@
    "url": "https://doi.org/10.52202/085713-3439",
    "arxiv_url": "https://arxiv.org/abs/2505.23705",
    "fig": "figures/knowledge-insulation.webp"
+  },
+  {
+   "id": "humanup",
+   "title": "Learning Getting-Up Policies for Real-World Humanoid Robots",
+   "tree": "rl",
+   "branch": "locomotion",
+   "authors": [
+    "Xialin He",
+    "Runpei Dong",
+    "Zixuan Chen",
+    "Saurabh Gupta"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-02-17",
+   "topics": [
+    "getting-up policies",
+    "real-world humanoid",
+    "curriculum"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "transformer-robot"
+   ],
+   "related": [
+    "deepmimic",
+    "fall-safety",
+    "getup-morphologies",
+    "kungfu-bot",
+    "stablemimic",
+    "unirelo",
+    "x2n"
+   ],
+   "arxiv": "2502.12152",
+   "doi": "10.48550/arxiv.2502.12152",
+   "code": "",
+   "site": "",
+   "note": "The reference getting-up paper: learned policies that stand a real humanoid back up from varied fallen configurations, later extended to deformable, slippery and inclined terrain. Any robot that falls needs this, and a transforming robot will fall in postures nobody anticipated.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Automatic fall recovery is a crucial prerequisite before humanoid robots can be reliably deployed. Hand-designing controllers for getting up is difficult because of the varied configurations a humanoid can end up in after a fall and the challenging terrains humanoid robots are expected to operate on. This paper develops a learning framework to produce controllers that enable humanoid robots to get up from varying configurations on varying terrains. Unlike previous successful applications of learning to humanoid locomotion, the getting-up task involves complex contact patterns (which necessitates accurately modeling of the collision geometry) and sparser rewards. We address these challenges through a two-phase approach that induces a curriculum. The first stage focuses on discovering a good getting-up trajectory under minimal constraints on smoothness or speed / torque limits. The second stage then refines the discovered motions into deployable (i.e. smooth and slow) motions that are robust to variations in initial configuration and terrains. We find these innovations enable a real-world G1 humanoid robot to get up from two main situations that we considered: a) lying face up and b) lying face down, both tested on flat, deformable, slippery surfaces and slopes (e.g., sloppy grass and snowfield). This is one of the first successful demonstrations of learned getting-up policies for human-sized humanoid robots in the real world.",
+   "source": "curated",
+   "first_author": "Xialin He",
+   "url": "https://arxiv.org/abs/2502.12152",
+   "fig": "figures/humanup.webp",
+   "figs": [
+    "figures/humanup-1.webp"
+   ]
+  },
+  {
+   "id": "getup-morphologies",
+   "title": "Learning to Get Up Across Morphologies: Zero-Shot Recovery with a Unified Humanoid Policy",
+   "tree": "rl",
+   "branch": "locomotion",
+   "authors": [
+    "Jonathan Spraggett"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-12-13",
+   "topics": [
+    "cross-morphology recovery",
+    "unified policy",
+    "zero-shot"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "transformer-robot",
+    "codesign-dex-agentic"
+   ],
+   "related": [
+    "cross-humanoid-wbc",
+    "dyret",
+    "humanup",
+    "unirelo",
+    "x2n"
+   ],
+   "arxiv": "2512.12230",
+   "doi": "10.48550/arxiv.2512.12230",
+   "code": "",
+   "site": "",
+   "note": "One policy that gets seven different humanoids (0.48–0.81 m, 2.8–7.9 kg) back on their feet, transferring zero-shot to unseen morphologies at ~86%. Directly relevant to a transforming robot: the policy has to survive the body changing, which is the same problem as the body being different.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Fall recovery is a critical skill for humanoid robots in dynamic environments such as RoboCup, where prolonged downtime often decides the match. Recent techniques using deep reinforcement learning (DRL) have produced robust get-up behaviors, yet existing methods require training of separate policies for each robot morphology. This paper presents a single DRL policy capable of recovering from falls across seven humanoid robots with diverse heights (0.48 - 0.81 m), weights (2.8 - 7.9 kg), and dynamics. Trained with CrossQ, the unified policy transfers zero-shot up to 86 +/- 7% (95% CI [81, 89]) on unseen morphologies, eliminating the need for robot-specific training. Comprehensive leave-one-out experiments, morph scaling analysis, and diversity ablations show that targeted morphological coverage improves zero-shot generalization. In some cases, the shared policy even surpasses the specialist baselines. These findings illustrate the practicality of morphology-agnostic control for fall recovery, laying the foundation for generalist humanoid control. The software is open-source and available at: https://github.com/utra-robosoccer/unified-humanoid-getup",
+   "source": "curated",
+   "first_author": "Jonathan Spraggett",
+   "url": "https://arxiv.org/abs/2512.12230",
+   "fig": "figures/getup-morphologies.webp"
   },
   {
    "id": "dreamerv3",
@@ -2902,6 +3676,132 @@
    ]
   },
   {
+   "id": "resmimic",
+   "title": "ResMimic: From General Motion Tracking to Humanoid Whole-body Loco-Manipulation via Residual Learning",
+   "tree": "rl",
+   "branch": "loco-manip",
+   "authors": [
+    "Siheng Zhao",
+    "Yanjie Ze",
+    "Yue Wang",
+    "C. Karen Liu",
+    "Pieter Abbeel",
+    "Guanya Shi",
+    "Rocky Duan"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-10-06",
+   "topics": [
+    "residual learning",
+    "motion tracking to loco-manipulation"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel",
+    "wam-tactile"
+   ],
+   "ideas": [
+    "wm-residual",
+    "learned-retargeting"
+   ],
+   "related": [
+    "adaptive-tracking",
+    "amo",
+    "asap",
+    "demohlm",
+    "exbody2",
+    "falcon",
+    "kinematics-multipolicy",
+    "pld"
+   ],
+   "arxiv": "2510.05070",
+   "doi": "10.48550/arxiv.2510.05070",
+   "code": "",
+   "site": "",
+   "note": "Takes a general motion-tracking policy and adds a <b>residual</b> to turn it into whole-body loco-manipulation, rather than retraining from scratch. The residual pattern shows up everywhere in this library ([[asap]], [[pld]], [[omnitactune]]) and this is its whole-body instance.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Humanoid whole-body loco-manipulation promises transformative capabilities for daily service and warehouse tasks. While recent advances in general motion tracking (GMT) have enabled humanoids to reproduce diverse human motions, these policies lack the precision and object awareness required for loco-manipulation. To this end, we introduce ResMimic, a two-stage residual learning framework for precise and expressive humanoid control from human motion data. First, a GMT policy, trained on large-scale human-only motion, serves as a task-agnostic base for generating human-like whole-body movements. An efficient but precise residual policy is then learned to refine the GMT outputs to improve locomotion and incorporate object interaction. To further facilitate efficient training, we design (i) a point-cloud-based object tracking reward for smoother optimization, (ii) a contact reward that encourages accurate humanoid body-object interactions, and (iii) a curriculum-based virtual object controller to stabilize early training. We evaluate ResMimic in both simulation and on a real Unitree G1 humanoid. Results show substantial gains in task success, training efficiency, and robustness over strong baselines. Videos are available at https://resmimic.github.io/ .",
+   "source": "curated",
+   "first_author": "Siheng Zhao",
+   "url": "https://arxiv.org/abs/2510.05070",
+   "fig": "figures/resmimic.webp",
+   "figs": [
+    "figures/resmimic-1.webp",
+    "figures/resmimic-2.webp",
+    "figures/resmimic-3.webp"
+   ]
+  },
+  {
+   "id": "gmr",
+   "title": "Retargeting Matters: General Motion Retargeting for Humanoid Motion Tracking",
+   "tree": "il",
+   "branch": "retargeting",
+   "authors": [
+    "João P. Araújo",
+    "Yanjie Ze",
+    "Pei Xu",
+    "Jiajun Wu",
+    "C. Karen Liu"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-10-02",
+   "topics": [
+    "general motion retargeting",
+    "tracking fidelity",
+    "real-time CPU"
+   ],
+   "paradigm": [
+    "teleop"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "learned-retargeting"
+   ],
+   "related": [
+    "c2dex",
+    "exbody2",
+    "h2o",
+    "hover",
+    "human2humanoid",
+    "retarget-objectives",
+    "twist"
+   ],
+   "arxiv": "2510.02252",
+   "doi": "10.48550/arxiv.2510.02252",
+   "code": "",
+   "site": "",
+   "note": "Retargeting Matters — and the title is the finding. It shows that retargeting quality, not policy quality, often determines whether whole-body tracking works, and closes most of the gap to closed-source baselines. Runs in real time on CPU and is the retargeter behind [[twist]]. Your learned-retargeting idea should treat this as the baseline to beat.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Humanoid motion tracking policies are central to building teleoperation pipelines and hierarchical controllers, yet they face a fundamental challenge: the embodiment gap between humans and humanoid robots. Current approaches address this gap by retargeting human motion data to humanoid embodiments and then training reinforcement learning (RL) policies to imitate these reference trajectories. However, artifacts introduced during retargeting, such as foot sliding, self-penetration, and physically infeasible motion are often left in the reference trajectories for the RL policy to correct. While prior work has demonstrated motion tracking abilities, they often require extensive reward engineering and domain randomization to succeed. In this paper, we systematically evaluate how retargeting quality affects policy performance when excessive reward tuning is suppressed. To address issues that we identify with existing retargeting methods, we propose a new retargeting method, General Motion Retargeting (GMR). We evaluate GMR alongside two open-source retargeters, PHC and ProtoMotions, as well as with a high-quality closed-source dataset from Unitree. Using BeyondMimic for policy training, we isolate retargeting effects without reward tuning. Our experiments on a diverse subset of the LAFAN1 dataset reveal that while most motions can be tracked, artifacts in retargeted data significantly reduce policy robustness, particularly for dynamic or long sequences. GMR consistently outperforms existing open-source methods in both tracking performance and faithfulness to the source motion, achieving perceptual fidelity and policy success rates close to the closed-source baseline. Website: https://jaraujo98.github.io/retargeting_matters. Code: https://github.com/YanjieZe/GMR.",
+   "source": "curated",
+   "first_author": "João P. Araújo",
+   "url": "https://arxiv.org/abs/2510.02252",
+   "fig": "figures/gmr.webp",
+   "figs": [
+    "figures/gmr-1.webp"
+   ]
+  },
+  {
    "id": "pld",
    "title": "Self-Improving Vision-Language-Action Models with Data Generation via Residual RL",
    "tree": "rl",
@@ -2947,9 +3847,11 @@
     "ace-ego-0",
     "dlr-vla",
     "expo-ft",
+    "hand-in-loop",
     "hil-serl",
     "iRe-VLA",
     "knowledge-insulation",
+    "resmimic",
     "ript-vla",
     "rlinf-vla",
     "robocurate",
@@ -2972,6 +3874,68 @@
    "figs": [
     "figures/pld-1.webp",
     "figures/pld-2.webp"
+   ]
+  },
+  {
+   "id": "twist",
+   "title": "TWIST: Teleoperated Whole-Body Imitation System",
+   "tree": "systems",
+   "branch": "interfaces",
+   "authors": [
+    "Yanjie Ze",
+    "Zixuan Chen",
+    "João Pedro Araújo",
+    "Zi-ang Cao",
+    "Xue Bin Peng",
+    "Jiajun Wu",
+    "C. Karen Liu"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-05-05",
+   "topics": [
+    "whole-body imitation teleoperation",
+    "real-time retargeting"
+   ],
+   "paradigm": [
+    "teleop",
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "learned-retargeting"
+   ],
+   "related": [
+    "exbody2",
+    "gmr",
+    "h2o",
+    "homie",
+    "hover",
+    "omnih2o"
+   ],
+   "arxiv": "2505.02833",
+   "doi": "10.48550/arxiv.2505.02833",
+   "code": "",
+   "site": "",
+   "note": "Teleoperated whole-body imitation from a single human demonstrator, with GMR as its retargeter. The pairing matters: TWIST is the system, [[gmr]] is the retargeting quality it depends on, and the two together are the cleanest current recipe for 'human moves, humanoid follows' at full body scale.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Teleoperating humanoid robots in a whole-body manner marks a fundamental step toward developing general-purpose robotic intelligence, with human motion providing an ideal interface for controlling all degrees of freedom. Yet, most current humanoid teleoperation systems fall short of enabling coordinated whole-body behavior, typically limiting themselves to isolated locomotion or manipulation tasks. We present the Teleoperated Whole-Body Imitation System (TWIST), a system for humanoid teleoperation through whole-body motion imitation. We first generate reference motion clips by retargeting human motion capture data to the humanoid robot. We then develop a robust, adaptive, and responsive whole-body controller using a combination of reinforcement learning and behavior cloning (RL+BC). Through systematic analysis, we demonstrate how incorporating privileged future motion frames and real-world motion capture (MoCap) data improves tracking accuracy. TWIST enables real-world humanoid robots to achieve unprecedented, versatile, and coordinated whole-body motor skills--spanning whole-body manipulation, legged manipulation, locomotion, and expressive movement--using a single unified neural network controller. Our project website: https://humanoid-teleop.github.io",
+   "source": "curated",
+   "first_author": "Yanjie Ze",
+   "url": "https://arxiv.org/abs/2505.02833",
+   "fig": "figures/twist.webp",
+   "figs": [
+    "figures/twist-1.webp",
+    "figures/twist-2.webp"
    ]
   },
   {
@@ -3093,6 +4057,7 @@
     "mobile-aloha",
     "pi05",
     "stretch",
+    "telemoma",
     "tidybot",
     "umi",
     "umi-on-legs",
@@ -3115,6 +4080,64 @@
     "figures/tidybot2-1.webp",
     "figures/tidybot2-2.webp"
    ]
+  },
+  {
+   "id": "phhi-survey",
+   "title": "Toward Seamless Physical Human-Humanoid Interaction: Insights from Control, Intent, and Modeling with a Vision for What Comes Next",
+   "tree": "rl",
+   "branch": "loco-manip",
+   "authors": [
+    "Cardona",
+    "Gustavo A.",
+    "Kumbhar",
+    "Shubham S.",
+    "Artemiadis",
+    "Panagiotis"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-12-08",
+   "topics": [
+    "physical human-humanoid interaction",
+    "survey",
+    "control and intent"
+   ],
+   "paradigm": [
+    "survey"
+   ],
+   "method": [],
+   "projects": [
+    "m2",
+    "mabel"
+   ],
+   "ideas": [
+    "hri-collab",
+    "multi-robot-marl"
+   ],
+   "related": [
+    "falcon",
+    "h2compact",
+    "intention-tracking",
+    "interact",
+    "workspace-opt"
+   ],
+   "arxiv": "2512.07765",
+   "doi": "10.48550/arxiv.2512.07765",
+   "code": "",
+   "site": "",
+   "note": "A survey of physical human-humanoid interaction across control, intent and modelling, with an explicit agenda for what comes next. Start your HRI literature review here — it is the most recent map, and it covers the physical-contact case rather than the social-navigation case most HRI surveys default to.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Physical Human-Humanoid Interaction (pHHI) is a rapidly advancing field with significant implications for deploying robots in unstructured, human-centric environments. In this review, we examine the current state of the art in pHHI through three core pillars: (i) humanoid modeling and control, (ii) human intent estimation, and (iii) computational human models. For each pillar, we survey representative approaches, identify open challenges, and analyze current limitations that hinder robust, scalable, and adaptive interaction. These include the need for whole-body control strategies capable of handling uncertain human dynamics, real-time intent inference under limited sensing, and modeling techniques that account for variability in human physical states. Although significant progress has been made within each domain, integration across pillars remains limited. We propose pathways for unifying methods across these areas to enable cohesive interaction frameworks. This structure enables us not only to map the current landscape but also to propose concrete directions for future research that aim to bridge these domains. Additionally, we introduce a unified taxonomy of interaction types based on modality, distinguishing between direct interactions (e.g., physical contact) and indirect interactions (e.g., object-mediated), and on the level of robot engagement, ranging from assistance to cooperation and collaboration. For each category in this taxonomy, we provide the three core pillars that highlight opportunities for cross-pillar unification. Our goal is to suggest avenues to advance robust, safe, and intuitive physical interaction, providing a roadmap for future research that will allow humanoid systems to effectively understand, anticipate, and collaborate with human partners in diverse real-world settings.",
+   "source": "curated",
+   "first_author": "Cardona",
+   "url": "https://arxiv.org/abs/2512.07765",
+   "fig": "figures/phhi-survey.webp"
   },
   {
    "id": "dreamerv4",
@@ -3221,6 +4244,7 @@
     "wam-umi-gloves"
    ],
    "related": [
+    "being-h07",
     "cosmos",
     "dream-tac",
     "dreamerv4",
@@ -3229,6 +4253,7 @@
     "genie",
     "gr2",
     "mobilewam",
+    "motionwam",
     "oa-wam",
     "r3m"
    ],
@@ -3325,6 +4350,83 @@
    ]
   },
   {
+   "id": "wholebodyvla",
+   "title": "WholeBodyVLA: Towards Unified Latent VLA for Whole-Body Loco-Manipulation Control",
+   "tree": "il",
+   "branch": "vla",
+   "authors": [
+    "Jiang",
+    "Haoran",
+    "Chen",
+    "Jin",
+    "Bu",
+    "Qingwen",
+    "Chen",
+    "Li",
+    "Shi",
+    "Modi",
+    "Zhang",
+    "Yanjie",
+    "Li",
+    "Delong",
+    "Suo",
+    "Chuanzhe",
+    "Wang",
+    "Chuang",
+    "Peng",
+    "Zhihui",
+    "Li",
+    "Hongyang"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-12-11",
+   "topics": [
+    "unified latent VLA",
+    "whole-body loco-manipulation"
+   ],
+   "paradigm": [
+    "VLA"
+   ],
+   "method": [],
+   "projects": [
+    "m2",
+    "mabel",
+    "wam-tactile"
+   ],
+   "ideas": [
+    "mobile-dex-umi",
+    "wam-umi-gloves"
+   ],
+   "related": [
+    "chorus",
+    "decowam",
+    "groot-n1",
+    "motionwam",
+    "umi-on-legs"
+   ],
+   "arxiv": "2512.11047",
+   "doi": "10.48550/arxiv.2512.11047",
+   "code": "",
+   "site": "",
+   "note": "ICLR 2026. A unified <b>latent</b> VLA for whole-body loco-manipulation — one model issuing both base and arm commands through a shared latent action space rather than two stacked controllers. If it holds, it collapses the manipulation/locomotion interface that [[umi-on-legs]] carefully separates, which is a real architectural fork for MABEL.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Humanoid robots require precise locomotion and dexterous manipulation to perform challenging loco-manipulation tasks. Yet existing approaches, modular or end-to-end, are deficient in manipulation-aware locomotion. This confines the robot to a limited workspace, preventing it from performing large-space loco-manipulation. We attribute this to: (1) the challenge of acquiring loco-manipulation knowledge due to the scarcity of humanoid teleoperation data, and (2) the difficulty of faithfully and reliably executing locomotion commands, stemming from the limited precision and stability of existing RL controllers. To acquire richer loco-manipulation knowledge, we propose a unified latent learning framework that enables Vision-Language-Action (VLA) system to learn from low-cost action-free egocentric videos. Moreover, an efficient human data collection pipeline is devised to augment the dataset and scale the benefits. To execute the desired locomotion commands more precisely, we present a loco-manipulation-oriented (LMO) RL policy specifically tailored for accurate and stable core loco-manipulation movements, such as advancing, turning, and squatting. Building on these components, we introduce WholeBodyVLA, a unified framework for humanoid loco-manipulation. To the best of our knowledge, WholeBodyVLA is one of its kind enabling large-space humanoid loco-manipulation. It is verified via comprehensive experiments on the AgiBot X2 humanoid, outperforming prior baseline by 21.3%. It also demonstrates strong generalization and high extensibility across a broad range of tasks.",
+   "source": "curated",
+   "first_author": "Jiang",
+   "url": "https://arxiv.org/abs/2512.11047",
+   "fig": "figures/wholebodyvla.webp",
+   "figs": [
+    "figures/wholebodyvla-1.webp"
+   ]
+  },
+  {
    "id": "pi0",
    "title": "$π_0$: A Vision-Language-Action Flow Model for General Robot Control",
    "tree": "il",
@@ -3369,6 +4471,7 @@
    ],
    "related": [
     "act",
+    "audio-vla",
     "dexvla",
     "dp",
     "dvla",
@@ -3406,6 +4509,72 @@
     "figures/pi0-1.webp",
     "figures/pi0-2.webp",
     "figures/pi0-3.webp"
+   ]
+  },
+  {
+   "id": "ace-teleop",
+   "title": "ACE: A Cross-Platform Visual-Exoskeletons System for Low-Cost Dexterous Teleoperation",
+   "tree": "systems",
+   "branch": "interfaces",
+   "authors": [
+    "Shiqi Yang",
+    "Minghuan Liu",
+    "Yuzhe Qin",
+    "Runyu Ding",
+    "Jialong Li",
+    "Xuxin Cheng",
+    "Ruihan Yang",
+    "Sha Yi",
+    "Xiaolong Wang"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-08-21",
+   "topics": [
+    "cross-platform exoskeleton",
+    "hand-facing camera",
+    "low cost"
+   ],
+   "paradigm": [
+    "teleop"
+   ],
+   "method": [],
+   "projects": [
+    "exo",
+    "geodex",
+    "mabel"
+   ],
+   "ideas": [
+    "learned-retargeting",
+    "mobile-dex-umi"
+   ],
+   "related": [
+    "anyteleop",
+    "dexumi",
+    "exo-viha",
+    "gello",
+    "homie"
+   ],
+   "arxiv": "2408.11805",
+   "doi": "10.48550/arxiv.2408.11805",
+   "code": "",
+   "site": "",
+   "note": "One rig that teleoperates humanoid hands, arm-hand, arm-gripper and quadruped-gripper systems — a hand-facing camera for finger pose plus a portable exoskeleton base for the wrist. The cross-platform claim is the valuable part for MABEL: build the interface once, retarget to whatever the robot becomes.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Learning from demonstrations has shown to be an effective approach to robotic manipulation, especially with the recently collected large-scale robot data with teleoperation systems. Building an efficient teleoperation system across diverse robot platforms has become more crucial than ever. However, there is a notable lack of cost-effective and user-friendly teleoperation systems for different end-effectors, e.g., anthropomorphic robot hands and grippers, that can operate across multiple platforms. To address this issue, we develop ACE, a cross-platform visual-exoskeleton system for low-cost dexterous teleoperation. Our system utilizes a hand-facing camera to capture 3D hand poses and an exoskeleton mounted on a portable base, enabling accurate real-time capture of both finger and wrist poses. Compared to previous systems, which often require hardware customization according to different robots, our single system can generalize to humanoid hands, arm-hands, arm-gripper, and quadruped-gripper systems with high-precision teleoperation. This enables imitation learning for complex manipulation tasks on diverse platforms.",
+   "source": "curated",
+   "first_author": "Shiqi Yang",
+   "url": "https://arxiv.org/abs/2408.11805",
+   "fig": "figures/ace-teleop.webp",
+   "figs": [
+    "figures/ace-teleop-1.webp",
+    "figures/ace-teleop-2.webp"
    ]
   },
   {
@@ -3454,9 +4623,11 @@
     "digit",
     "egoemg",
     "gelsight",
+    "miccheck",
     "reskin",
     "robotacdex",
-    "rotate-without-seeing"
+    "rotate-without-seeing",
+    "sonicsense"
    ],
    "arxiv": "2409.08276",
    "doi": "",
@@ -3760,6 +4931,74 @@
    ]
   },
   {
+   "id": "exbody2",
+   "title": "ExBody2: Advanced Expressive Humanoid Whole-Body Control",
+   "tree": "rl",
+   "branch": "motion-imitation",
+   "authors": [
+    "Mazeyu Ji",
+    "Peng",
+    "Xuanbin",
+    "Fangchen Liu",
+    "Jialong Li",
+    "Ge Yang",
+    "Xuxin Cheng",
+    "Xiaolong Wang"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-12-17",
+   "topics": [
+    "expressive whole-body tracking",
+    "velocity decoupling",
+    "teacher filtering"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "learned-retargeting"
+   ],
+   "related": [
+    "adaptive-tracking",
+    "amo",
+    "cross-humanoid-wbc",
+    "exbody",
+    "gmr",
+    "handoff",
+    "hover",
+    "hugwbc",
+    "kungfu-bot",
+    "resmimic",
+    "stablemimic",
+    "twist"
+   ],
+   "arxiv": "2412.13196",
+   "doi": "10.48550/arxiv.2412.13196",
+   "code": "",
+   "site": "",
+   "note": "The successor to ExBody, and the current reference for general whole-body motion tracking. Two ideas carry: decouple whole-body velocity tracking from body-landmark tracking, and use a teacher policy to <b>filter out motions the robot physically cannot do</b> before training on them. That filtering step is why most tracking pipelines fail on raw mocap.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "This paper tackles the challenge of enabling real-world humanoid robots to perform expressive and dynamic whole-body motions while maintaining overall stability and robustness. We propose Advanced Expressive Whole-Body Control (Exbody2), a method for producing whole-body tracking controllers that are trained on both human motion capture and simulated data and then transferred to the real world. We introduce a technique for decoupling the velocity tracking of the entire body from tracking body landmarks. We use a teacher policy to produce intermediate data that better conforms to the robot's kinematics and to automatically filter away infeasible whole-body motions. This two-step approach enabled us to produce a student policy that can be deployed on the robot that can walk, crouch, and dance. We also provide insight into the trade-off between versatility and the tracking performance on specific motions. We observed significant improvement of tracking performance after fine-tuning on a small amount of data, at the expense of the others.",
+   "source": "curated",
+   "first_author": "Mazeyu Ji",
+   "url": "https://arxiv.org/abs/2412.13196",
+   "fig": "figures/exbody2.webp",
+   "figs": [
+    "figures/exbody2-1.webp"
+   ]
+  },
+  {
    "id": "gello",
    "title": "GELLO: A General, Low-Cost, and Intuitive Teleoperation Framework for Robot Manipulators",
    "tree": "systems",
@@ -3799,10 +5038,12 @@
    ],
    "ideas": [],
    "related": [
+    "ace-teleop",
     "aloha",
     "modpack",
     "open-television",
     "so100",
+    "telemoma",
     "umi"
    ],
    "arxiv": "2309.13037",
@@ -3890,6 +5131,67 @@
     "figures/genie-1.webp",
     "figures/genie-2.webp",
     "figures/genie-3.webp"
+   ]
+  },
+  {
+   "id": "hearing-touch",
+   "title": "Hearing Touch: Audio-Visual Pretraining for Contact-Rich Manipulation",
+   "tree": "il",
+   "branch": "tactile-learn",
+   "authors": [
+    "Jared Mejia",
+    "Victoria Dean",
+    "Tess Hellebrekers",
+    "Abhinav Gupta"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-05-14",
+   "topics": [
+    "audio-visual pretraining",
+    "contact-rich manipulation"
+   ],
+   "paradigm": [
+    "representation learning",
+    "audio"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "wam-tactile"
+   ],
+   "ideas": [
+    "robot-dj",
+    "tactile-wm"
+   ],
+   "related": [
+    "av-contact",
+    "maniwav",
+    "r3m",
+    "sonicsense",
+    "vibecheck"
+   ],
+   "arxiv": "2405.08576",
+   "doi": "10.48550/arxiv.2405.08576",
+   "code": "",
+   "site": "",
+   "note": "Audio-visual pretraining with piezoelectric contact microphones, and the result that matters: sound improves generalisation most in the <b>low-data</b> regime and under texture change. For a task defined by friction against a rotating surface, that is exactly the failure mode you need covered.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Although pre-training on a large amount of data is beneficial for robot learning, current paradigms only perform large-scale pretraining for visual representations, whereas representations for other modalities are trained from scratch. In contrast to the abundance of visual data, it is unclear what relevant internet-scale data may be used for pretraining other modalities such as tactile sensing. Such pretraining becomes increasingly crucial in the low-data regimes common in robotics applications. In this paper, we address this gap by using contact microphones as an alternative tactile sensor. Our key insight is that contact microphones capture inherently audio-based information, allowing us to leverage large-scale audio-visual pretraining to obtain representations that boost the performance of robotic manipulation. To the best of our knowledge, our method is the first approach leveraging large-scale multisensory pre-training for robotic manipulation. For supplementary information including videos of real robot experiments, please see https://sites.google.com/view/hearing-touch.",
+   "source": "curated",
+   "first_author": "Jared Mejia",
+   "url": "https://arxiv.org/abs/2405.08576",
+   "fig": "figures/hearing-touch.webp",
+   "figs": [
+    "figures/hearing-touch-1.webp",
+    "figures/hearing-touch-2.webp",
+    "figures/hearing-touch-3.webp"
    ]
   },
   {
@@ -3998,9 +5300,12 @@
    "related": [
     "deepmimic",
     "exbody",
+    "gmr",
     "hover",
+    "human2humanoid",
     "omnih2o",
     "phc",
+    "twist",
     "x-op"
    ],
    "arxiv": "2403.04436",
@@ -4020,6 +5325,74 @@
     "figures/h2o-1.webp",
     "figures/h2o-2.webp",
     "figures/h2o-3.webp"
+   ]
+  },
+  {
+   "id": "maniwav",
+   "title": "ManiWAV: Learning Robot Manipulation from In-the-Wild Audio-Visual Data",
+   "tree": "il",
+   "branch": "tactile-learn",
+   "authors": [
+    "Zeyi Liu",
+    "Cheng Chi",
+    "Eric Cousineau",
+    "Naveen Kuppuswamy",
+    "Benjamin Burchfiel",
+    "Shuran Song"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-06-27",
+   "topics": [
+    "ear-in-hand",
+    "in-the-wild audio-visual data",
+    "contact sensing"
+   ],
+   "paradigm": [
+    "IL",
+    "audio"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "wam-tactile"
+   ],
+   "ideas": [
+    "robot-dj",
+    "tactile-wm",
+    "wam-umi-gloves"
+   ],
+   "related": [
+    "audio-vla",
+    "av-contact",
+    "dexumi",
+    "hearing-touch",
+    "see-hear-feel",
+    "sonicsense",
+    "umi",
+    "vibecheck"
+   ],
+   "arxiv": "2406.19464",
+   "doi": "10.48550/arxiv.2406.19464",
+   "code": "",
+   "site": "",
+   "note": "The key paper for an audio-driven system: an <b>ear-in-hand</b> device — a contact microphone on a UMI-style handheld gripper — that collects audio-visual demonstrations in the wild, and policies learned directly from them. It is the UMI argument with sound added, which makes it the obvious substrate for a turntable system.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Audio signals provide rich information for the robot interaction and object properties through contact. This information can surprisingly ease the learning of contact-rich robot manipulation skills, especially when the visual information alone is ambiguous or incomplete. However, the usage of audio data in robot manipulation has been constrained to teleoperated demonstrations collected by either attaching a microphone to the robot or object, which significantly limits its usage in robot learning pipelines. In this work, we introduce ManiWAV: an 'ear-in-hand' data collection device to collect in-the-wild human demonstrations with synchronous audio and visual feedback, and a corresponding policy interface to learn robot manipulation policy directly from the demonstrations. We demonstrate the capabilities of our system through four contact-rich manipulation tasks that require either passively sensing the contact events and modes, or actively sensing the object surface materials and states. In addition, we show that our system can generalize to unseen in-the-wild environments by learning from diverse in-the-wild human demonstrations.",
+   "source": "curated",
+   "first_author": "Zeyi Liu",
+   "url": "https://arxiv.org/abs/2406.19464",
+   "fig": "figures/maniwav.webp",
+   "figs": [
+    "figures/maniwav-1.webp",
+    "figures/maniwav-2.webp",
+    "figures/maniwav-3.webp"
    ]
   },
   {
@@ -4068,6 +5441,7 @@
     "ase",
     "beyond-mimic",
     "deepmimic",
+    "handoff",
     "hover",
     "omnih2o",
     "phc"
@@ -4136,6 +5510,7 @@
     "aloha2",
     "behavior-robot-suite",
     "homer",
+    "telemoma",
     "tidybot2",
     "umi",
     "umi-on-legs"
@@ -4202,9 +5577,11 @@
    ],
    "related": [
     "h2o",
+    "homie",
     "hover",
     "maskedmimic",
-    "phc"
+    "phc",
+    "twist"
    ],
    "arxiv": "2406.08858",
    "doi": "",
@@ -4268,6 +5645,7 @@
     "rl-post-training"
    ],
    "related": [
+    "audio-vla",
     "dexvla",
     "iRe-VLA",
     "libero",
@@ -4337,6 +5715,7 @@
    "related": [
     "dagger",
     "expo-ft",
+    "hand-in-loop",
     "omnitactune",
     "pi06",
     "pld",
@@ -4495,6 +5874,132 @@
    ]
   },
   {
+   "id": "sonicsense",
+   "title": "SonicSense: Object Perception from In-Hand Acoustic Vibration",
+   "tree": "systems",
+   "branch": "tactile-hw",
+   "authors": [
+    "Jiaxun Liu",
+    "Boyuan Chen"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-06-25",
+   "topics": [
+    "in-hand acoustic vibration",
+    "contact microphones per fingertip"
+   ],
+   "paradigm": [
+    "hardware",
+    "audio"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "wam-tactile"
+   ],
+   "ideas": [
+    "robot-dj",
+    "tactile-wm",
+    "hand-22dof"
+   ],
+   "related": [
+    "anyskin",
+    "dexskin",
+    "hearing-touch",
+    "leap-hand",
+    "maniwav",
+    "miccheck",
+    "vibecheck"
+   ],
+   "arxiv": "2406.17932",
+   "doi": "10.48550/arxiv.2406.17932",
+   "code": "",
+   "site": "",
+   "note": "A four-fingered hand with a contact microphone in <b>every fingertip</b>, identifying materials, container contents and 3D shape from tapping and shaking. Duke (Boyuan Chen). This is the hardware pattern for a dexterous audio hand — and it is cheap, because a piezo disc costs a dollar.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "We introduce SonicSense, a holistic design of hardware and software to enable rich robot object perception through in-hand acoustic vibration sensing. While previous studies have shown promising results with acoustic sensing for object perception, current solutions are constrained to a handful of objects with simple geometries and homogeneous materials, single-finger sensing, and mixing training and testing on the same objects. SonicSense enables container inventory status differentiation, heterogeneous material prediction, 3D shape reconstruction, and object re-identification from a diverse set of 83 real-world objects. Our system employs a simple but effective heuristic exploration policy to interact with the objects as well as end-to-end learning-based algorithms to fuse vibration signals to infer object properties. Our framework underscores the significance of in-hand acoustic vibration sensing in advancing robot tactile perception.",
+   "source": "curated",
+   "first_author": "Jiaxun Liu",
+   "url": "https://arxiv.org/abs/2406.17932",
+   "fig": "figures/sonicsense.webp",
+   "figs": [
+    "figures/sonicsense-1.webp",
+    "figures/sonicsense-2.webp"
+   ]
+  },
+  {
+   "id": "telemoma",
+   "title": "TeleMoMa: A Modular and Versatile Teleoperation System for Mobile Manipulation",
+   "tree": "systems",
+   "branch": "interfaces",
+   "authors": [
+    "Shivin Dass",
+    "Wensi Ai",
+    "Yuqian Jiang",
+    "Samik Singh",
+    "Jiaheng Hu",
+    "Ruohan Zhang",
+    "Peter Stone",
+    "Ben Abbatematteo",
+    "Roberto Martín-Martín"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-03-12",
+   "topics": [
+    "modular teleoperation",
+    "mobile manipulation",
+    "multi-interface"
+   ],
+   "paradigm": [
+    "teleop"
+   ],
+   "method": [],
+   "projects": [
+    "m2",
+    "mabel"
+   ],
+   "ideas": [
+    "mobile-dex-umi",
+    "learned-retargeting"
+   ],
+   "related": [
+    "gello",
+    "homie",
+    "mobile-aloha",
+    "modpack",
+    "tidybot2"
+   ],
+   "arxiv": "2403.07869",
+   "doi": "10.48550/arxiv.2403.07869",
+   "code": "",
+   "site": "",
+   "note": "A modular whole-body teleop interface for <b>mobile</b> manipulators that unifies RGB-D, VR controllers, keyboard and joystick — and mixes them. Demonstrated on Tiago++, HSR and Fetch. If MABEL needs one teleop stack that survives changing the input device, this is the architecture.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "A critical bottleneck limiting imitation learning in robotics is the lack of data. This problem is more severe in mobile manipulation, where collecting demonstrations is harder than in stationary manipulation due to the lack of available and easy-to-use teleoperation interfaces. In this work, we demonstrate TeleMoMa, a general and modular interface for whole-body teleoperation of mobile manipulators. TeleMoMa unifies multiple human interfaces including RGB and depth cameras, virtual reality controllers, keyboard, joysticks, etc., and any combination thereof. In its more accessible version, TeleMoMa works using simply vision (e.g., an RGB-D camera), lowering the entry bar for humans to provide mobile manipulation demonstrations. We demonstrate the versatility of TeleMoMa by teleoperating several existing mobile manipulators - PAL Tiago++, Toyota HSR, and Fetch - in simulation and the real world. We demonstrate the quality of the demonstrations collected with TeleMoMa by training imitation learning policies for mobile manipulation tasks involving synchronized whole-body motion. Finally, we also show that TeleMoMa's teleoperation channel enables teleoperation on site, looking at the robot, or remote, sending commands and observations through a computer network, and perform user studies to evaluate how easy it is for novice users to learn to collect demonstrations with different combinations of human interfaces enabled by our system. We hope TeleMoMa becomes a helpful tool for the community enabling researchers to collect whole-body mobile manipulation demonstrations. For more information and video results, https://robin-lab.cs.utexas.edu/telemoma-web.",
+   "source": "curated",
+   "first_author": "Shivin Dass",
+   "url": "https://arxiv.org/abs/2403.07869",
+   "fig": "figures/telemoma.webp",
+   "figs": [
+    "figures/telemoma-1.webp",
+    "figures/telemoma-2.webp"
+   ]
+  },
+  {
    "id": "umi-on-legs",
    "title": "UMI on Legs: Making Manipulation Policies Mobile with Manipulation-Centric Whole-body Controllers",
    "tree": "systems",
@@ -4541,10 +6046,13 @@
    ],
    "related": [
     "falcon",
+    "handeye-delivery",
+    "hmi-robotfree",
     "mobile-aloha",
     "realdexumi",
     "tidybot2",
-    "umi"
+    "umi",
+    "wholebodyvla"
    ],
    "arxiv": "2407.10353",
    "doi": "",
@@ -4628,6 +6136,8 @@
     "egokit",
     "fast-umi",
     "gello",
+    "hmi-robotfree",
+    "maniwav",
     "mobile-aloha",
     "one-demo",
     "open-aoe",
@@ -4656,6 +6166,68 @@
     "figures/umi-1.webp",
     "figures/umi-2.webp",
     "figures/umi-3.webp"
+   ]
+  },
+  {
+   "id": "wheeled-posforce",
+   "title": "Wheeled Humanoid Bilateral Teleoperation with Position-Force Control Modes for Dynamic Loco-Manipulation",
+   "tree": "rl",
+   "branch": "loco-manip",
+   "authors": [
+    "Amartya Purushottam",
+    "Jack Yan",
+    "Christopher Xu",
+    "Youngwoo Sim",
+    "João Ramos"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-07-16",
+   "topics": [
+    "position-force control modes",
+    "bilateral teleoperation",
+    "wheeled humanoid"
+   ],
+   "paradigm": [
+    "control",
+    "teleop"
+   ],
+   "method": [],
+   "projects": [
+    "m2",
+    "mabel"
+   ],
+   "ideas": [
+    "learned-retargeting",
+    "hri-collab"
+   ],
+   "related": [
+    "falcon",
+    "ume",
+    "wheeled-bilateral",
+    "wheeled-multistage"
+   ],
+   "arxiv": "2407.12189",
+   "doi": "10.48550/arxiv.2407.12189",
+   "code": "",
+   "site": "",
+   "note": "Already in your M2 library. Switching between position and force control modes during wheeled-humanoid teleoperation — which is exactly the decision MABEL has to make when it goes from reaching to pushing.",
+   "stars": 3,
+   "curated": true,
+   "local": "~/Desktop/M2/literature/mobile_bimanual_platforms/2024_2407.12189v1_Wheeled_Humanoid_Bilateral_Teleoperation_with_Position_Force.pdf",
+   "abstract": "Remote-controlled humanoid robots can revolutionize manufacturing, construction, and healthcare industries by performing complex or dangerous manual tasks traditionally done by humans. We refer to these behaviors as Dynamic Loco-Manipulation (DLM). To successfully complete these tasks, humans control the position of their bodies and contact forces at their hands. To enable similar whole-body control in humanoids, we introduce loco-manipulation retargeting strategies with switched position and force control modes in a bilateral teleoperation framework. Our proposed locomotion mappings use the pitch and yaw of the operator's torso to control robot position or acceleration. The manipulation retargeting maps the operator's arm movements to the robot's arms for joint-position or impedance control of the end-effector. A Human-Machine Interface captures the teleoperator's motion and provides haptic feedback to their torso, enhancing their awareness of the robot's interactions with the environment. In this paper, we demonstrate two forms of DLM. First, we show the robot slotting heavy boxes (5-10.5 kg), weighing up to 83% of the robot's weight, into desired positions. Second, we show human-robot collaboration for carrying an object, where the robot and teleoperator take on leader and follower roles.",
+   "source": "curated",
+   "first_author": "Amartya Purushottam",
+   "url": "https://arxiv.org/abs/2407.12189",
+   "fig": "figures/wheeled-posforce.webp",
+   "figs": [
+    "figures/wheeled-posforce-1.webp",
+    "figures/wheeled-posforce-2.webp",
+    "figures/wheeled-posforce-3.webp"
    ]
   },
   {
@@ -4762,11 +6334,13 @@
     "learned-retargeting"
    ],
    "related": [
+    "ace-teleop",
     "bunny-visionpro",
     "c2dex",
     "dex-retargeting",
     "dexpilot",
-    "open-television"
+    "open-television",
+    "retarget-objectives"
    ],
    "arxiv": "2307.04577",
    "doi": "",
@@ -4861,6 +6435,67 @@
     "figures/dp-1.webp",
     "figures/dp-2.webp",
     "figures/dp-3.webp"
+   ]
+  },
+  {
+   "id": "wheeled-bilateral",
+   "title": "Dynamic Mobile Manipulation via Whole-Body Bilateral Teleoperation of a Wheeled Humanoid",
+   "tree": "rl",
+   "branch": "loco-manip",
+   "authors": [
+    "Amartya Purushottam",
+    "Yeongtae Jung",
+    "Christopher Xu",
+    "João Ramos"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2023,
+   "date": "2023-07-03",
+   "topics": [
+    "wheeled humanoid",
+    "bilateral teleoperation",
+    "dynamic loco-manipulation"
+   ],
+   "paradigm": [
+    "teleop",
+    "control"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "learned-retargeting",
+    "hri-collab"
+   ],
+   "related": [
+    "deep-wbc",
+    "falcon",
+    "wheeled-multistage",
+    "wheeled-payload",
+    "wheeled-posforce"
+   ],
+   "arxiv": "2307.01350",
+   "doi": "10.48550/arxiv.2307.01350",
+   "code": "",
+   "site": "",
+   "note": "A wheeled humanoid doing dynamic mobile manipulation under whole-body bilateral teleoperation. MABEL is a wheeled humanoid, and this line of work is the closest existing control literature to that morphology — the balance problem on wheels is genuinely different from legs and is under-served in the RL literature.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Humanoid robots have the potential to help human workers by realizing physically demanding manipulation tasks such as moving large boxes within warehouses. We define such tasks as Dynamic Mobile Manipulation (DMM). This paper presents a framework for DMM via whole-body teleoperation, built upon three key contributions: Firstly, a teleoperation framework employing a Human Machine Interface (HMI) and a bi-wheeled humanoid, SATYRR, is proposed. Secondly, the study introduces a dynamic locomotion mapping, utilizing human-robot reduced order models, and a kinematic retargeting strategy for manipulation tasks. Additionally, the paper discusses the role of whole-body haptic feedback for wheeled humanoid control. Finally, the system's effectiveness and mappings for DMM are validated through locomanipulation experiments and heavy box pushing tasks. Here we show two forms of DMM: grasping a target moving at an average speed of 0.4 m/s, and pushing boxes weighing up to 105\\% of the robot's weight. By simultaneously adjusting their pitch and using their arms, the pilot adjusts the robot pose to apply larger contact forces and move a heavy box at a constant velocity of 0.2 m/s.",
+   "source": "curated",
+   "first_author": "Amartya Purushottam",
+   "url": "https://arxiv.org/abs/2307.01350",
+   "fig": "figures/wheeled-bilateral.webp",
+   "figs": [
+    "figures/wheeled-bilateral-1.webp",
+    "figures/wheeled-bilateral-2.webp",
+    "figures/wheeled-bilateral-3.webp"
    ]
   },
   {
@@ -5028,6 +6663,7 @@
     "ruka",
     "ruka-v2",
     "shadow-hand",
+    "sonicsense",
     "videodex"
    ],
    "arxiv": "2309.06440",
@@ -5664,6 +7300,7 @@
    "related": [
     "ego4d",
     "egoscale",
+    "hearing-touch",
     "vip",
     "vjepa2"
    ],
@@ -6303,10 +7940,12 @@
     "codesign-dog-rl"
    ],
    "related": [
+    "getup-morphologies",
     "meta-rl-legged",
     "mit-cheetah",
     "text2robot",
-    "transform2act"
+    "transform2act",
+    "x2n"
    ],
    "arxiv": "",
    "doi": "10.1038/s42256-021-00320-3",
@@ -6610,6 +8249,7 @@
    "related": [
     "anymal-hwangbo",
     "dyret",
+    "swheg",
     "unitree-g1"
    ],
    "arxiv": "",
@@ -6677,8 +8317,10 @@
     "disney-bdx",
     "exbody",
     "h2o",
+    "humanup",
     "maskedmimic",
     "phc",
+    "stablemimic",
     "videomimic",
     "visualmimic"
    ],
@@ -7209,6 +8851,63 @@
    "url": "https://doi.org/10.1145/3596711.3596785"
   },
   {
+   "id": "kungfu-bot",
+   "title": "A Kung Fu Athlete Bot That Can Do It All Day: Highly Dynamic, Balance-Challenging Motion Dataset and Autonomous Fall-Resilient Tracking",
+   "tree": "rl",
+   "branch": "motion-imitation",
+   "authors": [
+    "Zhongxiang Lei",
+    "Lulu Cao",
+    "Xuyang Wang",
+    "Tianyi Qian",
+    "Jinyan Liu",
+    "Xuesong Li"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-02-14",
+   "topics": [
+    "highly dynamic motion dataset",
+    "fall-resilient tracking"
+   ],
+   "paradigm": [
+    "RL",
+    "dataset"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "transformer-robot"
+   ],
+   "related": [
+    "exbody2",
+    "humanup",
+    "stablemimic"
+   ],
+   "arxiv": "2602.13656",
+   "doi": "10.48550/arxiv.2602.13656",
+   "code": "",
+   "site": "",
+   "note": "A balance-challenging dynamic motion dataset plus autonomous fall-resilient tracking — the robot keeps working all day because it recovers by itself. The dataset is the part to reuse.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Current humanoid motion tracking systems can execute routine and moderately dynamic behaviors, yet significant gaps remain near hardware performance limits and algorithmic robustness boundaries. Martial arts represent an extreme case of highly dynamic human motion, characterized by rapid center-of-mass shifts, complex coordination, and abrupt posture transitions. However, datasets tailored to such high-intensity scenarios remain scarce. To address this gap, we construct KungFuAthlete, a high-dynamic martial arts motion dataset derived from professional athletes' daily training videos. The dataset includes ground and jump subsets covering representative complex motion patterns. The jump subset exhibits substantially higher joint, linear, and angular velocities compared to commonly used datasets such as LAFAN1, PHUMA, and AMASS, indicating significantly increased motion intensity and complexity. Importantly, even professional athletes may fail during highly dynamic movements. Similarly, humanoid robots are prone to instability and falls under external disturbances or execution errors. Most prior work assumes motion execution remains within safe states and lacks a unified strategy for modeling unsafe states and enabling reliable autonomous recovery. We propose a novel training paradigm that enables a single policy to jointly learn high-dynamic motion tracking and fall recovery, unifying agile execution and stabilization within one framework. This framework expands robotic capability from pure motion tracking to recovery-enabled execution, promoting more robust and autonomous humanoid performance in real-world high-dynamic scenarios.",
+   "source": "curated",
+   "first_author": "Zhongxiang Lei",
+   "url": "https://arxiv.org/abs/2602.13656",
+   "fig": "figures/kungfu-bot.webp",
+   "figs": [
+    "figures/kungfu-bot-1.webp"
+   ]
+  },
+  {
    "id": "ace-ego-0",
    "title": "ACE-Ego-0: Unifying Egocentric Human and Robotic Data for VLA Pretraining",
    "tree": "il",
@@ -7427,7 +9126,9 @@
     "falcon",
     "flare",
     "mobilewam",
-    "oa-wam"
+    "motionwam",
+    "oa-wam",
+    "wholebodyvla"
    ],
    "arxiv": "2608.20114",
    "doi": "",
@@ -7487,7 +9188,8 @@
     "anymal-hwangbo",
     "clutterdexgrasp",
     "dexsim2real",
-    "force-grasp-s2r"
+    "force-grasp-s2r",
+    "wheeled-payload"
    ],
    "arxiv": "2510.08556",
    "doi": "",
@@ -8047,6 +9749,131 @@
    ]
   },
   {
+   "id": "handoff",
+   "title": "HANDOFF: Humanoid Agentic Task-Space Whole-Body Control via Distilled Complementary Teachers",
+   "tree": "rl",
+   "branch": "loco-manip",
+   "authors": [
+    "Lizhi Yang",
+    "Junheng Li",
+    "Nehar Poddar",
+    "Yiling Hou",
+    "Gio Huh",
+    "Robert Griffin",
+    "Georgia Gkioxari",
+    "Aaron Ames"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-06-04",
+   "topics": [
+    "task-space whole-body control",
+    "distilled teachers",
+    "agentic"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "agentic-physical",
+    "learned-retargeting"
+   ],
+   "related": [
+    "amo",
+    "exbody2",
+    "hover",
+    "maskedmimic",
+    "spatial-brain"
+   ],
+   "arxiv": "2606.06493",
+   "doi": "10.48550/arxiv.2606.06493",
+   "code": "",
+   "site": "",
+   "note": "Agentic task-space whole-body control distilled from complementary teacher policies. The distillation of several specialist teachers into one deployable policy is the same move [[hover]] makes for command modes.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "For a humanoid robot to be deployed in the real world, the choice of command space (i.e., the interface between task planning and whole-body control) is crucial. Existing whole-body controllers typically demand dense kinematic or spatial references that planners struggle to synthesize from task semantics. We instead propose a compact, explicit interface that is intuitive, general, modular, and expressive enough for diverse loco-manipulation skills. To this end, we introduce HANDOFF, a single humanoid whole-body controller that follows this interface and is distilled via multi-teacher KL distillation under a context-conditioned gating scheme into a mixture-of-experts student from three complementary specialists: whole-body motion tracking with safety-filtered data, locomotion, and fall-recovery. On the Unitree G1, HANDOFF matches state-of-the-art velocity tracking and offers one of the largest robust manipulation workspaces. We further demonstrate hardware feasibility through multiple natural-language-driven task roll-outs, powered by a VLM-driven agentic planner with no task-specific data or controller fine-tuning.",
+   "source": "curated",
+   "first_author": "Lizhi Yang",
+   "url": "https://arxiv.org/abs/2606.06493",
+   "fig": "figures/handoff.webp",
+   "figs": [
+    "figures/handoff-1.webp"
+   ]
+  },
+  {
+   "id": "hand-in-loop",
+   "title": "Hand-in-the-Loop: Improving VLA Policies for Dexterous Manipulation via Seamless Hand-Arm Intervention",
+   "tree": "rl",
+   "branch": "post-training",
+   "authors": [
+    "Zhuohang Li",
+    "Liqun Huang",
+    "Wei Xu",
+    "Zhengming Zhu",
+    "Nie Lin",
+    "Xiao Ma",
+    "Xinjun Sheng",
+    "Ruoshi Wen"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-05-14",
+   "topics": [
+    "hand-arm intervention",
+    "VLA improvement",
+    "dexterous manipulation"
+   ],
+   "paradigm": [
+    "RL",
+    "VLA"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "mabel"
+   ],
+   "ideas": [
+    "rl-post-training",
+    "hri-collab"
+   ],
+   "related": [
+    "hil-serl",
+    "pi06",
+    "pld",
+    "ript-vla"
+   ],
+   "arxiv": "2605.15157",
+   "doi": "10.48550/arxiv.2605.15157",
+   "code": "",
+   "site": "",
+   "note": "Seamless hand-arm human intervention to improve a dexterous VLA — HIL-SERL's idea carried into multi-finger manipulation, where taking over mid-episode is much harder than with a gripper.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Vision-Language-Action (VLA) models are prone to compounding errors in dexterous manipulation, where high-dimensional action spaces and contact-rich dynamics amplify small policy deviations over long horizons. While Interactive Imitation Learning (IIL) can refine policies through human correction data, applying it to high-degree-of-freedom (DoF) robotic hands remains challenging due to a command mismatch between human teleoperation and policy execution at the intervention moment, which causes abrupt robot-hand configuration changes, or \"gesture jumps\". We present Hand-in-the-Loop (HandITL), a seamless human-in-the-loop intervention method that blends human corrective intent with autonomous policy execution to avoid gesture jumps during bimanual dexterous manipulation. Compared with taking over control using direct teleoperation, HandITL reduces intervention jitter by 99.8% and preserves robust post-intervention manipulation, reducing grasp failures by 87.5% and mean completion time by 19.1%. We validate HandITL on tasks requiring bimanual coordination, tool use, and fine-grained long-horizon manipulation. When used to collect correction data for policy refinement, HandITL yields policies that outperform those trained with standard teleoperation data by 19% on average across three long-horizon dexterous tasks.",
+   "source": "curated",
+   "first_author": "Zhuohang Li",
+   "url": "https://arxiv.org/abs/2605.15157",
+   "fig": "figures/hand-in-loop.webp",
+   "figs": [
+    "figures/hand-in-loop-1.webp"
+   ]
+  },
+  {
    "id": "humannet",
    "title": "HumanNet: Scaling Human-centric Video Learning to One Million Hours",
    "tree": "il",
@@ -8098,6 +9925,128 @@
    "figs": [
     "figures/humannet-1.webp",
     "figures/humannet-2.webp"
+   ]
+  },
+  {
+   "id": "spatial-brain",
+   "title": "Humanoid Whole-Body Manipulation via Active Spatial Brain and Generalizable Action Cerebellum",
+   "tree": "rl",
+   "branch": "loco-manip",
+   "authors": [
+    "Zhizhao Liang",
+    "Yi-Lin Wei",
+    "Xuhang Chen",
+    "Mu Lin",
+    "Yi-Xiang He",
+    "Zhexi Luo",
+    "Jun-Hui Liu",
+    "Kun-Yu Lin",
+    "Wei-Shi Zheng"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-05-20",
+   "topics": [
+    "whole-body manipulation",
+    "spatial reasoning",
+    "generalizable action"
+   ],
+   "paradigm": [
+    "VLA",
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "agentic-physical"
+   ],
+   "related": [
+    "cosmos-reason",
+    "groot-n1",
+    "handoff",
+    "helix"
+   ],
+   "arxiv": "2605.21133",
+   "doi": "10.48550/arxiv.2605.21133",
+   "code": "",
+   "site": "",
+   "note": "Splits humanoid whole-body manipulation into an 'active spatial brain' and a 'generalizable action cerebellum' — the dual-system split again, this time with spatial reasoning as the slow half.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "In this paper, we explore spatial-aware humanoid whole-body manipulation task. Compared with tabletop settings, this task poses two key challenges: 1) Spatial understanding is challenging in complex 3D environments with diverse spatial relations. 2) Action generation is difficult to generalize, as limited and costly real-robot data restricts data-driven models generalization. To address these challenges, we propose a generalizable humanoid loco-manipulation framework that leverages the spatial perception and action generation capabilities of multi-agent large models. Specifically, our framework includes two components: Active Spatial Brain for active spatial perception and decision-making, and Generalizable Action Cerebellum for executable robot action generation. The first component actively perceives the spatial scene and makes decisions on task planning and subtask decomposition. The second component generate executable robot actions based on the decisions made by the first module without needs of task-specific real robot data. To benchmark our framework, we design a set of spatial manipulation tasks from two perspectives: evaluating spatial perception and understanding, and assessing real-robot task performance. The results demonstrate strong performance on both aspects across diverse tasks and environments.",
+   "source": "curated",
+   "first_author": "Zhizhao Liang",
+   "url": "https://arxiv.org/abs/2605.21133",
+   "fig": "figures/spatial-brain.webp",
+   "figs": [
+    "figures/spatial-brain-1.webp"
+   ]
+  },
+  {
+   "id": "intention-priors",
+   "title": "Learning Human-Intention Priors from Large-Scale Human Demonstrations for Robotic Manipulation",
+   "tree": "il",
+   "branch": "human-video",
+   "authors": [
+    "Yifan Xie",
+    "Yuan Wang",
+    "Guangyu Chen",
+    "Jinkun Liu",
+    "Yu Sun",
+    "Wenbo Ding"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-04-27",
+   "topics": [
+    "human-intention priors",
+    "large-scale demonstrations"
+   ],
+   "paradigm": [
+    "IL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel",
+    "r2s2r"
+   ],
+   "ideas": [
+    "ego-dex",
+    "hri-collab",
+    "third-person"
+   ],
+   "related": [
+    "ego2robot",
+    "egoscale",
+    "humanoid-policy",
+    "interact"
+   ],
+   "arxiv": "2604.24681",
+   "doi": "10.48550/arxiv.2604.24681",
+   "code": "",
+   "site": "",
+   "note": "Learns intention priors from large-scale human demonstrations rather than action labels. A different answer to the embodiment gap: transfer the <em>intent</em>, and let the robot solve the kinematics itself.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Human videos contain rich manipulation priors, but using them for robot learning remains difficult because raw observations entangle scene understanding, human motion, and embodiment-specific action. We introduce MoT-HRA, a hierarchical vision-language-action framework that learns human-intention priors from large-scale human demonstrations. We first curate HA-2.2M, a 2.2M-episode action-language dataset reconstructed from heterogeneous human videos through hand-centric filtering, spatial reconstruction, temporal segmentation, and language alignment. On top of this dataset, MoT-HRA factorizes manipulation into three coupled experts: a vision-language expert predicts an embodiment-agnostic 3D trajectory, an intention expert models MANO-style hand motion as a latent human-motion prior, and a fine expert maps the intention-aware representation to robot action chunks. A shared-attention trunk and read-only key-value transfer allow downstream control to use human priors while limiting interference with upstream representations. Experiments on hand motion generation, simulated manipulation, and real-world robot tasks show that MoT-HRA improves motion plausibility and robust control under distribution shift.",
+   "source": "curated",
+   "first_author": "Yifan Xie",
+   "url": "https://arxiv.org/abs/2604.24681",
+   "fig": "figures/intention-priors.webp",
+   "figs": [
+    "figures/intention-priors-1.webp"
    ]
   },
   {
@@ -8260,6 +10209,7 @@
    "related": [
     "decowam",
     "flare",
+    "motionwam",
     "oa-wam",
     "vjepa2"
    ],
@@ -8547,6 +10497,7 @@
    "projects": [],
    "ideas": [],
    "related": [
+    "demohlm",
     "dp",
     "egodemogen",
     "humanego",
@@ -8904,6 +10855,67 @@
    ]
   },
   {
+   "id": "cross-humanoid-wbc",
+   "title": "Scalable and General Whole-Body Control for Cross-Humanoid Locomotion",
+   "tree": "rl",
+   "branch": "locomotion",
+   "authors": [
+    "Yufei Xue",
+    "Yunfeng Lin",
+    "Wentao Dong",
+    "Yang Tang",
+    "Jingbo Wang",
+    "Jiangmiao Pang",
+    "Ming Zhou",
+    "Minghuan Liu",
+    "Weinan Zhang"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-02-05",
+   "topics": [
+    "cross-embodiment whole-body control",
+    "scalability"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "learned-retargeting"
+   ],
+   "related": [
+    "chorus",
+    "crossformer",
+    "exbody2",
+    "getup-morphologies",
+    "hugwbc"
+   ],
+   "arxiv": "2602.05791",
+   "doi": "10.48550/arxiv.2602.05791",
+   "code": "",
+   "site": "",
+   "note": "Whole-body control that scales across different humanoid bodies rather than being retrained per robot. Relevant if MABEL's morphology keeps changing — which, during a hardware programme, it will.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Learning-based whole-body controllers have become a key driver for humanoid robots, yet most existing approaches require robot-specific training. In this paper, we study the problem of cross-embodiment humanoid control and show that a single policy can robustly generalize across a wide range of humanoid robot designs with one-time training. We introduce XHugWBC, a novel cross-embodiment training framework that enables generalist humanoid control through: (1) physics-consistent morphological randomization, (2) semantically aligned observation and action spaces across diverse humanoid robots, and (3) effective policy architectures modeling morphological and dynamical properties. XHugWBC is not tied to any specific robot. Instead, it internalizes a broad distribution of morphological and dynamical characteristics during training. By learning motion priors from diverse randomized embodiments, the policy acquires a strong structural bias that supports zero-shot transfer to previously unseen robots. Experiments on twelve simulated humanoids and seven real-world robots demonstrate the strong generalization and robustness of the resulting universal controller.",
+   "source": "curated",
+   "first_author": "Yufei Xue",
+   "url": "https://arxiv.org/abs/2602.05791",
+   "fig": "figures/cross-humanoid-wbc.webp",
+   "figs": [
+    "figures/cross-humanoid-wbc-1.webp"
+   ]
+  },
+  {
    "id": "simdex",
    "title": "SiMDex: Mining Similar Egocentric Videos for Cross-Embodiment Dexterous Manipulation",
    "tree": "il",
@@ -9079,6 +11091,66 @@
    "url": "https://www.skild.ai/"
   },
   {
+   "id": "stablemimic",
+   "title": "StableMimic: Smooth Human-Like Recovery for Humanoid Motion Tracking - Learning Beyond the Tracking Distribution for Structured Post-Fall Behavior",
+   "tree": "rl",
+   "branch": "motion-imitation",
+   "authors": [
+    "Weihao Wu",
+    "Ming Huang",
+    "Ruofei Liu",
+    "Jinglei Nie",
+    "Shuxiang Guo",
+    "Chunying Li"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-08-03",
+   "topics": [
+    "post-fall behaviour",
+    "recovery beyond the tracking distribution"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "transformer-robot"
+   ],
+   "related": [
+    "deepmimic",
+    "exbody2",
+    "fall-safety",
+    "humanup",
+    "kungfu-bot"
+   ],
+   "arxiv": "2608.02385",
+   "doi": "10.48550/arxiv.2608.02385",
+   "code": "",
+   "site": "",
+   "note": "Structured post-fall behaviour for motion-tracking policies — what happens when the robot leaves the distribution the tracker was trained on. The honest complement to every DeepMimic-descended controller in this library.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Humanoid motion trackers perform reliably within learned tracking distributions, but falls can move the robot into low-height, contact-rich states from which an advancing command is temporarily unreachable. Tracking-only policies may chase infeasible references, producing rapid, large-amplitude limb corrections that increase risk to the robot and its surroundings. We present StableMimic, a unified tracker trained beyond the nominal tracking distribution. Perturbed resets around multiple human get-up references expose prone, supine, off-balance, and intermediate ground-contact states, shaping structured recovery that returns the robot to the trackable region. Because tracking and recovery occupy markedly different state--action distributions, StableMimic uses dedicated experts for each regime and a proprioceptive gate that continuously blends their actions. A hidden successor-state objective teaches human-reference-shaped recovery without exposing reference identity or phase to the deployed Actor; deployment requires no get-up reference, recovery command, trajectory retrieval, or external policy switch. On the complete retargeted LAFAN1 dance subset, StableMimic achieves the lowest errors on all four tracking metrics among five methods. Across 100 matched push-to-fall trials per method, it recovers in 100/100 and attains the lowest values on six of seven post-fall motion and load measures, supporting improved interaction safety under this protocol. Real Unitree G1 dance and standing-reference deployments qualitatively demonstrate bounded limb motion, autonomous recovery, and command resumption.",
+   "source": "curated",
+   "first_author": "Weihao Wu",
+   "url": "https://arxiv.org/abs/2608.02385",
+   "fig": "figures/stablemimic.webp",
+   "figs": [
+    "figures/stablemimic-1.webp",
+    "figures/stablemimic-2.webp",
+    "figures/stablemimic-3.webp"
+   ]
+  },
+  {
    "id": "tacforesight",
    "title": "TacForeSight: Force-Guided Tactile World Model for Contact-Rich Manipulation",
    "tree": "il",
@@ -9200,6 +11272,64 @@
    "figs": [
     "figures/tactile-wam-1.webp",
     "figures/tactile-wam-2.webp"
+   ]
+  },
+  {
+   "id": "unirelo",
+   "title": "UniReLo: Learning a Unified Humanoid Policy from Fall Recovery to Locomotion across Diverse Terrains",
+   "tree": "rl",
+   "branch": "locomotion",
+   "authors": [
+    "Xiaoyu Xu",
+    "Zhiming Chen",
+    "Yuenan Zhao",
+    "Ran Song",
+    "Wei Zhang (405)"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-06-08",
+   "topics": [
+    "unified fall recovery and locomotion",
+    "diverse terrain"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "transformer-robot"
+   ],
+   "related": [
+    "fall-safety",
+    "getup-morphologies",
+    "hover",
+    "hugwbc",
+    "humanup"
+   ],
+   "arxiv": "2606.08922",
+   "doi": "10.48550/arxiv.2606.08922",
+   "code": "",
+   "site": "",
+   "note": "One policy spanning fall recovery <em>and</em> locomotion across terrains, rather than a recovery policy bolted onto a walking policy. The unification argument matters when you are counting how many policies fit on the robot.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Reliable fall recovery, which commonly aims at attaining a nominal upright posture, is essential for the autonomous operation of humanoid robots in unstructured field environments. Although existing posture-centered methods can synthesize coordinated whole-body recovery motions from diverse fallen configurations, they may result in a dynamically fragile support state, leading to secondary loss of balance or unstable resumption of commanded locomotion, particularly under terrain-dependent contact conditions. We propose to learn a unified humanoid policy from fall recovery to locomotion (UniReLo) across heterogeneous field terrains. UniReLo leverages continuously gated multi-scale motion priors to modulate frame-, sequence-, and gait-level adversarial supervision according to recovery progress, preserving the distinct temporal structures of recovery and locomotion without requiring fixed-threshold switching. In addition, terrain-conditioned recovery guidance evaluates the evolving support state using a terrain-relative support representation and support-feasibility assessment. Simulation and outdoor real-world experiments demonstrate that UniReLo can deliver stable and continuous recovery-to-locomotion behaviors for humanoids across diverse field terrains. The supplementary video is available at https://vsislab.github.io/UniReLo/.",
+   "source": "curated",
+   "first_author": "Xiaoyu Xu",
+   "url": "https://arxiv.org/abs/2606.08922",
+   "fig": "figures/unirelo.webp",
+   "figs": [
+    "figures/unirelo-1.webp",
+    "figures/unirelo-2.webp"
    ]
   },
   {
@@ -9434,7 +11564,8 @@
    "related": [
     "c2dex",
     "h2o",
-    "hover"
+    "hover",
+    "human2humanoid"
    ],
    "arxiv": "2606.07934",
    "doi": "",
@@ -9790,6 +11921,69 @@
    ]
   },
   {
+   "id": "audio-vla",
+   "title": "Audio-VLA: Adding Contact Audio Perception to Vision-Language-Action Model for Robotic Manipulation",
+   "tree": "il",
+   "branch": "vla",
+   "authors": [
+    "Wei",
+    "Xiangyi",
+    "Haotian Zhang",
+    "Xinyi Cao",
+    "Siyu Xie",
+    "Weifeng Ge",
+    "Yang Li",
+    "Changbo Wang"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-11-13",
+   "topics": [
+    "contact audio in a VLA",
+    "multimodal action model"
+   ],
+   "paradigm": [
+    "VLA",
+    "audio"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "wam-tactile"
+   ],
+   "ideas": [
+    "robot-dj",
+    "tactile-wm"
+   ],
+   "related": [
+    "dream-tac",
+    "maniwav",
+    "openvla",
+    "pi0"
+   ],
+   "arxiv": "2511.09958",
+   "doi": "10.48550/arxiv.2511.09958",
+   "code": "",
+   "site": "",
+   "note": "Adds contact-audio perception to a VLA. The natural baseline once you have an audio-equipped hand: does sound survive being fed into a large pretrained action model, or does it get ignored next to vision?",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "The Vision-Language-Action models (VLA) have achieved significant advances in robotic manipulation recently. However, vision-only VLA models create fundamental limitations, particularly in perceiving interactive and manipulation dynamic processes. This paper proposes Audio-VLA, a multimodal manipulation policy that leverages contact audio to perceive contact events and dynamic process feedback. Audio-VLA overcomes the vision-only constraints of VLA models. Additionally, this paper introduces the Task Completion Rate (TCR) metric to systematically evaluate dynamic operational processes. Audio-VLA employs pre-trained DINOv2 and SigLIP as visual encoders, AudioCLIP as the audio encoder, and Llama2 as the large language model backbone. We apply LoRA fine-tuning to these pre-trained modules to achieve robust cross-modal understanding of both visual and acoustic inputs. A multimodal projection layer aligns features from different modalities into the same feature space. Moreover RLBench and LIBERO simulation environments are enhanced by adding collision-based audio generation to provide realistic sound feedback during object interactions. Since current robotic manipulation evaluations focus on final outcomes rather than providing systematic assessment of dynamic operational processes, the proposed TCR metric measures how well robots perceive dynamic processes during manipulation, creating a more comprehensive evaluation metric. Extensive experiments on LIBERO, RLBench, and two real-world tasks demonstrate Audio-VLA's superior performance over vision-only comparative methods, while the TCR metric effectively quantifies dynamic process perception capabilities.",
+   "source": "curated",
+   "first_author": "Wei",
+   "url": "https://arxiv.org/abs/2511.09958",
+   "fig": "figures/audio-vla.webp",
+   "figs": [
+    "figures/audio-vla-1.webp",
+    "figures/audio-vla-2.webp"
+   ]
+  },
+  {
    "id": "beyond-mimic",
    "title": "BeyondMimic: From Motion Tracking to Versatile Humanoid Control via Guided Diffusion",
    "tree": "rl",
@@ -10137,6 +12331,67 @@
    "fig": "figures/x-decentralizedaerialmanipulationofacables.webp"
   },
   {
+   "id": "demohlm",
+   "title": "DemoHLM: From One Demonstration to Generalizable Humanoid Loco-Manipulation",
+   "tree": "rl",
+   "branch": "loco-manip",
+   "authors": [
+    "Fu",
+    "Yuhui",
+    "Xie",
+    "Feiyang",
+    "Xu",
+    "Chaoyi",
+    "Xiong",
+    "Jing",
+    "Yuan",
+    "Haoqi",
+    "Lu",
+    "Zongqing"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-10-13",
+   "topics": [
+    "one demonstration",
+    "generalizable loco-manipulation"
+   ],
+   "paradigm": [
+    "RL",
+    "IL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "mobile-dex-umi"
+   ],
+   "related": [
+    "falcon",
+    "humanego",
+    "one-demo",
+    "resmimic"
+   ],
+   "arxiv": "2510.11258",
+   "doi": "10.48550/arxiv.2510.11258",
+   "code": "",
+   "site": "",
+   "note": "One demonstration to generalizable humanoid loco-manipulation. The sample-efficiency claim is the interesting one — compare against [[humanego]]'s thirty-minutes result before assuming you need scale.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Loco-manipulation is a fundamental challenge for humanoid robots to achieve versatile interactions in human environments. Although recent studies have made significant progress in humanoid whole-body control, loco-manipulation remains underexplored and often relies on hard-coded task definitions or costly real-world data collection, which limits autonomy and generalization. We present DemoHLM, a framework for humanoid loco-manipulation that enables generalizable loco-manipulation on a real humanoid robot from a single demonstration in simulation. DemoHLM adopts a hierarchy that integrates a low-level universal whole-body controller with high-level manipulation policies for multiple tasks. The whole-body controller maps whole-body motion commands to joint torques and provides omnidirectional mobility for the humanoid robot. The manipulation policies, learned in simulation via our data generation and imitation learning pipeline, command the whole-body controller with closed-loop visual feedback to execute challenging loco-manipulation tasks. Experiments show a positive correlation between the amount of synthetic data and policy performance, underscoring the effectiveness of our data generation pipeline and the data efficiency of our approach. Real-world experiments on a Unitree G1 robot equipped with an RGB-D camera validate the sim-to-real transferability of DemoHLM, demonstrating robust performance under spatial variations across ten loco-manipulation tasks.",
+   "source": "curated",
+   "first_author": "Fu",
+   "url": "https://arxiv.org/abs/2510.11258",
+   "fig": "figures/demohlm.webp"
+  },
+  {
    "id": "berkeley-humanoid-lite",
    "title": "Demonstrating Berkeley Humanoid Lite: An Open-source, Accessible, and Customizable 3D-printed Humanoid Robot",
    "tree": "systems",
@@ -10176,7 +12431,8 @@
    "related": [
     "berkeley-humanoid",
     "so100",
-    "toddlerbot"
+    "toddlerbot",
+    "x2n"
    ],
    "arxiv": "2504.17249",
    "doi": "",
@@ -10506,6 +12762,69 @@
    ]
   },
   {
+   "id": "exo-viha",
+   "title": "Exo-ViHa: A Cross-Platform Exoskeleton System with Visual and Haptic Feedback for Efficient Dexterous Skill Learning",
+   "tree": "systems",
+   "branch": "interfaces",
+   "authors": [
+    "Chao",
+    "Xintao",
+    "Shilong Mu",
+    "Yushan Liu",
+    "Shoujie Li",
+    "Chuqiao Lyu",
+    "Xiao–Ping Zhang",
+    "Wenbo Ding"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-03-03",
+   "topics": [
+    "exoskeleton with visual and haptic feedback",
+    "skill learning"
+   ],
+   "paradigm": [
+    "teleop"
+   ],
+   "method": [],
+   "projects": [
+    "exo",
+    "geodex",
+    "mabel"
+   ],
+   "ideas": [
+    "learned-retargeting"
+   ],
+   "related": [
+    "ace-teleop",
+    "doglove",
+    "homie",
+    "ume"
+   ],
+   "arxiv": "2503.01543",
+   "doi": "10.48550/arxiv.2503.01543",
+   "code": "",
+   "site": "",
+   "note": "Cross-platform exoskeleton with both visual and haptic feedback. Haptics is the channel almost every low-cost rig drops, and it is what lets the operator feel a failed grasp before the camera shows it.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Imitation learning has emerged as a powerful paradigm for robot skills learning. However, traditional data collection systems for dexterous manipulation face challenges, including a lack of balance between acquisition efficiency, consistency, and accuracy. To address these issues, we introduce Exo-ViHa, an innovative 3D-printed exoskeleton system that enables users to collect data from a first-person perspective while providing real-time haptic feedback. This system combines a 3D-printed modular structure with a slam camera, a motion capture glove, and a wrist-mounted camera. Various dexterous hands can be installed at the end, enabling it to simultaneously collect the posture of the end effector, hand movements, and visual data. By leveraging the first-person perspective and direct interaction, the exoskeleton enhances the task realism and haptic feedback, improving the consistency between demonstrations and actual robot deployments. In addition, it has cross-platform compatibility with various robotic arms and dexterous hands. Experiments show that the system can significantly improve the success rate and efficiency of data collection for dexterous manipulation tasks.",
+   "source": "curated",
+   "first_author": "Chao",
+   "url": "https://arxiv.org/abs/2503.01543",
+   "fig": "figures/exo-viha.webp",
+   "figs": [
+    "figures/exo-viha-1.webp",
+    "figures/exo-viha-2.webp",
+    "figures/exo-viha-3.webp"
+   ]
+  },
+  {
    "id": "falcon",
    "title": "FALCON: Learning Force-Adaptive Humanoid Loco-Manipulation",
    "tree": "rl",
@@ -10548,14 +12867,22 @@
     "hri-collab"
    ],
    "related": [
+    "amo",
     "catch-it",
     "decowam",
     "deep-wbc",
+    "demohlm",
     "fetchman",
     "h2compact",
     "intention-tracking",
+    "kinematics-multipolicy",
+    "phhi-survey",
+    "resmimic",
     "umi-on-legs",
-    "visualmimic"
+    "visualmimic",
+    "wheeled-bilateral",
+    "wheeled-multistage",
+    "wheeled-posforce"
    ],
    "arxiv": "2505.06776",
    "doi": "",
@@ -10890,6 +13217,8 @@
     "falcon",
     "intention-tracking",
     "interact",
+    "kinematics-multipolicy",
+    "phhi-survey",
     "workspace-opt"
    ],
    "arxiv": "2505.17627",
@@ -10907,6 +13236,64 @@
    "fig": "figures/h2compact.webp",
    "figs": [
     "figures/h2compact-1.webp"
+   ]
+  },
+  {
+   "id": "handeye-delivery",
+   "title": "Hand-Eye Autonomous Delivery: Learning Humanoid Navigation, Locomotion and Reaching",
+   "tree": "rl",
+   "branch": "loco-manip",
+   "authors": [
+    "Sirui Chen",
+    "Yufei Ye",
+    "Ziang Cao",
+    "Jennifer Lew",
+    "Xu Pei",
+    "C. Karen Liu"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-08-05",
+   "topics": [
+    "navigation",
+    "locomotion and reaching in one policy"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "mobile-dex-umi"
+   ],
+   "related": [
+    "fetchman",
+    "homer",
+    "umi-on-legs",
+    "visualmimic"
+   ],
+   "arxiv": "2508.03068",
+   "doi": "10.48550/arxiv.2508.03068",
+   "code": "",
+   "site": "",
+   "note": "Learns navigation, locomotion and reaching together for an autonomous delivery task. The end-to-end framing — no separate nav stack — is the opposite bet from MABEL's current modular design and worth knowing as the alternative.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "We propose Hand-Eye Autonomous Delivery (HEAD), a framework that learns navigation, locomotion, and reaching skills for humanoids, directly from human motion and vision perception data. We take a modular approach where the high-level planner commands the target position and orientation of the hands and eyes of the humanoid, delivered by the low-level policy that controls the whole-body movements. Specifically, the low-level whole-body controller learns to track the three points (eyes, left hand, and right hand) from existing large-scale human motion capture data while high-level policy learns from human data collected by Aria glasses. Our modular approach decouples the ego-centric vision perception from physical actions, promoting efficient learning and scalability to novel scenes. We evaluate our method both in simulation and in the real-world, demonstrating humanoid's capabilities to navigate and reach in complex environments designed for humans.",
+   "source": "curated",
+   "first_author": "Sirui Chen",
+   "url": "https://arxiv.org/abs/2508.03068",
+   "fig": "figures/handeye-delivery.webp",
+   "figs": [
+    "figures/handeye-delivery-1.webp",
+    "figures/handeye-delivery-2.webp"
    ]
   },
   {
@@ -10943,6 +13330,7 @@
     "figure-fleet",
     "groot-n1",
     "pi0",
+    "spatial-brain",
     "sunday-gelato"
    ],
    "arxiv": "",
@@ -10995,6 +13383,7 @@
    "ideas": [],
    "related": [
     "behavior-robot-suite",
+    "handeye-delivery",
     "mobile-aloha",
     "stretch",
     "tidybot",
@@ -11123,6 +13512,7 @@
    "related": [
     "conrft",
     "expo-ft",
+    "hand-in-loop",
     "hil-serl",
     "iRe-VLA",
     "pi0",
@@ -11144,6 +13534,60 @@
    "first_author": "Shuhan Tan",
    "url": "https://arxiv.org/abs/2505.17016",
    "fig": "figures/ript-vla.webp"
+  },
+  {
+   "id": "kinematics-multipolicy",
+   "title": "Kinematics-Aware Multi-Policy Reinforcement Learning for Force-Capable Humanoid Loco-Manipulation",
+   "tree": "rl",
+   "branch": "loco-manip",
+   "authors": [
+    "Kaiyan Xiao",
+    "Zihan Xu",
+    "Zhe Cheng",
+    "Chengju Liu",
+    "Qijun Chen"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-11-26",
+   "topics": [
+    "force-capable loco-manipulation",
+    "multi-policy RL"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "m2",
+    "mabel"
+   ],
+   "ideas": [
+    "hri-collab"
+   ],
+   "related": [
+    "amo",
+    "falcon",
+    "h2compact",
+    "resmimic"
+   ],
+   "arxiv": "2511.21169",
+   "doi": "10.48550/arxiv.2511.21169",
+   "code": "",
+   "site": "",
+   "note": "Kinematics-aware multi-policy RL for force-capable loco-manipulation. Read alongside [[falcon]] — both are attacking the same problem (a humanoid that can actually push and pull) from different structural choices.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Humanoid robots, with their human-like morphology, hold great potential for industrial applications. However, existing loco-manipulation methods primarily focus on dexterous manipulation, falling short of the combined requirements for dexterity and proactive force interaction in high-load industrial scenarios. To bridge this gap, we propose a reinforcement learning-based framework with a decoupled three-stage training pipeline, consisting of an upper-body policy, a lower-body policy, and a delta-command policy. To accelerate upper-body training, a heuristic reward function is designed. By implicitly embedding forward kinematics priors, it enables the policy to converge faster and achieve superior performance. For the lower body, a force-based curriculum learning strategy is developed, enabling the robot to actively exert and regulate interaction forces with the environment.",
+   "source": "curated",
+   "first_author": "Kaiyan Xiao",
+   "url": "https://arxiv.org/abs/2511.21169",
+   "fig": "figures/kinematics-multipolicy.webp"
   },
   {
    "id": "climrs",
@@ -11322,6 +13766,70 @@
     "figures/maniskill-1.webp",
     "figures/maniskill-2.webp",
     "figures/maniskill-3.webp"
+   ]
+  },
+  {
+   "id": "miccheck",
+   "title": "MicCheck: Repurposing Off-the-Shelf Pin Microphones for Easy and Low-Cost Contact Sensing",
+   "tree": "systems",
+   "branch": "tactile-hw",
+   "authors": [
+    "Oh",
+    "Steven",
+    "Inui",
+    "Tai",
+    "Kuan",
+    "Magdeline",
+    "Lin",
+    "Jia-Yeu"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-11-23",
+   "topics": [
+    "pin microphones",
+    "low-cost contact sensing"
+   ],
+   "paradigm": [
+    "hardware",
+    "audio"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "wam-tactile"
+   ],
+   "ideas": [
+    "robot-dj",
+    "tactile-wm",
+    "hand-22dof"
+   ],
+   "related": [
+    "anyskin",
+    "sonicsense",
+    "vibecheck"
+   ],
+   "arxiv": "2511.18299",
+   "doi": "10.48550/arxiv.2511.18299",
+   "code": "",
+   "site": "",
+   "note": "Off-the-shelf pin microphones repurposed as contact sensors. The cheapest possible entry point to audio sensing — worth building in an afternoon before designing anything custom.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Robotic manipulation tasks are contact-rich, yet most imitation learning (IL) approaches rely primarily on vision, which struggles to capture stiffness, roughness, slip, and other fine interaction cues. Tactile signals can address this gap, but existing sensors often require expensive, delicate, or integration-heavy hardware. In this work, we introduce MicCheck, a plug-and-play acoustic sensing approach that repurposes an off-the-shelf Bluetooth pin microphone as a low-cost contact sensor. The microphone clips into a 3D-printed gripper insert and streams audio via a standard USB receiver, requiring no custom electronics or drivers. Despite its simplicity, the microphone provides signals informative enough for both perception and control. In material classification, it achieves 92.9% accuracy on a 10-class benchmark across four interaction types (tap, knock, slow press, drag). For manipulation, integrating pin microphone into an IL pipeline with open source hardware improves the success rate on picking and pouring task from 0.40 to 0.80 and enables reliable execution of contact-rich skills such as unplugging and sound-based sorting. Compared with high-resolution tactile sensors, pin microphones trade spatial detail for cost and ease of integration, offering a practical pathway for deploying acoustic contact sensing in low-cost robot setups.",
+   "source": "curated",
+   "first_author": "Oh",
+   "url": "https://arxiv.org/abs/2511.18299",
+   "fig": "figures/miccheck.webp",
+   "figs": [
+    "figures/miccheck-1.webp",
+    "figures/miccheck-2.webp",
+    "figures/miccheck-3.webp"
    ]
   },
   {
@@ -11908,6 +14416,81 @@
    ]
   },
   {
+   "id": "adaptive-tracking",
+   "title": "Towards Adaptable Humanoid Control via Adaptive Motion Tracking",
+   "tree": "rl",
+   "branch": "motion-imitation",
+   "authors": [
+    "Huang",
+    "Tao",
+    "Wang",
+    "Huayi",
+    "Ren",
+    "Junli",
+    "Yin",
+    "Kangning",
+    "Wang",
+    "Zirui",
+    "Chen",
+    "Xiao",
+    "Jia",
+    "Feiyu",
+    "Zhang",
+    "Wentao",
+    "Long",
+    "Junfeng",
+    "Wang",
+    "Jingbo",
+    "Pang",
+    "Jiangmiao"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-10-16",
+   "topics": [
+    "adaptive motion tracking",
+    "controllability"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "learned-retargeting"
+   ],
+   "related": [
+    "exbody2",
+    "hover",
+    "phc",
+    "resmimic"
+   ],
+   "arxiv": "2510.14454",
+   "doi": "10.48550/arxiv.2510.14454",
+   "code": "",
+   "site": "",
+   "note": "Adaptive motion tracking for humanoid control — the tracking policy adjusts rather than assuming the reference is feasible. Complementary to ExBody2's filter-before-training approach.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Humanoid robots are envisioned to adapt demonstrated motions to diverse real-world conditions while accurately preserving motion patterns. Existing motion prior approaches enable well adaptability with a few motions but often sacrifice imitation accuracy, whereas motion-tracking methods achieve accurate imitation yet require many training motions and a test-time target motion to adapt. To combine their strengths, we introduce AdaMimic, a novel motion tracking algorithm that enables adaptable humanoid control from a single reference motion. To reduce data dependence while ensuring adaptability, our method first creates an augmented dataset by sparsifying the single reference motion into keyframes and applying light editing with minimal physical assumptions. A policy is then initialized by tracking these sparse keyframes to generate dense intermediate motions, and adapters are subsequently trained to adjust tracking speed and refine low-level actions based on the adjustment, enabling flexible time warping that further improves imitation accuracy and adaptability. We validate these significant improvements in our approach in both simulation and the real-world Unitree G1 humanoid robot in multiple tasks across a wide range of adaptation conditions. Videos and code are available at https://taohuang13.github.io/adamimic.github.io/.",
+   "source": "curated",
+   "first_author": "Huang",
+   "url": "https://arxiv.org/abs/2510.14454",
+   "fig": "figures/adaptive-tracking.webp",
+   "figs": [
+    "figures/adaptive-tracking-1.webp",
+    "figures/adaptive-tracking-2.webp",
+    "figures/adaptive-tracking-3.webp"
+   ]
+  },
+  {
    "id": "manip-survey",
    "title": "Towards a Unified Understanding of Robot Manipulation: A Comprehensive Survey",
    "tree": "il",
@@ -11968,6 +14551,131 @@
    "fig": "figures/manip-survey.webp"
   },
   {
+   "id": "fall-safety",
+   "title": "Unified Humanoid Fall-Safety Policy from a Few Demonstrations",
+   "tree": "rl",
+   "branch": "locomotion",
+   "authors": [
+    "Xu",
+    "Zhengjie",
+    "Li",
+    "Ye",
+    "Lin",
+    "Kwan-yee",
+    "Yu",
+    "Stella X."
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-11-10",
+   "topics": [
+    "fall-safety",
+    "few demonstrations",
+    "protective behaviour"
+   ],
+   "paradigm": [
+    "RL",
+    "IL"
+   ],
+   "method": [],
+   "projects": [
+    "mabel"
+   ],
+   "ideas": [
+    "transformer-robot"
+   ],
+   "related": [
+    "humanup",
+    "stablemimic",
+    "unirelo"
+   ],
+   "arxiv": "2511.07407",
+   "doi": "10.48550/arxiv.2511.07407",
+   "code": "",
+   "site": "",
+   "note": "Falling <em>well</em> — protective behaviour learned from a few demonstrations — rather than only getting up afterwards. Cheaper than replacing a humanoid, and almost nobody works on it.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Falling is an inherent risk of humanoid mobility. Maintaining stability is thus a primary safety focus in robot control and learning, yet no existing approach fully averts loss of balance. When instability does occur, prior work addresses only isolated aspects of falling: avoiding falls, choreographing a controlled descent, or standing up afterward. Consequently, humanoid robots lack integrated strategies for impact mitigation and prompt recovery when real falls defy these scripts. We aim to go beyond keeping balance to make the entire fall-and-recovery process safe and autonomous: prevent falls when possible, reduce impact when unavoidable, and stand up when fallen. By fusing sparse human demonstrations with reinforcement learning and an adaptive diffusion-based memory of safe reactions, we learn adaptive whole-body behaviors that unify fall prevention, impact mitigation, and rapid recovery in one policy. Experiments in simulation and on a Unitree G1 demonstrate robust sim-to-real transfer, lower impact forces, and consistently fast recovery across diverse disturbances, pointing towards safer, more resilient humanoids in real environments. Videos are available at https://firm2025.github.io/.",
+   "source": "curated",
+   "first_author": "Xu",
+   "url": "https://arxiv.org/abs/2511.07407",
+   "fig": "figures/fall-safety.webp",
+   "figs": [
+    "figures/fall-safety-1.webp"
+   ]
+  },
+  {
+   "id": "vibecheck",
+   "title": "VibeCheck: Using Active Acoustic Tactile Sensing for Contact-Rich Manipulation",
+   "tree": "systems",
+   "branch": "tactile-hw",
+   "authors": [
+    "Kaidi Zhang",
+    "Do-Gon Kim",
+    "Eric T. Chang",
+    "Hsinying Liang",
+    "Zhanpeng He",
+    "Kathryn Lampo",
+    "Peng Wu",
+    "Ioannis Kymissis",
+    "Matei Ciocarlie"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-04-22",
+   "topics": [
+    "active acoustic sensing",
+    "contact-rich manipulation"
+   ],
+   "paradigm": [
+    "hardware",
+    "audio"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "wam-tactile"
+   ],
+   "ideas": [
+    "robot-dj",
+    "tactile-wm"
+   ],
+   "related": [
+    "hearing-touch",
+    "maniwav",
+    "miccheck",
+    "sonicsense"
+   ],
+   "arxiv": "2504.15535",
+   "doi": "10.48550/arxiv.2504.15535",
+   "code": "",
+   "site": "",
+   "note": "<b>Active</b> acoustic sensing — inject a vibration and listen to the response, rather than waiting for the task to make a noise. For a turntable, the platter is already vibrating, so you get an active probe for free.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "The acoustic response of an object can reveal a lot about its global state, for example its material properties or the extrinsic contacts it is making with the world. In this work, we build an active acoustic sensing gripper equipped with two piezoelectric fingers: one for generating signals, the other for receiving them. By sending an acoustic vibration from one finger to the other through an object, we gain insight into an object's acoustic properties and contact state. We use this system to classify objects, estimate grasping position, estimate poses of internal structures, and classify the types of extrinsic contacts an object is making with the environment. Using our contact type classification model, we tackle a standard long-horizon manipulation problem: peg insertion. We use a simple simulated transition model based on the performance of our sensor to train an imitation learning policy that is robust to imperfect predictions from the classifier. We finally demonstrate the policy on a UR5 robot with active acoustic sensing as the only feedback. Videos can be found at https://roamlab.github.io/vibecheck .",
+   "source": "curated",
+   "first_author": "Kaidi Zhang",
+   "url": "https://arxiv.org/abs/2504.15535",
+   "fig": "figures/vibecheck.webp",
+   "figs": [
+    "figures/vibecheck-1.webp",
+    "figures/vibecheck-2.webp",
+    "figures/vibecheck-3.webp"
+   ]
+  },
+  {
    "id": "visualmimic",
    "title": "VisualMimic: Visual Humanoid Loco-Manipulation via Motion Tracking and Generation",
    "tree": "rl",
@@ -12009,6 +14717,7 @@
     "deepmimic",
     "falcon",
     "fetchman",
+    "handeye-delivery",
     "humanoidbench"
    ],
    "arxiv": "2509.20322",
@@ -12028,6 +14737,69 @@
     "figures/visualmimic-1.webp",
     "figures/visualmimic-2.webp",
     "figures/visualmimic-3.webp"
+   ]
+  },
+  {
+   "id": "wheeled-multistage",
+   "title": "Whole-Body Bilateral Teleoperation with Multi-Stage Object Parameter Estimation for Wheeled Humanoid Locomanipulation",
+   "tree": "rl",
+   "branch": "loco-manip",
+   "authors": [
+    "Baek",
+    "Donghoon",
+    "Purushottam",
+    "Amartya",
+    "Choi",
+    "Jason J.",
+    "Ramos",
+    "Joao"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-08-13",
+   "topics": [
+    "object parameter estimation",
+    "bilateral teleoperation",
+    "wheeled loco-manipulation"
+   ],
+   "paradigm": [
+    "control"
+   ],
+   "method": [],
+   "projects": [
+    "mabel",
+    "r2s2r"
+   ],
+   "ideas": [
+    "learned-retargeting",
+    "real2sim2real-ego"
+   ],
+   "related": [
+    "asap",
+    "falcon",
+    "wheeled-bilateral",
+    "wheeled-payload",
+    "wheeled-posforce"
+   ],
+   "arxiv": "2508.09846",
+   "doi": "10.48550/arxiv.2508.09846",
+   "code": "",
+   "site": "",
+   "note": "Multi-stage estimation of the manipulated object's parameters during wheeled-humanoid teleoperation. On a balancing base, an unknown payload is not a nuisance — it changes the plant. Estimating it online is the difference between carrying a box and falling over.",
+   "stars": 2,
+   "curated": true,
+   "local": "~/Desktop/M2/literature/mobile_bimanual_platforms/2025_2508.09846v1_Whole_Body_Bilateral_Teleoperation_with_Multi_Stage_Object_P.pdf",
+   "abstract": "This paper presents an object-aware whole-body bilateral teleoperation framework for wheeled humanoid loco-manipulation. This framework combines whole-body bilateral teleoperation with an online multi-stage object inertial parameter estimation module, which is the core technical contribution of this work. The multi-stage process sequentially integrates a vision-based object size estimator, an initial parameter guess generated by a large vision-language model (VLM), and a decoupled hierarchical sampling strategy. The visual size estimate and VLM prior offer a strong initial guess of the object's inertial parameters, significantly reducing the search space for sampling-based refinement and improving the overall estimation speed. A hierarchical strategy first estimates mass and center of mass, then infers inertia from object size to ensure physically feasible parameters, while a decoupled multi-hypothesis scheme enhances robustness to VLM prior errors. Our estimator operates in parallel with high-fidelity simulation and hardware, enabling real-time online updates. The estimated parameters are then used to update the wheeled humanoid's equilibrium point, allowing the operator to focus more on locomotion and manipulation. This integration improves the haptic force feedback for dynamic synchronization, enabling more dynamic whole-body teleoperation. By compensating for object dynamics using the estimated parameters, the framework also improves manipulation tracking while preserving compliant behavior. We validate the system on a customized wheeled humanoid with a robotic gripper and human-machine interface, demonstrating real-time execution of lifting, delivering, and releasing tasks with a payload weighing approximately one-third of the robot's body weight.",
+   "source": "curated",
+   "first_author": "Baek",
+   "url": "https://arxiv.org/abs/2508.09846",
+   "fig": "figures/wheeled-multistage.webp",
+   "figs": [
+    "figures/wheeled-multistage-1.webp"
    ]
   },
   {
@@ -12670,6 +15442,7 @@
    "ideas": [],
    "related": [
     "deepmimic",
+    "exbody2",
     "h2o",
     "hover"
    ],
@@ -13268,6 +16041,7 @@
    "ideas": [],
    "related": [
     "chorus",
+    "cross-humanoid-wbc",
     "multi-loco",
     "octo",
     "oxe",
@@ -13406,6 +16180,68 @@
    "first_author": "Chris Lu",
    "url": "https://arxiv.org/abs/2408.06292",
    "fig": "figures/ai-scientist.webp"
+  },
+  {
+   "id": "wheeled-payload",
+   "title": "Toward Control of Wheeled Humanoid Robots with Unknown Payloads: Equilibrium Point Estimation via Real-to-Sim Adaptation",
+   "tree": "rl",
+   "branch": "sim2real",
+   "authors": [
+    "Donghoon Baek",
+    "Youngwoo Sim",
+    "Amartya Purushottam",
+    "Saurabh Gupta",
+    "João Ramos"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-03-16",
+   "topics": [
+    "unknown payloads",
+    "equilibrium point estimation",
+    "real-to-sim adaptation"
+   ],
+   "paradigm": [
+    "control",
+    "real2sim"
+   ],
+   "method": [],
+   "projects": [
+    "mabel",
+    "r2s2r"
+   ],
+   "ideas": [
+    "real2sim2real-ego"
+   ],
+   "related": [
+    "asap",
+    "dexndm",
+    "real2sim",
+    "wheeled-bilateral",
+    "wheeled-multistage"
+   ],
+   "arxiv": "2403.10948",
+   "doi": "10.48550/arxiv.2403.10948",
+   "code": "",
+   "site": "",
+   "note": "Equilibrium-point estimation for wheeled humanoids carrying unknown payloads, via real-to-sim adaptation. The real-to-sim framing connects it straight to your Real2Sim2Real project, on the exact morphology MABEL has.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Model-based controllers using a linearized model around the system's equilibrium point is a common approach in the control of a wheeled humanoid due to their less computational load and ease of stability analysis. However, controlling a wheeled humanoid robot while it lifts an unknown object presents significant challenges, primarily due to the lack of knowledge in object dynamics. This paper presents a framework designed for predicting the new equilibrium point explicitly to control a wheeled-legged robot with unknown dynamics. We estimated the total mass and center of mass of the system from its response to initially unknown dynamics, then calculated the new equilibrium point accordingly. To avoid using additional sensors (e.g., force torque sensor) and reduce the effort of obtaining expensive real data, a data-driven approach is utilized with a novel real-to-sim adaptation. A more accurate nonlinear dynamics model, offering a closer representation of real-world physics, is injected into a rigid-body simulation for real-to-sim adaptation. The nonlinear dynamics model parameters were optimized using Particle Swarm Optimization. The efficacy of this framework was validated on a physical wheeled inverted pendulum, a simplified model of a wheeled-legged robot. The experimental results indicate that employing a more precise analytical model with optimized parameters significantly reduces the gap between simulation and reality, thus improving the efficiency of a model-based controller in controlling a wheeled robot with unknown dynamics",
+   "source": "curated",
+   "first_author": "Donghoon Baek",
+   "url": "https://arxiv.org/abs/2403.10948",
+   "fig": "figures/wheeled-payload.webp",
+   "figs": [
+    "figures/wheeled-payload-1.webp",
+    "figures/wheeled-payload-2.webp",
+    "figures/wheeled-payload-3.webp"
+   ]
   },
   {
    "id": "unitree-g1",
@@ -13581,6 +16417,61 @@
    ]
   },
   {
+   "id": "av-contact",
+   "title": "Visual-auditory Extrinsic Contact Estimation",
+   "tree": "il",
+   "branch": "tactile-learn",
+   "authors": [
+    "Xili Yi",
+    "Jayjun Lee",
+    "Nima Fazeli"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-09-22",
+   "topics": [
+    "extrinsic contact estimation",
+    "visual-auditory fusion"
+   ],
+   "paradigm": [
+    "audio"
+   ],
+   "method": [],
+   "projects": [
+    "wam-tactile"
+   ],
+   "ideas": [
+    "robot-dj",
+    "tactile-wm"
+   ],
+   "related": [
+    "dexskin",
+    "hearing-touch",
+    "maniwav"
+   ],
+   "arxiv": "2409.14608",
+   "doi": "10.48550/arxiv.2409.14608",
+   "code": "",
+   "site": "",
+   "note": "Estimates <em>extrinsic</em> contact — where the held object touches the world, not where the hand touches the object — from vision and sound together. For a stylus on a record, extrinsic contact is the whole task.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Robust manipulation often hinges on a robot's ability to perceive extrinsic contacts-contacts between a grasped object and its surrounding environment. However, these contacts are difficult to observe through vision alone due to occlusions, limited resolution, and ambiguous near-contact states. In this paper, we propose a visual-auditory method for extrinsic contact estimation that integrates global scene information from vision with local contact cues obtained through active audio sensing. Our approach equips a robotic gripper with contact microphones and conduction speakers, enabling the system to emit and receive acoustic signals through the grasped object to detect external contacts. We train our perception pipeline entirely in simulation and zero-shot transfer to the real world. To bridge the sim-to-real gap, we introduce a real-to-sim audio hallucination technique, injecting real-world audio samples into simulated scenes with ground-truth contact labels. The resulting multimodal model accurately estimates both the location and size of extrinsic contacts across a range of cluttered and occluded scenarios. We further demonstrate that explicit contact prediction significantly improves policy learning for downstream contact-rich manipulation tasks.",
+   "source": "curated",
+   "first_author": "Xili Yi",
+   "url": "https://arxiv.org/abs/2409.14608",
+   "fig": "figures/av-contact.webp",
+   "figs": [
+    "figures/av-contact-1.webp",
+    "figures/av-contact-2.webp"
+   ]
+  },
+  {
    "id": "workspace-opt",
    "title": "Workspace Optimization Techniques to Improve Prediction of Human Motion During Human-Robot Collaboration",
    "tree": "rl",
@@ -13620,7 +16511,8 @@
    "related": [
     "h2compact",
     "intention-tracking",
-    "interact"
+    "interact",
+    "phhi-survey"
    ],
    "arxiv": "2401.12965",
    "doi": "10.48550/arxiv.2401.12965",
@@ -13976,7 +16868,9 @@
    ],
    "related": [
     "h2compact",
+    "intention-priors",
     "intention-tracking",
+    "phhi-survey",
     "roco",
     "workspace-opt"
    ],
@@ -14283,6 +17177,7 @@
    "projects": [],
    "ideas": [],
    "related": [
+    "adaptive-tracking",
     "deepmimic",
     "h2o",
     "maskedmimic",
@@ -14362,6 +17257,69 @@
    "first_author": "Konstantinos Bousmalis",
    "url": "https://arxiv.org/abs/2306.11706",
    "fig": "figures/robocat.webp"
+  },
+  {
+   "id": "robot-synesthesia",
+   "title": "Robot Synesthesia: In-Hand Manipulation with Visuotactile Sensing",
+   "tree": "rl",
+   "branch": "manipulation",
+   "authors": [
+    "Ying Yuan",
+    "Haichuan Che",
+    "Yuzhe Qin",
+    "Binghao Huang",
+    "Zhao-Heng Yin",
+    "Kang-Won Lee",
+    "Yi Wu",
+    "Soo‐Chul Lim",
+    "Xiaolong Wang"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2023,
+   "date": "2023-12-04",
+   "topics": [
+    "visuotactile fusion",
+    "in-hand manipulation"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "wam-tactile"
+   ],
+   "ideas": [
+    "tactile-wm",
+    "robot-dj"
+   ],
+   "related": [
+    "dexskin",
+    "qi-inhand",
+    "see-hear-feel"
+   ],
+   "arxiv": "2312.01853",
+   "doi": "10.48550/arxiv.2312.01853",
+   "code": "",
+   "site": "",
+   "note": "Fuses vision and touch into a shared point-cloud representation for in-hand manipulation. The representation trick — put both modalities in the same 3D space instead of concatenating features — generalises to audio.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Executing contact-rich manipulation tasks necessitates the fusion of tactile and visual feedback. However, the distinct nature of these modalities poses significant challenges. In this paper, we introduce a system that leverages visual and tactile sensory inputs to enable dexterous in-hand manipulation. Specifically, we propose Robot Synesthesia, a novel point cloud-based tactile representation inspired by human tactile-visual synesthesia. This approach allows for the simultaneous and seamless integration of both sensory inputs, offering richer spatial information and facilitating better reasoning about robot actions. The method, trained in a simulated environment and then deployed to a real robot, is applicable to various in-hand object rotation tasks. Comprehensive ablations are performed on how the integration of vision and touch can improve reinforcement learning and Sim2Real performance. Our project page is available at https://yingyuan0414.github.io/visuotactile/ .",
+   "source": "curated",
+   "first_author": "Ying Yuan",
+   "url": "https://arxiv.org/abs/2312.01853",
+   "fig": "figures/robot-synesthesia.webp",
+   "figs": [
+    "figures/robot-synesthesia-1.webp",
+    "figures/robot-synesthesia-2.webp",
+    "figures/robot-synesthesia-3.webp"
+   ]
   },
   {
    "id": "rotate-without-seeing",
@@ -14776,7 +17734,8 @@
    "related": [
     "falcon",
     "fetchman",
-    "visualmimic"
+    "visualmimic",
+    "wheeled-bilateral"
    ],
    "arxiv": "2210.10044",
    "doi": "",
@@ -14962,6 +17921,7 @@
     "falcon",
     "h2compact",
     "interact",
+    "phhi-survey",
     "workspace-opt"
    ],
    "arxiv": "2203.09063",
@@ -15029,6 +17989,7 @@
     "chen-visual-inhand",
     "dactyl",
     "rma",
+    "robot-synesthesia",
     "rotate-without-seeing"
    ],
    "arxiv": "2210.04887",
@@ -15150,7 +18111,8 @@
     "dist-r2s2r",
     "simweaver",
     "video2sim2real",
-    "videomimic"
+    "videomimic",
+    "wheeled-payload"
    ],
    "arxiv": "2111.04814",
    "doi": "",
@@ -15169,6 +18131,124 @@
     "figures/real2sim-1.webp",
     "figures/real2sim-2.webp",
     "figures/real2sim-3.webp"
+   ]
+  },
+  {
+   "id": "swheg",
+   "title": "SWheg: A Wheel-Leg Transformable Robot With Minimalist Actuator Realization",
+   "tree": "systems",
+   "branch": "codesign",
+   "authors": [
+    "Cunxi Dai",
+    "Xiaohan Liu",
+    "Jianxiang Zhou",
+    "Zhengtao Liu",
+    "Zhenzhong Jia"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2022,
+   "date": "2022-10-27",
+   "topics": [
+    "wheel-leg transformable",
+    "minimalist actuation"
+   ],
+   "paradigm": [
+    "hardware"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "transformer-robot"
+   ],
+   "related": [
+    "mit-cheetah",
+    "reconfig-wheelleg",
+    "x2n"
+   ],
+   "arxiv": "2210.15126",
+   "doi": "10.48550/arxiv.2210.15126",
+   "code": "",
+   "site": "",
+   "note": "A wheel-leg transformable robot that reconfigures with a <b>single</b> extra actuator per wheel. The mechanical lesson for any transformer: the transformation should cost you one actuator, not a second robot.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "This article presents the design, implementation, and performance evaluation of SWheg, a novel modular wheel-leg transformable robot family with minimalist actuator realization. SWheg takes advantage of both wheeled and legged locomotion by seamlessly integrating them on a single platform. In contrast to other designs that use multiple actuators, SWheg uses only one actuator to drive the transformation of all the wheel-leg modules in sync. This means an N-legged SWheg robot requires only N+1 actuators, which can significantly reduce the cost and malfunction rate of the platform. The tendon-driven wheel-leg transformation mechanism based on a four-bar linkage can perform fast morphology transitions between wheels and legs. We validated the design principle with two SWheg robots with four and six wheel-leg modules separately, namely Quadrupedal SWheg and Hexapod SWheg. The design process, mechatronics infrastructure, and the gait behavioral development of both platforms were discussed. The performance of the robot was evaluated in various scenarios, including driving and turning in wheeled mode, step crossing, irregular terrain passing, and stair climbing in legged mode. The comparison between these two platforms was also discussed.",
+   "source": "curated",
+   "first_author": "Cunxi Dai",
+   "url": "https://arxiv.org/abs/2210.15126",
+   "fig": "figures/swheg.webp",
+   "figs": [
+    "figures/swheg-1.webp",
+    "figures/swheg-2.webp",
+    "figures/swheg-3.webp"
+   ]
+  },
+  {
+   "id": "see-hear-feel",
+   "title": "See, Hear, and Feel: Smart Sensory Fusion for Robotic Manipulation",
+   "tree": "il",
+   "branch": "tactile-learn",
+   "authors": [
+    "Hao Li",
+    "Yizhi Zhang",
+    "Junzhe Zhu",
+    "Shaoxiong Wang",
+    "Michelle A. Lee",
+    "Huazhe Xu",
+    "Edward H. Adelson",
+    "Feifei Li",
+    "Ruohan Gao",
+    "Jiajun Wu"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2022,
+   "date": "2022-12-07",
+   "topics": [
+    "multisensory fusion",
+    "vision touch audio"
+   ],
+   "paradigm": [
+    "IL",
+    "audio"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "wam-tactile"
+   ],
+   "ideas": [
+    "robot-dj",
+    "tactile-wm"
+   ],
+   "related": [
+    "maniwav",
+    "robot-synesthesia"
+   ],
+   "arxiv": "2212.03858",
+   "doi": "10.48550/arxiv.2212.03858",
+   "code": "",
+   "site": "",
+   "note": "The early systematic study of fusing vision, touch and audio for manipulation, and still the reference for <em>when</em> each modality actually helps. Read it before designing the fusion architecture.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Humans use all of their senses to accomplish different tasks in everyday activities. In contrast, existing work on robotic manipulation mostly relies on one, or occasionally two modalities, such as vision and touch. In this work, we systematically study how visual, auditory, and tactile perception can jointly help robots to solve complex manipulation tasks. We build a robot system that can see with a camera, hear with a contact microphone, and feel with a vision-based tactile sensor, with all three sensory modalities fused with a self-attention model. Results on two challenging tasks, dense packing and pouring, demonstrate the necessity and power of multisensory perception for robotic manipulation: vision displays the global status of the robot but can often suffer from occlusion, audio provides immediate feedback of key moments that are even invisible, and touch offers precise local geometry for decision making. Leveraging all three modalities, our robotic system significantly outperforms prior methods.",
+   "source": "curated",
+   "first_author": "Hao Li",
+   "url": "https://arxiv.org/abs/2212.03858",
+   "fig": "figures/see-hear-feel.webp",
+   "figs": [
+    "figures/see-hear-feel-1.webp",
+    "figures/see-hear-feel-2.webp"
    ]
   },
   {
@@ -15681,7 +18761,8 @@
    "related": [
     "anyteleop",
     "c2dex",
-    "dex-retargeting"
+    "dex-retargeting",
+    "retarget-objectives"
    ],
    "arxiv": "1910.03135",
    "doi": "",
@@ -18124,6 +21205,7 @@
    "related": [
     "deep-wbc",
     "falcon",
+    "handeye-delivery",
     "visualmimic"
    ],
    "arxiv": "2608.17027",
@@ -19290,7 +22372,8 @@
    "ideas": [],
    "related": [
     "gello",
-    "open-television"
+    "open-television",
+    "telemoma"
    ],
    "arxiv": "2607.19479",
    "doi": "10.48550/arxiv.2607.19479",
@@ -21231,6 +24314,65 @@
    "first_author": "Georgios Kamaras",
    "url": "https://arxiv.org/abs/2502.18615",
    "fig": "figures/dist-r2s2r.webp"
+  },
+  {
+   "id": "reconfig-wheelleg",
+   "title": "A Reconfigured Wheel-Legged Robot for Enhanced Steering and Adaptability",
+   "tree": "systems",
+   "branch": "codesign",
+   "authors": [
+    "Song",
+    "Zhicheng",
+    "Xu",
+    "Jinglan",
+    "Zheng",
+    "Chunxin",
+    "Li",
+    "Yulin",
+    "Bi",
+    "Zhihai",
+    "Ma",
+    "Jun"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-07-30",
+   "topics": [
+    "reconfigurable wheel-leg",
+    "steering and adaptability"
+   ],
+   "paradigm": [
+    "hardware"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "transformer-robot"
+   ],
+   "related": [
+    "swheg",
+    "x2n"
+   ],
+   "arxiv": "2507.22345",
+   "doi": "10.48550/arxiv.2507.22345",
+   "code": "",
+   "site": "",
+   "note": "A reconfigured wheel-legged design focused on steering and terrain adaptability. Useful as a mechanism survey point rather than for its learning content.",
+   "stars": 1,
+   "curated": true,
+   "local": "",
+   "abstract": "Wheel-legged robots integrate leg agility on rough terrain with wheel efficiency on flat ground. However, most existing designs do not fully capitalize on the benefits of both legged and wheeled structures, which limits overall system flexibility and efficiency. We present FLORES, a novel wheel-legged robot design featuring a distinctive front-leg configuration that sets it beyond standard design approaches. Specifically, FLORES replaces the conventional hip-roll degree of freedom (DoF) of the front leg with hip-yaw DoFs, and this allows for efficient movement on flat surfaces while ensuring adaptability when navigating complex terrains. This innovative design facilitates seamless transitions between different locomotion modes (i.e., legged locomotion and wheeled locomotion) and optimizes the performance across varied environments. To fully exploit \\flores's mechanical capabilities, we develop a tailored reinforcement learning (RL) controller that adapts the Hybrid Internal Model (HIM) with a customized reward structure optimized for our unique mechanical configuration. This framework enables the generation of adaptive, multi-modal locomotion strategies that facilitate smooth transitions between wheeled and legged movements. Furthermore, our distinctive joint design enables the robot to exhibit novel and highly efficient locomotion gaits that capitalize on the synergistic advantages of both locomotion modes. Through comprehensive experiments, we demonstrate FLORES's enhanced steering capabilities, improved navigation efficiency, and versatile locomotion across various terrains. The open-source project can be found at https://github.com/ZhichengSong6/FLORES.",
+   "source": "curated",
+   "first_author": "Song",
+   "url": "https://arxiv.org/abs/2507.22345",
+   "fig": "figures/reconfig-wheelleg.webp",
+   "figs": [
+    "figures/reconfig-wheelleg-1.webp"
+   ]
   },
   {
    "id": "x-asurveyonimprovinghumanrobotcollaboratio",
@@ -23571,54 +26713,6 @@
    "fig": "figures/x-trajboosterboostinghumanoidwholebodymani.webp"
   },
   {
-   "id": "x-wholebodybilateralteleoperationwithmulti",
-   "title": "Whole-Body Bilateral Teleoperation with Multi-Stage Object Parameter Estimation for Wheeled Humanoid Locomanipulation",
-   "tree": "rl",
-   "branch": "loco-manip",
-   "authors": [
-    "Donghoon Baek",
-    "Amartya Purushottam",
-    "Jason J. Choi",
-    "Joao Ramos"
-   ],
-   "first_author": "Donghoon Baek",
-   "corresponding": [],
-   "institutions": [],
-   "lab": "",
-   "venue": "IEEE Humanoids",
-   "venue_type": "conference",
-   "year": 2025,
-   "date": "2025-08-13",
-   "topics": [
-    "loco-manipulation",
-    "mobile bimanual platforms"
-   ],
-   "paradigm": [],
-   "method": [],
-   "projects": [
-    "m2"
-   ],
-   "ideas": [
-    "mobile-dex-umi",
-    "multi-robot-marl",
-    "auto-research-dex",
-    "agentic-physical"
-   ],
-   "related": [],
-   "arxiv": "2508.09846",
-   "doi": "",
-   "url": "https://arxiv.org/abs/2508.09846",
-   "code": "",
-   "site": "",
-   "abstract": "This paper presents an object-aware whole-body bilateral teleoperation framework for wheeled humanoid loco-manipulation. This framework combines whole-body bilateral teleoperation with an online multi-stage object inertial parameter estimation module, which is the core technical contribution of this work. The multi-stage process sequentially integrates a vision-based object size estimator, an initial parameter guess generated by a large vision-language model (VLM), and a decoupled hierarchical sampling strategy. The visual size estimate and VLM prior offer a strong initial guess of the object's inertial parameters, significantly reducing the search space for sampling-based refinement and improving the overall estimation speed. A hierarchical strategy first estimates mass and center of mass, then infers inertia from object size to ensure physically feasible parameters, while a decoupled multi-hypothesis scheme enhances robustness to VLM prior errors. Our estimator operates in parallel with high-fidelity simulation and hardware, enabling real-time online updates. The estimated parameters are then used to update the wheeled humanoid's equilibrium point, allowing the operator to focus more on locomotion and manipulation. This integration improves the haptic force feedback for dynamic synchronization, enabling more dynamic whole-body teleoperation. By compensating for object dynamics using the estimated parameters, the framework also improves manipulation tracking while preserving compliant behavior. We validate the system on a customized wheeled humanoid with a robotic gripper and human-machine interface, demonstrating real-time execution of lifting, delivering, and releasing tasks with a payload weighing approximately one-third of the robot's body weight.",
-   "note": "",
-   "stars": 1,
-   "curated": false,
-   "local": "~/Desktop/M2/literature/mobile_bimanual_platforms/2025_2508.09846v1_Whole_Body_Bilateral_Teleoperation_with_Multi_Stage_Object_P.pdf",
-   "source": "library",
-   "fig": "figures/x-wholebodybilateralteleoperationwithmulti.webp"
-  },
-  {
    "id": "dvla",
    "title": "dVLA: Diffusion Vision-Language-Action Model with Multimodal Chain-of-Thought",
    "tree": "il",
@@ -24501,55 +27595,6 @@
    "local": "~/Desktop/M2/literature/dynamic_obstacle_avoidance/2024_2401.06021v2_Topology_Driven_Parallel_Trajectory_Optimization_in_Dynamic.pdf",
    "source": "library",
    "fig": "figures/x-topologydrivenparalleltrajectoryoptimiza.webp"
-  },
-  {
-   "id": "x-wheeledhumanoidbilateralteleoperationwit",
-   "title": "Wheeled Humanoid Bilateral Teleoperation with Position-Force Control Modes for Dynamic Loco-Manipulation",
-   "tree": "rl",
-   "branch": "loco-manip",
-   "authors": [
-    "Amartya Purushottam",
-    "Jack Yan",
-    "Christopher Xu",
-    "Youngwoo Sim",
-    "Joao Ramos"
-   ],
-   "first_author": "Amartya Purushottam",
-   "corresponding": [],
-   "institutions": [],
-   "lab": "",
-   "venue": "IEEE Humanoids",
-   "venue_type": "conference",
-   "year": 2024,
-   "date": "2024-07-16",
-   "topics": [
-    "loco-manipulation",
-    "mobile bimanual platforms"
-   ],
-   "paradigm": [],
-   "method": [],
-   "projects": [
-    "m2"
-   ],
-   "ideas": [
-    "mobile-dex-umi",
-    "multi-robot-marl",
-    "learned-retargeting",
-    "hri-collab"
-   ],
-   "related": [],
-   "arxiv": "2407.12189",
-   "doi": "",
-   "url": "https://arxiv.org/abs/2407.12189",
-   "code": "",
-   "site": "",
-   "abstract": "Remote-controlled humanoid robots can revolutionize manufacturing, construction, and healthcare industries by performing complex or dangerous manual tasks traditionally done by humans. We refer to these behaviors as Dynamic Loco-Manipulation (DLM). To successfully complete these tasks, humans control the position of their bodies and contact forces at their hands. To enable similar whole-body control in humanoids, we introduce loco-manipulation retargeting strategies with switched position and force control modes in a bilateral teleoperation framework. Our proposed locomotion mappings use the pitch and yaw of the operator's torso to control robot position or acceleration. The manipulation retargeting maps the operator's arm movements to the robot's arms for joint-position or impedance control of the end-effector. A Human-Machine Interface captures the teleoperator's motion and provides haptic feedback to their torso, enhancing their awareness of the robot's interactions with the environment. In this paper, we demonstrate two forms of DLM. First, we show the robot slotting heavy boxes (5-10.5 kg), weighing up to 83% of the robot's weight, into desired positions. Second, we show human-robot collaboration for carrying an object, where the robot and teleoperator take on leader and follower roles.",
-   "note": "",
-   "stars": 1,
-   "curated": false,
-   "local": "~/Desktop/M2/literature/mobile_bimanual_platforms/2024_2407.12189v1_Wheeled_Humanoid_Bilateral_Teleoperation_with_Position_Force.pdf",
-   "source": "library",
-   "fig": "figures/x-wheeledhumanoidbilateralteleoperationwit.webp"
   },
   {
    "id": "x-integratedplanningandcontrolofroboticsur",

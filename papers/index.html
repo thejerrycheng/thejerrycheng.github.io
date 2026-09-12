@@ -208,6 +208,11 @@ html[data-theme="night"] .pcard .pven{ color:#151820; }
 .icard .imeta span{ font-family:var(--font-mono); font-size:10.5px; font-weight:700; padding:2px 8px;
   border:1.2px solid var(--line-soft); border-radius:4px; background:var(--bone); color:var(--ink-soft) }
 .icard .imeta span.np{ background:var(--yellow); color:#151820; border-color:var(--line) }
+.icard .inov{ margin-top:11px; padding:10px 13px; background:var(--bone); border:1.5px solid var(--line-soft);
+  border-left:5px solid var(--hi); border-radius:var(--radius-sm); font-size:13.6px; line-height:1.52; color:var(--ink-soft) }
+.icard .inov b{ color:var(--ink); font-weight:700 }
+.icard .inov .nl{ display:block; font-family:var(--font-comic); font-size:11px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--hi); margin-bottom:4px }
 .icard .merged{ font-size:11.8px; color:var(--ash); margin-top:9px; font-style:italic }
 .icard .go{ flex:none; font-family:var(--font-comic); font-size:13px; letter-spacing:.07em; text-transform:uppercase; color:var(--imp); white-space:nowrap }
 
@@ -636,8 +641,11 @@ html[data-theme="night"] .tl-m{ color:#151820 }
 /* the timeline needs more room than the 1240px wrap; main.wrap gets .wide while
    this view (or the dataset table) is showing, and keeps clear of the floating key */
 .wrap.wide{ max-width:min(1720px, calc(100vw - 44px)) }
-@media (min-width:1401px){   /* sit the wide block to the left of the floating key */
-  .wrap.wide{ max-width:min(1720px, calc(100vw - 300px)); margin-left:auto; margin-right:248px }
+/* When the key panel is showing on a wide screen, reserve a gutter for it so it
+   never lands on top of content — this applies to every view, not just the wide ones. */
+@media (min-width:1401px){
+  body:has(.legend:not(.min)){ padding-right:238px }
+  .wrap.wide{ max-width:min(1720px, calc(100vw - 282px)) }
 }
 .timeline{ margin-left:0; padding:0 0 40px; width:100% }
 .timeline::before{ left:50%; transform:translateX(-50%); top:0; bottom:18px; width:3px; opacity:.9 }
@@ -790,7 +798,8 @@ function buildLegend(){
       p.kind==="past"?" <small style=\"color:var(--ash)\">· past</small>":""}</span>`).join("");
   const el=$("#legend"), btn=$("#legendToggle");
   const wide = ()=> matchMedia("(min-width:1401px)").matches;
-  let open = true; try{ const v=localStorage.getItem("atlas-legend"); if(v!==null) open = v==="1"; }catch(e){}
+  let open = wide();   // expanded only where there is room for it
+  try{ const v=localStorage.getItem("atlas-legend"); if(v!==null) open = v==="1"; }catch(e){}
   const apply = ()=>{
     if(wide()){ el.classList.toggle("min", !open); el.classList.remove("open"); }
     else { el.classList.remove("min"); el.classList.toggle("open", open); }
@@ -1042,6 +1051,7 @@ function renderIdeas(){
         ${(i.trees||[]).map(t=>`<span>${esc(DATA.meta.trees[t]?.name||t)}</span>`).join("")}
         <span>${ps.length} linked paper${ps.length===1?"":"s"}</span>
       </div>
+      ${i.novelty?`<div class="inov"><span class="nl">What's novel</span>${i.novelty}</div>`:""}
       ${i.merged&&i.merged.length>1?`<p class="merged">Merged from ${i.merged.length} of your bullets: “${esc(i.merged.join("” · “"))}”</p>`:""}
     </article>`;
   }).join("");
@@ -1363,6 +1373,7 @@ function openIdea(id, push=true){
     const p=BYID[pid]; return p? `<a class="ref" data-id="${esc(pid)}">${esc(p.title.split(":")[0].split("—")[0].trim())}</a>` : "";
   });
   let body = `<div class="dpad"><h2>${esc(idea.title)}</h2><div class="dnote">${esc(idea.pitch)}</div>`;
+  if(idea.novelty) body += `<div class="rv"><div class="callout"><p class="cl">The novel claim</p><p>${idea.novelty}</p></div></div>`;
   if(idea.merged && idea.merged.length>1)
     body += `<p style="font-size:12.8px;color:var(--ink3);margin:-6px 0 14px">Merged from your bullets: “${esc(idea.merged.join("” · “"))}”</p>`;
   if(rv){

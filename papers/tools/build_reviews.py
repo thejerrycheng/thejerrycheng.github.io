@@ -4,11 +4,11 @@ the database, and emit reviews.json."""
 import json, os, re, sys
 HERE=os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0,HERE)
 ROOT=os.path.dirname(HERE)
-import reviews_a, reviews_b, reviews_c
+import reviews_a, reviews_b, reviews_c, reviews_d
 import schema
 
 R={}
-for m in (reviews_a, reviews_b, reviews_c): R.update(m.R)
+for m in (reviews_a, reviews_b, reviews_c, reviews_d): R.update(m.R)
 
 db=json.load(open(os.path.join(ROOT,"papers_data.json")))
 ids={p["id"] for p in db["papers"]}
