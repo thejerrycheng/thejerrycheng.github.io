@@ -2,10 +2,7 @@
   const data = window.M2ComplexScenes;
   const host = document.getElementById('complex-planner');
   if (!data?.clips?.length || !host) return;
-  // Keep the public planner grounded in measured contact runs. Welded or
-  // purely geometric clips are useful for development, but should not appear
-  // in the user-facing rollout flow.
-  data.clips = data.clips.filter(c => c.physical_grasp_before_route && c.welded_fallback !== true);
+  // Display the full archive; each clip retains its grasp-model label.
   // Promote verified couch carry and pitch recordings into the planner. These
   // clips come from the same physical-contact rollout set and include measured
   // traces, so the planner view shows real motion even when an obstacle route
@@ -19,7 +16,7 @@
   // The same measured contact clips also belong in the main rollout flow.
   if (window.M2Rollouts) {
     const ids = new Set(window.M2Rollouts.clips.map(c => c.id));
-    window.M2Rollouts.clips.push(...data.clips.filter(c => !ids.has(c.id)));
+    window.M2Rollouts.clips.push(...data.clips.filter(c => c.physical_grasp_before_route && c.welded_fallback !== true && !ids.has(c.id)));
   }
   const video = host.querySelector('#complex-planner-video');
   const plot = host.querySelector('#complex-planner-plot');
@@ -32,7 +29,7 @@
     video.pause(); video.src = s.video; video.poster = s.poster; video.load();
     title.textContent = s.title;
     const terminations = Array.isArray(s.termination_reasons) ? s.termination_reasons : [];
-    note.textContent = `${s.physical_grasp_before_route ? 'Four-hand physical grasp acquired. ' : ''}${s.success ? 'Route completed.' : 'Route stopped before completion.'} ${terminations.join(', ').replaceAll('_', ' ') || 'No physical termination recorded.'}`;
+    note.textContent = `${s.physical_grasp_before_route && s.welded_fallback !== true ? 'Physical-contact grasp. ' : 'Welded / constrained-grasp baseline. '}${s.controller || s.label || ''} · ${s.success ? 'Route completed.' : 'Route stopped before completion.'} ${terminations.join(', ').replaceAll('_', ' ') || 'No physical termination recorded.'}`;
     buttons.replaceChildren();
     data.clips.forEach((clip, i) => {
       const b = document.createElement('button'); b.type = 'button'; b.textContent = clip.title;
@@ -41,7 +38,7 @@
       buttons.append(b);
     });
     if (!window.Plotly) return;
-    const measured = { type: 'scatter3d', mode: 'lines', name: 'Measured couch center',
+    const measured = { type: 'scatter3d', mode: 'lines', name: 'Measured object center',
       x: s.trace.map(r => r.xyz[0]), y: s.trace.map(r => r.xyz[1]), z: s.trace.map(r => r.xyz[2]),
       line: { color, width: 5 }, customdata: s.trace.map(r => [r.t, r.secured, r.rpy[0], r.rpy[1], r.rpy[2]]),
       hovertemplate: 't %{customdata[0]:.2f} s · %{customdata[1]}/4 hands<br>X %{x:.2f} · Y %{y:.2f} · Z %{z:.2f}<br>rotation %{customdata[2]:.1f}°, %{customdata[3]:.1f}°, %{customdata[4]:.1f}°<extra></extra>' };
