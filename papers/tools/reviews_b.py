@@ -2,92 +2,217 @@
 R = {}
 
 R["real2sim2real-ego"] = dict(
- why="""<p>This is now one of your four live projects, so the review matters more than the others. The pitch is a
+ why="""<p>This is one of your four live projects, so the review matters more than the others. The pitch is a
  loop: capture a scene egocentrically, rebuild it as something a simulator can step, learn a policy inside it,
- and put the policy back in the real scene. Each leg of that loop is individually mature — 3D reconstruction,
- sim training, sim-to-real — and the interesting claim is that stitching them with the <em>ego view as the
- shared interface</em> gives you scene-specific policies without scene-specific robot data.</p>
+ and put the policy back in the real scene. Each leg is individually mature. The interesting claim is that
+ stitching them with the <em>ego view as the shared interface</em> gives you scene-specific policies without
+ scene-specific robot data.</p>
  <p>The reason to care is economics. A robot demonstration costs a robot, an operator and a scene. An
  egocentric capture costs a person walking through a kitchen with a headset. If the exchange rate is even
  modest, the data equation changes.</p>""",
- state="""<p><b>The full loop has been built.</b> [[egoengine]] (June 2026) reconstructs a simulation scene
- from egocentric video that preserves task-relevant geometry and object layout, recovering hand pose and
- scene entities jointly, then trains in that twin. [[video2sim2real]] (June 2026) goes further and closes
- the whole loop from a <em>single</em> human video to a deployed dexterous skill, with an explicit division
- of labour: imitation learning produces the transferable base trajectory, and a residual RL policy learns
- the local corrections that contact discrepancies demand. If you were going to write down the architecture
- for this project, that is the architecture.</p>
- <p><b>The reconstruction leg is the bottleneck, and the field knows it.</b> [[r2s-ego]] (Aug 2026) exists
- precisely because egocentric capture gives you sparse, badly-distributed views — dual-proxy refinement for
- sparse-capture real-to-sim. Expect this to consume most of your engineering time, not the policy learning.</p>
- <p><b>The humanoid version came earlier.</b> [[videomimic]] reconstructs both the human motion and the
- terrain from ordinary video and trains a terrain-aware humanoid policy in the reconstruction. It is the
- cleanest demonstration that reconstructing the <em>scene</em>, not just the human, is what makes this work.</p>
- <p><b>And the capture side just got a purpose-built substrate.</b> Ropedia's Xperience-10M pairs 10,000 hours
- of egocentric video with stereo depth, SLAM camera pose and full hand-plus-body motion capture, all
- synchronised — which is exactly the annotation stack a reconstruction pipeline otherwise has to estimate.
- [[egokit]] is the open toolkit if you would rather record your own. Between them, the input side of this
- project is no longer the hard part; the reconstruction and the loop closure are. See the Datasets tab.</p>
- <p><b>Real-to-sim is also being used for evaluation, not just training.</b> [[polaris]] builds twins so
- generalist policies can be benchmarked cheaply and reproducibly. That is a lower-risk use of the same
- machinery and worth adopting regardless of what your training story ends up being.</p>
- <p><b>What closes the last gap.</b> [[asap]]'s delta-action model — collect real rollouts, learn a residual
- correction to the simulator, retrain against the corrected sim — is the most convincing published answer to
- the dynamics half of the gap, and it composes with everything above. [[real2sim]] is the older, simpler
- statement of the same loop on a deformable.</p>""",
+ state="""<p><b>The full loop has been built — once.</b> [[egoengine]] (June 2026) reconstructs a simulation
+ scene from egocentric video that preserves task-relevant geometry and object layout, recovering hand pose and
+ scene entities jointly, then trains in that twin. [[video2sim2real]] (June 2026) closes the whole path from a
+ <em>single</em> human video to a deployed dexterous skill, and — this is the part to internalise — states the
+ division of labour explicitly: <b>imitation learning addresses the geometry gap, finger-level residual RL
+ handles the local control and physics gap</b>.</p>
+ <p><b>The reconstruction leg is the bottleneck and the field knows it.</b> [[r2s-ego]] (Aug 2026) exists
+ because egocentric capture gives sparse, badly-distributed views. Expect this to consume most of your
+ engineering time.</p>
+ <p><b>Scene construction has quietly become its own sub-field, and it is not RL.</b> [[acdc]] introduced
+ <b>digital cousins</b>: scenes that preserve a real reference's structure and affordances while substituting
+ different assets, rather than twinning it exactly — cheaper to build and <em>better</em> for transfer, because
+ training across cousins is domain randomization with semantics attached. [[simfoundry]] (2026) does zero-shot
+ real-to-sim from video with object, scene and task editing and automated cousin generation. [[robosnap]] goes
+ from one RGB image to a sim-ready scene. [[prism]] synthesises both scene and motion. In the LLM direction,
+ RoboGen and GenSim2 prompt a model to propose a task and compose the scene for it, and [[dreureka]] has an LLM
+ write the domain-randomization ranges. None of this is reinforcement learning.</p>
+ <p><b>The humanoid version came earlier.</b> [[videomimic]] reconstructs both the human motion and the terrain
+ from ordinary video and trains a terrain-aware policy in the reconstruction — the clearest demonstration that
+ reconstructing the <em>scene</em>, not just the human, is what makes this work.</p>
+ <p><b>Real-to-sim is also an evaluation tool.</b> [[polaris]] builds twins so generalist policies can be
+ benchmarked cheaply and reproducibly. Lower-risk use of the same machinery, and worth adopting early.</p>
+ <p><b>And for dexterity specifically, the IL-plus-residual pattern is now the consensus.</b>
+ [[residual-assembly]] states it cleanly — imitation gets the coarse trajectory, residual RL supplies precision
+ demonstrations cannot. [[far-dex]] is the 2026 dexterous instance with an adaptive residual.
+ [[humanoid-dex-s2r]] adds an <b>automated real-to-sim tuning module</b>, which is the closest published thing
+ to closing the loop even though the paper does not frame it that way. [[asap]]'s delta-action model and
+ [[dexndm]]'s joint-wise neural dynamics are the two mechanisms for correcting the dynamics half.</p>""",
  threads=[
-  """<b>Ego capture → scene reconstruction.</b> [[egoengine]], [[r2s-ego]], [[videomimic]]. The geometry and
-  layout have to be task-relevant, not photorealistic — a lesson that saves a lot of Gaussian-splatting time.""",
-  """<b>IL base + residual RL.</b> [[video2sim2real]], [[hil-serl]], [[pld]]. The consensus structure: get a
-  transferable trajectory by imitation, fix contact with RL.""",
-  """<b>Dynamics-gap correction.</b> [[asap]], [[dexndm]], [[dexsim2real]]. Learn the correction rather than
-  randomize over your ignorance.""",
-  """<b>Rendering-gap correction.</b> [[simweaver]], [[phantom]]. Editing pixels is often cheaper than
-  matching them.""",
-  """<b>Real-to-sim for evaluation.</b> [[polaris]]. Underrated; it makes your ablations affordable.""",
-  """<b>Viewpoint robustness.</b> [[egodemogen]]. Ego policies overfit to camera placement badly.""",
+  """<b>Ego capture → scene reconstruction.</b> [[egoengine]], [[r2s-ego]], [[videomimic]]. Task-relevant
+  geometry, not photorealism.""",
+  """<b>Agentic / automated scene construction.</b> [[acdc]] (digital cousins), [[simfoundry]], [[robosnap]],
+  [[prism]], [[dreureka]] (LLM writes the randomization). This is generation and search, not RL.""",
+  """<b>IL base + residual RL.</b> [[video2sim2real]], [[residual-assembly]], [[far-dex]], [[pld]],
+  [[hil-serl]]. The consensus structure for contact.""",
+  """<b>Dynamics-gap correction.</b> [[asap]], [[dexndm]], [[humanoid-dex-s2r]], [[wheeled-payload]]. Learn the
+  correction rather than randomize over your ignorance.""",
+  """<b>Rendering-gap correction.</b> [[simweaver]], [[phantom]]. Editing pixels is often cheaper than matching
+  them.""",
+  """<b>Real-to-sim for evaluation.</b> [[polaris]]. Makes your ablations affordable.""",
+  """<b>Viewpoint robustness.</b> [[egodemogen]] — ego policies overfit to camera placement badly.""",
  ],
- gap="""<p>The loop is built, so the contribution has to be in the loop's <em>closure</em>. Two things are
- missing from all of the above. <b>First, iteration.</b> Every published system runs the loop once: capture,
- reconstruct, train, deploy. Nobody feeds the real-world failure back into the reconstruction and goes
- round again, even though that is the obvious thing to do and [[asap]] gives you the mechanism.
- <b>Second, scene generalization.</b> These systems build a twin of <em>the</em> kitchen. The question nobody
- answers is how many reconstructed kitchens you need before the policy stops needing a new one.</p>
- <p>A paper that runs the loop N times on the same task and reports the error trajectory — reconstruction
- fidelity, sim-real dynamics gap, and task success, all as functions of iteration count — would be a genuine
- contribution, and it is a systems result you are well set up to produce.</p>""",
+ gap="""<p>The loop is built, so the contribution has to be in the loop's <em>closure</em>. Three claims, in
+ increasing order of value.</p>
+ <p><b>1. Close the loop.</b> Every published system runs capture → reconstruct → train → deploy <em>once</em>,
+ reports success, and stops. Feed the real-world failures back and go round again (see the diagram below for
+ what "back" actually means). Report geometry error, dynamics gap and task success as functions of
+ <em>iteration count</em>. [[asap]] and [[humanoid-dex-s2r]] give you the correction mechanisms; nobody has run
+ them more than once.</p>
+ <p><b>2. Attribute the residual error.</b> When a real2sim2real policy fails, no paper says whether the
+ geometry, the dynamics or the rendering was at fault — they report end-to-end success. An ablation that holds
+ two of the three at ground truth and varies the third gives the field its error budget, and it is what any
+ practitioner actually wants to know before investing in reconstruction.</p>
+ <p><b>3. The scene-count curve.</b> These systems build a twin of <em>the</em> kitchen. How many reconstructed
+ scenes — or [[acdc]]-style cousins — before the policy stops needing a new one? That number decides whether
+ real2sim2real scales or is an expensive way to overfit to one room.</p>""",
+ diagram=dict(
+   title="Closing the loop — what feeds back, and where",
+   caption="Single-pass systems stop at deploy. Closing the loop means three separate corrections, each fixing "
+           "a different gap and each measurable on its own. The agent sits on the construction side and is not "
+           "part of the policy's learning algorithm.",
+   svg="""<svg viewBox="0 0 980 600" role="img" aria-label="Real to sim to real closed loop">
+ <defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7"
+   orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker></defs>
+ <style>
+  .bx{fill:var(--panel);stroke:var(--line);stroke-width:2;rx:8}
+  .bx2{fill:var(--bone);stroke:var(--line-soft);stroke-width:1.5;rx:7}
+  .hi{fill:var(--yellow);stroke:var(--line);stroke-width:2;rx:8}
+  .t{font:600 13px var(--font-sans);fill:var(--ink)}
+  .s{font:400 10.5px var(--font-mono);fill:var(--ash)}
+  .lb{font:700 10px var(--font-mono);fill:var(--imp);letter-spacing:.06em}
+  .fb{font:700 10px var(--font-mono);fill:var(--hi);letter-spacing:.05em}
+  .ln{stroke:currentColor;stroke-width:2;fill:none;marker-end:url(#ah2);color:var(--line)}
+  .fl{stroke:var(--hi);stroke-width:2;fill:none;marker-end:url(#ah2);color:var(--hi);stroke-dasharray:6 4}
+ </style>
+ <!-- forward path -->
+ <rect class="bx" x="16" y="40" width="168" height="96"/>
+ <text class="lb" x="30" y="62">1 · CAPTURE</text>
+ <text class="s" x="30" y="82">egocentric video</text>
+ <text class="s" x="30" y="98">hand pose + scene</text>
+ <text class="s" x="30" y="114">one walk-through</text>
+
+ <rect class="bx" x="216" y="40" width="188" height="96"/>
+ <text class="lb" x="230" y="62">2 · RECONSTRUCT</text>
+ <text class="s" x="230" y="82">task-relevant geometry</text>
+ <text class="s" x="230" y="98">object poses, articulation</text>
+ <text class="s" x="230" y="114">→ sim-ready scene</text>
+
+ <rect class="hi" x="436" y="40" width="188" height="96"/>
+ <text class="lb" x="450" y="62" style="fill:#8a4a10">3 · AGENT (not RL)</text>
+ <text class="s" x="450" y="82" style="fill:#3a3320">completes missing geometry</text>
+ <text class="s" x="450" y="98" style="fill:#3a3320">swaps assets → cousins</text>
+ <text class="s" x="450" y="114" style="fill:#3a3320">writes tasks + DR ranges</text>
+
+ <rect class="bx" x="656" y="40" width="188" height="96"/>
+ <text class="lb" x="670" y="62">4 · TRAIN IN SIM</text>
+ <text class="s" x="670" y="82">IL on retargeted human</text>
+ <text class="s" x="670" y="98">+ residual RL on contact</text>
+ <text class="s" x="670" y="114">across N cousins</text>
+
+ <rect class="bx" x="656" y="212" width="188" height="82"/>
+ <text class="lb" x="670" y="234">5 · DEPLOY</text>
+ <text class="s" x="670" y="254">real scene, real robot</text>
+ <text class="s" x="670" y="272">log every rollout</text>
+
+ <!-- the three corrections -->
+ <rect class="bx2" x="30" y="360" width="270" height="118"/>
+ <text class="fb" x="44" y="382">FEEDBACK A · GEOMETRY</text>
+ <text class="s" x="44" y="402">contact happened at 0.79 m,</text>
+ <text class="s" x="44" y="418">the mesh said 0.82 m</text>
+ <text class="s" x="44" y="438">→ treat real contacts as</text>
+ <text class="s" x="44" y="454">   constraints, refit the scene</text>
+ <text class="s" x="44" y="470">→ fixes layout + articulation</text>
+
+ <rect class="bx2" x="330" y="360" width="270" height="118"/>
+ <text class="fb" x="344" y="382">FEEDBACK B · DYNAMICS</text>
+ <text class="s" x="344" y="402">same commands, real vs sim</text>
+ <text class="s" x="344" y="418">→ learn a delta-action /</text>
+ <text class="s" x="344" y="434">   joint-wise residual model</text>
+ <text class="s" x="344" y="454">→ bake into sim, retrain</text>
+ <text class="s" x="344" y="470">   (ASAP, DexNDM)</text>
+
+ <rect class="bx2" x="630" y="360" width="270" height="118"/>
+ <text class="fb" x="644" y="382">FEEDBACK C · APPEARANCE</text>
+ <text class="s" x="644" y="402">render from the robot's own</text>
+ <text class="s" x="644" y="418">camera pose, compare to real</text>
+ <text class="s" x="644" y="438">→ fine-tune splat / texture</text>
+ <text class="s" x="644" y="454">   on the residual</text>
+ <text class="s" x="644" y="470">→ fixes the visual gap</text>
+
+ <rect class="bx" x="330" y="514" width="270" height="62"/>
+ <text class="lb" x="344" y="536">STOP WHEN</text>
+ <text class="s" x="344" y="556">Δ success per iteration &lt; cost of</text>
+ <text class="s" x="344" y="570">another round of robot time</text>
+
+ <!-- arrows -->
+ <path class="ln" d="M184 88 L212 88"/>
+ <path class="ln" d="M404 88 L432 88"/>
+ <path class="ln" d="M624 88 L652 88"/>
+ <path class="ln" d="M750 136 L750 208"/>
+ <path class="fl" d="M656 253 L470 253 L470 356"/>
+ <path class="fl" d="M656 262 L160 262 L160 356"/>
+ <path class="fl" d="M844 262 L920 262 L920 330 L765 330 L765 356"/>
+ <text class="fb" x="176" y="246">failure rollouts</text>
+ <path class="fl" d="M165 360 L165 320 L310 320 L310 140"/>
+ <path class="fl" d="M465 360 L465 330 L560 330 L560 140" />
+ <path class="fl" d="M765 478 L765 500 L930 500 L930 20 L750 20 L750 36"/>
+ <text class="fb" x="322" y="312">refit</text>
+ <text class="fb" x="574" y="312">re-randomise</text>
+ <text class="fb" x="792" y="16">retrain</text>
+</svg>"""),
  plan=[
-  """Reproduce [[video2sim2real]] on one task first. Do not start by building your own pipeline; start by
-  confirming you can run theirs, because the reconstruction stage will otherwise silently eat a month.""",
-  """Instrument the three gaps separately: geometry error against a scanned ground truth, dynamics error
-  against real rollouts ([[asap]]'s delta-action residual is a good scalar), and rendering error.""",
-  """Add the second iteration. Feed real failure rollouts back into the delta-action model and the scene
-  estimate, re-train, re-deploy. Report the curve.""",
-  """Then the generalization experiment: 1, 3, 10 reconstructed scenes, evaluate on a held-out scene. This
-  is the number the field actually wants.""",
-  """Use [[polaris]]-style twins as the evaluation harness so you can afford the ablations.""",
+  """Reproduce [[video2sim2real]] on one task first. Do not start by building your own pipeline — the
+  reconstruction stage will silently eat a month otherwise.""",
+  """<b>On the agent:</b> build it on top of [[simfoundry]] or [[acdc]] rather than from scratch. Give it four
+  jobs, all of which are generation and search rather than RL: complete geometry the ego capture missed,
+  substitute assets to produce cousins, check physical plausibility (floating objects, missing collision
+  meshes, articulation that cannot open), and write the randomization ranges [[dreureka]]-style. Its feedback
+  signal is rendered images plus physics-stability checks plus the downstream policy's training curve.""",
+  """<b>On IL vs RL:</b> use both, in the division [[video2sim2real]] and [[residual-assembly]] establish —
+  <b>IL for the geometry gap, residual RL for the contact and physics gap</b>. For dexterity IL should be
+  primary, because the ego capture already contains a human demonstration and retargeting it gives you a
+  trajectory for free; pure RL for dexterous manipulation needs enormous sample counts and heavy reward
+  engineering. RL earns its place in exactly one situation: when the retargeted trajectory is
+  <em>kinematically infeasible</em> for your hand, IL will happily track something impossible, and only RL will
+  find the achievable neighbourhood.""",
+  """Instrument the three gaps separately from day one — geometry error against a scanned ground truth,
+  dynamics error against real rollouts ([[asap]]'s delta-action residual is a good scalar), rendering error
+  against real images from the robot's camera pose. Without this you cannot do the attribution ablation and you
+  cannot tell which feedback path is working.""",
+  """Add the second iteration. Feed real failures back into the scene estimate and the dynamics model, retrain,
+  redeploy. Report the curve, and report whether it converges or oscillates — oscillation is the interesting
+  failure.""",
+  """Then the generalization experiment: 1, 3, 10 reconstructed scenes (or [[acdc]] cousins of one scene),
+  evaluate on a held-out real scene.""",
+  """Use [[polaris]]-style twins as the evaluation harness so the ablations are affordable.""",
  ],
  risks=[
   """<b>Reconstruction quality dominates every result.</b> If the twin is bad, everything downstream measures
-  your reconstruction, not your method. [[r2s-ego]] exists because of this. Budget accordingly and report
-  reconstruction quality as a first-class variable.""",
-  """<b>The loop may not converge.</b> Iterating a real-to-sim loop can diverge if the correction model
-  overfits to the last batch of failures. Hold out rollouts and watch for it.""",
+  your reconstruction rather than your method. [[r2s-ego]] exists because of this. Report reconstruction
+  quality as a first-class variable.""",
+  """<b>The loop may not converge.</b> Iterating can diverge if the correction model overfits to the last batch
+  of failures. Hold out rollouts, and cap the correction's capacity.""",
+  """<b>The agent generates plausible-looking nonsense.</b> A VLM will happily place a mug that intersects the
+  counter. Physics-stability checks must gate every generated scene before it reaches training, and
+  [[acdc]]'s cousin framing helps here because it substitutes from a vetted asset library rather than
+  generating geometry freely.""",
   """<b>It becomes a graphics project.</b> Very easy to spend six months on splatting. The published systems
-  all use task-relevant geometry, not beauty — copy that discipline.""",
+  use task-relevant geometry, not beauty — copy that discipline.""",
  ],
  read=[
-  dict(id="video2sim2real", why="Start here. Single human video to deployed dexterous skill, with the IL-plus-residual-RL split you want."),
+  dict(id="video2sim2real", why="Start here. Single human video to deployed dexterous skill, and the explicit IL-for-geometry / residual-RL-for-contact split."),
+  dict(id="acdc", why="Digital cousins. The reframing that makes agentic scene construction cheap and better for transfer than exact twins."),
+  dict(id="simfoundry", why="2026. Zero-shot real-to-sim from video with scene and task editing — the substrate your agent should drive."),
   dict(id="egoengine", why="The reconstruction leg done properly — hand pose and scene entities recovered together."),
-  dict(id="videomimic", why="The humanoid/terrain version, and the clearest argument for reconstructing the scene rather than just the human."),
-  dict(id="asap", why="The dynamics-gap correction that composes with all of this. The delta-action idea is the one to reuse."),
+  dict(id="residual-assembly", why="The cleanest argument for why imitation alone cannot supply precision, and what the residual is for."),
+  dict(id="far-dex", why="The 2026 dexterous instance: few-shot augmentation plus an adaptive residual."),
+  dict(id="humanoid-dex-s2r", why="Has an automated real-to-sim tuning module — the closest thing to loop closure already published."),
+  dict(id="asap", why="The delta-action model. This is feedback path B, and it is the mechanism you iterate."),
   dict(id="r2s-ego", why="Sparse-capture reconstruction — the engineering problem that will actually cost you time."),
-  dict(id="polaris", why="Real-to-sim as an evaluation harness. Adopt this early; it makes ablations affordable."),
-  dict(id="hil-serl", why="If the RL fine-tuning stage is on real hardware, this is the sample budget to beat."),
-  dict(id="real2sim", why="The original, simplest statement of the loop. Short; read for framing."),
-  dict(id="simweaver", why="The rendering half of the gap, on deformables where it is worst."),
-  dict(id="egokit", why="The open capture toolkit, if you record your own egocentric input."),
-  dict(id="egoscale", why="What the downstream policy can be expected to gain per hour of human data."),
+  dict(id="dreureka", why="An LLM writing the domain-randomization ranges — the narrow, working version of agent-in-the-loop."),
+  dict(id="polaris", why="Real-to-sim as an evaluation harness. Adopt early; it makes ablations affordable."),
+  dict(id="videomimic", why="Reconstruct the scene, not just the human. The clearest statement of why that matters."),
  ])
 
 R["rl-post-training"] = dict(

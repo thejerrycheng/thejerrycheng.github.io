@@ -2,8 +2,8 @@
  "meta": {
   "generated": "2026-09-12",
   "counts": {
-   "total": 525,
-   "curated": 339,
+   "total": 533,
+   "curated": 347,
    "library": 197,
    "attached": 63,
    "dropped": 35
@@ -880,11 +880,13 @@
     "ego-dex"
    ],
    "related": [
+    "acdc",
     "egodemogen",
     "egomimic",
     "phantom",
     "polaris",
     "r2s-ego",
+    "simfoundry",
     "video2sim2real",
     "videomimic"
    ],
@@ -982,6 +984,72 @@
    "fig": "figures/egoscale.webp",
    "figs": [
     "figures/egoscale-1.webp"
+   ]
+  },
+  {
+   "id": "far-dex",
+   "title": "FAR-Dex: Few-shot Data Augmentation and Adaptive Residual Policy Refinement for Dexterous Manipulation",
+   "tree": "rl",
+   "branch": "manipulation",
+   "authors": [
+    "Yushan Bai",
+    "Fulin Chen",
+    "Hongzheng Sun",
+    "Yuchuang Tong",
+    "En Li",
+    "Zhengtao Zhang"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-03-11",
+   "topics": [
+    "few-shot augmentation",
+    "adaptive residual policy refinement",
+    "dexterity"
+   ],
+   "paradigm": [
+    "IL",
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "r2s2r"
+   ],
+   "ideas": [
+    "real2sim2real-ego",
+    "ego-dex",
+    "rl-post-training"
+   ],
+   "related": [
+    "asap",
+    "humanoid-dex-s2r",
+    "omnitactune",
+    "pld",
+    "residual-assembly",
+    "video2sim2real"
+   ],
+   "arxiv": "2603.10451",
+   "doi": "10.48550/arxiv.2603.10451",
+   "code": "",
+   "site": "",
+   "note": "Few-shot data augmentation plus an <b>adaptive residual</b> policy for dexterous manipulation — the 2026 instance of the pattern that keeps recurring in this library: a base policy from imitation, a residual from RL, and the residual is where all the contact lives.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Achieving human-like dexterous manipulation through the collaboration of multi-fingered hands with robotic arms remains a longstanding challenge in robotics, primarily due to the scarcity of high-quality demonstrations and the complexity of high-dimensional action spaces. To address these challenges, we propose FAR-Dex, a hierarchical framework that integrates few-shot data augmentation with adaptive residual refinement to enable robust and precise arm-hand coordination in dexterous tasks. First, FAR-DexGen leverages the IsaacLab simulator to generate diverse and physically constrained trajectories from a few demonstrations, providing a data foundation for policy training. Second, FAR-DexRes introduces an adaptive residual module that refines policies by combining multi-step trajectory segments with observation features, thereby enhancing accuracy and robustness in manipulation scenarios. Experiments in both simulation and real-world demonstrate that FAR-Dex improves data quality by 13.4% and task success rates by 7% over state-of-the-art methods. It further achieves over 80% success in real-world tasks, enabling fine-grained dexterous manipulation with strong positional generalization.",
+   "source": "curated",
+   "first_author": "Yushan Bai",
+   "url": "https://arxiv.org/abs/2603.10451",
+   "fig": "figures/far-dex.webp",
+   "figs": [
+    "figures/far-dex-1.webp",
+    "figures/far-dex-2.webp",
+    "figures/far-dex-3.webp"
    ]
   },
   {
@@ -1678,6 +1746,78 @@
    ]
   },
   {
+   "id": "simfoundry",
+   "title": "SimFoundry: Modular and Automated Scene Generation for Policy Learning and Evaluation",
+   "tree": "systems",
+   "branch": "sim-bench",
+   "authors": [
+    "Nadun Ranawaka",
+    "Josiah Wong",
+    "Wei-Lin Pai",
+    "Wei-Teng Chu",
+    "Tianyuan Dai",
+    "Masoud Moghani",
+    "Hang Yin",
+    "Yi Jiang",
+    "Wesley Durbano",
+    "Brandon Huynh",
+    "Y D Fang",
+    "Danfei Xu",
+    "Ruohan Zhang",
+    "Li Fei-Fei",
+    "Linxi Fan",
+    "Bowen Wen",
+    "Ajay Mandlekar",
+    "Yuke Zhu"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-06-26",
+   "topics": [
+    "automated scene generation from video",
+    "sim-ready twins",
+    "editing"
+   ],
+   "paradigm": [
+    "simulator"
+   ],
+   "method": [],
+   "projects": [
+    "r2s2r"
+   ],
+   "ideas": [
+    "real2sim2real-ego",
+    "agentic-physical"
+   ],
+   "related": [
+    "acdc",
+    "egoengine",
+    "prism",
+    "r2s-ego",
+    "robosnap"
+   ],
+   "arxiv": "2606.28276",
+   "doi": "10.48550/arxiv.2606.28276",
+   "code": "",
+   "site": "",
+   "note": "Zero-shot real-to-sim from a video, producing sim-ready digital twins with object, scene and task editing, and automated generation of cousins. This is the closest thing to the 'agent constructs the scene' component you want — it is a pipeline rather than an LLM loop, but it is the substrate an agent would drive.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Training and evaluating robot policies in the real world is costly and difficult to scale. We introduce SimFoundry, a modular and automated system for zero-shot real-to-sim scene construction from a video. SimFoundry generates sim-ready digital twins and supports object, scene, and task editing, enabling the automated generation of diverse digital cousins: affordance-preserving variations of reconstructed real-world scenes. Policies trained on SimFoundry data transfer zero-shot to challenging real tasks involving multi-step manipulation, articulated object interaction, and bimanual interaction, and its digital cousins (variations of the original scene, objects, and tasks) facilitate generalization to new real-world conditions. Across 7 manipulation tasks and 5 policy architectures, SimFoundry simulation evaluations strongly predict real-world performance, with mean Pearson correlation 0.911 and mean maximum ranking violation 0.018. When evaluating sim-trained policies zero-shot in the real world, policies trained with object, scene, and task cousins in simulation show average task success rate improvements of 17%, 21%, and 40%, respectively. Additional details at https://research.nvidia.com/labs/gear/simfoundry/ .",
+   "source": "curated",
+   "first_author": "Nadun Ranawaka",
+   "url": "https://arxiv.org/abs/2606.28276",
+   "fig": "figures/simfoundry.webp",
+   "figs": [
+    "figures/simfoundry-1.webp"
+   ]
+  },
+  {
    "id": "ume",
    "title": "Universal Manipulation Exoskeleton: Learning Compliant Whole-body Policies with Real-time Torque Feedback",
    "tree": "systems",
@@ -1795,9 +1935,12 @@
     "asap",
     "dist-r2s2r",
     "egoengine",
+    "far-dex",
     "hil-serl",
+    "humanoid-dex-s2r",
     "r2s-ego",
     "real2sim",
+    "residual-assembly",
     "videomimic"
    ],
    "arxiv": "2606.08828",
@@ -2197,6 +2340,8 @@
     "deepmimic",
     "domain-rand",
     "dreureka",
+    "far-dex",
+    "humanoid-dex-s2r",
     "real2sim",
     "resmimic",
     "rma",
@@ -2831,6 +2976,7 @@
     "groot-n1",
     "groot-n15",
     "humannet",
+    "prism",
     "robocurate",
     "vjepa2"
    ],
@@ -3815,6 +3961,7 @@
     "human-video-survey",
     "humanego",
     "humanoid-policy",
+    "learn-any-images",
     "mimicplay"
    ],
    "arxiv": "2503.00779",
@@ -4081,10 +4228,12 @@
     "ace-ego-0",
     "dlr-vla",
     "expo-ft",
+    "far-dex",
     "hand-in-loop",
     "hil-serl",
     "iRe-VLA",
     "knowledge-insulation",
+    "residual-assembly",
     "resmimic",
     "ript-vla",
     "rlinf-vla",
@@ -4108,6 +4257,71 @@
    "figs": [
     "figures/pld-1.webp",
     "figures/pld-2.webp"
+   ]
+  },
+  {
+   "id": "humanoid-dex-s2r",
+   "title": "Sim-to-Real Reinforcement Learning for Vision-Based Dexterous Manipulation on Humanoids",
+   "tree": "rl",
+   "branch": "sim2real",
+   "authors": [
+    "Lin",
+    "Toru",
+    "Sachdev",
+    "Kartik",
+    "Fan",
+    "Linxi",
+    "Malik",
+    "Jitendra",
+    "Zhu",
+    "Yuke"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-02-27",
+   "topics": [
+    "automated real-to-sim tuning",
+    "vision-based dexterity",
+    "policy distillation"
+   ],
+   "paradigm": [
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "geodex",
+    "r2s2r"
+   ],
+   "ideas": [
+    "real2sim2real-ego",
+    "ego-dex"
+   ],
+   "related": [
+    "asap",
+    "chen-visual-inhand",
+    "dexndm",
+    "far-dex",
+    "video2sim2real"
+   ],
+   "arxiv": "2502.20396",
+   "doi": "10.48550/arxiv.2502.20396",
+   "code": "",
+   "site": "",
+   "note": "Vision-based dexterous manipulation on humanoids with an <b>automated real-to-sim tuning module</b>, a contact-and-object-goal reward formulation, and divide-and-conquer distillation. The automated tuning module is the piece to steal: it is the closest published thing to closing the loop, even though the paper does not frame it that way.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Learning generalizable robot manipulation policies, especially for complex multi-fingered humanoids, remains a significant challenge. Existing approaches primarily rely on extensive data collection and imitation learning, which are expensive, labor-intensive, and difficult to scale. Sim-to-real reinforcement learning (RL) offers a promising alternative, but has mostly succeeded in simpler state-based or single-hand setups. How to effectively extend this to vision-based, contact-rich bimanual manipulation tasks remains an open question. In this paper, we introduce a practical sim-to-real RL recipe that trains a humanoid robot to perform three challenging dexterous manipulation tasks: grasp-and-reach, box lift and bimanual handover. Our method features an automated real-to-sim tuning module, a generalized reward formulation based on contact and object goals, a divide-and-conquer policy distillation framework, and a hybrid object representation strategy with modality-specific augmentation. We demonstrate high success rates on unseen objects and robust, adaptive policy behaviors -- highlighting that vision-based dexterous manipulation via sim-to-real RL is not only viable, but also scalable and broadly applicable to real-world humanoid manipulation tasks.",
+   "source": "curated",
+   "first_author": "Lin",
+   "url": "https://arxiv.org/abs/2502.20396",
+   "fig": "figures/humanoid-dex-s2r.webp",
+   "figs": [
+    "figures/humanoid-dex-s2r-1.webp"
    ]
   },
   {
@@ -4883,6 +5097,68 @@
    ]
   },
   {
+   "id": "acdc",
+   "title": "Automated Creation of Digital Cousins for Robust Policy Learning",
+   "tree": "systems",
+   "branch": "sim-bench",
+   "authors": [
+    "Tianyuan Dai",
+    "Josiah Wong",
+    "Yunfan Jiang",
+    "Chen Wang",
+    "Cem Gökmen",
+    "Ruohan Zhang",
+    "Jiajun Wu",
+    "Feifei Li"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-10-09",
+   "topics": [
+    "digital cousins",
+    "automated scene creation",
+    "asset substitution"
+   ],
+   "paradigm": [
+    "simulator"
+   ],
+   "method": [],
+   "projects": [
+    "r2s2r"
+   ],
+   "ideas": [
+    "real2sim2real-ego",
+    "agentic-physical"
+   ],
+   "related": [
+    "egoengine",
+    "prism",
+    "r2s-ego",
+    "robosnap",
+    "simfoundry"
+   ],
+   "arxiv": "2410.07408",
+   "doi": "10.48550/arxiv.2410.07408",
+   "code": "",
+   "site": "",
+   "note": "ACDC introduces <b>digital cousins</b> — scenes that preserve a real reference's structure and affordances while substituting different asset instances, rather than trying to twin it exactly. That is the key reframing for agentic scene construction: an exact twin is expensive and brittle, a cousin is cheap and <em>better for transfer</em>, because training across cousins is domain randomization with semantics. Stanford.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Training robot policies in the real world can be unsafe, costly, and difficult to scale. Simulation serves as an inexpensive and potentially limitless source of training data, but suffers from the semantics and physics disparity between simulated and real-world environments. These discrepancies can be minimized by training in digital twins, which serve as virtual replicas of a real scene but are expensive to generate and cannot produce cross-domain generalization. To address these limitations, we propose the concept of digital cousins, a virtual asset or scene that, unlike a digital twin, does not explicitly model a real-world counterpart but still exhibits similar geometric and semantic affordances. As a result, digital cousins simultaneously reduce the cost of generating an analogous virtual environment while also facilitating better robustness during sim-to-real domain transfer by providing a distribution of similar training scenes. Leveraging digital cousins, we introduce a novel method for their automated creation, and propose a fully automated real-to-sim-to-real pipeline for generating fully interactive scenes and training robot policies that can be deployed zero-shot in the original scene. We find that digital cousin scenes that preserve geometric and semantic affordances can be produced automatically, and can be used to train policies that outperform policies trained on digital twins, achieving 90% vs. 25% success rates under zero-shot sim-to-real transfer. Additional details are available at https://digital-cousins.github.io/.",
+   "source": "curated",
+   "first_author": "Tianyuan Dai",
+   "url": "https://arxiv.org/abs/2410.07408",
+   "fig": "figures/acdc.webp",
+   "figs": [
+    "figures/acdc-1.webp"
+   ]
+  },
+  {
    "id": "droid",
    "title": "DROID: A Large-Scale In-The-Wild Robot Manipulation Dataset",
    "tree": "il",
@@ -5231,6 +5507,66 @@
    "fig": "figures/exbody2.webp",
    "figs": [
     "figures/exbody2-1.webp"
+   ]
+  },
+  {
+   "id": "residual-assembly",
+   "title": "From Imitation to Refinement -- Residual RL for Precise Assembly",
+   "tree": "rl",
+   "branch": "manipulation",
+   "authors": [
+    "Lars Ankile",
+    "Anthony Simeonov",
+    "Idan Shenfeld",
+    "Marcel Torne",
+    "Pulkit Agrawal"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-07-23",
+   "topics": [
+    "residual RL on top of imitation",
+    "precise assembly"
+   ],
+   "paradigm": [
+    "IL",
+    "RL"
+   ],
+   "method": [],
+   "projects": [
+    "r2s2r"
+   ],
+   "ideas": [
+    "real2sim2real-ego",
+    "rl-post-training"
+   ],
+   "related": [
+    "far-dex",
+    "hil-serl",
+    "pld",
+    "video2sim2real"
+   ],
+   "arxiv": "2407.16677",
+   "doi": "10.48550/arxiv.2407.16677",
+   "code": "",
+   "site": "",
+   "note": "'From Imitation to Refinement' — the clearest statement of the division of labour: imitation gets you the coarse trajectory, residual RL supplies the precision that demonstrations cannot, on assembly tasks where tolerances are sub-millimetre. Read it for the argument, not the task.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Recent advances in Behavior Cloning (BC) have made it easy to teach robots new tasks. However, we find that the ease of teaching comes at the cost of unreliable performance that saturates with increasing data for tasks requiring precision. The performance saturation can be attributed to two critical factors: (a) distribution shift resulting from the use of offline data and (b) the lack of closed-loop corrective control caused by action chucking (predicting a set of future actions executed open-loop) critical for BC performance. Our key insight is that by predicting action chunks, BC policies function more like trajectory \"planners\" than closed-loop controllers necessary for reliable execution. To address these challenges, we devise a simple yet effective method, ResiP (Residual for Precise Manipulation), that overcomes the reliability problem while retaining BC's ease of teaching and long-horizon capabilities. ResiP augments a frozen, chunked BC model with a fully closed-loop residual policy trained with reinforcement learning (RL) that addresses distribution shifts and introduces closed-loop corrections over open-loop execution of action chunks predicted by the BC trajectory planner. Videos, code, and data: https://residual-assembly.github.io.",
+   "source": "curated",
+   "first_author": "Lars Ankile",
+   "url": "https://arxiv.org/abs/2407.16677",
+   "fig": "figures/residual-assembly.webp",
+   "figs": [
+    "figures/residual-assembly-1.webp",
+    "figures/residual-assembly-2.webp",
+    "figures/residual-assembly-3.webp"
    ]
   },
   {
@@ -5956,6 +6292,7 @@
     "omnitactune",
     "pi06",
     "pld",
+    "residual-assembly",
     "ript-vla",
     "rlpd",
     "serl",
@@ -7282,6 +7619,7 @@
     "chen-inhand",
     "clutterdexgrasp",
     "dextreme",
+    "humanoid-dex-s2r",
     "qi-inhand"
    ],
    "arxiv": "2211.11744",
@@ -9640,6 +9978,7 @@
     "clutterdexgrasp",
     "dexsim2real",
     "force-grasp-s2r",
+    "humanoid-dex-s2r",
     "wheeled-payload"
    ],
    "arxiv": "2510.08556",
@@ -10829,6 +11168,7 @@
    ],
    "related": [
     "dexskin",
+    "far-dex",
     "hil-serl"
    ],
    "arxiv": "2607.03723",
@@ -11076,6 +11416,67 @@
    "url": "https://doi.org/10.1109/lra.2025.3634886"
   },
   {
+   "id": "prism",
+   "title": "PRISM: Personalized Robotic Dataset Generation via Image-based Scene and Motion Synthesis",
+   "tree": "systems",
+   "branch": "sim-bench",
+   "authors": [
+    "Dogyu Ko",
+    "H. Y. Kim",
+    "Chanyoung Yeo",
+    "Dowoon Lee",
+    "Taeho Park",
+    "Hyoseok Hwang"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-07-06",
+   "topics": [
+    "personalized dataset generation",
+    "scene and motion synthesis"
+   ],
+   "paradigm": [
+    "simulator",
+    "IL"
+   ],
+   "method": [],
+   "projects": [
+    "r2s2r"
+   ],
+   "ideas": [
+    "real2sim2real-ego",
+    "third-person"
+   ],
+   "related": [
+    "acdc",
+    "dreamgen",
+    "egodemogen",
+    "learn-any-images",
+    "robosnap",
+    "simfoundry"
+   ],
+   "arxiv": "2607.04880",
+   "doi": "10.48550/arxiv.2607.04880",
+   "code": "",
+   "site": "",
+   "note": "Generates robot datasets by synthesising both the scene and the motion from images. The natural pairing with cousin generation: once the agent can vary the scene, it should vary the demonstration too.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Recent advances in large-scale pretrained vision-language-action models have improved robot policy learning, but directly deploying such policies in user-specific environments remains challenging due to limited generalization, which inevitably requires collecting a dataset tailored to the target environment. Teleoperation yields well-aligned data but is costly and difficult to scale, whereas simulation scales easily but struggles to resemble the target environment and generate task-specific trajectories. To meet both simultaneously, we propose PRISM, an end-to-end pipeline that generates personalized robotic datasets from a single image and a natural-language instruction. PRISM constructs digital cousin scenes that are semantically and geometrically aligned with the user environment yet diverse at the instance level, and synthesizes executable demonstrations without human teleoperation. Extensive experiments show that policies trained on PRISM-generated datasets outperform those trained on baseline-generated datasets on LIBERO and LIBERO-Plus, achieve up to 100\\% success rate on three real-world manipulation tasks, and maintain stronger performance when evaluated in environments that differ from those seen during training.",
+   "source": "curated",
+   "first_author": "Dogyu Ko",
+   "url": "https://arxiv.org/abs/2607.04880",
+   "fig": "figures/prism.webp",
+   "figs": [
+    "figures/prism-1.webp"
+   ]
+  },
+  {
    "id": "r2s-ego",
    "title": "R2S-EGO: Dual-Proxy Refinement for Sparse-Capture Real-to-Sim",
    "tree": "rl",
@@ -11109,8 +11510,10 @@
     "real2sim2real-ego"
    ],
    "related": [
+    "acdc",
     "egoengine",
     "polaris",
+    "simfoundry",
     "video2sim2real"
    ],
    "arxiv": "2608.06827",
@@ -11247,6 +11650,65 @@
     "figures/robocurate-1.webp",
     "figures/robocurate-2.webp",
     "figures/robocurate-3.webp"
+   ]
+  },
+  {
+   "id": "robosnap",
+   "title": "RoboSnap: One-Shot Real-to-Sim Scene Generation for Generalizable Robot Learning and Evaluation",
+   "tree": "systems",
+   "branch": "sim-bench",
+   "authors": [
+    "Shujie Zhang",
+    "Jingkun Yi",
+    "Weipeng Zhong",
+    "Zirui Zhou",
+    "Yangkun Zhu",
+    "Hanqing Wang",
+    "X X Xu",
+    "Weinan Zhang",
+    "Chunhua Shen"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-07-07",
+   "topics": [
+    "one-shot real-to-sim from a single image"
+   ],
+   "paradigm": [
+    "simulator"
+   ],
+   "method": [],
+   "projects": [
+    "r2s2r"
+   ],
+   "ideas": [
+    "real2sim2real-ego"
+   ],
+   "related": [
+    "acdc",
+    "learn-any-images",
+    "prism",
+    "simfoundry"
+   ],
+   "arxiv": "2607.06699",
+   "doi": "10.48550/arxiv.2607.06699",
+   "code": "",
+   "site": "",
+   "note": "A single RGB image to a simulation-ready scene. The cheapest possible entry to the reconstruction leg — worth trying before committing to multi-view egocentric capture, if only to see how far one photo goes.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Recovering real-world scenes as interactive simulation environments can enable generalizable robot learning and reproducible policy evaluation. However, constructing scenes that are both physically stable and visually faithful remains slow and expensive. In this work, we present RoboSnap, a real-to-sim framework that turns a single RGB image into a simulation-ready scene. The key idea is a layered design that separates the physics-critical interaction area from the surrounding visual context: collision-aware foreground assets are refined for stable robot interaction, while a 3D Gaussian splatting visual layer preserves faithful background appearance under novel views. Experiments on DROID scenes and real-robot tasks show that RoboSnap achieves reliable trajectory replay in the recovered scenes, supports task-specific synthetic data generation for policy training, and yields meaningful sim-real correlation for policy evaluation. To further support real-to-sim research, we introduce DROID-Sim, a real-to-sim companion dataset constructed from 564 real-world scenes in DROID. Extensive experiments suggest that the value of real-to-sim methods lies not only in high-fidelity visual reconstruction, but in turning real environments into reusable infrastructure for robot learning and evaluation.",
+   "source": "curated",
+   "first_author": "Shujie Zhang",
+   "url": "https://arxiv.org/abs/2607.06699",
+   "fig": "figures/robosnap.webp",
+   "figs": [
+    "figures/robosnap-1.webp"
    ]
   },
   {
@@ -13194,7 +13656,8 @@
    "related": [
     "egoengine",
     "egomimic",
-    "one-demo"
+    "one-demo",
+    "prism"
    ],
    "arxiv": "2509.22578",
    "doi": "",
@@ -14701,6 +15164,85 @@
    "figs": [
     "figures/real-deep-research-1.webp",
     "figures/real-deep-research-2.webp"
+   ]
+  },
+  {
+   "id": "learn-any-images",
+   "title": "Robot Learning from Any Images",
+   "tree": "il",
+   "branch": "visuomotor",
+   "authors": [
+    "Zhao",
+    "Siheng",
+    "Mao",
+    "Jiageng",
+    "Chow",
+    "Wei",
+    "Shangguan",
+    "Zeyu",
+    "Shi",
+    "Tianheng",
+    "Xue",
+    "Rong",
+    "Zheng",
+    "Yuxi",
+    "Weng",
+    "Yijia",
+    "You",
+    "Yang",
+    "Seita",
+    "Daniel",
+    "Guibas",
+    "Leonidas",
+    "Zakharov",
+    "Sergey",
+    "Guizilini",
+    "Vitor",
+    "Wang",
+    "Yue"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-09-26",
+   "topics": [
+    "policy learning from arbitrary images",
+    "scene synthesis"
+   ],
+   "paradigm": [
+    "IL"
+   ],
+   "method": [],
+   "projects": [
+    "r2s2r"
+   ],
+   "ideas": [
+    "real2sim2real-ego",
+    "third-person"
+   ],
+   "related": [
+    "phantom",
+    "prism",
+    "robosnap"
+   ],
+   "arxiv": "2509.22970",
+   "doi": "10.48550/arxiv.2509.22970",
+   "code": "",
+   "site": "",
+   "note": "Turns ordinary images into training signal for manipulation. Relevant as the loosest end of the spectrum — if this works, the bar for how good your reconstruction must be drops considerably.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "We introduce RoLA, a framework that transforms any in-the-wild image into an interactive, physics-enabled robotic environment. Unlike previous methods, RoLA operates directly on a single image without requiring additional hardware or digital assets. Our framework democratizes robotic data generation by producing massive visuomotor robotic demonstrations within minutes from a wide range of image sources, including camera captures, robotic datasets, and Internet images. At its core, our approach combines a novel method for single-view physical scene recovery with an efficient visual blending strategy for photorealistic data collection. We demonstrate RoLA's versatility across applications like scalable robotic data generation and augmentation, robot learning from Internet images, and single-image real-to-sim-to-real systems for manipulators and humanoids. Video results are available at https://sihengz02.github.io/RoLA .",
+   "source": "curated",
+   "first_author": "Zhao",
+   "url": "https://arxiv.org/abs/2509.22970",
+   "fig": "figures/learn-any-images.webp",
+   "figs": [
+    "figures/learn-any-images-1.webp"
    ]
   },
   {
