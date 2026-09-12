@@ -2,8 +2,8 @@
  "meta": {
   "generated": "2026-09-11",
   "counts": {
-   "total": 454,
-   "curated": 266,
+   "total": 462,
+   "curated": 274,
    "library": 199,
    "attached": 61,
    "dropped": 35
@@ -512,6 +512,68 @@
    "fig": "figures/c2dex.webp"
   },
   {
+   "id": "chorus",
+   "title": "CHORUS: Decentralized Multi-Embodiment Collaboration with One VLA Policy",
+   "tree": "rl",
+   "branch": "marl",
+   "authors": [
+    "Ria Doshi",
+    "Tian Gao",
+    "Annie Chen",
+    "Chelsea Finn",
+    "Jeannette Bohg"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-06-10",
+   "topics": [
+    "decentralized collaboration",
+    "multi-embodiment",
+    "single policy"
+   ],
+   "paradigm": [
+    "VLA",
+    "MARL"
+   ],
+   "method": [],
+   "projects": [
+    "m2"
+   ],
+   "ideas": [
+    "multi-robot-marl",
+    "hri-collab"
+   ],
+   "related": [
+    "climrs",
+    "crossformer",
+    "decentralized-aerial",
+    "h2compact",
+    "mappo",
+    "roco"
+   ],
+   "arxiv": "2606.12352",
+   "doi": "10.48550/arxiv.2606.12352",
+   "code": "",
+   "site": "",
+   "note": "One VLA policy driving decentralized collaboration across different embodiments. This is the most direct answer yet to M2's core question — whether two heterogeneous robots need two policies or one — and it says one. Read it before designing M2's policy architecture.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "Multi-robot collaboration allows robots to efficiently take on a wide range of tasks, from moving a couch through a doorway to assembling structures on a construction site. However, achieving such coordination in mobile multi-robot settings remains challenging: centralized methods conditioned on the combined observations of a team scale poorly with team size, and decentralized methods that train one policy per robot often require explicit alignment procedures or information sharing at inference time to overcome partial observability. Our key insight is that the visuomotor priors of pretrained vision-language-action (VLA) models should enable reactive, decentralized collaboration from each robot's local observations alone, without these inference-time assumptions. We propose CHORUS, a framework that adapts a single VLA backbone to control diverse, multi-robot teams. At inference time, each robot runs an independent copy of CHORUS, conditioned only on its own observations and a robot-identifying prompt. In real-world experiments including mobile tape measurement, library book handovers, and laundry basket lifting, CHORUS achieves a 64% point improvement over decentralized, from-scratch models, improves reactivity to teammate behavior by 40% points, and outperforms centralized baselines. Together, these results show that a shared VLA backbone is capable of achieving decentralized multi-robot collaboration, without per-robot policies or inter-robot communication at inference.",
+   "source": "curated",
+   "first_author": "Ria Doshi",
+   "url": "https://arxiv.org/abs/2606.12352",
+   "fig": "figures/chorus.webp",
+   "figs": [
+    "figures/chorus-1.webp",
+    "figures/chorus-2.webp"
+   ]
+  },
+  {
    "id": "dream-tac",
    "title": "Dream-Tac: A Unified Tactile World Action Model for Contact-Rich Robot Manipulation",
    "tree": "il",
@@ -837,6 +899,7 @@
    ],
    "related": [
     "agent-laboratory",
+    "embo-team",
     "eureka",
     "polaris",
     "rf-agent",
@@ -2612,7 +2675,7 @@
    "arxiv": "",
    "doi": "",
    "code": "https://github.com/newton-physics/newton",
-   "site": "https://developer.nvidia.com/newton",
+   "site": "https://github.com/newton-physics/newton",
    "note": "The three groups with the most to gain from better contact simulation building one engine together, with explicit support for rigid and flexible parts in the same scene. If the soft-body claims hold, this is the most important development for your soft-object sim-to-real idea — benchmark it against MuJoCo and Genesis before believing the marketing.",
    "stars": 3,
    "curated": true,
@@ -2620,7 +2683,7 @@
    "abstract": "",
    "source": "curated",
    "first_author": "NVIDIA",
-   "url": "https://developer.nvidia.com/newton"
+   "url": "https://github.com/newton-physics/newton"
   },
   {
    "id": "orca-hand",
@@ -5238,6 +5301,68 @@
    ]
   },
   {
+   "id": "roco",
+   "title": "RoCo: Dialectic Multi-Robot Collaboration with Large Language Models",
+   "tree": "rl",
+   "branch": "marl",
+   "authors": [
+    "Zhao Mandi",
+    "Shreeya Jain",
+    "Shuran Song"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2023,
+   "date": "2023-07-10",
+   "topics": [
+    "LLM dialogue",
+    "multi-arm planning",
+    "benchmark"
+   ],
+   "paradigm": [
+    "LLM",
+    "MARL"
+   ],
+   "method": [],
+   "projects": [
+    "m2"
+   ],
+   "ideas": [
+    "multi-robot-marl",
+    "agentic-physical",
+    "hri-collab"
+   ],
+   "related": [
+    "chorus",
+    "climrs",
+    "embo-team",
+    "interact",
+    "llm-teams",
+    "mappo",
+    "voyager"
+   ],
+   "arxiv": "2307.04738",
+   "doi": "10.48550/arxiv.2307.04738",
+   "code": "",
+   "site": "",
+   "note": "Robots that literally talk to each other: LLMs negotiate the task split, then a multi-arm motion planner executes the agreed waypoints. RoCoBench came out of it and is now the standard evaluation. The human-in-the-loop mode — a person as one of the agents — is the cleanest existing bridge between your multi-robot and HRI ideas.",
+   "stars": 3,
+   "curated": true,
+   "local": "",
+   "abstract": "We propose a novel approach to multi-robot collaboration that harnesses the power of pre-trained large language models (LLMs) for both high-level communication and low-level path planning. Robots are equipped with LLMs to discuss and collectively reason task strategies. They then generate sub-task plans and task space waypoint paths, which are used by a multi-arm motion planner to accelerate trajectory planning. We also provide feedback from the environment, such as collision checking, and prompt the LLM agents to improve their plan and waypoints in-context. For evaluation, we introduce RoCoBench, a 6-task benchmark covering a wide range of multi-robot collaboration scenarios, accompanied by a text-only dataset for agent representation and reasoning. We experimentally demonstrate the effectiveness of our approach -- it achieves high success rates across all tasks in RoCoBench and adapts to variations in task semantics. Our dialog setup offers high interpretability and flexibility -- in real world experiments, we show RoCo easily incorporates human-in-the-loop, where a user can communicate and collaborate with a robot agent to complete tasks together. See project website https://project-roco.github.io for videos and code.",
+   "source": "curated",
+   "first_author": "Zhao Mandi",
+   "url": "https://arxiv.org/abs/2307.04738",
+   "fig": "figures/roco.webp",
+   "figs": [
+    "figures/roco-1.webp",
+    "figures/roco-2.webp"
+   ]
+  },
+  {
    "id": "chen-visual-inhand",
    "title": "Visual Dexterity: In-Hand Reorientation of Novel and Complex Object Shapes",
    "tree": "rl",
@@ -5604,10 +5729,13 @@
     "multi-robot-marl"
    ],
    "related": [
+    "chorus",
+    "climrs",
     "decentralized-aerial",
     "maddpg",
     "ppo",
-    "qmix"
+    "qmix",
+    "roco"
    ],
    "arxiv": "2103.01955",
    "doi": "",
@@ -7863,6 +7991,62 @@
    ]
   },
   {
+   "id": "embo-team",
+   "title": "EmboTeam: Grounding LLM Reasoning into Reactive Behavior Trees via PDDL for Embodied Multi-Robot Collaboration",
+   "tree": "systems",
+   "branch": "agentic",
+   "authors": [
+    "Haishan Zeng",
+    "Mengna Wang",
+    "Peng Li"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2026,
+   "date": "2026-01-16",
+   "topics": [
+    "behaviour trees",
+    "PDDL grounding",
+    "multi-robot planning"
+   ],
+   "paradigm": [
+    "LLM"
+   ],
+   "method": [],
+   "projects": [
+    "m2"
+   ],
+   "ideas": [
+    "multi-robot-marl",
+    "agentic-physical"
+   ],
+   "related": [
+    "harbor",
+    "llm-teams",
+    "roco",
+    "voyager"
+   ],
+   "arxiv": "2601.11063",
+   "doi": "10.48550/arxiv.2601.11063",
+   "code": "",
+   "site": "",
+   "note": "Grounds LLM reasoning into reactive behaviour trees via PDDL, so the plan is executable and re-plannable rather than a paragraph of hope. The architecture to copy if you want an LLM in M2's planning loop without giving up reactivity.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "In embodied artificial intelligence, enabling heterogeneous robot teams to execute long-horizon tasks from high-level instructions remains a critical challenge. While large language models (LLMs) show promise in instruction parsing and preliminary planning, they exhibit limitations in long-term reasoning and dynamic multi-robot coordination. We propose EmboTeam, a novel embodied multi-robot task planning framework that addresses these issues through a three-stage cascaded architecture: 1) It leverages an LLM to parse instructions and generate Planning Domain Definition Language (PDDL) problem descriptions, thereby transforming commands into formal planning problems; 2) It combines the semantic reasoning of LLMs with the search capabilities of a classical planner to produce optimized action sequences; 3) It compiles the resulting plan into behavior trees for reactive control. The framework supports dynamically sized heterogeneous robot teams via a shared blackboard mechanism for communication and state synchronization. To validate our approach, we introduce the MACE-THOR benchmark dataset, comprising 42 complex tasks across 8 distinct household layouts. Experiments show EmboTeam improves the task success rate from 12% to 55% and goal condition recall from 32% to 72% over the LaMMA-P baseline.",
+   "source": "curated",
+   "first_author": "Haishan Zeng",
+   "url": "https://arxiv.org/abs/2601.11063",
+   "fig": "figures/embo-team.webp",
+   "figs": [
+    "figures/embo-team-1.webp"
+   ]
+  },
+  {
    "id": "humannet",
    "title": "HumanNet: Scaling Human-centric Video Learning to One Million Hours",
    "tree": "il",
@@ -9934,6 +10118,7 @@
     "multi-robot-marl"
    ],
    "related": [
+    "chorus",
     "h2compact",
     "mappo"
    ],
@@ -10368,6 +10553,7 @@
     "deep-wbc",
     "fetchman",
     "h2compact",
+    "intention-tracking",
     "umi-on-legs",
     "visualmimic"
    ],
@@ -10699,8 +10885,12 @@
     "hri-collab"
    ],
    "related": [
+    "chorus",
     "decentralized-aerial",
-    "falcon"
+    "falcon",
+    "intention-tracking",
+    "interact",
+    "workspace-opt"
    ],
    "arxiv": "2505.17627",
    "doi": "",
@@ -10954,6 +11144,65 @@
    "first_author": "Shuhan Tan",
    "url": "https://arxiv.org/abs/2505.17016",
    "fig": "figures/ript-vla.webp"
+  },
+  {
+   "id": "climrs",
+   "title": "Leveraging Adaptive Group Negotiation for Heterogeneous Multi-Robot Collaboration with Large Language Models",
+   "tree": "rl",
+   "branch": "marl",
+   "authors": [
+    "Siqi Song",
+    "叶悬冰",
+    "Ru Li",
+    "Yuqiang Li",
+    "Shijie Wang",
+    "Biqing Qi"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2025,
+   "date": "2025-12-29",
+   "topics": [
+    "group negotiation",
+    "heterogeneous teams",
+    "LLM coordination"
+   ],
+   "paradigm": [
+    "LLM",
+    "MARL"
+   ],
+   "method": [],
+   "projects": [
+    "m2"
+   ],
+   "ideas": [
+    "multi-robot-marl"
+   ],
+   "related": [
+    "chorus",
+    "mappo",
+    "roco"
+   ],
+   "arxiv": "2602.06967",
+   "doi": "10.48550/arxiv.2602.06967",
+   "code": "",
+   "site": "",
+   "note": "Adaptive group negotiation for heterogeneous teams, reporting >40% higher efficiency on complex tasks without losing success on simple ones. The efficiency-vs-robustness tradeoff is the one M2 will actually have to manage.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Multi-robot collaboration tasks often require heterogeneous robots to work together over long horizons under spatial constraints and environmental uncertainties. Although Large Language Models (LLMs) excel at reasoning and planning, their potential for coordinated control has not been fully explored. Inspired by human teamwork, we present CLiMRS (Cooperative Large-Language-Model-Driven Heterogeneous Multi-Robot System), an adaptive group negotiation framework among LLMs for multi-robot collaboration. This framework pairs each robot with an LLM agent and dynamically forms subgroups through a general proposal planner. Within each subgroup, a subgroup manager leads perception-driven multi-LLM discussions to get commands for actions. Feedback is provided by both robot execution outcomes and environment changes. This grouping-planning-execution-feedback loop enables efficient planning and robust execution. To evaluate these capabilities, we introduce CLiMBench, a heterogeneous multi-robot benchmark of challenging assembly tasks. Our experiments show that CLiMRS surpasses the best baseline, achieving over 40% higher efficiency on complex tasks without sacrificing success on simpler ones. Overall, our results demonstrate that leveraging human-inspired group formation and negotiation principles significantly enhances the efficiency of heterogeneous multi-robot collaboration. Our code is available here: https://github.com/song-siqi/CLiMRS.",
+   "source": "curated",
+   "first_author": "Siqi Song",
+   "url": "https://arxiv.org/abs/2602.06967",
+   "fig": "figures/climrs.webp",
+   "figs": [
+    "figures/climrs-1.webp",
+    "figures/climrs-2.webp"
+   ]
   },
   {
    "id": "manflow",
@@ -11592,7 +11841,7 @@
    "arxiv": "",
    "doi": "",
    "code": "",
-   "site": "https://www.sundayrobotics.com/",
+   "site": "https://www.humanoidsdaily.com/news/sunday-unveils-memo-a-wheeled-domestic-robot-that-learns-from-200-gloves",
    "note": "Came out of stealth late 2025 with 'Memo' and a handheld Skill Capture device — a commercial UMI-glove lineage, which is directly your world-action-model-from-gloves thesis with a company behind it. Company blog: unreviewed, no benchmarks. Track it as competitive intelligence, not evidence.",
    "stars": 2,
    "curated": true,
@@ -11600,7 +11849,7 @@
    "abstract": "",
    "source": "curated",
    "first_author": "Sunday Robotics",
-   "url": "https://www.sundayrobotics.com/"
+   "url": "https://www.humanoidsdaily.com/news/sunday-unveils-memo-a-wheeled-domestic-robot-that-learns-from-200-gloves"
   },
   {
    "id": "toddlerbot",
@@ -12323,6 +12572,66 @@
    ]
   },
   {
+   "id": "llm-teams",
+   "title": "Embodied LLM Agents Learn to Cooperate in Organized Teams",
+   "tree": "systems",
+   "branch": "agentic",
+   "authors": [
+    "Xudong Guo",
+    "Kaixuan Huang",
+    "Jiale Liu",
+    "Wenhui Fan",
+    "Natalia Vélez",
+    "Qingyun Wu",
+    "Huazheng Wang",
+    "Thomas L. Griffiths",
+    "Mengdi Wang"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-03-19",
+   "topics": [
+    "organised teams",
+    "emergent cooperation",
+    "LLM agents"
+   ],
+   "paradigm": [
+    "LLM"
+   ],
+   "method": [],
+   "projects": [],
+   "ideas": [
+    "multi-robot-marl",
+    "agentic-physical"
+   ],
+   "related": [
+    "embo-team",
+    "roco",
+    "voyager"
+   ],
+   "arxiv": "2403.12482",
+   "doi": "10.48550/arxiv.2403.12482",
+   "code": "",
+   "site": "",
+   "note": "Non-robotic, but the finding transfers: giving LLM agents an explicit organisational structure changes how well they cooperate. Relevant if M2's agents ever need roles rather than symmetry.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Large Language Models (LLMs) have emerged as integral tools for reasoning, planning, and decision-making, drawing upon their extensive world knowledge and proficiency in language-related tasks. LLMs thus hold tremendous potential for natural language interaction within multi-agent systems to foster cooperation. However, LLM agents tend to over-report and comply with any instruction, which may result in information redundancy and confusion in multi-agent cooperation. Inspired by human organizations, this paper introduces a framework that imposes prompt-based organization structures on LLM agents to mitigate these problems. Through a series of experiments with embodied LLM agents and human-agent collaboration, our results highlight the impact of designated leadership on team efficiency, shedding light on the leadership qualities displayed by LLM agents and their spontaneous cooperative behaviors. Further, we harness the potential of LLMs to propose enhanced organizational prompts, via a Criticize-Reflect process, resulting in novel organization structures that reduce communication costs and enhance team efficiency.",
+   "source": "curated",
+   "first_author": "Xudong Guo",
+   "url": "https://arxiv.org/abs/2403.12482",
+   "fig": "figures/llm-teams.webp",
+   "figs": [
+    "figures/llm-teams-1.webp",
+    "figures/llm-teams-2.webp"
+   ]
+  },
+  {
    "id": "exbody",
    "title": "Expressive Whole-Body Control for Humanoid Robots",
    "tree": "il",
@@ -12958,6 +13267,7 @@
    ],
    "ideas": [],
    "related": [
+    "chorus",
     "multi-loco",
     "octo",
     "oxe",
@@ -13271,6 +13581,66 @@
    ]
   },
   {
+   "id": "workspace-opt",
+   "title": "Workspace Optimization Techniques to Improve Prediction of Human Motion During Human-Robot Collaboration",
+   "tree": "rl",
+   "branch": "marl",
+   "authors": [
+    "Tung",
+    "Yi-Shiuan",
+    "Luebbers",
+    "Matthew B.",
+    "Roncone",
+    "Alessandro",
+    "Hayes",
+    "Bradley"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2024,
+   "date": "2024-01-23",
+   "topics": [
+    "workspace arrangement",
+    "human motion prediction",
+    "legibility"
+   ],
+   "paradigm": [
+    "HRI"
+   ],
+   "method": [],
+   "projects": [
+    "m2"
+   ],
+   "ideas": [
+    "hri-collab"
+   ],
+   "related": [
+    "h2compact",
+    "intention-tracking",
+    "interact"
+   ],
+   "arxiv": "2401.12965",
+   "doi": "10.48550/arxiv.2401.12965",
+   "code": "",
+   "site": "",
+   "note": "A genuinely different idea: instead of predicting human motion better, <em>arrange the workspace</em> so the human moves more predictably, including projecting virtual obstacles in AR. Cheap, and it attacks the variance rather than the model.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Understanding human intentions is critical for safe and effective human-robot collaboration. While state of the art methods for human goal prediction utilize learned models to account for the uncertainty of human motion data, that data is inherently stochastic and high variance, hindering those models' utility for interactions requiring coordination, including safety-critical or close-proximity tasks. Our key insight is that robot teammates can deliberately configure shared workspaces prior to interaction in order to reduce the variance in human motion, realizing classifier-agnostic improvements in goal prediction. In this work, we present an algorithmic approach for a robot to arrange physical objects and project \"virtual obstacles\" using augmented reality in shared human-robot workspaces, optimizing for human legibility over a given set of tasks. We compare our approach against other workspace arrangement strategies using two human-subjects studies, one in a virtual 2D navigation domain and the other in a live tabletop manipulation domain involving a robotic manipulator arm. We evaluate the accuracy of human motion prediction models learned from each condition, demonstrating that our workspace optimization technique with virtual obstacles leads to higher robot prediction accuracy using less training data.",
+   "source": "curated",
+   "first_author": "Tung",
+   "url": "https://arxiv.org/abs/2401.12965",
+   "fig": "figures/workspace-opt.webp",
+   "figs": [
+    "figures/workspace-opt-1.webp",
+    "figures/workspace-opt-2.webp"
+   ]
+  },
+  {
    "id": "bridgedata",
    "title": "BridgeData V2: A Dataset for Robot Learning at Scale",
    "tree": "il",
@@ -13568,6 +13938,64 @@
     "figures/faive-ball-1.webp",
     "figures/faive-ball-2.webp",
     "figures/faive-ball-3.webp"
+   ]
+  },
+  {
+   "id": "interact",
+   "title": "InteRACT: Transformer Models for Human Intent Prediction Conditioned on Robot Actions",
+   "tree": "rl",
+   "branch": "marl",
+   "authors": [
+    "Kushal Kedia",
+    "Atiksh Bhardwaj",
+    "Prithwish Dan",
+    "Sanjiban Choudhury"
+   ],
+   "corresponding": [],
+   "institutions": [],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2023,
+   "date": "2023-11-21",
+   "topics": [
+    "human intent prediction conditioned on robot action",
+    "collaborative manipulation"
+   ],
+   "paradigm": [
+    "HRI",
+    "transformer"
+   ],
+   "method": [],
+   "projects": [
+    "m2"
+   ],
+   "ideas": [
+    "hri-collab",
+    "multi-robot-marl"
+   ],
+   "related": [
+    "h2compact",
+    "intention-tracking",
+    "roco",
+    "workspace-opt"
+   ],
+   "arxiv": "2311.12943",
+   "doi": "10.48550/arxiv.2311.12943",
+   "code": "",
+   "site": "",
+   "note": "Predicts human intent <em>conditioned on what the robot is doing</em>. Almost every intent dataset treats the human as if the robot were not there, which is exactly the assumption that breaks in collaboration. The teleoperation setup and the collected human-robot data are open-sourced.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "In collaborative human-robot manipulation, a robot must predict human intents and adapt its actions accordingly to smoothly execute tasks. However, the human's intent in turn depends on actions the robot takes, creating a chicken-or-egg problem. Prior methods ignore such inter-dependency and instead train marginal intent prediction models independent of robot actions. This is because training conditional models is hard given a lack of paired human-robot interaction datasets. Can we instead leverage large-scale human-human interaction data that is more easily accessible? Our key insight is to exploit a correspondence between human and robot actions that enables transfer learning from human-human to human-robot data. We propose a novel architecture, InteRACT, that pre-trains a conditional intent prediction model on large human-human datasets and fine-tunes on a small human-robot dataset. We evaluate on a set of real-world collaborative human-robot manipulation tasks and show that our conditional model improves over various marginal baselines. We also introduce new techniques to tele-operate a 7-DoF robot arm and collect a diverse range of human-robot collaborative manipulation data, which we open-source.",
+   "source": "curated",
+   "first_author": "Kushal Kedia",
+   "url": "https://arxiv.org/abs/2311.12943",
+   "fig": "figures/interact.webp",
+   "figs": [
+    "figures/interact-1.webp",
+    "figures/interact-2.webp"
    ]
   },
   {
@@ -14168,9 +14596,12 @@
     "agent-laboratory",
     "ai-scientist",
     "cosmos-reason",
+    "embo-team",
     "eureka",
     "harbor",
-    "robocat"
+    "llm-teams",
+    "robocat",
+    "roco"
    ],
    "arxiv": "2305.16291",
    "doi": "",
@@ -14484,6 +14915,72 @@
    "fig": "figures/evogym.webp",
    "figs": [
     "figures/evogym-1.webp"
+   ]
+  },
+  {
+   "id": "intention-tracking",
+   "title": "Hierarchical Intention Tracking for Robust Human-Robot Collaboration in  Industrial Assembly Tasks",
+   "tree": "rl",
+   "branch": "marl",
+   "authors": [
+    "Zhe Huang",
+    "Ye-Ji Mun",
+    "Xiang Li",
+    "Yiqing Xie",
+    "Ninghan Zhong",
+    "Weihang Liang",
+    "Junyi Geng",
+    "Tan Chen",
+    "Katherine Driggs-Campbell"
+   ],
+   "corresponding": [],
+   "institutions": [
+    "University of Illinois Urbana-Champaign"
+   ],
+   "lab": "",
+   "venue": "arXiv",
+   "venue_type": "preprint",
+   "year": 2022,
+   "date": "2022-03-16",
+   "topics": [
+    "intention tracking",
+    "industrial assembly",
+    "human-robot collaboration"
+   ],
+   "paradigm": [
+    "HRI"
+   ],
+   "method": [],
+   "projects": [
+    "m2"
+   ],
+   "ideas": [
+    "hri-collab",
+    "multi-robot-marl"
+   ],
+   "related": [
+    "falcon",
+    "h2compact",
+    "interact",
+    "workspace-opt"
+   ],
+   "arxiv": "2203.09063",
+   "doi": "10.48550/arxiv.2203.09063",
+   "code": "",
+   "site": "",
+   "note": "Hierarchical intention tracking so the robot can both avoid interrupting the human and step in when the human is failing. That second behaviour — assistive intervention — is what separates a collaborator from a compliant obstacle.",
+   "stars": 2,
+   "curated": true,
+   "local": "",
+   "abstract": "Collaborative robots require effective human intention estimation to safely and smoothly work with humans in less structured tasks such as industrial assembly, where human intention continuously changes. We propose the concept of intention tracking and introduce a collaborative robot system that concurrently tracks intentions at hierarchical levels. The high-level intention is tracked to estimate human's interaction pattern and enable robot to (1) avoid collision with human to minimize interruption and (2) assist human to correct failure. The low-level intention estimate provides robot with task-related information. We implement the system on a UR5e robot and demonstrate robust, seamless and ergonomic human-robot collaboration in an ablative pilot study of an assembly use case. Our robot demonstrations and videos are available at \\\\url{https://sites.google.com/view/hierarchicalintentiontracking}. ",
+   "source": "curated",
+   "first_author": "Zhe Huang",
+   "url": "https://arxiv.org/abs/2203.09063",
+   "fig": "figures/intention-tracking.webp",
+   "figs": [
+    "figures/intention-tracking-1.webp",
+    "figures/intention-tracking-2.webp",
+    "figures/intention-tracking-3.webp"
    ]
   },
   {

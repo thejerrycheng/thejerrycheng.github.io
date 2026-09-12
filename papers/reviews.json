@@ -1,7 +1,7 @@
 {
  "multi-robot-marl": {
   "why": "<p>M2 is the project where the hard part is not any single robot's competence but the fact that two of\n them share one rigid object. The moment a payload couples two mobile manipulators, the system stops being\n two control problems and becomes one under-actuated, over-constrained, partially-observed problem where\n every local decision imposes a force on the other agent. That coupling is what makes the literature here\n worth reading carefully rather than skimming.</p>\n <p>There is also a strategic reason. Single-robot manipulation is the most crowded area in robotics right\n now. Multi-robot physical collaboration is not — the datasets do not exist, the benchmarks are thin, and\n most published work is either simulation-only or two drones carrying a stick. A working two-manipulator\n physical collaboration result with real contact forces is still a publishable systems contribution.</p>",
-  "state": "<p>The field splits cleanly into two camps that barely cite each other. On one side, <b>model-based\n distributed control</b>: ADMM-decomposed MPC, control barrier functions for safety, event-triggered\n communication to keep bandwidth down. This camp has guarantees, handles the rigid-constraint case properly,\n and is what most of your <em>distributed_mpc</em> and <em>collaborative_transport</em> folders contain. On the\n other, <b>multi-agent RL</b>: [[mappo]] as the pragmatic default, [[qmix]] for value factorization,\n [[maddpg]] as the original centralized-critic template. This camp scales to messy observations and\n discovers coordination strategies nobody scripted, and offers essentially no guarantees.</p>\n <p>The honest summary of MARL-for-robotics as of now: <b>[[mappo]] with a well-shaped reward beats almost\n every specialized MARL algorithm</b> once you actually tune it, which is the same lesson single-agent RL\n learned about PPO. Do not start by implementing QMIX. Start by implementing centralized-critic PPO and\n spending your time on the reward and the observation space instead.</p>\n <p>The most convincing recent physical result in your library is [[decentralized-aerial]] — multiple aerial\n vehicles manipulating a cable-suspended load with decentralized policies. It matters because the cable\n imposes exactly the kind of shared constraint your two ground manipulators will face, and because the\n policies are genuinely decentralized at execution time rather than a centralized controller in disguise.\n On the ground side, [[h2compact]] handles the human-humanoid case with adaptive contact trajectories, which\n is the same problem with a far less predictable partner.</p>\n <p>Worth noting what is <em>missing</em> from the literature: almost nobody reports what happens when the\n two agents disagree about the object's pose. Estimation error is the dominant real-world failure mode in\n coupled transport and it is systematically under-reported.</p>",
+  "state": "<p>The field splits cleanly into two camps that barely cite each other. On one side, <b>model-based\n distributed control</b>: ADMM-decomposed MPC, control barrier functions for safety, event-triggered\n communication to keep bandwidth down. This camp has guarantees, handles the rigid-constraint case properly,\n and is what most of your <em>distributed_mpc</em> and <em>collaborative_transport</em> folders contain. On the\n other, <b>multi-agent RL</b>: [[mappo]] as the pragmatic default, [[qmix]] for value factorization,\n [[maddpg]] as the original centralized-critic template. This camp scales to messy observations and\n discovers coordination strategies nobody scripted, and offers essentially no guarantees.</p>\n <p>The honest summary of MARL-for-robotics as of now: <b>[[mappo]] with a well-shaped reward beats almost\n every specialized MARL algorithm</b> once you actually tune it, which is the same lesson single-agent RL\n learned about PPO. Do not start by implementing QMIX. Start by implementing centralized-critic PPO and\n spending your time on the reward and the observation space instead.</p>\n <p>The most convincing recent physical result in your library is [[decentralized-aerial]] — multiple aerial\n vehicles manipulating a cable-suspended load with decentralized policies. It matters because the cable\n imposes exactly the kind of shared constraint your two ground manipulators will face, and because the\n policies are genuinely decentralized at execution time rather than a centralized controller in disguise.\n On the ground side, [[h2compact]] handles the human-humanoid case with adaptive contact trajectories, which\n is the same problem with a far less predictable partner.</p>\n <p><b>The LLM-coordination branch grew fast and is worth knowing even if you do not use it.</b> [[roco]] has\n robots negotiate the task split in natural language and hands the agreed waypoints to a multi-arm motion\n planner; RoCoBench came out of it and is now the standard evaluation, with a human-in-the-loop mode that\n makes a person one of the agents. [[embo-team]] grounds that reasoning into reactive behaviour trees via\n PDDL so the plan stays executable, and [[climrs]] adds adaptive group negotiation for heterogeneous teams,\n reporting over 40% higher efficiency on complex tasks.</p>\n <p><b>And one 2026 result speaks directly to M2's architecture question.</b> [[chorus]] runs decentralized\n collaboration across different embodiments with a <em>single</em> VLA policy. If that holds, the answer to\n \"do two heterogeneous robots need two policies\" is no — which is a far cheaper system to build and maintain\n than the one M2 is currently sketched as. Read it before committing to the architecture.</p>\n <p>Worth noting what is <em>missing</em> from the literature: almost nobody reports what happens when the\n two agents disagree about the object's pose. Estimation error is the dominant real-world failure mode in\n coupled transport and it is systematically under-reported.</p>",
   "threads": [
    "<b>Centralized training, decentralized execution (CTDE).</b> The organizing principle of the whole area.\n  [[mappo]], [[qmix]], [[maddpg]]. Read MAPPO first and treat the others as context.",
    "<b>Distributed MPC and ADMM.</b> Your M2 <em>distributed_mpc</em> folder has ~17 papers here. The\n  relevant question is not which solver is fastest but which formulation lets you write the rigid-body\n  constraint exactly rather than as a soft penalty.",
@@ -46,6 +46,22 @@
    {
     "id": "maddpg",
     "why": "Historical anchor for centralized-critic methods; skim."
+   },
+   {
+    "id": "chorus",
+    "why": "2026. One VLA policy, decentralized, across embodiments. Read before fixing M2's architecture."
+   },
+   {
+    "id": "roco",
+    "why": "LLM negotiation plus multi-arm planning, and the benchmark everyone now reports on."
+   },
+   {
+    "id": "embo-team",
+    "why": "How to keep an LLM plan executable and re-plannable — behaviour trees via PDDL."
+   },
+   {
+    "id": "climrs",
+    "why": "Heterogeneous-team negotiation, and the efficiency-vs-robustness tradeoff you will face."
    },
    {
     "id": "crossformer",
@@ -1105,7 +1121,7 @@
  },
  "hri-collab": {
   "why": "<p>Physical collaboration with a person is the hardest case of the M2 problem: your partner's policy\n is unknown, non-stationary, and cannot be retrained. It is also the case with the clearest path to something\n people actually want, since most useful physical tasks in a home or a workshop involve a human.</p>",
-  "state": "<p><b>Humanoid co-manipulation has a concrete recent instance.</b> [[h2compact]] does\n human-humanoid co-manipulation with adaptive contact trajectory policies — in your own M2 library. The\n related work in your <em>collaborative_transport</em> folder (carbon-fibre plies, co-manipulated systems,\n human-guided transport) covers the industrial side.</p>\n <p><b>Force-adaptive whole-body control is the enabling capability.</b> [[falcon]]'s decoupled upper/lower-body\n formulation with an explicit external-force curriculum is exactly what a robot carrying one end of something\n with a person needs, and it is directly portable to MABEL.</p>\n <p><b>Intent inference is the part borrowed from elsewhere.</b> The MARL literature's opponent modelling\n ([[mappo]] and the belief-based opponent-shaping work in your library) is the formal version of \"guess what\n your partner is about to do\", and human-video work ([[r3m]], [[vip]]) is where the perception side comes\n from.</p>\n <p><b>And corrections-as-data is the loop that makes it improve.</b> [[hil-serl]] and [[pi06]] both treat\n human intervention as a first-class training signal rather than a nuisance.</p>",
+  "state": "<p><b>Humanoid co-manipulation has a concrete recent instance.</b> [[h2compact]] does\n human-humanoid co-manipulation with adaptive contact trajectory policies — in your own M2 library. The\n related work in your <em>collaborative_transport</em> folder (carbon-fibre plies, co-manipulated systems,\n human-guided transport) covers the industrial side.</p>\n <p><b>Force-adaptive whole-body control is the enabling capability.</b> [[falcon]]'s decoupled upper/lower-body\n formulation with an explicit external-force curriculum is exactly what a robot carrying one end of something\n with a person needs, and it is directly portable to MABEL.</p>\n <p><b>Intent prediction now has purpose-built data and a sharper framing.</b> [[interact]] predicts human\n intent <em>conditioned on what the robot is doing</em> — most datasets treat the human as if the robot were\n not there, which is precisely the assumption that fails in collaboration. [[intention-tracking]] adds a\n hierarchical version that both avoids interrupting the human and intervenes when the human is failing, and\n [[workspace-opt]] makes the genuinely contrarian move of arranging the workspace so the human moves more\n predictably instead of modelling the variance. On the data side, Kaiwu records human, environment and robot\n synchronously, and MoGaze pairs full-body motion with workspace geometry and eye gaze — see the Datasets tab.</p>\n <p><b>Intent inference is the part borrowed from elsewhere.</b> The MARL literature's opponent modelling\n ([[mappo]] and the belief-based opponent-shaping work in your library) is the formal version of \"guess what\n your partner is about to do\", and human-video work ([[r3m]], [[vip]]) is where the perception side comes\n from.</p>\n <p><b>And corrections-as-data is the loop that makes it improve.</b> [[hil-serl]] and [[pi06]] both treat\n human intervention as a first-class training signal rather than a nuisance.</p>",
   "threads": [
    "<b>Physical human-robot co-manipulation.</b> [[h2compact]], and the co-manipulation papers in your M2\n  collaborative_transport folder.",
    "<b>Force-adaptive control.</b> [[falcon]], [[deep-wbc]].",
@@ -1113,7 +1129,7 @@
    "<b>Corrections as data.</b> [[hil-serl]], [[pi06]].",
    "<b>Handovers.</b> The task-oriented handover work in your whole_body_loco_manipulation folder."
   ],
-  "gap": "<p>The measurement is missing. Physical HRI papers report task success and occasionally a subjective\n comfort survey. What they do not report is <b>who is doing the adapting</b>. In almost every deployed system\n the human silently adapts to the robot, and the paper claims the collaboration worked.</p>\n <p>An experiment that quantifies the division of adaptation — how much the human's trajectory changes when\n partnered with the robot versus with another human, on the same task — would be a genuinely novel measurement,\n and it is the one that distinguishes a collaborative robot from a compliant one. It connects directly to M2,\n where you already have the two-agent infrastructure and can substitute a human for one agent.</p>",
+  "gap": "<p>The measurement is missing. Physical HRI papers report task success and occasionally a subjective\n comfort survey. What they do not report is <b>who is doing the adapting</b>. In almost every deployed system\n the human silently adapts to the robot, and the paper claims the collaboration worked.</p>\n <p>The data to do it now exists — Kaiwu records all three streams at once, MoGaze gives gaze as an early\n intent signal, and [[interact]] provides the robot-conditioned framing — so this is a study you could run\n rather than a dataset you would first have to build.</p>\n <p>An experiment that quantifies the division of adaptation — how much the human's trajectory changes when\n partnered with the robot versus with another human, on the same task — would be a genuinely novel measurement,\n and it is the one that distinguishes a collaborative robot from a compliant one. It connects directly to M2,\n where you already have the two-agent infrastructure and can substitute a human for one agent.</p>",
   "plan": [
    "Reuse the M2 collaborative-transport setup with a human replacing one robot. The instrumentation is\n  already there.",
    "Collect the human-human baseline on the same task. Without it there is nothing to compare against, and\n  this is the step everyone skips.",
@@ -1146,6 +1162,22 @@
    {
     "id": "pi06",
     "why": "The same idea at scale — interventions during autonomous execution."
+   },
+   {
+    "id": "interact",
+    "why": "Human intent predicted conditioned on the robot's actions — the framing most datasets miss."
+   },
+   {
+    "id": "intention-tracking",
+    "why": "Assistive intervention, not just collision avoidance. The behaviour that makes a collaborator."
+   },
+   {
+    "id": "workspace-opt",
+    "why": "Reduce the human's motion variance instead of modelling it better. Cheap and clever."
+   },
+   {
+    "id": "roco",
+    "why": "Its human-in-the-loop mode is the bridge between your multi-robot and HRI ideas."
    },
    {
     "id": "deep-wbc",

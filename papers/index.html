@@ -601,7 +601,7 @@ html[data-theme="night"] .org-consortium{ color:#151820 }
   padding-top:13px; border-top:1.5px solid var(--line-soft) }
 
 /* ---------- timeline ---------- */
-.tl-controls{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; background:var(--panel);
+.tl-controls{ width:100%; display:flex; flex-wrap:wrap; gap:6px; align-items:center; background:var(--panel);
   border:var(--line-w) solid var(--line); border-radius:var(--radius); box-shadow:var(--sh-xs);
   padding:12px; margin:0 0 26px }
 .tl-lab{ font-family:var(--font-comic); font-size:12px; letter-spacing:.09em; text-transform:uppercase;
@@ -631,33 +631,43 @@ html[data-theme="night"] .tl-m{ color:#151820 }
   line-height:1.28; margin:0 0 5px; color:var(--ink) }
 .tl-a{ font-family:var(--font-mono); font-size:11px; color:var(--ash); margin:0 }
 .tl-n{ font-size:13.4px; line-height:1.5; color:var(--ink-soft); margin:8px 0 0 }
-/* two-sided: an explicit 3-column grid so cards always align to the spine and
-   each row is as tall as its taller card (no zigzag holes) */
-.timeline{ margin-left:0; padding:0 0 40px }
-.timeline::before{ left:50%; transform:translateX(-50%); top:0; bottom:18px }
-.tl-year{ padding:20px 0 12px; text-align:center; position:relative; z-index:2 }
-.tl-year span{ display:inline-block; font-family:var(--font-display); font-size:20px; letter-spacing:.05em;
+/* two-sided. The timeline breaks out of the 1240px wrap because these cards need
+   the room, and every box is given an explicit width so nothing shrink-wraps. */
+/* the timeline needs more room than the 1240px wrap; main.wrap gets .wide while
+   this view (or the dataset table) is showing, and keeps clear of the floating key */
+.wrap.wide{ max-width:min(1720px, calc(100vw - 44px)) }
+@media (min-width:1401px){   /* sit the wide block to the left of the floating key */
+  .wrap.wide{ max-width:min(1720px, calc(100vw - 300px)); margin-left:auto; margin-right:248px }
+}
+.timeline{ margin-left:0; padding:0 0 40px; width:100% }
+.timeline::before{ left:50%; transform:translateX(-50%); top:0; bottom:18px; width:3px; opacity:.9 }
+.tl-year{ padding:22px 0 14px; text-align:center; position:relative; z-index:2 }
+.tl-year span{ display:inline-block; font-family:var(--font-display); font-size:21px; letter-spacing:.05em;
   border:var(--line-w) solid var(--line); border-radius:980px; background:var(--pop); color:#151820;
-  padding:3px 18px 2px; box-shadow:var(--sh-xs) }
+  padding:3px 20px 2px; box-shadow:var(--sh-xs) }
 .tl-year::before{ display:none }
-.tl-row{ display:grid; grid-template-columns:1fr 76px 1fr; align-items:start; margin:0 0 12px }
-.tl-item{ position:relative; width:auto; min-width:0; padding:0; margin:0; cursor:pointer }
+.tl-row{ display:grid; grid-template-columns:minmax(0,1fr) 90px minmax(0,1fr);
+  align-items:stretch; justify-items:stretch; margin:0 0 14px; width:100% }
+.tl-item{ position:relative; display:block; width:100%; min-width:0; padding:0; margin:0; cursor:pointer }
 .tl-item.l{ grid-column:1 } .tl-item.r{ grid-column:3 }
-.tl-dot{ position:absolute; top:15px; left:auto; right:auto; width:13px; height:13px; z-index:3;
+.tl-card{ display:block; width:100%; box-sizing:border-box; padding:13px 17px; height:100% }
+.tl-card h4{ font-size:15.2px; margin:0 0 5px }
+.tl-n{ font-size:13px; margin:8px 0 0 }
+/* connector runs from the card's edge to the dot; the dot sits on the spine */
+.tl-dot{ position:absolute; top:17px; left:auto; right:auto; width:13px; height:13px; z-index:3;
   background:var(--tc); border:var(--line-w) solid var(--line); border-radius:50% }
-.tl-item.l .tl-dot{ right:-44px } .tl-item.r .tl-dot{ left:-44px }
-.tl-item::after{ content:""; position:absolute; top:20px; height:2px; width:32px; background:var(--line-soft) }
-.tl-item.l::after{ right:-34px } .tl-item.r::after{ left:-34px }
-.tl-card{ padding:11px 14px; height:100% }
-.tl-card h4{ font-size:14.6px; margin:0 0 4px }
-.tl-n{ font-size:12.6px; margin:7px 0 0 }
+.tl-item.l .tl-dot{ right:-51px } .tl-item.r .tl-dot{ left:-51px }
+.tl-item::after{ content:""; position:absolute; top:22px; height:3px; width:38px;
+  background:var(--line); opacity:.55; z-index:1 }
+.tl-item.l::after{ right:-38px } .tl-item.r::after{ left:-38px }
 .tl-item.l .tl-card{ border-left:none; border-right:7px solid var(--tc); text-align:right }
 .tl-item.l .tl-top{ flex-direction:row-reverse }
-@media (max-width:860px){
+@media (max-width:900px){
+  #view-timeline.on{ width:auto; max-width:none; margin-left:0; transform:none }
   .timeline::before{ left:13px; transform:none }
-  .tl-year{ text-align:left; padding:16px 0 10px 44px }
-  .tl-row{ display:block; margin:0 }
-  .tl-item, .tl-item.l, .tl-item.r{ grid-column:auto; margin:0 0 9px 44px }
+  .tl-year{ text-align:left; padding:18px 0 10px 44px }
+  .tl-row{ display:block; margin:0; width:auto }
+  .tl-item, .tl-item.l, .tl-item.r{ grid-column:auto; margin:0 0 10px 44px; width:auto }
   .tl-item.l .tl-dot, .tl-item.r .tl-dot{ left:-37px; right:auto }
   .tl-item.l::after, .tl-item.r::after{ left:-30px; right:auto; width:28px }
   .tl-item.l .tl-card{ border-right:none; border-left:7px solid var(--tc); text-align:left }
@@ -948,6 +958,7 @@ function go(v, push=true){
   $$("#viewTabs button").forEach(b=>b.classList.toggle("active", b.dataset.view===v));
   if(window.__syncMobileMenu) window.__syncMobileMenu(v);
   $$(".view").forEach(s=>s.classList.toggle("on", s.id==="view-"+v));
+  document.querySelector("main.wrap").classList.toggle("wide", v==="timeline" || v==="datasets");
   if(v==="graph") G.start(); else G.stop();
   if(v==="timeline") renderTimeline();
   if(v==="datasets") renderDatasets();
@@ -1208,7 +1219,7 @@ function renderDatasets(){
   if(DSS.sort==="cat"){
     host.innerHTML = m.order.map(k=>{
       const sub=rows.filter(d=>d.cat===k); if(!sub.length) return "";
-      sub.sort((a,b)=>(b.year||0)-(a.year||0)||a.name.localeCompare(b.name));
+      sub.sort((a,b)=>(b.hours_num||-1)-(a.hours_num||-1)||(b.year||0)-(a.year||0)||a.name.localeCompare(b.name));
       return `<section class="dsgroup"><h3>${esc(m.categories[k].name)}<span class="n">${sub.length}</span></h3>
         <p class="gsub">${esc(m.categories[k].blurb)}</p>${dsTableHTML(sub)}</section>`;
     }).join("");

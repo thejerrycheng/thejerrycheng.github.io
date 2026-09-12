@@ -28,6 +28,16 @@ R["multi-robot-marl"] = dict(
  policies are genuinely decentralized at execution time rather than a centralized controller in disguise.
  On the ground side, [[h2compact]] handles the human-humanoid case with adaptive contact trajectories, which
  is the same problem with a far less predictable partner.</p>
+ <p><b>The LLM-coordination branch grew fast and is worth knowing even if you do not use it.</b> [[roco]] has
+ robots negotiate the task split in natural language and hands the agreed waypoints to a multi-arm motion
+ planner; RoCoBench came out of it and is now the standard evaluation, with a human-in-the-loop mode that
+ makes a person one of the agents. [[embo-team]] grounds that reasoning into reactive behaviour trees via
+ PDDL so the plan stays executable, and [[climrs]] adds adaptive group negotiation for heterogeneous teams,
+ reporting over 40% higher efficiency on complex tasks.</p>
+ <p><b>And one 2026 result speaks directly to M2's architecture question.</b> [[chorus]] runs decentralized
+ collaboration across different embodiments with a <em>single</em> VLA policy. If that holds, the answer to
+ "do two heterogeneous robots need two policies" is no — which is a far cheaper system to build and maintain
+ than the one M2 is currently sketched as. Read it before committing to the architecture.</p>
  <p>Worth noting what is <em>missing</em> from the literature: almost nobody reports what happens when the
  two agents disagree about the object's pose. Estimation error is the dominant real-world failure mode in
  coupled transport and it is systematically under-reported.</p>""",
@@ -83,6 +93,10 @@ R["multi-robot-marl"] = dict(
   dict(id="qmix", why="Context for the value-factorization alternative, so you can say why you did not use it."),
   dict(id="falcon", why="Not multi-agent, but the force-curriculum idea transfers directly to the squeeze-penalty problem."),
   dict(id="maddpg", why="Historical anchor for centralized-critic methods; skim."),
+  dict(id="chorus", why="2026. One VLA policy, decentralized, across embodiments. Read before fixing M2's architecture."),
+  dict(id="roco", why="LLM negotiation plus multi-arm planning, and the benchmark everyone now reports on."),
+  dict(id="embo-team", why="How to keep an LLM plan executable and re-plannable — behaviour trees via PDDL."),
+  dict(id="climrs", why="Heterogeneous-team negotiation, and the efficiency-vs-robustness tradeoff you will face."),
   dict(id="crossformer", why="If M2 ever needs one policy across heterogeneous robots, this is the reference."),
  ])
 

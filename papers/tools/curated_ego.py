@@ -3,7 +3,7 @@
 (arXiv / OpenAlex), annotation is mine."""
 import json, os
 HERE = os.path.dirname(os.path.abspath(__file__))
-SRC  = json.load(open(os.path.join(HERE, "dataset_papers.json")))
+SRC  = json.load(open(os.path.join(HERE, "ego_papers.json")))
 ROWS = []
 
 ANN = {
@@ -63,6 +63,13 @@ ANN = {
   "head pose and OpenXR 26-joint hand tracking alongside video. If you run your own capture rather than "
   "consuming someone else's corpus, start here.",
   "umi,dexcap,egomimic,open-aoe"),
+"2311.12943": ("interact","rl","marl",
+  "human intent prediction conditioned on robot action, collaborative manipulation","HRI, transformer",
+  "hri-collab,multi-robot-marl","m2",2,
+  "Predicts human intent <em>conditioned on what the robot is doing</em>. Almost every intent dataset treats "
+  "the human as if the robot were not there, which is exactly the assumption that breaks in collaboration. The "
+  "teleoperation setup and the collected human-robot data are open-sourced.",
+  "intention-tracking,workspace-opt,h2compact,roco"),
 "2605.05712": ("egoemg","il","tactile-learn",
   "EMG, egocentric, hand pose, intent","dataset","tactile-wm,ego-dex","wam-tactile,geodex",2,
   "Bilateral 8-channel wrist EMG at 2 kHz paired with egocentric video, RGB-D and hand mocap, over 41 "

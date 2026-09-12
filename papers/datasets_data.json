@@ -1,7 +1,7 @@
 {
  "meta": {
   "generated": "2026-09-11",
-  "total": 101,
+  "total": 109,
   "categories": {
    "ego": {
     "name": "Egocentric human",
@@ -73,7 +73,7 @@
    "device": "Build AI custom head-mounted glasses",
    "modal": "RGB (streamable, no full download required)",
    "hours": "~1,000,000 h",
-   "eps": "10.8 billion frames",
+   "eps": "10.8 billion frames · gated on Hugging Face",
    "tasks": "assembly, sorting, packaging, machining",
    "scenes": "real production floors, Southeast Asia",
    "subj": "14,228 factory workers",
@@ -85,7 +85,7 @@
    "date": "2026-04-08",
    "institutions": [],
    "paper": "",
-   "site": "https://huggingface.co/datasets/builddotai/Egocentric-1M",
+   "site": "https://huggingface.co/builddotai",
    "fig": "",
    "hours_num": 1000000.0
   },
@@ -762,7 +762,7 @@
    "date": "2024-06-14",
    "institutions": [],
    "paper": "https://arxiv.org/abs/2406.09905",
-   "site": "https://www.projectaria.com/datasets/nymeria/",
+   "site": "https://github.com/facebookresearch/nymeria_dataset",
    "fig": "figures/ds-nymeria.webp",
    "figs": [
     "figures/ds-nymeria-1.webp"
@@ -1115,46 +1115,6 @@
    "hours_num": -1
   },
   {
-   "id": "egoexo-handrig",
-   "name": "Ego-Exo 3D Hand Tracking in the Wild with a Mobile Multi-Camera Rig",
-   "title": "Ego-Exo 3D Hand Tracking in the Wild with a Mobile Multi-Camera Rig",
-   "cat": "ego",
-   "org": "industry",
-   "one": "In-the-wild 3D hand tracking from a mobile multi-camera ego-exo rig, built to get ground truth outside the lab.",
-   "device": "mobile multi-camera ego+exo rig",
-   "modal": "RGB multi-view, 3D hand pose",
-   "hours": "—",
-   "eps": "—",
-   "tasks": "hand tracking",
-   "scenes": "in-the-wild",
-   "subj": "—",
-   "embod": "human",
-   "note": "",
-   "arxiv": "2510.02601",
-   "authors": [
-    "Patrick Rim",
-    "Kun He",
-    "Kevin R. Harris",
-    "Braden Copple",
-    "Shangchen Han",
-    "Sizhe An",
-    "Ivan Shugurov",
-    "Tomáš Hodaň",
-    "Wen He",
-    "Xu Xie"
-   ],
-   "year": 2025,
-   "date": "2025-10-02",
-   "institutions": [],
-   "paper": "https://arxiv.org/abs/2510.02601",
-   "site": "https://arxiv.org/abs/2510.02601",
-   "fig": "figures/ds-egoexo-handrig.webp",
-   "figs": [
-    "figures/ds-egoexo-handrig-1.webp"
-   ],
-   "hours_num": -1
-  },
-  {
    "id": "egovla",
    "name": "EgoVLA",
    "title": "EgoVLA: Learning Vision-Language-Action Models from Egocentric Human Videos",
@@ -1284,7 +1244,7 @@
    "date": "2024-02-20",
    "institutions": [],
    "paper": "https://arxiv.org/abs/2402.13349",
-   "site": "https://www.projectaria.com/datasets/aea/",
+   "site": "https://facebookresearch.github.io/projectaria_tools/docs/open_datasets/aria_everyday_activities_dataset",
    "fig": "figures/ds-aea.webp",
    "figs": [
     "figures/ds-aea-1.webp",
@@ -1429,7 +1389,7 @@
    "date": "2023-08-24",
    "institutions": [],
    "paper": "https://arxiv.org/abs/2308.13561",
-   "site": "https://www.projectaria.com/",
+   "site": "https://facebookresearch.github.io/projectaria_tools/",
    "fig": "figures/ds-aria.webp",
    "figs": [
     "figures/ds-aria-1.webp",
@@ -1545,6 +1505,35 @@
    "fig": "figures/ds-h2o-ego.webp",
    "figs": [
     "figures/ds-h2o-ego-1.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "egoexo-handrig",
+   "name": "egoexo-handrig",
+   "title": "egoexo-handrig",
+   "cat": "ego",
+   "org": "industry",
+   "one": "In-the-wild 3D hand tracking from a mobile multi-camera ego-exo rig, built to get ground truth outside the lab.",
+   "device": "mobile multi-camera ego+exo rig",
+   "modal": "RGB multi-view, 3D hand pose",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "hand tracking",
+   "scenes": "in-the-wild",
+   "subj": "—",
+   "embod": "human",
+   "note": "",
+   "arxiv": "2510.02601",
+   "authors": [],
+   "year": null,
+   "date": "",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2510.02601",
+   "site": "https://arxiv.org/abs/2510.02601",
+   "fig": "figures/ds-egoexo-handrig.webp",
+   "figs": [
+    "figures/ds-egoexo-handrig-1.webp"
    ],
    "hours_num": -1
   },
@@ -3398,7 +3387,7 @@
    "date": "2024-10-30",
    "institutions": [],
    "paper": "https://arxiv.org/abs/2410.23004",
-   "site": "https://pku-epic.github.io/DexGraspNet2/",
+   "site": "https://pku-epic.github.io/DexGraspNet2.0/",
    "fig": "figures/ds-dexgraspnet2.webp",
    "figs": [
     "figures/ds-dexgraspnet2-1.webp",
@@ -3959,7 +3948,7 @@
    "date": "2023-03-27",
    "institutions": [],
    "paper": "https://arxiv.org/abs/2303.14880",
-   "site": "https://cs.gmu.edu/~xiao/Research/MuSoHu/",
+   "site": "https://arxiv.org/abs/2303.14880",
    "fig": "figures/ds-musohu.webp",
    "figs": [
     "figures/ds-musohu-1.webp",
@@ -4159,6 +4148,78 @@
    "hours_num": -1
   },
   {
+   "id": "kaiwu",
+   "name": "Kaiwu",
+   "title": "Kaiwu: A Multimodal Manipulation Dataset and Framework for Robot Learning and Human-Robot Interaction",
+   "cat": "hri",
+   "org": "academia",
+   "one": "A multimodal manipulation dataset that records the human, the environment and the robot together — built for robot learning and HRI at once.",
+   "device": "mocap + multi-view cameras + robot",
+   "modal": "RGB-D, human pose, object pose, robot state, force",
+   "hours": "—",
+   "eps": "11,664 integrated instances",
+   "tasks": "manipulation + interaction",
+   "scenes": "lab",
+   "subj": "20 subjects · 30 objects",
+   "embod": "robot arm",
+   "note": "Unusual in capturing all three streams synchronously. If you want to measure who adapts to whom in a collaboration, this is the closest existing data.",
+   "arxiv": "2503.05231",
+   "authors": [
+    "Jiang, Shuo",
+    "Li, Haonan",
+    "Ren, Ruochen",
+    "Zhou, Yanmin",
+    "Wang, Zhipeng",
+    "He, Bin"
+   ],
+   "year": 2025,
+   "date": "2025-03-07",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2503.05231",
+   "site": "https://arxiv.org/abs/2503.05231",
+   "fig": "figures/ds-kaiwu.webp",
+   "figs": [
+    "figures/ds-kaiwu-1.webp",
+    "figures/ds-kaiwu-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "interact",
+   "name": "InteRACT",
+   "title": "InteRACT: Transformer Models for Human Intent Prediction Conditioned on Robot Actions",
+   "cat": "hri",
+   "org": "academia",
+   "one": "Human-robot collaborative manipulation data where human intent is predicted *conditioned on what the robot does* — with the teleoperation setup open-sourced.",
+   "device": "7-DoF arm teleoperation + human motion capture",
+   "modal": "RGB-D, human pose, robot state",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "collaborative manipulation",
+   "scenes": "tabletop",
+   "subj": "—",
+   "embod": "7-DoF arm",
+   "note": "The conditioning is the point: most intent-prediction datasets treat the human as if the robot were not there. This one does not, which is exactly the framing your HRI idea needs.",
+   "arxiv": "2311.12943",
+   "authors": [
+    "Kushal Kedia",
+    "Atiksh Bhardwaj",
+    "Prithwish Dan",
+    "Sanjiban Choudhury"
+   ],
+   "year": 2023,
+   "date": "2023-11-21",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2311.12943",
+   "site": "https://arxiv.org/abs/2311.12943",
+   "fig": "figures/ds-interact.webp",
+   "figs": [
+    "figures/ds-interact-1.webp",
+    "figures/ds-interact-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
    "id": "handoversim",
    "name": "HandoverSim",
    "title": "HandoverSim: A Simulation Framework and Benchmark for Human-to-Robot Object Handovers",
@@ -4225,11 +4286,120 @@
    "date": "2021-06-16",
    "institutions": [],
    "paper": "https://arxiv.org/abs/2106.08827",
-   "site": "https://jrdb.erc.monash.edu/dataset/activity",
+   "site": "https://jrdb.erc.monash.edu/",
    "fig": "figures/ds-jrdbact.webp",
    "figs": [
     "figures/ds-jrdbact-1.webp",
     "figures/ds-jrdbact-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "mogaze",
+   "name": "MoGaze",
+   "title": "MoGaze: A Dataset of Full-Body Motions that Includes Workspace Geometry\\n and Eye-Gaze",
+   "cat": "hri",
+   "org": "academia",
+   "one": "Long manipulation sequences with full-body motion, the 3D geometry of the workspace, and eye gaze — three things rarely captured together.",
+   "device": "optical mocap + eye tracker + scanned workspace",
+   "modal": "full-body 3D motion, eye gaze, workspace geometry, object poses",
+   "hours": "—",
+   "eps": "~3 h of manipulation sequences",
+   "tasks": "pick-and-place sequences",
+   "scenes": "scanned lab",
+   "subj": "6 participants",
+   "embod": "human (for robot prediction)",
+   "note": "Eye gaze is the strongest early signal of human intent and almost nothing else records it alongside full-body motion and scene geometry.",
+   "arxiv": "2011.11552",
+   "authors": [
+    "Philipp Kratzer",
+    "Simon Bihlmaier",
+    "Niteesh Balachandra Midlagajni",
+    "Rohit Prakash",
+    "Marc Toussaint",
+    "Jim Mainprice"
+   ],
+   "year": 2020,
+   "date": "2020-11-23",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2011.11552",
+   "site": "https://humans-to-robots-motion.github.io/mogaze/",
+   "fig": "figures/ds-mogaze.webp",
+   "figs": [
+    "figures/ds-mogaze-1.webp",
+    "figures/ds-mogaze-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "ga3t",
+   "name": "GA3T",
+   "title": "GA3T: A Ground-Aerial Terrain Traversability Dataset for Heterogeneous Robot Teams in Unstructured Environments",
+   "cat": "multi",
+   "org": "academia",
+   "one": "A real-world ground-aerial collaborative perception dataset: a Husky UGV and an Autel UAV working the same unstructured terrain together.",
+   "device": "Clearpath Husky UGV + Autel EVO II UAV",
+   "modal": "RGB, LiDAR, IMU, GPS, cross-agent views",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "terrain traversability, collaborative perception",
+   "scenes": "unstructured outdoor",
+   "subj": "2 heterogeneous agents",
+   "embod": "UGV + UAV",
+   "note": "Rare: an actual real-world multi-robot dataset rather than a simulator. Aerial-ground rather than manipulation, but the cross-agent perception problem is the same one M2 has.",
+   "arxiv": "2605.06478",
+   "authors": [
+    "Siwei Cai",
+    "Knut Peterson",
+    "Quan Tran",
+    "Christian Ricks",
+    "Dhanush Parthasarathy",
+    "Amir Kaidarov",
+    "Neil Deshpande",
+    "Sukaina Najm",
+    "David Han",
+    "Lifeng Zhou"
+   ],
+   "year": 2026,
+   "date": "2026-05-07",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2605.06478",
+   "site": "https://arxiv.org/abs/2605.06478",
+   "fig": "figures/ds-ga3t.webp",
+   "hours_num": -1
+  },
+  {
+   "id": "hercules",
+   "name": "HERCULES",
+   "title": "HERCULES: An Open-Source Simulation Framework for Heterogeneous Multi-Robot SLAM, Collaborative Perception, and Exploration",
+   "cat": "multi",
+   "org": "academia",
+   "one": "An open simulation framework and benchmark for heterogeneous multi-robot SLAM, collaborative perception and exploration.",
+   "device": "simulation (Unreal Engine 5 / AirSim)",
+   "modal": "RGB, depth, LiDAR, IMU, ground-truth poses",
+   "hours": "—",
+   "eps": "—",
+   "tasks": "collaborative SLAM, exploration",
+   "scenes": "large-scale sim",
+   "subj": "concurrent aerial + ground agents",
+   "embod": "UAV + UGV",
+   "note": "",
+   "arxiv": "2606.22756",
+   "authors": [
+    "Sandilya Sai Garimella",
+    "Daniel Chase Butterfield",
+    "Sean Wilson",
+    "Lu Gan"
+   ],
+   "year": 2026,
+   "date": "2026-06-22",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2606.22756",
+   "site": "https://arxiv.org/abs/2606.22756",
+   "fig": "figures/ds-hercules.webp",
+   "figs": [
+    "figures/ds-hercules-1.webp",
+    "figures/ds-hercules-2.webp"
    ],
    "hours_num": -1
   },
@@ -4271,6 +4441,88 @@
    "hours_num": -1
   },
   {
+   "id": "rocochallenge",
+   "name": "RoCo Challenge at AAAI 2026",
+   "title": "RoCo Challenge at AAAI 2026: Benchmarking Robotic Collaborative Manipulation for Assembly Towards Industrial Automation",
+   "cat": "multi",
+   "org": "consortium",
+   "one": "An AAAI 2026 challenge on collaborative assembly, released with a teleoperated dual-arm mobile manipulation dataset.",
+   "device": "dual-arm mobile platform, teleoperation",
+   "modal": "RGB, depth, proprioception, action streams (synchronised)",
+   "hours": "—",
+   "eps": "300+ teleoperated demonstrations",
+   "tasks": "collaborative assembly",
+   "scenes": "industrial",
+   "subj": "60+ teams, 170+ participants, 10+ countries",
+   "embod": "dual-arm mobile manipulator",
+   "note": "One of the very few real-robot collaborative-manipulation datasets that exists, and it comes with a leaderboard. Directly usable for M2 as a baseline setting rather than a from-scratch build.",
+   "arxiv": "2603.15469",
+   "authors": [
+    "Haichao Liu",
+    "Yuheng Zhou",
+    "Zhenyu Wu",
+    "Ziheng Ji",
+    "Ziyu Shan",
+    "Qianzhun Wang",
+    "Ruixuan Liu",
+    "Zhiyuan Yang",
+    "Yejun Gu",
+    "Shalman Khan",
+    "Shijun Yan",
+    "Jun Liu",
+    "Haiyue Zhu",
+    "Changliu Liu",
+    "Jianfei Yang",
+    "Jingbing Zhang",
+    "Ziwei Wang"
+   ],
+   "year": 2026,
+   "date": "2026-03-16",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2603.15469",
+   "site": "https://arxiv.org/abs/2603.15469",
+   "fig": "figures/ds-rocochallenge.webp",
+   "figs": [
+    "figures/ds-rocochallenge-1.webp",
+    "figures/ds-rocochallenge-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "comuros",
+   "name": "LLM-Based Generalizable Hierarchical Task Planning and Execution for Heterogeneous Robot Teams with Event-Driven Replanning",
+   "title": "LLM-Based Generalizable Hierarchical Task Planning and Execution for Heterogeneous Robot Teams with Event-Driven Replanning",
+   "cat": "multi",
+   "org": "academia",
+   "one": "A heterogeneous-team benchmark of scenarios and tasks spanning roughly twenty robots, with a task-manager LLM allocating subtasks to robot-level LLMs.",
+   "device": "simulation + hardware",
+   "modal": "state, language, ROS2 skill traces",
+   "hours": "—",
+   "eps": "22 scenarios",
+   "tasks": "54 tasks",
+   "scenes": "—",
+   "subj": "~20 robots",
+   "embod": "heterogeneous team",
+   "note": "Interesting for M2 because it reports recovery from disruptive events and coordinated transport with emergent human-robot cooperation — i.e. it measures robustness, not just success.",
+   "arxiv": "2511.22354",
+   "authors": [
+    "Suraj Borate",
+    "B Bhavish",
+    "Vipul Pardeshi",
+    "Madhu Vadali"
+   ],
+   "year": 2025,
+   "date": "2025-11-27",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2511.22354",
+   "site": "https://arxiv.org/abs/2511.22354",
+   "fig": "figures/ds-comuros.webp",
+   "figs": [
+    "figures/ds-comuros-1.webp"
+   ],
+   "hours_num": -1
+  },
+  {
    "id": "humanthor",
    "name": "Demonstrating HumanTHOR",
    "title": "Demonstrating HumanTHOR: A Simulation Platform and Benchmark for Human-Robot Collaboration in a Shared Workspace",
@@ -4304,6 +4556,40 @@
    "figs": [
     "figures/ds-humanthor-1.webp",
     "figures/ds-humanthor-2.webp"
+   ],
+   "hours_num": -1
+  },
+  {
+   "id": "rocobench",
+   "name": "RoCo",
+   "title": "RoCo: Dialectic Multi-Robot Collaboration with Large Language Models",
+   "cat": "multi",
+   "org": "academia",
+   "one": "The reference multi-robot collaboration benchmark: six tabletop tasks that need both high-level communication and coordinated multi-arm motion planning.",
+   "device": "simulation + real multi-arm",
+   "modal": "state, RGB, language dialogue",
+   "hours": "—",
+   "eps": "text dataset for agent reasoning",
+   "tasks": "6 collaboration tasks",
+   "scenes": "tabletop",
+   "subj": "—",
+   "embod": "multi-arm (sim + real)",
+   "note": "RoCoBench is what almost every LLM multi-robot paper now reports on. It also supports human-in-the-loop, so a person can be one of the agents — the bridge to your HRI idea.",
+   "arxiv": "2307.04738",
+   "authors": [
+    "Zhao Mandi",
+    "Shreeya Jain",
+    "Shuran Song"
+   ],
+   "year": 2023,
+   "date": "2023-07-10",
+   "institutions": [],
+   "paper": "https://arxiv.org/abs/2307.04738",
+   "site": "https://project-roco.github.io/",
+   "fig": "figures/ds-rocobench.webp",
+   "figs": [
+    "figures/ds-rocobench-1.webp",
+    "figures/ds-rocobench-2.webp"
    ],
    "hours_num": -1
   },
@@ -4418,7 +4704,7 @@
    "date": "2017-06-13",
    "institutions": [],
    "paper": "https://arxiv.org/abs/1706.04261",
-   "site": "https://www.qualcomm.com/developer/software/something-something-v2-dataset",
+   "site": "https://www.qualcomm.com/developer/software/something-something-v-2-dataset",
    "fig": "figures/ds-ssv2.webp",
    "figs": [
     "figures/ds-ssv2-1.webp"

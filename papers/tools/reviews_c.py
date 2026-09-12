@@ -519,6 +519,13 @@ R["hri-collab"] = dict(
  <p><b>Force-adaptive whole-body control is the enabling capability.</b> [[falcon]]'s decoupled upper/lower-body
  formulation with an explicit external-force curriculum is exactly what a robot carrying one end of something
  with a person needs, and it is directly portable to MABEL.</p>
+ <p><b>Intent prediction now has purpose-built data and a sharper framing.</b> [[interact]] predicts human
+ intent <em>conditioned on what the robot is doing</em> — most datasets treat the human as if the robot were
+ not there, which is precisely the assumption that fails in collaboration. [[intention-tracking]] adds a
+ hierarchical version that both avoids interrupting the human and intervenes when the human is failing, and
+ [[workspace-opt]] makes the genuinely contrarian move of arranging the workspace so the human moves more
+ predictably instead of modelling the variance. On the data side, Kaiwu records human, environment and robot
+ synchronously, and MoGaze pairs full-body motion with workspace geometry and eye gaze — see the Datasets tab.</p>
  <p><b>Intent inference is the part borrowed from elsewhere.</b> The MARL literature's opponent modelling
  ([[mappo]] and the belief-based opponent-shaping work in your library) is the formal version of "guess what
  your partner is about to do", and human-video work ([[r3m]], [[vip]]) is where the perception side comes
@@ -536,6 +543,9 @@ R["hri-collab"] = dict(
  gap="""<p>The measurement is missing. Physical HRI papers report task success and occasionally a subjective
  comfort survey. What they do not report is <b>who is doing the adapting</b>. In almost every deployed system
  the human silently adapts to the robot, and the paper claims the collaboration worked.</p>
+ <p>The data to do it now exists — Kaiwu records all three streams at once, MoGaze gives gaze as an early
+ intent signal, and [[interact]] provides the robot-conditioned framing — so this is a study you could run
+ rather than a dataset you would first have to build.</p>
  <p>An experiment that quantifies the division of adaptation — how much the human's trajectory changes when
  partnered with the robot versus with another human, on the same task — would be a genuinely novel measurement,
  and it is the one that distinguishes a collaborative robot from a compliant one. It connects directly to M2,
@@ -565,6 +575,10 @@ R["hri-collab"] = dict(
   dict(id="mappo", why="The formal frame for reasoning about a partner whose policy you do not control."),
   dict(id="hil-serl", why="Human corrections as a first-class training signal."),
   dict(id="pi06", why="The same idea at scale — interventions during autonomous execution."),
+  dict(id="interact", why="Human intent predicted conditioned on the robot's actions — the framing most datasets miss."),
+  dict(id="intention-tracking", why="Assistive intervention, not just collision avoidance. The behaviour that makes a collaborator."),
+  dict(id="workspace-opt", why="Reduce the human's motion variance instead of modelling it better. Cheap and clever."),
+  dict(id="roco", why="Its human-in-the-loop mode is the bridge between your multi-robot and HRI ideas."),
   dict(id="deep-wbc", why="Whole-body control with arm and legs in one policy."),
  ])
 

@@ -25,20 +25,32 @@ CATS = {
 }
 ORDER = ["ego","umi","teleop","robot","dex","tactile","hri","multi","exo","motion","sim"]
 
-UA={"User-Agent":"Mozilla/5.0 (compatible; paper-atlas-linkcheck/1.0; +https://thejerrycheng.github.io/papers/)"}
+UA={"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+                 "(KHTML, like Gecko) Chrome/131.0 Safari/537.36",
+    "Accept":"text/html,application/xhtml+xml,*/*;q=0.8","Accept-Language":"en-US,en;q=0.9"}
+SOFT404 = re.compile(r"(404|page not found|site not found|not be found|doesn'?t exist|"
+                     r"no longer available|there isn'?t a github pages site here|"
+                     r"we can'?t find the page)", re.I)
 def check(url):
+    """None = do not ship this link. Catches soft-404s, not just error codes."""
     if not url or not url.startswith("http"): return None
-    for method in ("HEAD","GET"):
-        try:
-            req=urllib.request.Request(url, headers=UA, method=method)
-            with urllib.request.urlopen(req, timeout=25) as r:
-                if 200 <= r.status < 400: return r.status
-        except urllib.error.HTTPError as e:
-            if e.code in (403,405,406,429): return e.code      # exists, just blocking us
-            if method=="GET": return e.code
-        except Exception:
-            if method=="GET": return None
-    return None
+    try:
+        req=urllib.request.Request(url, headers=UA)
+        with urllib.request.urlopen(req, timeout=30) as r:
+            if not (200 <= r.status < 400): return None
+            ctype=r.headers.get("Content-Type","")
+            body=r.read(120000).decode("utf-8","ignore") if ("html" in ctype or "text" in ctype) else ""
+    except urllib.error.HTTPError as e:
+        return e.code if e.code in (403,429) else None    # 403/429 = alive but blocking us
+    except Exception:
+        return None
+    if body:
+        m=re.search(r"<title[^>]*>(.*?)</title>", body, re.S|re.I)
+        title=m.group(1) if m else ""
+        head=re.sub(r"<script.*?</script>|<style.*?</style>","",body[:60000],flags=re.S|re.I)
+        head=re.sub(r"<[^>]+>"," ",head)[:2500]
+        if SOFT404.search(title) or SOFT404.search(head): return None
+    return 200
 
 rows=[]
 for r in DS.ROWS:

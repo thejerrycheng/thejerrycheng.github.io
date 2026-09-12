@@ -41,19 +41,19 @@ D("nymeria","2406.09905",cat="ego",org="industry",
   device="Project Aria glasses + wrist Aria + XSens body suit",
   modal="RGB, SLAM, eye gaze, IMU, full-body 3D motion, language narration",
   hours="300 h", eps="1,200 sequences · 399 km travelled", tasks="daily activity", scenes="50 locations",
-  subj="264 participants", embod="human", site="https://www.projectaria.com/datasets/nymeria/",
+  subj="264 participants", embod="human", site="https://github.com/facebookresearch/nymeria_dataset",
   note="The body-motion counterpart to Ego4D. If you want humanoid whole-body targets from ego video, this is the supervision.")
 D("aea","2402.13349",cat="ego",org="industry",
   one="Everyday activity sequences from Aria glasses with globally aligned 3D trajectories, gaze and speech.",
   device="Project Aria glasses", modal="RGB, SLAM, eye gaze, point cloud, speech transcript",
   hours="—", eps="143 sequences", tasks="daily activity", scenes="5 indoor locations",
-  subj="multiple wearers", embod="human", site="https://www.projectaria.com/datasets/aea/",
+  subj="multiple wearers", embod="human", site="https://facebookresearch.github.io/projectaria_tools/docs/open_datasets/aria_everyday_activities_dataset",
   note="Small but the cleanest machine-perception annotations of the Aria family.")
 D("aria","2308.13561",cat="ego",org="industry",
   one="The glasses themselves: the research platform and open tooling that most modern egocentric datasets are recorded on.",
   device="Project Aria glasses", modal="RGB, SLAM cameras, eye tracking, IMU, magnetometer, barometer, audio",
   hours="—", eps="platform + tools", tasks="—", scenes="—", subj="—",
-  embod="human", site="https://www.projectaria.com/",
+  embod="human", site="https://facebookresearch.github.io/projectaria_tools/",
   note="Not a dataset — the capture platform. Worth knowing the sensor suite before designing your own rig.")
 D("egodex","2505.11709",cat="ego",org="industry",
   one="Apple's large-scale egocentric video with paired 3D hand and finger tracking captured at record time, aimed squarely at dexterous manipulation.",
@@ -155,7 +155,7 @@ D("dexgraspnet2","2410.23004",cat="dex",org="academia",
   one="Dexterous grasping in cluttered scenes at scale — 427 million grasps with demonstrated zero-shot sim-to-real.",
   device="synthetic", modal="grasp poses, depth, cluttered scenes",
   hours="—", eps="427M grasps", tasks="cluttered grasping", scenes="8,270 scenes", subj="1,319 objects",
-  embod="dexterous hand (sim)", site="https://pku-epic.github.io/DexGraspNet2/",
+  embod="dexterous hand (sim)", site="https://pku-epic.github.io/DexGraspNet2.0/",
   note="Reports 90.7% real-world success in clutter from synthetic data alone — a strong data point for the soft/sim2real debate.")
 D("dexart","2305.05706",cat="dex",org="academia",
   one="Benchmark for dexterous manipulation of articulated objects with generalisation to unseen instances.",
@@ -405,7 +405,7 @@ D("jrdbact","2106.08827",cat="hri",org="academia",
   one="JRDB extended with spatio-temporal action, social grouping and activity labels.",
   device="JackRabbot", modal="360° RGB, 3D, action + social group labels",
   hours="—", eps="2.8M action labels", tasks="action + social group detection", scenes="campus",
-  subj="—", embod="JackRabbot", site="https://jrdb.erc.monash.edu/dataset/activity")
+  subj="—", embod="JackRabbot", site="https://jrdb.erc.monash.edu/")
 D("thormagni","2403.09285",cat="hri",org="academia",
   one="Large-scale indoor motion capture of humans moving and interacting with robots in a shared workspace.",
   device="Qualisys mocap + robot + eye-tracking glasses",
@@ -452,7 +452,7 @@ D("musohu","2303.14880",cat="hri",org="academia",
   one="Multi-modal recordings of human navigation behaviour, captured to teach robots to move like people do.",
   device="human-worn sensor rig", modal="RGB-D, 3D lidar, IMU, GPS, audio",
   hours="20 h", eps="300 trials · ~100 km", tasks="social navigation", scenes="public spaces",
-  subj="13 humans", embod="human (for robot transfer)", site="https://cs.gmu.edu/~xiao/Research/MuSoHu/")
+  subj="13 humans", embod="human (for robot transfer)", site="https://arxiv.org/abs/2303.14880")
 
 # ──────────────────────────── HUMAN MOTION / HUMANOID ───────────────────────────
 D("amass","1904.03278",cat="motion",org="academia",
@@ -521,7 +521,7 @@ D("ssv2","1706.04261",cat="exo",org="industry",
   one="Crowd-acted third-person clips of basic physical interactions, built to test whether models understand physical causality rather than object identity.",
   device="crowdsourced handheld video", modal="RGB, action class",
   hours="—", eps="220,847 videos", tasks="174 action templates", scenes="in-the-wild", subj="crowd workers",
-  embod="human (third-person)", site="https://www.qualcomm.com/developer/software/something-something-v2-dataset",
+  embod="human (third-person)", site="https://www.qualcomm.com/developer/software/something-something-v-2-dataset",
   note="Still the sharpest test of physical rather than semantic video understanding.")
 D("howto100m","1906.03327",cat="exo",org="academia",
   one="136 million clips from 1.22M narrated instructional web videos — the largest source of humans explaining tasks while doing them.",
@@ -543,9 +543,9 @@ D("egocentric1m","",name="Egocentric-1M",cat="ego",org="industry",
   one="Roughly one million hours of factory-floor egocentric video — larger than every prior egocentric dataset combined, released open under Apache 2.0.",
   device="Build AI custom head-mounted glasses",
   modal="RGB (streamable, no full download required)",
-  hours="~1,000,000 h", eps="10.8 billion frames", tasks="assembly, sorting, packaging, machining",
+  hours="~1,000,000 h", eps="10.8 billion frames · gated on Hugging Face", tasks="assembly, sorting, packaging, machining",
   scenes="real production floors, Southeast Asia", subj="14,228 factory workers",
-  embod="human", site="https://huggingface.co/datasets/builddotai/Egocentric-1M",
+  embod="human", site="https://huggingface.co/builddotai",
   year=2026, date="2026-04-08",
   note="Build AI's scaling ladder went 10K hours (Nov 2025) → 100K (Dec 2025) → 1M (Apr 2026). The framing "
        "to hold onto: this is industrial repetitive labour, not household diversity, so it is enormous and "
@@ -657,3 +657,63 @@ D("agibot2026","",name="AgiBot World 2026",cat="robot",org="industry",
   note="Small next to the original million-trajectory AgiBot World, and deliberately so — it is structured for "
        "RL, which almost no large robot dataset is. Released with Shanghai AI Lab and the National-Local "
        "Humanoid Robotics Innovation Centre.")
+
+# ══════════════ MULTI-ROBOT & HUMAN-ROBOT INTERACTION (expanded) ══════════════
+D("rocobench","2307.04738",cat="multi",org="academia",
+  one="The reference multi-robot collaboration benchmark: six tabletop tasks that need both high-level communication and coordinated multi-arm motion planning.",
+  device="simulation + real multi-arm", modal="state, RGB, language dialogue",
+  hours="—", eps="text dataset for agent reasoning", tasks="6 collaboration tasks", scenes="tabletop",
+  subj="—", embod="multi-arm (sim + real)", site="https://project-roco.github.io/",
+  note="RoCoBench is what almost every LLM multi-robot paper now reports on. It also supports human-in-the-loop, "
+       "so a person can be one of the agents — the bridge to your HRI idea.")
+D("rocochallenge","2603.15469",cat="multi",org="consortium",
+  one="An AAAI 2026 challenge on collaborative assembly, released with a teleoperated dual-arm mobile manipulation dataset.",
+  device="dual-arm mobile platform, teleoperation",
+  modal="RGB, depth, proprioception, action streams (synchronised)",
+  hours="—", eps="300+ teleoperated demonstrations", tasks="collaborative assembly", scenes="industrial",
+  subj="60+ teams, 170+ participants, 10+ countries", embod="dual-arm mobile manipulator",
+  site="https://arxiv.org/abs/2603.15469",
+  note="One of the very few real-robot collaborative-manipulation datasets that exists, and it comes with a "
+       "leaderboard. Directly usable for M2 as a baseline setting rather than a from-scratch build.")
+D("comuros","2511.22354",cat="multi",org="academia",
+  one="A heterogeneous-team benchmark of scenarios and tasks spanning roughly twenty robots, with a task-manager LLM allocating subtasks to robot-level LLMs.",
+  device="simulation + hardware", modal="state, language, ROS2 skill traces",
+  hours="—", eps="22 scenarios", tasks="54 tasks", scenes="—", subj="~20 robots",
+  embod="heterogeneous team", site="https://arxiv.org/abs/2511.22354",
+  note="Interesting for M2 because it reports recovery from disruptive events and coordinated transport with "
+       "emergent human-robot cooperation — i.e. it measures robustness, not just success.")
+D("ga3t","2605.06478",cat="multi",org="academia",
+  one="A real-world ground-aerial collaborative perception dataset: a Husky UGV and an Autel UAV working the same unstructured terrain together.",
+  device="Clearpath Husky UGV + Autel EVO II UAV", modal="RGB, LiDAR, IMU, GPS, cross-agent views",
+  hours="—", eps="—", tasks="terrain traversability, collaborative perception", scenes="unstructured outdoor",
+  subj="2 heterogeneous agents", embod="UGV + UAV", site="https://arxiv.org/abs/2605.06478",
+  note="Rare: an actual real-world multi-robot dataset rather than a simulator. Aerial-ground rather than "
+       "manipulation, but the cross-agent perception problem is the same one M2 has.")
+D("hercules","2606.22756",cat="multi",org="academia",
+  one="An open simulation framework and benchmark for heterogeneous multi-robot SLAM, collaborative perception and exploration.",
+  device="simulation (Unreal Engine 5 / AirSim)", modal="RGB, depth, LiDAR, IMU, ground-truth poses",
+  hours="—", eps="—", tasks="collaborative SLAM, exploration", scenes="large-scale sim",
+  subj="concurrent aerial + ground agents", embod="UAV + UGV", site="https://arxiv.org/abs/2606.22756")
+D("kaiwu","2503.05231",cat="hri",org="academia",
+  one="A multimodal manipulation dataset that records the human, the environment and the robot together — built for robot learning and HRI at once.",
+  device="mocap + multi-view cameras + robot", modal="RGB-D, human pose, object pose, robot state, force",
+  hours="—", eps="11,664 integrated instances", tasks="manipulation + interaction", scenes="lab",
+  subj="20 subjects · 30 objects", embod="robot arm", site="https://arxiv.org/abs/2503.05231",
+  note="Unusual in capturing all three streams synchronously. If you want to measure who adapts to whom in a "
+       "collaboration, this is the closest existing data.")
+D("interact","2311.12943",cat="hri",org="academia",
+  one="Human-robot collaborative manipulation data where human intent is predicted *conditioned on what the robot does* — with the teleoperation setup open-sourced.",
+  device="7-DoF arm teleoperation + human motion capture", modal="RGB-D, human pose, robot state",
+  hours="—", eps="—", tasks="collaborative manipulation", scenes="tabletop", subj="—",
+  embod="7-DoF arm", site="https://arxiv.org/abs/2311.12943",
+  note="The conditioning is the point: most intent-prediction datasets treat the human as if the robot were not "
+       "there. This one does not, which is exactly the framing your HRI idea needs.")
+D("mogaze","2011.11552",cat="hri",org="academia",
+  one="Long manipulation sequences with full-body motion, the 3D geometry of the workspace, and eye gaze — three things rarely captured together.",
+  device="optical mocap + eye tracker + scanned workspace",
+  modal="full-body 3D motion, eye gaze, workspace geometry, object poses",
+  hours="—", eps="~3 h of manipulation sequences", tasks="pick-and-place sequences", scenes="scanned lab",
+  subj="6 participants", embod="human (for robot prediction)",
+  site="https://humans-to-robots-motion.github.io/mogaze/",
+  note="Eye gaze is the strongest early signal of human intent and almost nothing else records it alongside "
+       "full-body motion and scene geometry.")

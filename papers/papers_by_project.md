@@ -1,6 +1,6 @@
 # Paper Atlas — papers by project
 
-_454 papers · generated 2026-09-11_
+_462 papers · generated 2026-09-11_
 
 
 ## CURRENT PROJECTS
@@ -87,15 +87,15 @@ _454 papers · generated 2026-09-11_
         - [Planning Optimal Trajectories for Mobile Manipulators under End-effector Trajectory Continuity Constraint](https://arxiv.org/abs/2309.12251)  `ICRA 2023`
         - [Cooptimizing Safety and Performance Using Safety Value-Constrained Model Predictive Control](https://arxiv.org/abs/2604.23863)  `arXiv 2026`
       - Agentic & auto-research systems  (2)
-        - [Sunday Robotics: Gelato Foundation Model & Skill Capture](https://www.sundayrobotics.com/)  `company blog 2025`
+        - [Sunday Robotics: Gelato Foundation Model & Skill Capture](https://www.humanoidsdaily.com/news/sunday-unveils-memo-a-wheeled-domestic-robot-that-learns-from-200-gloves)  `company blog 2025`
         - [Figure AI: Helix in the home and at BMW Spartanburg](https://www.figure.ai/news)  `company blog 2026`
   - Research ideas
     - World-action model from UMI gloves
     - Learning-based retargeting
     - Mobile dexterous manipulation with a custom dexterous UMI
 - M2 — Multi-robot collaboration
-  - Reading  (153)
-    - Reinforcement Learning  (61)
+  - Reading  (160)
+    - Reinforcement Learning  (67)
       - Locomotion  (9)
         - [Learning to Walk in Minutes Using Massively Parallel Deep Reinforcement Learning](https://arxiv.org/abs/2109.11978)  `CoRL 2021`
         - [Cooperative Long Rope Skipping via Multi-Agent Reinforcement Learning](https://arxiv.org/abs/2606.08064)  `Nature 2026`
@@ -134,16 +134,22 @@ _454 papers · generated 2026-09-11_
         - [RoboReact: Agentic Skill Distillation from Generated Egocentric Videos for Generalizable Whole-Body Manipulation](https://arxiv.org/abs/2608.03387)  `IEEE Humanoids 2026`
         - [Task-Oriented Robot-Human Handovers on Legged Manipulators](https://arxiv.org/abs/2602.05760)  `arXiv 2026`
         - [Video2DoorTraversal: Push Door Traversal via Simulated Door Twins](https://arxiv.org/abs/2608.20251)  `arXiv 2026`
-      - Multi-agent RL  (27)
+      - Multi-agent RL  (33)
         - [Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments](https://doi.org/10.57702/apbqmp7u)  `NeurIPS 2017`
         - [QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning](https://arxiv.org/abs/1803.11485)  `ICML 2018`
+        - [Hierarchical Intention Tracking for Robust Human-Robot Collaboration in  Industrial Assembly Tasks](https://arxiv.org/abs/2203.09063)  `arXiv 2022`
         - [The Surprising Effectiveness of PPO in Cooperative, Multi-Agent Games](https://arxiv.org/abs/2103.01955)  `NeurIPS 2022`
+        - [InteRACT: Transformer Models for Human Intent Prediction Conditioned on Robot Actions](https://arxiv.org/abs/2311.12943)  `arXiv 2023`
+        - [RoCo: Dialectic Multi-Robot Collaboration with Large Language Models](https://arxiv.org/abs/2307.04738)  `arXiv 2023`
+        - [Workspace Optimization Techniques to Improve Prediction of Human Motion During Human-Robot Collaboration](https://arxiv.org/abs/2401.12965)  `arXiv 2024`
         - [A Survey on Improving Human Robot Collaboration through Vision-and-Language Navigation](https://arxiv.org/abs/2512.00027)  `arXiv 2025`
         - [Decentralized Aerial Manipulation of a Cable-Suspended Load using Multi-Agent Reinforcement Learning](https://arxiv.org/abs/2508.01522)  `CoRL 2025`
         - [H2-COMPACT: Human-Humanoid Co-Manipulation via Adaptive Contact Trajectory Policies](https://arxiv.org/abs/2505.17627)  `arXiv 2025`
+        - [Leveraging Adaptive Group Negotiation for Heterogeneous Multi-Robot Collaboration with Large Language Models](https://arxiv.org/abs/2602.06967)  `arXiv 2025`
         - [ADMM-Based Safety-Critical Distributed NMPC for Cooperative Transportation by Quadrupedal Robots](https://arxiv.org/abs/2607.17007)  `arXiv 2026`
         - [AMR-Pose: An Active LED Marker-Based Relative Pose Estimation Framework With Probabilistic Switching PnP for Cooperative AUVs](https://arxiv.org/abs/2608.12866)  `arXiv 2026`
         - [An O-RAN-Assisted MARL Approach for Dynamic Sidelink and Infrastructure Selection in V2X Communications](https://doi.org/10.1109/tvt.2026.3721784)  `IEEE Transactions on Vehicular Technology 2026`
+        - [CHORUS: Decentralized Multi-Embodiment Collaboration with One VLA Policy](https://arxiv.org/abs/2606.12352)  `arXiv 2026`
         - [CUDA MPC: A GPU-Native Solver for Model Predictive Control](https://arxiv.org/abs/2608.03051)  `arXiv 2026`
         - [Compact Latent Coordination for Autonomous Vehicles at Unsignalized Intersections](https://arxiv.org/abs/2607.21488)  `arXiv 2026`
         - [Continual Quadruped Robots Coordination via Semantic Skill Discovery](https://arxiv.org/abs/2606.08102)  `arXiv 2026`
@@ -201,7 +207,7 @@ _454 papers · generated 2026-09-11_
         - [X-OP: Cross-Morphology Whole-Body Teleoperation via MPC Retargeting](https://arxiv.org/abs/2606.07934)  `arXiv 2026`
       - Data scaling & cross-embodiment  (1)
         - [Open-AoE: An Open Egocentric Manipulation Dataset and Toolchain for Embodied Learning](https://arxiv.org/abs/2607.14183)  `arXiv 2026`
-    - Hardware & Systems  (60)
+    - Hardware & Systems  (61)
       - Open-source arms & bimanual  (4)
         - [Nonlinear Model Predictive Control for Cooperative Transportation and Manipulation of Cable Suspended Payloads with Multiple Quadrotors](https://arxiv.org/abs/2303.06165)  `IROS 2023`
         - [Event-Triggered Nonlinear Model Predictive Control for Cooperative Cable-Suspended Payload Transportation with Multi-Quadrotors](https://arxiv.org/abs/2504.03123)  `arXiv 2025`
@@ -270,8 +276,9 @@ _454 papers · generated 2026-09-11_
         - [WarpMPC: Large-Batch MPC on GPU via ADMM with Unrolled $LDL^\top$ Factorization](https://arxiv.org/abs/2607.11603)  `arXiv 2026`
       - Perception & state estimation  (1)
         - [Omnidirectional Dual-Arm Aerial Manipulator with Proprioceptive Contact Localization for Landing on Slanted Roofs](https://arxiv.org/abs/2602.10703)  `ICRA 2026`
-      - Agentic & auto-research systems  (1)
+      - Agentic & auto-research systems  (2)
         - [Affordance-Based Disambiguation of Surgical Instructions for Collaborative Robot-Assisted Surgery](https://arxiv.org/abs/2509.14967)  `CoRL 2025`
+        - [EmboTeam: Grounding LLM Reasoning into Reactive Behavior Trees via PDDL for Embodied Multi-Robot Collaboration](https://arxiv.org/abs/2601.11063)  `arXiv 2026`
   - Research ideas
     - Multi-robot collaboration & multi-agent RL
     - Human-robot interaction & collaboration tasks
@@ -441,7 +448,7 @@ _454 papers · generated 2026-09-11_
       - Perception & state estimation  (1)
         - [Omnidirectional Dual-Arm Aerial Manipulator with Proprioceptive Contact Localization for Landing on Slanted Roofs](https://arxiv.org/abs/2602.10703)  `ICRA 2026`
       - Agentic & auto-research systems  (2)
-        - [Sunday Robotics: Gelato Foundation Model & Skill Capture](https://www.sundayrobotics.com/)  `company blog 2025`
+        - [Sunday Robotics: Gelato Foundation Model & Skill Capture](https://www.humanoidsdaily.com/news/sunday-unveils-memo-a-wheeled-domestic-robot-that-learns-from-200-gloves)  `company blog 2025`
         - [Dyna Robotics DYNA-2: scaling human video for commercial dexterity](https://www.dyna.co/)  `tech report 2026`
 
 ## PAST PROJECTS
@@ -575,8 +582,15 @@ _454 papers · generated 2026-09-11_
 ## RESEARCH IDEAS  (19)
 
 - Multi-robot collaboration & multi-agent RL  [M2]
+  - [CHORUS: Decentralized Multi-Embodiment Collaboration with One VLA Policy](https://arxiv.org/abs/2606.12352)  `arXiv 2026`
+  - [RoCo: Dialectic Multi-Robot Collaboration with Large Language Models](https://arxiv.org/abs/2307.04738)  `arXiv 2023`
   - [The Surprising Effectiveness of PPO in Cooperative, Multi-Agent Games](https://arxiv.org/abs/2103.01955)  `NeurIPS 2022`
+  - [EmboTeam: Grounding LLM Reasoning into Reactive Behavior Trees via PDDL for Embodied Multi-Robot Collaboration](https://arxiv.org/abs/2601.11063)  `arXiv 2026`
   - [Decentralized Aerial Manipulation of a Cable-Suspended Load using Multi-Agent Reinforcement Learning](https://arxiv.org/abs/2508.01522)  `CoRL 2025`
+  - [Leveraging Adaptive Group Negotiation for Heterogeneous Multi-Robot Collaboration with Large Language Models](https://arxiv.org/abs/2602.06967)  `arXiv 2025`
+  - [Embodied LLM Agents Learn to Cooperate in Organized Teams](https://arxiv.org/abs/2403.12482)  `arXiv 2024`
+  - [InteRACT: Transformer Models for Human Intent Prediction Conditioned on Robot Actions](https://arxiv.org/abs/2311.12943)  `arXiv 2023`
+  - [Hierarchical Intention Tracking for Robust Human-Robot Collaboration in  Industrial Assembly Tasks](https://arxiv.org/abs/2203.09063)  `arXiv 2022`
   - [QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning](https://arxiv.org/abs/1803.11485)  `ICML 2018`
   - [Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments](https://doi.org/10.57702/apbqmp7u)  `NeurIPS 2017`
   - [$ω$-0: A Latent Predictive World Action Model for Concurrent Humanoid Loco-Manipulation](https://arxiv.org/abs/2608.06375)  `arXiv 2026`
@@ -596,13 +610,6 @@ _454 papers · generated 2026-09-11_
   - [Decentralized LLM-Driven Coordination of Acoustic Robots for Contactless Object Manipulation](https://arxiv.org/abs/2605.29378)  `arXiv 2026`
   - [Differentiable Belief-based Opponent Shaping](https://arxiv.org/abs/2605.29042)  `arXiv 2026`
   - [Distributed Model Predictive Control with Adaptive Safety Zones for Multi-Fleet Drone Operations](https://arxiv.org/abs/2606.20651)  `arXiv 2026`
-  - [Distributed Motion Planning with Safety Guarantees for Self-Reconfiguring Robotic Boats](https://arxiv.org/abs/2607.20352)  `arXiv 2026`
-  - [Duet: Dual-Robot Understanding via Efficient Teaching](https://arxiv.org/abs/2606.20990)  `arXiv 2026`
-  - [EFLUX: Elastic Multi-Robot Formation Navigation and Adaptation with Agentic LLMs](https://arxiv.org/abs/2607.12050)  `arXiv 2026`
-  - [Efficient Real-World Online Reinforcement Learning for Robot Manipulation via Centralized Training and Critic Decomposition](https://arxiv.org/abs/2608.09762)  `arXiv 2026`
-  - [FT-WBC: Learning Fault-Tolerant Whole-Body Control for Legged Loco-Manipulation](https://arxiv.org/abs/2606.24466)  `arXiv 2026`
-  - [From Raw Data to Shared 3D Semantics: Task-Oriented Communication for Multi-Robot Collaboration](https://arxiv.org/abs/2602.08624)  `arXiv 2026`
-  - [Genetic Fuzzy System-Based Multi-Robot Coordination for Planetary Missions](https://arxiv.org/abs/2608.12755)  `arXiv 2026`
 - Tactile world models for robot learning  [GeoDex]
   - [Dream-Tac: A Unified Tactile World Action Model for Contact-Rich Robot Manipulation](https://arxiv.org/abs/2606.08737)  `arXiv 2026`
   - [MM-Hand: A 21-DOF Multi-modal Modular Dexterous Robotic Hand with Remote Actuation](https://arxiv.org/abs/2604.17245)  `arXiv 2026`
@@ -763,7 +770,10 @@ _454 papers · generated 2026-09-11_
   - [Cosmos-Reason1: From Physical Common Sense To Embodied Reasoning](https://arxiv.org/abs/2503.15558)  `arXiv 2025`
   - [Text2Robot: Evolutionary Robot Design from Text Descriptions](https://arxiv.org/abs/2406.19963)  `ICRA 2025`
   - [Eureka: Human-Level Reward Design via Coding Large Language Models](https://arxiv.org/abs/2310.12931)  `ICLR 2024`
+  - [RoCo: Dialectic Multi-Robot Collaboration with Large Language Models](https://arxiv.org/abs/2307.04738)  `arXiv 2023`
+  - [EmboTeam: Grounding LLM Reasoning into Reactive Behavior Trees via PDDL for Embodied Multi-Robot Collaboration](https://arxiv.org/abs/2601.11063)  `arXiv 2026`
   - [Agent Laboratory: Using LLM Agents as Research Assistants](https://arxiv.org/abs/2501.04227)  `arXiv 2025`
+  - [Embodied LLM Agents Learn to Cooperate in Organized Teams](https://arxiv.org/abs/2403.12482)  `arXiv 2024`
   - [RoboCat: A Self-Improving Generalist Agent for Robotic Manipulation](https://arxiv.org/abs/2306.11706)  `TMLR 2023`
   - [Voyager: An Open-Ended Embodied Agent with Large Language Models](https://arxiv.org/abs/2305.16291)  `TMLR 2023`
   - [AgenticFocus: Object-Preserving Mixed Reality Synthesis from Human FPV Video for Dexterous Humanoid Learning](https://arxiv.org/abs/2607.08857)  `IEEE Humanoids 2026`
@@ -800,7 +810,7 @@ _454 papers · generated 2026-09-11_
   - [OA-WAM: Object-Addressable World Action Model for Robust Robot Manipulation](https://arxiv.org/abs/2605.06481)  `arXiv 2026`
   - [Open-AoE: An Open Egocentric Manipulation Dataset and Toolchain for Embodied Learning](https://arxiv.org/abs/2607.14183)  `arXiv 2026`
   - [WT-UMI: Tactile-based Whole-Body Manipulation via Force-Supervised Contact-Aware Planning](https://arxiv.org/abs/2606.13232)  `arXiv 2026`
-  - [Sunday Robotics: Gelato Foundation Model & Skill Capture](https://www.sundayrobotics.com/)  `company blog 2025`
+  - [Sunday Robotics: Gelato Foundation Model & Skill Capture](https://www.humanoidsdaily.com/news/sunday-unveils-memo-a-wheeled-domestic-robot-that-learns-from-200-gloves)  `company blog 2025`
 - Open-source 22-DOF tendon-driven hand  [GeoDex]
   - [MM-Hand: A 21-DOF Multi-modal Modular Dexterous Robotic Hand with Remote Actuation](https://arxiv.org/abs/2604.17245)  `arXiv 2026`
   - [Ruka-v2: Tendon Driven Open-Source Dexterous Hand with Wrist and Abduction for Robot Learning](https://arxiv.org/abs/2603.26660)  `arXiv 2026`
@@ -861,7 +871,7 @@ _454 papers · generated 2026-09-11_
   - [MobileWAM: Bridging World Action Models to Mobile Manipulation with Chain-of-Foresight](https://arxiv.org/abs/2608.04657)  `arXiv 2026`
   - [WT-UMI: Tactile-based Whole-Body Manipulation via Force-Supervised Contact-Aware Planning](https://arxiv.org/abs/2606.13232)  `arXiv 2026`
   - [Catch It! Learning to Catch in Flight with Mobile Dexterous Hands](https://arxiv.org/abs/2409.10319)  `ICRA 2025`
-  - [Sunday Robotics: Gelato Foundation Model & Skill Capture](https://www.sundayrobotics.com/)  `company blog 2025`
+  - [Sunday Robotics: Gelato Foundation Model & Skill Capture](https://www.humanoidsdaily.com/news/sunday-unveils-memo-a-wheeled-domestic-robot-that-learns-from-200-gloves)  `company blog 2025`
   - [$ω$-0: A Latent Predictive World Action Model for Concurrent Humanoid Loco-Manipulation](https://arxiv.org/abs/2608.06375)  `arXiv 2026`
   - [Duet: Dual-Robot Understanding via Efficient Teaching](https://arxiv.org/abs/2606.20990)  `arXiv 2026`
   - [DynaMOMA: Instantaneous Prediction of Grasp Poses for Mobile Manipulation of Dynamic Objects](https://arxiv.org/abs/2606.25295)  `arXiv 2026`
@@ -923,8 +933,13 @@ _454 papers · generated 2026-09-11_
   - [Vid2Robot: End-to-end Video-conditioned Policy Learning with Cross-Attention Transformers](https://arxiv.org/abs/2403.12943)  `RSS 2024`
   - [MimicPlay: Long-Horizon Imitation Learning by Watching Human Play](https://arxiv.org/abs/2302.12422)  `CoRL 2023`
 - Human-robot interaction & collaboration tasks  [M2]
+  - [CHORUS: Decentralized Multi-Embodiment Collaboration with One VLA Policy](https://arxiv.org/abs/2606.12352)  `arXiv 2026`
+  - [RoCo: Dialectic Multi-Robot Collaboration with Large Language Models](https://arxiv.org/abs/2307.04738)  `arXiv 2023`
   - [FALCON: Learning Force-Adaptive Humanoid Loco-Manipulation](https://arxiv.org/abs/2505.06776)  `arXiv 2025`
   - [H2-COMPACT: Human-Humanoid Co-Manipulation via Adaptive Contact Trajectory Policies](https://arxiv.org/abs/2505.17627)  `arXiv 2025`
+  - [Workspace Optimization Techniques to Improve Prediction of Human Motion During Human-Robot Collaboration](https://arxiv.org/abs/2401.12965)  `arXiv 2024`
+  - [InteRACT: Transformer Models for Human Intent Prediction Conditioned on Robot Actions](https://arxiv.org/abs/2311.12943)  `arXiv 2023`
+  - [Hierarchical Intention Tracking for Robust Human-Robot Collaboration in  Industrial Assembly Tasks](https://arxiv.org/abs/2203.09063)  `arXiv 2022`
   - [Decentralized LLM-Driven Coordination of Acoustic Robots for Contactless Object Manipulation](https://arxiv.org/abs/2605.29378)  `arXiv 2026`
   - [Duet: Dual-Robot Understanding via Efficient Teaching](https://arxiv.org/abs/2606.20990)  `arXiv 2026`
   - [Human-Guided Co-Manipulation of Carbon Fiber Plies](https://arxiv.org/abs/2606.11818)  `arXiv 2026`
@@ -934,7 +949,7 @@ _454 papers · generated 2026-09-11_
   - [Affordance-Based Disambiguation of Surgical Instructions for Collaborative Robot-Assisted Surgery](https://arxiv.org/abs/2509.14967)  `CoRL 2025`
   - [Wheeled Humanoid Bilateral Teleoperation with Position-Force Control Modes for Dynamic Loco-Manipulation](https://arxiv.org/abs/2407.12189)  `IEEE Humanoids 2024`
 - Soft-object manipulation from simulation  [GeoDex]
-  - [Newton: An Open-Source GPU-Accelerated Physics Engine for Robot Learning](https://developer.nvidia.com/newton)  `open source 2025`
+  - [Newton: An Open-Source GPU-Accelerated Physics Engine for Robot Learning](https://github.com/newton-physics/newton)  `open source 2025`
   - [Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World](https://arxiv.org/abs/1703.06907)  `IROS 2017`
   - [Closing the Reality Gap: Zero-Shot Sim-to-Real Deployment for Dexterous Force-Based Grasping and Manipulation](https://arxiv.org/abs/2601.02778)  `arXiv 2026`
   - [DexSim2Real: Foundation Model-Guided Sim-to-Real Transfer for Generalizable Dexterous Manipulation](https://arxiv.org/abs/2605.05241)  `arXiv 2026`
@@ -960,7 +975,7 @@ _454 papers · generated 2026-09-11_
 
 ## THE THREE TREES
 
-- Reinforcement Learning  (143)
+- Reinforcement Learning  (149)
   - Algorithmic foundations  (8)
     - [Human-level control through deep reinforcement learning](https://doi.org/10.1038/nature14236)  `Nature 2015`
     - [Trust Region Policy Optimization](http://proceedings.mlr.press/v37/schulman15.pdf)  `ICML 2015`
@@ -1056,16 +1071,22 @@ _454 papers · generated 2026-09-11_
     - [Task-Oriented Robot-Human Handovers on Legged Manipulators](https://arxiv.org/abs/2602.05760)  `arXiv 2026`
     - [Video2DoorTraversal: Push Door Traversal via Simulated Door Twins](https://arxiv.org/abs/2608.20251)  `arXiv 2026`
     - From Sim2Real 1.0 to 4.0 for Humanoid Whole-Body Control and Loco-Manipulation  `CoRL`
-  - Multi-agent RL  (27)
+  - Multi-agent RL  (33)
     - [Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments](https://doi.org/10.57702/apbqmp7u)  `NeurIPS 2017`
     - [QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning](https://arxiv.org/abs/1803.11485)  `ICML 2018`
+    - [Hierarchical Intention Tracking for Robust Human-Robot Collaboration in  Industrial Assembly Tasks](https://arxiv.org/abs/2203.09063)  `arXiv 2022`
     - [The Surprising Effectiveness of PPO in Cooperative, Multi-Agent Games](https://arxiv.org/abs/2103.01955)  `NeurIPS 2022`
+    - [InteRACT: Transformer Models for Human Intent Prediction Conditioned on Robot Actions](https://arxiv.org/abs/2311.12943)  `arXiv 2023`
+    - [RoCo: Dialectic Multi-Robot Collaboration with Large Language Models](https://arxiv.org/abs/2307.04738)  `arXiv 2023`
+    - [Workspace Optimization Techniques to Improve Prediction of Human Motion During Human-Robot Collaboration](https://arxiv.org/abs/2401.12965)  `arXiv 2024`
     - [A Survey on Improving Human Robot Collaboration through Vision-and-Language Navigation](https://arxiv.org/abs/2512.00027)  `arXiv 2025`
     - [Decentralized Aerial Manipulation of a Cable-Suspended Load using Multi-Agent Reinforcement Learning](https://arxiv.org/abs/2508.01522)  `CoRL 2025`
     - [H2-COMPACT: Human-Humanoid Co-Manipulation via Adaptive Contact Trajectory Policies](https://arxiv.org/abs/2505.17627)  `arXiv 2025`
+    - [Leveraging Adaptive Group Negotiation for Heterogeneous Multi-Robot Collaboration with Large Language Models](https://arxiv.org/abs/2602.06967)  `arXiv 2025`
     - [ADMM-Based Safety-Critical Distributed NMPC for Cooperative Transportation by Quadrupedal Robots](https://arxiv.org/abs/2607.17007)  `arXiv 2026`
     - [AMR-Pose: An Active LED Marker-Based Relative Pose Estimation Framework With Probabilistic Switching PnP for Cooperative AUVs](https://arxiv.org/abs/2608.12866)  `arXiv 2026`
     - [An O-RAN-Assisted MARL Approach for Dynamic Sidelink and Infrastructure Selection in V2X Communications](https://doi.org/10.1109/tvt.2026.3721784)  `IEEE Transactions on Vehicular Technology 2026`
+    - [CHORUS: Decentralized Multi-Embodiment Collaboration with One VLA Policy](https://arxiv.org/abs/2606.12352)  `arXiv 2026`
     - [CUDA MPC: A GPU-Native Solver for Model Predictive Control](https://arxiv.org/abs/2608.03051)  `arXiv 2026`
     - [Compact Latent Coordination for Autonomous Vehicles at Unsignalized Intersections](https://arxiv.org/abs/2607.21488)  `arXiv 2026`
     - [Continual Quadruped Robots Coordination via Semantic Skill Discovery](https://arxiv.org/abs/2606.08102)  `arXiv 2026`
@@ -1255,7 +1276,7 @@ _454 papers · generated 2026-09-11_
     - [Open-AoE: An Open Egocentric Manipulation Dataset and Toolchain for Embodied Learning](https://arxiv.org/abs/2607.14183)  `arXiv 2026`
   - Tactile & contact learning  (1)
     - [EgoEMG: A Multimodal Egocentric Dataset with Bilateral EMG and Vision for Hand Pose Estimation](https://arxiv.org/abs/2605.05712)  `arXiv 2026`
-- Hardware & Systems  (179)
+- Hardware & Systems  (181)
   - Open-source arms & bimanual  (12)
     - [Quasi-Direct Drive for Low-Cost Compliant Robotic Manipulation](https://doi.org/10.1109/icra.2019.8794236)  `ICRA 2019`
     - [ALOHA: A Low-cost Open-source Hardware System for Bimanual Teleoperation](https://tonyzhaozh.github.io/aloha/)  `RSS 2023`
@@ -1365,7 +1386,7 @@ _454 papers · generated 2026-09-11_
     - [The One RING: a Robotic Indoor Navigation Generalist](https://arxiv.org/abs/2412.14401)  `arXiv 2024`
     - [ActivePusher: Active Learning and Planning with Residual Physics for Nonprehensile Manipulation](https://arxiv.org/abs/2506.04646)  `ICRA 2025`
     - [ManiSkill3: GPU Parallelized Robotics Simulation and Rendering for Generalizable Embodied AI](https://arxiv.org/abs/2410.00425)  `RSS 2025`
-    - [Newton: An Open-Source GPU-Accelerated Physics Engine for Robot Learning](https://developer.nvidia.com/newton)  `open source 2025`
+    - [Newton: An Open-Source GPU-Accelerated Physics Engine for Robot Learning](https://github.com/newton-physics/newton)  `open source 2025`
     - [Olaf: Bringing an Animated Character to Life in the Physical World](https://doi.org/10.1109/lra.2026.3685938)  `IEEE RA-L 2025`
     - [One View, Many Worlds: Single-Image to 3D Object Meets Generative Domain Randomization for One-Shot 6D Pose Estimation](https://arxiv.org/abs/2509.07978)  `2025`
     - [PolaRiS: Scalable Real-to-Sim Evaluations for Generalist Robot Policies](https://doi.org/10.15607/rss.2026.xxii.062)  `Robotics: Science and Systems XXII 2025`
@@ -1426,9 +1447,10 @@ _454 papers · generated 2026-09-11_
     - [CHOSEN: Contrastive Hypothesis Selection for Multi-View Depth Refinement](https://doi.org/10.21428/d82e957c.024f76dd)  `Conference on Robots and Vision`
     - [Change of Scenery: Unsupervised LiDAR Change Detection for Mobile Robots](https://doi.org/10.21428/d82e957c.276daa5a)  `Conference on Robots and Vision`
     - [Image Space Path Following Control Using Visual Servoing](https://doi.org/10.21428/d82e957c.4ade25c5)  `Conference on Robots and Vision`
-  - Agentic & auto-research systems  (17)
+  - Agentic & auto-research systems  (19)
     - [Voyager: An Open-Ended Embodied Agent with Large Language Models](https://arxiv.org/abs/2305.16291)  `TMLR 2023`
     - [DrEureka: Language Model Guided Sim-To-Real Transfer](https://arxiv.org/abs/2406.01967)  `RSS 2024`
+    - [Embodied LLM Agents Learn to Cooperate in Organized Teams](https://arxiv.org/abs/2403.12482)  `arXiv 2024`
     - [Eureka: Human-Level Reward Design via Coding Large Language Models](https://arxiv.org/abs/2310.12931)  `ICLR 2024`
     - [The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery](https://arxiv.org/abs/2408.06292)  `arXiv 2024`
     - [Affordance-Based Disambiguation of Surgical Instructions for Collaborative Robot-Assisted Surgery](https://arxiv.org/abs/2509.14967)  `CoRL 2025`
@@ -1437,18 +1459,19 @@ _454 papers · generated 2026-09-11_
     - [Generalist AI: GEN-0 and Harmonic Reasoning](https://generalistai.com/)  `company blog 2025`
     - [Real Deep Research for AI, Robotics and Beyond](https://arxiv.org/abs/2510.20809)  `arXiv 2025`
     - [Skild AI: Omni-bodied Robot Brain](https://www.skild.ai/)  `company blog 2025`
-    - [Sunday Robotics: Gelato Foundation Model & Skill Capture](https://www.sundayrobotics.com/)  `company blog 2025`
+    - [Sunday Robotics: Gelato Foundation Model & Skill Capture](https://www.humanoidsdaily.com/news/sunday-unveils-memo-a-wheeled-domestic-robot-that-learns-from-200-gloves)  `company blog 2025`
     - [mimic robotics: Dexterous Manipulation from Human Demonstration](https://www.mimicrobotics.com/)  `company blog 2025`
     - [Dyna Robotics DYNA-2: scaling human video for commercial dexterity](https://www.dyna.co/)  `tech report 2026`
+    - [EmboTeam: Grounding LLM Reasoning into Reactive Behavior Trees via PDDL for Embodied Multi-Robot Collaboration](https://arxiv.org/abs/2601.11063)  `arXiv 2026`
     - [Figure AI: Helix in the home and at BMW Spartanburg](https://www.figure.ai/news)  `company blog 2026`
     - [HARBOR: A Harness Framework for Agentic Robot Reinforcement Learning](https://arxiv.org/abs/2606.08610)  `arXiv 2026`
     - [RF-Agent: Automated Reward Function Design via Language Agent Tree Search](https://arxiv.org/abs/2602.23876)  `arXiv 2026`
     - [Skild AI: scaling to 100,000 hours and one-shot video imitation](https://www.skild.ai/)  `company blog 2026`
 
-## OPEN DATASETS  (101)
+## OPEN DATASETS  (109)
 
 - Egocentric human  (31)
-  - [Egocentric-1M](https://huggingface.co/datasets/builddotai/Egocentric-1M)  `2026`
+  - [Egocentric-1M](https://huggingface.co/builddotai)  `2026`
   - [HumanNet](https://arxiv.org/abs/2605.06747)  `2026`
   - [EgoScale](https://research.nvidia.com/labs/gear/egoscale/)  `2026`
   - [Ego2Robot](https://arxiv.org/abs/2608.02580)  `2026`
@@ -1463,22 +1486,22 @@ _454 papers · generated 2026-09-11_
   - [Egocentric-10K](https://huggingface.co/datasets/builddotai/Egocentric-10K)  `2025`
   - [OpenEgo](https://arxiv.org/abs/2509.05513)  `2025`
   - [EgoDex](https://github.com/apple/ml-egodex)  `2025`
-  - [Ego-Exo 3D Hand Tracking in the Wild with a Mobile Multi-Camera Rig](https://arxiv.org/abs/2510.02601)  `2025`
   - [EgoVLA](https://arxiv.org/abs/2507.12440)  `2025`
   - [H-RDT](https://arxiv.org/abs/2507.23523)  `2025`
-  - [Nymeria](https://www.projectaria.com/datasets/nymeria/)  `2024`
+  - [Nymeria](https://github.com/facebookresearch/nymeria_dataset)  `2024`
   - [EgoExoLearn](https://github.com/OpenGVLab/EgoExoLearn)  `2024`
   - [HOT3D](https://facebookresearch.github.io/hot3d/)  `2024`
-  - [Aria Everyday Activities Dataset](https://www.projectaria.com/datasets/aea/)  `2024`
+  - [Aria Everyday Activities Dataset](https://facebookresearch.github.io/projectaria_tools/docs/open_datasets/aria_everyday_activities_dataset)  `2024`
   - [EgoVid-5M](https://egovid.github.io/)  `2024`
   - [Ego-Exo4D](https://ego-exo4d-data.org/)  `2023`
   - [EPIC Fields](https://epic-kitchens.github.io/epic-fields/)  `2023`
-  - [Project Aria](https://www.projectaria.com/)  `2023`
+  - [Project Aria](https://facebookresearch.github.io/projectaria_tools/)  `2023`
   - [HOI4D](https://hoi4d.github.io/)  `2022`
   - [Ego4D](https://ego4d-data.org/)  `2021`
   - [EgoBody](https://sanweiliti.github.io/egobody/egobody.html)  `2021`
   - [H2O](https://taeinkwon.com/projects/h2o/)  `2021`
   - [Rescaling Egocentric Vision](https://epic-kitchens.github.io/)  `2020`
+  - [egoexo-handrig](https://arxiv.org/abs/2510.02601)  ``
 - UMI & handheld  (7)
   - [YUBI](https://arxiv.org/abs/2606.10244)  `2026`
   - [Open-AoE](https://arxiv.org/abs/2607.14183)  `2026`
@@ -1514,7 +1537,7 @@ _454 papers · generated 2026-09-11_
   - [RT-1](https://robotics-transformer1.github.io/)  `2022`
   - [RoboNet](https://www.robonet.wiki/)  `2019`
 - Hand-object & dexterous  (8)
-  - [DexGraspNet 2.0](https://pku-epic.github.io/DexGraspNet2/)  `2024`
+  - [DexGraspNet 2.0](https://pku-epic.github.io/DexGraspNet2.0/)  `2024`
   - [OAKINK2](https://oakink.net/v2/)  `2024`
   - [TACO](https://taco2024.github.io/)  `2024`
   - [DexArt](https://www.chenbao.tech/dexart/)  `2023`
@@ -1530,22 +1553,30 @@ _454 papers · generated 2026-09-11_
   - [The ObjectFolder Benchmark](https://objectfolder.stanford.edu/)  `2023`
   - [ObjectFolder 2.0](https://objectfolder.stanford.edu/)  `2022`
   - [Touch and Go](https://touch-and-go.github.io/)  `2022`
-- Human-robot interaction  (8)
+- Human-robot interaction  (11)
   - [R2HandoverSim](https://arxiv.org/abs/2606.21011)  `2026`
   - [DexH2R](https://arxiv.org/abs/2506.23152)  `2025`
+  - [Kaiwu](https://arxiv.org/abs/2503.05231)  `2025`
   - [THÖR-MAGNI](http://thor.oru.se/)  `2024`
-  - [Toward Human-Like Social Robot Navigation](https://cs.gmu.edu/~xiao/Research/MuSoHu/)  `2023`
+  - [Toward Human-Like Social Robot Navigation](https://arxiv.org/abs/2303.14880)  `2023`
+  - [InteRACT](https://arxiv.org/abs/2311.12943)  `2023`
   - [Socially Compliant Navigation Dataset (SCAND)](https://www.cs.utexas.edu/~xiao/SCAND/SCAND.html)  `2022`
   - [HandoverSim](https://handover-sim.github.io/)  `2022`
-  - [JRDB-Act](https://jrdb.erc.monash.edu/dataset/activity)  `2021`
+  - [JRDB-Act](https://jrdb.erc.monash.edu/)  `2021`
+  - [MoGaze](https://humans-to-robots-motion.github.io/mogaze/)  `2020`
   - [JRDB](https://jrdb.erc.monash.edu/)  `2019`
-- Multi-robot & collaboration  (2)
+- Multi-robot & collaboration  (7)
+  - [GA3T](https://arxiv.org/abs/2605.06478)  `2026`
+  - [HERCULES](https://arxiv.org/abs/2606.22756)  `2026`
   - [HRIBench](https://arxiv.org/abs/2607.13056)  `2026`
+  - [RoCo Challenge at AAAI 2026](https://arxiv.org/abs/2603.15469)  `2026`
+  - [LLM-Based Generalizable Hierarchical Task Planning and Execution for Heterogeneous Robot Teams with Event-Driven Replanning](https://arxiv.org/abs/2511.22354)  `2025`
   - [Demonstrating HumanTHOR](https://sites.google.com/view/humanthor)  `2024`
+  - [RoCo](https://project-roco.github.io/)  `2023`
 - Third-person video  (3)
   - [Assembly101](https://assembly-101.github.io/)  `2022`
   - [HowTo100M](https://www.di.ens.fr/willow/research/howto100m/)  `2019`
-  - [The "something something" video database for learning and evaluating visual common sense](https://www.qualcomm.com/developer/software/something-something-v2-dataset)  `2017`
+  - [The "something something" video database for learning and evaluating visual common sense](https://www.qualcomm.com/developer/software/something-something-v-2-dataset)  `2017`
 - Human motion & humanoid  (3)
   - [Learning from Massive Human Videos for Universal Humanoid Pose Control](https://usc-gvl.github.io/UH-1/)  `2024`
   - [Motion-X](https://motion-x-dataset.github.io/)  `2023`

@@ -492,7 +492,7 @@ P("ai-scientist","The AI Scientist: Towards Fully Automated Open-Ended Scientifi
 P("sunday-gelato","Sunday Robotics: Gelato Foundation Model & Skill Capture",
   a="Sunday Robotics", inst="Sunday Robotics", lab="Sunday Robotics", v="company blog", vt="industry",
   y=2025, d="2025-11-01", br="agentic", top="home robot, skill capture glove, foundation model", par="VLA",
-  site="https://www.sundayrobotics.com/", st=2,
+  site="https://www.humanoidsdaily.com/news/sunday-unveils-memo-a-wheeled-domestic-robot-that-learns-from-200-gloves", st=2,
   note="Came out of stealth late 2025 with 'Memo' and a handheld Skill Capture device — a commercial UMI-glove "
        "lineage, which is directly your world-action-model-from-gloves thesis with a company behind it. "
        "Company blog: unreviewed, no benchmarks. Track it as competitive intelligence, not evidence.",
@@ -692,7 +692,7 @@ P("newton","Newton: An Open-Source GPU-Accelerated Physics Engine for Robot Lear
   a="NVIDIA; Google DeepMind; Disney Research", inst="NVIDIA; Google DeepMind; Disney Research",
   v="open source", vt="industry", y=2025, d="2025-09-01", br="sim-bench",
   top="physics engine, differentiable simulation, rigid and soft bodies", par="simulator",
-  site="https://developer.nvidia.com/newton", code="https://github.com/newton-physics/newton", st=3,
+  site="https://github.com/newton-physics/newton", code="https://github.com/newton-physics/newton", st=3,
   note="The three groups with the most to gain from better contact simulation building one engine together, "
        "with explicit support for rigid and flexible parts in the same scene. If the soft-body claims hold, "
        "this is the most important development for your soft-object sim-to-real idea — benchmark it against "
