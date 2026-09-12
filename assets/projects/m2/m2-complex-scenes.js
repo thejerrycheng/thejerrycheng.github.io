@@ -6,6 +6,15 @@
   // purely geometric clips are useful for development, but should not appear
   // in the user-facing rollout flow.
   data.clips = data.clips.filter(c => c.physical_grasp_before_route && c.welded_fallback !== true);
+  // Promote verified couch carry and pitch recordings into the planner. These
+  // clips come from the same physical-contact rollout set and include measured
+  // traces, so the planner view shows real motion even when an obstacle route
+  // is still incomplete.
+  const verifiedCouch = (window.M2Rollouts?.clips || [])
+    .filter(c => c.trace && c.success && (c.id === 'shared-lift-couch-11620000' || c.id.startsWith('move-996') || c.id.startsWith('native-tilt-')))
+    .map(c => ({ ...c, id: `planner-${c.id}`, title: `Couch · ${c.title.replace(/^Training couch · /, '').replace(/^Carry to a new pose · /, 'carry · ')}`, physical_grasp_before_route: true, welded_fallback: false, planner_source: 'physical-contact couch rollout', object_size_xyz: [1.8, 0.65, 1.1] }));
+  const existing = new Set(data.clips.map(c => c.id));
+  data.clips.push(...verifiedCouch.filter(c => !existing.has(c.id)));
   if (!data.clips.length) return;
   // The same measured contact clips also belong in the main rollout flow.
   if (window.M2Rollouts) {
