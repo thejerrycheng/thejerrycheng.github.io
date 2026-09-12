@@ -626,31 +626,37 @@ html[data-theme="night"] .tl-m{ color:#151820 }
   line-height:1.28; margin:0 0 5px; color:var(--ink) }
 .tl-a{ font-family:var(--font-mono); font-size:11px; color:var(--ash); margin:0 }
 .tl-n{ font-size:13.4px; line-height:1.5; color:var(--ink-soft); margin:8px 0 0 }
-/* two-sided, vertically compact */
-.timeline{ margin-left:0 }
-.timeline::before{ left:50%; transform:translateX(-50%); top:0; bottom:16px }
-.tl-year{ padding:16px 0 8px; text-align:center }
-.tl-year span{ display:inline-block; font-size:21px; border:var(--line-w) solid var(--line);
-  border-radius:980px; background:var(--pop); color:#151820; padding:2px 16px 1px; box-shadow:var(--sh-xs) }
+/* two-sided: an explicit 3-column grid so cards always align to the spine and
+   each row is as tall as its taller card (no zigzag holes) */
+.timeline{ margin-left:0; padding:0 0 40px }
+.timeline::before{ left:50%; transform:translateX(-50%); top:0; bottom:18px }
+.tl-year{ padding:20px 0 12px; text-align:center; position:relative; z-index:2 }
+.tl-year span{ display:inline-block; font-family:var(--font-display); font-size:20px; letter-spacing:.05em;
+  border:var(--line-w) solid var(--line); border-radius:980px; background:var(--pop); color:#151820;
+  padding:3px 18px 2px; box-shadow:var(--sh-xs) }
 .tl-year::before{ display:none }
-.tl-item{ position:relative; width:calc(50% - 30px); padding:0; margin-bottom:9px }
-.tl-item.l{ margin-right:auto }
-.tl-item.r{ margin-left:auto }
-.tl-dot{ top:14px; left:auto; right:auto; width:12px; height:12px }
-.tl-item.l .tl-dot{ right:-36px } .tl-item.r .tl-dot{ left:-36px }
-.tl-item::after{ content:""; position:absolute; top:19px; height:2px; width:26px; background:var(--line-soft) }
-.tl-item.l::after{ right:-28px } .tl-item.r::after{ left:-28px }
-.tl-card{ padding:10px 13px }
+.tl-row{ display:grid; grid-template-columns:1fr 76px 1fr; align-items:start; margin:0 0 12px }
+.tl-item{ position:relative; width:auto; min-width:0; padding:0; margin:0; cursor:pointer }
+.tl-item.l{ grid-column:1 } .tl-item.r{ grid-column:3 }
+.tl-dot{ position:absolute; top:15px; left:auto; right:auto; width:13px; height:13px; z-index:3;
+  background:var(--tc); border:var(--line-w) solid var(--line); border-radius:50% }
+.tl-item.l .tl-dot{ right:-44px } .tl-item.r .tl-dot{ left:-44px }
+.tl-item::after{ content:""; position:absolute; top:20px; height:2px; width:32px; background:var(--line-soft) }
+.tl-item.l::after{ right:-34px } .tl-item.r::after{ left:-34px }
+.tl-card{ padding:11px 14px; height:100% }
 .tl-card h4{ font-size:14.6px; margin:0 0 4px }
-.tl-n{ font-size:12.6px; margin:6px 0 0 }
+.tl-n{ font-size:12.6px; margin:7px 0 0 }
 .tl-item.l .tl-card{ border-left:none; border-right:7px solid var(--tc); text-align:right }
-@media (max-width:820px){
+.tl-item.l .tl-top{ flex-direction:row-reverse }
+@media (max-width:860px){
   .timeline::before{ left:13px; transform:none }
-  .tl-year{ text-align:left; padding-left:44px }
-  .tl-item, .tl-item.l, .tl-item.r{ width:auto; margin:0 0 9px 44px }
+  .tl-year{ text-align:left; padding:16px 0 10px 44px }
+  .tl-row{ display:block; margin:0 }
+  .tl-item, .tl-item.l, .tl-item.r{ grid-column:auto; margin:0 0 9px 44px }
   .tl-item.l .tl-dot, .tl-item.r .tl-dot{ left:-37px; right:auto }
-  .tl-item.l::after, .tl-item.r::after{ left:-29px; right:auto }
+  .tl-item.l::after, .tl-item.r::after{ left:-30px; right:auto; width:28px }
   .tl-item.l .tl-card{ border-right:none; border-left:7px solid var(--tc); text-align:left }
+  .tl-item.l .tl-top{ flex-direction:row }
 }
 
 /* ---------- floating colour key ---------- */
@@ -1082,21 +1088,32 @@ function renderTimeline(){
 
   const list = pool.filter(p=> !tlMethod || methodOf(p)===tlMethod)
                    .sort((a,b)=> (yearOf(b)-yearOf(a)) || (b.date||"").localeCompare(a.date||"") || (b.stars||1)-(a.stars||1));
-  let html="", lastYear=null, side=0;
-  list.forEach(p=>{
-    const y=yearOf(p);
-    if(y!==lastYear){ html += `<div class="tl-year"><span>${y}</span></div>`; lastYear=y; }
-    const m=methodOf(p);
-    const sd = (side++ % 2) ? "r" : "l";
-    html += `<article class="tl-item ${sd} t-${p.tree}" data-id="${esc(p.id)}">
+  let html="";
+  const card = (p, side) => {
+    const m = methodOf(p);
+    return `<article class="tl-item ${side} t-${p.tree}" data-id="${esc(p.id)}">
       <span class="tl-dot"></span>
       <div class="tl-card">
         <div class="tl-top"><span class="tl-m">${esc(m)}</span><span class="tl-v">${esc(p.venue||"")}</span></div>
         <h4>${esc(p.title)}</h4>
-        <p class="tl-a">${esc((p.authors||[]).slice(0,3).join(", "))}${(p.authors||[]).length>3?" et al.":""}${
+        <p class="tl-a">${esc((p.authors||[]).slice(0,2).join(", "))}${(p.authors||[]).length>2?" et al.":""}${
           p.lab?" · "+esc(p.lab):((p.institutions||[]).length?" · "+esc(p.institutions[0]):"")}</p>
         ${p.note?`<p class="tl-n">${esc(p.note.split(". ")[0])}.</p>`:""}
       </div></article>`;
+  };
+  // group by year, then lay each year's papers out two per row so the rows stay tight
+  const byYear = [];
+  list.forEach(p=>{
+    const y = yearOf(p);
+    if(!byYear.length || byYear[byYear.length-1].y !== y) byYear.push({y, items:[]});
+    byYear[byYear.length-1].items.push(p);
+  });
+  byYear.forEach(g=>{
+    html += `<div class="tl-year"><span>${g.y}</span></div>`;
+    for(let i=0;i<g.items.length;i+=2){
+      html += `<div class="tl-row">${card(g.items[i],"l")}${
+        g.items[i+1]? card(g.items[i+1],"r") : ""}</div>`;
+    }
   });
   host.innerHTML = list.length? html : `<p class="empty">No papers for that methodology.</p>`;
   host.onclick = e=>{ const a=e.target.closest("[data-id]"); if(a) openPaper(a.dataset.id); };
