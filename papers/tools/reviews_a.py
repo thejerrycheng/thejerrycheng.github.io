@@ -153,6 +153,26 @@ R["tactile-wm"] = dict(
  grippers and simple end-effectors. On a 20+ DOF hand the contact state is far higher-dimensional and the
  vision occlusion far worse, which is precisely where the argument for touch is strongest and where nobody
  has data.</p>
+ <p><b>The foundational literature has already run your argument, in a different modality.</b>
+ [[diamond]] is the one to read: it moves the world model into pixel space precisely because the latent
+ autoencoder in the [[dreamer-v2]]/[[dreamerv3]] line was discarding small but decision-relevant detail, and
+ it names the Atari failures that detail loss caused. A tactile signal <em>is</em> a small decision-relevant
+ detail — low-dimensional, high-frequency, and invisible in RGB — so DIAMOND is the strongest existing
+ evidence that a reconstruction-trained latent will throw your touch channel away unless you force it not
+ to. Cite it as prior art for the mechanism, not as a competitor.</p>
+ <p><b>But do not follow DIAMOND into pixel space.</b> [[lawam]] makes the opposing case for robotics and
+ makes it well: decoding future frames you immediately discard is the largest waste in the WAM stack, so
+ expose dynamics to the policy as compact latent subgoals instead. [[vla-jepa]] and [[flare]] reach the same
+ conclusion independently in 2026, which makes "predict in latent space, never decode" close to settled
+ practice. For a model that has to run at contact rates on a 20-DOF hand, this is not a stylistic choice.
+ The synthesis is to keep DIAMOND's <em>diagnosis</em> (detail is being lost) and LaWAM's <em>remedy</em>
+ (do not reconstruct — supervise the latent directly), which is exactly what "predict the tactile latent one
+ step ahead" does.</p>
+ <p><b>The data problem has just been addressed.</b> [[deform360]] is a large multi-view <em>visuotactile</em>
+ dataset built for deformable world models — until it appeared, visual world models of soft objects had data
+ and visuotactile ones did not. Check its coverage before you build a capture rig. [[ev-wm]] is the other
+ useful 2026 idea: verify rollouts against discrete <em>events</em> rather than pixel error, which pairs
+ naturally with tactile sensing because contact onset is the one event you can measure without ambiguity.</p>
  <p>The formulation worth trying: a [[vjepa2]]-style joint-embedding predictive model over a <em>fused</em>
  vision-plus-tactile stream, where the training objective includes predicting the tactile latent one step
  ahead. Then evaluate it on the only thing that matters — <b>does it predict slip before it happens?</b></p>
@@ -185,6 +205,11 @@ R["tactile-wm"] = dict(
   dict(id="dexskin", why="High-coverage conformable skin — fingertip-only sensing is not enough for a world model."),
   dict(id="vjepa2", why="The architecture to extend. Latent prediction, not pixel generation."),
   dict(id="flare", why="The cheap version: world modelling as an auxiliary loss. This is what to build first."),
+  dict(id="diamond", why="Why a reconstruction-trained latent discards exactly the detail you care about. The mechanism behind your whole argument."),
+  dict(id="lawam", why="The counter-move: latent subgoals instead of decoded frames. Read beside DIAMOND — the synthesis is your architecture."),
+  dict(id="deform360", why="Multi-view visuotactile data for deformable world models. Check its coverage before building a rig."),
+  dict(id="ev-wm", why="Verify rollouts against contact events, not pixels — the evaluation that suits touch."),
+  dict(id="dreamdojo", why="The pretrained backbone you would fine-tune. 44k hours of human video, distilled to real time."),
   dict(id="robotacdex", why="Paired visual-tactile data for pretraining — check whether it covers your task regime."),
   dict(id="gelsight", why="Origin of vision-based tactile sensing; read for what the signal physically is."),
   dict(id="doglove", why="If you need human demonstrations with recorded contact, this is the $600 way."),

@@ -3,7 +3,7 @@
 import json, os, re, sys, unicodedata, datetime
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import schema, curated_rl, curated_il, curated_sys, curated_recent, curated_ego, curated_multi, curated_mabel, curated_ideas, curated_r2s2r
+import schema, curated_rl, curated_il, curated_sys, curated_recent, curated_ego, curated_multi, curated_mabel, curated_ideas, curated_r2s2r, curated_wm
 
 HARVEST = "/private/tmp/claude-501/-Users-jerrycheng-Desktop/bfd64d9a-4eab-4216-ade8-f0b0cd1137d7/scratchpad/harvest"
 OUT = os.path.join(os.path.dirname(HERE), "papers_data.json")
@@ -20,7 +20,7 @@ def splitlist(s):
 
 # ------------------------------------------------------------------ curated
 CUR = {}
-for mod in (curated_rl, curated_il, curated_sys, curated_recent, curated_ego, curated_multi, curated_mabel, curated_ideas, curated_r2s2r):
+for mod in (curated_rl, curated_il, curated_sys, curated_recent, curated_ego, curated_multi, curated_mabel, curated_ideas, curated_r2s2r, curated_wm):
     for r in mod.ROWS:
         rec = dict(
             id=r["id"], title=r["title"], tree=r["tree"], branch=r.get("br",""),
@@ -31,7 +31,7 @@ for mod in (curated_rl, curated_il, curated_sys, curated_recent, curated_ego, cu
             paradigm=splitlist(r.get("par","")), method=splitlist(r.get("meth","")),
             projects=splitlist(r.get("pr","")), ideas=splitlist(r.get("id_","")),
             related=splitlist(r.get("rel","")), arxiv=r.get("arx",""), doi=r.get("doi",""),
-            code=r.get("code",""), site=r.get("site",""), note=r.get("note",""),
+            code=r.get("code",""), site=r.get("site",""), note=r.get("note",""), aka=r.get("aka",""),
             
             stars=r.get("st",1), curated=True, local="", abstract=r.get("abstract",""), source="curated",
         )

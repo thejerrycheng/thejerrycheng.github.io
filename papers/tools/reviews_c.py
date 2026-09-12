@@ -408,6 +408,15 @@ R["wm-residual"] = dict(
  domain-agnostic by design; [[tdmpc2]] is decoder-free and cheap; [[vjepa2]] predicts in latent space;
  [[pwm]] uses first-order gradients through a learned smooth model, which is the closest to a differentiable
  hybrid. None of them are given a simulator to start from.</p>
+ <p><b>The camp you were missing entirely is the structured-dynamics one.</b> Where Dreamer learns physics
+ from scratch and residual-physics corrects a simulator for a policy, [[robocraft]], [[robocook]],
+ [[adaptigraph]], [[particle-grid-dynamics]] and [[gs-dynamics]] choose a representation with physics baked
+ into its shape — particles, graphs, springs — and learn only the parameters. The payoff they report is
+ the one you are predicting: orders of magnitude less data, and extrapolation rather than interpolation.
+ [[physworld]] closes the loop by turning the reconstructed model back into synthesized demonstrations, and
+ [[egophys]] now does it from egocentric video. [[causal-wm]] is the cautionary note for the
+ learn-from-scratch side: a model fit to passively collected data learns correlations and will happily plan
+ against one.</p>
  <p><b>And a better prior may be arriving.</b> [[newton]] is NVIDIA, Google DeepMind and Disney Research
  building one GPU physics engine together, with rigid and flexible bodies in the same scene. If its contact
  model is materially better than MuJoCo's, the residual you need to learn gets smaller — which is the whole
@@ -422,14 +431,25 @@ R["wm-residual"] = dict(
   """<b>Differentiable physics.</b> [[genesis]], [[diff-contact-design]], [[pwm]].""",
   """<b>Auxiliary-loss world modelling.</b> [[flare]] — the cheap way to test whether the prior helps.""",
  ],
- gap="""<p>Nobody has built a world model whose <b>backbone is a simulator</b>. The residual-physics literature
- corrects a simulator to help a policy; the world-model literature learns dynamics from scratch. The hybrid —
- roll out MuJoCo, predict the residual with a learned model, and train the agent inside the sum — is an
- obvious construction that has not been done for robot manipulation.</p>
+ gap="""<p><b>Correction to the original framing:</b> "nobody has built a world model whose backbone is physics"
+ is no longer true, and the counter-example is a whole research programme. Yunzhu Li's group has been doing
+ exactly this for deformables for four years — [[robocraft]] puts a graph network over particles,
+ [[adaptigraph]] adds an explicit <em>material latent</em> inferred online from a short interaction, and
+ [[phystwin]] goes furthest: a spring-mass physics backbone whose dense physical parameters are recovered
+ from video by inverse optimization, rendered with Gaussian splats, running in real time. That is a
+ physics-backed world model with a learned residual, built and validated. Read them before claiming novelty,
+ and cite them as proof that the construction works rather than pretending it is untried.</p>
+ <p><b>What genuinely remains is the rigid, contact-rich case with a full simulator backbone.</b> The
+ RoboPIL line models one deformable object with a hand-chosen structure (particles, springs); it does not
+ roll out MuJoCo with the robot, the scene and frictional contact and learn the residual on top. That gap is
+ real, and it is where your [[asap]] delta-action model already gives you a head start — ASAP is a residual
+ dynamics correction you have and that nobody has repurposed as the learned half of a world model.</p>
  <p>The claim to test is sharp and falsifiable: <b>sample complexity versus a pure learned world model, at
  matched final performance.</b> And a second one that matters more for safety — rollouts from a
  physics-backed model should stay plausible for far longer horizons, which you can measure directly as
- divergence from ground truth over time.</p>""",
+ divergence from ground truth over time. [[bab-nd]] is the warning attached to that second claim: planning
+ inside a learned dynamics model is non-convex and sampling-based planners quietly settle for local optima,
+ so a rollout that looks stable may just be a planner that stopped exploring.</p>""",
  plan=[
   """Pick a task where the analytic model is good but not perfect: contact-rich insertion, or in-hand
   rotation. Free-space reaching will not show anything.""",
@@ -453,6 +473,12 @@ R["wm-residual"] = dict(
   dict(id="anymal-hwangbo", why="The original residual-physics argument, and still the clearest."),
   dict(id="dexndm", why="The dexterous-hand version: joint-wise learned dynamics closing the reality gap."),
   dict(id="tdmpc2", why="The cheapest pure world-model baseline to beat."),
+  dict(id="phystwin", why="A spring-mass backbone with parameters recovered from video, in real time. The closest existing thing to your idea — read before claiming novelty."),
+  dict(id="adaptigraph", why="A material latent inferred online from a short poke. This is what 'closing the loop' actually means."),
+  dict(id="td-mpc", why="The original decoder-free argument: model only what reward and value depend on."),
+  dict(id="planet", why="The RSSM ablation — the cleanest evidence for why the two-path latent is not arbitrary."),
+  dict(id="bab-nd", why="Planning in a learned model is non-convex. Read if your MPC fails for reasons the model cannot explain."),
+  dict(id="causal-wm", why="Correlational data teaches a world model the wrong causes. The failure nobody measures."),
   dict(id="vjepa2", why="Latent prediction, for the architecture of the learned half."),
   dict(id="flare", why="The cheap first experiment before building anything."),
   dict(id="pwm", why="First-order gradients through a learned smooth model, if you want it differentiable end to end."),
@@ -486,13 +512,27 @@ R["auto-research-wm"] = dict(
   """<b>Model fidelity as the gating variable.</b> [[asap]], [[dexndm]] — how wrong the model is determines
   whether any of this is sound.""",
  ],
- gap="""<p>The join is the contribution, and it has a sharp, testable form: <b>does hypothesis triage inside a
- learned world model actually save real-robot time?</b> Run the agent loop twice — once with every hypothesis
- tested on hardware, once with the world model filtering first — and report robot-hours to reach the same
+ gap="""<p><b>The evaluator half of this loop stopped being speculative in 2026, and the numbers are good.</b>
+ [[roboworld]] trains a video world model on DROID and replicates the RoboArena benchmark inside it for
+ <b>100 H100 hours</b> instead of months of real evaluation. [[worldeval]] ranks real-world policies through
+ a world model rather than on hardware. [[interactive-world-sim]] is the one to actually build on — it uses
+ consistency models for both decoding and latent dynamics, needs only a moderate-sized interaction dataset,
+ and holds a stable interactive rollout for <b>over 10 minutes at 15 FPS on a single RTX 4090</b>. Modest
+ data, one consumer GPU, long stable rollouts: that is a lab-scale system, not a frontier-lab one.</p>
+ <p>So the join is still the contribution, but it is now a narrower and more defensible one. All three of
+ those papers evaluate <b>policies</b> — given a trained policy, how good is it? Your loop needs something
+ different: triage of <b>hypotheses</b> — given a proposed reward, morphology or curriculum, is it worth a
+ robot-hour? Nobody has run that, and the testable form is unchanged: <b>does hypothesis triage inside a
+ learned world model actually save real-robot time?</b> Run the agent loop twice, once with every hypothesis
+ tested on hardware and once with the world model filtering first, and report robot-hours to the same
  conclusion.</p>
- <p>The failure mode is well defined too, and worth measuring: the model's false-negative rate. A world model
- that confidently rejects a hypothesis that would have worked is worse than no filter at all, and nobody has
- quantified that for robot dynamics.</p>""",
+ <p>The failure mode is well defined and still unmeasured, and it is the number that would make the paper:
+ the model's <b>false-negative rate</b>. A world model that confidently rejects a hypothesis that would have
+ worked is worse than no filter at all, and none of the evaluator papers above reports it — they report
+ correlation with real performance, which hides exactly this asymmetry. [[robogaze]] is the closest anyone
+ comes to the right instinct, judging rollouts by structured vision-language analysis of what happened
+ rather than by pixel error, and [[worldarena2]] gives you evaluation axes so you do not have to invent
+ them.</p>""",
  plan=[
   """Start narrow. One task family, one world model ([[tdmpc2]] or [[flare]]-style), a hypothesis space of
   reward and controller variants rather than open-ended ideas.""",
@@ -514,6 +554,12 @@ R["auto-research-wm"] = dict(
   dict(id="harbor", why="The orchestration layer, already built for robot RL."),
   dict(id="eureka", why="The narrow version of the loop that demonstrably works."),
   dict(id="genie3", why="What interactive world generation now looks like."),
+  dict(id="interactive-world-sim", why="Build on this one: 15 FPS, 10-minute stable rollouts, a single 4090, moderate data."),
+  dict(id="roboworld", why="RoboArena replicated in a neural simulator for 100 H100-hours. The cost argument, made concrete."),
+  dict(id="worldeval", why="Policy ranking through a world model instead of hardware — the evaluator half of your loop."),
+  dict(id="robogaze", why="Judge rollouts by what happened, not by pixel error. The right evaluation instinct."),
+  dict(id="worldarena2", why="Evaluation axes for embodied world models — take them rather than inventing your own."),
+  dict(id="robodream", why="Compositional world models as a data engine: the generator side of the loop."),
   dict(id="ai-scientist", why="The honest limits of agent-run research — read the criticism too."),
   dict(id="asap", why="How wrong your model is, and how to make it less wrong."),
   dict(id="dreamgen", why="The world model already used as a generator of things that never happened — one step from hypothesis testing."),

@@ -135,6 +135,19 @@ html[data-theme="night"] .pcard .pven{ color:#151820; }
 .starred{ display:inline-flex; gap:2px; margin-left:5px; vertical-align:2px }
 .starred i{ width:5px; height:5px; background:var(--tc); display:inline-block; transform:rotate(45deg) }
 
+/* ---------- "known as" badge ----------
+   Some landmark papers are never called by their titles — Dreamer V3 is
+   published as "Mastering Diverse Domains through World Models". The badge puts
+   the name people actually search for in front of the title. */
+.aka{ display:inline-block; margin-right:6px; padding:1px 6px 2px; vertical-align:1px;
+  font-family:var(--font-mono); font-size:10.5px; font-weight:600; letter-spacing:.04em;
+  text-transform:uppercase; white-space:nowrap;
+  color:var(--paper); background:var(--tc); border:1.5px solid var(--line);
+  box-shadow:1.5px 1.5px 0 var(--line); }
+.dpad.t-rl{ --tc:var(--rl) } .dpad.t-il{ --tc:var(--il) } .dpad.t-systems{ --tc:var(--sys) }
+.aka{ background:var(--tc, var(--ink)) }
+.drawer h2 .aka{ font-size:12px; padding:2px 7px 3px; vertical-align:3px; margin-right:8px }
+
 /* ---------- section heads ---------- */
 .sechead{ margin:6px 0 18px }
 .sechead p{ color:var(--ink-soft); margin:-14px 0 0; max-width:760px; font-size:15.5px; }
@@ -733,6 +746,8 @@ const $  = (s,r=document)=>r.querySelector(s);
 const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
 const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const norm = s => String(s??"").toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g,"");
+const rich = s => esc(s).replace(/&lt;(\/?)(b|em)&gt;/g,"<$1$2>");   /* curated notes use only <b>/<em> */
+const plain = s => String(s??"").replace(/<\/?[a-z][^>]*>/gi,"");     /* strip tags for search/snippets */
 
 /* ---------------- theme (shares the site-wide `theme` key) ---------------- */
 function setTheme(t){
@@ -765,7 +780,7 @@ Promise.all([
 ]).then(([d,rv,ds])=>{
   DATA=d; REVIEWS=rv||{}; DSETS=ds;
   PAPERS=d.papers.map(p=>{
-    p.hay = norm([p.title,(p.authors||[]).join(" "),(p.institutions||[]).join(" "),p.lab,p.venue,
+    p.hay = norm([p.title,p.aka,(p.authors||[]).join(" "),(p.institutions||[]).join(" "),p.lab,p.venue,
                   (p.topics||[]).join(" "),(p.paradigm||[]).join(" "),(p.method||[]).join(" "),
                   p.note,p.abstract,p.branch,p.id].join(" "));
     p.bucket = bucketOf(p);
@@ -906,12 +921,13 @@ function cardHTML(p){
   (p.projects||[]).forEach(x=> tags.push(`<span class="pj">${esc(DATA.meta.projects[x]?.name||x)}</span>`));
   (p.topics||[]).slice(0,3).forEach(t=> tags.push(`<span>${esc(t)}</span>`));
   const stars = (p.stars||1)>1? `<span class="starred">${"<i></i>".repeat(p.stars-1)}</span>`:"";
+  const aka = p.aka? `<span class="aka">${esc(p.aka)}</span>`:"";
   return `<article class="pcard t-${p.tree}${p.local?" has":""}" data-id="${esc(p.id)}">
     <span class="haspdf" title="PDF on disk"></span>
     ${p.fig?`<img class="pfig" src="${esc(p.fig)}" alt="" loading="lazy" decoding="async">`:""}
     <div class="pbody">
       <div class="ptop"><span class="pven">${esc(p.venue||"—")}</span><span class="pyear">${yearOf(p)||""}</span></div>
-      <h3>${esc(p.title)}${stars}</h3>
+      <h3>${aka}${esc(p.title)}${stars}</h3>
       <p class="pauth">${esc((p.authors||[]).slice(0,3).join(", ") || "—")}${(p.authors||[]).length>3?" et al.":""}</p>
       <p class="pinst">${esc((p.institutions||[]).slice(0,2).join(" · ") || p.lab || "")}</p>
       ${tags.length?`<div class="ptags">${tags.slice(0,5).join("")}</div>`:""}
@@ -1131,10 +1147,10 @@ function renderTimeline(){
       <span class="tl-dot"></span>
       <div class="tl-card">
         <div class="tl-top"><span class="tl-m">${esc(m)}</span><span class="tl-v">${esc(p.venue||"")}</span></div>
-        <h4>${esc(p.title)}</h4>
+        <h4>${p.aka?`<span class="aka">${esc(p.aka)}</span>`:""}${esc(p.title)}</h4>
         <p class="tl-a">${esc((p.authors||[]).slice(0,2).join(", "))}${(p.authors||[]).length>2?" et al.":""}${
           p.lab?" · "+esc(p.lab):((p.institutions||[]).length?" · "+esc(p.institutions[0]):"")}</p>
-        ${p.note?`<p class="tl-n">${esc(p.note.split(". ")[0])}.</p>`:""}
+        ${p.note?`<p class="tl-n">${esc(plain(p.note).split(". ")[0])}.</p>`:""}
       </div></article>`;
   };
   // group by year, then lay each year's papers out two per row so the rows stay tight
@@ -1344,9 +1360,9 @@ function openPaper(id, push=true){
 
   $("#dBody").innerHTML = `
     ${p.fig?`<img class="dhero" src="${esc(p.fig)}" alt="Teaser figure from ${esc(p.title)}">`:""}
-    <div class="dpad">
-    <h2>${esc(p.title)}</h2>
-    ${p.note?`<div class="dnote">${esc(p.note)}</div>`:""}
+    <div class="dpad t-${p.tree}">
+    <h2>${p.aka?`<span class="aka">${esc(p.aka)}</span>`:""}${esc(p.title)}</h2>
+    ${p.note?`<div class="dnote">${rich(p.note)}</div>`:""}
     <div class="dlinks">${links.join("")}</div>
     <dl class="dmetagrid">${meta.join("")}</dl>
     ${p.abstract?`<p class="dsec">Abstract</p><p class="dabs">${esc(p.abstract)}</p>`:""}

@@ -343,6 +343,24 @@ R["wam-umi-gloves"] = dict(
  still has that none of those have is <b>a clean, physically-grounded action track</b> — gripper pose and
  width recorded at capture time rather than inferred after the fact by [[ego2robot]]-style retargeting.
  That, not volume, is now the argument.</p>
+ <p><b>Read [[dreamdojo]] before you write a word of this.</b> NVIDIA pretrained a generalist robot world
+ model on <b>44,000 hours of egocentric human video</b> — the largest video corpus used for world-model
+ pretraining to date — and solved the missing-action-label problem with <b>continuous latent actions</b> as
+ a unified proxy, post-training on a small amount of target-robot data to make it controllable. Then they
+ distilled it to <b>10.81 FPS</b>, which is what turns a world model into something you can teleoperate
+ through, evaluate policies in, and plan with. That is a large fraction of this idea, already executed at a
+ scale you cannot match.</p>
+ <p><b>What survives is the thing DreamDojo had to work around.</b> Its actions are <em>inferred</em> —
+ latent proxies recovered from frame transitions, in the [[lapa]] / [[lawm]] tradition, with [[lawm-3d]]
+ addressing the obvious failure that such latents drift toward 2D optical flow. UMI capture does not need
+ to infer anything: gripper pose and width are <b>measured at capture time</b>. So the sharp question is no
+ longer "can unlabelled human video train a WAM" — DreamDojo answered yes — but <b>how much does a measured
+ action track buy you over an inferred one, at equal hours?</b> That is a clean ablation, it is one nobody
+ with only video can run, and it is a better paper than the one this idea originally described.</p>
+ <p>[[dreamzero]] sets the bar on the policy side and you should quote its numbers rather than guess at
+ them: a 14B world-action model reporting <b>over 2× the generalization of GR00T N1.6 and π0.5</b> to unseen
+ tasks and environments, few-shot embodiment transfer from 30 minutes of play data, and latency cut
+ <b>5.7 s → 150 ms</b>. Any claim you make about a UMI-trained WAM has to be made against that.</p>
  <p>The opening is the property UMI data has that robot-teleop data does not: <b>it is collected in
  hundreds of different real scenes, cheaply</b>. Every world-action model published so far is trained on
  data from a handful of lab environments, which is exactly the regime where a world model's main selling
@@ -376,6 +394,11 @@ R["wam-umi-gloves"] = dict(
   dict(id="umi", why="The interface, and the hardware section is the part people skip and should not."),
   dict(id="vjepa2", why="The architecture to build on. Latent prediction, zero-shot transfer, and an honest ablation section."),
   dict(id="genie", why="Latent actions from unlabelled video — your fallback when the action track is bad."),
+  dict(id="dreamdojo", why="Read first. 44k hours of egocentric video, latent actions, real-time distillation — most of this idea, already done."),
+  dict(id="dreamzero", why="The numbers your result is measured against: 2x generalization over GR00T N1.6 and pi-0.5, 150 ms latency."),
+  dict(id="lapa", why="The canonical latent-action mechanism — what you are arguing a measured action track improves on."),
+  dict(id="lawm-3d", why="3D-aware latent actions. The fix for latents that secretly encode 2D optical flow."),
+  dict(id="wam-tutorial", why="Short and definitional: what the *action* in world-action model actually buys. Read before writing your intro."),
   dict(id="flare", why="The two-week version of this project. Do it first."),
   dict(id="realdexumi", why="2026 wearable UMI for dexterous hands — the capture rig if you want fingers."),
   dict(id="mobilewam", why="WAM on a mobile manipulator; in your own M2 library. Read for what breaks in practice."),
