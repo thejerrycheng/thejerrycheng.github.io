@@ -75,7 +75,16 @@
   if(selected)select(selected);else $('rollout-feature').hidden=true;
   const scores=d.evaluations;
   const translation=scores.find(s=>s.label==='Translate');
-  if(translation&&$('rollout-progress-note'))$('rollout-progress-note').textContent=`Established couch benchmarks: lift completes 198/200 trials; corrected final-target translation completes ${translation.passed}/${translation.total} with a 30-second allowance. Full six-axis tracking is still in development.`;
+  // Generated from the evaluation table, never typed: every rate on this page
+  // is its artifact's own. The gate is 90 per cent, so a rung below it is
+  // named as below it rather than listed beside the ones that pass.
+  if(scores.length&&$('rollout-progress-note')){
+    const pct=s=>100*s.passed/s.total, pass=scores.filter(s=>pct(s)>=90), under=scores.filter(s=>pct(s)<90);
+    const list=a=>a.map(s=>`${s.label.toLowerCase()} ${s.passed}/${s.total}`).join(', ');
+    $('rollout-progress-note').textContent=`Established couch benchmarks, each on a fresh 200-trial block: ${list(pass)}.`+
+      (under.length?` Below the 90 per cent gate: ${list(under)}.`:'')+
+      ' Full six-axis tracking at the specified tolerance is still in development.';
+  }
   if(scores.length&&window.Plotly){
     const l=common();l.margin={l:75,r:28,t:12,b:38};l.xaxis={title:'Successful trials · %',range:[0,110],ticksuffix:'%'};l.yaxis={autorange:'reversed'};l.showlegend=false;
     Plotly.newPlot($('rollout-success-plot'),[{type:'bar',orientation:'h',y:scores.map(s=>s.label),x:scores.map(s=>100*s.passed/s.total),
