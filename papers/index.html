@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/gotham.css">
+<script src="../assets/js/private.js"></script>
 <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 <style>
 /* =============================================================================
@@ -19,6 +20,14 @@
    The three trees get the three printed voices: red, blue, green.
    ============================================================================= */
 :root{ --rl:#C6301A; --il:#23577E; --sys:#2E7D4F; --atlas-max:1240px; }
+/* the ideas view while it is gated */
+.idea-lock{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:6px}
+.idea-lock input{font:400 14px/1 var(--font-mono);padding:9px 11px;border:2px solid var(--line);
+  border-radius:6px;background:var(--panel);color:var(--ink);min-width:210px}
+.idea-lock button{font:700 13px/1 var(--font-sans);letter-spacing:.03em;padding:10px 16px;cursor:pointer;
+  border:2px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
+.idea-lock button:hover{background:var(--panel-2)}
+.idea-lock .err{font:700 12px/1 var(--font-mono);color:var(--rl)}
 html[data-theme="night"]{ --rl:#F07A5A; --il:#79AEDA; --sys:#63BE8B; }
 
 body{ font-family:var(--font-sans); background:var(--bone); color:var(--ink);
@@ -742,6 +751,15 @@ html[data-theme="night"] .tl-m{ color:#151820 }
 <script>
 (() => {
 "use strict";
+/* The research ideas are not public yet. LOCKED strips the view, its tab, the
+   facet, the paper-detail chips and the downloads that carry the idea text.
+   See assets/js/private.js for how to get in. */
+const LOCKED = !window.JCPrivate.unlocked();
+if(LOCKED){
+  document.querySelectorAll('[data-view="ideas"],[data-mview="ideas"]').forEach(el=>el.remove());
+  ["papers_by_project.xmind","papers_by_project.md","papers_data.json","reviews.json"]
+    .forEach(f=>document.querySelectorAll(`a[href="${f}"]`).forEach(el=>el.remove()));
+}
 const $  = (s,r=document)=>r.querySelector(s);
 const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
 const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -796,7 +814,7 @@ function boot(){
     [c.total,"papers"],[Object.keys(DATA.meta.trees).length,"trees"],
     [PAPERS.filter(p=>p.local).length,"PDFs on disk"],
     [Object.values(DATA.meta.projects).filter(p=>p.kind==="current").length,"live projects"],
-    [DATA.meta.ideas.length,"research ideas"],
+    ...(LOCKED? [] : [[DATA.meta.ideas.length,"research ideas"]]),
     [DSETS? DSETS.datasets.length : 0,"open datasets"],
   ].map(([n,l])=>`<div><b>${n}</b><span>${l}</span></div>`).join("");
   $("#footMeta").textContent = `${c.total} papers · ${c.curated} hand-annotated · ${c.library} harvested from your disk · generated ${DATA.meta.generated}`;
@@ -809,7 +827,7 @@ function boot(){
     + `${ndoi} records link to a published DOI rather than the preprint. `
     + `${nfig} teaser figures were extracted from the PDFs themselves. `
     + `Records marked as harvested have inferred tags — check them before citing.`;
-  $("#ideaLede").textContent = `Your ${DATA.meta.ideas.length} ideas — deduplicated from the original ${
+  if(!LOCKED) $("#ideaLede").textContent = `Your ${DATA.meta.ideas.length} ideas — deduplicated from the original ${
     DATA.meta.ideas.reduce((a,i)=>a+(i.merged?i.merged.length:1),0)} bullets — each with a literature review: where the field actually is, what is already taken, and where the opening is.`;
   buildFacets(); renderTrees(); renderProjects(); renderIdeas(); buildLegend(); buildDatasets(); render();
   window.addEventListener("hashchange", fromHash); fromHash(true);
@@ -836,7 +854,7 @@ function buildLegend(){
 }
 
 /* ---------------- facets ---------------- */
-const FACET_DEFS = [
+let FACET_DEFS = [
   ["tree","Tree", p=>[p.tree], k=>DATA.meta.trees[k]?.name||k],
   ["branch","Branch", p=>[p.tree+"/"+p.branch], k=>{const[t,b]=k.split("/");return (DATA.meta.trees[t]?.branches[b]?.[0])||b;}],
   ["project","Project", p=>p.projects||[], k=> DATA.meta.projects[k]?.name||k],
@@ -847,6 +865,7 @@ const FACET_DEFS = [
   ["inst","Institution", p=>p.institutions||[], k=>k],
   ["topic","Topic", p=>p.topics||[], k=>k],
 ];
+if(LOCKED) FACET_DEFS = FACET_DEFS.filter(d=>d[0]!=="idea");
 function buildFacets(){
   const host=$("#facets"); host.innerHTML="";
   FACET_DEFS.forEach(([key,label,get,lab])=>{
@@ -1062,6 +1081,7 @@ function renderProjects(){
 
 /* ---------------- ideas view ---------------- */
 function renderIdeas(){
+  if(LOCKED) return renderIdeaLock();
   const host=$("#ideaGrid");
   host.innerHTML = DATA.meta.ideas.map(i=>{
     const ps = PAPERS.filter(p=>(p.ideas||[]).includes(i.id));
@@ -1084,6 +1104,23 @@ function renderIdeas(){
   host.onclick = e=>{ const c=e.target.closest("[data-idea]"); if(c) openIdea(c.dataset.idea); };
 }
 
+
+/* The public face of the ideas view: no ideas, and a way in for me. */
+function renderIdeaLock(){
+  $("#view-ideas").innerHTML =
+    `<div class="sechead"><h2 class="section-title">Coming soon</h2>
+      <p>The research ideas — and the literature review behind each one — are not public yet.</p>
+      <form class="idea-lock" autocomplete="off">
+        <input type="password" placeholder="passphrase" aria-label="Passphrase" autocomplete="off">
+        <button type="submit">Unlock</button><span class="err" role="status"></span>
+      </form></div>`;
+  const form=$("#view-ideas form"), inp=$("#view-ideas input"), err=$("#view-ideas .err");
+  form.onsubmit = e => {
+    e.preventDefault();
+    if(window.JCPrivate.unlock(inp.value)){ location.hash="#ideas"; location.reload(); return; }
+    err.textContent="Not that one."; inp.select();
+  };
+}
 
 /* ---------------- timeline (vertical, by methodology) ---------------- */
 // A methodology axis that is actually informative: a specific paradigm wins;
@@ -1350,7 +1387,7 @@ function openPaper(id, push=true){
   const tagBlocks=[];
   if((p.projects||[]).length) tagBlocks.push(`<p class="dsec">Projects</p><div class="dchips">${
     p.projects.map(v=>chip("project",v, DATA.meta.projects[v]?.name||v)).join("")}</div>`);
-  if((p.ideas||[]).length) tagBlocks.push(`<p class="dsec">Feeds these research ideas</p><div class="dchips">${
+  if(!LOCKED && (p.ideas||[]).length) tagBlocks.push(`<p class="dsec">Feeds these research ideas</p><div class="dchips">${
     p.ideas.map(v=>`<button data-openidea="${esc(v)}">${esc((DATA.meta.ideas.find(i=>i.id===v)?.title)||v)}</button>`).join("")}</div>`);
   if((p.topics||[]).length||(p.paradigm||[]).length) tagBlocks.push(`<p class="dsec">Topics &amp; paradigm</p><div class="dchips">${
     (p.paradigm||[]).map(v=>chip("paradigm",v,v)).join("")+(p.topics||[]).map(v=>chip("topic",v,v)).join("")}</div>`);
@@ -1388,6 +1425,7 @@ function openPaper(id, push=true){
 }
 
 function openIdea(id, push=true){
+  if(LOCKED) return;
   const idea=DATA.meta.ideas.find(i=>i.id===id); if(!idea) return;
   if(push) history.replaceState(null,"","#i/"+encodeURIComponent(id));
   const rv=REVIEWS[id];

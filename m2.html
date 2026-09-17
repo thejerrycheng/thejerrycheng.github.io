@@ -1,47 +1,131 @@
 <!DOCTYPE html>
-<html data-theme="day" lang="en"><head>
-<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Read the Room | Grasp-Aware Multi-Robot Transport</title>
-<meta content="Read the Room: grasp-aware planning and learned local control for cooperative robot transport. Paper, demonstrations, interactive results and communication research questions." name="description"/>
-<meta content="Jerry (Qilong) Cheng" name="author"/><meta content="#F4EAD2" name="theme-color"/>
-<link href="https://thejerrycheng.github.io/m2.html" rel="canonical"/>
-<link href="assets/projects/m2/m2-mark.svg" rel="icon" type="image/svg+xml"/>
-<link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
-<script>try{if(localStorage.getItem('m2-theme')==='night')document.documentElement.dataset.theme='night';}catch(e){}</script>
-<link href="assets/projects/m2/m2-project.css?v=b710bde805" rel="stylesheet"/>
-<script defer="" src="assets/projects/m2/plotly.min.js?v=10ebc4d3cd91"></script>
-<link href="assets/projects/m2/m2-live-demo.css?v=2895eade1e" rel="stylesheet"/>
-<script defer="" src="assets/projects/m2/m2-live-demo.js?v=restored-se3-tracking"></script>
-<script defer="" src="assets/projects/m2/contact-rollouts-data.js?v=2430ca23d914"></script><script defer="" src="assets/projects/m2/contact-complex-scenes-data.js?v=9028627e2ede"></script><script defer="" src="assets/projects/m2/m2-complex-scenes.js?v=20260912-academic-v2"></script><script defer="" src="assets/projects/m2/m2-rollouts.js?v=694ff7dc70b3"></script><link href="assets/projects/m2/m2-rollouts.css?v=20260912-rollouts" rel="stylesheet"/><link href="assets/projects/m2/m2-complex-scenes.css?v=20260912-academic-v2" rel="stylesheet"/><script defer src="assets/projects/m2/pose-navigation-data.js?v=20260912-academic-v2"></script><script defer src="assets/projects/m2/m2-academic-navigation.js?v=20260912-academic-v2"></script></head><body class="research-page narrative-page"><div class="project-masthead"><a aria-label="M2 project overview" class="project-wordmark" href="#paper-figures"><img alt="" height="32" src="assets/projects/m2/m2-mark.svg" width="32"/>M₂ <span>Cooperative robot transport</span></a><button aria-label="Switch to dark appearance" aria-pressed="false" id="project-theme" type="button">Dark appearance</button></div><main class="m2-wrap"><header class="research-header"><p class="eyebrow">M₂ / Cooperative robot transport</p><h1>Read the Room</h1><p class="paper-subtitle">Grasp-aware planning and local control for cooperative robot transport.</p><div class="resource-links"><a class="primary" href="assets/projects/m2/read-the-room.pdf">Paper · PDF</a><a href="assets/projects/m2/supplement.pdf">Supplement</a><a href="https://github.com/thejerrycheng/M2">Code</a><a href="#paper-figures">Task &amp; method</a></div></header><nav aria-label="On this page" class="section-links"><a href="#paper-figures">Overview</a><a href="#live-demo">Live demo</a><a href="#rollouts">Grasp &amp; motion</a><a href="#complex-planner">Recorded routes</a><a href="#pose-navigation">3D missions</a><a href="#paper-results">Results</a></nav><section class="research-section" id="paper-figures"><p class="eyebrow">01 / The task and the method</p><h2>Two robots. One shared load.</h2><p class="section-intro">Carrying a large object through a room requires the robots to coordinate their grasps, motion and clearance. The object’s orientation changes where the pair can travel: a turn or tilt can make a tight passage accessible.</p><figure class="paper-figure"><a class="figure-open" href="assets/projects/m2/figures/iros_01_task.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/projects/m2/figures/iros_01_task.png" alt="Figure 1 · Cooperative transport" style="width:100%;display:block"/></a><figcaption><strong>Figure 1 · Cooperative transport.</strong> Task overview from the paper: two mobile manipulators coordinate to carry a shared object through an environment.</figcaption></figure><h3>From an object route to coordinated robot motion.</h3><p class="section-intro">The planner selects a route for the shared object. Local controllers follow pose and motion references while coordinating the robots’ hands and bases. The system diagram identifies the learned components, physical-contact model and welded-grasp baseline evaluated in the paper.</p><figure class="paper-figure"><a class="figure-open" href="assets/projects/m2/figures/iros_02_evaluated.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/projects/m2/figures/iros_02_evaluated.png" alt="Figure 2 · Evaluated system" style="width:100%;display:block"/></a><figcaption><strong>Figure 2 · Evaluated system.</strong> The evaluated planning and control system. Refer to the paper for the scope of each component.</figcaption></figure><p class="section-intro">Explore that interface in the live demo below, then follow recorded grasps and motions into longer obstacle-navigation missions.</p></section><section aria-describedby="live-help" aria-labelledby="live-title" class="research-section" id="live-demo" tabindex="0">
-<p class="eyebrow">02 / Try the controller</p><h2 id="live-title">Take the object through every direction.</h2>
-<p class="section-intro">Start with forward and backward, left and right, then up and down. Explore yaw, long-axis pitch and roll with measured motion beside your target.</p>
-<div class="live-shell">
-<div class="live-topline"><p data-kind="idle" id="live-status" role="status">Ready when you are</p><div class="live-actions"><button id="live-connect" type="button">Start live demo</button><button aria-pressed="false" disabled="" id="live-pause" type="button">Pause</button><button disabled="" id="live-reset" type="button">Reset</button></div></div>
-<div class="live-grid">
-<div><div class="live-viewport"><canvas aria-label="Live MuJoCo simulation of two robots carrying the selected object" height="600" hidden="" id="live-canvas" width="960"></canvas><div id="live-placeholder"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 100 74"><path d="M30 25 50 14 71 25 50 37Z M30 25v25l20 12 21-12V25 M50 37v25 M12 55V32l11-6 M88 55V32l-10-6 M7 55h11v7H7z M82 55h11v7H82z M16 30l14 10 M85 31 71 40"></path></svg><strong>Take the controls.</strong><p id="live-placeholder-note">Start a live session to send a pose reference and see the measured robot response.</p></div><div aria-live="polite" class="live-scene-notice" hidden="" id="live-scene-notice" role="status"><div class="live-scene-card"><span aria-hidden="true" class="live-scene-symbol" id="live-scene-symbol">↻</span><h3 id="live-scene-title">Trial stopped</h3><p id="live-scene-note">Reset the trial to move again.</p><button id="live-scene-action" type="button">Reset trial</button><p class="live-scene-role-note" id="live-scene-role-note"></p></div></div></div><div aria-label="3D reference legend" class="live-view-legend"><span><i class="live-target-swatch"></i>Target pose · blue ghost</span><span><i class="live-path-swatch"></i>Position path · above load</span><span><i class="live-rotation-swatch"></i>Orientation sweep</span></div><div class="live-caption"><span id="live-role">Not connected</span><span><span id="live-phase">Waiting</span> · <span id="live-clock">—</span> · <span id="live-rtf">—</span></span></div></div>
-<div class="live-side">
-<div class="live-objects-panel"><h3>Choose a load</h3><div aria-label="Choose the live simulation object" class="live-objects" id="live-objects" role="group"><span class="live-reference-note">Available objects load when connected.</span></div></div>
-<div class="live-pose-panel"><h3>Object pose</h3><p class="live-reference-note">Position: world frame. Angles: relative to the initial carried pose.</p><table aria-label="Desired and measured object pose" class="live-pose"><thead><tr><th scope="col">Axis</th><th scope="col">Desired</th><th scope="col">Measured</th></tr></thead><tbody><tr><th scope="row">X · m</th><td id="live-desired-x">—</td><td id="live-measured-x">—</td></tr><tr><th scope="row">Y · m</th><td id="live-desired-y">—</td><td id="live-measured-y">—</td></tr><tr><th scope="row">Height · m</th><td id="live-desired-z">—</td><td id="live-measured-z">—</td></tr><tr><th scope="row">Roll · °</th><td id="live-desired-roll">—</td><td id="live-measured-roll">—</td></tr><tr><th scope="row">Pitch · °</th><td id="live-desired-pitch">—</td><td id="live-measured-pitch">—</td></tr><tr><th scope="row">Yaw · °</th><td id="live-desired-yaw">—</td><td id="live-measured-yaw">—</td></tr></tbody></table><p class="live-reference-note" id="live-support"></p></div>
-</div></div>
-<div class="live-controls-panel"><h3>Move the reference</h3><p class="live-reference-note" id="live-command-note">Pose controls unlock when the simulation is ready.</p><div class="live-control-groups">
-<div class="live-control-group"><span>Forward / back · X</span><div class="live-key-row"><button aria-label="Move desired object forward along positive X" data-live-key="w" disabled="" type="button"><kbd>W</kbd> +X</button><button aria-label="Move desired object backward along negative X" data-live-key="s" disabled="" type="button"><kbd>S</kbd> −X</button></div></div>
-<div class="live-control-group"><span>Sideways · Y</span><div class="live-key-row"><button aria-label="Move desired object along positive Y" data-live-key="a" disabled="" type="button"><kbd>A</kbd> +Y</button><button aria-label="Move desired object along negative Y" data-live-key="d" disabled="" type="button"><kbd>D</kbd> −Y</button></div></div>
-<div class="live-control-group"><span>Lift / lower · Z</span><div class="live-key-row"><button aria-label="Raise the desired object height" data-live-key="r" disabled="" type="button"><kbd>R</kbd> +Z</button><button aria-label="Lower the desired object height" data-live-key="f" disabled="" type="button"><kbd>F</kbd> −Z</button></div></div>
-<div class="live-control-group"><span>Turn · yaw</span><div class="live-key-row"><button aria-label="Increase desired object yaw" data-live-key="q" disabled="" type="button"><kbd>Q</kbd> +yaw</button><button aria-label="Decrease desired object yaw" data-live-key="e" disabled="" type="button"><kbd>E</kbd> −yaw</button></div></div>
-<div class="live-control-group"><span>Tilt · pitch</span><div class="live-key-row"><button aria-label="Increase desired object pitch" data-live-key="i" disabled="" type="button"><kbd>I</kbd> +pitch</button><button aria-label="Decrease desired object pitch" data-live-key="k" disabled="" type="button"><kbd>K</kbd> −pitch</button></div></div>
-<div class="live-control-group"><span>Lean · roll</span><div class="live-key-row"><button aria-label="Increase desired object roll" data-live-key="j" disabled="" type="button"><kbd>J</kbd> +roll</button><button aria-label="Decrease desired object roll" data-live-key="l" disabled="" type="button"><kbd>L</kbd> −roll</button></div></div>
-</div><p class="live-control-help" id="live-help">Hold a key or press and hold a control to move the reference. Release to hold its position. Switching objects resets the scene.</p></div>
-<div class="live-provenance"><p><strong id="live-policy">SE(3) tracking controller</strong><span id="live-grasp">Controller identity is verified when connected</span></p><p>The restored SE(3) tracking policy uses contact-gated welded grasps. Physical-contact grasp/lift training is a separate experiment. The active controller and operating range are reported by the simulation.</p></div><p class="section-note">Painting and exhibition panel passed small translation, pitch and yaw checks. Couch pickup remains experimental and timed out in the latest check. These checks do not measure overall reliability.</p><p id="live-limits">Each live session lasts two minutes of real time. Reconnect to start another session. Reference changes stay inside the server’s operating range.</p>
-</div></section><section aria-labelledby="rollouts-title" class="research-section" id="rollouts">
-<div class="rollout-heading"><div><p class="eyebrow">03 / From grasp to motion</p><h2 id="rollouts-title">Grasp. Lift. Move. Rotate.</h2><p>Watch the hands close, the couch rise, and the pair move together. Choose a stage to explore more trials.</p></div><span class="rollout-count" id="rollout-count" role="status"></span></div>
-<div aria-label="Filter robot rollouts" class="rollout-filters" role="group"><button aria-pressed="true" data-rollout-stage="all">All motion</button><button aria-pressed="false" data-rollout-stage="grasp">Grasp</button><button aria-pressed="false" data-rollout-stage="lift">Lift</button><button aria-pressed="false" data-rollout-stage="move">Move</button><button aria-pressed="false" data-rollout-stage="rotate">Rotate</button></div>
-<div class="rollout-grid" id="rollout-grid"></div>
-<div class="rollout-feature" id="rollout-feature"><h3>Follow the motion.</h3><p>Replay a full contact-policy trial with its measured position, orientation and grasp state. Choose “View motion plots” on a moving trial to compare another recording.</p>
-<div class="rollout-analysis"><figure><video aria-label="Selected robot trial with synchronized measurements" controls="" id="rollout-feature-video" muted="" playsinline="" preload="none"></video><div aria-label="Jump to a measured event" class="rollout-chapters" id="rollout-chapters"></div><figcaption id="rollout-feature-caption"></figcaption></figure>
-<div><div aria-label="Rollout measurements" class="rollout-modes" role="group"><button aria-pressed="true" data-rollout-plot="position">Position</button><button aria-pressed="false" data-rollout-plot="rotation">Orientation</button><button aria-pressed="false" data-rollout-plot="path">3D path</button><button aria-pressed="false" data-rollout-plot="grasp">Grasp</button></div><div aria-label="Measured robot rollout plot" id="rollout-motion-plot" role="img"></div><p class="rollout-now" id="rollout-now" role="status"></p></div></div>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Gate: with the key, this page steps aside for the real one. -->
+  <script src="assets/js/private.js"></script>
+  <script>if(window.JCPrivate.unlocked())location.replace("m2-private.html"+location.hash);</script>
+  <title>Read the Room — Coming soon</title>
+  <meta name="description" content="Read the Room: cooperative multi-robot transport. The project page is not public yet.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/m2.html">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <style>
+    .soon-wrap{max-width:640px;margin:0 auto;padding:0 20px}
+    .soon-stamp{display:inline-block;font-family:var(--font-comic);font-size:clamp(28px,6vw,44px);
+      letter-spacing:.04em;color:var(--hi);border:var(--line-w) solid currentColor;border-radius:var(--radius-sm);
+      padding:.15em .5em;transform:rotate(-3deg);margin:0 0 22px}
+    .soon-wrap p{font-size:17px;line-height:1.65}
+    .soon-actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:28px}
+    .keyline{margin-top:46px;font:400 12px/1.6 var(--font-mono);color:var(--ash)}
+    .keyline button{font:inherit;color:inherit;background:none;border:0;border-bottom:1px dotted currentColor;
+      padding:0;cursor:pointer}
+    .keyform{display:none;justify-content:center;gap:8px;margin-top:14px}
+    .keyform.on{display:flex}
+    .keyform input{font:400 14px/1 var(--font-mono);padding:9px 11px;border:var(--line-w) solid var(--line);
+      border-radius:var(--radius-sm);background:var(--panel);color:var(--ink);min-width:200px}
+    .keyerr{margin-top:10px;font:700 12px/1 var(--font-mono);color:var(--hi);min-height:1em}
+  </style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html">Projects</a>
+      <a href="experience.html">Experience</a>
+      <a href="papers/index.html">Papers</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button type="button" class="theme-btn" aria-label="Switch between day and night" aria-pressed="false">
+      <span class="if-night"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Day</span></span>
+      <span class="if-day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="lbl">Night</span></span>
+    </button>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+  <a href="experience.html">Experience</a>
+  <a href="papers/index.html">Papers</a>
+  <a href="cv.html">CV</a>
 </div>
-<div aria-hidden="true" class="rollout-scores" hidden=""><div><p class="eyebrow">Progress / Physical finger contact</p><h3>From a secure grasp to a controlled move.</h3><p id="rollout-progress-note">Established couch benchmarks, each on a fresh 200-trial block: grasp 198/200, lift 198/200, translate 186/200, rotate 183/200, transport 0.75 m 194/200, yaw 0.40 rad 189/200. Below the 90 per cent gate: both, staged 177/200. Full six-axis tracking at the specified tolerance is still in development.</p></div><div aria-label="Grasp, lift and translation success rates" class="m2-chart" id="rollout-success-plot" role="img"></div></div><div aria-hidden="true" class="rollout-scores" hidden="" id="rollout-comparison"><div><p class="eyebrow">Learning / PPO &amp; SAC</p><h3>Same starting grasp. Two ways to learn.</h3><p>Follow the matched lift experiment as training continues. Early results vary across training seeds; they do not establish an overall winner.</p></div><div><div aria-label="PPO versus SAC, three training seeds per architecture" class="m2-chart" id="rollout-comparison-plot" role="img"></div><p class="rollout-scope" id="rollout-comparison-note">Physical-contact simulation with lightweight training objects. Video selections are demonstrations, not reliability estimates. Each card identifies its controller; geometric tilt control is distinct from learned motion control.</p></div></div>
-<div aria-hidden="true" class="rollout-scores" hidden="" id="rollout-response"><div><p class="eyebrow">Control / A fresh command</p><h3>A new target. A measured response.</h3><p>Once the couch is held, ask the pair to move or turn. Compare the earlier learned controller with a task-space baseline.</p><div aria-label="Choose a command response" class="result-controls" role="group"><button aria-pressed="true" data-response-case="x_positive">Move 12 cm</button><button aria-pressed="false" data-response-case="yaw_positive">Turn 4°</button></div></div><div><div aria-label="Measured object response after a new pose command" class="m2-chart" id="rollout-response-plot" role="img"></div><p class="rollout-scope" id="rollout-response-note"></p></div></div>
-<p class="rollout-scope">Physical-contact simulation with lightweight training objects. Video selections are separate from evaluation denominators. Each recording identifies its controller.</p>
-</section><section aria-labelledby="complex-planner-title" class="research-section" id="complex-planner"><p class="eyebrow">04 / From motion to routes</p><h2 id="complex-planner-title">Watch the couch move, lift and pitch.</h2><p class="section-intro">A sequence of object poses turns individual movements into a route. Compare recorded object motion with its target and inspect the measured 3D path. Each trial identifies its controller, grasp model and outcome.</p><div id="complex-planner-scenes" aria-label="Choose a recorded route" role="group"></div><div class="complex-planner-grid"><figure><video controls="" id="complex-planner-video" muted="" playsinline="" preload="metadata" aria-label="Physical-contact couch route"></video><figcaption id="complex-planner-note"></figcaption></figure><div id="complex-planner-plot" aria-label="Measured object 3D route and target pose" role="img"></div></div></section><span id="planar-planning"></span><section class="research-section" id="pose-navigation"><p class="eyebrow">05 / Through tight passages</p><h2>Rotate to clear the passage.</h2><p class="section-intro">When translation alone cannot clear a passage, the planner changes the load’s orientation. Follow the recorded missions through lintels, doorframes and overhead obstacles, then compare their position and rotation traces. These demonstrations use gated acquisition and welded retention; each recording identifies its controller. They do not establish physical-contact RL reliability.</p><div id="navigation-picker" class="result-controls" aria-label="Choose a planning mission"></div><p id="navigation-outcome" role="status"></p><div class="paper-explorer"><figure><video id="navigation-video" controls muted playsinline preload="metadata" style="width:100%"></video><figcaption id="navigation-caption"></figcaption><div id="navigation-chapters" class="result-controls"></div><p id="navigation-readout"></p></figure><div><div class="result-controls" aria-label="Mission measurements"><button type="button" data-navigation-plot="3d" aria-pressed="true">3D route + hands</button><button type="button" data-navigation-plot="orientation" aria-pressed="false">Pitch, yaw & roll</button><button type="button" data-navigation-plot="position" aria-pressed="false">XYZ tracking</button><button type="button" data-navigation-plot="contacts" aria-pressed="false">Grasp error</button><button type="button" data-navigation-plot="bases" aria-pressed="false">Base tilt</button><button type="button" data-navigation-plot="reward" aria-pressed="false">Reward</button></div><div id="navigation-plot" style="height:480px" role="img" aria-label="Recorded mission measurements"></div></div></div><details class="protocol"><summary>Evaluation scope and recorded attempts</summary><p id="navigation-scope"></p><div class="table-scroll"><table><thead><tr><th>Trial</th><th>Planning</th><th>Execution</th><th>Scope</th></tr></thead><tbody id="navigation-attempts"></tbody></table></div></details></section><section class="research-section" id="paper-results"><p class="eyebrow">06 / Paper · experimental evidence</p><h2>Execution, geometry and control.</h2><p class="section-intro">The experiments examine the behavior shown above: acquisition and transport, passage geometry, force response and mission outcomes. The paper’s figures retain their original experimental scope; ongoing physical-contact PPO and SAC evaluations are separate.</p><figure class="paper-figure"><a class="figure-open" href="assets/projects/m2/figures/iros_13_execution.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/projects/m2/figures/iros_13_execution.png" alt="Recorded execution" style="width:100%;display:block"/></a><figcaption><strong>Recorded execution.</strong> Acquisition, lift and transport sequences across the evaluated scenes.</figcaption></figure><div class="finding-grid"><figure class="paper-figure"><a class="figure-open" href="assets/projects/m2/figures/iros_03_geometry.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/projects/m2/figures/iros_03_geometry.png" alt="Passage geometry" style="width:100%;display:block"/></a><figcaption><strong>Passage geometry.</strong> How grasp geometry affects passage feasibility.</figcaption></figure><figure class="paper-figure"><a class="figure-open" href="assets/projects/m2/figures/iros_14_force_response.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/projects/m2/figures/iros_14_force_response.png" alt="Force response" style="width:100%;display:block"/></a><figcaption><strong>Force response.</strong> Measured response in the paper’s stated grasp and controller setup.</figcaption></figure><figure class="paper-figure"><a class="figure-open" href="assets/projects/m2/figures/iros_08_reliability.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/projects/m2/figures/iros_08_reliability.png" alt="Stage outcomes" style="width:100%;display:block"/></a><figcaption><strong>Stage outcomes.</strong> Stage counts and clearance measurements for the paper’s evaluation cohort.</figcaption></figure><figure class="paper-figure"><a class="figure-open" href="assets/projects/m2/figures/ral_02_training.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/projects/m2/figures/ral_02_training.png" alt="Learning curves" style="width:100%;display:block"/></a><figcaption><strong>Learning curves.</strong> Training results for the experiment identified in the figure; not a current six-axis success claim.</figcaption></figure><figure class="paper-figure"><a class="figure-open" href="assets/projects/m2/figures/ral_04_results.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/projects/m2/figures/ral_04_results.png" alt="Planning and mission results" style="width:100%;display:block"/></a><figcaption><strong>Planning and mission results.</strong> Planning consistency and mission-duration measurements.</figcaption></figure><figure class="paper-figure"><a class="figure-open" href="assets/projects/m2/figures/ral_03_arrival.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/projects/m2/figures/ral_03_arrival.png" alt="Independent arrival" style="width:100%;display:block"/></a><figcaption><strong>Independent arrival.</strong> Recorded approach and arrival behavior.</figcaption></figure></div></section><footer class="m2-footer">M₂ · Physical-contact simulation</footer></main><script>document.getElementById('project-theme').onclick=function(){const dark=document.documentElement.dataset.theme!=='night';document.documentElement.dataset.theme=dark?'night':'day';this.textContent=dark?'Light appearance':'Dark appearance';this.setAttribute('aria-pressed',String(dark));};</script></body></html>
+
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">M₂ / Cooperative robot transport</p>
+    <h1>Read the Room</h1>
+    <p>Grasp-aware planning and learned local control for two robots carrying one load.</p>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
+<section class="section">
+  <div class="soon-wrap" style="text-align:center">
+    <p class="soon-stamp">Coming soon</p>
+    <p>This one is still under review, so the write-up, the demos and the results are not public yet.
+       It will go up here once the paper is out.</p>
+    <p>In the meantime, the rest of the work is open.</p>
+    <div class="soon-actions">
+      <a class="btn btn-primary" href="projects.html">All projects</a>
+      <a class="btn" href="publications.html">Publications</a>
+    </div>
+
+    <p class="keyline">Have the key? <button type="button" id="keyToggle">Unlock</button></p>
+    <form class="keyform" id="keyForm" autocomplete="off">
+      <input type="password" id="keyInput" aria-label="Passphrase" placeholder="passphrase" autocomplete="off">
+      <button class="btn" type="submit">Enter</button>
+    </form>
+    <p class="keyerr" id="keyErr" role="status"></p>
+  </div>
+</section>
+
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+<script>
+(function(){
+  var form = document.getElementById('keyForm'),
+      inp  = document.getElementById('keyInput'),
+      err  = document.getElementById('keyErr');
+  document.getElementById('keyToggle').addEventListener('click', function(){
+    form.classList.add('on'); inp.focus();
+  });
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (window.JCPrivate.unlock(inp.value)) { location.replace('m2-private.html'); return; }
+    err.textContent = 'Not that one.'; inp.select();
+  });
+})();
+</script>
+</body>
+</html>
