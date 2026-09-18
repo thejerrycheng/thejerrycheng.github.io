@@ -14,3 +14,15 @@ MPR/ScreenRecording*
 # Python caches
 __pycache__/
 *.pyc
+
+# ---- not published --------------------------------------------------------
+# These hold the private pages in the clear. The site publishes only their
+# encrypted twins (*.enc, see scripts/tools/build_private.py); the plaintext
+# stays on this machine. Untracking them is what makes the pages private —
+# a client-side gate would not, since this repo is public.
+m2-private.html
+papers/private-ideas.json
+papers/reviews.json
+papers/tools/
+assets/projects/m2/read-the-room.pdf
+assets/projects/m2/supplement.pdf

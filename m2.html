@@ -3,11 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Gate: with the key, this page steps aside for the real one. -->
+  <!-- The page itself is published encrypted; the key turns it back into HTML. -->
   <script src="assets/js/private.js"></script>
-  <script>if(window.JCPrivate.unlocked())location.replace("m2-private.html"+location.hash);</script>
   <title>Read the Room — Coming soon</title>
-  <meta name="description" content="Read the Room: cooperative multi-robot transport. The project page is not public yet.">
+  <meta name="description" content="Read the Room: cooperative multi-robot transport. This page is private.">
   <meta name="author" content="Jerry Cheng">
   <link rel="canonical" href="https://thejerrycheng.github.io/m2.html">
   <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
@@ -82,9 +81,9 @@
 
 <section class="section">
   <div class="soon-wrap" style="text-align:center">
-    <p class="soon-stamp">Coming soon</p>
-    <p>This one is still under review, so the write-up, the demos and the results are not public yet.
-       It will go up here once the paper is out.</p>
+    <p class="soon-stamp">Private</p>
+    <p>This one is still under review, so it is not published yet &mdash; the page is stored
+       encrypted, and only the key turns it back into something readable.</p>
     <p>In the meantime, the rest of the work is open.</p>
     <div class="soon-actions">
       <a class="btn btn-primary" href="projects.html">All projects</a>
@@ -116,14 +115,47 @@
 (function(){
   var form = document.getElementById('keyForm'),
       inp  = document.getElementById('keyInput'),
-      err  = document.getElementById('keyErr');
-  document.getElementById('keyToggle').addEventListener('click', function(){
-    form.classList.add('on'); inp.focus();
-  });
+      err  = document.getElementById('keyErr'),
+      tog  = document.getElementById('keyToggle');
+
+  /* Decrypt the page and become it. document.open() clears the document but
+     leaves the window — JCPrivate, and the key it holds, survive the swap. */
+  function reveal(){
+    err.textContent = 'Decrypting\u2026';
+    return window.JCPrivate.text('assets/private/m2.enc').then(function(html){
+      document.open(); document.write(html); document.close();
+      wirePdfs();
+    }).catch(function(e){
+      err.textContent = 'Could not open it: ' + e.message;
+    });
+  }
+
+  /* The PDFs are encrypted too, so a click has to fetch and decrypt first. */
+  function wirePdfs(){
+    document.addEventListener('click', function(e){
+      var a = e.target.closest && e.target.closest('a[href$=".pdf"]');
+      if(!a || a.dataset.opened) return;
+      e.preventDefault();
+      var tab = window.open('', '_blank');          /* opened in the gesture, so not blocked */
+      window.JCPrivate.blobUrl(a.getAttribute('href') + '.enc', 'application/pdf')
+        .then(function(url){ if(tab) tab.location = url; else location.href = url; })
+        .catch(function(){ if(tab) tab.close(); });
+    });
+  }
+
+  if (!window.JCPrivate.supported) {
+    err.textContent = 'This browser cannot decrypt here — open the site over https.';
+  }
+  window.JCPrivate.ready.then(function(open){ if(open) reveal(); });
+
+  tog.addEventListener('click', function(){ form.classList.add('on'); inp.focus(); });
   form.addEventListener('submit', function(e){
     e.preventDefault();
-    if (window.JCPrivate.unlock(inp.value)) { location.replace('m2-private.html'); return; }
-    err.textContent = 'Not that one.'; inp.select();
+    err.textContent = 'Checking\u2026';
+    window.JCPrivate.unlock(inp.value).then(function(ok){
+      if(ok) return reveal();
+      err.textContent = 'Not that one.'; inp.select();
+    });
   });
 })();
 </script>

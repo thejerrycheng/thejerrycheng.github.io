@@ -20,8 +20,16 @@
    The three trees get the three printed voices: red, blue, green.
    ============================================================================= */
 :root{ --rl:#C6301A; --il:#23577E; --sys:#2E7D4F; --atlas-max:1240px; }
-/* the ideas view while it is gated */
-.idea-lock{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:6px}
+/* the ideas view while it is locked */
+.lockglyph{width:11px;height:11px;margin-left:6px;vertical-align:-1px;opacity:.75}
+.nav-links button.vtab.islocked{opacity:.72}
+.ideagate{max-width:580px;margin:34px auto 66px;text-align:center}
+.ideagate .stamp{display:inline-block;font-family:var(--font-comic);font-size:clamp(26px,5vw,40px);
+  letter-spacing:.06em;color:var(--rl);border:2px solid currentColor;border-radius:6px;
+  padding:.1em .48em;transform:rotate(-3deg);margin:0 0 22px}
+.ideagate p{font-size:15.4px;line-height:1.68;color:var(--ink)}
+.ideagate .err{font:700 12.5px/1.5 var(--font-mono);color:var(--rl);min-height:1.4em;margin:12px 0 0}
+.idea-lock{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin-top:22px}
 .idea-lock input{font:400 14px/1 var(--font-mono);padding:9px 11px;border:2px solid var(--line);
   border-radius:6px;background:var(--panel);color:var(--ink);min-width:210px}
 .idea-lock button{font:700 13px/1 var(--font-sans);letter-spacing:.03em;padding:10px 16px;cursor:pointer;
@@ -513,7 +521,7 @@ html[data-theme="night"] .mobile-menu a[data-mview].on{ background:var(--gold); 
 <section class="view" id="view-ideas">
   <div class="sechead">
     <h2 class="section-title">Research ideas</h2>
-    <p id="ideaLede">Your idea list, deduplicated, each one with a literature review: where the field actually is, what is already taken, and where the opening is.</p>
+    <p id="ideaLede"></p>
   </div>
   <div class="ideagrid" id="ideaGrid"></div>
 </section>
@@ -529,8 +537,6 @@ html[data-theme="night"] .mobile-menu a[data-mview].on{ background:var(--gold); 
       <b>papers_data.json</b><small>The whole paper database, with every field</small></a>
     <a class="dl" href="datasets_data.json" download>
       <b>datasets_data.json</b><small>Every open dataset, with scale, devices and verified links</small></a>
-    <a class="dl" href="reviews.json" download>
-      <b>reviews.json</b><small>All 19 literature reviews</small></a>
   </div>
   <p class="prov" id="provenance"></p>
 </section>
@@ -751,15 +757,14 @@ html[data-theme="night"] .tl-m{ color:#151820 }
 <script>
 (() => {
 "use strict";
-/* The research ideas are not public yet. LOCKED strips the view, its tab, the
-   facet, the paper-detail chips and the downloads that carry the idea text.
-   See assets/js/private.js for how to get in. */
-const LOCKED = !window.JCPrivate.unlocked();
-if(LOCKED){
-  document.querySelectorAll('[data-view="ideas"],[data-mview="ideas"]').forEach(el=>el.remove());
-  ["papers_by_project.xmind","papers_by_project.md","papers_data.json","reviews.json"]
-    .forEach(f=>document.querySelectorAll(`a[href="${f}"]`).forEach(el=>el.remove()));
-}
+/* The research ideas are not in this page, and not in papers_data.json either —
+   they are published as papers/private-ideas.enc and only exist here once the
+   key has opened them. LOCKED says which of the two atlases you are looking at.
+   The Ideas tab stays where it is, wearing a padlock. */
+let LOCKED = true;
+const LOCK_SVG = `<svg class="lockglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+  stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="4.5" y="10.5" width="15" height="11" rx="2"/>
+  <path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>`;
 const $  = (s,r=document)=>r.querySelector(s);
 const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
 const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -793,10 +798,24 @@ const bucketOf = p => { const y=yearOf(p); if(!y) return "undated";
 /* ---------------- load ---------------- */
 Promise.all([
   fetch("papers_data.json").then(r=>r.json()),
-  fetch("reviews.json").then(r=>r.ok?r.json():{}).catch(()=>({})),
+  window.JCPrivate.ready
+    .then(open => open ? window.JCPrivate.json("private-ideas.enc").catch(()=>null) : null)
+    .catch(()=>null),
   fetch("datasets_data.json").then(r=>r.ok?r.json():null).catch(()=>null)
-]).then(([d,rv,ds])=>{
-  DATA=d; REVIEWS=rv||{}; DSETS=ds;
+]).then(([d,priv,ds])=>{
+  DATA=d; DSETS=ds;
+  LOCKED = !priv;
+  if(priv){
+    /* put the ideas, their reviews and the paper→idea links back on the data */
+    DATA.meta.ideas = priv.ideas || [];
+    REVIEWS = priv.reviews || {};
+    const byId = Object.fromEntries(d.papers.map(p=>[p.id,p]));
+    Object.entries(priv.paperIdeas||{}).forEach(([pid,ids])=>{ if(byId[pid]) byId[pid].ideas = ids; });
+  } else {
+    DATA.meta.ideas = [];
+    $$('#viewTabs button[data-view="ideas"]').forEach(b=>{ b.innerHTML = "Ideas" + LOCK_SVG; b.classList.add("islocked"); });
+    $$('#mobileMenu a[data-mview="ideas"]').forEach(a=>{ a.innerHTML = "Ideas" + LOCK_SVG; a.classList.add("islocked"); });
+  }
   PAPERS=d.papers.map(p=>{
     p.hay = norm([p.title,p.aka,(p.authors||[]).join(" "),(p.institutions||[]).join(" "),p.lab,p.venue,
                   (p.topics||[]).join(" "),(p.paradigm||[]).join(" "),(p.method||[]).join(" "),
@@ -829,6 +848,7 @@ function boot(){
     + `Records marked as harvested have inferred tags — check them before citing.`;
   if(!LOCKED) $("#ideaLede").textContent = `Your ${DATA.meta.ideas.length} ideas — deduplicated from the original ${
     DATA.meta.ideas.reduce((a,i)=>a+(i.merged?i.merged.length:1),0)} bullets — each with a literature review: where the field actually is, what is already taken, and where the opening is.`;
+  if(LOCKED) FACET_DEFS = FACET_DEFS.filter(d=>d[0]!=="idea");
   buildFacets(); renderTrees(); renderProjects(); renderIdeas(); buildLegend(); buildDatasets(); render();
   window.addEventListener("hashchange", fromHash); fromHash(true);
 }
@@ -865,7 +885,6 @@ let FACET_DEFS = [
   ["inst","Institution", p=>p.institutions||[], k=>k],
   ["topic","Topic", p=>p.topics||[], k=>k],
 ];
-if(LOCKED) FACET_DEFS = FACET_DEFS.filter(d=>d[0]!=="idea");
 function buildFacets(){
   const host=$("#facets"); host.innerHTML="";
   FACET_DEFS.forEach(([key,label,get,lab])=>{
@@ -1108,17 +1127,27 @@ function renderIdeas(){
 /* The public face of the ideas view: no ideas, and a way in for me. */
 function renderIdeaLock(){
   $("#view-ideas").innerHTML =
-    `<div class="sechead"><h2 class="section-title">Coming soon</h2>
-      <p>The research ideas — and the literature review behind each one — are not public yet.</p>
+    `<div class="ideagate">
+      <p class="stamp">Private</p>
+      <p>My research ideas, and the literature review behind each one: where the field
+         actually is, what is already taken, and where the opening is. They are not
+         published — what this site holds is encrypted, and the key turns it back into
+         something readable.</p>
       <form class="idea-lock" autocomplete="off">
-        <input type="password" placeholder="passphrase" aria-label="Passphrase" autocomplete="off">
-        <button type="submit">Unlock</button><span class="err" role="status"></span>
-      </form></div>`;
+        <input type="password" placeholder="key" aria-label="Key" autocomplete="off">
+        <button type="submit">Unlock</button>
+      </form>
+      <p class="err" role="status"></p>
+    </div>`;
   const form=$("#view-ideas form"), inp=$("#view-ideas input"), err=$("#view-ideas .err");
+  if(!window.JCPrivate.supported) err.textContent = "This browser cannot decrypt here — open the site over https.";
   form.onsubmit = e => {
     e.preventDefault();
-    if(window.JCPrivate.unlock(inp.value)){ location.hash="#ideas"; location.reload(); return; }
-    err.textContent="Not that one."; inp.select();
+    err.textContent = "Checking\u2026";
+    window.JCPrivate.unlock(inp.value).then(ok => {
+      if(ok){ location.hash = "#ideas"; location.reload(); return; }
+      err.textContent = "Not that one."; inp.select();
+    });
   };
 }
 
