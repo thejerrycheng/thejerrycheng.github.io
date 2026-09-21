@@ -1,0 +1,33 @@
+{
+  "protocol_version": 2,
+  "scene": "m2_gallery_panel",
+  "planner": "Riemannian",
+  "seed": 1,
+  "budget_s": 30.0,
+  "success": true,
+  "planning_time_s": 2.6225793750490993,
+  "ik_calls": 240,
+  "reason": "",
+  "execution_time_s": null,
+  "positive_actuator_work_J": null,
+  "audit": {
+    "samples": 717,
+    "bad_contact_samples": 0,
+    "max_hand_position_residual_m": 0.00010918354508771349,
+    "max_hand_rotation_residual_rad": 0.00017738305179106005,
+    "max_joint_limit_violation": 0.0,
+    "max_penetration_m": 0.0,
+    "accepted": true
+  },
+  "object_translation_m": 6.184234254773041,
+  "object_rotation_rad": 3.1737174754627553,
+  "base_travel_m": [
+    8.431396615588161,
+    8.195615511016364
+  ],
+  "reference_duration_s": 91.21188652633978,
+  "common_pullback_cost": 8.948363682438135,
+  "environment_clearance_m": 0.0,
+  "clearance_samples": 100,
+  "clearance_definition": "minimum sampled robot/object to static environment distance, excluding floor; capped at 1 m"
+}

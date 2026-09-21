@@ -1,0 +1,57 @@
+{
+  "scene": "m2_warehouse_crate",
+  "mode": "rl",
+  "success": false,
+  "reason": "controller termination: ['robot_self_penetration']",
+  "simulation_s": 0.09500000000000001,
+  "wall_s": 0.32093241601251066,
+  "final_position_error_m": 0.014161833664540704,
+  "final_angle_error_rad": 0.00161978774673666,
+  "max_penetration_m": 0.0,
+  "grasp_assumption": "four permanently active welds anchored at held start",
+  "state_assignment": "only at t=0",
+  "controller": "existing learned PPO SE3 actor",
+  "payload_mass_kg": 1.6,
+  "checkpoint": "$M2_REPOSITORY/experiments/evaluation_snapshots/v106_se3_clearance_final/evaluation_checkpoint.pt",
+  "checkpoint_sha256": "e4f505550966c1ea6410a583b05030f2161e140a85c2eea184e4576d4b135684",
+  "records": [
+    {
+      "time_s": 0.02,
+      "position_error_m": 0.00011283618517295926,
+      "angle_error_rad": 0.0015848901298215776,
+      "reference_xyz": [
+        -3.6,
+        0.0,
+        0.445
+      ],
+      "actual_xyz": [
+        -3.599984034618087,
+        1.800406100866848e-05,
+        0.4451102404873536
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 0.09500000000000001,
+      "position_error_m": 0.014161833664540704,
+      "angle_error_rad": 0.00161978774673666,
+      "reference_xyz": [
+        -3.6,
+        0.0,
+        0.445
+      ],
+      "actual_xyz": [
+        -3.600208272492061,
+        0.0003730837866084025,
+        0.43084461361179643
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0017223809755906472
+    }
+  ]
+}

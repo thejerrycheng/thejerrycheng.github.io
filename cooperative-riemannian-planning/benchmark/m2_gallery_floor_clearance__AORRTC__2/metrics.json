@@ -1,0 +1,50 @@
+{
+  "protocol_version": 2,
+  "scene": "m2_gallery_floor_clearance",
+  "planner": "AORRTC",
+  "seed": 2,
+  "budget_s": 30.0,
+  "success": true,
+  "planning_time_s": 30.006236874964088,
+  "ik_calls": 3740,
+  "reason": "",
+  "execution_time_s": 28.979999999994817,
+  "positive_actuator_work_J": 391.96712031383714,
+  "distance_time_score": {
+    "object_distance_m": 2.2136055066962363,
+    "object_rotation_rad": 1.0714026428114596,
+    "reference_time_s": 27.446800269174016,
+    "base_distance_m": [
+      2.2139896975345854,
+      2.2299453544957846
+    ],
+    "inplace_yaw_time_s": 0.0,
+    "acceleration_time_scale": 1.0000000004174592,
+    "local_timing_iterations": 23,
+    "timing": "shared forward/backward speed pass, local sampled acceleration repair and final scaling guard; approximate"
+  },
+  "audit": {
+    "samples": 198,
+    "bad_contact_samples": 0,
+    "max_hand_position_residual_m": 0.00010726955104107078,
+    "max_hand_rotation_residual_rad": 0.0001997040133210844,
+    "max_joint_limit_violation": 0.0,
+    "max_penetration_m": 0.0,
+    "accepted": true
+  },
+  "object_translation_m": 2.2136055066962363,
+  "object_rotation_rad": 1.0714026428114596,
+  "base_travel_m": [
+    2.2139896975345854,
+    2.2299453544957846
+  ],
+  "reference_duration_s": 24.945960082266986,
+  "common_pullback_cost": 2.8993057299967746,
+  "environment_clearance_m": -0.00021259785021286902,
+  "clearance_samples": 67,
+  "clearance_definition": "minimum sampled robot/object to static environment distance, excluding floor; capped at 1 m",
+  "execution_success": true,
+  "final_position_error_m": 0.0009255080790146343,
+  "final_angle_error_rad": 0.0006482843506570389,
+  "max_penetration_m": 0.0
+}

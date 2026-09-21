@@ -1,0 +1,1235 @@
+{
+  "format": "m2_riemannian_targets_v2_se3",
+  "robots": [
+    "mabel",
+    "milo"
+  ],
+  "hand_order": [
+    [
+      "mabel",
+      "left"
+    ],
+    [
+      "mabel",
+      "right"
+    ],
+    [
+      "milo",
+      "left"
+    ],
+    [
+      "milo",
+      "right"
+    ]
+  ],
+  "object_to_hand_wxyz": [
+    [
+      -1.649969291047622,
+      0.20084505510997416,
+      -0.020159283977821185,
+      0.21783040724621802,
+      0.6842723785591645,
+      0.2949998394379438,
+      0.6303144614805517
+    ],
+    [
+      -1.6500243075206307,
+      -0.2004808662682355,
+      -0.020092986512241118,
+      0.6119621297690098,
+      0.4210096916301403,
+      0.6260493985451866,
+      0.23730853727432963
+    ],
+    [
+      1.6499692910476211,
+      -0.20084505510997416,
+      -0.02015928397782074,
+      -0.6303144614805523,
+      -0.29499983943794367,
+      0.6842723785591639,
+      0.2178304072462181
+    ],
+    [
+      1.6497515781432959,
+      0.20094135461645593,
+      -0.01981700746590187,
+      0.01378776426021538,
+      0.9033729795220545,
+      -0.3685136034418408,
+      -0.2189175221503754
+    ]
+  ],
+  "payload_qpos_address": 0,
+  "actuators": [
+    {
+      "index": 0,
+      "name": "mabel/FL Steer",
+      "mode": "position",
+      "units": "rad",
+      "limits": null
+    },
+    {
+      "index": 1,
+      "name": "mabel/FL Drive",
+      "mode": "velocity",
+      "units": "rad/s",
+      "limits": [
+        -126.0,
+        126.0
+      ]
+    },
+    {
+      "index": 2,
+      "name": "mabel/FR Steer",
+      "mode": "position",
+      "units": "rad",
+      "limits": null
+    },
+    {
+      "index": 3,
+      "name": "mabel/FR Drive",
+      "mode": "velocity",
+      "units": "rad/s",
+      "limits": [
+        -126.0,
+        126.0
+      ]
+    },
+    {
+      "index": 4,
+      "name": "mabel/B Steer",
+      "mode": "position",
+      "units": "rad",
+      "limits": null
+    },
+    {
+      "index": 5,
+      "name": "mabel/B Drive",
+      "mode": "velocity",
+      "units": "rad/s",
+      "limits": [
+        -126.0,
+        126.0
+      ]
+    },
+    {
+      "index": 6,
+      "name": "mabel/Lift",
+      "mode": "position",
+      "units": "m",
+      "limits": [
+        0.0,
+        0.635
+      ]
+    },
+    {
+      "index": 7,
+      "name": "mabel/Torso",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.0472,
+        0.2618
+      ]
+    },
+    {
+      "index": 8,
+      "name": "mabel/Neck Yaw",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.571,
+        1.571
+      ]
+    },
+    {
+      "index": 9,
+      "name": "mabel/Neck Pitch",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.785,
+        0.785
+      ]
+    },
+    {
+      "index": 10,
+      "name": "mabel/Neck Roll",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.785,
+        0.785
+      ]
+    },
+    {
+      "index": 11,
+      "name": "mabel/Left Arm 1",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -3.491,
+        1.396
+      ]
+    },
+    {
+      "index": 12,
+      "name": "mabel/Left Arm 2",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.175,
+        3.316
+      ]
+    },
+    {
+      "index": 13,
+      "name": "mabel/Left Arm 3",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.571,
+        1.571
+      ]
+    },
+    {
+      "index": 14,
+      "name": "mabel/Left Arm 4",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.943,
+        1.542
+      ]
+    },
+    {
+      "index": 15,
+      "name": "mabel/Left Arm 5",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.571,
+        1.571
+      ]
+    },
+    {
+      "index": 16,
+      "name": "mabel/Left Arm 6",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.785,
+        0.785
+      ]
+    },
+    {
+      "index": 17,
+      "name": "mabel/Left Arm 7",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.571,
+        1.571
+      ]
+    },
+    {
+      "index": 18,
+      "name": "mabel/Left Wrist",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.8972,
+        0.6736
+      ]
+    },
+    {
+      "index": 19,
+      "name": "mabel/Left Thumb MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.87266,
+        0.87266
+      ]
+    },
+    {
+      "index": 20,
+      "name": "mabel/Left Thumb Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.08211,
+        0.0
+      ]
+    },
+    {
+      "index": 21,
+      "name": "mabel/Left Thumb PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.7944,
+        1.23
+      ]
+    },
+    {
+      "index": 22,
+      "name": "mabel/Left Thumb DIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.85384,
+        1.45
+      ]
+    },
+    {
+      "index": 23,
+      "name": "mabel/Left Index Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.04577,
+        0.24577
+      ]
+    },
+    {
+      "index": 24,
+      "name": "mabel/Left Index MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.65806
+      ]
+    },
+    {
+      "index": 25,
+      "name": "mabel/Left Index PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.88496
+      ]
+    },
+    {
+      "index": 26,
+      "name": "mabel/Left Middle Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.64577,
+        0.64577
+      ]
+    },
+    {
+      "index": 27,
+      "name": "mabel/Left Middle MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.58825
+      ]
+    },
+    {
+      "index": 28,
+      "name": "mabel/Left Middle PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.8675
+      ]
+    },
+    {
+      "index": 29,
+      "name": "mabel/Left Ring Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.47577,
+        0.80577
+      ]
+    },
+    {
+      "index": 30,
+      "name": "mabel/Left Ring MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.58825
+      ]
+    },
+    {
+      "index": 31,
+      "name": "mabel/Left Ring PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.8675
+      ]
+    },
+    {
+      "index": 32,
+      "name": "mabel/Left Pinky Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.12244,
+        1.1691
+      ]
+    },
+    {
+      "index": 33,
+      "name": "mabel/Left Pinky MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.71042
+      ]
+    },
+    {
+      "index": 34,
+      "name": "mabel/Left Pinky PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.88496
+      ]
+    },
+    {
+      "index": 35,
+      "name": "mabel/Right Arm 1",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.396,
+        3.491
+      ]
+    },
+    {
+      "index": 36,
+      "name": "mabel/Right Arm 2",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -3.316,
+        0.175
+      ]
+    },
+    {
+      "index": 37,
+      "name": "mabel/Right Arm 3",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.571,
+        1.571
+      ]
+    },
+    {
+      "index": 38,
+      "name": "mabel/Right Arm 4",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.67,
+        0.773
+      ]
+    },
+    {
+      "index": 39,
+      "name": "mabel/Right Arm 5",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.571,
+        1.571
+      ]
+    },
+    {
+      "index": 40,
+      "name": "mabel/Right Arm 6",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.785,
+        0.785
+      ]
+    },
+    {
+      "index": 41,
+      "name": "mabel/Right Arm 7",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.571,
+        1.571
+      ]
+    },
+    {
+      "index": 42,
+      "name": "mabel/Right Wrist",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.6736,
+        0.8972
+      ]
+    },
+    {
+      "index": 43,
+      "name": "mabel/Right Thumb MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.87266,
+        0.87266
+      ]
+    },
+    {
+      "index": 44,
+      "name": "mabel/Right Thumb Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.08211,
+        0.0
+      ]
+    },
+    {
+      "index": 45,
+      "name": "mabel/Right Thumb PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.7944,
+        1.23
+      ]
+    },
+    {
+      "index": 46,
+      "name": "mabel/Right Thumb DIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.85384,
+        1.45
+      ]
+    },
+    {
+      "index": 47,
+      "name": "mabel/Right Index Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.04577,
+        0.24577
+      ]
+    },
+    {
+      "index": 48,
+      "name": "mabel/Right Index MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.65806
+      ]
+    },
+    {
+      "index": 49,
+      "name": "mabel/Right Index PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.88496
+      ]
+    },
+    {
+      "index": 50,
+      "name": "mabel/Right Middle Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.64577,
+        0.64577
+      ]
+    },
+    {
+      "index": 51,
+      "name": "mabel/Right Middle MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.58825
+      ]
+    },
+    {
+      "index": 52,
+      "name": "mabel/Right Middle PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.8675
+      ]
+    },
+    {
+      "index": 53,
+      "name": "mabel/Right Ring Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.47577,
+        0.80577
+      ]
+    },
+    {
+      "index": 54,
+      "name": "mabel/Right Ring MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.58825
+      ]
+    },
+    {
+      "index": 55,
+      "name": "mabel/Right Ring PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.8675
+      ]
+    },
+    {
+      "index": 56,
+      "name": "mabel/Right Pinky Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.12244,
+        1.1691
+      ]
+    },
+    {
+      "index": 57,
+      "name": "mabel/Right Pinky MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.71042
+      ]
+    },
+    {
+      "index": 58,
+      "name": "mabel/Right Pinky PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.88496
+      ]
+    },
+    {
+      "index": 59,
+      "name": "milo/FL Steer",
+      "mode": "position",
+      "units": "rad",
+      "limits": null
+    },
+    {
+      "index": 60,
+      "name": "milo/FL Drive",
+      "mode": "velocity",
+      "units": "rad/s",
+      "limits": [
+        -126.0,
+        126.0
+      ]
+    },
+    {
+      "index": 61,
+      "name": "milo/FR Steer",
+      "mode": "position",
+      "units": "rad",
+      "limits": null
+    },
+    {
+      "index": 62,
+      "name": "milo/FR Drive",
+      "mode": "velocity",
+      "units": "rad/s",
+      "limits": [
+        -126.0,
+        126.0
+      ]
+    },
+    {
+      "index": 63,
+      "name": "milo/B Steer",
+      "mode": "position",
+      "units": "rad",
+      "limits": null
+    },
+    {
+      "index": 64,
+      "name": "milo/B Drive",
+      "mode": "velocity",
+      "units": "rad/s",
+      "limits": [
+        -126.0,
+        126.0
+      ]
+    },
+    {
+      "index": 65,
+      "name": "milo/Lift",
+      "mode": "position",
+      "units": "m",
+      "limits": [
+        0.0,
+        0.635
+      ]
+    },
+    {
+      "index": 66,
+      "name": "milo/Torso",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.0472,
+        0.2618
+      ]
+    },
+    {
+      "index": 67,
+      "name": "milo/Neck Yaw",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.571,
+        1.571
+      ]
+    },
+    {
+      "index": 68,
+      "name": "milo/Neck Pitch",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.785,
+        0.785
+      ]
+    },
+    {
+      "index": 69,
+      "name": "milo/Neck Roll",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.785,
+        0.785
+      ]
+    },
+    {
+      "index": 70,
+      "name": "milo/Left Arm 1",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -3.491,
+        1.396
+      ]
+    },
+    {
+      "index": 71,
+      "name": "milo/Left Arm 2",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.175,
+        3.316
+      ]
+    },
+    {
+      "index": 72,
+      "name": "milo/Left Arm 3",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.571,
+        1.571
+      ]
+    },
+    {
+      "index": 73,
+      "name": "milo/Left Arm 4",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.943,
+        1.542
+      ]
+    },
+    {
+      "index": 74,
+      "name": "milo/Left Arm 5",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.571,
+        1.571
+      ]
+    },
+    {
+      "index": 75,
+      "name": "milo/Left Arm 6",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.785,
+        0.785
+      ]
+    },
+    {
+      "index": 76,
+      "name": "milo/Left Arm 7",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.571,
+        1.571
+      ]
+    },
+    {
+      "index": 77,
+      "name": "milo/Left Wrist",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.8972,
+        0.6736
+      ]
+    },
+    {
+      "index": 78,
+      "name": "milo/Left Thumb MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.87266,
+        0.87266
+      ]
+    },
+    {
+      "index": 79,
+      "name": "milo/Left Thumb Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.08211,
+        0.0
+      ]
+    },
+    {
+      "index": 80,
+      "name": "milo/Left Thumb PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.7944,
+        1.23
+      ]
+    },
+    {
+      "index": 81,
+      "name": "milo/Left Thumb DIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.85384,
+        1.45
+      ]
+    },
+    {
+      "index": 82,
+      "name": "milo/Left Index Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.04577,
+        0.24577
+      ]
+    },
+    {
+      "index": 83,
+      "name": "milo/Left Index MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.65806
+      ]
+    },
+    {
+      "index": 84,
+      "name": "milo/Left Index PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.88496
+      ]
+    },
+    {
+      "index": 85,
+      "name": "milo/Left Middle Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.64577,
+        0.64577
+      ]
+    },
+    {
+      "index": 86,
+      "name": "milo/Left Middle MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.58825
+      ]
+    },
+    {
+      "index": 87,
+      "name": "milo/Left Middle PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.8675
+      ]
+    },
+    {
+      "index": 88,
+      "name": "milo/Left Ring Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.47577,
+        0.80577
+      ]
+    },
+    {
+      "index": 89,
+      "name": "milo/Left Ring MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.58825
+      ]
+    },
+    {
+      "index": 90,
+      "name": "milo/Left Ring PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.8675
+      ]
+    },
+    {
+      "index": 91,
+      "name": "milo/Left Pinky Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.12244,
+        1.1691
+      ]
+    },
+    {
+      "index": 92,
+      "name": "milo/Left Pinky MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.71042
+      ]
+    },
+    {
+      "index": 93,
+      "name": "milo/Left Pinky PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.88496
+      ]
+    },
+    {
+      "index": 94,
+      "name": "milo/Right Arm 1",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.396,
+        3.491
+      ]
+    },
+    {
+      "index": 95,
+      "name": "milo/Right Arm 2",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -3.316,
+        0.175
+      ]
+    },
+    {
+      "index": 96,
+      "name": "milo/Right Arm 3",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.571,
+        1.571
+      ]
+    },
+    {
+      "index": 97,
+      "name": "milo/Right Arm 4",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.67,
+        0.773
+      ]
+    },
+    {
+      "index": 98,
+      "name": "milo/Right Arm 5",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.571,
+        1.571
+      ]
+    },
+    {
+      "index": 99,
+      "name": "milo/Right Arm 6",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.785,
+        0.785
+      ]
+    },
+    {
+      "index": 100,
+      "name": "milo/Right Arm 7",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.571,
+        1.571
+      ]
+    },
+    {
+      "index": 101,
+      "name": "milo/Right Wrist",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.6736,
+        0.8972
+      ]
+    },
+    {
+      "index": 102,
+      "name": "milo/Right Thumb MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.87266,
+        0.87266
+      ]
+    },
+    {
+      "index": 103,
+      "name": "milo/Right Thumb Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.08211,
+        0.0
+      ]
+    },
+    {
+      "index": 104,
+      "name": "milo/Right Thumb PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.7944,
+        1.23
+      ]
+    },
+    {
+      "index": 105,
+      "name": "milo/Right Thumb DIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.85384,
+        1.45
+      ]
+    },
+    {
+      "index": 106,
+      "name": "milo/Right Index Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -1.04577,
+        0.24577
+      ]
+    },
+    {
+      "index": 107,
+      "name": "milo/Right Index MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.65806
+      ]
+    },
+    {
+      "index": 108,
+      "name": "milo/Right Index PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.88496
+      ]
+    },
+    {
+      "index": 109,
+      "name": "milo/Right Middle Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.64577,
+        0.64577
+      ]
+    },
+    {
+      "index": 110,
+      "name": "milo/Right Middle MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.58825
+      ]
+    },
+    {
+      "index": 111,
+      "name": "milo/Right Middle PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.8675
+      ]
+    },
+    {
+      "index": 112,
+      "name": "milo/Right Ring Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.47577,
+        0.80577
+      ]
+    },
+    {
+      "index": 113,
+      "name": "milo/Right Ring MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.58825
+      ]
+    },
+    {
+      "index": 114,
+      "name": "milo/Right Ring PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.8675
+      ]
+    },
+    {
+      "index": 115,
+      "name": "milo/Right Pinky Abd",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.12244,
+        1.1691
+      ]
+    },
+    {
+      "index": 116,
+      "name": "milo/Right Pinky MCP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.71042
+      ]
+    },
+    {
+      "index": 117,
+      "name": "milo/Right Pinky PIP",
+      "mode": "position",
+      "units": "rad",
+      "limits": [
+        -0.34907,
+        1.88496
+      ]
+    }
+  ],
+  "coordinates": "world metres/radians; wxyz",
+  "grounding_m": {
+    "mabel": 0.1696130116711796,
+    "milo": 0.1696130116711796
+  },
+  "grasp_assumption": "secure from held start",
+  "global_search_scope": "full SE(3), grounded robot joint-limited closed-chain witnesses"
+}

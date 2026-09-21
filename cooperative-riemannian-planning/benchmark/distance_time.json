@@ -1,0 +1,300 @@
+[
+  {
+    "scene": "m2_long_museum_five_rooms",
+    "baseline": {
+      "object_distance_m": 48.07344772131809,
+      "object_rotation_rad": 8.170290272346158,
+      "reference_time_s": 631.5347221778485,
+      "base_distance_m": [
+        55.312150315444946,
+        55.16692640423285
+      ],
+      "inplace_yaw_time_s": 85.346381253641,
+      "acceleration_time_scale": 1.0000000004801453,
+      "local_timing_iterations": 24,
+      "timing": "shared forward/backward speed pass, local sampled acceleration repair and final scaling guard; approximate"
+    },
+    "optimized": {
+      "object_distance_m": 44.880493103754475,
+      "object_rotation_rad": 6.7983401397348775,
+      "reference_time_s": 581.0065334657322,
+      "base_distance_m": [
+        47.47969707742752,
+        44.028657413720566
+      ],
+      "inplace_yaw_time_s": 0.0,
+      "acceleration_time_scale": 1.000000000442012,
+      "local_timing_iterations": 26,
+      "timing": "shared forward/backward speed pass, local sampled acceleration repair and final scaling guard; approximate",
+      "distance_time_objective": 0.9267865874167491,
+      "radii_m": [
+        2.0,
+        3.0,
+        1.5
+      ]
+    },
+    "candidate_count": 216,
+    "optimization_time_s": 167.48783133318648,
+    "reduction_percent": {
+      "object_distance_m": 6.641825724822525,
+      "reference_time_s": 8.000856791827648
+    },
+    "baseline_execution": {
+      "scene": "m2_long_museum_five_rooms",
+      "mode": "whole_body",
+      "success": true,
+      "reason": "goal reached",
+      "simulation_s": 635.5599999987948,
+      "wall_s": 871.2784824578557,
+      "final_position_error_m": 0.0007001150355066093,
+      "final_angle_error_rad": 0.0005680551199872869,
+      "max_penetration_m": 0.0,
+      "positive_actuator_work_J": 2410.76466739015,
+      "signed_actuator_work_J": 649.1720292425754,
+      "work_definition": "sum over actuators integral max(force * transmission_velocity, 0) dt at physics steps; mechanical work, not electrical energy",
+      "grasp_assumption": "four permanently active welds anchored at held start",
+      "state_assignment": "only at t=0",
+      "controller": "whole-body position targets + gravity feedforward + swerve base feedback",
+      "payload_mass_kg": 1.4999999999999998,
+      "checkpoint": null,
+      "checkpoint_sha256": null
+    },
+    "optimized_execution": {
+      "scene": "m2_long_museum_five_rooms_timeaware",
+      "mode": "whole_body",
+      "success": true,
+      "reason": "goal reached",
+      "simulation_s": 585.0399999999894,
+      "wall_s": 845.6329102499876,
+      "final_position_error_m": 0.0010140059489600753,
+      "final_angle_error_rad": 0.000571610377400212,
+      "max_penetration_m": 0.0,
+      "positive_actuator_work_J": 8921.747381247533,
+      "signed_actuator_work_J": -667.5657338410438,
+      "work_definition": "sum over actuators integral max(force * transmission_velocity, 0) dt at physics steps; mechanical work, not electrical energy",
+      "grasp_assumption": "four permanently active welds anchored at held start",
+      "state_assignment": "only at t=0",
+      "controller": "whole-body position targets + gravity feedforward + swerve base feedback",
+      "payload_mass_kg": 1.4999999999999998,
+      "checkpoint": null,
+      "checkpoint_sha256": null
+    },
+    "weight_sweep": [
+      {
+        "distance_weight": 0.25,
+        "selected": {
+          "object_distance_m": 45.257365194601235,
+          "object_rotation_rad": 7.1105791928675135,
+          "reference_time_s": 579.270057936739,
+          "base_distance_m": [
+            47.802240073179846,
+            45.67256764248174
+          ],
+          "inplace_yaw_time_s": 0.0,
+          "acceleration_time_scale": 1.000000000442012,
+          "local_timing_iterations": 26,
+          "timing": "shared forward/backward speed pass, local sampled acceleration repair and final scaling guard; approximate",
+          "distance_time_objective": 0.9293315344481703,
+          "radii_m": [
+            1.0,
+            3.0,
+            1.5
+          ]
+        }
+      },
+      {
+        "distance_weight": 0.5,
+        "selected": {
+          "object_distance_m": 44.880493103754475,
+          "object_rotation_rad": 6.7983401397348775,
+          "reference_time_s": 581.0065334657322,
+          "base_distance_m": [
+            47.47969707742752,
+            44.028657413720566
+          ],
+          "inplace_yaw_time_s": 0.0,
+          "acceleration_time_scale": 1.000000000442012,
+          "local_timing_iterations": 26,
+          "timing": "shared forward/backward speed pass, local sampled acceleration repair and final scaling guard; approximate",
+          "distance_time_objective": 0.9267865874167491,
+          "radii_m": [
+            2.0,
+            3.0,
+            1.5
+          ]
+        }
+      },
+      {
+        "distance_weight": 0.75,
+        "selected": {
+          "object_distance_m": 43.93519289668495,
+          "object_rotation_rad": 6.421017714556455,
+          "reference_time_s": 600.4405404810834,
+          "base_distance_m": [
+            46.5829049799116,
+            42.92864453544611
+          ],
+          "inplace_yaw_time_s": 0.0,
+          "acceleration_time_scale": 1.000000000442012,
+          "local_timing_iterations": 26,
+          "timing": "shared forward/backward speed pass, local sampled acceleration repair and final scaling guard; approximate",
+          "distance_time_objective": 0.9323410874999969,
+          "radii_m": [
+            3.0,
+            3.0,
+            3.0
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "scene": "m2_long_logistics_five_rooms",
+    "baseline": {
+      "object_distance_m": 48.407066831294586,
+      "object_rotation_rad": 8.565998782897998,
+      "reference_time_s": 635.4346602343601,
+      "base_distance_m": [
+        54.82651612284904,
+        55.46296442404142
+      ],
+      "inplace_yaw_time_s": 84.82707799263764,
+      "acceleration_time_scale": 1.0000000004533334,
+      "local_timing_iterations": 24,
+      "timing": "shared forward/backward speed pass, local sampled acceleration repair and final scaling guard; approximate"
+    },
+    "optimized": {
+      "object_distance_m": 44.054877625641424,
+      "object_rotation_rad": 7.086203677259087,
+      "reference_time_s": 554.6566600713261,
+      "base_distance_m": [
+        42.365934727387284,
+        46.86238742039373
+      ],
+      "inplace_yaw_time_s": 0.0,
+      "acceleration_time_scale": 1.0000000002201725,
+      "local_timing_iterations": 26,
+      "timing": "shared forward/backward speed pass, local sampled acceleration repair and final scaling guard; approximate",
+      "distance_time_objective": 0.8914847147934453,
+      "radii_m": [
+        3.0,
+        3.0,
+        3.0
+      ]
+    },
+    "candidate_count": 216,
+    "optimization_time_s": 126.36419354192913,
+    "reduction_percent": {
+      "object_distance_m": 8.990813719040547,
+      "reference_time_s": 12.712243322270389
+    },
+    "baseline_execution": {
+      "scene": "m2_long_logistics_five_rooms",
+      "mode": "whole_body",
+      "success": true,
+      "reason": "goal reached",
+      "simulation_s": 639.4599999987025,
+      "wall_s": 665.0499654999003,
+      "final_position_error_m": 0.001382853747963762,
+      "final_angle_error_rad": 0.0012428599360568247,
+      "max_penetration_m": 0.0,
+      "positive_actuator_work_J": 2469.325652816618,
+      "signed_actuator_work_J": 545.7191753409405,
+      "work_definition": "sum over actuators integral max(force * transmission_velocity, 0) dt at physics steps; mechanical work, not electrical energy",
+      "grasp_assumption": "four permanently active welds anchored at held start",
+      "state_assignment": "only at t=0",
+      "controller": "whole-body position targets + gravity feedforward + swerve base feedback",
+      "payload_mass_kg": 1.5,
+      "checkpoint": null,
+      "checkpoint_sha256": null
+    },
+    "optimized_execution": {
+      "scene": "m2_long_logistics_five_rooms_timeaware",
+      "mode": "whole_body",
+      "success": true,
+      "reason": "goal reached",
+      "simulation_s": 558.6800000006127,
+      "wall_s": 786.12140824995,
+      "final_position_error_m": 0.0023652233939827393,
+      "final_angle_error_rad": 0.0016639760708373101,
+      "max_penetration_m": 0.0,
+      "positive_actuator_work_J": 4189.992773385533,
+      "signed_actuator_work_J": -146.8711526396967,
+      "work_definition": "sum over actuators integral max(force * transmission_velocity, 0) dt at physics steps; mechanical work, not electrical energy",
+      "grasp_assumption": "four permanently active welds anchored at held start",
+      "state_assignment": "only at t=0",
+      "controller": "whole-body position targets + gravity feedforward + swerve base feedback",
+      "payload_mass_kg": 1.5,
+      "checkpoint": null,
+      "checkpoint_sha256": null
+    },
+    "weight_sweep": [
+      {
+        "distance_weight": 0.25,
+        "selected": {
+          "object_distance_m": 44.054877625641424,
+          "object_rotation_rad": 7.086203677259087,
+          "reference_time_s": 554.6566600713261,
+          "base_distance_m": [
+            42.365934727387284,
+            46.86238742039373
+          ],
+          "inplace_yaw_time_s": 0.0,
+          "acceleration_time_scale": 1.0000000002201725,
+          "local_timing_iterations": 26,
+          "timing": "shared forward/backward speed pass, local sampled acceleration repair and final scaling guard; approximate",
+          "distance_time_objective": 0.8914847147934453,
+          "radii_m": [
+            3.0,
+            3.0,
+            3.0
+          ]
+        }
+      },
+      {
+        "distance_weight": 0.5,
+        "selected": {
+          "object_distance_m": 44.054877625641424,
+          "object_rotation_rad": 7.086203677259087,
+          "reference_time_s": 554.6566600713261,
+          "base_distance_m": [
+            42.365934727387284,
+            46.86238742039373
+          ],
+          "inplace_yaw_time_s": 0.0,
+          "acceleration_time_scale": 1.0000000002201725,
+          "local_timing_iterations": 26,
+          "timing": "shared forward/backward speed pass, local sampled acceleration repair and final scaling guard; approximate",
+          "distance_time_objective": 0.8914847147934453,
+          "radii_m": [
+            3.0,
+            3.0,
+            3.0
+          ]
+        }
+      },
+      {
+        "distance_weight": 0.75,
+        "selected": {
+          "object_distance_m": 44.054877625641424,
+          "object_rotation_rad": 7.086203677259087,
+          "reference_time_s": 554.6566600713261,
+          "base_distance_m": [
+            42.365934727387284,
+            46.86238742039373
+          ],
+          "inplace_yaw_time_s": 0.0,
+          "acceleration_time_scale": 1.0000000002201725,
+          "local_timing_iterations": 26,
+          "timing": "shared forward/backward speed pass, local sampled acceleration repair and final scaling guard; approximate",
+          "distance_time_objective": 0.8914847147934453,
+          "radii_m": [
+            3.0,
+            3.0,
+            3.0
+          ]
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,912 @@
+{
+  "scene": "m2_loft_low_beam",
+  "mode": "rl",
+  "success": false,
+  "reason": "controller termination: ['base_over']",
+  "simulation_s": 4.559999999999925,
+  "wall_s": 7.406176584074274,
+  "final_position_error_m": 0.026011397219299875,
+  "final_angle_error_rad": 0.14585008262439222,
+  "max_penetration_m": 0.0,
+  "grasp_assumption": "four permanently active welds anchored at held start",
+  "state_assignment": "only at t=0",
+  "controller": "existing learned PPO SE3 actor",
+  "payload_mass_kg": 1.4999999999999993,
+  "checkpoint": "$M2_REPOSITORY/experiments/evaluation_snapshots/v106_se3_clearance_final/evaluation_checkpoint.pt",
+  "checkpoint_sha256": "e4f505550966c1ea6410a583b05030f2161e140a85c2eea184e4576d4b135684",
+  "records": [
+    {
+      "time_s": 0.02,
+      "position_error_m": 0.0020293469236610027,
+      "angle_error_rad": 2.9756671935903926e-06,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.1000003714806788,
+        -1.1202478373360816e-07,
+        0.7679706531134316
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 0.12000000000000004,
+      "position_error_m": 0.02073147209102795,
+      "angle_error_rad": 0.00034860801596272233,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.0999822616187591,
+        -6.459565450945795e-06,
+        0.7492685365040257
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 0.2200000000000001,
+      "position_error_m": 0.026851433405832542,
+      "angle_error_rad": 0.0011746469334905172,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.0998796584660842,
+        5.008474779639327e-05,
+        0.7431488829770322
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 0.3200000000000002,
+      "position_error_m": 0.026288342115960726,
+      "angle_error_rad": 0.0018028808605293034,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.1000868388772052,
+        0.0004229024084741906,
+        0.7437152031819132
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 0.42000000000000026,
+      "position_error_m": 0.02444174113377865,
+      "angle_error_rad": 0.002071530337385328,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.0998933724023767,
+        0.0005671782515600587,
+        0.7455650731730781
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 0.5200000000000004,
+      "position_error_m": 0.022137444785004793,
+      "angle_error_rad": 0.002360965475213316,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.1001489390263752,
+        -0.000580342797704548,
+        0.7478706646956419
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 0.6200000000000004,
+      "position_error_m": 0.020015340432228194,
+      "angle_error_rad": 0.0021590668417337897,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.1008371423798662,
+        -0.0005877764601228464,
+        0.7500108138212996
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 0.7200000000000005,
+      "position_error_m": 0.017862425371598763,
+      "angle_error_rad": 0.002523546028893595,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.100825481459613,
+        -0.0001948657569137295,
+        0.7521577230193971
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 0.8200000000000006,
+      "position_error_m": 0.01558801183861289,
+      "angle_error_rad": 0.0027810438242213908,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.1008248485361125,
+        -0.0004973789664466799,
+        0.7544417754182251
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 0.9200000000000007,
+      "position_error_m": 0.01331814415925101,
+      "angle_error_rad": 0.0031685057714453254,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.1008025936173085,
+        -0.00015364890280202215,
+        0.7567069492084505
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 1.0200000000000002,
+      "position_error_m": 0.011063495821038886,
+      "angle_error_rad": 0.0037329441145076687,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.1008064987381447,
+        -5.04791652307389e-05,
+        0.7589660545849912
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 1.119999999999998,
+      "position_error_m": 0.009006492253787607,
+      "angle_error_rad": 0.004247837178117725,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.1003322784610248,
+        -0.0005691636297902525,
+        0.7610176536192151
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 1.219999999999996,
+      "position_error_m": 0.006929504575638403,
+      "angle_error_rad": 0.004331336751216217,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.1001382329093572,
+        -0.0003948762157909134,
+        0.7630831366862741
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 1.3199999999999938,
+      "position_error_m": 0.005008130459355051,
+      "angle_error_rad": 0.00441642558800114,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.0999448566245578,
+        0.00036275013885304604,
+        0.7650053286151313
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 1.4199999999999917,
+      "position_error_m": 0.0034146400312973194,
+      "angle_error_rad": 0.004747952155620151,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.0996996284749254,
+        0.001305622569263194,
+        0.766859157247347
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 1.5199999999999896,
+      "position_error_m": 0.0025138637067959263,
+      "angle_error_rad": 0.004626165015040799,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.09955321696089,
+        0.002423387114374989,
+        0.7695029179683488
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 1.6199999999999875,
+      "position_error_m": 0.0037514508671091114,
+      "angle_error_rad": 0.004802072713817895,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.099224018626029,
+        0.0028834013333254825,
+        0.7722709542634233
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 1.7199999999999853,
+      "position_error_m": 0.005915582648144973,
+      "angle_error_rad": 0.005077005988773424,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.0989584870542708,
+        0.0033110995888649183,
+        0.7747901971111355
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 1.8199999999999832,
+      "position_error_m": 0.007679588636214661,
+      "angle_error_rad": 0.00544883950209055,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.0984835983070196,
+        0.003076299257237463,
+        0.7768711709633019
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 1.919999999999981,
+      "position_error_m": 0.009181558561322752,
+      "angle_error_rad": 0.005808701919567856,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.0982557145618423,
+        0.002781405297663911,
+        0.7785745128430341
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 2.019999999999979,
+      "position_error_m": 0.010349533099060183,
+      "angle_error_rad": 0.006128608825637159,
+      "reference_xyz": [
+        -1.1,
+        0.0,
+        0.77
+      ],
+      "actual_xyz": [
+        -1.0981480877372236,
+        0.002571034825790032,
+        0.7798525649586336
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 2.119999999999977,
+      "position_error_m": 0.009434760556028723,
+      "angle_error_rad": 0.005199770421137683,
+      "reference_xyz": [
+        -1.0960551724137932,
+        0.0,
+        0.7720800000000001
+      ],
+      "actual_xyz": [
+        -1.097321921978878,
+        0.0024088819471569825,
+        0.7811136781021695
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 2.219999999999975,
+      "position_error_m": 0.009532275231060967,
+      "angle_error_rad": 0.01031759896029396,
+      "reference_xyz": [
+        -1.0921103448275864,
+        0.0,
+        0.77416
+      ],
+      "actual_xyz": [
+        -1.0917780075760117,
+        0.0007428625899509699,
+        0.7836574722007682
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 2.3199999999999728,
+      "position_error_m": 0.010457337577876284,
+      "angle_error_rad": 0.016451641427164827,
+      "reference_xyz": [
+        -1.0881655172413793,
+        0.0,
+        0.77624
+      ],
+      "actual_xyz": [
+        -1.08677962664823,
+        -0.001917604991131129,
+        0.7864261674627641
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 2.4199999999999706,
+      "position_error_m": 0.01238467266627381,
+      "angle_error_rad": 0.022969234204549164,
+      "reference_xyz": [
+        -1.0842206896551725,
+        0.0,
+        0.77832
+      ],
+      "actual_xyz": [
+        -1.0818774805974691,
+        -0.005276469353779249,
+        0.7892766582278209
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 2.5199999999999685,
+      "position_error_m": 0.013974798883992494,
+      "angle_error_rad": 0.029105056551611046,
+      "reference_xyz": [
+        -1.0802758620689654,
+        0.0,
+        0.7804
+      ],
+      "actual_xyz": [
+        -1.0767920944874623,
+        -0.006579336749135722,
+        0.792226694180014
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 2.6199999999999664,
+      "position_error_m": 0.015236187827763273,
+      "angle_error_rad": 0.03551950210371063,
+      "reference_xyz": [
+        -1.0763310344827588,
+        0.0,
+        0.7824800000000001
+      ],
+      "actual_xyz": [
+        -1.071893446606382,
+        -0.00735424701849251,
+        0.795064287192897
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 2.7199999999999642,
+      "position_error_m": 0.015747838434773467,
+      "angle_error_rad": 0.04149383072887096,
+      "reference_xyz": [
+        -1.072386206896552,
+        0.0,
+        0.78456
+      ],
+      "actual_xyz": [
+        -1.0679978286433955,
+        -0.007763101225040437,
+        0.7975396306205041
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 2.819999999999962,
+      "position_error_m": 0.01624851032328951,
+      "angle_error_rad": 0.04690552278697954,
+      "reference_xyz": [
+        -1.0684413793103449,
+        0.0,
+        0.78664
+      ],
+      "actual_xyz": [
+        -1.0644083208128536,
+        -0.008131325395384043,
+        0.8001170202268989
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 2.91999999999996,
+      "position_error_m": 0.01636679155715419,
+      "angle_error_rad": 0.05302161573185003,
+      "reference_xyz": [
+        -1.064496551724138,
+        0.0,
+        0.78872
+      ],
+      "actual_xyz": [
+        -1.0628631060663838,
+        -0.008431193103430613,
+        0.8026526488512113
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 3.019999999999958,
+      "position_error_m": 0.017023348606455786,
+      "angle_error_rad": 0.05869496576505294,
+      "reference_xyz": [
+        -1.0605517241379312,
+        0.0,
+        0.7908000000000001
+      ],
+      "actual_xyz": [
+        -1.058124670423515,
+        -0.008004121549860884,
+        0.8056269297651035
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 3.1199999999999557,
+      "position_error_m": 0.01746875336833031,
+      "angle_error_rad": 0.06483444737977692,
+      "reference_xyz": [
+        -1.0566068965517244,
+        0.0,
+        0.79288
+      ],
+      "actual_xyz": [
+        -1.0570385448169715,
+        -0.008027594739934942,
+        0.8083889892227066
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 3.2199999999999536,
+      "position_error_m": 0.018329193071806426,
+      "angle_error_rad": 0.0714147438060719,
+      "reference_xyz": [
+        -1.0526620689655175,
+        0.0,
+        0.7949600000000001
+      ],
+      "actual_xyz": [
+        -1.0519711322197112,
+        -0.007967264345516934,
+        0.8114525626852078
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 3.3199999999999514,
+      "position_error_m": 0.0193483385610349,
+      "angle_error_rad": 0.07564160450410866,
+      "reference_xyz": [
+        -1.0487172413793104,
+        0.0,
+        0.7970400000000001
+      ],
+      "actual_xyz": [
+        -1.0512626345713338,
+        -0.007831187813880381,
+        0.8145486171925188
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 3.4199999999999493,
+      "position_error_m": 0.019429718734196213,
+      "angle_error_rad": 0.08390292191496393,
+      "reference_xyz": [
+        -1.0447724137931034,
+        0.0,
+        0.79912
+      ],
+      "actual_xyz": [
+        -1.0450020395933193,
+        -0.007221168750572481,
+        0.8171565175119148
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 3.519999999999947,
+      "position_error_m": 0.020775308144426352,
+      "angle_error_rad": 0.08767066016516771,
+      "reference_xyz": [
+        -1.0408275862068965,
+        0.0,
+        0.8012
+      ],
+      "actual_xyz": [
+        -1.0447016768958652,
+        -0.006642696286597099,
+        0.820499726316027
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 3.619999999999945,
+      "position_error_m": 0.020656408769203823,
+      "angle_error_rad": 0.0945411202018651,
+      "reference_xyz": [
+        -1.0368827586206897,
+        0.0,
+        0.80328
+      ],
+      "actual_xyz": [
+        -1.038746781777664,
+        -0.00558660995390448,
+        0.8230790512432702
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 3.719999999999943,
+      "position_error_m": 0.021719252422513366,
+      "angle_error_rad": 0.09807027973483368,
+      "reference_xyz": [
+        -1.0329379310344828,
+        0.0,
+        0.8053600000000001
+      ],
+      "actual_xyz": [
+        -1.0364832848923635,
+        -0.0044177375261873755,
+        0.8263275937333062
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 3.8199999999999408,
+      "position_error_m": 0.022319434687615776,
+      "angle_error_rad": 0.1052672120157572,
+      "reference_xyz": [
+        -1.028993103448276,
+        0.0,
+        0.80744
+      ],
+      "actual_xyz": [
+        -1.0324175801652455,
+        -0.0031116203801412837,
+        0.8292745584475522
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 3.9199999999999386,
+      "position_error_m": 0.022739069908747345,
+      "angle_error_rad": 0.11178935841416975,
+      "reference_xyz": [
+        -1.0250482758620691,
+        0.0,
+        0.80952
+      ],
+      "actual_xyz": [
+        -1.0275963427643506,
+        -0.001445764867420774,
+        0.8320695547478111
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 4.0199999999999365,
+      "position_error_m": 0.023715758323518844,
+      "angle_error_rad": 0.11668647120246517,
+      "reference_xyz": [
+        -1.0211034482758623,
+        0.0,
+        0.8116000000000001
+      ],
+      "actual_xyz": [
+        -1.0255089843999097,
+        0.00033306308552513426,
+        0.83490059040669
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 4.119999999999934,
+      "position_error_m": 0.024094736539247298,
+      "angle_error_rad": 0.1221077911691934,
+      "reference_xyz": [
+        -1.0171586206896555,
+        0.0,
+        0.81368
+      ],
+      "actual_xyz": [
+        -1.0209444047991563,
+        0.001123345679063911,
+        0.837448934811163
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 4.219999999999932,
+      "position_error_m": 0.024414360051676826,
+      "angle_error_rad": 0.12733924850079895,
+      "reference_xyz": [
+        -1.0132137931034484,
+        0.0,
+        0.81576
+      ],
+      "actual_xyz": [
+        -1.0162595098149383,
+        0.0013788759731497428,
+        0.8399443603904866
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 4.31999999999993,
+      "position_error_m": 0.02510065896773984,
+      "angle_error_rad": 0.13269365370439873,
+      "reference_xyz": [
+        -1.0092689655172415,
+        0.0,
+        0.8178399999999999
+      ],
+      "actual_xyz": [
+        -1.0133993263154988,
+        0.0010764245053538496,
+        0.8425750866296293
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 4.419999999999928,
+      "position_error_m": 0.025671599469302912,
+      "angle_error_rad": 0.1380664547242271,
+      "reference_xyz": [
+        -1.0053241379310345,
+        0.0,
+        0.81992
+      ],
+      "actual_xyz": [
+        -1.010519845015326,
+        -0.00021179436558402183,
+        0.8450594270092471
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 4.519999999999926,
+      "position_error_m": 0.025874367604505084,
+      "angle_error_rad": 0.14387579016002966,
+      "reference_xyz": [
+        -1.0013793103448276,
+        0.0,
+        0.822
+      ],
+      "actual_xyz": [
+        -1.0059715022843192,
+        -0.001788999298735896,
+        0.8474006723067137
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    },
+    {
+      "time_s": 4.559999999999925,
+      "position_error_m": 0.026011397219299875,
+      "angle_error_rad": 0.14585008262439222,
+      "reference_xyz": [
+        -0.9998013793103449,
+        0.0,
+        0.822832
+      ],
+      "actual_xyz": [
+        -1.0044159353452633,
+        -0.002421963597203197,
+        0.8483159704566345
+      ],
+      "bad_contacts": 0,
+      "penetration_m": 0.0,
+      "contacts": [],
+      "gripper_internal_penetration_m": 0.0
+    }
+  ]
+}

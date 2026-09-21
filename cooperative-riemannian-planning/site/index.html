@@ -1,0 +1,232 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Riemannian Cooperative Transport — M2 Research Review</title>
+<style>
+:root{--ink:#203346;--muted:#596d80;--accent:#146b76;--paper:#f4f5f3;--line:#d6deda}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 Georgia,serif}main{max-width:1220px;margin:auto;padding:52px 34px}header{border-bottom:2px solid var(--ink);padding-bottom:28px}small,.eyebrow,label,button,select,.caption,table,.stat{font-family:system-ui,sans-serif}.eyebrow{letter-spacing:.16em;font-size:12px;color:var(--accent);font-weight:700}h1{font-size:clamp(34px,5vw,62px);line-height:1.08;max-width:940px;font-weight:500;margin:20px 0}h2{font-weight:500;font-size:28px;margin:35px 0 13px}h3{font-size:21px}p{max-width:960px}a{color:#126673}nav{display:flex;gap:22px;flex-wrap:wrap;margin-top:22px}section{margin-top:35px}.intro{font-size:20px;color:var(--muted)}.note{border-left:3px solid #b16e33;padding:12px 20px;background:#f3eadd}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:28px 0}.stat{background:white;padding:20px;border:1px solid var(--line)}.stat b{font-size:30px;display:block}.stat span{font-size:13px;color:var(--muted)}.controls{display:flex;gap:14px;align-items:center;flex-wrap:wrap}select,button{padding:10px 13px;background:white;border:1px solid #a8b8bf;color:var(--ink);border-radius:3px;font-size:14px}button{cursor:pointer}button:hover{background:#e0edeb}.grid{display:grid;grid-template-columns:1.3fr 1fr;gap:22px}.panel{background:white;border:1px solid var(--line);padding:20px}video{width:100%;background:#12202b}.caption{font-size:13px;color:var(--muted);margin:8px 0}#workspace{height:470px}.range{width:100%;accent-color:var(--accent)}table{border-collapse:collapse;width:100%;font-size:13px}td,th{text-align:left;padding:12px 9px;border-bottom:1px solid var(--line);vertical-align:top}th{font-weight:600;color:var(--muted)}.pass{color:#167345}.fail{color:#a34222}.download{display:flex;gap:15px;flex-wrap:wrap;font:13px system-ui,sans-serif;margin:15px 0}.figure{width:100%;background:white}#tracking{height:300px}pre{white-space:pre-wrap;background:#e9edeb;padding:19px;font:14px/1.7 ui-monospace,monospace;border-left:2px solid var(--accent);overflow-wrap:anywhere}#methods{max-width:940px}#methods h1{font-size:34px}#methods h2{font-size:25px}code{font-size:.9em}details{border-top:1px solid var(--line);padding:12px 0}summary{cursor:pointer;font:16px system-ui,sans-serif}footer{border-top:1px solid var(--line);padding-top:20px;margin-top:50px;color:var(--muted);font-size:13px}@media(max-width:800px){main{padding:28px 16px}.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.panel{padding:12px}table{font-size:11px}td,th{padding:9px 4px}#workspace{height:380px}}
+</style>
+<main><aside id="se3-revision" class="note"><strong>New: full SE(3) planning with robot reachability and geometry constraints.</strong> <a href="se3.html">Open the current SE(3) report, recordings and derivations →</a><br>This page preserves the earlier planar baseline.</aside><header><div class="eyebrow">M2 · COMPUTATIONAL ROBOTICS · EXPERIMENTAL REPORT</div><h1>Riemannian planning for cooperative transport</h1><p class="intro">Two robots, four secured grasps, five environments. Geometry-aware global planning and constrained whole-body refinement, evaluated through two controller interfaces.</p><nav><a href="#experiments">Experiments & recordings</a><a href="#results">Measured results</a><a href="#methods">Methods & derivations</a><a href="../METHODS.md">Download methods</a><a href="https://github.com/thejerrycheng/cooperative-riemannian-planning/archive/refs/heads/main.zip">Offline bundle</a></nav></header>
+<div class="stats"><div class="stat"><b id="plans">—</b><span>Verified geometric plans</span></div><div class="stat"><b>44</b><span>Whole-body optimization coordinates</span></div><div class="stat"><b id="rl-rate">—</b><span>Learned execution successes</span></div><div class="stat"><b id="wb-rate">—</b><span>Position-tracking successes</span></div></div>
+<p class="note"><strong>Read the scope with the results.</strong> The global route uses a fixed-height SE(2) submanifold of SE(3). Four world-frame hand poses retain full orientation. Whole-body refinement is a local constrained solve. A valid geometric path does not establish controller success. Each clip is labeled as search, kinematic plan, or measured MuJoCo execution.</p>
+<section id="experiments"><h2>01 · Explore an experiment</h2><div class="controls"><label>Environment <select id="scene"></select></label><label>Recording <select id="kind"><option value="algorithm">Algorithm process</option><option value="grasp_plan">SE(3) grasp-reference plan</option><option value="whole_body_plan">Whole-body position plan</option><option value="rl_execution">Learned PPO execution</option><option value="whole_body_execution">Whole-body tracking execution</option></select></label></div>
+<div class="grid" style="margin-top:18px"><div class="panel"><video id="video" controls preload="metadata" playsinline></video><p id="video-caption" class="caption"></p><div class="controls"><button id="slower">0.5× video</button><button id="normal">1× video</button></div><div id="downloads" class="download"></div></div><div class="panel"><div class="controls"><label>3D view <select id="view"><option value="workspace">Workspace paths</option><option value="search">Search connections</option><option value="configuration">Configuration space (x,y,yaw)</option></select></label><button id="play">Play trace</button></div><div id="workspace"></div><input id="progress" class="range" type="range" min="0" max="100" value="100"><p class="caption">Drag to orbit, scroll to zoom. The slider reveals search edges or advances the planned formation. Gray volumes are collision-map proxies; videos show the actual scene geometry.</p></div></div>
+<div class="panel" style="margin-top:20px"><label>Tracking quantity <select id="tracking-mode"><option value="payload">Object position error</option><option value="base_error_m">Robot base position errors</option><option value="arm_rms_error_rad">Arm joint RMS errors</option><option value="lift_error_m">Lift position errors</option><option value="base_tilt_rad">Base inclination</option></select></label><div id="tracking"></div><p id="tracking-caption" class="caption"></p></div></section>
+<section id="results"><h2>02 · Results and failure evidence</h2><p>The table separates global planning, whole-body constraint validation, and closed-loop execution. One held-start controller trial per scene is a development test, not a reliability estimate. The current scene payloads weigh 1–2 kg.</p><p class="caption">Collision scope: whole-body tracking treats each secured gripper as one hand, recording internal finger overlap separately. PPO additionally keeps its original safety terminations. Its early stops are deployment failures, not evidence that the grasp-reference paths are geometrically infeasible.</p><div style="overflow:auto"><table><thead><tr><th>Environment</th><th>Plan margin</th><th>Whole-body audit</th><th>Learned PPO</th><th>Position tracking</th></tr></thead><tbody id="results-body"></tbody></table></div><img class="figure" src="summary.png" alt="Paired planning timings and final controller reference errors"><p class="caption">30 / 30 verified paired planning trials; mean cost reduction under the same task metric: 0.36%; median runtime ratio: 1.34×. These results do not establish a speedup or substantial cost advantage. <a href="summary.pdf">PDF figure</a> · <a href="../results/benchmark/summary.json">Raw benchmark</a></p><p class="note">An early failure can have a small final reference error because the reference has barely moved. Read the termination reason and elapsed time, not only the error bar.</p></section>
+<section><h2>03 · Interface contracts</h2><div class="grid"><div class="panel"><h3>Grasp poses → learned controller</h3><pre>Tᵂₕ(t) = Tᵂₒ(t) Tᵒₕ
+four poses × [x, y, z, qw, qx, qy, qz]
+MABEL left/right · MILO left/right</pre><p>Fixed object-to-hand transforms encode the secure grasps. The existing PPO actor consumes its trained observation schema, refreshed from the planned object pose and twist.</p></div><div class="panel"><h3>Whole body → position tracking</h3><pre>q*(t), baseᵢ*(t), actuator targets
+base: metres, radians
+arm/torso: radians · lift: metres</pre><p>Both robots are solved together on the closed-chain constraint manifold. Swerve wheel speeds are generated by base feedback. Joint servos use position targets and gravity feedforward.</p></div></div></section>
+<section id="methods"><h1>Riemannian cooperative transport: implementation and evidence</h1>
+<p>This experiment replaces RRT-Connect with a lazy, metric-aware roadmap in this
+folder. It does not change older experiments or silently reroute their planners.
+Run <code>run_suite.py</code> for both output interfaces. The original five scene geometries
+and their start/goal specifications are reused. A grasp is assumed acquired at
+the initial held state and secured thereafter by four fixed welds.</p>
+<h2>Two interfaces</h2>
+<ol>
+<li><strong>SE(3) grasp references.</strong> Each of the two bimanual robots receives a left and
+   right palm pose: four poses, not just two ambiguous robot frames. NPZ array
+   <code>hand_poses_wxyz</code> has shape <code>[time, 4, 7]</code>, ordered MABEL left/right, MILO
+   left/right; each row is world-frame <code>[x,y,z,qw,qx,qy,qz]</code> in metres. The object
+   pose and a fixed object-to-hand transform imply the same references for the
+   existing SE3 RL actor. The actor retains its own 187-observation/21-action
+   contract; these poses are not misrepresented as policy actions.</li>
+<li><strong>Whole-body position targets.</strong> The output includes base <code>[x,y,yaw]</code> targets,
+   complete MuJoCo qpos, and named actuator targets. Arms/torso use radians,
+   lift uses summed tendon travel in metres. Wheel DRIVE actuators are velocity
+   actuators and are resolved online from base tracking, not commanded to a
+   fictitious wheel position. Finger/neck targets retain the secured posture.</li>
+</ol>
+<h2>Configuration space and scope</h2>
+<p>The global transport chart is q=(x,y,theta), with unwrapped theta in [-pi,pi].
+It embeds as T(q)=(Rz(theta),[x,y,z0]) in SE(3). Therefore the outputs contain
+full orientations, but the global search does <strong>not</strong> explore roll, pitch or
+height. This is a level-carry experiment, not evidence of six-axis obstacle
+avoidance. A single yaw chart is used consistently for metric bounds and
+sampling; there is no unjustified Euclidean heuristic across a wrap cut.</p>
+<p>The whole-body optimization has 44 ambient generalized velocity coordinates: both
+grounded bases x/y/yaw, both 16-axis arm/wrist groups, both torsos, and both pairs
+of coupled lift stages. Payload poses are prescribed by the global route.
+Four six-axis grasp constraints and two lift-coupling constraints leave an
+18-dimensional local tangent space wherever the 26-row constraint Jacobian has
+full row rank. Damping handles poorly conditioned solves but is not a proof
+that the constraint manifold stays regular at every possible robot posture.
+This is constrained, local whole-body trajectory refinement seeded by a global
+transport route. It is not a globally complete 44-DOF planner.</p>
+<h2>Metric construction and distance</h2>
+<p>For robot i at payload-frame offset r_i, its planar base position is
+p_i(q)=[x,y]+R(theta)r_i. Differentiation gives</p>
+<pre><code>J_i(q) = [[1, 0, -(R r_i)_y], [0, 1, (R r_i)_x]].
+W(theta) = R(theta) diag(0.12, 0.65) R(theta)^T.
+B = diag(1, 1, max(0.2, 0.25 rho^2)).
+G(q) = B + sum_i J_i(q)^T W(theta) J_i(q).
+</code></pre>
+<p>Here rho is the composite circumradius. W penalizes lateral motion more than
+longitudinal motion. This is an engineered task metric with specified units and
+weights; it is <strong>not</strong> a measured energy cost. Because W is positive definite,
+v^T(G-B)v=sum_i (J_i v)^T W (J_i v)&gt;=0 for every v and q. Thus B is a certified
+global Loewner lower bound, without trusting a finite sample to establish a
+global claim.</p>
+<p>For two nearby chart points a,b and delta=b-a, the midpoint approximation is</p>
+<pre><code>d_hat(a,b) = sqrt(delta^T G((a+b)/2) delta).
+L_hat(path) = sum_k d_hat(q_k,q_(k+1)).
+</code></pre>
+<p>This implements the midpoint geometry of Kyaw &amp; Kelly [1]. Their local accuracy
+statement is not a claim that a long roadmap edge is an exact geodesic. Edges
+are subdivided by the local planner; all reported costs are numerical metric
+lengths, not physical work or global-optimality certificates.</p>
+<h2>Natural-gradient steering and graph search</h2>
+<p>Define phi(q)=0.5 d_hat(q,b)^2. With chart retraction R_q(v)=q+v, a finite
+central difference evaluates grad_E phi at 1e-5 coordinate steps. Solve</p>
+<pre><code>v = -G(q)^(-1) grad_E phi(q),
+q_next = R_q(s v / sqrt(v^T G(q) v)).
+</code></pre>
+<p>Backtracking requires phi(q_next)&lt;phi(q) and d_hat(q,q_next)&lt;=1.5s. The complete
+returned local polyline is checked; it is never replaced by a straight shortcut
+without checking. The graph uses 24 nearest neighbors under B, symmetrized.
+Dijkstra proposes a route using midpoint estimates for unknown edges. Each
+candidate route is checked lazily; accepted edges get their actual subdivided
+costs, failed edges are removed, and shortest-path search repeats. A changed
+edge cost triggers another search before accepting the route.</p>
+<p>Portal samples are obtained from the scene's existing aperture geometry. They
+are sampling guidance, not a precomputed path. Free samples outside the portal
+remain in the roadmap. There is no call to RRT-Connect in this pipeline.</p>
+<h2>Informed sampling derivation</h2>
+<p>From B&lt;=G, every smooth chart curve gamma satisfies</p>
+<pre><code>L_G(gamma) &gt;= integral ||L^T gamma_dot|| dt
+           &gt;= ||L^T(q_goal-q_start)||,  B=L L^T.
+</code></pre>
+<p>The second inequality is the triangle inequality in transformed coordinates.
+Hence h(q)=||L^T(q-q_start)||+||L^T(q_goal-q)|| is admissible. An incumbent
+cost c restricts potentially improving points to h(q)&lt;=c. In coordinates
+x=L^T q this is a prolate hyperspheroid centered at (x_start+x_goal)/2 with
+major semiaxis c/2 and minor semiaxes sqrt(c^2-c_min^2)/2. A uniform unit-ball
+sample is rotated to the start-goal axis, scaled by those semiaxes, translated,
+then mapped back by L^(-T). This is the direct sampler in [2].</p>
+<p>Eighty percent of later-batch samples use that ellipsoid. Remaining samples
+preserve global exploration. Uniformity is guaranteed inside the ellipsoid
+before workspace and collision rejection, not over collision-free space without
+rejection. The implementation also tests the paper's pairwise Loewner-meet
+operation, but uses the analytically certified B for the actual experiments.
+It does not claim to compute the tightest possible global matrix bound.</p>
+<h2>Whole-body constraints and projected optimization</h2>
+<p>Let F_h(Q) be a hand's forward kinematics and C_h its fixed object-relative
+grasp transform. Secured grasps impose</p>
+<pre><code>F_h(Q) = T_object C_h, for all four hands.
+c_h(Q) = [p_h-p_h*, 0.25 Log(R_h R_h*^T)] = 0.
+</code></pre>
+<p>The factor 0.25 metres scales rotation residuals to the translational objective.
+Two additional rows enforce equal travel of each lift's coupled stages.
+Stacking these rows gives constraint Jacobian A. With the reduced mass matrix
+H=S^T M(Q) S+0.3 I and joint-centering objective f, compute</p>
+<pre><code>u = -H^(-1) grad f,
+v = u - H^(-1) A^T (A H^(-1) A^T + epsilon I)^(-1) A u.
+</code></pre>
+<p>Without damping, A v=0: this is the H-orthogonal projection into the constraint
+tangent space. After a bounded tangent step, MuJoCo's configuration integrator
+retracts rotations. Iterated damped least-squares projection corrects closure:</p>
+<pre><code>Delta = -A^T (A A^T + 1e-7 I)^(-1) c(Q).
+</code></pre>
+<p>Joint limits are imposed after each retraction. A proposal is retained only if
+closure converges and actual model contact checks find no unallowed penetration
+above 1 mm. The endpoints remain at the original held posture. A posture taper
+vanishes at endpoints. The optimization improves local joint centering; it does
+not optimize all timing, contact forces or torque limits jointly.</p>
+<h2>Verification and dynamics</h2>
+<p>Global edge checking uses an 18 mm swept-displacement step. An independent
+final pass uses 5 mm; acceptance requires at least 20 mm planar clearance.
+These are sampled checks, not continuous-time collision certificates. MuJoCo
+full-body contact checks at trajectory knots complement the composite model;
+neither finite sampling nor endpoint grasp projection proves the complete
+interpolated trajectory is collision-free. Interpolation is independently
+audited in <code>audit.py</code> and execution checks actual states.</p>
+<p>The long beam initially overlaps low sawhorses in an infinite-height projected
+map. The planner uses the measured held payload underside minus 20 mm to ignore
+obstacles below the beam; those obstacles remain active against robot bases.
+No furniture or scene geometry is removed to obtain success.</p>
+<p>Dynamic execution uses <code>mj_step</code> only after a single held-start initialization.
+Four grasp welds stay active. No payload force or pose correction is injected.
+The original CAD keyframes leave the wheel surfaces about 170 mm above the
+floor. Initialization lowers each base by its measured wheel-to-floor gap and
+extends its two coupled lift stages by the same total amount. This preserves
+all four world-frame palm poses and the object pose. A regression test checks
+that preservation and the lift limits. Grasp weld impedance is explicitly set
+to [0.999,0.9999], with time constant max(4 ms, twice the physics timestep).
+Whole-body targets are tracked with position servos and base feedback through
+the existing swerve controller. Gravity feedforward adjusts servo setpoints
+using robot bias forces plus four equal nominal shares of payload weight.
+Bounded position-error integration compensates residual servo offsets.
+This support allocation is approximate, and does not certify force feasibility.
+Actuator limits remain active. PPO execution uses the existing frozen SE3
+checkpoint; no policy training or weight changes occur in this experiment.</p>
+<p>Success requires the final object position within 60 mm, orientation within
+0.08 rad, and no recorded unallowed penetration exceeding 2 mm. Runs stop on
+controller termination, 650 mm position error, 0.8 rad orientation error,
+20 mm unallowed penetration, or a documented time budget. Planning success
+and controller success are reported separately. Failure recordings are results.</p>
+<p>Under the secured-gripper approximation, contacts internal to a single hand
+are excluded from the transport collision gate, as are intended hand/payload
+and wheel/floor contacts. Internal finger penetration is still recorded as
+<code>gripper_internal_penetration_m</code>. Contacts between distinct hands, arm links,
+robots, objects and the environment remain forbidden. The learned controller
+additionally retains its original termination manager, which can stop on
+<code>robot_self_penetration</code> even when the common transport audit reports no
+forbidden external contact. Consequently, native PPO failures must be read as
+failures of that complete deployed controller, not proof that the exported
+grasp poses are unreachable or a matched comparison of termination policies.</p>
+<p>An independent recorded-state audit checks base inclination and actuator-space
+tracking. Maximum base inclination remained below 0.017 rad in these runs.
+MuJoCo uses soft joint constraints: the measured trajectories exhibit small
+limit overshoots, despite valid planned configurations. <code>tracking_audit.json</code>
+reports revolute overshoot in radians and prismatic overshoot in metres
+separately. Goal completion therefore does not imply strict hard-limit
+invariance or readiness for hardware deployment.</p>
+<h2>Reproducibility and statistical limits</h2>
+<p>Five scenes cover couch, scanned living-room sofa, crate, painting and beam.
+These are the repository's current light-load scene presets, approximately
+1–2 kg, not full-weight sofas or the historical 55 kg warehouse description.
+The actual model mass is stored in every execution result and displayed on the
+site. Successful light-load tracking does not establish full-scale load capacity.
+The main pipeline records both outputs and controller trials at seed 0.
+The paired planning benchmark evaluates three seeds per scene against the
+same roadmap with a constant metric. It tests metric/search behavior, not
+an RL training distribution or a broad generalization claim. Three seeds and
+one controller trial per scene are insufficient for population reliability.
+Sources are hashed in result files; policy SHA-256 is recorded per RL run.
+<code>summarize_benchmark.py</code> also evaluates both candidate paths with the same
+Riemannian metric. The measured mean paired cost reduction is about 0.36%,
+with a median runtime ratio of about 1.34. These small-sample observations do
+not support a claim of a substantial cost advantage or a speedup.</p>
+<h2>References</h2>
+<p>[1] Phone Thiha Kyaw and Jonathan Kelly. Geometry-Aware Sampling-Based Motion
+Planning on Riemannian Manifolds. WAFR 2026, arXiv:2602.00992v3.
+<a href="https://arxiv.org/abs/2602.00992v3">Versioned paper</a></p>
+<p>[2] Phone Thiha Kyaw and Jonathan Kelly. Direct Informed Sampling on Riemannian
+Manifolds via Loewner Order Lower Bounds. arXiv:2606.02879v1, 2026.
+<a href="https://arxiv.org/abs/2606.02879v1">Versioned paper</a></p>
+<p>[3] Authors' geodex implementation, Apache-2.0.
+<a href="https://github.com/utiasSTARS/geodex">Authors' repository</a></p>
+<p>This folder independently implements the paper-inspired geometry in NumPy to
+reuse M2's collision and controller interfaces. It is not an unmodified run of
+geodex and does not claim to reproduce the papers' published performance tables.</p></section><footer>Generated from local experiment files. No successful execution is inferred from a kinematic video. <a href="https://github.com/thejerrycheng/cooperative-riemannian-planning/blob/main/implementation/run_suite.py">Experiment runner</a> · <a href="https://github.com/thejerrycheng/cooperative-riemannian-planning/blob/main/implementation/planner.py">Planner source</a> · <a href="https://github.com/thejerrycheng/cooperative-riemannian-planning/blob/main/implementation/robot.py">Whole-body source</a> · <a href="https://github.com/thejerrycheng/cooperative-riemannian-planning/blob/main/implementation/execute.py">Execution source</a> · <a href="https://github.com/thejerrycheng/cooperative-riemannian-planning/blob/main/implementation/test_geometry.py">Numerical tests</a></footer></main>
+<script src="plotly.min.js"></script><script src="data.js"></script><script>
+const E=window.EXPERIMENTS,$=id=>document.getElementById(id);let active=0,timer=null;
+E.forEach((e,i)=>$('scene').add(new Option(e.label,i)));$('plans').textContent=E.filter(e=>e.report.success).length+'/'+E.length;
+for(const [id,mode] of [['rl-rate','rl'],['wb-rate','whole_body']])$(id).textContent=E.filter(e=>e.execution[mode]?.success).length+'/'+E.filter(e=>e.execution[mode]).length;
+function verdict(e){if(!e)return 'Not recorded';return `<span class="${e.success?'pass':'fail'}">${e.success?'PASS':'FAIL'}</span><br>${e.reason}<br>${e.simulation_s.toFixed(2)} s · ${(e.final_position_error_m*1000).toFixed(1)} mm`;}
+$('results-body').innerHTML=E.map(e=>`<tr><td>${e.label}<br>${(e.execution.whole_body?.payload_mass_kg??e.report.payload_mass_kg).toFixed(2)} kg</td><td>${(e.report.clearance_m*1000).toFixed(1)} mm<br>${e.report.time_s.toFixed(1)} s search</td><td>${e.audit?.whole_body.accepted?'PASS':'Not accepted'}<br>${e.audit? (1000*e.audit.whole_body.max_hand_position_residual_m).toFixed(2)+' mm closure':''}</td><td>${verdict(e.execution.rl)}</td><td>${verdict(e.execution.whole_body)}</td></tr>`).join('');
+function updateVideo(){const e=E[active],k=$('kind').value,v=$('video');if(e.videos[k]){v.src=e.videos[k];v.poster=e.videos[k].replace('.mp4','.jpg');v.load();}else{v.removeAttribute('src');v.removeAttribute('poster');v.load();}let text=k==='algorithm'?'Search trace: accepted and rejected local connections, followed by the chosen route.':k.endsWith('plan')?'Kinematic visualization of the planned path; no controller is being simulated.':verdict(e.execution[k==='rl_execution'?'rl':'whole_body']).replace(/<[^>]+>/g,' ');$('video-caption').textContent=e.videos[k]?text:'Recording not available.';}
+function scatter(points,name,color,width=5){return {type:'scatter3d',mode:'lines',x:points.map(p=>p[0]),y:points.map(p=>p[1]),z:points.map(p=>p[2]),name,line:{color,width},hoverinfo:'name+x+y+z'};}
+function draw(){const e=E[active],f=+$('progress').value/100,view=$('view').value,traces=[];
+ if(view==='configuration'){traces.push(scatter(e.path,'q = (x,y,yaw)','#1c688c',6));}
+ else{traces.push(scatter(e.path.map(p=>[p[0],p[1],.5]),'Object route','#1c688c',6));for(let r=0;r<2;r++)traces.push(scatter(e.bases.map(p=>[p[r][0],p[r][1],.25]),r?'MILO':'MABEL',r?'#b95b35':'#287b5d',4));
+ const idx=Math.min(e.bases.length-1,Math.floor(f*(e.bases.length-1)));const hands=e.hands[idx].map(h=>h.slice(0,3));traces.push({type:'scatter3d',mode:'markers',x:hands.map(p=>p[0]),y:hands.map(p=>p[1]),z:hands.map(p=>p[2]),name:'Four palm targets',marker:{size:6,color:'#d28c25'}});
+ for(const o of e.obstacles){const x=[o.x-o.hx,o.x+o.hx,o.x+o.hx,o.x-o.hx],y=[o.y-o.hy,o.y-o.hy,o.y+o.hy,o.y+o.hy];traces.push({type:'mesh3d',x:[...x,...x],y:[...y,...y],z:[0,0,0,0,o.z,o.z,o.z,o.z],i:[0,0,4,4,0,0,1,1,2,2,3,3],j:[1,2,5,6,1,5,2,6,3,7,0,4],k:[2,3,6,7,5,4,6,5,7,6,4,7],color:'#98a7ae',opacity:.17,hoverinfo:'skip',showlegend:false});}}
+ if(view!=='workspace'){const events=e.report.trace.filter(x=>x.a).slice(0,Math.floor(f*e.report.trace.filter(x=>x.a).length));for(const accepted of [true,false]){const pts=[];for(const x of events.filter(x=>x.accepted===accepted)){for(const p of [x.a,x.b])pts.push(view==='configuration'?p:[p[0],p[1],.2]);pts.push([null,null,null]);}traces.push(scatter(pts,accepted?'Accepted edges':'Rejected edges',accepted?'#329374':'#db824b',2));}}
+ Plotly.react('workspace',traces,{margin:{l:0,r:0,t:5,b:0},paper_bgcolor:'white',showlegend:true,legend:{orientation:'h',y:1.05,font:{size:10}},uirevision:'scene'+active,scene:{aspectmode:'data',xaxis:{title:'x (m)'},yaxis:{title:'y (m)'},zaxis:{title:view==='configuration'?'yaw (rad)':'z (m)'},camera:{eye:{x:-1.4,y:-1.5,z:1.2}}}},{responsive:true,displaylogo:false});}
+function tracking(){const e=E[active],traces=[],quantity=$('tracking-mode').value;let label='Position reference error (mm)';
+ if(quantity==='payload'){for(const [mode,color]of [['rl','#24608b'],['whole_body','#ca7843']]){const records=e.execution[mode]?.records||[];traces.push({x:records.map(r=>r.time_s),y:records.map(r=>1000*r.position_error_m),name:mode==='rl'?'Learned PPO':'Whole-body tracking',mode:'lines+markers',marker:{size:3},line:{color}});}}
+ else{const records=e.tracking?.records||[],angular=quantity.endsWith('_rad');label=quantity.replaceAll('_',' ')+' ('+(angular?'rad':'mm')+')';for(const [robot,color]of [['mabel','#24608b'],['milo','#ca7843']])traces.push({x:records.map(r=>r.time_s),y:records.map(r=>r.robots[robot][quantity]*(angular?1:1000)),name:robot.toUpperCase(),mode:'lines',line:{color}});}
+ Plotly.react('tracking',traces,{margin:{l:75,r:20,t:25,b:45},xaxis:{title:'Measured simulation time (s)'},yaxis:{title:label},legend:{orientation:'h'},paper_bgcolor:'white'},{responsive:true,displaylogo:false});$('tracking-caption').textContent=quantity==='payload'?'Actual dynamics samples. Traces end at termination; they are not extended to the goal.':'Whole-body execution: measured robot state versus its time-indexed target. Base inclination is measured against vertical.';}
+ function update(){active=+$('scene').value;const e=E[active];$('downloads').innerHTML=['result.json','audit.json','interfaces.json','tracking_audit.json','grasp.npz','whole_body.npz','execution_rl.json','execution_whole_body.json'].map(name=>`<a href="${e.directory}/${name}">${name}</a>`).join('');updateVideo();draw();tracking();}
+$('scene').onchange=update;$('kind').onchange=updateVideo;$('tracking-mode').onchange=tracking;$('view').onchange=draw;$('progress').oninput=draw;$('slower').onclick=()=>$('video').playbackRate=.5;$('normal').onclick=()=>$('video').playbackRate=1;$('play').onclick=()=>{if(timer){clearInterval(timer);timer=null;return;}$('progress').value=0;timer=setInterval(()=>{let x=+$('progress').value+4;$('progress').value=x;draw();if(x>=100){clearInterval(timer);timer=null;}},200);};update();
+</script></html>
