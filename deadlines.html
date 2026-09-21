@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paper Deadline Tracker — robotics, robot learning, ML and vision — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="A verified tracker of paper deadlines, decision dates and conference dates for robotics, robot learning, machine learning, vision, HCI and control venues (ICRA, IROS, RSS, CoRL, ICLR, NeurIPS, ICML, CVPR and more), on a shared timeline, with a planner that chains one venue's decision into the next deadline.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/deadlines.html">
+  <meta property="og:title" content="Paper Deadline Tracker — robotics & ML venues on one timeline">
+  <meta property="og:description" content="Deadlines, decision dates and conference dates for 40+ robotics, robot-learning, ML and vision venues, verified against the official calls, with a submission planner.">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#151820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+
+  <style>
+    :root { --dl-blue: #23577E; --dl-gold: #B77E1E; --dl-green: #2E7D4F; --dl-amber: #B8860B; --dl-est-bg: rgba(242,201,76,.22); }
+    html[data-theme="night"] { --dl-blue: #7FB6DF; --dl-gold: #E0B45A; --dl-green: #6FCF97; --dl-amber: #F2C94C; --dl-est-bg: rgba(242,201,76,.14); }
+    .lead { font-size: 17px; line-height: 1.6; max-width: 76ch; }
+    .lead a, .prose a { color: var(--link); font-weight: 600; text-decoration: none; }
+    .lead a:hover, .prose a:hover { text-decoration: underline; }
+    .prose p { font-size: 15.5px; line-height: 1.62; margin-bottom: 12px; }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose ul { padding-left: 20px; margin: 8px 0 12px; }
+    .prose li { font-size: 15px; line-height: 1.55; margin-bottom: 6px; }
+    .prose li::marker { color: var(--hi); }
+    .prose code { background: var(--paper); border: 1px solid var(--line-soft); border-radius: 4px; padding: 1px 6px; font-size: 12.5px; font-family: var(--font-mono); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+    .grid-2 > * { min-width: 0; }
+    .sub-note { font-family: var(--font-mono); font-size: 12px; color: var(--ash); margin-top: 6px; }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 22px; }
+    .stat-tile { padding: 14px 14px 12px; }
+    .stat-tile .num { font-family: var(--font-mono); font-weight: 700; font-size: 28px; letter-spacing: -0.02em; color: var(--ink); line-height: 1.05; }
+    .stat-tile .num small { font-size: 14px; font-weight: 400; color: var(--ash); margin-left: 3px; }
+    .stat-tile .lab { font-family: var(--font-comic); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--imp); margin-top: 6px; line-height: 1.2; }
+    .stat-tile .sub { font-size: 12px; color: var(--ash); margin-top: 4px; line-height: 1.35; }
+
+    /* status badges + countdown chips */
+    .st { display: inline-block; font-family: var(--font-comic); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; line-height: 1; padding: 3px 6px 2px; border-radius: 4px; border: 1.5px solid var(--line); vertical-align: middle; }
+    .st-ok { color: var(--ink); background: var(--panel); }
+    .st-est { color: #151820; background: var(--yellow); border-color: #151820; border-style: dashed; }
+    .st-tbd, .st-roll { color: var(--ash); border-color: var(--line-soft); background: transparent; }
+    .cd { display: inline-block; font-family: var(--font-mono); font-size: 11.5px; padding: 3px 7px 2px; border-radius: 4px; background: var(--paper); color: var(--ink-soft); border: 1px solid var(--line-soft); white-space: nowrap; margin-left: auto; }
+    .cd-hot { background: var(--hi); color: #FFF9F0; border-color: var(--hi); font-weight: 700; }
+    .cd-warm { background: var(--yellow); color: #151820; border-color: #151820; }
+    .cd-past { opacity: .65; }
+
+    /* next-up lists */
+    .nl-card { padding: 16px 18px 12px; }
+    .nl-head { margin-bottom: 8px; }
+    .nl { list-style: none; }
+    .nl li { border-top: 1.5px dashed var(--line-soft); }
+    .nl li:first-child { border-top: none; }
+    .nl a { display: flex; gap: 12px; align-items: center; padding: 9px 2px; color: inherit; text-decoration: none; border-radius: 6px; }
+    .nl a:hover { background: var(--wash); }
+    .nl-when { flex: none; width: 58px; text-align: center; font-family: var(--font-mono); line-height: 1.05; }
+    .nl-when b { display: block; font-size: 14px; color: var(--ink); }
+    .nl-when small { font-size: 10.5px; color: var(--ash); }
+    .nl-body { min-width: 0; flex: 1; }
+    .nl-name { display: block; font-weight: 700; font-size: 15px; color: var(--ink); }
+    .nl-sub { display: block; font-size: 12.5px; color: var(--ash); line-height: 1.35; margin-top: 2px; }
+    .nl-empty { font-size: 14px; color: var(--ash); padding: 10px 2px; }
+
+    /* filter bar */
+    .dl-filterbar { position: sticky; top: calc(var(--nav-h) + 8px); z-index: 20; max-width: var(--maxw); margin: 34px auto 0; padding: 0 20px; }
+    .dl-filterbar > .fb-row { background: var(--panel); border: var(--line-w) solid var(--line); box-shadow: var(--sh-sm); padding: 10px 12px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+    .dl-filterbar > .fb-row:first-child { border-radius: var(--radius) var(--radius) 0 0; border-bottom: none; }
+    .dl-filterbar > .fb-row:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+    .fb-group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .fb-lab { font-family: var(--font-comic); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--imp); margin-right: 4px; }
+    .fchip { font: inherit; font-size: 12.5px; font-weight: 600; line-height: 1; color: var(--ink); background: var(--bone); border: 1.5px solid var(--line); border-radius: 5px; padding: 6px 9px; cursor: pointer; box-shadow: 2px 2px 0 var(--sh-c); transition: transform .12s ease, background .12s ease, color .12s ease; }
+    .fchip small { font-weight: 400; color: var(--ash); font-family: var(--font-mono); font-size: 10px; margin-left: 2px; }
+    .fchip:hover { transform: translate(-1px, -1px); background: var(--yellow); color: #151820; }
+    .fchip:hover small { color: #151820; }
+    .fchip[aria-pressed="true"] { background: var(--hi); color: #FFF9F0; border-color: var(--hi); }
+    .fchip[aria-pressed="true"] small { color: #FFF9F0; }
+    .fb-pop { position: relative; }
+    .fb-sum { list-style: none; cursor: pointer; font-family: var(--font-comic); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); padding: 6px 10px 5px; border: 1.5px solid var(--line); border-radius: 6px; background: var(--bone); box-shadow: 2px 2px 0 var(--sh-c); }
+    .fb-sum::-webkit-details-marker { display: none; }
+    .fb-sum span { font-family: var(--font-mono); font-size: 11px; color: var(--ash); text-transform: none; letter-spacing: 0; }
+    .fb-pop-body { position: absolute; left: 0; top: calc(100% + 8px); z-index: 30; width: min(560px, 86vw); background: var(--panel); border: var(--line-w) solid var(--line); border-radius: var(--radius-sm); box-shadow: var(--sh); padding: 12px; }
+    .fb-pop-tools { display: flex; gap: 8px; margin-bottom: 8px; }
+    .fb-mini { font: inherit; font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-soft); background: transparent; border: 1px solid var(--line-soft); border-radius: 4px; padding: 4px 8px; cursor: pointer; }
+    .fb-mini:hover { background: var(--wash); color: var(--ink); }
+    .fb-sel { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ash); }
+    .fb-sel select, .pl-lab select, .pl-lab input, #dl-months { font: inherit; font-size: 13px; padding: 5px 8px; border: 1.5px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--ink); max-width: 240px; }
+    .fb-check { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-soft); cursor: pointer; }
+    .fb-check input { accent-color: var(--hi); width: 15px; height: 15px; }
+    #fb-q { font: inherit; font-size: 13px; padding: 6px 10px; border: 1.5px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--ink); min-width: 200px; flex: 1; }
+    .fb-count { font-family: var(--font-mono); font-size: 11.5px; color: var(--ash); margin-left: auto; }
+
+    /* cycle chart */
+    .chart-card { padding: 16px 16px 10px; margin-top: 18px; }
+    .chart-tools { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--ash); }
+    .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-soft); }
+    .legend i { display: inline-block; width: 11px; height: 11px; vertical-align: -1px; margin-right: 5px; }
+    .legend .l-abs { border: 1.5px solid var(--hi); transform: rotate(45deg) scale(.8); }
+    .legend .l-dl { background: var(--hi); transform: rotate(45deg) scale(.85); }
+    .legend .l-rev { height: 3px; width: 18px; background: repeating-linear-gradient(90deg, var(--hi) 0 4px, transparent 4px 7px); vertical-align: 3px; }
+    .legend .l-dec { background: var(--dl-gold); border-radius: 50%; }
+    .legend .l-conf { background: var(--dl-blue); border-radius: 2px; width: 18px; }
+    .legend .l-est { border: 1.5px dashed var(--ash); width: 18px; height: 8px; }
+    .chart-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .scroll-hint { display: none; font-family: var(--font-comic); font-size: 12px; letter-spacing: .06em; color: var(--imp); margin-top: 4px; }
+    .cy { display: block; font-family: var(--font-mono); }
+    .cy-band { fill: var(--wash); }
+    .cy-mon { fill: var(--ash); font-size: 11px; }
+    .cy-mon.jan { fill: var(--ink); font-weight: 700; }
+    .cy-yr { fill: var(--ink); font-family: var(--font-comic); font-size: 13px; letter-spacing: .08em; }
+    .cy-year { stroke: var(--line-soft); stroke-width: 1.5; }
+    .cy-sep { stroke: var(--line-soft); stroke-width: 1; stroke-dasharray: 2 4; }
+    .cy-hit { fill: transparent; }
+    .cy-row { cursor: pointer; }
+    .cy-row:hover .cy-hit, .cy-row:focus .cy-hit { fill: var(--wash); }
+    .cy-row:focus { outline: none; }
+    .cy-lab { fill: var(--ink); font-size: 12.5px; font-weight: 700; }
+    .cy-sub { fill: var(--ash); font-size: 10.5px; }
+    .cy-review { stroke: var(--hi); stroke-width: 3; stroke-dasharray: 4 3; opacity: .75; }
+    .cy-wait { stroke: var(--line-soft); stroke-width: 1.5; }
+    .cy-abs { fill: var(--panel); stroke: var(--hi); stroke-width: 1.5; }
+    .cy-dl { fill: var(--hi); stroke: var(--panel); stroke-width: 1; }
+    .cy-dec { fill: var(--dl-gold); stroke: var(--panel); stroke-width: 1; }
+    .cy-conf { fill: var(--dl-blue); }
+    .cy-row.est .cy-conf, .cy-row.est .cy-dl, .cy-row.est .cy-dec { opacity: .55; stroke: var(--ink); stroke-dasharray: 2 2; }
+    .cy-row.est .cy-review { stroke-dasharray: 1 4; opacity: .5; }
+    .cy .est1 { opacity: .55; stroke: var(--ink); stroke-dasharray: 2 2; }
+    .cy-row.held { opacity: .55; }
+    .cy-today { stroke: var(--imp); stroke-width: 2; stroke-dasharray: 5 4; }
+    .cy-today-lab { fill: var(--imp); font-family: var(--font-comic); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+
+    /* detail card */
+    .dt { position: relative; padding: 22px 24px 18px; margin-top: 18px; border-color: var(--hi); box-shadow: 6px 6px 0 var(--hi); }
+    .dt-close { position: absolute; top: 10px; right: 12px; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--line); background: var(--yellow); color: #151820; font: 700 20px/1 var(--font-sans); cursor: pointer; box-shadow: 2px 2px 0 var(--sh-c); }
+    .dt-close:hover { transform: rotate(90deg); }
+    .dt-head h3 { font-size: 22px; margin-top: 2px; }
+    .dt-full { font-size: 14px; color: var(--ash); margin-top: 2px; }
+    .dt-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 18px; margin-top: 14px; }
+    .dt-grid > * { min-width: 0; }
+    .dt-dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px; align-items: baseline; }
+    .dt-dl dt { font-family: var(--font-comic); letter-spacing: .06em; text-transform: uppercase; font-size: 12px; color: var(--imp); }
+    .dt-dl dd { font-family: var(--font-mono); font-size: 13px; color: var(--ink); display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+    .dt-dl dd small { color: var(--ash); }
+    .dt-dl dd .cd { margin-left: 0; }
+    .dt-conf { font-family: var(--font-mono); font-size: 11.5px; color: var(--ash); margin-top: 10px; line-height: 1.5; }
+    .dt-conf b { color: var(--ink); }
+    .dt-notes { padding-left: 18px; margin-top: 8px; font-size: 13px; line-height: 1.45; color: var(--ink-soft); }
+    .dt-notes li { margin-bottom: 4px; }
+    .dt-notes li::marker { color: var(--hi); }
+    .dt-src { margin-top: 12px; font-size: 13px; }
+    .dt-src summary { cursor: pointer; font-family: var(--font-comic); letter-spacing: .06em; text-transform: uppercase; font-size: 12px; color: var(--imp); }
+    .dt-src ul { list-style: none; margin-top: 8px; }
+    .dt-src li { margin-bottom: 8px; word-break: break-word; }
+    .dt-src a { color: var(--link); font-family: var(--font-mono); font-size: 12px; text-decoration: none; }
+    .dt-src a:hover { text-decoration: underline; }
+    .dt-src small { color: var(--ash); font-family: var(--font-mono); font-size: 11px; }
+    .dt-src blockquote { margin: 3px 0 0; padding: 4px 10px; border-left: 3px solid var(--yellow); font-size: 12.5px; color: var(--ink-soft); font-style: italic; }
+    .dt-nosrc { font-size: 13px; color: var(--ash); margin-top: 10px; }
+    .btn-s { font-size: 13px; padding: 7px 12px 6px; box-shadow: 2px 2px 0 var(--sh-c); }
+
+    /* month feed */
+    .feed-tools { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; margin-bottom: 6px; font-size: 13px; color: var(--ash); }
+    .fd-month { font-family: var(--font-display); font-size: 20px; letter-spacing: .02em; color: var(--ink); margin: 26px 0 8px; display: flex; align-items: center; gap: 12px; }
+    .fd-month::after { content: ""; flex: 1; height: 1px; background: var(--line-soft); }
+    .fd { list-style: none; }
+    .fd-ev { display: grid; grid-template-columns: 64px 22px minmax(0, 1fr); align-items: start; }
+    .fd-when { font-family: var(--font-mono); font-size: 13px; color: var(--ash); text-align: right; padding: 12px 8px 0 0; line-height: 1.2; }
+    .fd-when b { color: var(--ink); font-weight: 400; display: block; font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; }
+    .fd-node { position: relative; align-self: stretch; }
+    .fd-node::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--line-soft); }
+    .fd-ev:first-child .fd-node::before { top: 14px; }
+    .fd-ev:last-child .fd-node::before { bottom: auto; height: 14px; }
+    .fd-node::after { content: ""; position: absolute; left: 50%; top: 14px; width: 11px; height: 11px; margin-left: -5.5px; background: var(--hi); border: 2px solid var(--panel); box-shadow: 0 0 0 1.5px var(--hi); transform: rotate(45deg); }
+    .fd-ev.abstract .fd-node::after { background: var(--panel); }
+    .fd-ev.decision .fd-node::after { background: var(--dl-gold); box-shadow: 0 0 0 1.5px var(--dl-gold); border-radius: 50%; transform: none; }
+    .fd-ev.conf .fd-node::after { background: var(--dl-blue); box-shadow: 0 0 0 1.5px var(--dl-blue); transform: none; border-radius: 2px; }
+    .fd-card { display: block; margin: 4px 0 8px 10px; padding: 9px 12px; background: var(--panel); border: 1.5px solid var(--line); border-radius: var(--radius-sm); box-shadow: 3px 3px 0 var(--sh-c); color: inherit; text-decoration: none; transition: transform .15s var(--ease-out), box-shadow .15s var(--ease-out); }
+    .fd-card:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--sh-c); background: var(--panel-2); }
+    .fd-ev.est .fd-card { border-style: dashed; background: var(--dl-est-bg); }
+    .fd-top { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+    .fd-type { font-family: var(--font-comic); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--hi); }
+    .fd-ev.decision .fd-type { color: var(--dl-gold); }
+    .fd-ev.conf .fd-type { color: var(--dl-blue); }
+    .fd-name { font-weight: 700; font-size: 15px; color: var(--ink); }
+    .fd-sub { display: block; font-size: 13px; color: var(--ash); margin-top: 3px; line-height: 1.45; }
+    .fd-chain { display: block; font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-soft); margin-top: 4px; }
+    .fd-chain b { color: var(--dl-amber); }
+
+    /* planner */
+    .pl-controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-bottom: 14px; }
+    .pl-lab { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ash); }
+    .pl-lab input[type=number] { width: 68px; font-family: var(--font-mono); }
+    .pl-lab select { max-width: min(420px, 80vw); }
+    .pl-h { font-family: var(--font-comic); font-size: 18px; letter-spacing: .06em; color: var(--ink); margin: 6px 0 4px; }
+    .pl-note { font-size: 14px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 14px; max-width: 80ch; }
+    .ladder { display: flex; flex-direction: column; gap: 0; }
+    .ld-step { position: relative; padding: 14px 16px 12px 58px; box-shadow: var(--sh-sm); }
+    .ld-step.est { border-style: dashed; background: var(--dl-est-bg); }
+    .ld-n { position: absolute; left: 14px; top: 12px; width: 32px; height: 32px; border-radius: 50%; background: var(--ink); color: var(--bone); font-family: var(--font-comic); font-size: 18px; display: grid; place-items: center; }
+    html[data-theme="night"] .ld-n { background: var(--gold); color: #151820; }
+    .ld-name { font-weight: 700; font-size: 17px; color: var(--ink); text-decoration: none; }
+    .ld-name:hover { color: var(--link); }
+    .ld-dates { display: flex; flex-wrap: wrap; gap: 4px 22px; margin-top: 6px; font-family: var(--font-mono); font-size: 12.5px; color: var(--ink); }
+    .ld-dates i { font-style: normal; font-family: var(--font-comic); letter-spacing: .06em; text-transform: uppercase; font-size: 11px; color: var(--imp); margin-right: 6px; }
+    .ld-alt { font-size: 12.5px; color: var(--ash); margin-top: 6px; line-height: 1.5; }
+    .ld-alt a { color: var(--link); text-decoration: none; }
+    .ld-alt a:hover { text-decoration: underline; }
+    .ld-gap { display: flex; align-items: center; gap: 10px; padding: 6px 0 6px 26px; font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); }
+    .ld-gap::before { content: "↓"; font-size: 18px; line-height: 1; color: var(--dl-green); }
+    .ld-gap.g-tight::before { color: var(--dl-amber); }
+    .ld-gap.g-bad::before { color: var(--hi); }
+    .ld-gap.g-tight span { color: var(--dl-amber); }
+    .ld-gap.g-bad span { color: var(--hi); }
+    .pr, .cf { list-style: none; }
+    .pr > li { padding: 10px 0; border-top: 1.5px dashed var(--line-soft); }
+    .pr > li:first-child { border-top: none; padding-top: 0; }
+    .pr-b { font-size: 15px; font-weight: 700; color: var(--ink); }
+    .pr-b a, .pr-as a, .cf a { color: var(--ink); text-decoration: none; }
+    .pr-b a:hover, .pr-as a:hover, .cf a:hover { color: var(--link); }
+    .pr-when { font-family: var(--font-mono); font-size: 12px; color: var(--ash); font-weight: 400; }
+    .pr-as { list-style: none; margin: 4px 0 0 4px; }
+    .pr-as li { font-size: 13.5px; line-height: 1.5; padding-left: 4px; border-left: 3px solid var(--dl-green); margin-bottom: 2px; }
+    .pr-as li.g-tight { border-left-color: var(--dl-amber); }
+    .pr-as li.g-bad { border-left-color: var(--hi); opacity: .8; }
+    .pr-arrow { color: var(--ash); }
+    .pr-gap { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-soft); }
+    .g-tight .pr-gap { color: var(--dl-amber); }
+    .g-bad .pr-gap { color: var(--hi); }
+    .pr-more { font-size: 12px; color: var(--ash); border-left: none !important; }
+    .cf li { font-size: 14px; line-height: 1.5; padding: 6px 0; border-top: 1.5px dashed var(--line-soft); }
+    .cf li:first-child { border-top: none; }
+    .rules { margin-top: 18px; }
+    .rules p { margin-bottom: 8px; }
+    .rules p:last-child { margin-bottom: 0; }
+
+    /* directory */
+    .dir-tools { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; margin-bottom: 4px; font-size: 13px; color: var(--ash); }
+    .dir-group { font-family: var(--font-comic); font-size: 20px; letter-spacing: .06em; color: var(--imp); margin: 26px 0 12px; display: flex; align-items: center; gap: 12px; }
+    .dir-group::after { content: ""; flex: 1; height: 1px; background: var(--line-soft); }
+    .dir-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+    .dir-grid > * { min-width: 0; }
+    .dir-eds { margin-top: 8px; }
+    .dir-eds summary { cursor: pointer; font-family: var(--font-comic); letter-spacing: .06em; text-transform: uppercase; font-size: 12px; color: var(--imp); }
+    .dir-eds summary:hover { text-decoration: underline; }
+    .fd-fold { margin: 18px 0 0 96px; }
+    .dir-card { padding: 16px 18px 14px; }
+    .dir-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+    .dir-short { font-family: var(--font-comic); font-size: 26px; letter-spacing: .04em; color: var(--ink); line-height: 1; }
+    .dir-full { font-size: 14px; color: var(--ink-soft); }
+    .dir-fields { display: inline-flex; gap: 6px; margin-left: auto; }
+    .chip-s { font-size: 11px; padding: 4px 7px; box-shadow: none; }
+    .dir-cycle { font-size: 13.5px; color: var(--ink-soft); margin-top: 8px; }
+    .dir-cycle b { color: var(--ink); }
+    .dir-next { margin-top: 8px; font-size: 13.5px; line-height: 1.5; padding: 8px 12px; background: var(--wash); border-radius: 6px; }
+    .dir-next .kicker { font-size: 12px; margin-right: 4px; }
+    .dir-next a { color: var(--ink); text-decoration: none; }
+    .dir-next a:hover { color: var(--link); }
+    .table-wrap { overflow-x: auto; margin-top: 8px; }
+    .dir-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12px; }
+    .dir-table th, .dir-table td { padding: 6px 8px; border-bottom: 1px dashed var(--line-soft); text-align: left; vertical-align: top; line-height: 1.35; white-space: nowrap; }
+    .dir-table thead th { font-family: var(--font-comic); letter-spacing: .06em; text-transform: uppercase; font-size: 11px; color: var(--imp); border-bottom: 1.5px solid var(--line); }
+    .dir-table tbody tr:last-child td { border-bottom: none; }
+    .dir-table tr.est td { color: var(--ash); }
+    .dir-table td small { display: block; font-size: 10.5px; color: var(--ash); }
+    .dir-table a { color: var(--ink); font-weight: 700; text-decoration: none; }
+    .dir-table a:hover { color: var(--link); }
+    .dir-notes { font-size: 13px; color: var(--ink-soft); margin-top: 8px; line-height: 1.5; }
+    .dir-notes p { margin-bottom: 6px; }
+    .dir-notes b { color: var(--imp); font-family: var(--font-comic); font-weight: 400; letter-spacing: .06em; text-transform: uppercase; font-size: 11.5px; margin-right: 4px; }
+    .dir-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+    .method dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin-top: 10px; font-size: 14px; }
+    .method dt { font-family: var(--font-comic); letter-spacing: .06em; text-transform: uppercase; font-size: 12px; color: var(--imp); padding-top: 2px; }
+    .method dd { color: var(--ink-soft); line-height: 1.5; }
+
+    @media (max-width: 820px) {
+      .grid-2, .dt-grid { grid-template-columns: 1fr; }
+      .dl-filterbar { position: static; }
+      .fb-count { margin-left: 0; width: 100%; }
+      .fd-ev { grid-template-columns: 50px 18px minmax(0, 1fr); }
+      .fd-when { font-size: 12px; padding-right: 4px; }
+      .dir-fields { margin-left: 0; }
+      .dir-grid { grid-template-columns: 1fr; }
+      .fd-fold { margin-left: 0; }
+      .dir-short { font-size: 22px; }
+      .stat-tile .num { font-size: 24px; }
+      .scroll-hint { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span>Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html">Projects</a>
+      <a href="experience.html">Experience</a>
+      <a href="papers/index.html">Papers</a>
+      <a href="deadlines.html" aria-current="page">Deadlines</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button type="button" class="theme-btn" aria-label="Switch between day and night" aria-pressed="false">
+      <span class="if-night"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Day</span></span>
+      <span class="if-day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="lbl">Night</span></span>
+    </button>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+  <a href="experience.html">Experience</a>
+  <a href="papers/index.html">Papers</a>
+  <a href="deadlines.html">Deadlines</a>
+  <a href="cv.html">CV</a>
+</div>
+
+<header class="page-cover night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">Robotics ◆ Robot learning ◆ Machine learning ◆ Vision ◆ Checked against the official calls</p>
+    <h1>Paper Deadline Tracker</h1>
+    <p>Every venue I might send a paper to, on one clock: when the paper is due, when the decision comes back, and when and where the conference meets. The planner below chains one venue's decision into the next deadline, so a rejected manuscript always has somewhere to go.</p>
+  </div>
+</header>
+<div class="deco-band" aria-hidden="true"></div>
+
+<!-- =================== NOW =================== -->
+<section class="section" id="now" style="padding-top:44px">
+  <div class="stat-row">
+    <div class="card stat-tile"><div class="num" id="stat-soon">—</div><div class="lab">deadlines in 30 days</div><div class="sub">in the current selection</div></div>
+    <div class="card stat-tile"><div class="num" id="stat-pending">—</div><div class="lab">decisions pending</div><div class="sub">submitted, not yet decided</div></div>
+    <div class="card stat-tile"><div class="num" id="stat-confs">—</div><div class="lab">venues tracked</div><div class="sub">conferences and journals</div></div>
+    <div class="card stat-tile"><div class="num" id="stat-official">—</div><div class="lab">editions verified</div><div class="sub">against an official page, <span id="dl-generated">—</span></div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card nl-card" id="dl-next-deadlines"></div>
+    <div class="card nl-card" id="dl-next-decisions"></div>
+  </div>
+  <p class="sub-note">Today is <span id="dl-today">—</span>. Countdowns are in whole days to the deadline date; most deadlines close at 23:59 Anywhere-on-Earth, which is 07:59 the next morning in New York.</p>
+</section>
+
+<div class="dl-filterbar" id="dl-filterbar" aria-label="Filters"></div>
+
+<!-- =================== CYCLE CHART =================== -->
+<section class="section" id="cycle" style="padding-top:44px">
+  <h2 class="section-title">The cycle</h2>
+  <p class="lead">One row per conference edition, all on the same time axis. A red diamond is the paper deadline, the dashed red stretch is the paper under review, the gold dot is the decision, and the blue block is the meeting itself. The gap between a gold dot on one row and a red diamond further right on another is a resubmission window. Click a row for the full schedule and its sources.</p>
+  <div class="card chart-card">
+    <div class="chart-tools">
+      <div class="legend"><span><i class="l-abs"></i>abstract</span><span><i class="l-dl"></i>paper deadline</span><span><i class="l-rev"></i>under review</span><span><i class="l-dec"></i>decision</span><span><i class="l-conf"></i>conference</span><span><i class="l-est"></i>estimated</span></div>
+      <label class="fb-sel" style="margin-left:auto">Window <select id="dl-months"><option value="6">6 months</option><option value="12">12 months</option><option value="15">15 months</option><option value="24">24 months</option></select></label>
+    </div>
+    <div class="chart-scroll"><div id="dl-chart"></div></div>
+    <p class="sub-note" id="dl-chart-count"></p>
+    <p class="scroll-hint" aria-hidden="true">swipe sideways to see the whole year →</p>
+  </div>
+  <div id="dl-detail" hidden></div>
+</section>
+
+<!-- =================== MONTH BY MONTH =================== -->
+<section class="section" id="timeline">
+  <h2 class="section-title">Month by month</h2>
+  <div class="feed-tools">
+    <label class="fb-check"><input type="checkbox" id="dl-past"> include the past year</label>
+    <span class="sub-note" id="dl-feed-count" style="margin:0"></span>
+    <button type="button" class="btn btn-s" id="dl-ics" style="margin-left:auto">Download .ics ↓</button>
+  </div>
+  <div id="dl-feed"></div>
+</section>
+
+<!-- =================== PLANNER =================== -->
+<section class="section" id="planner">
+  <h2 class="section-title">Submission planner</h2>
+  <p class="lead">The rule is simple: a paper can only be under review at one venue at a time, so the useful question is which deadline comes <em>after</em> the decision you are waiting for. If RSS decides today and ICRA closes next week, the same manuscript can go to RSS first and, if it is turned down, straight on to ICRA. The planner finds those windows and lines them up into a ladder.</p>
+  <div class="card card-pad" id="dl-planner"></div>
+  <div class="grid-2" style="margin-top:18px">
+    <div class="card card-pad">
+      <p class="kicker" style="margin-bottom:10px">Decisions that land before each deadline</p>
+      <p class="pl-note">For every upcoming deadline in the next nine months: the venues whose decision you will already have. Green means there is at least the buffer to revise; amber means the decision lands inside the buffer; red means it lands after the deadline.</p>
+      <div id="dl-pairs"></div>
+    </div>
+    <div class="card card-pad">
+      <p class="kicker" style="margin-bottom:10px">Deadlines that collide</p>
+      <p class="pl-note">Two deadlines within ten days of each other cannot take the same manuscript. Either send two different papers or choose one.</p>
+      <div id="dl-conflicts"></div>
+      <p class="kicker" style="margin:22px 0 10px">Rules of the road</p>
+      <div class="rules prose">
+        <p><b>No concurrent submission.</b> ICRA, IROS, RSS, CoRL, ICLR, NeurIPS, ICML and the CVF conferences all forbid submitting a paper that is under review elsewhere, and the ban covers substantially similar papers. Withdraw first, then resubmit.</p>
+        <p><b>Abstract registration is a hard gate.</b> ICLR, NeurIPS, ICML and CVPR require an abstract a few days to two weeks before the paper. Miss it and the ladder skips that rung.</p>
+        <p><b>Workshops are usually exempt.</b> Workshop papers and RA-L or T-RO journal submissions follow their own rules; check the venue's dual-submission policy for the exact wording.</p>
+        <p><b>arXiv is fine almost everywhere,</b> but double-blind venues ask you not to advertise the preprint during review.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== DIRECTORY =================== -->
+<section class="section" id="directory">
+  <h2 class="section-title">Conferences</h2>
+  <p class="lead">Every venue with its typical cycle, the next edition, and the last few years as a reference. The filter bar above applies here too, so you can narrow to a field, a continent or a deadline season.</p>
+  <div class="dir-tools"><span class="sub-note" id="dl-dir-count" style="margin:0"></span></div>
+  <div id="dl-directory"></div>
+</section>
+
+<!-- =================== METHOD =================== -->
+<section class="section" id="method">
+  <h2 class="section-title">How the dates were checked</h2>
+  <div class="card card-pad prose method">
+    <p>Each edition was checked against its official call for papers or important-dates page, and the supporting sentence is quoted in the edition's sources (open any row and expand <em>Sources</em>). Aggregators such as aideadlin.es and ccfddl were used only to cross-check, never as the source of a date; where they disagreed with the official page, the official page won and the disagreement is recorded in the notes.</p>
+    <dl>
+      <dt>Official</dt><dd>Every date on the row was read from an official page on the access date shown in its sources.</dd>
+      <dt>Est.</dt><dd>The edition has not published that date yet. It is projected from the last three cycles, drawn dashed, and should be treated as ±2 weeks. Turn on <em>official dates only</em> to hide these.</dd>
+      <dt>Time zones</dt><dd>Deadlines are shown on the calendar date the venue prints. Most close at 23:59 Anywhere-on-Earth (UTC−12); a few, such as ICRA and IROS, print Pacific time. The time and zone are shown next to each deadline when known.</dd>
+      <dt>Extensions</dt><dd>When a venue extended its deadline, the extended date is the one shown and the original is kept in the edition's detail.</dd>
+      <dt>Reproduce</dt><dd>The dataset lives in <code>assets/data/deadlines.json</code>, built from the research files in <code>assets/data/deadlines_src/</code> by <code>scripts/build_deadlines.py</code>, which checks that every edition's dates are in order (abstract → paper → reviews → rebuttal → decision → camera-ready → conference) before writing the page's data.</dd>
+    </dl>
+    <p style="margin-top:14px">Dates last verified <b id="dl-generated-2">—</b>. Deadlines move; before you plan a week around one, confirm it on the official site linked from every card.</p>
+  </div>
+</section>
+
+<footer class="site-foot"><div class="wrap"><p>© 2026 Qilong (Jerry) Cheng · <a href="index.html">home</a> · <a href="publications.html">publications</a> · <a href="papers/index.html">paper atlas</a></p></div></footer>
+
+<script src="assets/js/site.js"></script>
+<script src="assets/js/deadlines_data.js"></script>
+<script src="assets/js/deadlines.js"></script>
+<script>(function(){var a=document.getElementById('dl-generated'),b=document.getElementById('dl-generated-2');if(a&&b)b.textContent=a.textContent;})();</script>
+</body>
+</html>

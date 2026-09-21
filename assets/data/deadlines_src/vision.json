@@ -1,0 +1,940 @@
+{
+  "generated": "2026-09-21",
+  "note": "All 'high' entries were read from the official conference sites on 2026-09-21; 'estimated' editions are pattern extrapolations and must be re-verified once CFPs appear. Extra fields beyond the requested schema: supplementary_deadline (all editions) and rounds (WACV).",
+  "conferences": {
+    "cvpr": {
+      "full_name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+      "field": [
+        "computer vision"
+      ],
+      "pattern": {
+        "typical_deadline_window": "Paper registration/abstract in the first ~10 days of November, full paper deadline ~1 week later (2024-11-14 PT, 2025-11-13 AoE, 2026-11-16 AoE), supplementary +1 week. Deadlines are 'firm, no extension'.",
+        "typical_notification_month": "Late February (2025-02-26, 2026-02-20, 2027-02-25). Reviews out ~Jan 22-25 with a one-week rebuttal.",
+        "typical_conference_month": "June (2025: Jun 11-15; 2026: Jun 3-7; 2027: Jun 20-25); camera-ready late March.",
+        "location_rotation": "Annual, always North America: Vancouver 2023, Seattle 2024, Nashville 2025, Denver 2026, Seattle 2027.",
+        "review_process": "Double-blind on OpenReview: ~3 reviewers per paper, reviews released to authors, a one-week rebuttal (no paper revision), then AC/SAC decisions. All authors commit to review/AC when invited (since 2026 an enrollment form + OpenReview profile per author is required).",
+        "resubmission_rules": "Dual submission: 'no substantially similar paper (20% or more overlap) has been or will be submitted to another conference or workshop during the review period'; journal submissions are treated the same. arXiv: preprints are allowed and 'we do not distinguish arxiv papers and other published papers' for the contemporaneous-work rule (work appearing <~2 months before the deadline need not be compared). A CVPR reject can go straight to ICCV (March) or ECCV (March, even years)."
+      },
+      "editions": [
+        {
+          "abstract_deadline": "2024-11-07",
+          "paper_deadline": "2024-11-14",
+          "deadline_time": "23:59",
+          "deadline_tz": "PT",
+          "original_paper_deadline": null,
+          "supplementary_deadline": "2024-11-21",
+          "rebuttal_start": "2025-01-23",
+          "rebuttal_end": "2025-01-30",
+          "reviews_released": "2025-01-23",
+          "notification": "2025-02-26",
+          "camera_ready": "2025-03-24",
+          "conf_start": "2025-06-11",
+          "conf_end": "2025-06-15",
+          "city": "Nashville",
+          "country": "United States",
+          "country_code": "US",
+          "continent": "North America",
+          "venue": "Music City Center",
+          "status": "past",
+          "notes": [
+            "'Paper registration' (title/abstract/authors) is the abstract deadline; supplementary due one week after the paper.",
+            "Workshops/tutorials Jun 11-12, main conference Jun 13-15.",
+            "The Dates page renders times in UTC/CST: 'Nov 15 '24 07:59 AM UTC' = Nov 14 23:59 PST; 'Camera Ready Deadline Mar 25 '25 06:59 AM UTC' = Mar 24 23:59 PDT (recorded as 2025-03-24). The Dates page shows decisions as 'Feb 26 '25 01:59 AM CST' (= Feb 25 23:59 PST); the CFP text says 'February 26th, 2025'."
+          ],
+          "sources": [
+            {
+              "url": "https://cvpr.thecvf.com/Conferences/2025/CallForPapers",
+              "accessed": "2026-09-21",
+              "quote": "Paper Registration Deadline: November 7th, 2024 11:59pm Pacific Time ... Paper Submission Deadline: November 14th, 2024 11:59pm Pacific Time ... Reviews Released: January 23rd, 2025 ... Rebuttal Period: January 23-30, 2025 ... Final Decisions: February 26th, 2025"
+            },
+            {
+              "url": "https://cvpr.thecvf.com/Conferences/2025/Dates",
+              "accessed": "2026-09-21",
+              "quote": "Camera Ready Deadline | Mar 25 '25 06:59 AM UTC"
+            },
+            {
+              "url": "https://cvpr.thecvf.com/Conferences/2025",
+              "accessed": "2026-09-21",
+              "quote": "at the Music City Center, Nashville TN ... Wed June 11th - Sun June 15th, 2025"
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "high",
+            "notification": "high",
+            "conf_dates": "high",
+            "location": "high"
+          },
+          "conf": "cvpr",
+          "year": 2025,
+          "name": "CVPR 2025",
+          "full_name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition 2025",
+          "website": "https://cvpr.thecvf.com/Conferences/2025"
+        },
+        {
+          "abstract_deadline": "2025-11-07",
+          "paper_deadline": "2025-11-13",
+          "deadline_time": "23:59",
+          "deadline_tz": "AoE",
+          "original_paper_deadline": null,
+          "supplementary_deadline": "2025-11-20",
+          "rebuttal_start": "2026-01-22",
+          "rebuttal_end": "2026-01-29",
+          "reviews_released": "2026-01-22",
+          "notification": "2026-02-20",
+          "camera_ready": null,
+          "conf_start": "2026-06-03",
+          "conf_end": "2026-06-07",
+          "city": "Denver",
+          "country": "United States",
+          "country_code": "US",
+          "continent": "North America",
+          "venue": "Colorado Convention Center",
+          "status": "past",
+          "notes": [
+            "Abstract/registration deadline was extended to Nov 7, 2025 (home page: 'Abstract Submission (extended): Nov 07, 2025'); the original registration date was not captured on the current pages. The paper deadline (Nov 13) was 'firm' and not extended.",
+            "New for 2026: every author had to complete an enrollment form and OpenReview profile by Nov 16, 2025 AoE (author reviewing obligation).",
+            "Workshops/tutorials Jun 3-4, main conference Jun 5-7.",
+            "Camera-ready date not listed on the Dates/CFP pages (typically late March)."
+          ],
+          "sources": [
+            {
+              "url": "https://cvpr.thecvf.com/Conferences/2026/Dates",
+              "accessed": "2026-09-21",
+              "quote": "Abstract Submission Deadline | Nov 07 '25 (Anywhere on Earth) ... Paper Submission Deadline | Nov 13 '25 (Anywhere on Earth) ... Supplementary Materials Deadline | Nov 20 '25 ... Reviews Released | Jan 22 '26 ... Rebuttal Period Ends | Jan 29 '26 ... Final Decisions | Feb 20 '26"
+            },
+            {
+              "url": "https://cvpr.thecvf.com/Conferences/2026",
+              "accessed": "2026-09-21",
+              "quote": "at the Colorado Convention Center ... Wed June 3 - Sun June 7, 2026 ... Abstract Submission (extended): Nov 07, 2025 (Anywhere on Earth) ... Paper Submission: Nov 13, 2025 (Anywhere on Earth)"
+            },
+            {
+              "url": "https://cvpr.thecvf.com/Conferences/2026/CallForPapers",
+              "accessed": "2026-09-21",
+              "quote": "By submitting to CVPR, authors confirm that no substantially similar paper has been or will be submitted to another conference or workshop during the review period (November 13, 2025 - February 20, 2026)."
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "high",
+            "notification": "high",
+            "conf_dates": "high",
+            "location": "high"
+          },
+          "conf": "cvpr",
+          "year": 2026,
+          "name": "CVPR 2026",
+          "full_name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition 2026",
+          "website": "https://cvpr.thecvf.com/Conferences/2026"
+        },
+        {
+          "abstract_deadline": "2026-11-10",
+          "paper_deadline": "2026-11-16",
+          "deadline_time": "23:59",
+          "deadline_tz": "AoE",
+          "original_paper_deadline": null,
+          "supplementary_deadline": "2026-11-23",
+          "rebuttal_start": "2027-01-25",
+          "rebuttal_end": "2027-02-01",
+          "reviews_released": "2027-01-25",
+          "notification": "2027-02-25",
+          "camera_ready": null,
+          "conf_start": "2027-06-20",
+          "conf_end": "2027-06-25",
+          "city": "Seattle",
+          "country": "United States",
+          "country_code": "US",
+          "continent": "North America",
+          "venue": "TBA (official site names only 'Seattle WA'; third-party listings say Seattle Convention Center)",
+          "status": "announced",
+          "notes": [
+            "Paper registration (title/abstract/authors) Nov 10, 2026 AoE; full paper Nov 16, 2026 AoE; supplementary Nov 23, 2026 AoE. CVPR marks these 'firm'.",
+            "Reviews released Jan 25, 2027; rebuttal Jan 25 - Feb 1, 2027; final decisions Feb 25, 2027 (all AoE).",
+            "Dual-submission review period stated as Nov 16, 2026 - Feb 22, 2027.",
+            "Workshops/tutorials Jun 20-21, main conference Jun 22-25, 2027.",
+            "Camera-ready not yet announced (pattern: late March 2027).",
+            "Disagreement: huggingface/ai-deadlines lists 'June 19-26, 2027' and 'Seattle Convention Center'; the official site says June 20-25 and names no venue. Official dates used."
+          ],
+          "sources": [
+            {
+              "url": "https://cvpr.thecvf.com/Conferences/2027/Dates",
+              "accessed": "2026-09-21",
+              "quote": "Paper Registration Deadline | Nov 10 '26 (Anywhere on Earth) ... Submission Deadline | Nov 16 '26 (Anywhere on Earth) ... Supplementary Materials Deadline | Nov 23 '26 ... Reviews Released | Jan 25 '27 ... Final Decisions | Feb 25 '27 ... Workshops and Tutorials June 20-21, 2027 ... Main Conference Sessions June 22-25, 2027"
+            },
+            {
+              "url": "https://cvpr.thecvf.com/Conferences/2027/CallForPapers",
+              "accessed": "2026-09-21",
+              "quote": "Paper Registration Deadline*: Nov 10, 2026 AOE ... Submission Deadline*: Nov 16, 2026 AOE ... Supplementary Materials Deadline: Nov 23, 2026 AOE ... Reviews Released: Jan 25, 2027 AOE ... Rebuttal Period: January 25 - February 1, 2027 AOE ... Final Decisions: Feb 25, 2027 AOE"
+            },
+            {
+              "url": "https://cvpr.thecvf.com/Conferences/2027",
+              "accessed": "2026-09-21",
+              "quote": "Seattle WA ... June 20-25, 2027"
+            },
+            {
+              "url": "https://huggingface.co/spaces/huggingface/ai-deadlines/commit/9d3c5404835da9e75af6f42d683290ceb23d374f",
+              "accessed": "2026-09-21",
+              "quote": "date: June 19-26, 2027 ... city: Seattle ... venue: Seattle Convention Center, Seattle, USA ... note: Submission deadlines to be announced."
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "high",
+            "notification": "high",
+            "conf_dates": "high",
+            "location": "high"
+          },
+          "conf": "cvpr",
+          "year": 2027,
+          "name": "CVPR 2027",
+          "full_name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition 2027",
+          "website": "https://cvpr.thecvf.com/Conferences/2027"
+        }
+      ]
+    },
+    "iccv": {
+      "full_name": "IEEE/CVF International Conference on Computer Vision",
+      "field": [
+        "computer vision"
+      ],
+      "pattern": {
+        "typical_deadline_window": "Odd years only. Paper deadline in the first ~10 days of March (2023-03-08 23:59 GMT, 2025-03-07 23:59 HST), registration ~4 days earlier, supplementary with the paper.",
+        "typical_notification_month": "Late June (2025-06-25); reviews early May with a one-week rebuttal (2025: May 9-16).",
+        "typical_conference_month": "October (Paris Oct 2-6 2023; Honolulu Oct 19-23 2025; Hong Kong Oct 2-8 2027).",
+        "location_rotation": "Biennial, rotates globally: Paris 2023 (Europe), Honolulu 2025 (North America/Pacific), Hong Kong 2027 (Asia).",
+        "review_process": "Same CVF process as CVPR: double-blind on OpenReview, ~3 reviews, reviews released, one-week rebuttal (no revision), AC decisions.",
+        "resubmission_rules": "Dual submission: 'No paper substantially similar in content has been or will be submitted to another conference or workshop during the review period' (2025: Mar 7 - Jun 20). arXiv preprints allowed (CVF policy). A CVPR (Nov) reject can be revised for the March ICCV deadline; an ICCV reject lands before the WACV round-2 / BMVC / NeurIPS windows."
+      },
+      "editions": [
+        {
+          "abstract_deadline": "2025-03-03",
+          "paper_deadline": "2025-03-07",
+          "deadline_time": "23:59",
+          "deadline_tz": "HST",
+          "original_paper_deadline": null,
+          "supplementary_deadline": "2025-03-07",
+          "rebuttal_start": "2025-05-10",
+          "rebuttal_end": "2025-05-16",
+          "reviews_released": "2025-05-09",
+          "notification": "2025-06-25",
+          "camera_ready": null,
+          "conf_start": "2025-10-19",
+          "conf_end": "2025-10-23",
+          "city": "Honolulu",
+          "country": "United States",
+          "country_code": "US",
+          "continent": "North America",
+          "venue": "Hawai'i Convention Center",
+          "status": "past",
+          "notes": [
+            "Paper and supplementary shared one deadline (Mar 7, 2025 11:59 PM HST).",
+            "Dates page: 'Main Conference Paper Decisions Jun 25 '25 11:59 PM HST'; the CFP text says 'June 26th, 2025' - one-day discrepancy, Dates page used.",
+            "Workshops Oct 19-20, main conference Oct 21-23.",
+            "Camera-ready date not published on the Dates page."
+          ],
+          "sources": [
+            {
+              "url": "https://iccv.thecvf.com/Conferences/2025/Dates",
+              "accessed": "2026-09-21",
+              "quote": "Paper Registration Deadline | Mar 03 '25 11:59 PM HST ... Submission and Supplementary Materials Deadline | Mar 07 '25 11:59 PM HST ... Reviews Released to Authors | May 09 '25 11:59 PM HST ... Author Rebuttals Due | May 16 '25 11:59 PM HST ... Main Conference Paper Decisions | Jun 25 '25 11:59 PM HST"
+            },
+            {
+              "url": "https://iccv.thecvf.com/Conferences/2025/CallForPapers",
+              "accessed": "2026-09-21",
+              "quote": "No paper substantially similar in content has been or will be submitted to another conference or workshop during the review period (March 7, 2025 - June 20, 2025). ... Rebuttal Period: May 10-16, 2025 ... Final Decisions: June 26th, 2025"
+            },
+            {
+              "url": "https://iccv.thecvf.com/Conferences/2025",
+              "accessed": "2026-09-21",
+              "quote": "Hawai'i Convention Center ... Honolulu, Hawai'i ... Oct 19 - 23th, 2025"
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "high",
+            "notification": "high",
+            "conf_dates": "high",
+            "location": "high"
+          },
+          "conf": "iccv",
+          "year": 2025,
+          "name": "ICCV 2025",
+          "full_name": "IEEE/CVF International Conference on Computer Vision 2025",
+          "website": "https://iccv.thecvf.com/Conferences/2025"
+        },
+        {
+          "abstract_deadline": "2027-03-01",
+          "paper_deadline": "2027-03-05",
+          "deadline_time": "23:59",
+          "deadline_tz": "AoE (estimated)",
+          "original_paper_deadline": null,
+          "supplementary_deadline": "2027-03-05",
+          "rebuttal_start": "2027-05-08",
+          "rebuttal_end": "2027-05-14",
+          "reviews_released": "2027-05-07",
+          "notification": "2027-06-25",
+          "camera_ready": null,
+          "conf_start": "2027-10-02",
+          "conf_end": "2027-10-08",
+          "city": "Hong Kong",
+          "country": "Hong Kong SAR, China",
+          "country_code": "HK",
+          "continent": "Asia",
+          "venue": "TBA ('Venue coming soon...')",
+          "status": "estimated",
+          "notes": [
+            "OFFICIAL: city (Hong Kong, CN) and conference dates (October 2-8, 2027) are on iccv.thecvf.com. NOT OFFICIAL: all submission/review dates - the Dates page lists them as TBD.",
+            "ESTIMATE from the last cycles: ICCV 2023 paper deadline Mar 8 (Wed) 23:59 GMT; ICCV 2025 registration Mar 3, paper Mar 7 (Fri) 23:59 HST; 2025 reviews May 9, rebuttal May 10-16, decisions Jun 25. Expect registration ~Mar 1 and paper deadline ~Mar 5-8, 2027, decisions ~late June 2027. Timezone will likely be AoE or conference-local.",
+            "General chairs G. Hua, W. Scheirer, N. Oliver (per conference calendar listings)."
+          ],
+          "sources": [
+            {
+              "url": "https://iccv.thecvf.com/Conferences/2027",
+              "accessed": "2026-09-21",
+              "quote": "Hong Kong, CN ... Venue coming soon... ... October 2-8, 2027"
+            },
+            {
+              "url": "https://iccv.thecvf.com/Conferences/2027/Dates",
+              "accessed": "2026-09-21",
+              "quote": "All other dates referenced ... are marked as TBD"
+            },
+            {
+              "url": "https://iccv2023.thecvf.com/",
+              "accessed": "2026-09-21",
+              "quote": "Paris Convention Center ... October 2-6, 2023 ... Paper Submission Deadline: March 8, 2023 (23:59 GMT)"
+            },
+            {
+              "url": "https://iccv.thecvf.com/Conferences/2025/Dates",
+              "accessed": "2026-09-21",
+              "quote": "Submission and Supplementary Materials Deadline | Mar 07 '25 11:59 PM HST"
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "low",
+            "notification": "low",
+            "conf_dates": "high",
+            "location": "high"
+          },
+          "conf": "iccv",
+          "year": 2027,
+          "name": "ICCV 2027",
+          "full_name": "IEEE/CVF International Conference on Computer Vision 2027",
+          "website": "https://iccv.thecvf.com/Conferences/2027"
+        }
+      ]
+    },
+    "eccv": {
+      "full_name": "European Conference on Computer Vision",
+      "field": [
+        "computer vision"
+      ],
+      "pattern": {
+        "typical_deadline_window": "Even years only. Paper registration late Feb, full paper in the first week of March (2024-03-07 22:00 CET; 2026-03-05 23:00 CET), supplementary +1 week. Deadlines are stated in Central European time, not AoE.",
+        "typical_notification_month": "Mid-June to early July (2024-07-01, 2026-06-17); reviews early May with an 8-9 day rebuttal (2024: May 9-17; 2026: May 2-11).",
+        "typical_conference_month": "September/early October (Milan Sep 29-Oct 4 2024; Malmo Sep 8-12 2026); camera-ready late June to mid July.",
+        "location_rotation": "Biennial, always Europe: Tel Aviv 2022, Milan 2024, Malmo 2026; Bucharest 2028 per a program chair's page (not yet on the ECVA site).",
+        "review_process": "Double-blind (CVF/ECVA process on OpenReview): ~3 reviews, reviews released to authors, ~8-day rebuttal (no revision), AC decisions; runs on the same calendar slot as ICCV in odd years.",
+        "resubmission_rules": "Dual submission: 'no paper substantially similar in content has been or will be submitted to another conference or workshop during the review period' (2026: Mar 13 - Jun 17). arXiv preprints allowed. Natural resubmission target for a CVPR (late Feb) reject; an ECCV reject (mid June) can go to WACV round 2 (late Aug), 3DV (late Aug) or BMVC (May, too early)."
+      },
+      "editions": [
+        {
+          "abstract_deadline": "2024-02-29",
+          "paper_deadline": "2024-03-07",
+          "deadline_time": "22:00",
+          "deadline_tz": "CET",
+          "original_paper_deadline": null,
+          "supplementary_deadline": "2024-03-14",
+          "rebuttal_start": "2024-05-09",
+          "rebuttal_end": "2024-05-17",
+          "reviews_released": "2024-05-09",
+          "notification": "2024-07-01",
+          "camera_ready": "2024-07-17",
+          "conf_start": "2024-09-29",
+          "conf_end": "2024-10-04",
+          "city": "Milan",
+          "country": "Italy",
+          "country_code": "IT",
+          "continent": "Europe",
+          "venue": "MiCo Milano",
+          "status": "past",
+          "notes": [
+            "'Paper registration deadline' (Feb 29) is the abstract deadline.",
+            "Rebuttal was 8 days (May 9-17, 2024).",
+            "Workshops/tutorials Sep 29-30, main conference Oct 1-4 (Oct 4 morning only)."
+          ],
+          "sources": [
+            {
+              "url": "https://eccv.ecva.net/Conferences/2024/CallForPapers",
+              "accessed": "2026-09-21",
+              "quote": "Paper Registration Deadline: Feb 29, 2024 10:00 PM CET ... Paper Submission Deadline: Mar 07, 2024 10:00 PM CET ... Supplementary Materials Deadline: Mar 14, 2024 09:00 PM CET ... Reviews Released: May 09, 2024 ... Rebuttal Deadline: May 17, 2024 ... Final Decisions: Jul 01, 2024"
+            },
+            {
+              "url": "https://eccv.ecva.net/Conferences/2024/Dates",
+              "accessed": "2026-09-21",
+              "quote": "Rebuttal deadline (8 days) | May 17 '24 ... Decisions communicated to authors | Jul 01 '24 ... Camera ready deadline | Jul 17 '24 Anywhere on Earth ... Conference Day 1: Workshops | Sep 29 '24 ... Main Conference Day 4 (Morning only) | Oct 04 '24"
+            },
+            {
+              "url": "https://eccv.ecva.net/Conferences/2024",
+              "accessed": "2026-09-21",
+              "quote": "at MiCo Milano ... Sun Sep 29th through Fri Oct 4th, 2024"
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "high",
+            "notification": "high",
+            "conf_dates": "high",
+            "location": "high"
+          },
+          "conf": "eccv",
+          "year": 2024,
+          "name": "ECCV 2024",
+          "full_name": "European Conference on Computer Vision 2024",
+          "website": "https://eccv.ecva.net/Conferences/2024"
+        },
+        {
+          "abstract_deadline": "2026-02-26",
+          "paper_deadline": "2026-03-05",
+          "deadline_time": "23:00",
+          "deadline_tz": "CET",
+          "original_paper_deadline": null,
+          "supplementary_deadline": "2026-03-12",
+          "rebuttal_start": "2026-05-02",
+          "rebuttal_end": "2026-05-11",
+          "reviews_released": "2026-05-02",
+          "notification": "2026-06-17",
+          "camera_ready": "2026-06-30",
+          "conf_start": "2026-09-08",
+          "conf_end": "2026-09-12",
+          "city": "Malmo",
+          "country": "Sweden",
+          "country_code": "SE",
+          "continent": "Europe",
+          "venue": "Malmo Arena and Malmomassan",
+          "status": "past",
+          "notes": [
+            "'Paper registration deadline' Feb 26, 2026 11:00 PM CET is the abstract deadline; paper Mar 5, 2026 11:00 PM CET (= 22:00 UTC); supplementary Mar 12; rebuttal deadline May 11, 2026 11:00 PM CEST.",
+            "Dual-submission review period stated as March 13, 2026 - June 17, 2026.",
+            "Workshops/tutorials Sep 8-9, main conference Sep 10-12, 2026.",
+            "Disagreement: aideadlines.org / mldeadlines / huggingface ai-deadlines list the paper deadline as 'March 6, 2026' and the conference as 'September 8-13'; the official CFP and Dates pages say Mar 05 '26 11:00 PM CET and Sep 8-12. Official pages used (the March 6 value is the same instant expressed in AoE-ish terms only if misconverted; 23:00 CET Mar 5 is 10:00 UTC-12 Mar 5, so it is genuinely March 5)."
+          ],
+          "sources": [
+            {
+              "url": "https://eccv.ecva.net/Conferences/2026/CallForPapers",
+              "accessed": "2026-09-21",
+              "quote": "Paper Registration Deadline: Feb 26, 2026 11:00 PM CET ... Submission Deadline: Mar 05, 2026 11:00 PM CET ... Supplementary Materials Deadline: Mar 12, 2026 11:00 PM CET ... Reviews Released to authors: May 02, 2026 ... Rebuttal Deadline: May 11, 2026 11:00 PM CEST ... Final Decisions: Jun 17, 2026 ... Camera ready deadline: Jun 30, 2026 AOE"
+            },
+            {
+              "url": "https://eccv.ecva.net/Conferences/2026/Dates",
+              "accessed": "2026-09-21",
+              "quote": "Paper registration deadline | Feb 26 '26 10:00 PM UTC ... Main Conference Submission Deadline | Mar 05 '26 10:00 PM UTC ... Final decisions | Jun 17 '26 ... Camera ready deadline | Jun 30 '26 (Anywhere on Earth) ... Main Conference September 10 - 12 ... Workshops & Tutorials September 8 - 9"
+            },
+            {
+              "url": "https://eccv.ecva.net/",
+              "accessed": "2026-09-21",
+              "quote": "September 8 - 12th, 2026 in Malmo, Sweden ... Malmo Arena and Malmomassan"
+            },
+            {
+              "url": "http://aideadlines.org/conference/?id=eccv26",
+              "accessed": "2026-09-21",
+              "quote": "(secondary) Paper submission deadline: March 6, 2026 ... September 8-13, 2026"
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "high",
+            "notification": "high",
+            "conf_dates": "high",
+            "location": "high"
+          },
+          "conf": "eccv",
+          "year": 2026,
+          "name": "ECCV 2026",
+          "full_name": "European Conference on Computer Vision 2026",
+          "website": "https://eccv.ecva.net/Conferences/2026"
+        },
+        {
+          "abstract_deadline": "2028-02-25",
+          "paper_deadline": "2028-03-03",
+          "deadline_time": "23:00",
+          "deadline_tz": "CET (estimated)",
+          "original_paper_deadline": null,
+          "supplementary_deadline": "2028-03-10",
+          "rebuttal_start": "2028-05-05",
+          "rebuttal_end": "2028-05-14",
+          "reviews_released": "2028-05-05",
+          "notification": "2028-06-20",
+          "camera_ready": null,
+          "conf_start": "2028-09-18",
+          "conf_end": "2028-09-22",
+          "city": "Bucharest",
+          "country": "Romania",
+          "country_code": "RO",
+          "continent": "Europe",
+          "venue": null,
+          "status": "estimated",
+          "notes": [
+            "NOT on the official ECVA/ECCV sites as of 2026-09-21 (eccv.ecva.net/Conferences/2028 returns 404; ecva.net lists nothing after 2024). Location comes from program chair Radu Timofte's own page ('Program Chair for The 20th ECCV, 2028 in Bucharest, Romania') and aggregator listings (showsbee, ourglocal).",
+            "ALL dates are ESTIMATES from the 2024/2026 pattern (paper deadline first Friday of March in CET, decisions mid/late June, conference mid-September to early October). Treat as placeholders until the ECVA announces."
+          ],
+          "sources": [
+            {
+              "url": "https://cvlai.net/",
+              "accessed": "2026-09-21",
+              "quote": "Radu Timofte will serve as a Program Chair for The 20th European Conference on Computer Vision (ECCV), 2028 in Bucharest, Romania."
+            },
+            {
+              "url": "https://eccv.ecva.net/Conferences/2028",
+              "accessed": "2026-09-21",
+              "quote": "HTTP 404 Not Found"
+            },
+            {
+              "url": "https://www.ecva.net/",
+              "accessed": "2026-09-21",
+              "quote": "table of past and current ECCV conferences from 2004 through 2024 ... no information regarding future editions"
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "low",
+            "notification": "low",
+            "conf_dates": "low",
+            "location": "medium"
+          },
+          "conf": "eccv",
+          "year": 2028,
+          "name": "ECCV 2028",
+          "full_name": "European Conference on Computer Vision 2028",
+          "website": "https://eccv.ecva.net/"
+        }
+      ]
+    },
+    "wacv": {
+      "full_name": "IEEE/CVF Winter Conference on Applications of Computer Vision",
+      "field": [
+        "computer vision"
+      ],
+      "pattern": {
+        "typical_deadline_window": "Annual, two submission rounds. Round 1 paper deadline late June/mid July (2024-07-15, 2025-07-18, 2026-06-26); Round 2 paper deadline late Aug/mid Sep (2024-09-09, 2025-09-19, 2026-08-28), registration one week before each; supplementary +0-2 days. All AoE.",
+        "typical_notification_month": "Round 1 decisions ~6-7 weeks after the deadline (Accept / Revise-and-Resubmit / Reject); final decisions for both rounds late Oct/early Nov (2024-10-28, 2025-11-05, 2026-10-09). Camera-ready Nov/Dec.",
+        "typical_conference_month": "Winter: Feb 28-Mar 4 2025 (Tucson), Mar 6-10 2026 (Tucson), Jan 4-8 2027 (Lake Buena Vista/Orlando). Workshops the first two days, main conference the last three.",
+        "location_rotation": "USA resort venues: Waikoloa HI 2023-2024, Tucson AZ 2025-2026, Disney Springs / Lake Buena Vista FL 2027.",
+        "review_process": "Double-blind on OpenReview, three tracks (Algorithms, Applications, Evaluations & Datasets). Round-1 papers get Accept, Revise-and-Resubmit or Reject; R&R papers upload a revised paper plus a 1-page rebuttal at the Round-2 deadline and go back to the same reviewers/AC for a final decision with Round 2. Round-2 papers get one-shot decisions with no rebuttal.",
+        "resubmission_rules": "'Rejected round 1 papers which are submitted to round 2 as new papers will be desk rejected.' Dual submission: not previously published/accepted in substantially similar form and not under concurrent review. arXiv explicitly allowed ('Q. Can I post my submission on arXiv? A. Yes.'); an un-refereed arXiv report is not prior art. Round 1 (late June) suits ECCV/CVPR rejects; Round 2 (late Aug) suits ICCV/ECCV rejects."
+      },
+      "editions": [
+        {
+          "abstract_deadline": "2025-09-12",
+          "paper_deadline": "2025-09-19",
+          "deadline_time": "23:59",
+          "deadline_tz": "AoE",
+          "original_paper_deadline": null,
+          "supplementary_deadline": "2025-09-19",
+          "rebuttal_start": "2025-09-03",
+          "rebuttal_end": "2025-09-19",
+          "reviews_released": "2025-09-03",
+          "notification": "2025-11-05",
+          "camera_ready": "2025-12-08",
+          "conf_start": "2026-03-06",
+          "conf_end": "2026-03-10",
+          "city": "Tucson",
+          "country": "United States",
+          "country_code": "US",
+          "continent": "North America",
+          "venue": "JW Marriott Starr Pass Resort",
+          "status": "past",
+          "notes": [
+            "Primary fields hold ROUND 2 (final) dates; see 'rounds' for both. Round 1: registration Jul 11, paper+supp Jul 18, 2025 AoE; reviews+decisions Sep 3, 2025; revision+rebuttal due Sep 19; final decisions Nov 5, 2025. Round 2: registration Sep 12, paper+supp Sep 19, 2025 AoE; reviews+final decisions Nov 5, 2025.",
+            "rebuttal_* fields describe the Round-1 Revise-and-Resubmit window (decisions Sep 3 -> revision due Sep 19). Round 2 has no rebuttal.",
+            "Dates page renders R1 decisions as 'Sep 05 '25 06:39 AM UTC' and final decisions as 'Nov 06 '25 07:59 AM UTC' (= Nov 5 23:59 PST); the CFP text says Sept 3 and Nov 5 - CFP dates used.",
+            "Camera-ready 'for accepted round 2 papers: Dec 8, 2025, AoE' (author guide). A secondary source claiming Jan 9, 2026 was ignored (likely a workshop).",
+            "Workshops/tutorials Mar 6-7, main conference Mar 8-10, 2026."
+          ],
+          "sources": [
+            {
+              "url": "https://wacv.thecvf.com/Conferences/2026/CallForPapers",
+              "accessed": "2026-09-21",
+              "quote": "Paper registration: July 11th, 2025, 23:59 AoE ... Paper submissions: July 18th, 2025, 23:59 AoE ... Reviews and Decisions to authors: Sept 3rd, 2025 ... Rebuttal and Revision submission: Sept 19th, 2025, 23:59 AoE ... Final Decisions released to authors: Nov 5th, 2025 ... New paper registration: Sept 12th, 2025, 23:59 AoE ... Paper submissions: Sept 19th, 2025, 23:59 AoE ... Reviews and Final Decisions to authors: Nov 5th, 2025"
+            },
+            {
+              "url": "https://wacv.thecvf.com/Conferences/2026/Dates",
+              "accessed": "2026-09-21",
+              "quote": "Round 1 Paper Submission Deadline | Jul 18 '25 (Anywhere on Earth) ... Round 2 Paper Submissions | Sep 19 '25 ... Round 2 Reviews and Final Decisions to Authors | Nov 06 '25 07:59 AM UTC ... Fri. Mar 6th through Tue the 10th, 2026"
+            },
+            {
+              "url": "https://wacv.thecvf.com/Conferences/2026/AuthorReviewerGuides",
+              "accessed": "2026-09-21",
+              "quote": "Camera ready paper due for accepted round 2 papers: Dec 8, 2025, AoE ... Rejected round 1 papers which are submitted to round 2 as new papers will be desk rejected. ... Q. Can I post my submission on arXiv? A. Yes."
+            },
+            {
+              "url": "https://wacv.thecvf.com/Conferences/2026",
+              "accessed": "2026-09-21",
+              "quote": "JW Marriott Starpass in Tucson, Arizona ... Friday, March 6 - Tuesday, March 10, 2026"
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "high",
+            "notification": "high",
+            "conf_dates": "high",
+            "location": "high"
+          },
+          "conf": "wacv",
+          "year": 2026,
+          "name": "WACV 2026",
+          "full_name": "IEEE/CVF Winter Conference on Applications of Computer Vision 2026",
+          "website": "https://wacv.thecvf.com/Conferences/2026",
+          "rounds": [
+            {
+              "round": 1,
+              "registration": "2025-07-11",
+              "paper": "2025-07-18",
+              "supplementary": "2025-07-18",
+              "reviews_and_decisions": "2025-09-03",
+              "revision_and_rebuttal_due": "2025-09-19",
+              "final_decisions": "2025-11-05"
+            },
+            {
+              "round": 2,
+              "registration": "2025-09-12",
+              "paper": "2025-09-19",
+              "supplementary": "2025-09-19",
+              "reviews_and_decisions": "2025-11-05",
+              "revision_and_rebuttal_due": null,
+              "final_decisions": "2025-11-05"
+            }
+          ]
+        },
+        {
+          "abstract_deadline": "2026-08-21",
+          "paper_deadline": "2026-08-28",
+          "deadline_time": "23:59",
+          "deadline_tz": "AoE",
+          "original_paper_deadline": null,
+          "supplementary_deadline": "2026-08-30",
+          "rebuttal_start": "2026-08-07",
+          "rebuttal_end": "2026-08-28",
+          "reviews_released": "2026-08-07",
+          "notification": "2026-10-09",
+          "camera_ready": "2026-11-02",
+          "conf_start": "2027-01-04",
+          "conf_end": "2027-01-08",
+          "city": "Lake Buena Vista (Orlando)",
+          "country": "United States",
+          "country_code": "US",
+          "continent": "North America",
+          "venue": "Disney Springs, Buena Vista, FL (specific hotel not named on the official site)",
+          "status": "announced",
+          "notes": [
+            "Primary fields hold ROUND 2 (final) dates; see 'rounds'. Round 1: registration Jun 19, paper Jun 26, supp Jun 28, 2026 AoE; reviews+decisions Aug 7, 2026; revision+1-page rebuttal due Aug 28; final decisions Oct 9, 2026. Round 2: registration Aug 21, paper Aug 28, supp Aug 30, 2026 AoE; reviews+final decisions Oct 9, 2026. Both rounds' deadlines have passed as of 2026-09-21; final decisions pending (Oct 9).",
+            "rebuttal_* fields describe the Round-1 Revise-and-Resubmit window. Round 2 has no rebuttal.",
+            "Disagreement: Dates page says 'Round 1 Reviews and Decisions To Authors Aug 09 '26'; the CFP and Reviewer Guidelines say August 7, 2026. CFP date used.",
+            "Camera-ready both rounds Nov 2, 2026 AoE.",
+            "Workshops Jan 4-5, main conference Jan 6-8, 2027."
+          ],
+          "sources": [
+            {
+              "url": "https://wacv.thecvf.com/Conferences/2027/Dates",
+              "accessed": "2026-09-21",
+              "quote": "Round 1 Paper Registration Deadline | Jun 19 '26 Anywhere on Earth ... Round 1 Paper Submission Deadline | Jun 26 '26 ... Round 1 Supplementary Material | Jun 28 '26 ... Round 1 Reviews and Decisions To Authors | Aug 09 '26 ... Round 2 New Paper Registration | Aug 21 '26 ... Round 2 Paper Submissions | Aug 28 '26 ... Round 1 Rebuttal and Revision Submission | Aug 28 '26 ... Round 2 Supplemental Material | Aug 30 '26 ... Round 1 Final Decisions Released to Authors | Oct 09 '26 ... Round 2 Reviews and Final Decisions to Authors | Oct 09 '26 ... Camera Ready Both Rounds | Nov 02 '26"
+            },
+            {
+              "url": "https://wacv.thecvf.com/Conferences/2027/CallForPapers",
+              "accessed": "2026-09-21",
+              "quote": "Paper enrollment: June 19th, 2026 ... Paper submission: June 26th, 2026 ... Reviews and Decisions released to authors: August 7th, 2026 ... Rebuttal and Revision submission: August 28th, 2026 ... Final Decisions released to authors: October 9th, 2026 ... New paper enrollment: August 21st, 2026 ... Paper submission: August 28th, 2026 ... Camera ready submission: November 2nd, 2026 ... (All deadline dates are Anywhere on Earth)"
+            },
+            {
+              "url": "https://wacv.thecvf.com/Conferences/2027/AuthorGuides",
+              "accessed": "2026-09-21",
+              "quote": "Rejected round 1 papers which are submitted to round 2 as new papers will be desk rejected. ... Revise and Resubmit: The submission has not been accepted to WACV 2027, but may be made acceptable after some revisions. ... Camera-ready paper due for accepted round 2 papers: November 2, 2026, AoE"
+            },
+            {
+              "url": "https://wacv.thecvf.com/Conferences/2027",
+              "accessed": "2026-09-21",
+              "quote": "Disney Springs, Buena Vista, FL ... Monday, Jan 4 through Friday, Jan 8, 2027 ... Workshops: Jan 4th - 5th ... Main Conference Sessions: Jan 6th - 8th"
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "high",
+            "notification": "high",
+            "conf_dates": "high",
+            "location": "high"
+          },
+          "conf": "wacv",
+          "year": 2027,
+          "name": "WACV 2027",
+          "full_name": "IEEE/CVF Winter Conference on Applications of Computer Vision 2027",
+          "website": "https://wacv.thecvf.com/Conferences/2027",
+          "rounds": [
+            {
+              "round": 1,
+              "registration": "2026-06-19",
+              "paper": "2026-06-26",
+              "supplementary": "2026-06-28",
+              "reviews_and_decisions": "2026-08-07",
+              "revision_and_rebuttal_due": "2026-08-28",
+              "final_decisions": "2026-10-09"
+            },
+            {
+              "round": 2,
+              "registration": "2026-08-21",
+              "paper": "2026-08-28",
+              "supplementary": "2026-08-30",
+              "reviews_and_decisions": "2026-10-09",
+              "revision_and_rebuttal_due": null,
+              "final_decisions": "2026-10-09"
+            }
+          ]
+        }
+      ]
+    },
+    "3dv": {
+      "full_name": "International Conference on 3D Vision",
+      "field": [
+        "computer vision"
+      ],
+      "pattern": {
+        "typical_deadline_window": "Annual. Paper deadline in the second half of August (2024-08-12 PT, 2025-08-18 PT, 2026-08-28 AoE), supplementary 3-5 days later. 'No extensions will be granted.'",
+        "typical_notification_month": "Early November (2024-11-05, 2025-11-05). 2027 changed to a preliminary notification Oct 27 plus a final notification Dec 2 with an optional, invitation-only author response in between.",
+        "typical_conference_month": "March/April (Singapore Mar 25-28 2025; Vancouver Mar 20-23 2026; Thessaloniki Apr 6-9 2027). Single track.",
+        "location_rotation": "Rotates globally: Singapore 2025 (Asia), Vancouver 2026 (North America), Thessaloniki 2027 (Europe).",
+        "review_process": "Double-blind on OpenReview with area chairs; historically no rebuttal. From 3DV 2027 reviewers/ACs 'are given the option to ask for a short response from the authors' for borderline papers between preliminary and final notification; clear accept/reject papers get no rebuttal.",
+        "resubmission_rules": "Dual submission: not previously published/accepted in substantially similar form; 'substantial overlap' = 20 percent or more shared material with previous or concurrent submissions. arXiv: 'a technical report (departmental, arXiv.org, etc.) ... put up without any form of direct peer-review is NOT considered published and can be submitted'. Late-August deadline is the natural home for an ECCV/ICCV reject; a 3DV reject (Nov/Dec) can go to CVPR only if it beats the mid-Nov deadline, else ICCV/ECCV in March."
+      },
+      "editions": [
+        {
+          "abstract_deadline": null,
+          "paper_deadline": "2025-08-18",
+          "deadline_time": "23:59",
+          "deadline_tz": "PT",
+          "original_paper_deadline": null,
+          "supplementary_deadline": "2025-08-21",
+          "rebuttal_start": null,
+          "rebuttal_end": null,
+          "reviews_released": null,
+          "notification": "2025-11-05",
+          "camera_ready": null,
+          "conf_start": "2026-03-20",
+          "conf_end": "2026-03-23",
+          "city": "Vancouver",
+          "country": "Canada",
+          "country_code": "CA",
+          "continent": "North America",
+          "venue": "Vancouver Convention Centre",
+          "status": "past",
+          "notes": [
+            "No rebuttal period (none listed on the Dates page); 'Reviews due October 09, 2025' is internal.",
+            "'All dates and deadlines are 23:59 Pacific Time (PT). No extensions will be granted.' The deadline was not extended.",
+            "No separate abstract registration was listed; camera-ready date not on the Dates page.",
+            "Nectar track (already-published papers) deadline Feb 15, 2026."
+          ],
+          "sources": [
+            {
+              "url": "https://3dvconf.github.io/2026/dates/",
+              "accessed": "2026-09-21",
+              "quote": "Paper Submission: August 18, 2025 ... Supplementary Material: August 21, 2025 ... Reviews Due: October 09, 2025 ... Paper Notification: November 05, 2025 ... Main Conference: March 20-23, 2026 ... 23:59 Pacific Time (PT)"
+            },
+            {
+              "url": "https://3dvconf.github.io/2026/",
+              "accessed": "2026-09-21",
+              "quote": "Vancouver, BC, Canada ... Vancouver Convention Centre ... March 20 to 23, 2026 ... All dates and deadlines are 23:59 Pacific Time (PT). No extensions will be granted."
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "high",
+            "notification": "high",
+            "conf_dates": "high",
+            "location": "high"
+          },
+          "conf": "3dv",
+          "year": 2026,
+          "name": "3DV 2026",
+          "full_name": "International Conference on 3D Vision 2026",
+          "website": "https://3dvconf.github.io/2026/"
+        },
+        {
+          "abstract_deadline": "2026-08-28",
+          "paper_deadline": "2026-08-28",
+          "deadline_time": "23:59",
+          "deadline_tz": "AoE",
+          "original_paper_deadline": null,
+          "supplementary_deadline": "2026-09-02",
+          "rebuttal_start": "2026-10-27",
+          "rebuttal_end": null,
+          "reviews_released": "2026-10-27",
+          "notification": "2026-12-02",
+          "camera_ready": null,
+          "conf_start": "2027-04-06",
+          "conf_end": "2027-04-09",
+          "city": "Thessaloniki",
+          "country": "Greece",
+          "country_code": "GR",
+          "continent": "Europe",
+          "venue": "Thessaloniki Concert Hall (M2 building)",
+          "status": "announced",
+          "notes": [
+            "Abstract registration and paper submission share the Aug 28, 2026 23:59 AoE deadline; supplementary Sep 2, 2026 AoE. Submission has closed as of 2026-09-21.",
+            "Two-stage notification: 'Preliminary Notification Oct 27, 2026' and 'Final Notification Dec 02, 2026', both 11:00 am Pacific Time. reviews_released = preliminary notification; rebuttal_end is null because the optional author response is by invitation only ('Rebuttal only upon invite for borderline papers') and its exact window is not published.",
+            "Camera-ready date not yet published.",
+            "Conference Apr 6-9, 2027; workshops/tutorials split not published."
+          ],
+          "sources": [
+            {
+              "url": "https://3dvconf.github.io/2027/dates/",
+              "accessed": "2026-09-21",
+              "quote": "Abstract Registration & Paper Submission: Aug 28, 2026 (23:59 Anywhere on Earth) ... Supplementary Material: Sep 02, 2026 ... Preliminary Notification: Oct 27, 2026 (11:00 am Pacific Time) ... Final Notification: Dec 02, 2026 (11:00 am Pacific Time) ... Main Conference: Apr 6-9, 2027 ... rebuttals will be requested only if reviewers and area chairs need additional information to make their decision"
+            },
+            {
+              "url": "https://3dvconf.github.io/2027/",
+              "accessed": "2026-09-21",
+              "quote": "Thessaloniki, Greece ... Thessaloniki Concert Hall (M2 building) ... April 6 to 9, 2027 ... The Abstract Registration, Paper Submission and Supplementary Material deadlines are 23:59 Anywhere on Earth (AoE). All other deadlines are 11:00 am Pacific Time (PDT)."
+            },
+            {
+              "url": "https://3dvconf.github.io/2027/author-guidelines/",
+              "accessed": "2026-09-21",
+              "quote": "Based on the initial reviews, the reviewers and Area Chairs will discuss submissions and are given the option to ask for a short response from the authors, e.g., in cases where clarifications are needed. ... A submission with substantial overlap is one that shares 20 percent or more material with previous or concurrently submitted publications. ... a technical report (departmental, arXiv.org, etc.) version of the submission that is put up without any form of direct peer-review is NOT considered published and can be submitted to 3DV 2027."
+            },
+            {
+              "url": "https://x.com/3DVconf/status/2059050374145994911",
+              "accessed": "2026-09-21",
+              "quote": "Conference dates: April 6-9, 2027 ... Place: #Thessaloniki (#SKG), #Greece ... Paper ddl: Aug 28 ... Supp ddl: Sep 02 ... Rebuttal only upon invite for borderline papers!"
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "high",
+            "notification": "high",
+            "conf_dates": "high",
+            "location": "high"
+          },
+          "conf": "3dv",
+          "year": 2027,
+          "name": "3DV 2027",
+          "full_name": "International Conference on 3D Vision 2027",
+          "website": "https://3dvconf.github.io/2027/"
+        }
+      ]
+    },
+    "bmvc": {
+      "full_name": "British Machine Vision Conference",
+      "field": [
+        "computer vision"
+      ],
+      "pattern": {
+        "typical_deadline_window": "Annual. Abstract late April to late May, full paper + supplementary one to two weeks later, always a Friday in May (2024-05-10, 2025-05-16, 2026-05-29); deadlines 23:59 AoE (GMT in 2024-25).",
+        "typical_notification_month": "Late July / early August (2024-07-19, 2025-07-25, 2026-08-07); reviews released early July with a one-week rebuttal (2026: Jul 3-10); camera-ready late August.",
+        "typical_conference_month": "Late November, Monday-Thursday (Glasgow Nov 25-28 2024; Sheffield Nov 24-27 2025; Lancaster Nov 23-26 2026).",
+        "location_rotation": "Rotates among UK universities: Aberdeen 2023, Glasgow 2024, Sheffield 2025, Lancaster 2026; the BMVA solicits host proposals 'in June of each year for the BMVC two years later', so 2027's host is normally announced at/around the preceding conference.",
+        "review_process": "Double-blind; 'each paper will be reviewed by at least three reviewers. An Area Chair will provide a meta-review'; reviews released with a one-week rebuttal, then decisions. Top papers invited to an IJCV special issue.",
+        "resubmission_rules": "'Work submitted to BMVC must be original and cannot be under concurrent review for another peer-reviewed conference or journal.' 'Posting a preprint to arXiv does not constitute a prior publication.' The late-May deadline lines up with ECCV/ICCV rejects only if decisions are early; more often it catches CVPR rejects (late Feb) and feeds into NeurIPS/3DV timelines after an early-August decision."
+      },
+      "editions": [
+        {
+          "abstract_deadline": "2026-05-22",
+          "paper_deadline": "2026-05-29",
+          "deadline_time": "23:59",
+          "deadline_tz": "AoE",
+          "original_paper_deadline": null,
+          "supplementary_deadline": "2026-05-29",
+          "rebuttal_start": "2026-07-03",
+          "rebuttal_end": "2026-07-10",
+          "reviews_released": "2026-07-03",
+          "notification": "2026-08-07",
+          "camera_ready": "2026-08-28",
+          "conf_start": "2026-11-23",
+          "conf_end": "2026-11-26",
+          "city": "Lancaster",
+          "country": "United Kingdom",
+          "country_code": "GB",
+          "continent": "Europe",
+          "venue": "Lancaster Town Hall (hosted by Lancaster University)",
+          "status": "announced",
+          "notes": [
+            "All deadlines 23:59 AoE. Paper and supplementary share the May 29, 2026 deadline.",
+            "'Paper Decisions' (internal) Jul 31, 2026; 'Author Notifications' Aug 7, 2026 - the latter is the notification date.",
+            "Submission closed and decisions sent; conference is upcoming (Nov 23-26, 2026).",
+            "Top papers invited to an IJCV special issue."
+          ],
+          "sources": [
+            {
+              "url": "https://bmvc2026.bmva.org/dates/",
+              "accessed": "2026-09-21",
+              "quote": "Abstract Submission Deadline | Friday, 22 May 2026 | 23:59 AoE ... Paper Submission Deadline | Friday, 29 May 2026 ... Release of Reviews; Start of Rebuttal | Friday, 3 July 2026 ... End of Rebuttal | Friday, 10 July 2026 ... Paper Decisions | Friday, 31 July 2026 ... Author Notifications | Friday, 7 August 2026 ... Camera Ready Deadline for Papers | Friday, 28 August 2026 ... Conference Starts | Monday, 23 November 2026 ... Conference Ends | Thursday, 26 November 2026"
+            },
+            {
+              "url": "https://bmvc2026.bmva.org/calls/call-for-papers/",
+              "accessed": "2026-09-21",
+              "quote": "Abstract Submission Deadline: Friday, 22 May 2026 ... Paper & Supplementary Material Submission Deadline: Friday, 29 May 2026 ... Rebuttal Period: Friday, 3 July - Friday, 10 July 2026 ... Author Notification of Decisions: Friday, 7 August 2026 ... Final Camera-Ready Paper Deadline: Friday, 28 August 2026 ... Work submitted to BMVC 2026 must be original and cannot be under concurrent review for another peer-reviewed conference or journal. ... Posting a preprint to arXiv does not constitute a prior publication."
+            },
+            {
+              "url": "https://bmvc2026.bmva.org/",
+              "accessed": "2026-09-21",
+              "quote": "Lancaster, UK ... Lancaster Town Hall ... 23rd - 26th November 2026"
+            },
+            {
+              "url": "https://www.bmva.org/bmvc",
+              "accessed": "2026-09-21",
+              "quote": "BMVC 2026: We are pleased to announce that BMVC will be held from 23rd - 26th November 2026 in Lancaster."
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "high",
+            "notification": "high",
+            "conf_dates": "high",
+            "location": "high"
+          },
+          "conf": "bmvc",
+          "year": 2026,
+          "name": "BMVC 2026",
+          "full_name": "The 37th British Machine Vision Conference 2026",
+          "website": "https://bmvc2026.bmva.org/"
+        },
+        {
+          "abstract_deadline": "2027-05-14",
+          "paper_deadline": "2027-05-21",
+          "deadline_time": "23:59",
+          "deadline_tz": "AoE (estimated)",
+          "original_paper_deadline": null,
+          "supplementary_deadline": "2027-05-21",
+          "rebuttal_start": "2027-07-02",
+          "rebuttal_end": "2027-07-09",
+          "reviews_released": "2027-07-02",
+          "notification": "2027-07-30",
+          "camera_ready": "2027-08-27",
+          "conf_start": "2027-11-22",
+          "conf_end": "2027-11-25",
+          "city": null,
+          "country": "United Kingdom",
+          "country_code": "GB",
+          "continent": "Europe",
+          "venue": null,
+          "status": "estimated",
+          "notes": [
+            "NOT ANNOUNCED as of 2026-09-21: neither bmva.org nor the BMVC 2026 site mentions a 2027 host; bmvc2027.org does not resolve. The BMVA solicits host proposals 'in June of each year for the BMVC two years later', so the host is normally revealed at/after BMVC 2026 (late Nov 2026).",
+            "ALL dates are ESTIMATES from 2024-2026: paper deadline a Friday in mid/late May (May 10 / May 16 / May 29), abstract one week earlier, reviews+rebuttal first week of July, notification late Jul/early Aug (Jul 19 / Jul 25 / Aug 7), camera-ready last Friday of August, conference Mon-Thu in the last full week of November (Nov 25-28 / Nov 24-27 / Nov 23-26).",
+            "Aggregator mlciv.com/ai-deadlines lists 'Nov 23-26, 2027, TBA' - also a prediction, not official."
+          ],
+          "sources": [
+            {
+              "url": "https://www.bmva.org/bmvc",
+              "accessed": "2026-09-21",
+              "quote": "If you would like to host BMVC, proposals are solicited in June of each year for the BMVC two years later. (no BMVC 2027 mentioned)"
+            },
+            {
+              "url": "https://bmvc2025.bmva.org/dates/",
+              "accessed": "2026-09-21",
+              "quote": "Abstract Deadline: Tuesday, 13 May 2025 (23:59 GMT) ... Paper Submission Deadline: Friday, 16 May 2025 ... Author Notifications: Friday, 25 July 2025 ... Camera Ready: Friday, 29 August 2025 ... Monday, 24 November 2025 through Thursday, 27 November 2025"
+            },
+            {
+              "url": "https://bmvc2024.org/dates/",
+              "accessed": "2026-09-21",
+              "quote": "Abstract Deadline: Friday, 26 April 2024 (23:59 GMT) ... Paper Deadline: Friday, 10 May 2024 ... Notification: Friday, 19 July 2024 ... Camera-Ready: Friday, 30 August 2024 ... Monday, 25 November 2024 through Thursday, 28 November 2024"
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "low",
+            "notification": "low",
+            "conf_dates": "low",
+            "location": "low"
+          },
+          "conf": "bmvc",
+          "year": 2027,
+          "name": "BMVC 2027",
+          "full_name": "The 38th British Machine Vision Conference 2027",
+          "website": "https://www.bmva.org/bmvc"
+        }
+      ]
+    }
+  }
+}

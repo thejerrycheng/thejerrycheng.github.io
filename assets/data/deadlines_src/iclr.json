@@ -1,0 +1,346 @@
+{
+  "conferences": {
+    "iclr": {
+      "full_name": "International Conference on Learning Representations",
+      "field": [
+        "machine learning"
+      ],
+      "researched_on": "2026-09-21",
+      "pattern": {
+        "deadline_window": "Full-paper deadline Sep 24 - Oct 1 (2024: Sep 28; 2025: Oct 1; 2026: Sep 24; 2027: Sep 25), 11:59pm AoE. Mandatory abstract deadline 4-7 days earlier (Sep 18 - Sep 27; 2024's was extended Sep 21 -> Sep 23). No paper-deadline extension in any of the last four cycles.",
+        "abstract_deadline_window": "Sep 18 - Sep 27",
+        "typical_notification_month": "January for 2024-2026 (Jan 15 / Jan 22 / Jan 25); moved to mid-December for 2027 (Dec 16, 2026) - roughly 12 weeks after the deadline.",
+        "typical_conference_month": "Late April to early May (2024: May 7-11; 2025: Apr 24-28; 2026: Apr 23-27; 2027: Apr 26-30); 3 main-conference days followed by 2 workshop days.",
+        "location_rotation": "Rotates across continents: Vienna, Europe (2024) -> Singapore, Asia (2025) -> Rio de Janeiro, South America (2026) -> San Francisco, North America (2027); Kigali, Africa in 2023.",
+        "review_process": "Double-blind, fully public reviewing on OpenReview: reviews, author responses and the author-reviewer discussion are posted publicly (author names revealed only after decisions), followed by a private reviewer/AC discussion and meta-review. Withdrawn submissions stay public and are de-anonymized. Reciprocal reviewing has been required since ICLR 2025: authors on 3+ papers must review at least 6, and every submission needs a registered qualified reviewer-author.",
+        "resubmission_rules": {
+          "dual_submission": "Submissions that are identical (or substantially similar) to versions that have been previously published, or accepted for publication, or that have been submitted in parallel to this or other conferences or journals, are not allowed and violate our dual submission policy.",
+          "arxiv": "Allowed: 'papers that have appeared on non-peer reviewed websites (like arXiv) or that have been presented at workshops (i.e., venues that do not have publication proceedings) do not violate the policy.' Cite your own preprints in the third person to preserve anonymity.",
+          "neurips_resubmission": "No formal NeurIPS->ICLR rule; the norm is that NeurIPS rejects (NeurIPS notifications land within days of the ICLR deadline - Sep 24, 2026 vs ICLR 2027 paper deadline Sep 25, 2026) get revised and resubmitted to ICLR. Because the ICLR abstract deadline is mandatory and falls a week before the paper deadline, the abstract must be registered before the NeurIPS decision arrives; the paper must not be under review at both venues simultaneously (withdraw from the other venue first).",
+          "submission_caps_2027": "Max 20 submissions per author; at most one submission per author on which no co-author is an eligible reciprocal reviewer (first-time authors effectively limited to one paper).",
+          "rejected_papers": "Rejected ICLR papers may be resubmitted elsewhere; reviews remain public on OpenReview. Withdrawn papers remain publicly visible and de-anonymized.",
+          "page_limit": "9 pages main text at submission (10 for rebuttal/camera-ready), references and appendix excluded.",
+          "deadline_firmness": "Official wording: 'the deadlines are final and we cannot make any accommodations for missing the abstract deadline or paper deadline.'"
+        }
+      },
+      "editions": [
+        {
+          "conf": "iclr",
+          "year": 2024,
+          "name": "ICLR 2024",
+          "full_name": "The Twelfth International Conference on Learning Representations",
+          "website": "https://iclr.cc/Conferences/2024",
+          "abstract_deadline": "2023-09-23",
+          "original_abstract_deadline": "2023-09-21",
+          "paper_deadline": "2023-09-28",
+          "deadline_time": "23:59",
+          "deadline_tz": "AoE",
+          "original_paper_deadline": null,
+          "reviews_released": "2023-11-10",
+          "rebuttal_start": "2023-11-10",
+          "rebuttal_end": "2023-11-22",
+          "notification": "2024-01-15",
+          "camera_ready": "2024-04-14",
+          "conf_start": "2024-05-07",
+          "conf_end": "2024-05-11",
+          "city": "Vienna",
+          "country": "Austria",
+          "country_code": "AT",
+          "continent": "Europe",
+          "venue": "Messe Wien Exhibition and Congress Center",
+          "status": "past",
+          "notes": [
+            "Abstract deadline was extended by two days: the CFP says the Sept 23 abstract date 'was originally Sept 21st'. The full-paper deadline (Sept 28) was not extended.",
+            "Public OpenReview review + author/reviewer discussion Nov 10-22, 2023; decisions Jan 15, 2024 (~3.5 months after the deadline).",
+            "Main conference sessions Tue May 7 - Fri May 10; workshops Sat May 11, 2024.",
+            "ccfddl still lists the pre-extension abstract date (2023-09-21); the official CFP/Dates pages (Sept 23) are authoritative."
+          ],
+          "sources": [
+            {
+              "url": "https://iclr.cc/Conferences/2024/CallForPapers",
+              "accessed": "2026-09-21",
+              "quote": "Abstract submission: 11:59pm, Sept 23 (this date was originally Sept 21st) ... Full paper submission: 11:59pm, Sept 28 ... UTC-12h, aka 'Anywhere on Earth' ... Reviews Released: Nov 10 ... Author/Reviewer Discussion: Nov 10-22 ... Final Decisions: Jan 15 2024 ... May 7th to May 11th, 2024"
+            },
+            {
+              "url": "https://iclr.cc/Conferences/2024/Dates",
+              "accessed": "2026-09-21",
+              "quote": "Abstract Deadline - Sep 23 '23 (Anywhere on Earth); Paper Submission Deadline - Sep 28 '23 (Anywhere on Earth); Camera ready deadline - Apr 14 '24 (Anywhere on Earth); Tue May 7th through Fri the 10th (Conference Sessions); Sat May 11th (Workshops)"
+            },
+            {
+              "url": "https://iclr.cc/Conferences/2024",
+              "accessed": "2026-09-21",
+              "quote": "May 7th, 2024 to May 11th, 2024 ... Vienna Austria ... Messe Wien Exhibition and Congress Center"
+            },
+            {
+              "url": "https://api2.openreview.net/groups?id=ICLR.cc/2024/Conference",
+              "accessed": "2026-09-21",
+              "quote": "The Twelfth International Conference on Learning Representations ... Vienna, Austria ... Abstract Registration: Sep 24 2023 12:59PM UTC-0, Submission Deadline: Sep 29 2023 12:59PM UTC-0"
+            },
+            {
+              "url": "https://raw.githubusercontent.com/ccfddl/ccf-deadlines/main/conference/AI/iclr.yml",
+              "accessed": "2026-09-21",
+              "quote": "abstract_deadline: '2023-09-21 23:59:59' deadline: '2023-09-28 23:59:59' comment: \"Mandatory abstract deadline on Sep. 21, 2023.\" timezone: UTC-12 date: May 07-11, 2024 place: Vienna, Austria"
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "high",
+            "notification": "high",
+            "conf_dates": "high",
+            "location": "high"
+          }
+        },
+        {
+          "conf": "iclr",
+          "year": 2025,
+          "name": "ICLR 2025",
+          "full_name": "The Thirteenth International Conference on Learning Representations",
+          "website": "https://iclr.cc/Conferences/2025",
+          "abstract_deadline": "2024-09-27",
+          "original_abstract_deadline": null,
+          "paper_deadline": "2024-10-01",
+          "deadline_time": "23:59",
+          "deadline_tz": "AoE",
+          "original_paper_deadline": null,
+          "reviews_released": "2024-11-12",
+          "rebuttal_start": "2024-11-12",
+          "rebuttal_end": "2024-11-27",
+          "notification": "2025-01-22",
+          "camera_ready": "2025-03-14",
+          "conf_start": "2025-04-24",
+          "conf_end": "2025-04-28",
+          "city": "Singapore",
+          "country": "Singapore",
+          "country_code": "SG",
+          "continent": "Asia",
+          "venue": "Singapore EXPO",
+          "status": "past",
+          "notes": [
+            "No extension found: the CFP, Dates page and the @iclr_conf announcement all give Sept 27 (abstract) / Oct 1 (paper), 11:59pm AoE.",
+            "Discussion: CFP says Nov 12-26 with 'Author Last Day to Reply' Nov 27; the Dates page lists 'Discussion Period Starts' Nov 13. rebuttal_end here = last day authors could respond (Nov 27).",
+            "Meta reviews / final reviews due Dec 10, 2024; decisions Jan 22, 2025; camera-ready Mar 14, 2025.",
+            "Main conference Thu Apr 24 - Sat Apr 26; workshops Sun Apr 27 - Mon Apr 28, 2025.",
+            "Reciprocal-reviewing requirement introduced this cycle (authors on 3+ papers must review; each paper needs a registered qualified reviewer-author)."
+          ],
+          "sources": [
+            {
+              "url": "https://iclr.cc/Conferences/2025/CallForPapers",
+              "accessed": "2026-09-21",
+              "quote": "Abstract submission: 11:59pm, Sept 27 ... Full paper submission: 11:59pm, Oct 1 ... UTC-12h ... Reviews Released: Nov 12 ... Nov 12-26 ... Author Last Day to Reply: Nov 27 ... Final Decisions: Jan 22 2025"
+            },
+            {
+              "url": "https://iclr.cc/Conferences/2025/Dates",
+              "accessed": "2026-09-21",
+              "quote": "Abstract Submission Deadline - Sep 27 '24 (Anywhere on Earth); Full Paper Submission Deadline - Oct 01 '24 (Anywhere on Earth); Discussion Period Starts - Nov 13 '24; Discussion Period Ends - Nov 26 '24; Last Day Authors Can Respond - Nov 27 '24; Decision Notification - Jan 22 '25 (Anywhere on Earth); Camera Ready Deadline - Mar 14 '25 (Anywhere on Earth); Thu April 24th through Sat the 26th; Workshops: Sun April 27 through Mon the 28th"
+            },
+            {
+              "url": "https://iclr.cc/Conferences/2025",
+              "accessed": "2026-09-21",
+              "quote": "Thu Apr 24 – Mon Apr 28th, 2025 ... Singapore EXPO ... Camera Ready Deadline: Mar 14 '25 (Anywhere on Earth)"
+            },
+            {
+              "url": "https://x.com/iclr_conf/status/1821205626409660567",
+              "accessed": "2026-09-21",
+              "quote": "Announcing the ICLR 2025 Call for Papers! Abstract submission: 11:59pm, Sept 27 (AoE) Submission date: 11:59pm, Oct 1 (AoE) Reviews released: Nov 12 Author/Reviewer Discussion: Nov 12-26 Author Last Day to Reply: Nov 27 Final Decisions: Jan 22 2025"
+            },
+            {
+              "url": "https://api2.openreview.net/groups?id=ICLR.cc/2025/Conference",
+              "accessed": "2026-09-21",
+              "quote": "The Thirteenth International Conference on Learning Representations ... Singapore ... Apr 24 2025 ... Abstract Registration: Sep 28 2024 11:59AM UTC-0, Submission Deadline: Oct 02 2024 11:59AM UTC-0"
+            },
+            {
+              "url": "https://raw.githubusercontent.com/ccfddl/ccf-deadlines/main/conference/AI/iclr.yml",
+              "accessed": "2026-09-21",
+              "quote": "abstract_deadline: '2024-09-27 23:59:59' deadline: '2024-10-01 23:59:59' timezone: UTC-12 date: April 24-28, 2025 place: Singapore"
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "high",
+            "notification": "high",
+            "conf_dates": "high",
+            "location": "high"
+          }
+        },
+        {
+          "conf": "iclr",
+          "year": 2026,
+          "name": "ICLR 2026",
+          "full_name": "The Fourteenth International Conference on Learning Representations",
+          "website": "https://iclr.cc/Conferences/2026",
+          "abstract_deadline": "2025-09-19",
+          "original_abstract_deadline": null,
+          "paper_deadline": "2025-09-24",
+          "deadline_time": "23:59",
+          "deadline_tz": "AoE",
+          "original_paper_deadline": null,
+          "reviews_released": "2025-11-11",
+          "rebuttal_start": "2025-11-11",
+          "rebuttal_end": "2025-12-03",
+          "notification": "2026-01-25",
+          "camera_ready": null,
+          "conf_start": "2026-04-23",
+          "conf_end": "2026-04-27",
+          "city": "Rio de Janeiro",
+          "country": "Brazil",
+          "country_code": "BR",
+          "continent": "South America",
+          "venue": "Riocentro Convention and Event Center",
+          "status": "past",
+          "notes": [
+            "No extension found; CFP, Dates page and OpenReview agree on Sep 19 (abstract) / Sep 24 (paper), 11:59pm AoE.",
+            "Longest author/reviewer discussion of the four editions: Nov 11 - Dec 3, 2025 (~3 weeks), then private reviewer/AC discussion until decisions.",
+            "Official-page inconsistency on the decision date: Dates page and CFP say Jan 25, 2026; the Author Guide says 'Jan 22'. Jan 25 recorded (two official pages incl. the canonical Dates schedule).",
+            "Camera-ready: no exact date published on the Dates page; the Author Guide only says instructions go out 'mid-February 2026'.",
+            "Scale (official retrospective, Mar 31 2026): 19,525 valid submissions, 779 desk rejects, 5,042 withdrawals, 13,763 decided, 5,355 accepted = 27.4% acceptance; a review-data security incident occurred mid-discussion.",
+            "Main conference Thu Apr 23 - Sat Apr 25; workshops Sun Apr 26 - Mon Apr 27, 2026.",
+            "Stale secondary data: ccfddl lists 'May 01-05, 2026 / Brazil' and mldeadlines lists location 'TBD' - both wrong vs the official site."
+          ],
+          "sources": [
+            {
+              "url": "https://iclr.cc/Conferences/2026/CallForPapers",
+              "accessed": "2026-09-21",
+              "quote": "Abstract submission: 11:59pm, Sep 19 ... Full paper submission: 11:59pm, Sep 24 ... UTC-12h ... Reviews released: Nov 11 ... Author/Reviewer Discussion: Nov 11-Dec 3 ... Author response deadline: Dec 3 ... Final decisions: Jan 25 2026 ... Having papers on arxiv is allowed per the dual submission policy outlined in the author guide."
+            },
+            {
+              "url": "https://iclr.cc/Conferences/2026/Dates",
+              "accessed": "2026-09-21",
+              "quote": "Abstract Submission: Sep 19 '25 (Anywhere on Earth); Paper Submission: Sep 24 '25 (Anywhere on Earth); Reviews Released: Nov 11 '25 09:00 PM UTC; Author/Reviewer Discussion Ends: Dec 03 '25 09:00 PM UTC; Decision Notification: Jan 25 '26 (Anywhere on Earth); Main Conference: Thursday April 23 through Saturday April 25; Workshops: Sunday April 26 through Monday April 27"
+            },
+            {
+              "url": "https://iclr.cc/Conferences/2026",
+              "accessed": "2026-09-21",
+              "quote": "April 23rd - 27th, 2026 ... Rio de Janeiro, Brazil ... Riocentro Convention and Event Center"
+            },
+            {
+              "url": "https://iclr.cc/Conferences/2026/AuthorGuide",
+              "accessed": "2026-09-21",
+              "quote": "Abstract Submission: September 19 2025, anywhere on earth (AOE) ... Sept 24, 2025 11:59pm AOE ... Reviews Released: Nov 11 ... Public Discussion Period: Nov 11 – December 3 ... Private Discussion Among Reviewers/ACs: December 3 – Jan 22 ... Decision Notification: Jan 22 ... Camera-Ready Submissions: Mid-February 2026"
+            },
+            {
+              "url": "https://api2.openreview.net/groups?id=ICLR.cc/2026/Conference",
+              "accessed": "2026-09-21",
+              "quote": "The Fourteenth International Conference on Learning Representations ... Rio de Janeiro, Brazil ... Apr 23 2026 ... Submission Start: Sep 01 2025 11:59AM UTC-0, Abstract Registration: Sep 20 2025 11:59AM UTC-0, Submission Deadline: Sep 25 2025 11:59AM UTC-0"
+            },
+            {
+              "url": "https://blog.iclr.cc/2026/03/31/a-retrospective-on-the-iclr-2026-review-process/",
+              "accessed": "2026-09-21",
+              "quote": "ICLR 2026 received 19,525 valid, format-compliant submissions. 779 submissions were desk rejected for procedural/content violations and 5,042 were withdrawn ... ultimately 13,763 submissions received an accept or reject decision based on 76,139 reviews provided by 18,054 reviewers. Of those decisions, 5,355 papers were accepted and 8,408 were rejected, representing an acceptance rate of 27.4%."
+            },
+            {
+              "url": "https://mldeadlines.com/conference/iclr-2026/",
+              "accessed": "2026-09-21",
+              "quote": "Abstract Deadline: 19 September 2025, 23:59:59 UTC-12 ... Paper Deadline: 24 September 2025, 23:59:59 UTC-12 ... Mandatory abstract deadline Sep 19, 2025"
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "high",
+            "notification": "high",
+            "conf_dates": "high",
+            "location": "high"
+          }
+        },
+        {
+          "conf": "iclr",
+          "year": 2027,
+          "name": "ICLR 2027",
+          "full_name": "The Fifteenth International Conference on Learning Representations",
+          "website": "https://iclr.cc/Conferences/2027",
+          "abstract_deadline": "2026-09-18",
+          "original_abstract_deadline": null,
+          "paper_deadline": "2026-09-25",
+          "deadline_time": "23:59",
+          "deadline_tz": "AoE",
+          "original_paper_deadline": null,
+          "reviews_released": "2026-11-05",
+          "rebuttal_start": "2026-11-05",
+          "rebuttal_end": "2026-11-18",
+          "notification": "2026-12-16",
+          "camera_ready": null,
+          "conf_start": "2027-04-26",
+          "conf_end": "2027-04-30",
+          "city": "San Francisco",
+          "country": "United States",
+          "country_code": "US",
+          "continent": "North America",
+          "venue": "Moscone Center (image caption on iclr.cc and ai-deadlines; the official venue block still reads 'Venue information will be posted here')",
+          "status": "announced",
+          "notes": [
+            "AS OF 2026-09-21 THE ABSTRACT DEADLINE (Sep 18, 2026 11:59 PM AoE) HAS PASSED and the paper deadline is Fri Sep 25, 2026 11:59 PM AoE (= Sat Sep 26 11:59 UTC). Earlier than the 'late Sept / early Oct' pattern by ~1 week.",
+            "The abstract deadline is mandatory and hard: 'the deadlines are final and we cannot make any accommodations for missing the abstract deadline or paper deadline.' No extension announced on the CFP, Dates, Author Guidelines, blog, or secondary trackers as of today.",
+            "Between abstract and paper deadline: titles and abstracts may be edited; author order may change but authors cannot be added/removed; no edits at all after the paper deadline.",
+            "Timeline is compressed vs 2026: reviews Nov 5; author-reviewer discussion Nov 5-18 (2 weeks, vs 3 weeks in 2026); reviewer-AC discussion/meta-reviewing Nov 19-Dec 16; final decisions Dec 16, 2026 (about 5-6 weeks earlier than the January decisions of 2024-2026).",
+            "New 2027 submission caps (blog, Sep 2 2026): no author on more than 20 submissions; each author on at most one paper in which no author is an eligible reciprocal reviewer ('new authors' = never published at a major AI/ML/CV/robotics/NLP conference). Authors on 3+ papers must review at least 6 papers; every paper needs a registered qualified reviewer-author.",
+            "Page limit: 9 pages main text at submission, 10 for rebuttal/camera-ready; references/appendix excluded.",
+            "Location: the 2027 landing page says only 'California' with 'Venue information will be posted here'; 'San Francisco, California, US' is stated on the official Call for Workshops page and 'San Francisco, CA, USA' on the OpenReview venue group. Moscone Center appears only as an image caption on iclr.cc and in the ai-deadlines entry - treat the venue as likely but not formally announced.",
+            "Conference: main conference Apr 26-28, workshops Apr 29-30, 2027 (the Call for Workshops page has a typo 'April 29 and 30, 2026'). Workshop proposal deadline Oct 9, 2026 AoE; workshop notification Nov 29, 2026.",
+            "NeurIPS 2026 author notifications are Sep 24, 2026 AoE (neurips.cc Dates) - one day before the ICLR 2027 paper deadline and after the mandatory abstract deadline. A NeurIPS-rejected paper can only go to ICLR 2027 if its abstract was already registered by Sep 18; ICLR's dual-submission policy forbids parallel submission, so a paper still under review elsewhere at submission time is a violation.",
+            "Withdrawn ICLR papers remain publicly visible on OpenReview and are de-anonymized after the deadline (Author Guidelines).",
+            "Camera-ready deadline not yet announced (expected ~Feb-Mar 2027 by pattern: 2025 Mar 14, 2024 Apr 14, 2026 mid-Feb instructions)."
+          ],
+          "sources": [
+            {
+              "url": "https://iclr.cc/Conferences/2027/CallForPapers",
+              "accessed": "2026-09-21",
+              "quote": "Abstract Deadline: Sep 18, 2026 11:59 PM AOE ... Paper Deadline: Sep 25, 2026 11:59 PM AOE ... Reviews Released: Nov 05, 2026 ... Author-Reviewer Discussion: Nov 05, 2026–Nov 18, 2026 ... Reviewer-AC Discussion: Nov 19, 2026–Dec 16, 2026 ... Final Decisions: Dec 16, 2026 ... Submissions will be double blind: reviewers cannot see author names when conducting reviews, and authors cannot see reviewer names. ... Having papers on arxiv is allowed per the dual submission policy outlined in the author guidelines."
+            },
+            {
+              "url": "https://iclr.cc/Conferences/2027/Dates",
+              "accessed": "2026-09-21",
+              "quote": "Main Conference: April 26 - 28; Workshops: April 29 - 30; Abstract Deadline: Sep 18 '26 (Anywhere on Earth); Paper Deadline: Sep 25 '26 (Anywhere on Earth); Reviews Released: Nov 05 '26; Author-Reviewer Discussion Begins: Nov 05 '26; Author-Reviewer Discussion Ends: Nov 18 '26; Reviewer-AC Discussion and Meta-reviewing Begins: Nov 19 '26; Reviewer-AC Discussion and Meta-reviewing Ends: Dec 16 '26; Final Decisions: Dec 16 '26"
+            },
+            {
+              "url": "https://iclr.cc/Conferences/2027",
+              "accessed": "2026-09-21",
+              "quote": "April 26-30, 2027 ... California ... Venue information will be posted here ... [image caption] Moscone Center, San Francisco, CA ... Abstract Deadline: Sep 18 '26 (Anywhere on Earth) ... Paper Deadline: Sep 25 '26 (Anywhere on Earth) ... Reviews Released: Nov 05 '26 ... Final Decisions: Dec 16 '26"
+            },
+            {
+              "url": "https://iclr.cc/Conferences/2027/CallForWorkshops",
+              "accessed": "2026-09-21",
+              "quote": "San Francisco, California, US ... April 29 and 30, 2026 [sic] ... Workshop Application Deadline: 9 October 2026, 11.59pm AoE ... Workshop Acceptance Notification: 29 November 2026"
+            },
+            {
+              "url": "https://iclr.cc/Conferences/2027/AuthorGuidelines",
+              "accessed": "2026-09-21",
+              "quote": "Authors must submit paper abstracts by the abstract submission deadline of Sep 18, 2026 11:59 PM AOE ... Please keep in mind that the deadlines are final and we cannot make any accommodations for missing the abstract deadline or paper deadline. ... Titles and abstracts may be edited before the submission deadline. ... Author order may be edited after the abstract deadline, but new authors cannot be added or removed. ... No author may appear as a co-author on more than 20 papers. ... Each author may appear as a co-author on at most one paper in which no author is an eligible reciprocal reviewer. ... All authors who are on 3 or more papers must serve as a reviewer for at least 6 papers. ... The main text should be 9 pages or fewer ... Submissions that are identical (or substantially similar) to versions that have been previously published, or accepted for publication, or that have been submitted in parallel to this or other conferences or journals, are not allowed and violate our dual submission policy. However, papers that cite previous related work by the authors and papers that have appeared on non-peer reviewed websites (like arXiv) or that have been presented at workshops (i.e., venues that do not have publication proceedings) do not violate the policy."
+            },
+            {
+              "url": "https://blog.iclr.cc/2026/09/02/submission-policies-for-iclr-2027/",
+              "accessed": "2026-09-21",
+              "quote": "a 20-paper limit for all authors, and a 1-paper limit for submissions by 'new authors' ... 'new authors' (defined as people who have never published at a major AI / ML / CV / robotics / NLP conference)"
+            },
+            {
+              "url": "https://api2.openreview.net/groups?id=ICLR.cc/2027/Conference",
+              "accessed": "2026-09-21",
+              "quote": "The Fifteenth International Conference on Learning Representations ... ICLR 2027 ... San Francisco, CA, USA ... start_date 1808769600000 (= 2027-04-26T20:00Z)"
+            },
+            {
+              "url": "https://huggingface.co/spaces/huggingface/ai-deadlines/commit/222dce0a118825309d1b0ec7c3ae545a2990e545",
+              "accessed": "2026-09-21",
+              "quote": "abstract '2026-09-18 23:59:59' (AoE) ... paper '2026-09-25 23:59:59' ... Reviews Released '2026-11-05' ... Discussion End '2026-11-18' ... Decisions '2026-12-16' ... April 26-30, 2027 ... San Francisco ... United States ... Moscone Center, San Francisco, CA ... Mandatory abstract deadline on Sep 18, 2026."
+            },
+            {
+              "url": "https://raw.githubusercontent.com/ccfddl/ccf-deadlines/main/conference/AI/iclr.yml",
+              "accessed": "2026-09-21",
+              "quote": "id: iclr27 ... abstract_deadline: '2026-09-18 23:59:59' deadline: '2026-09-25 23:59:59' timezone: AoE date: April 26-30, 2027 place: San Francisco, CA, USA"
+            },
+            {
+              "url": "https://mldeadlines.com/conference/iclr-2027/",
+              "accessed": "2026-09-21",
+              "quote": "25 September 2026, 23:59:59 UTC-12 (also listed as 26 September 2026, 11:59:59 UTC) ... 18 September 2026, 23:59:59 UTC-12 ... April 26-30, 2027 ... California, USA"
+            },
+            {
+              "url": "https://neurips.cc/Conferences/2026/Dates",
+              "accessed": "2026-09-21",
+              "quote": "Paper Author Notifications: Sep 24 '26 (Anywhere on Earth)"
+            }
+          ],
+          "confidence": {
+            "paper_deadline": "high",
+            "notification": "high",
+            "conf_dates": "high",
+            "location": "high"
+          }
+        }
+      ]
+    }
+  }
+}
