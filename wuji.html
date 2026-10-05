@@ -3,13 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WUJI Chopsticks — contact-aware tool use for a dexterous hand — Jerry (Qilong) Cheng</title>
-  <meta name="description" content="Two loose chopsticks in a 20-DoF WUJI Hand 2 on a Franka Panda, in MuJoCo: how the holding pose was found, what the hand's geometry allows, the pick-up of a sugar cube with a wrist twist, and the road to contact- and force-aware reinforcement learning.">
+  <!-- The page itself is published encrypted; the key turns it back into HTML. -->
+  <script src="assets/js/private.js"></script>
+  <title>WUJI Chopsticks — private</title>
+  <meta name="description" content="WUJI Chopsticks: contact-aware tool use for a dexterous hand. This page is private.">
   <meta name="author" content="Jerry Cheng">
   <link rel="canonical" href="https://thejerrycheng.github.io/wuji.html">
-  <meta property="og:title" content="WUJI Chopsticks — two free sticks in a 20-DoF hand">
-  <meta property="og:description" content="Contact-aware, force-aware tool use for dexterous hands: chopsticks first. MuJoCo foundation for an IROS 2027 submission.">
-  <meta property="og:image" content="https://thejerrycheng.github.io/assets/projects/wuji/images/card.jpg">
   <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
   <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
@@ -20,36 +19,26 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/gotham.css">
-  <link rel="stylesheet" href="assets/css/project-page.css">
   <script>document.documentElement.classList.add('js');</script>
   <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
-  <script>window.MathJax = { tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["$$", "$$"]] }, svg: { fontCache: "global" } };</script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" async></script>
   <style>
-    /* page-local: lacquer and bamboo, the two chopstick materials */
-    :root { --lac: #A8321F; --bamboo: #6B7F2E; }
-    [data-theme="night"] { --lac: #E06A4E; --bamboo: #A6BF5A; }
-    .wj .stat-tile .num { color: var(--lac); }
-    .wj .section-title::after { content: ""; display: block; width: 72px; height: 0; margin-top: 8px;
-      border-top: 3px solid var(--lac); border-bottom: 3px solid var(--bamboo); transform: skewY(-4deg); }
-    .roles { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
-    .roles th, .roles td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
-    .roles th { font-family: var(--font-comic); letter-spacing: .06em; font-weight: 400; color: var(--bamboo); font-size: 14px; }
-    .roles td:first-child { font-weight: 600; white-space: nowrap; }
-    .clip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 18px; }
-    .clip-grid figure { margin: 0; }
-    .clip-grid video { width: 100%; display: block; aspect-ratio: 16/9; background: var(--ink); border: var(--line-w) solid var(--ink); border-radius: var(--radius-sm); box-shadow: var(--sh-xs); }
-    .clip-grid figcaption { font-size: 13px; color: var(--ash); margin-top: 6px; line-height: 1.4; }
-    .eqs { overflow-x: auto; margin: 10px 0 16px; font-size: 15px; }
-    .verdict { border-left: 5px solid var(--lac); padding: 10px 16px; margin: 18px 0; background: var(--panel); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
-    .verdict b { color: var(--lac); }
-    .tried th:first-child, .tried td:first-child { width: 2.2em; color: var(--ash); }
-    .ok { color: var(--bamboo); font-weight: 700; } .no { color: var(--lac); font-weight: 700; }
-    .mono { font-family: var(--font-mono); font-size: .9em; }
-    @media (max-width: 900px) { .clip-grid { grid-template-columns: 1fr; } }
+    .soon-wrap{max-width:640px;margin:0 auto;padding:0 20px}
+    .soon-stamp{display:inline-block;font-family:var(--font-comic);font-size:clamp(28px,6vw,44px);
+      letter-spacing:.04em;color:var(--hi);border:var(--line-w) solid currentColor;border-radius:var(--radius-sm);
+      padding:.15em .5em;transform:rotate(-3deg);margin:0 0 22px}
+    .soon-wrap p{font-size:17px;line-height:1.65}
+    .soon-actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:28px}
+    .keyline{margin-top:46px;font:400 12px/1.6 var(--font-mono);color:var(--ash)}
+    .keyline button{font:inherit;color:inherit;background:none;border:0;border-bottom:1px dotted currentColor;
+      padding:0;cursor:pointer}
+    .keyform{display:none;justify-content:center;gap:8px;margin-top:14px}
+    .keyform.on{display:flex}
+    .keyform input{font:400 14px/1 var(--font-mono);padding:9px 11px;border:var(--line-w) solid var(--line);
+      border-radius:var(--radius-sm);background:var(--panel);color:var(--ink);min-width:200px}
+    .keyerr{margin-top:10px;font:700 12px/1 var(--font-mono);color:var(--hi);min-height:1em}
   </style>
 </head>
-<body class="wj">
+<body>
 
 <nav class="nav" role="navigation" aria-label="Primary">
   <div class="nav-inner">
@@ -57,7 +46,7 @@
     <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="publications.html">Publications</a>
-      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="projects.html">Projects</a>
       <a href="experience.html">Experience</a>
       <a href="papers/index.html">Papers</a>
       <a href="deadlines.html">Deadlines</a>
@@ -85,225 +74,30 @@
   <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
   <div class="skyline" aria-hidden="true"></div>
   <div class="wrap">
-    <p class="kicker">Dexterous manipulation ◆ Tool use ◆ Contact &amp; force ◆ Reinforcement learning ◆ Ongoing ◆ 2026</p>
+    <p class="kicker">Dexterous manipulation / Tool use / Contact &amp; force / Reinforcement learning</p>
     <h1>WUJI Chopsticks</h1>
-    <p>Contact-aware, force-aware tool use for a dexterous hand, chopsticks first. A 20-DoF WUJI Hand 2 on a Franka Panda holds two loose chopsticks in MuJoCo; the page records how the holding pose was found, what the hand's geometry allows and forbids, the pick-up attempt with a human-style wrist twist, and the learning plan: torque sensing and force feedback as observations for RL, visual RL after that, then sim-to-real. Target: IROS 2027.</p>
+    <p>Two loose chopsticks in a 20-DoF hand: contact-aware, force-aware tool use, towards IROS 2027.</p>
   </div>
 </header>
 <div class="deco-band" aria-hidden="true"></div>
 
-<section class="section" id="demo">
-  <div class="hero-video">
-    <video controls playsinline preload="metadata" poster="assets/projects/wuji/images/grip_top.jpg">
-      <source src="assets/projects/wuji/videos/grip_hold.mp4" type="video/mp4">
-    </video>
-  </div>
-  <div class="hero-caption">
-    <p>The fingers take two free 240&nbsp;mm chopsticks, the hand is flipped through six gravity directions (palm up, tips down, little-finger down, thumb down, palm down, tips up), then index and middle swing the upper stick onto the lower one and reopen. Nothing is welded or strapped: contact and friction only. Simulation footage, 30 fps.</p>
-    <div class="links">
-      <a href="assets/pdf/projects/wuji_hand2_sim.pdf" target="_blank" rel="noopener">Technical document (PDF)</a>
-      <a href="https://github.com/thejerrycheng/WUJI_Tools" target="_blank" rel="noopener">Code</a>
-      <a href="#grip">The grip</a>
-      <a href="#pickup">The pick-up attempt</a>
-      <a href="#tried">What was tried</a>
-      <a href="#plan">Learning plan</a>
+<section class="section">
+  <div class="soon-wrap" style="text-align:center">
+    <p class="soon-stamp">Private</p>
+    <p>This project is ongoing and not published yet &mdash; the page is stored encrypted,
+       and only the key turns it back into something readable.</p>
+    <p>In the meantime, the rest of the work is open.</p>
+    <div class="soon-actions">
+      <a class="btn btn-primary" href="projects.html">All projects</a>
+      <a class="btn" href="publications.html">Publications</a>
     </div>
-  </div>
 
-  <div class="stat-row">
-    <div class="card stat-tile"><div class="num">27<small>DoF</small></div><div class="lab">Arm + hand</div><div class="sub">7-DoF Panda + 20-DoF WUJI Hand 2 (Beta 2, right)</div></div>
-    <div class="card stat-tile"><div class="num">2</div><div class="lab">Free sticks</div><div class="sub">240 mm, 4.2 g each; held by contact and friction</div></div>
-    <div class="card stat-tile"><div class="num">&le;7<small>mm</small></div><div class="lab">Drift, any orientation</div><div class="sub">Stick centres after 0.5 s in each of six gravity directions</div></div>
-    <div class="card stat-tile"><div class="num">42&rarr;4<small>mm</small></div><div class="lab">Tip gap closes</div><div class="sub">Index + middle flexion, closed loop on the stick axes</div></div>
-    <div class="card stat-tile"><div class="num">71<small>mm</small></div><div class="lab">Sugar cube lifted</div><div class="sub">Free sticks, 90° wrist supination; repeatable (<a href="#pickup">the run</a>)</div></div>
-    <div class="card stat-tile"><div class="num">1<small>/6</small></div><div class="lab">Objects lifted</div><div class="sub">Wider than 22 mm exceeds this hold's opening (<a href="#pickup">why</a>)</div></div>
-    <div class="card stat-tile"><div class="num">24</div><div class="lab">Iterations</div><div class="sub">13 grip searches, 11 pick-up variants before one worked (<a href="#tried">log</a>)</div></div>
-  </div>
-</section>
-
-<!-- =================== SCENES =================== -->
-<section class="section" id="scenes">
-  <h2 class="section-title">What is simulated</h2>
-  <p class="lead">Five scenes with realistic objects: chopsticks over a place setting (plate with tofu, dumpling, cherry tomato, peanut; sugar, pine and foam cubes; rice bowl), scissors cutting a rope and a card, tweezers and nuts, pliers and a bolt, a cordless drill driving a screw. The hand model is converted from the official WUJI description with convex-hull and CoACD collision geometry; the sticky chopsticks own their contact parameters through MuJoCo's geom priority; every object's mass and friction is stated in the PDF. Tool physics is validated on mocap benches; the hand operates the chopsticks.</p>
-  <figure class="fig">
-    <img src="assets/projects/wuji/images/scenes.jpg" alt="The five scenes: chopsticks, scissors, tweezers, pliers and drill, each on the table under the palm-up hand" loading="lazy">
-    <figcaption><b>The scene set.</b> Chopsticks, scissors with rope and card, tweezers with nuts, pliers with a bolt, drill with a started wood screw. The tool benches cut the rope at a 0.28 rad opening, lift the nut and the bolt, and drive the screw 16.7 mm in 2 s against 16.8 mm from the thread pitch.</figcaption>
-  </figure>
-</section>
-
-<!-- =================== GRIP =================== -->
-<section class="section" id="grip">
-  <h2 class="section-title">The grip the hand uses</h2>
-  <p class="lead">The upper stick is sandwiched between the index and middle fingers, resting on the middle finger's side, with the thumb's proximal phalanx lying on its rear end. The index and middle fingers flex at the MCP to swing it; the lower stick is clamped between the ring and little fingers and does not move. Each stick is clamped near its midpoint, so gravity produces no pitch torque about the clamp. This is the robot analogue of the Dangling Stick and Forsaken Pinky grips in the Marcosticks taxonomy, the two human mechanisms that do not need a thumb web.</p>
-  <div class="grid-2">
-    <div>
-      <table class="roles">
-        <tr><th>digit</th><th>role</th><th>measured</th></tr>
-        <tr><td>index</td><td>swings the upper stick (MCP flexion, PIP at half rate); its abduction steers the tip sideways</td><td>alone: 42 &rarr; 13.5 mm</td></tr>
-        <tr><td>middle</td><td>the upper stick rests on its side; flexing with the index</td><td>with index: 42 &rarr; 4.1 mm</td></tr>
-        <tr><td>thumb</td><td>lies on the upper stick's rear end; must not press during the pinch (a press pins the stick: flexion then moves the tip 12 instead of 34 mm/rad)</td><td>pressing opens: 42 &rarr; 20 mm</td></tr>
-        <tr><td>ring + little</td><td>clamp the lower stick, static</td><td>moves 1.0 mm during the pinch</td></tr>
-      </table>
-      <p class="plot-note" style="margin-top:12px">Contact forces at rest: 8.5 N on the lower stick, 4.1 N on the upper. Hand actuator gains are the upstream placeholders scaled &times;3 on abduction and &times;1.5 on flexion (<span class="mono">config.HAND_GAIN_SCALE</span>); with the upstream values the 0.2 N&middot;m abduction servos cannot clamp a stick against the arm's accelerations.</p>
-    </div>
-    <figure class="fig" style="margin-top:0">
-      <img src="assets/projects/wuji/images/grip_top.jpg" alt="Top view of the palm with both chopsticks held between the finger pairs, tips closed" loading="lazy">
-      <figcaption><b>Palm view, tips closed.</b> Both sticks run between the finger pairs and converge at the tips; the thumb lies across the upper stick's rear end.</figcaption>
-    </figure>
-  </div>
-  <figure class="fig">
-    <img src="assets/projects/wuji/figures/chopstick_grip.png" alt="Stick-centre drift under six gravity directions and the tip gap during the closed-loop pinch for three finger assignments" class="pad" loading="lazy">
-    <figcaption><b>Hand-only measurements.</b> Left: drift of each stick's centre after 0.5 s in each gravity direction (dashed: the 10 mm tolerance). Right: the axis gap near the tips during the closed-loop pinch for index + middle, index alone, and index with a thumb press.</figcaption>
-  </figure>
-</section>
-
-<!-- =================== GEOMETRY =================== -->
-<section class="section" id="geometry">
-  <h2 class="section-title">What the hand's geometry allows</h2>
-  <p class="lead">Measured from the hand's convex collision hulls in the palm frame (<span class="mono">palm_center</span>: x along the fingers, y towards the little finger, z out of the palm; mm). Three facts rule out the textbook standard grip on this hand.</p>
-  <div class="grid-2">
-    <div class="card finding"><span class="no">1</span><h3>No thumb web</h3><p>The thumb metacarpal lies on the radial edge of the palm 4&ndash;35 mm proud of it (x &minus;14..31, y &minus;53..&minus;26). The purlicue that anchors the lower stick in a human hand is solid robot. Every attempt to pass a stick along the thumb side at z &lt; 30 behind x = 31 collided with it.</p></div>
-    <div class="card finding"><span class="no">2</span><h3>A curled finger is a closed loop</h3><p>With MCP &ge; 0.8 rad and PIP &ge; 1.0 rad the middle phalanx stands as a wall in front of the pad, so a stick under the fingertip pad cannot continue forward past the finger. Pads face the palm only when the loop is closed. This is why the index pad cannot press a forward-running stick from above.</p></div>
-    <div class="card finding"><span class="no">3</span><h3>20 mm lanes, 4 mm gaps</h3><p>Index y &minus;43..&minus;23, middle &minus;19..&minus;2, ring 0..20, little 17..39 (extended), at z &minus;21..&minus;3, below the palm_center plane; the palm shell top is at z 9. A stick between two fingers is free to yaw, so it aligns with its finger pair; two parallel pairs give parallel sticks 40 mm apart.</p></div>
-    <figure class="fig" style="margin-top:0">
-      <img src="assets/projects/wuji/images/thumb_grid.jpg" alt="Top views of the palm for a grid of thumb flexion and abduction angles" loading="lazy">
-      <figcaption><b>Thumb workspace.</b> Flexion 0, 0.6, 1.2 rad (rows) by abduction &minus;1.0, &minus;0.5, 0, +0.4 rad (columns). Flexion yaws the thumb across the palm; abduction lifts it. The metacarpal stays on the palm edge in every cell.</figcaption>
-    </figure>
-  </div>
-</section>
-
-<!-- =================== HUMAN GRIPS =================== -->
-<section class="section" id="human">
-  <h2 class="section-title">Human grips, and which one the robot realises</h2>
-  <p class="lead">Human chopstick use is not one grip. Yang, Yin and Liu (SIGGRAPH 2022) learn chopstick skills for many holding styles found by Bayesian optimisation over a physics check; the Marcosticks taxonomy classifies more than forty grips by which fingers hold the top and the bottom stick in the open and closed postures; Choji and Saito (2024) show with motion capture that lower-stick stability separates skilled from unskilled users. In the <b>standard grip</b> the lower stick is fixed in the thumb web and on the ring finger, and the upper stick is held like a pencil by the thumb, index and middle pads and moved by index and middle flexion. The whole <b>lateral family</b> rests both rear ends on the purlicue. The <b>Dangling Stick</b> grip sandwiches the top stick between the hooked index and middle fingers and lets the MCP knuckles do the work; the <b>Forsaken Pinky</b> grip gives the bottom stick to the ulnar side of the hand. The robot combines the last two, because they are the ones that need no purlicue. The tripod the standard grip asks for (index pad on top, middle finger resting under, thumb pressing from the side) was also attempted by construction (<a href="#tried">row 7</a>); facts 1 and 2 above are why it did not pass the geometric stage.</p>
-</section>
-
-<!-- =================== METHOD =================== -->
-<section class="section" id="method">
-  <h2 class="section-title">Method</h2>
-  <div class="prose">
-    <h3>Holding pose</h3>
-    <p>A pose is the 20 joint angles \(q\) plus one line per stick in the palm frame, each through two points at fixed stations along the fingers, \(\mathbf p_0=(X_0,y_0,z_0)\), \(\mathbf p_1=(X_1,y_1,z_1)\) with \(X_0 = 90\) mm (clamp) and \(X_1 = 210\) mm (near the tips):</p>
-    <div class="eqs">$$ \mathbf d=\frac{\mathbf p_1-\mathbf p_0}{\lVert\mathbf p_1-\mathbf p_0\rVert},\qquad \mathbf c=\mathbf p_0+\Big(\tfrac{L}{2}-B\Big)\mathbf d,\qquad L=240\ \text{mm},\ B=110\ \text{mm}, $$</div>
-    <p>so the stick centre \(\mathbf c\) has its thick end \(B\) behind \(\mathbf p_0\) and the clamp sits near the midpoint. The world orientation is \(R_w=[R\mathbf d,\ \mathbf y,\ \mathbf z]\) with \(\mathbf y=\mathbf n\times R\mathbf d\) normalised and \(\mathbf z=R\mathbf d\times\mathbf y\) (\(R,\mathbf n\): palm rotation and normal). 28 parameters, sampled uniformly in a box subject to: each pair squeezes (index minus middle abduction &ge; 0.12 rad, ring minus little &ge; 0.12), the lines meet within 30&deg;, the extrapolated tip separation is 10&ndash;40 mm, and the upper tip starts below the lower one.</p>
-    <h3>Taking the sticks</h3>
-    <p>The clamping joints are backed off (thumb abduction &minus;0.3 rad, index and ring &minus;0.3, middle and little +0.3), each stick is teleported onto its line and lifted along the palm normal in 1 mm steps until no hull is penetrated by more than 0.5 mm, and the targets ramp to the grip posture over 0.4 s. The sample is kept only if the lower stick touches two links of the ring/little pair and none of the index or middle, and the upper stick touches an index and a middle link.</p>
-    <h3>Stability and pinch</h3>
-    <p>With gravity set in turn to the six directions, the hand settles 0.5 s each and the drift of each stick centre is measured; a pose is feasible if \(\delta_k=\max(\lVert\mathbf c_L-\mathbf c_L^0\rVert,\lVert\mathbf c_U-\mathbf c_U^0\rVert)\le 10\) mm for the four orientations the pick-up passes through. The pinch is closed loop: every 20 ms the error \(\mathbf e\) from the upper tip to the closest point of the lower stick's axis (restricted to its last 50 mm, so an offset along the sticks does not count) is expressed in the palm frame; the index and middle MCP targets integrate \(e_z\) (closing along the swing arc), their common abduction integrates \(e_y\) (steering sideways), with gain \(k/0.17\) rad per metre from the 170 mm lever between the MCP and the tip. The score is</p>
-    <div class="eqs">$$ J=-g^{*}-2\delta_{\max}-2\Lambda-0.3\lvert g_{\rm re}-g_0\rvert-0.5\max(0,g_0-40\,\text{mm})-0.5\max(0,15\,\text{mm}-g_0), $$</div>
-    <p>with \(g^{*}\) the minimum axis gap reached, \(\Lambda\) the lower stick's motion, \(g_0\) and \(g_{\rm re}\) the open and reopened gaps.</p>
-    <h3>Why the finger pairs must converge</h3>
-    <p>A stick between two finger sides aligns with its pair. With pair axes converging by \(\alpha\) and clamp stations \(\Delta y\) apart at \(x_c\) the sticks meet at</p>
-    <div class="eqs">$$ x_{\rm meet}=x_c+\frac{\Delta y}{2\tan(\alpha/2)}, $$</div>
-    <p>placed at the tips (\(x\approx 200\) mm) by \(\alpha\approx 0.4\) rad; the index/middle pair is abducted towards the ring and the ring/little pair towards the middle.</p>
-    <h3>Pick-up with the arm</h3>
-    <p>The grip is reused unchanged in the arm scene. The palm rotation is the Kabsch fit that sends the mean stick direction to the world direction \((\cos 60^\circ,0,-\sin 60^\circ)\) (tips down and forward) and the palm normal to world \(+y\) (palm facing the side), solved by the Panda's grid-seeded bounded least-squares IK with the pinch point 60 mm above the object; the arm descends until the pinch point is 3 mm below the object centre, with the lowest tip kept 2 mm above the object's support, and corrects the pinch point three times in closed loop on the commanded palm pose (the position servos sag 5&ndash;8 mm); the pinch runs until the gap stops shrinking; then \(R_k=R_x(k\pi/80)\,R_0\) for \(k=1..40\) rotates the palm about the world \(x\) axis (the forearm) while rising 30 mm, each step solved by damped least squares from the previous one: the hand supinates from palm-sideways to palm-up and the tips swing the object up, as a person turns the wrist.</p>
-  </div>
-</section>
-
-<!-- =================== PICKUP =================== -->
-<section class="section" id="pickup">
-  <h2 class="section-title">The pick-up attempt</h2>
-  <div class="verdict"><b>The sugar cube is picked up.</b> Sticks kept through the 6 s approach (axis gap 27 mm before and after), closing point placed within 1.4 mm of the cube's far face, both sticks loading the cube (two contacts, 0.09 N), and the supination lift raises it 71 mm where it stays between the sticks; five consecutive runs agree. The other five objects are not lifted, each for a measured reason: the 25&ndash;28 mm cubes and the dumpling need an opening wider than the 27 mm this hold gives at the tips, and opening the sticks by more than about 35 mm with the fingers releases the sandwich (34 mm keeps two contacts, 38 mm drops the stick); the 22 mm tomato is placed within 1.3 mm but the sticks close to 17 mm with one contact and slide over the sphere; the tofu on the plate loses a stick on the longer reach.</div>
-  <p class="lead">What made the difference, each found by instrumenting a failed run: not pressing the thumb on the upper stick; measuring the tip Jacobian of the finger motions instead of assuming flexion acts along the palm normal; orienting the hand from the measured closing direction (in this crossed pose it is lateral in the palm, so the palm faces up with the tips level); targeting the lower tip's height rather than the closing point's (at a 60&deg; tilt the lower tip dug 30 mm into the table); 3 mm of clearance at the far face instead of 1 mm (the arm's stiffness had pressed the cube with 580 N); and stopping the pinch on the moving stick's own force.</p>
-  <div class="clip-grid">
-    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_sugar_cube.mp4" type="video/mp4"></video><figcaption><b>Sugar cube</b> (16 mm, 3.7 g). <b>Lifted 71 mm.</b> Take, approach palm-up, place the static stick at the far face, close on the measured Jacobian, supinate.</figcaption></figure>
-    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_foam_cube.mp4" type="video/mp4"></video><figcaption><b>Foam die</b> (25 mm, 1.9 g). Needs a 36 mm opening; the hold gives 27. One stick presses it (1.5 N), the other cannot reach; not lifted.</figcaption></figure>
-    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_wood_cube.mp4" type="video/mp4"></video><figcaption><b>Pine cube</b> (25 mm, 7.0 g). Same opening limit; one contact, 0.23 N; not lifted.</figcaption></figure>
-    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_tofu_cube.mp4" type="video/mp4"></video><figcaption><b>Tofu cube</b> (on the plate). A stick slips out of its clamp on the longer reach.</figcaption></figure>
-    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_cherry_tomato.mp4" type="video/mp4"></video><figcaption><b>Cherry tomato</b> (22 mm sphere, on the plate). Placed within 1.3 mm; the sticks close to 17 mm with one contact and slide over it.</figcaption></figure>
-    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_dumpling.mp4" type="video/mp4"></video><figcaption><b>Dumpling</b> (28 mm, on the plate). Needs a 39 mm opening; not lifted.</figcaption></figure>
-  </div>
-  <figure class="fig">
-    <img src="assets/projects/wuji/figures/chopstick_pickup_plot.png" alt="Axis gap, chopstick-object force and object height versus time for the six pick-up attempts" class="pad" loading="lazy">
-    <figcaption><b>Six attempts, logged.</b> Axis gap near the tips, chopstick&ndash;object normal force and object height above the table versus time. The sugar cube's height trace rises 71 mm during the supination; the others stay flat.</figcaption>
-  </figure>
-  <div class="table-wrap">
-    <table class="data-table">
-      <thead><tr><th>object</th><th>width [mm]</th><th>gap after approach [mm]</th><th>placement error [mm]</th><th>gap open [mm]</th><th>gap closed [mm]</th><th>contacts</th><th>force [N]</th><th>rise [mm]</th></tr></thead>
-      <tbody>
-        <tr><td><b>sugar cube</b></td><td>16</td><td>27</td><td>1.4</td><td>25</td><td>22</td><td>2</td><td>0.09</td><td class="ok">+71</td></tr>
-        <tr><td>tofu cube</td><td>20</td><td class="bad">440</td><td>105</td><td>473</td><td>469</td><td>0</td><td>0</td><td class="bad">0</td></tr>
-        <tr><td>cherry tomato</td><td>22</td><td>31</td><td>1.3</td><td>32</td><td>17</td><td>1</td><td>0.08</td><td class="bad">0</td></tr>
-        <tr><td>dumpling</td><td>28</td><td>98</td><td>28</td><td>38</td><td>38</td><td>0</td><td>0</td><td class="bad">0</td></tr>
-        <tr><td>foam die</td><td>25</td><td>33</td><td>26</td><td>58</td><td>56</td><td>1</td><td>1.50</td><td class="bad">0</td></tr>
-        <tr><td>pine cube</td><td>25</td><td>33</td><td>1.4</td><td>46</td><td>28</td><td>1</td><td>0.23</td><td class="bad">0</td></tr>
-      </tbody>
-    </table>
-    <p class="scroll-hint">&larr; swipe the table &rarr;</p>
-  </div>
-  <div class="grid-2" style="margin-top:18px">
-    <div class="card finding"><span class="no">i</span><h3>The opening is the limit</h3><p>This hold gives 27 mm between the upper tip and the lower stick at the tips. Opening the sticks with the fingers works to 34 mm (two contacts kept) and fails at 38 mm (the upper stick drops), so objects up to about 22 mm are reachable and the 25 mm cubes are not. A pose with a wider natural opening was not found among the feasible search results; the two with 41&ndash;53 mm openings lose a stick during the approach.</p></div>
-    <div class="card finding"><span class="no">ii</span><h3>Everything is measured, nothing assumed</h3><p>Four of the six scripted assumptions about the in-hand geometry were wrong: the closing direction is lateral in the palm, not along the normal; flexion barely moves the stick while the thumb presses it; the lower tip is 30 mm below the closing point at a 60&deg; tilt; and the pair's abduction, not flexion, steers the tip sideways. Measuring each of them at run time is what made the pick-up work, and it is what a policy with contact and torque observations will learn.</p></div>
-  </div>
-</section>
-
-<!-- =================== TRIED =================== -->
-<section class="section" id="tried">
-  <h2 class="section-title">What was tried, in order</h2>
-  <div class="table-wrap">
-    <table class="data-table tried">
-      <thead><tr><th>#</th><th>attempt</th><th>outcome</th><th>why</th></tr></thead>
-      <tbody>
-        <tr><td>1</td><td>Hinged training pair strapped to the hand (weld); index and middle close the tips; arm pick-up</td><td><span class="ok">6/6 lifted</span>, 71&ndash;75 mm</td><td>Rejected: not two free sticks.</td></tr>
-        <tr><td>2</td><td>Random 28-D search, sticks along the fingers, strict insertion into the static posture</td><td><span class="no">0/3400 feasible</span></td><td>The feasible set is a thin shell; random samples start inside links or float.</td></tr>
-        <tr><td>3</td><td>Constructed standard grip: lower stick under the thumb's proximal phalanx on the index knuckle, upper on the thumb under the index pad</td><td><span class="no">no clearance / stick falls</span></td><td>Nothing supports a stick outboard of the palm; the metacarpal blocks it behind x = 31 mm (fact 1).</td></tr>
-        <tr><td>4</td><td>Lateral finger-pair clamps behind the stick midpoint, insert-and-close search</td><td><span class="ok">22/80 hold</span> in all six directions, tips 90&ndash;280 mm apart</td><td>Tip-heavy sticks pitch about the clamp and dangle through the palm plane.</td></tr>
-        <tr><td>5</td><td>Clamps at the midpoint, fingers nearly straight, sticks parallel to the palm above the shell</td><td><span class="ok">holds</span> (drift 6&ndash;8 mm), tips 88&ndash;108 mm apart, pinch does nothing</td><td>Each stick yaws to its finger pair; parallel pairs give parallel sticks (fact 3).</td></tr>
-        <tr><td>6</td><td>As 5 with converging pairs, settled tip order enforced, closed-loop pinch, axis-gap metric</td><td><span class="ok">holds, 42 &rarr; 4 mm</span></td><td>The grip used above.</td></tr>
-        <tr><td>7</td><td>Constructed tripod (index pad on top, middle resting under, thumb pressing): stick lines from the ring and index fingertips and a web point on the palm edge; thumb, index and middle swept until they touch the upper stick</td><td><span class="no">0 passed the geometric stage</span> over four parametrisations</td><td>The curled ring fingertip sits behind the web point; the index pad never reaches a stick that passes the palm edge (facts 1 and 2).</td></tr>
-        <tr><td>8</td><td>Grip 6 with the lower stick below the upper one so a thumb press closes</td><td><span class="no">best 24 &rarr; 9 mm</span>, worse than 6</td><td>On this hand the thumb's press translates the upper stick instead of levering its tip.</td></tr>
-        <tr><td>9</td><td>Arm pick-up, palm sideways, tip-midpoint targeting, open-loop index+middle pinch</td><td><span class="no">0/6</span></td><td>Tips offset 35 mm along the sticks; the pinch sweeps the upper tip down past the cube.</td></tr>
-        <tr><td>10</td><td>Open the sticks first; orient from the measured closing direction; static stick on the far face; force-based stop</td><td><span class="no">sticks dropped</span></td><td>The closing direction forced a palm-down orientation; the hold is weakest palm-down.</td></tr>
-        <tr><td>11</td><td>Explicit groove-clamp poses (fingers straight, sticks along the pairs), five variants</td><td><span class="no">not held or crossed</span></td><td>The pair clamp has no pitch stiffness; the stick's rear end hits the wrist shell or the thumb base; a lateral squeeze ejects a stick that is not at the phalanges' centre height.</td></tr>
-        <tr><td>12</td><td>Searched pose, firm-up with thumb press, measured Jacobian, verified take</td><td><span class="no">placed within 1 mm, pinch moves the wrong way</span></td><td>The thumb press pins the upper stick: flexion moves the tip 12 mm/rad instead of 34.</td></tr>
-        <tr><td>13</td><td>As 12 without the thumb press, lower-tip height targeting, 3 mm far-face clearance, per-stick force stop, supination about n&times;z</td><td><span class="ok">sugar cube lifted 71 mm</span>, repeatable</td><td>The pipeline above. Wider objects then failed at the opening (34 mm ok, 38 mm drops); pinch stations behind the tips and alternative poses did not help.</td></tr>
-      </tbody>
-    </table>
-    <p class="scroll-hint">&larr; swipe the table &rarr;</p>
-  </div>
-  <div class="clip-grid" style="margin-top:18px">
-    <figure><img src="assets/projects/wuji/images/attempt_webclamp.jpg" alt="Constructed web clamp attempts" loading="lazy" style="width:100%;border:var(--line-w) solid var(--ink);border-radius:var(--radius-sm)"><figcaption><b>3.</b> The constructed web clamp: the lower stick drops onto the palm, the upper falls off the hand.</figcaption></figure>
-    <figure><img src="assets/projects/wuji/images/attempt_droop.jpg" alt="Lateral clamps behind the midpoint" loading="lazy" style="width:100%;border:var(--line-w) solid var(--ink);border-radius:var(--radius-sm)"><figcaption><b>4.</b> Lateral clamps hold under every flip, but the sticks dangle through the palm plane.</figcaption></figure>
-    <figure><img src="assets/projects/wuji/images/attempt_parallel.jpg" alt="Balanced between-fingers grip with parallel pairs" loading="lazy" style="width:100%;border:var(--line-w) solid var(--ink);border-radius:var(--radius-sm)"><figcaption><b>5.</b> Midpoint clamps with straight fingers: stable, but the sticks run parallel to the pairs, 89 mm apart at the tips.</figcaption></figure>
-  </div>
-</section>
-
-<!-- =================== PLAN =================== -->
-<section class="section" id="plan">
-  <h2 class="section-title">Learning plan</h2>
-  <div class="grid-2">
-    <div class="card finding"><span class="no">1</span><h3>Contact- and force-aware RL</h3><p>Observations: joint torques (the WUJI actuators report current), fingertip contact normals and forces, the sticks' pose relative to the palm. Reward: object height with a penalty on clamp-force variance and on stick slip in the hand. The scripted pipeline above is the reset and the baseline; the between-fingers hold is the initial state distribution.</p></div>
-    <div class="card finding"><span class="no">2</span><h3>Visual RL, then sim-to-real</h3><p>Replace the privileged stick and object state with a wrist camera, keep the torque and contact channels; domain-randomise friction (the chopstick class is 1.5, foods 0.5&ndash;0.9), masses and the hand gains, which are placeholders until WUJI system identification. Training stack: MJLab or Isaac Sim, decided by time.</p></div>
-    <div class="card finding"><span class="no">3</span><h3>Other tools</h3><p>The scissors, tweezers, pliers and drill scenes are validated on mocap benches (cutting is a geometric rule on rigid chains; the screw advances on a helical coupling). Grasping and operating them with the hand is next, with the same contact and force observations.</p></div>
-    <div class="card finding"><span class="no">4</span><h3>Open items on the grip</h3><p>Clamp-force regulation from torque feedback during arm motion; a pinch controller that closes until both sticks carry load; the tripod grip if a soft fingertip pad model (the Beta 2 pads are rigid hulls here) makes the index pad reach.</p></div>
-  </div>
-</section>
-
-<!-- =================== REPRODUCE =================== -->
-<section class="section" id="reproduce">
-  <h2 class="section-title">Reproduce it</h2>
-  <div class="cmd"><span class="c"># MuJoCo 3.5, Python 3.11; hand model converted from wuji-technology/wuji-description (Beta 2)</span>
-git clone https://github.com/thejerrycheng/WUJI_Tools && cd WUJI_Tools
-python scripts/tools/search_chopstick_grip.py --geo 2500 --n 120 --seed 101   <span class="c"># holding-pose search, ~10 min</span>
-python scripts/tools/exp_chopstick_grip.py                                     <span class="c"># hold + pinch measurements -> docs/figures/</span>
-python scripts/tools/exp_chopstick_pickup.py                                   <span class="c"># six pick-up attempts, plot and table</span>
-python scripts/tools/record_rollouts.py                                        <span class="c"># the clips on this page -> docs/videos/</span>
-python scripts/demo_chopsticks_pickup.py --object sugar_cube/sugar_cube       <span class="c"># interactive viewer</span>
-make -C docs                                                                    <span class="c"># the 20-page technical document</span></div>
-  <p class="plot-note" style="margin-top:14px">Every number on this page is printed by one of these scripts; the PDF holds the derivations, the parameter tables and the other experiments (static settling, in-hand retention through a wrist roll, the mocap pinch bench, the tool benches).</p>
-</section>
-
-<section class="section" id="credits">
-  <h2 class="section-title">Credits and sources</h2>
-  <div class="card card-pad credits">
-    <p>Solo project, started October 2026, towards an IROS 2027 submission on contact-aware, force-aware tool use for dexterous hands. Hand: WUJI Hand 2 (wuji-technology, Beta 2 release 2026.9.11). Arm: Franka Panda from MuJoCo Menagerie. Built with Claude Code.</p>
-    <p style="margin-top:8px">Z. Yang, K. Yin, L. Liu, <a href="https://arxiv.org/abs/2205.14313" target="_blank" rel="noopener">Learning to Use Chopsticks in Diverse Gripping Styles</a>, SIGGRAPH 2022 &middot; Y. Choji, K. Saito, Motion capture-based evaluation of lower chopstick stability, J. Phys. Ther. Sci. 36(9), 2024 &middot; Marcosticks: <a href="https://marcosticks.org/learn/" target="_blank" rel="noopener">grip taxonomy</a>, <a href="https://marcosticks.org/lateral-chopstick-grips/" target="_blank" rel="noopener">lateral family</a>, <a href="https://marcosticks.org/the-dangling-stick-grip/" target="_blank" rel="noopener">Dangling Stick</a>, <a href="https://marcosticks.org/the-forsaken-pinky-grip/" target="_blank" rel="noopener">Forsaken Pinky</a>.</p>
-    <div class="links" style="margin-top:12px">
-      <a href="assets/pdf/projects/wuji_hand2_sim.pdf" target="_blank" rel="noopener">Technical document</a>
-      <a href="https://github.com/thejerrycheng/WUJI_Tools" target="_blank" rel="noopener">Code</a>
-      <a href="projects.html">All projects</a>
-    </div>
+    <p class="keyline">Have the key? <button type="button" id="keyToggle">Unlock</button></p>
+    <form class="keyform" id="keyForm" autocomplete="off">
+      <input type="password" id="keyInput" aria-label="Passphrase" placeholder="passphrase" autocomplete="off">
+      <button class="btn" type="submit">Enter</button>
+    </form>
+    <p class="keyerr" id="keyErr" role="status"></p>
   </div>
 </section>
 
@@ -314,11 +108,73 @@ make -C docs                                                                    
     <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
     <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
     <div class="footer-rule"></div>
-    <div class="footer-credit">Template inspiration from <a href="http://www.cs.cmu.edu/~dpathak/" target="_blank">Here</a></div>
     <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
   </div>
 </footer>
 
 <script src="assets/js/site.js"></script>
+<script>
+(function(){
+  var form = document.getElementById('keyForm'),
+      inp  = document.getElementById('keyInput'),
+      err  = document.getElementById('keyErr'),
+      tog  = document.getElementById('keyToggle');
+
+  /* Decrypt the page and become it. document.open() clears the document but
+     leaves the window — JCPrivate, and the key it holds, survive the swap. */
+  function reveal(){
+    err.textContent = 'Decrypting\u2026';
+    return window.JCPrivate.text('assets/private/wuji.enc').then(function(html){
+      document.open(); document.write(html); document.close();
+      wirePdfs(); decryptMedia();
+    }).catch(function(e){
+      err.textContent = 'Could not open it: ' + e.message;
+    });
+  }
+
+  /* The videos and images are encrypted too: swap each private src/poster for a decrypted blob URL. */
+  function decryptMedia(){
+    var TYPES = {mp4:'video/mp4', jpg:'image/jpeg', jpeg:'image/jpeg', png:'image/png', svg:'image/svg+xml'};
+    ['src','poster'].forEach(function(attr){
+      document.querySelectorAll('['+attr+'^="assets/private/"]').forEach(function(el){
+        var u = el.getAttribute(attr), ext = u.split('.').pop().toLowerCase();
+        el.removeAttribute(attr);
+        window.JCPrivate.blobUrl(u + '.enc', TYPES[ext] || 'application/octet-stream').then(function(b){
+          el.setAttribute(attr, b);
+          var v = el.closest && el.closest('video'); if (v && attr === 'src') v.load();
+        });
+      });
+    });
+  }
+
+  /* The PDFs are encrypted too, so a click has to fetch and decrypt first. */
+  function wirePdfs(){
+    document.addEventListener('click', function(e){
+      var a = e.target.closest && e.target.closest('a[href$=".pdf"]');
+      if(!a || a.dataset.opened) return;
+      e.preventDefault();
+      var tab = window.open('', '_blank');          /* opened in the gesture, so not blocked */
+      window.JCPrivate.blobUrl(a.getAttribute('href') + '.enc', 'application/pdf')
+        .then(function(url){ if(tab) tab.location = url; else location.href = url; })
+        .catch(function(){ if(tab) tab.close(); });
+    });
+  }
+
+  if (!window.JCPrivate.supported) {
+    err.textContent = 'This browser cannot decrypt here — open the site over https.';
+  }
+  window.JCPrivate.ready.then(function(open){ if(open) reveal(); });
+
+  tog.addEventListener('click', function(){ form.classList.add('on'); inp.focus(); });
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    err.textContent = 'Checking\u2026';
+    window.JCPrivate.unlock(inp.value).then(function(ok){
+      if(ok) return reveal();
+      err.textContent = 'Not that one.'; inp.select();
+    });
+  });
+})();
+</script>
 </body>
 </html>

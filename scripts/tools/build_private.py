@@ -11,7 +11,7 @@ Run it after any rebuild of papers_data.json, or after editing m2-private.html:
     JC_PRIVATE_PASS=... python3 scripts/tools/build_private.py
 
 Idempotent. The plaintext stays on disk, git-ignored:
-  papers/private-ideas.json · papers/reviews.json · m2-private.html · the M2 PDFs
+  papers/private-ideas.json · papers/reviews.json · m2-private.html · the M2 PDFs · wuji-private.html · its PDF
 """
 import hashlib, json, os, subprocess, sys
 
@@ -92,6 +92,17 @@ for pdf in ("read-the-room.pdf", "supplement.pdf"):
     f = p("assets", "projects", "m2", pdf)
     if os.path.exists(f):
         enc(f, f + ".enc")
+
+# ---- 3. the WUJI chopsticks page and its PDF (private while the project is ongoing) ----
+if os.path.exists(p("wuji-private.html")):
+    enc(p("wuji-private.html"), p("assets", "private", "wuji.enc"))
+f = p("assets", "private", "wuji_hand2_sim.pdf")
+if os.path.exists(f):
+    enc(f, f + ".enc")
+for dirpath, _, files in os.walk(p("assets", "private", "wuji")):      # the page's videos, figures, images
+    for name in sorted(files):
+        if not name.endswith(".enc"):
+            f = os.path.join(dirpath, name); enc(f, f + ".enc")
 
 json.dump(MANIFEST, open(MANIFEST_PATH, "w"), indent=1)
 

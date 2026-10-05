@@ -410,37 +410,6 @@
  ],
  "projects": [
   {
-   "id": "wuji",
-   "title": "WUJI Chopsticks: Contact-Aware Tool Use for a Dexterous Hand",
-   "short": "WUJI Chopsticks: two free sticks in a 20-DoF hand",
-   "year": 2026,
-   "tag": "Dexterous manipulation",
-   "images": [
-    "assets/projects/wuji/images/card.jpg"
-   ],
-   "alts": [
-    "The WUJI Hand 2 holding two loose chopsticks between its fingers, tips closed"
-   ],
-   "video": "assets/projects/wuji/videos/grip_hold.mp4",
-   "fit": "cover",
-   "links": [
-    {
-     "label": "Website",
-     "href": "wuji.html",
-     "internal": true
-    },
-    {
-     "label": "PDF",
-     "href": "assets/pdf/projects/wuji_hand2_sim.pdf"
-    },
-    {
-     "label": "Code",
-     "href": "https://github.com/thejerrycheng/WUJI_Tools"
-    }
-   ],
-   "desc": "Ongoing. A 20-DoF WUJI Hand 2 on a Franka Panda holds two loose chopsticks in MuJoCo: the holding pose found by a geometric + dynamic search keeps both sticks within 7&nbsp;mm in every gravity direction and closes the tips from 42 to 4&nbsp;mm by index and middle flexion; the arm picks a 16&nbsp;mm sugar cube up and lifts it 71&nbsp;mm with a wrist supination, after measuring the in-hand geometry at run time. Wider objects exceed this hold's opening, and the page says exactly why. Next: reinforcement learning with torque and contact feedback, visual RL, sim-to-real."
-  },
-  {
    "id": "m2",
    "title": "Read the Room: Cooperative Multi-Robot Transport",
    "short": "Read the Room: shared policy, shared load",

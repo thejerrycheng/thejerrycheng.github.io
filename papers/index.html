@@ -227,6 +227,7 @@ html[data-theme="night"] .pcard .pven{ color:#151820; }
 .pjcard .n{ position:absolute; right:18px; top:16px; font-family:var(--font-mono); font-size:24px; font-weight:700; color:var(--ash) }
 .pjcard .n small{ font-family:var(--font-comic); font-size:10px; letter-spacing:.07em; text-transform:uppercase; display:block; text-align:right; margin-top:-3px }
 .ideagrid{ display:grid; gap:16px; padding-bottom:36px }
+.icard .ipage{margin:8px 0 0;font:600 13px/1.4 var(--font-sans)} .icard .ipage a{color:var(--hi-deep);text-decoration:none} .icard .ipage a:hover{text-decoration:underline}
 .icard{ background:var(--panel); border:var(--line-w) solid var(--line); border-radius:var(--radius);
   box-shadow:var(--sh-sm); padding:20px 22px; cursor:pointer;
   transition:transform .18s var(--ease-out), box-shadow .18s var(--ease-out), background .18s ease }
@@ -1117,6 +1118,7 @@ function renderIdeas(){
         <span>${ps.length} linked paper${ps.length===1?"":"s"}</span>
       </div>
       ${i.novelty?`<div class="inov"><span class="nl">What's novel</span>${i.novelty}</div>`:""}
+      ${i.page?`<p class="ipage"><a href="${esc(i.page.href)}" onclick="event.stopPropagation()">${esc(i.page.label)} &rarr;</a></p>`:""}
       ${i.merged&&i.merged.length>1?`<p class="merged">Merged from ${i.merged.length} of your bullets: “${esc(i.merged.join("” · “"))}”</p>`:""}
     </article>`;
   }).join("");
@@ -1467,6 +1469,7 @@ function openIdea(id, push=true){
   });
   let body = `<div class="dpad"><h2>${esc(idea.title)}</h2><div class="dnote">${esc(idea.pitch)}</div>`;
   if(idea.novelty) body += `<div class="rv"><div class="callout"><p class="cl">The novel claim</p><p>${idea.novelty}</p></div></div>`;
+  if(idea.page) body += `<div class="dlinks" style="margin-bottom:14px"><a class="pri" href="${esc(idea.page.href)}">${esc(idea.page.label)} &rarr;</a></div>`;
   if(idea.merged && idea.merged.length>1)
     body += `<p style="font-size:12.8px;color:var(--ink3);margin:-6px 0 14px">Merged from your bullets: “${esc(idea.merged.join("” · “"))}”</p>`;
   if(rv){
