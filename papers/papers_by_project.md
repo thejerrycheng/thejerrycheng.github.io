@@ -1,13 +1,13 @@
 # Paper Atlas — papers by project
 
-_607 papers · generated 2026-09-21_
+_613 papers · generated 2026-10-05_
 
 
 ## CURRENT PROJECTS
 
 - MABEL — Mobile bimanual humanoid
-  - Reading  (113)
-    - Reinforcement Learning  (42)
+  - Reading  (119)
+    - Reinforcement Learning  (45)
       - Locomotion  (12)
         - [Learning agile and dynamic motor skills for legged robots](https://arxiv.org/abs/1901.08652)  `Science Robotics 2019`
         - [Learning Quadrupedal Locomotion over Challenging Terrain](https://arxiv.org/abs/2010.11251)  `Science Robotics 2020`
@@ -33,7 +33,8 @@ _607 papers · generated 2026-09-21_
         - [StableMimic: Smooth Human-Like Recovery for Humanoid Motion Tracking - Learning Beyond the Tracking Distribution for Structured Post-Fall Behavior](https://arxiv.org/abs/2608.02385)  `arXiv 2026`
       - Dexterous manipulation  (1)
         - [Catch It! Learning to Catch in Flight with Mobile Dexterous Hands](https://arxiv.org/abs/2409.10319)  `ICRA 2025`
-      - Whole-body loco-manipulation  (15)
+      - Whole-body loco-manipulation  (18)
+        - [Whole-Body Control of a Mobile Manipulator using End-to-End Reinforcement Learning](https://arxiv.org/abs/2003.02637)  `arXiv 2020`
         - [Deep Whole-Body Control: Learning a Unified Policy for Manipulation and Locomotion](https://arxiv.org/abs/2210.10044)  `CoRL 2022`
         - [Dynamic Mobile Manipulation via Whole-Body Bilateral Teleoperation of a Wheeled Humanoid](https://arxiv.org/abs/2307.01350)  `arXiv 2023`
         - [Wheeled Humanoid Bilateral Teleoperation with Position-Force Control Modes for Dynamic Loco-Manipulation](https://arxiv.org/abs/2407.12189)  `arXiv 2024`
@@ -45,10 +46,12 @@ _607 papers · generated 2026-09-21_
         - [ResMimic: From General Motion Tracking to Humanoid Whole-body Loco-Manipulation via Residual Learning](https://arxiv.org/abs/2510.05070)  `arXiv 2025`
         - [Toward Seamless Physical Human-Humanoid Interaction: Insights from Control, Intent, and Modeling with a Vision for What Comes Next](https://arxiv.org/abs/2512.07765)  `arXiv 2025`
         - [Whole-Body Bilateral Teleoperation with Multi-Stage Object Parameter Estimation for Wheeled Humanoid Locomanipulation](https://arxiv.org/abs/2508.09846)  `arXiv 2025`
+        - [Dyna-2.1: A Physical Agent for End-to-End Workflows](https://www.dyna.co/dyna-2.1)  `Technical report 2026`
         - [FetchMan: Learning Visual Humanoid Loco-Manipulation Policies from Simulated Experiences](https://arxiv.org/abs/2608.17027)  `arXiv 2026`
         - [HAIC: Humanoid Agile Object Interaction Control via Dynamics-Aware World Model](https://arxiv.org/abs/2602.11758)  `arXiv 2026`
         - [HANDOFF: Humanoid Agentic Task-Space Whole-Body Control via Distilled Complementary Teachers](https://arxiv.org/abs/2606.06493)  `arXiv 2026`
         - [Humanoid Whole-Body Manipulation via Active Spatial Brain and Generalizable Action Cerebellum](https://arxiv.org/abs/2605.21133)  `arXiv 2026`
+        - [Whole-Body Mobile Manipulation using Offline Reinforcement Learning on Sub-optimal Controllers](https://arxiv.org/abs/2604.12509)  `arXiv 2026`
       - RL post-training on foundation models  (1)
         - [Hand-in-the-Loop: Improving VLA Policies for Dexterous Manipulation via Seamless Hand-Arm Intervention](https://arxiv.org/abs/2605.15157)  `arXiv 2026`
       - Model-based & world-model RL  (2)
@@ -90,7 +93,7 @@ _607 papers · generated 2026-09-21_
         - [Retargeting Matters: General Motion Retargeting for Humanoid Motion Tracking](https://arxiv.org/abs/2510.02252)  `arXiv 2025`
         - [Human2Humanoid: Physics-Aware Cross-Morphology Motion Retargeting for Humanoid Robots](https://arxiv.org/abs/2606.03476)  `arXiv 2026`
         - [X-OP: Cross-Morphology Whole-Body Teleoperation via MPC Retargeting](https://arxiv.org/abs/2606.07934)  `arXiv 2026`
-    - Hardware & Systems  (43)
+    - Hardware & Systems  (46)
       - Open-source arms & bimanual  (7)
         - [Quasi-Direct Drive for Low-Cost Compliant Robotic Manipulation](https://doi.org/10.1109/icra.2019.8794236)  `ICRA 2019`
         - [ALOHA: A Low-cost Open-source Hardware System for Bimanual Teleoperation](https://tonyzhaozh.github.io/aloha/)  `RSS 2023`
@@ -99,11 +102,12 @@ _607 papers · generated 2026-09-21_
         - [LeRobot / SO-100 & SO-101: Standard Open Arm](https://github.com/huggingface/lerobot)  `open hardware 2024`
         - [Mobile ALOHA: Learning Bimanual Mobile Manipulation with Low-Cost Whole-Body Teleoperation](https://arxiv.org/abs/2401.02117)  `CoRL 2024`
         - [OpenPyRo-A1: An Open Python-Based Low-Cost Bimanual Robot for Embodied AI](https://doi.org/10.1109/lra.2025.3634886)  `IEEE RA-L 2026`
-      - Mobile manipulation platforms  (5)
+      - Mobile manipulation platforms  (6)
         - [The Design of Stretch: A Compact, Lightweight Mobile Manipulator for Indoor Human Environments](https://arxiv.org/abs/2109.10892)  `ICRA 2022`
         - [BEHAVIOR Robot Suite: Streamlining Real-World Whole-Body Manipulation for Everyday Household Activities](https://arxiv.org/abs/2503.05652)  `CoRL 2025`
         - [HoMeR: Learning In-the-Wild Mobile Manipulation via Hybrid Imitation and Whole-Body Control](https://arxiv.org/abs/2506.01185)  `arXiv 2025`
         - [TidyBot++: An Open-Source Holonomic Mobile Manipulator for Robot Learning](https://arxiv.org/abs/2412.10447)  `CoRL 2025`
+        - [Towards Human-level Intelligence via Human-like Whole-Body Manipulation](https://arxiv.org/abs/2507.17141)  `arXiv 2025`
         - [YOR: Your Own Mobile Manipulator for Generalizable Robotics](https://arxiv.org/abs/2602.11150)  `arXiv 2026`
       - Data-collection interfaces  (15)
         - [ACE: A Cross-Platform Visual-Exoskeletons System for Low-Cost Dexterous Teleoperation](https://arxiv.org/abs/2408.11805)  `arXiv 2024`
@@ -127,10 +131,13 @@ _607 papers · generated 2026-09-21_
         - [Unitree G1 / H1 Humanoid Platforms](https://www.unitree.com/g1)  `commercial 2024`
         - [Demonstrating Berkeley Humanoid Lite: An Open-source, Accessible, and Customizable 3D-printed Humanoid Robot](https://arxiv.org/abs/2504.17249)  `arXiv 2025`
         - [ToddlerBot: Open-Source ML-Compatible Humanoid Platform for Loco-Manipulation](https://arxiv.org/abs/2502.00893)  `arXiv 2025`
+      - Co-design & morphology  (1)
+        - [Accelerated co-design of robots through morphological pretraining](https://arxiv.org/abs/2502.10862)  `arXiv 2025`
       - Simulators & benchmarks  (2)
         - [Orbit: A Unified Simulation Framework for Interactive Robot Learning Environments](https://arxiv.org/abs/2301.04195)  `IEEE RA-L 2023`
         - [HumanoidBench: Simulated Humanoid Benchmark for Whole-Body Locomotion and Manipulation](https://arxiv.org/abs/2403.10506)  `RSS 2024`
-      - Planning & control  (4)
+      - Planning & control  (5)
+        - [Keep it Upright: Model Predictive Control for Nonprehensile Object Transportation with Obstacle Avoidance on a Mobile Manipulator](https://arxiv.org/abs/2305.17484)  `IEEE Robotics and Automation Letters 2023`
         - [Planning Optimal Trajectories for Mobile Manipulators under End-effector Trajectory Continuity Constraint](https://arxiv.org/abs/2309.12251)  `ICRA 2023`
         - [VoxPoser: Composable 3D Value Maps for Robotic Manipulation with Language Models](https://arxiv.org/abs/2307.05973)  `CoRL 2023`
         - [ReKep: Spatio-Temporal Reasoning of Relational Keypoint Constraints for Robotic Manipulation](https://arxiv.org/abs/2409.01652)  `CoRL 2024`
@@ -781,7 +788,7 @@ _607 papers · generated 2026-09-21_
 
 ## THE THREE TREES
 
-- Reinforcement Learning  (200)
+- Reinforcement Learning  (203)
   - Algorithmic foundations  (10)
     - [Human-level control through deep reinforcement learning](https://doi.org/10.1038/nature14236)  `Nature 2015`
     - [Trust Region Policy Optimization](http://proceedings.mlr.press/v37/schulman15.pdf)  `ICML 2015`
@@ -876,7 +883,8 @@ _607 papers · generated 2026-09-21_
     - [Grasp to Act: Dexterous Grasping for Tool Use in Dynamic Settings](https://arxiv.org/abs/2602.20466)  `arXiv 2026`
     - [ORCA: A Platform for Open-Source Dexterity Research](https://arxiv.org/abs/2606.14561)  `arXiv 2026`
     - [RoboStriker: Latent-Space Strategic Games for Autonomous Humanoid Boxing](https://arxiv.org/abs/2608.16195)  `IEEE Humanoids 2026`
-  - Whole-body loco-manipulation  (34)
+  - Whole-body loco-manipulation  (37)
+    - [Whole-Body Control of a Mobile Manipulator using End-to-End Reinforcement Learning](https://arxiv.org/abs/2003.02637)  `arXiv 2020`
     - [Deep Whole-Body Control: Learning a Unified Policy for Manipulation and Locomotion](https://arxiv.org/abs/2210.10044)  `CoRL 2022`
     - [Dynamic Mobile Manipulation via Whole-Body Bilateral Teleoperation of a Wheeled Humanoid](https://arxiv.org/abs/2307.01350)  `arXiv 2023`
     - [Hierarchical Adaptive Motion Planning with Nonlinear Model Predictive Control for Safety-Critical Collaborative Loco-Manipulation](https://arxiv.org/abs/2411.10699)  `arXiv 2024`
@@ -895,6 +903,7 @@ _607 papers · generated 2026-09-21_
     - [Toward Seamless Physical Human-Humanoid Interaction: Insights from Control, Intent, and Modeling with a Vision for What Comes Next](https://arxiv.org/abs/2512.07765)  `arXiv 2025`
     - [Whole-Body Bilateral Teleoperation with Multi-Stage Object Parameter Estimation for Wheeled Humanoid Locomanipulation](https://arxiv.org/abs/2508.09846)  `arXiv 2025`
     - [ACLM: ADMM-Based Distributed Model Predictive Control for Collaborative Loco-Manipulation](https://arxiv.org/abs/2603.07095)  `arXiv 2026`
+    - [Dyna-2.1: A Physical Agent for End-to-End Workflows](https://www.dyna.co/dyna-2.1)  `Technical report 2026`
     - [DynaMOMA: Instantaneous Prediction of Grasp Poses for Mobile Manipulation of Dynamic Objects](https://arxiv.org/abs/2606.25295)  `arXiv 2026`
     - [FT-WBC: Learning Fault-Tolerant Whole-Body Control for Legged Loco-Manipulation](https://arxiv.org/abs/2606.24466)  `arXiv 2026`
     - [FetchMan: Learning Visual Humanoid Loco-Manipulation Policies from Simulated Experiences](https://arxiv.org/abs/2608.17027)  `arXiv 2026`
@@ -910,6 +919,7 @@ _607 papers · generated 2026-09-21_
     - [RoboReact: Agentic Skill Distillation from Generated Egocentric Videos for Generalizable Whole-Body Manipulation](https://arxiv.org/abs/2608.03387)  `IEEE Humanoids 2026`
     - [Task-Oriented Robot-Human Handovers on Legged Manipulators](https://arxiv.org/abs/2602.05760)  `arXiv 2026`
     - [Video2DoorTraversal: Push Door Traversal via Simulated Door Twins](https://arxiv.org/abs/2608.20251)  `arXiv 2026`
+    - [Whole-Body Mobile Manipulation using Offline Reinforcement Learning on Sub-optimal Controllers](https://arxiv.org/abs/2604.12509)  `arXiv 2026`
     - From Sim2Real 1.0 to 4.0 for Humanoid Whole-Body Control and Loco-Manipulation  `CoRL`
   - Multi-agent RL  (33)
     - [Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments](https://doi.org/10.57702/apbqmp7u)  `NeurIPS 2017`
@@ -1185,7 +1195,7 @@ _607 papers · generated 2026-09-21_
     - [Visual-auditory Extrinsic Contact Estimation](https://arxiv.org/abs/2409.14608)  `arXiv 2024`
     - [Deform360: A Massive Multi-view Visuotactile Dataset for Deformable World Models](https://arxiv.org/abs/2607.05390)  `arXiv 2026`
     - [EgoEMG: A Multimodal Egocentric Dataset with Bilateral EMG and Vision for Hand Pose Estimation](https://arxiv.org/abs/2605.05712)  `arXiv 2026`
-- Hardware & Systems  (223)
+- Hardware & Systems  (226)
   - Open-source arms & bimanual  (12)
     - [Quasi-Direct Drive for Low-Cost Compliant Robotic Manipulation](https://doi.org/10.1109/icra.2019.8794236)  `ICRA 2019`
     - [ALOHA: A Low-cost Open-source Hardware System for Bimanual Teleoperation](https://tonyzhaozh.github.io/aloha/)  `RSS 2023`
@@ -1199,12 +1209,13 @@ _607 papers · generated 2026-09-21_
     - [HEATS: A Hierarchical Framework for Efficient Autonomous Target Search with Mobile Manipulators](https://arxiv.org/abs/2503.07986)  `arXiv 2025`
     - [KinDER: A Physical Reasoning Benchmark for Robot Learning and Planning](https://doi.org/10.15607/rss.2026.xxii.184)  `RSS 2026`
     - [OpenPyRo-A1: An Open Python-Based Low-Cost Bimanual Robot for Embodied AI](https://doi.org/10.1109/lra.2025.3634886)  `IEEE RA-L 2026`
-  - Mobile manipulation platforms  (6)
+  - Mobile manipulation platforms  (7)
     - [The Design of Stretch: A Compact, Lightweight Mobile Manipulator for Indoor Human Environments](https://arxiv.org/abs/2109.10892)  `ICRA 2022`
     - [TidyBot: Personalized Robot Assistance with Large Language Models](https://arxiv.org/abs/2305.05658)  `IROS 2023`
     - [BEHAVIOR Robot Suite: Streamlining Real-World Whole-Body Manipulation for Everyday Household Activities](https://arxiv.org/abs/2503.05652)  `CoRL 2025`
     - [HoMeR: Learning In-the-Wild Mobile Manipulation via Hybrid Imitation and Whole-Body Control](https://arxiv.org/abs/2506.01185)  `arXiv 2025`
     - [TidyBot++: An Open-Source Holonomic Mobile Manipulator for Robot Learning](https://arxiv.org/abs/2412.10447)  `CoRL 2025`
+    - [Towards Human-level Intelligence via Human-like Whole-Body Manipulation](https://arxiv.org/abs/2507.17141)  `arXiv 2025`
     - [YOR: Your Own Mobile Manipulator for Generalizable Robotics](https://arxiv.org/abs/2602.11150)  `arXiv 2026`
   - Data-collection interfaces  (22)
     - [HASHI: Highly Adaptable Seafood Handling Instrument for Manipulation in Industrial Settings](https://arxiv.org/abs/2311.02277)  `arXiv 2023`
@@ -1270,7 +1281,7 @@ _607 papers · generated 2026-09-21_
     - Task-Agnostic and Device-Agnostic Exoskeleton Control via Reinforcement Learning and Mixture of Experts  `IEEE T-RO 2026`
     - Design and Modeling of Bio-Inspired Shoulder Exoskeleton with Cable-Driven Quasi-Direct Drive Actuation: Misalignment Compensation and Interference Mitigation  `IEEE T-RO`
     - End-to-End Assistive Torque Control for Lower-Limb Exoskeleton via Sim-to-Real Reinforcement Learning and Curriculum Learning  `IEEE T-RO`
-  - Co-design & morphology  (31)
+  - Co-design & morphology  (32)
     - [Evolving Virtual Creatures](https://doi.org/10.1145/3596711.3596785)  `SIGGRAPH 1994`
     - [Automatic design and manufacture of robotic lifeforms](https://doi.org/10.1038/35023115)  `Nature 2000`
     - [Letrons: a drivable BMW that converts into a 4.5 m robot](https://www.letrons.com/)  `industry 2016`
@@ -1298,6 +1309,7 @@ _607 papers · generated 2026-09-21_
     - [RoboMorph: Evolving Robot Morphology using Large Language Models](https://arxiv.org/abs/2407.08626)  `arXiv 2024`
     - [The Foundational Pose as a Selection Mechanism for the Design of Tool-Wielding Multi-Finger Robotic Hands](https://arxiv.org/abs/2409.14158)  `arXiv 2024`
     - [A Reconfigured Wheel-Legged Robot for Enhanced Steering and Adaptability](https://arxiv.org/abs/2507.22345)  `arXiv 2025`
+    - [Accelerated co-design of robots through morphological pretraining](https://arxiv.org/abs/2502.10862)  `arXiv 2025`
     - [Fast and Modular Whole-Body Lagrangian Dynamics of Legged Robots with Changing Morphology](https://arxiv.org/abs/2504.16383)  `Nonlinear Dynamics 2025`
     - [Text2Robot: Evolutionary Robot Design from Text Descriptions](https://arxiv.org/abs/2406.19963)  `ICRA 2025`
     - [S-Cheetah: A Novel Quadrupedal Robot with a 3-DOF Active Spine Learning Agile Locomotion](https://arxiv.org/abs/2605.27909)  `arXiv 2026`
@@ -1346,10 +1358,11 @@ _607 papers · generated 2026-09-21_
     - [WorldArena 2.0: Extending Embodied World Model Benchmarking on Modality, Functionality and Platform](https://arxiv.org/abs/2605.17912)  `arXiv 2026`
     - Catheter PCI Intervention Sim2Real
     - [Scalable Muscle-Actuated Human Simulation and Control](https://doi.org/10.1145/3306346.3322972)  `SIGGRAPH`
-  - Planning & control  (41)
+  - Planning & control  (42)
     - [Convex Programming Approach to Powered Descent Guidance for Mars Landing](https://doi.org/10.2514/1.27553)  `JGCD 2007`
     - [Data-Driven Risk-sensitive Model Predictive Control for Safe Navigation in Multi-Robot Systems](https://arxiv.org/abs/2209.07793)  `Nature 2022`
     - [Distributed Safe Learning and Planning for Multi-robot Systems](https://arxiv.org/abs/2207.07824)  `arXiv 2022`
+    - [Keep it Upright: Model Predictive Control for Nonprehensile Object Transportation with Obstacle Avoidance on a Mobile Manipulator](https://arxiv.org/abs/2305.17484)  `IEEE Robotics and Automation Letters 2023`
     - [Multi-Robot Local Motion Planning Using Dynamic Optimization Fabrics](https://arxiv.org/abs/2310.12816)  `arXiv 2023`
     - [Nonholonomic Motion Planning as Efficient as Piano Mover's](https://arxiv.org/abs/2306.01301)  `arXiv 2023`
     - [Planning Optimal Trajectories for Mobile Manipulators under End-effector Trajectory Continuity Constraint](https://arxiv.org/abs/2309.12251)  `ICRA 2023`
