@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>WUJI Chopsticks — contact-aware tool use for a dexterous hand — Jerry (Qilong) Cheng</title>
-  <meta name="description" content="Two loose chopsticks in a 20-DoF WUJI Hand 2 on a Franka Panda, in MuJoCo: how the holding pose was found, what the hand's geometry allows, the pick-up attempt with a wrist twist, and the road to contact- and force-aware reinforcement learning.">
+  <meta name="description" content="Two loose chopsticks in a 20-DoF WUJI Hand 2 on a Franka Panda, in MuJoCo: how the holding pose was found, what the hand's geometry allows, the pick-up of a sugar cube with a wrist twist, and the road to contact- and force-aware reinforcement learning.">
   <meta name="author" content="Jerry Cheng">
   <link rel="canonical" href="https://thejerrycheng.github.io/wuji.html">
   <meta property="og:title" content="WUJI Chopsticks — two free sticks in a 20-DoF hand">
@@ -115,8 +115,9 @@
     <div class="card stat-tile"><div class="num">2</div><div class="lab">Free sticks</div><div class="sub">240 mm, 4.2 g each; held by contact and friction</div></div>
     <div class="card stat-tile"><div class="num">&le;7<small>mm</small></div><div class="lab">Drift, any orientation</div><div class="sub">Stick centres after 0.5 s in each of six gravity directions</div></div>
     <div class="card stat-tile"><div class="num">42&rarr;4<small>mm</small></div><div class="lab">Tip gap closes</div><div class="sub">Index + middle flexion, closed loop on the stick axes</div></div>
-    <div class="card stat-tile"><div class="num">0<small>/6</small></div><div class="lab">Objects lifted</div><div class="sub">Arm pick-up with free sticks: not yet (<a href="#pickup">why</a>)</div></div>
-    <div class="card stat-tile"><div class="num">13</div><div class="lab">Search runs</div><div class="sub">Six grip families tried before one held (<a href="#tried">log</a>)</div></div>
+    <div class="card stat-tile"><div class="num">71<small>mm</small></div><div class="lab">Sugar cube lifted</div><div class="sub">Free sticks, 90° wrist supination; repeatable (<a href="#pickup">the run</a>)</div></div>
+    <div class="card stat-tile"><div class="num">1<small>/6</small></div><div class="lab">Objects lifted</div><div class="sub">Wider than 22 mm exceeds this hold's opening (<a href="#pickup">why</a>)</div></div>
+    <div class="card stat-tile"><div class="num">24</div><div class="lab">Iterations</div><div class="sub">13 grip searches, 11 pick-up variants before one worked (<a href="#tried">log</a>)</div></div>
   </div>
 </section>
 
@@ -140,7 +141,7 @@
         <tr><th>digit</th><th>role</th><th>measured</th></tr>
         <tr><td>index</td><td>swings the upper stick (MCP flexion, PIP at half rate); its abduction steers the tip sideways</td><td>alone: 42 &rarr; 13.5 mm</td></tr>
         <tr><td>middle</td><td>the upper stick rests on its side; flexing with the index</td><td>with index: 42 &rarr; 4.1 mm</td></tr>
-        <tr><td>thumb</td><td>lies on the upper stick's rear end and holds it</td><td>pressing opens: 42 &rarr; 20 mm</td></tr>
+        <tr><td>thumb</td><td>lies on the upper stick's rear end; must not press during the pinch (a press pins the stick: flexion then moves the tip 12 instead of 34 mm/rad)</td><td>pressing opens: 42 &rarr; 20 mm</td></tr>
         <tr><td>ring + little</td><td>clamp the lower stick, static</td><td>moves 1.0 mm during the pinch</td></tr>
       </table>
       <p class="plot-note" style="margin-top:12px">Contact forces at rest: 8.5 N on the lower stick, 4.1 N on the upper. Hand actuator gains are the upstream placeholders scaled &times;3 on abduction and &times;1.5 on flexion (<span class="mono">config.HAND_GAIN_SCALE</span>); with the upstream values the 0.2 N&middot;m abduction servos cannot clamp a stick against the arm's accelerations.</p>
@@ -203,36 +204,37 @@
 <!-- =================== PICKUP =================== -->
 <section class="section" id="pickup">
   <h2 class="section-title">The pick-up attempt</h2>
-  <div class="verdict"><b>Not achieved yet.</b> With the free sticks no object is lifted. The three objects on the table keep the sticks through the approach (axis gap 22&ndash;24 mm after the move) and the pinch point lands within 2&ndash;8 mm of its target, but the pinch stalls at an axis gap of 13&ndash;43 mm with one or two chopstick&ndash;object contacts and 0.05&ndash;1.0 N: one stick touches, the other never squeezes. For the three objects on the plate one stick slips out of its clamp while the arm reorients the hand on the longer reach (sticks displaced by more than 100 mm). The hinged-pair version of this demo lifted all six objects by 71&ndash;75 mm; the loss is entirely in the free-stick grip, which is the research problem the learning phase addresses.</div>
+  <div class="verdict"><b>The sugar cube is picked up.</b> Sticks kept through the 6 s approach (axis gap 27 mm before and after), closing point placed within 1.4 mm of the cube's far face, both sticks loading the cube (two contacts, 0.09 N), and the supination lift raises it 71 mm where it stays between the sticks; five consecutive runs agree. The other five objects are not lifted, each for a measured reason: the 25&ndash;28 mm cubes and the dumpling need an opening wider than the 27 mm this hold gives at the tips, and opening the sticks by more than about 35 mm with the fingers releases the sandwich (34 mm keeps two contacts, 38 mm drops the stick); the 22 mm tomato is placed within 1.3 mm but the sticks close to 17 mm with one contact and slide over the sphere; the tofu on the plate loses a stick on the longer reach.</div>
+  <p class="lead">What made the difference, each found by instrumenting a failed run: not pressing the thumb on the upper stick; measuring the tip Jacobian of the finger motions instead of assuming flexion acts along the palm normal; orienting the hand from the measured closing direction (in this crossed pose it is lateral in the palm, so the palm faces up with the tips level); targeting the lower tip's height rather than the closing point's (at a 60&deg; tilt the lower tip dug 30 mm into the table); 3 mm of clearance at the far face instead of 1 mm (the arm's stiffness had pressed the cube with 580 N); and stopping the pinch on the moving stick's own force.</p>
   <div class="clip-grid">
-    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_sugar_cube.mp4" type="video/mp4"></video><figcaption><b>Sugar cube</b> (16 mm, 3.7 g). Sticks held through the approach; pinch stalls at 13 mm, 0.05 N; not lifted.</figcaption></figure>
-    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_foam_cube.mp4" type="video/mp4"></video><figcaption><b>Foam die</b> (25 mm, 1.9 g). One stick presses the cube with 0.9 N; the other does not close; not lifted.</figcaption></figure>
-    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_wood_cube.mp4" type="video/mp4"></video><figcaption><b>Pine cube</b> (25 mm, 7.0 g). Two contacts, 1.0 N, gap 39 mm; not lifted.</figcaption></figure>
-    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_tofu_cube.mp4" type="video/mp4"></video><figcaption><b>Tofu cube</b> (on the plate). A stick slips out during the approach.</figcaption></figure>
-    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_cherry_tomato.mp4" type="video/mp4"></video><figcaption><b>Cherry tomato</b> (on the plate). A stick slips out during the approach.</figcaption></figure>
-    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_dumpling.mp4" type="video/mp4"></video><figcaption><b>Dumpling</b> (on the plate). A stick slips out during the approach.</figcaption></figure>
+    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_sugar_cube.mp4" type="video/mp4"></video><figcaption><b>Sugar cube</b> (16 mm, 3.7 g). <b>Lifted 71 mm.</b> Take, approach palm-up, place the static stick at the far face, close on the measured Jacobian, supinate.</figcaption></figure>
+    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_foam_cube.mp4" type="video/mp4"></video><figcaption><b>Foam die</b> (25 mm, 1.9 g). Needs a 36 mm opening; the hold gives 27. One stick presses it (1.5 N), the other cannot reach; not lifted.</figcaption></figure>
+    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_wood_cube.mp4" type="video/mp4"></video><figcaption><b>Pine cube</b> (25 mm, 7.0 g). Same opening limit; one contact, 0.23 N; not lifted.</figcaption></figure>
+    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_tofu_cube.mp4" type="video/mp4"></video><figcaption><b>Tofu cube</b> (on the plate). A stick slips out of its clamp on the longer reach.</figcaption></figure>
+    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_cherry_tomato.mp4" type="video/mp4"></video><figcaption><b>Cherry tomato</b> (22 mm sphere, on the plate). Placed within 1.3 mm; the sticks close to 17 mm with one contact and slide over it.</figcaption></figure>
+    <figure><video controls muted playsinline preload="metadata"><source src="assets/projects/wuji/videos/pickup_dumpling.mp4" type="video/mp4"></video><figcaption><b>Dumpling</b> (28 mm, on the plate). Needs a 39 mm opening; not lifted.</figcaption></figure>
   </div>
   <figure class="fig">
     <img src="assets/projects/wuji/figures/chopstick_pickup_plot.png" alt="Axis gap, chopstick-object force and object height versus time for the six pick-up attempts" class="pad" loading="lazy">
-    <figcaption><b>Six attempts, logged.</b> Axis gap near the tips, chopstick&ndash;object normal force and object height above the table versus time. The height traces stay flat: the supination lift carries the sticks, not the object.</figcaption>
+    <figcaption><b>Six attempts, logged.</b> Axis gap near the tips, chopstick&ndash;object normal force and object height above the table versus time. The sugar cube's height trace rises 71 mm during the supination; the others stay flat.</figcaption>
   </figure>
   <div class="table-wrap">
     <table class="data-table">
-      <thead><tr><th>object</th><th>IK margin [rad]</th><th>gap after approach [mm]</th><th>pinch-point error [mm]</th><th>gap open [mm]</th><th>gap closed [mm]</th><th>contacts</th><th>force [N]</th><th>rise [mm]</th></tr></thead>
+      <thead><tr><th>object</th><th>width [mm]</th><th>gap after approach [mm]</th><th>placement error [mm]</th><th>gap open [mm]</th><th>gap closed [mm]</th><th>contacts</th><th>force [N]</th><th>rise [mm]</th></tr></thead>
       <tbody>
-        <tr><td>sugar cube</td><td>0.62</td><td>24</td><td>2.3</td><td>32</td><td>13</td><td>2</td><td>0.05</td><td class="bad">0</td></tr>
-        <tr><td>tofu cube</td><td>0.78</td><td class="bad">134</td><td>0.1</td><td>136</td><td>152</td><td>0</td><td>0</td><td class="bad">0</td></tr>
-        <tr><td>cherry tomato</td><td>0.59</td><td class="bad">114</td><td>92</td><td>49</td><td>48</td><td>1</td><td>0.01</td><td class="bad">0</td></tr>
-        <tr><td>dumpling</td><td>0.66</td><td class="bad">114</td><td>0.6</td><td>128</td><td>158</td><td>0</td><td>0</td><td class="bad">0</td></tr>
-        <tr><td>foam die</td><td>0.81</td><td>22</td><td>8.4</td><td>49</td><td>43</td><td>1</td><td>0.89</td><td class="bad">0</td></tr>
-        <tr><td>pine cube</td><td>0.72</td><td>24</td><td>8.3</td><td>42</td><td>39</td><td>2</td><td>0.98</td><td class="bad">0</td></tr>
+        <tr><td><b>sugar cube</b></td><td>16</td><td>27</td><td>1.4</td><td>25</td><td>22</td><td>2</td><td>0.09</td><td class="ok">+71</td></tr>
+        <tr><td>tofu cube</td><td>20</td><td class="bad">440</td><td>105</td><td>473</td><td>469</td><td>0</td><td>0</td><td class="bad">0</td></tr>
+        <tr><td>cherry tomato</td><td>22</td><td>31</td><td>1.3</td><td>32</td><td>17</td><td>1</td><td>0.08</td><td class="bad">0</td></tr>
+        <tr><td>dumpling</td><td>28</td><td>98</td><td>28</td><td>38</td><td>38</td><td>0</td><td>0</td><td class="bad">0</td></tr>
+        <tr><td>foam die</td><td>25</td><td>33</td><td>26</td><td>58</td><td>56</td><td>1</td><td>1.50</td><td class="bad">0</td></tr>
+        <tr><td>pine cube</td><td>25</td><td>33</td><td>1.4</td><td>46</td><td>28</td><td>1</td><td>0.23</td><td class="bad">0</td></tr>
       </tbody>
     </table>
     <p class="scroll-hint">&larr; swipe the table &rarr;</p>
   </div>
   <div class="grid-2" style="margin-top:18px">
-    <div class="card finding"><span class="no">i</span><h3>Clamps fix yaw by friction only</h3><p>The between-fingers clamp holds each stick with two side contacts. Under the arm's motion the sticks' relative geometry changes (open gap 15 mm in the hand, 32&ndash;49 mm after the approach) and on the longer reach one stick leaves its clamp. A human fixes this with the purlicue and the thumb pad; this hand has neither, so the learned policy will have to regulate the clamp forces from contact and torque feedback, which is the point of the project.</p></div>
-    <div class="card finding"><span class="no">ii</span><h3>The pinch steers to the stick, not around the object</h3><p>The controller drives the upper tip onto the lower stick's axis. With an object between them it stalls as soon as one stick touches, because the measured gap stops shrinking. A force-aware controller (or policy) would keep closing until both contacts carry load.</p></div>
+    <div class="card finding"><span class="no">i</span><h3>The opening is the limit</h3><p>This hold gives 27 mm between the upper tip and the lower stick at the tips. Opening the sticks with the fingers works to 34 mm (two contacts kept) and fails at 38 mm (the upper stick drops), so objects up to about 22 mm are reachable and the 25 mm cubes are not. A pose with a wider natural opening was not found among the feasible search results; the two with 41&ndash;53 mm openings lose a stick during the approach.</p></div>
+    <div class="card finding"><span class="no">ii</span><h3>Everything is measured, nothing assumed</h3><p>Four of the six scripted assumptions about the in-hand geometry were wrong: the closing direction is lateral in the palm, not along the normal; flexion barely moves the stick while the thumb presses it; the lower tip is 30 mm below the closing point at a 60&deg; tilt; and the pair's abduction, not flexion, steers the tip sideways. Measuring each of them at run time is what made the pick-up work, and it is what a policy with contact and torque observations will learn.</p></div>
   </div>
 </section>
 
@@ -251,6 +253,11 @@
         <tr><td>6</td><td>As 5 with converging pairs, settled tip order enforced, closed-loop pinch, axis-gap metric</td><td><span class="ok">holds, 42 &rarr; 4 mm</span></td><td>The grip used above.</td></tr>
         <tr><td>7</td><td>Constructed tripod (index pad on top, middle resting under, thumb pressing): stick lines from the ring and index fingertips and a web point on the palm edge; thumb, index and middle swept until they touch the upper stick</td><td><span class="no">0 passed the geometric stage</span> over four parametrisations</td><td>The curled ring fingertip sits behind the web point; the index pad never reaches a stick that passes the palm edge (facts 1 and 2).</td></tr>
         <tr><td>8</td><td>Grip 6 with the lower stick below the upper one so a thumb press closes</td><td><span class="no">best 24 &rarr; 9 mm</span>, worse than 6</td><td>On this hand the thumb's press translates the upper stick instead of levering its tip.</td></tr>
+        <tr><td>9</td><td>Arm pick-up, palm sideways, tip-midpoint targeting, open-loop index+middle pinch</td><td><span class="no">0/6</span></td><td>Tips offset 35 mm along the sticks; the pinch sweeps the upper tip down past the cube.</td></tr>
+        <tr><td>10</td><td>Open the sticks first; orient from the measured closing direction; static stick on the far face; force-based stop</td><td><span class="no">sticks dropped</span></td><td>The closing direction forced a palm-down orientation; the hold is weakest palm-down.</td></tr>
+        <tr><td>11</td><td>Explicit groove-clamp poses (fingers straight, sticks along the pairs), five variants</td><td><span class="no">not held or crossed</span></td><td>The pair clamp has no pitch stiffness; the stick's rear end hits the wrist shell or the thumb base; a lateral squeeze ejects a stick that is not at the phalanges' centre height.</td></tr>
+        <tr><td>12</td><td>Searched pose, firm-up with thumb press, measured Jacobian, verified take</td><td><span class="no">placed within 1 mm, pinch moves the wrong way</span></td><td>The thumb press pins the upper stick: flexion moves the tip 12 mm/rad instead of 34.</td></tr>
+        <tr><td>13</td><td>As 12 without the thumb press, lower-tip height targeting, 3 mm far-face clearance, per-stick force stop, supination about n&times;z</td><td><span class="ok">sugar cube lifted 71 mm</span>, repeatable</td><td>The pipeline above. Wider objects then failed at the opening (34 mm ok, 38 mm drops); pinch stations behind the tips and alternative poses did not help.</td></tr>
       </tbody>
     </table>
     <p class="scroll-hint">&larr; swipe the table &rarr;</p>
