@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- The page itself is published encrypted; the key turns it back into HTML. -->
   <script src="assets/js/private.js"></script>
-  <title>WUJI Chopsticks — private</title>
+  <title>WUJI Chopsticks — Coming soon</title>
   <meta name="description" content="WUJI Chopsticks: contact-aware tool use for a dexterous hand. This page is private.">
   <meta name="author" content="Jerry Cheng">
   <link rel="canonical" href="https://thejerrycheng.github.io/wuji.html">
@@ -83,9 +83,9 @@
 
 <section class="section">
   <div class="soon-wrap" style="text-align:center">
-    <p class="soon-stamp">Private</p>
-    <p>This project is ongoing and not published yet &mdash; the page is stored encrypted,
-       and only the key turns it back into something readable.</p>
+    <p class="soon-stamp">Coming soon</p>
+    <p>This project is ongoing and not published yet. The page is stored encrypted,
+       and only the passcode turns it back into something readable.</p>
     <p>In the meantime, the rest of the work is open.</p>
     <div class="soon-actions">
       <a class="btn btn-primary" href="projects.html">All projects</a>
@@ -125,8 +125,14 @@
   function reveal(){
     err.textContent = 'Decrypting\u2026';
     return window.JCPrivate.text('assets/private/wuji.enc').then(function(html){
+      /* private media is published only as .enc: park its paths so the browser does not request them */
+      html = html.replace(/ (src|poster)="(assets\/private\/[^"]+)"/g, ' data-p$1="$2"');
       document.open(); document.write(html); document.close();
-      wirePdfs(); decryptMedia();
+      wirePdfs();
+      /* the written page parses asynchronously (its stylesheets block its head scripts), so swap the
+         media only once it has been parsed */
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', decryptMedia);
+      else decryptMedia();
     }).catch(function(e){
       err.textContent = 'Could not open it: ' + e.message;
     });
@@ -136,9 +142,9 @@
   function decryptMedia(){
     var TYPES = {mp4:'video/mp4', jpg:'image/jpeg', jpeg:'image/jpeg', png:'image/png', svg:'image/svg+xml'};
     ['src','poster'].forEach(function(attr){
-      document.querySelectorAll('['+attr+'^="assets/private/"]').forEach(function(el){
-        var u = el.getAttribute(attr), ext = u.split('.').pop().toLowerCase();
-        el.removeAttribute(attr);
+      document.querySelectorAll('[data-p'+attr+']').forEach(function(el){
+        var u = el.getAttribute('data-p'+attr), ext = u.split('.').pop().toLowerCase();
+        el.removeAttribute('data-p'+attr);
         window.JCPrivate.blobUrl(u + '.enc', TYPES[ext] || 'application/octet-stream').then(function(b){
           el.setAttribute(attr, b);
           var v = el.closest && el.closest('video'); if (v && attr === 'src') v.load();
