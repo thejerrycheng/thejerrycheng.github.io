@@ -1,0 +1,151 @@
+{
+  "evaluation_scope": "Camera-conditioned cross-view appearance transfer. Camera fitting used annotations in all three photos. No independent metric geometry ground truth. This is NOT an end-to-end held-out novel-view benchmark.",
+  "methods": [
+    {
+      "method": "depth_point_reprojection",
+      "source": 1207,
+      "target": 1208,
+      "coverage_fraction": 0.25929066666666667,
+      "psnr_on_covered_pixels_db": 12.282881791218713,
+      "psnr_full_image_including_holes_db": 4.864272782911718,
+      "ssim_full_image": 0.1049555261672868,
+      "trained": false
+    },
+    {
+      "method": "untrained_gaussian_splats",
+      "source": 1207,
+      "target": 1208,
+      "coverage_fraction": 0.25929066666666667,
+      "psnr_on_covered_pixels_db": 12.249256208700839,
+      "psnr_full_image_including_holes_db": 4.8627658425049995,
+      "ssim_full_image": 0.10407704910011184,
+      "trained": false
+    },
+    {
+      "method": "depth_point_reprojection",
+      "source": 1207,
+      "target": 1209,
+      "coverage_fraction": 0.535152,
+      "psnr_on_covered_pixels_db": 19.855308335346326,
+      "psnr_full_image_including_holes_db": 6.695534020673591,
+      "ssim_full_image": 0.36754156364714813,
+      "trained": false
+    },
+    {
+      "method": "untrained_gaussian_splats",
+      "source": 1207,
+      "target": 1209,
+      "coverage_fraction": 0.535152,
+      "psnr_on_covered_pixels_db": 19.77266984202896,
+      "psnr_full_image_including_holes_db": 6.693377871586601,
+      "ssim_full_image": 0.3655476597405754,
+      "trained": false
+    },
+    {
+      "method": "depth_point_reprojection",
+      "source": 1208,
+      "target": 1207,
+      "coverage_fraction": 0.18133066666666667,
+      "psnr_on_covered_pixels_db": 10.471526748450703,
+      "psnr_full_image_including_holes_db": 4.495849989804884,
+      "ssim_full_image": 0.07344497431612727,
+      "trained": false
+    },
+    {
+      "method": "untrained_gaussian_splats",
+      "source": 1208,
+      "target": 1207,
+      "coverage_fraction": 0.18133066666666667,
+      "psnr_on_covered_pixels_db": 10.457813995951282,
+      "psnr_full_image_including_holes_db": 4.495221443201081,
+      "ssim_full_image": 0.07316064831358106,
+      "trained": false
+    },
+    {
+      "method": "depth_point_reprojection",
+      "source": 1208,
+      "target": 1209,
+      "coverage_fraction": 0.13353066666666666,
+      "psnr_on_covered_pixels_db": 12.33000700572466,
+      "psnr_full_image_including_holes_db": 4.22817729688006,
+      "ssim_full_image": 0.05086229574125531,
+      "trained": false
+    },
+    {
+      "method": "untrained_gaussian_splats",
+      "source": 1208,
+      "target": 1209,
+      "coverage_fraction": 0.13353066666666666,
+      "psnr_on_covered_pixels_db": 12.315758679818972,
+      "psnr_full_image_including_holes_db": 4.227875253864232,
+      "ssim_full_image": 0.05058163612708746,
+      "trained": false
+    },
+    {
+      "method": "depth_point_reprojection",
+      "source": 1209,
+      "target": 1207,
+      "coverage_fraction": 0.5281173333333333,
+      "psnr_on_covered_pixels_db": 18.78157826838637,
+      "psnr_full_image_including_holes_db": 6.789101135116978,
+      "ssim_full_image": 0.36175840099282514,
+      "trained": false
+    },
+    {
+      "method": "untrained_gaussian_splats",
+      "source": 1209,
+      "target": 1207,
+      "coverage_fraction": 0.5281173333333333,
+      "psnr_on_covered_pixels_db": 18.72799081994686,
+      "psnr_full_image_including_holes_db": 6.78730146666765,
+      "ssim_full_image": 0.3599712822470644,
+      "trained": false
+    },
+    {
+      "method": "depth_point_reprojection",
+      "source": 1209,
+      "target": 1208,
+      "coverage_fraction": 0.178196,
+      "psnr_on_covered_pixels_db": 11.106377487633605,
+      "psnr_full_image_including_holes_db": 4.463597994038288,
+      "ssim_full_image": 0.06496582817973323,
+      "trained": false
+    },
+    {
+      "method": "untrained_gaussian_splats",
+      "source": 1209,
+      "target": 1208,
+      "coverage_fraction": 0.178196,
+      "psnr_on_covered_pixels_db": 11.084244719856947,
+      "psnr_full_image_including_holes_db": 4.462745915965417,
+      "ssim_full_image": 0.06402562945457708,
+      "trained": false
+    }
+  ],
+  "stereo": {
+    "method": "OpenCV StereoSGBM",
+    "pair": [
+      1207,
+      1209
+    ],
+    "valid_disparity_fraction": 0.3869186666666667,
+    "status": "diagnostic only; no ground-truth depth; weak baseline and textureless table limit reliability"
+  },
+  "unavailable": [
+    {
+      "method": "gsplat trained 3D Gaussian Splatting",
+      "status": "not run",
+      "reason": "GitHub DNS/download blocked; package unavailable; CUDA inaccessible"
+    },
+    {
+      "method": "VGGT / MASt3R",
+      "status": "not run",
+      "reason": "Weights and source not installed; network downloads blocked"
+    },
+    {
+      "method": "visual inertial SLAM",
+      "status": "not applicable to this input",
+      "reason": "Only three stills; no temporal image sequence or synchronized IMU"
+    }
+  ]
+}
