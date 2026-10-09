@@ -1,0 +1,116 @@
+[
+  {
+    "object": "chair_left",
+    "alignment": "24 proper axis initializations; 35 trimmed similarity ICP iterations against partial scan; largest component + 8 Taubin iterations",
+    "observed_to_generated_clipped_rms_m": 0.05268590508570331,
+    "scale": 1.7850723902638166,
+    "rotation": [
+      [
+        0.33761291291822315,
+        0.9396888187952049,
+        -0.05479456964101661
+      ],
+      [
+        -0.657055583404475,
+        0.2769515489551327,
+        0.701124667836155
+      ],
+      [
+        0.6740144518835459,
+        -0.20070566350411065,
+        0.710930204232102
+      ]
+    ],
+    "translation": [
+      -1.5688941389769324,
+      1.1439840102735999,
+      0.23168127800412205
+    ],
+    "components_before": 2,
+    "components_after": 1,
+    "watertight": true,
+    "views": [
+      {
+        "frame": 1,
+        "partial_scan_silhouette_iou": 0.8624678663239075,
+        "generated_silhouette_iou": 0.2730290456431535
+      },
+      {
+        "frame": 7,
+        "partial_scan_silhouette_iou": 0.8712503318290417,
+        "generated_silhouette_iou": 0.5586376404494382
+      },
+      {
+        "frame": 13,
+        "partial_scan_silhouette_iou": 0.9166666666666666,
+        "generated_silhouette_iou": 0.6537429167909334
+      },
+      {
+        "frame": 19,
+        "partial_scan_silhouette_iou": 0.9004237288135594,
+        "generated_silhouette_iou": 0.6547949965253649
+      }
+    ],
+    "mean_scan_iou": 0.8877021484082938,
+    "mean_generated_iou": 0.5350511498522225,
+    "selected": false,
+    "limitations": "Pseudo-reference SAM masks; standalone silhouettes include occluded geometry. Alignment used shared reconstructed geometry from all views. Not a held-out geometry test. No real scale validation."
+  },
+  {
+    "object": "backpack",
+    "alignment": "24 proper axis initializations; 35 trimmed similarity ICP iterations against partial scan; largest component + 8 Taubin iterations",
+    "observed_to_generated_clipped_rms_m": 0.017007599636899788,
+    "scale": 0.8670206166114028,
+    "rotation": [
+      [
+        -0.07801667451244094,
+        0.969720443377667,
+        -0.23142095884651342
+      ],
+      [
+        -0.015922160958022867,
+        -0.2333108253796772,
+        -0.972271846528058
+      ],
+      [
+        -0.996824901017448,
+        -0.07216869443237535,
+        0.03364217970761989
+      ]
+    ],
+    "translation": [
+      -0.6984836435076789,
+      0.008049016310141086,
+      0.022360136834135957
+    ],
+    "components_before": 2,
+    "components_after": 1,
+    "watertight": true,
+    "views": [
+      {
+        "frame": 1,
+        "partial_scan_silhouette_iou": 0.8945509586276489,
+        "generated_silhouette_iou": 0.5529079793071014
+      },
+      {
+        "frame": 7,
+        "partial_scan_silhouette_iou": 0.30871526953217765,
+        "generated_silhouette_iou": 0.21675531914893617
+      },
+      {
+        "frame": 13,
+        "partial_scan_silhouette_iou": 0.6550019018638266,
+        "generated_silhouette_iou": 0.3229361225252148
+      },
+      {
+        "frame": 19,
+        "partial_scan_silhouette_iou": 0.8464178464178465,
+        "generated_silhouette_iou": 0.4319539721177252
+      }
+    ],
+    "mean_scan_iou": 0.6761714941103749,
+    "mean_generated_iou": 0.3811383482747444,
+    "selected": false,
+    "limitations": "Pseudo-reference SAM masks; standalone silhouettes include occluded geometry. Alignment used shared reconstructed geometry from all views. Not a held-out geometry test. No real scale validation."
+  }
+]

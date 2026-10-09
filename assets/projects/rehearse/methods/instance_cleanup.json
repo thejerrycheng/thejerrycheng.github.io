@@ -1,0 +1,56 @@
+{
+  "baseline_faces": 179999,
+  "method": "31-view depth-visible SAM 2 ownership, spatial exclusion of object remnants, component filtering, six Taubin smoothing iterations",
+  "objects": {
+    "table": {
+      "before_faces": 2937,
+      "after_faces": 2925,
+      "removed_small_component_faces": 12,
+      "retained_components": 1,
+      "watertight_visual": false,
+      "completion": "none; hidden surfaces still need generative completion or better capture"
+    },
+    "chair_left": {
+      "before_faces": 3434,
+      "after_faces": 3401,
+      "removed_small_component_faces": 33,
+      "retained_components": 5,
+      "watertight_visual": false,
+      "completion": "none; hidden surfaces still need generative completion or better capture"
+    },
+    "chair_right": {
+      "before_faces": 3974,
+      "after_faces": 3940,
+      "removed_small_component_faces": 34,
+      "retained_components": 3,
+      "watertight_visual": false,
+      "completion": "none; hidden surfaces still need generative completion or better capture"
+    },
+    "backpack": {
+      "before_faces": 1340,
+      "after_faces": 1273,
+      "removed_small_component_faces": 67,
+      "retained_components": 3,
+      "watertight_visual": false,
+      "completion": "none; hidden surfaces still need generative completion or better capture"
+    },
+    "laptop": {
+      "before_faces": 458,
+      "after_faces": 458,
+      "removed_small_component_faces": 0,
+      "retained_components": 2,
+      "watertight_visual": false,
+      "completion": "none; hidden surfaces still need generative completion or better capture"
+    },
+    "cup": {
+      "before_faces": 136,
+      "after_faces": 136,
+      "removed_small_component_faces": 0,
+      "retained_components": 1,
+      "watertight_visual": false,
+      "completion": "none; hidden surfaces still need generative completion or better capture"
+    }
+  },
+  "fixed_object_remnant_faces_removed": 4523,
+  "output_faces": 175315
+}

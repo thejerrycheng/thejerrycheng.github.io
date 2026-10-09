@@ -1,16 +1,50 @@
 {
   "javascript_errors": [],
   "failed_http_assets": [],
-  "scene2_objects": 6,
-  "video_seek_seconds": 6.25,
-  "cup_group_count": 1,
+  "seek_checks": [
+    {
+      "time": 0.1,
+      "frame": 3,
+      "mediaTime": 0.1
+    },
+    {
+      "time": 1.03,
+      "frame": 30,
+      "mediaTime": 1.03
+    },
+    {
+      "time": 4.37,
+      "frame": 131,
+      "mediaTime": 4.366667
+    },
+    {
+      "time": 6.25,
+      "frame": 187,
+      "mediaTime": 6.233333
+    },
+    {
+      "time": 10.71,
+      "frame": 321,
+      "mediaTime": 10.7
+    },
+    {
+      "time": 13.23,
+      "frame": 396,
+      "mediaTime": 13.23
+    },
+    {
+      "time": 15.63,
+      "frame": 468,
+      "mediaTime": 15.6
+    }
+  ],
+  "playback_frames_checked": 60,
+  "maximum_overlay_media_time_error_s": 0.0,
+  "model_frames": 471,
   "checked": [
-    "desktop and mobile layout",
-    "video seek and camera synchronization",
-    "SAM 2 overlay",
-    "cup move and reset",
-    "laptop hinge input and reset",
-    "point map and photo surface toggle",
-    "scene1 recorded camera and grouped cup lift"
-  ]
+    "decoded-frame PTS overlay alignment during playback and seeks",
+    "recorded camera and map views",
+    "desktop/mobile layout"
+  ],
+  "note": "Timing validation does not establish mask accuracy."
 }

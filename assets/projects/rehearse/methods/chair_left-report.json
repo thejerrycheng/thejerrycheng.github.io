@@ -1,0 +1,26 @@
+{
+  "method": "TripoSR CPU object completion",
+  "object": "chair_left",
+  "input": "frame_0013 + SAM mask, centered crop with 0.85 foreground ratio and gray background",
+  "seconds_excluding_model_load": 20.701879024505615,
+  "resolution": 192,
+  "mesh_extraction": "skimage marching cubes, density threshold 25; differs from upstream torchmcubes implementation",
+  "vertices": 16330,
+  "faces": 32652,
+  "watertight": true,
+  "components": 2,
+  "bounds": [
+    [
+      -0.1759818196296692,
+      -0.3215874433517456,
+      -0.348425030708313
+    ],
+    [
+      0.24782860279083252,
+      0.33702683448791504,
+      0.3855396509170532
+    ]
+  ],
+  "training_ready": false,
+  "remaining_validation": "Canonical generated object; must fit pose/scale to multiple calibrated views and validate hidden shape/contact before adoption."
+}

@@ -1,0 +1,75 @@
+{
+  "objects": [
+    {
+      "name": "table",
+      "faces": 3072,
+      "finite": true,
+      "degenerate_faces": 0,
+      "boundary_edges": 0,
+      "nonmanifold_edges": 0,
+      "watertight": true,
+      "components": 1
+    },
+    {
+      "name": "cup",
+      "faces": 1152,
+      "finite": true,
+      "degenerate_faces": 0,
+      "boundary_edges": 0,
+      "nonmanifold_edges": 0,
+      "watertight": true,
+      "components": 1
+    },
+    {
+      "name": "laptop",
+      "faces": 3072,
+      "finite": true,
+      "degenerate_faces": 0,
+      "boundary_edges": 0,
+      "nonmanifold_edges": 0,
+      "watertight": true,
+      "components": 1
+    },
+    {
+      "name": "laptop_lid",
+      "faces": 3072,
+      "finite": true,
+      "degenerate_faces": 0,
+      "boundary_edges": 0,
+      "nonmanifold_edges": 0,
+      "watertight": true,
+      "components": 1
+    },
+    {
+      "name": "chair_left",
+      "faces": 3401,
+      "finite": true,
+      "degenerate_faces": 0,
+      "boundary_edges": 438,
+      "nonmanifold_edges": 1,
+      "watertight": false,
+      "components": 5
+    },
+    {
+      "name": "chair_right",
+      "faces": 3940,
+      "finite": true,
+      "degenerate_faces": 0,
+      "boundary_edges": 398,
+      "nonmanifold_edges": 1,
+      "watertight": false,
+      "components": 4
+    },
+    {
+      "name": "backpack",
+      "faces": 1273,
+      "finite": true,
+      "degenerate_faces": 0,
+      "boundary_edges": 225,
+      "nonmanifold_edges": 0,
+      "watertight": false,
+      "components": 3
+    }
+  ],
+  "interpretation": "UV seams are welded for topology analysis. Watertightness alone does not establish physical shape accuracy. Partial chair/backpack visuals remain excluded from a training-ready claim."
+}

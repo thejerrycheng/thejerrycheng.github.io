@@ -1,0 +1,45 @@
+{
+  "protocol": "MuJoCo 3.5, 5 s closing torque of 3 Nm, table and base fixed to isolate hinge response. Contacts are compliant; bounded numerical penetration is reported. Not a real-world calibration.",
+  "cases": [
+    {
+      "case": "keyboard closure",
+      "max_angle_rad": 2.085606310580367,
+      "final_angle_rad": 2.0801476220870425,
+      "max_lid_penetration_m": 0.0014465246078310665,
+      "contacted": [
+        "laptop_base_collision"
+      ],
+      "finite": true,
+      "warnings": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "case": "raised table",
+      "max_angle_rad": 1.222457380284829,
+      "final_angle_rad": 1.2143383119891165,
+      "max_lid_penetration_m": 0.0008015394633366976,
+      "contacted": [
+        "table_collision_geom"
+      ],
+      "finite": true,
+      "warnings": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

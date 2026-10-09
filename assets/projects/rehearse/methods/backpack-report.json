@@ -1,0 +1,26 @@
+{
+  "method": "TripoSR CPU object completion",
+  "object": "backpack",
+  "input": "frame_0013 + SAM mask, centered crop with 0.85 foreground ratio and gray background",
+  "seconds_excluding_model_load": 22.274166107177734,
+  "resolution": 192,
+  "mesh_extraction": "skimage marching cubes, density threshold 25; differs from upstream torchmcubes implementation",
+  "vertices": 25621,
+  "faces": 51234,
+  "watertight": true,
+  "components": 2,
+  "bounds": [
+    [
+      -0.09138590097427368,
+      -0.5414578914642334,
+      -0.4313923716545105
+    ],
+    [
+      0.16820800304412842,
+      0.5230746269226074,
+      0.42106080055236816
+    ]
+  ],
+  "training_ready": false,
+  "remaining_validation": "Canonical generated object; must fit pose/scale to multiple calibrated views and validate hidden shape/contact before adoption."
+}
