@@ -1,0 +1,25 @@
+{
+  "method": "Apple SHARP, independently predicted from one image per case; SPZ quantization + Spark browser rendering",
+  "evaluation": "Input image resized with Lanczos to browser render resolution; RGB PSNR/SSIM without image alignment or exposure correction. Not independent novel-view or geometry accuracy. Different resolutions and inputs from the mesh benchmark prevent a matched-budget method comparison.",
+  "results": [
+    {
+      "case": "scene1",
+      "render_width": 487,
+      "render_height": 650,
+      "psnr_db": 34.69655330796672,
+      "ssim_rgb": 0.9743179588308107
+    },
+    {
+      "case": "scene2",
+      "render_width": 536,
+      "render_height": 402,
+      "psnr_db": 29.913710146556134,
+      "ssim_rgb": 0.9270592272339292
+    }
+  ],
+  "limitations": [
+    "Cup segmentation exposes missing background and residual boundary splats when moved.",
+    "Appearance preview has no collision simulation.",
+    "No multi-view Gaussian training or online updating was performed."
+  ]
+}
