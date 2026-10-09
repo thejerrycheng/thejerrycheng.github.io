@@ -1,0 +1,45 @@
+{
+  "protocol": "Input-view fit: render vs resized source from recovered camera. These are training/input images, not held-out novel views. Generated fill counts as rendered content. No alignment or exposure correction is applied.",
+  "cases": {
+    "test_scene_1": [
+      {
+        "capture": "1207",
+        "psnr_db": 19.061312581857976,
+        "ssim_rgb": 0.8075531997321064,
+        "mean_absolute_rgb_error_0_255": 12.765530222222216
+      },
+      {
+        "capture": "1208",
+        "psnr_db": 19.440531420773667,
+        "ssim_rgb": 0.8351497168896203,
+        "mean_absolute_rgb_error_0_255": 12.322439111111118
+      },
+      {
+        "capture": "1209",
+        "psnr_db": 18.531933224319857,
+        "ssim_rgb": 0.7720417380737509,
+        "mean_absolute_rgb_error_0_255": 14.973005777777761
+      }
+    ],
+    "test_scene_2": [
+      {
+        "capture": "0",
+        "psnr_db": 13.069231446484945,
+        "ssim_rgb": 0.506861275995598,
+        "mean_absolute_rgb_error_0_255": 36.24765239197531
+      },
+      {
+        "capture": "12",
+        "psnr_db": 14.87316644091431,
+        "ssim_rgb": 0.6283761471978957,
+        "mean_absolute_rgb_error_0_255": 25.958783757716056
+      },
+      {
+        "capture": "24",
+        "psnr_db": 15.204663932851636,
+        "ssim_rgb": 0.5086260019436232,
+        "mean_absolute_rgb_error_0_255": 28.374680266203693
+      }
+    ]
+  }
+}
