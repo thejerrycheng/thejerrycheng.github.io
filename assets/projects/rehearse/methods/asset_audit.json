@@ -42,34 +42,34 @@
     },
     {
       "name": "chair_left",
-      "faces": 3401,
+      "faces": 30000,
       "finite": true,
       "degenerate_faces": 0,
-      "boundary_edges": 438,
-      "nonmanifold_edges": 1,
-      "watertight": false,
-      "components": 5
-    },
-    {
-      "name": "chair_right",
-      "faces": 3940,
-      "finite": true,
-      "degenerate_faces": 0,
-      "boundary_edges": 398,
-      "nonmanifold_edges": 1,
-      "watertight": false,
+      "boundary_edges": 0,
+      "nonmanifold_edges": 0,
+      "watertight": true,
       "components": 4
     },
     {
-      "name": "backpack",
-      "faces": 1273,
+      "name": "chair_right",
+      "faces": 30000,
       "finite": true,
       "degenerate_faces": 0,
-      "boundary_edges": 225,
+      "boundary_edges": 0,
       "nonmanifold_edges": 0,
-      "watertight": false,
+      "watertight": true,
       "components": 3
+    },
+    {
+      "name": "backpack",
+      "faces": 24000,
+      "finite": true,
+      "degenerate_faces": 0,
+      "boundary_edges": 0,
+      "nonmanifold_edges": 0,
+      "watertight": true,
+      "components": 1
     }
   ],
-  "interpretation": "UV seams are welded for topology analysis. Watertightness alone does not establish physical shape accuracy. Partial chair/backpack visuals remain excluded from a training-ready claim."
+  "interpretation": "UV seams are welded for topology analysis. Watertightness alone does not establish physical shape accuracy. Completed chair/backpack geometry uses inferred hidden surfaces; see completed_asset_validation.json for the separate self-intersection and contact-surface tests."
 }

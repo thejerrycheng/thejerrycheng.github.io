@@ -1,0 +1,43 @@
+{
+  "objects": [
+    {
+      "object": "chair_left",
+      "visual_faces": 30000,
+      "closed_parts": 4,
+      "vertex_manifold": true,
+      "edge_manifold": true,
+      "watertight": true,
+      "self_intersection_pairs": 0,
+      "convex_contact_parts": 26,
+      "sampled_visual_to_contact_surface_median_m": 0.00832606852054596,
+      "sampled_visual_to_contact_surface_p95_m": 0.029473911318927994
+    },
+    {
+      "object": "chair_right",
+      "visual_faces": 30000,
+      "closed_parts": 3,
+      "vertex_manifold": true,
+      "edge_manifold": true,
+      "watertight": true,
+      "self_intersection_pairs": 0,
+      "convex_contact_parts": 14,
+      "sampled_visual_to_contact_surface_median_m": 0.012386687099933624,
+      "sampled_visual_to_contact_surface_p95_m": 0.04118503183126449
+    },
+    {
+      "object": "backpack",
+      "visual_faces": 24000,
+      "closed_parts": 1,
+      "vertex_manifold": true,
+      "edge_manifold": true,
+      "watertight": true,
+      "self_intersection_pairs": 0,
+      "convex_contact_parts": 12,
+      "sampled_visual_to_contact_surface_median_m": 0.0015358581440523267,
+      "sampled_visual_to_contact_surface_p95_m": 0.012435487238690254
+    }
+  ],
+  "distance_protocol": "2,000 deterministic visual-surface samples to nearest convex-piece surface. Includes internal piece boundaries; one-sided comparison, not union Hausdorff distance or ground-truth physical accuracy.",
+  "hidden_surface_status": "Inferred closure; real contact shape, rigid-material assumptions and mass/friction are unverified.",
+  "contact_status": "These are the initial coarse CoACD contacts. Current selected collision fitting is reported in contact_comparison.json; the visual geometry audited here is unchanged."
+}

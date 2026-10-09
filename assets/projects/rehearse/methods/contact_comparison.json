@@ -1,0 +1,112 @@
+{
+  "objects": [
+    {
+      "object": "chair_left",
+      "visual_sha256": "c82223f5853ac916769b5f4af01f5a0acc0aaee2c7ce598c738a7aa711e67ed2",
+      "trials": [
+        {
+          "directory": "contact_candidates",
+          "hulls": 26,
+          "median_m": 0.008326081583256852,
+          "p95_m": 0.029473899880876012,
+          "contact_to_visual_p95_m": 0.05248246788930001,
+          "all_closed_convex": true
+        },
+        {
+          "directory": "contact_fine",
+          "hulls": 51,
+          "median_m": 0.00533812655763609,
+          "p95_m": 0.020023873980397535,
+          "contact_to_visual_p95_m": 0.03985218428985861,
+          "all_closed_convex": true
+        },
+        {
+          "directory": "contact_spatial",
+          "hulls": 586,
+          "median_m": 0.000748681289038494,
+          "p95_m": 0.006107181451798971,
+          "contact_to_visual_p95_m": 0.0070609675924901165,
+          "all_closed_convex": true
+        }
+      ],
+      "selected": {
+        "directory": "contact_spatial",
+        "hulls": 586,
+        "median_m": 0.000748681289038494,
+        "p95_m": 0.006107181451798971,
+        "contact_to_visual_p95_m": 0.0070609675924901165,
+        "all_closed_convex": true
+      }
+    },
+    {
+      "object": "chair_right",
+      "visual_sha256": "f7c5f469087cc701c66ad25c83bb3a06557d1f0ec5ebd7493a85faf00b33b57e",
+      "trials": [
+        {
+          "directory": "contact_candidates",
+          "hulls": 14,
+          "median_m": 0.012386684715286348,
+          "p95_m": 0.04118503749950315,
+          "contact_to_visual_p95_m": 0.060041605596148115,
+          "all_closed_convex": true
+        },
+        {
+          "directory": "contact_fine",
+          "hulls": 29,
+          "median_m": 0.006033673091571383,
+          "p95_m": 0.019728186621971167,
+          "contact_to_visual_p95_m": 0.0344113043340538,
+          "all_closed_convex": true
+        },
+        {
+          "directory": "contact_spatial",
+          "hulls": 504,
+          "median_m": 0.0008381423393298856,
+          "p95_m": 0.0052489675369260785,
+          "contact_to_visual_p95_m": 0.006802908290709504,
+          "all_closed_convex": true
+        }
+      ],
+      "selected": {
+        "directory": "contact_spatial",
+        "hulls": 504,
+        "median_m": 0.0008381423393298856,
+        "p95_m": 0.0052489675369260785,
+        "contact_to_visual_p95_m": 0.006802908290709504,
+        "all_closed_convex": true
+      }
+    },
+    {
+      "object": "backpack",
+      "visual_sha256": "b0997469b19a6624f1fd02f70ed6c9ee50a85ec749bbbfa5787675f5df9eb9b4",
+      "trials": [
+        {
+          "directory": "contact_candidates",
+          "hulls": 12,
+          "median_m": 0.001535867430137621,
+          "p95_m": 0.012435476957337804,
+          "contact_to_visual_p95_m": 0.05503759351027848,
+          "all_closed_convex": true
+        },
+        {
+          "directory": "contact_spatial",
+          "hulls": 901,
+          "median_m": 0.00025968536743787,
+          "p95_m": 0.001507692582432688,
+          "contact_to_visual_p95_m": 0.0044684476504033505,
+          "all_closed_convex": true
+        }
+      ],
+      "selected": {
+        "directory": "contact_spatial",
+        "hulls": 901,
+        "median_m": 0.00025968536743787,
+        "p95_m": 0.001507692582432688,
+        "contact_to_visual_p95_m": 0.0044684476504033505,
+        "all_closed_convex": true
+      }
+    }
+  ],
+  "protocol": "2,000 deterministic samples in each direction between completed visual and convex-piece surfaces, using trimesh closest_point. Internal piece surfaces are included. Sampled surface-set distances, not union Hausdorff distance or measured real-object accuracy.",
+  "limits": "Hidden shape, supports, mass and friction are inferred. CoACD hull caps prevented requested concavity from being achieved. Spatial patches may bridge local concavities; require dynamics validation."
+}

@@ -1,0 +1,38 @@
+{
+  "status": "not selected",
+  "reason": "Planar-room regularization slightly improved two source views but reduced the third; reflective/glass structure remains unresolved. Final scene retains the prior static geometry with the extended inferred floor.",
+  "trial": {
+    "planes": [
+      {
+        "plane": [
+          0.9997217734755304,
+          -0.010684392493812905,
+          -0.021029013195552115,
+          -0.897525567313961
+        ],
+        "replaced_faces": 25246,
+        "output_faces": 23576,
+        "grid_m": 0.02,
+        "observed_cells": 10056,
+        "completed_cells": 11788,
+        "inferred_extra_cells": 1732
+      },
+      {
+        "plane": [
+          0.9999160000303696,
+          0.008204974733974546,
+          0.010033507506376755,
+          -0.5802472661205709
+        ],
+        "replaced_faces": 11707,
+        "output_faces": 10572,
+        "grid_m": 0.02,
+        "observed_cells": 4766,
+        "completed_cells": 5286,
+        "inferred_extra_cells": 520
+      }
+    ],
+    "method": "Two RANSAC-supported vertical planes; 2 cm raster union, 5-cell closing and hole filling",
+    "limitation": "Inferred planar closure, including reflective surfaces. Not a verified collision boundary or measured hidden structure."
+  }
+}
