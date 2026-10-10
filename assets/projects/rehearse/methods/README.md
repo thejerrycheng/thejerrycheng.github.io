@@ -1,5 +1,64 @@
 # Rehearse video to simulation harness
 
+## SimFoundry rebuild — prepared, GPU execution pending
+
+The requested replacement now follows [NVIDIA SimFoundry](https://research.nvidia.com/labs/gear/simfoundry/) and its [released implementation](https://github.com/NVlabs/SimFoundry), pinned to `9e34ebefcd020583fbb755a8b57268dce78eca26`. The live reconstructed meshes and SHARP predictions below are **earlier baselines**, not results from this rebuild. No new SimFoundry Gaussian, object mesh or MuJoCo scene has been generated yet.
+
+`harness/simfoundry/scene2.json` configures the room capture. `pipeline.py` provides separate `prepare`, `foreground`, `background` and `preflight` commands; it prints a command plan unless `--execute` is supplied. The background phase invokes upstream stages directly with explicit output paths instead of its hard-coded `Data/` shell wrapper. All reconstruction products stay under `scenes/test_scene_2/simfoundry/room`. Dependencies remain in `third_party/SimFoundry`.
+
+The implementation uses generated complete textured object meshes as separately simulated bodies and a **trained multi-view Gaussian background**. Following the automatic-background recipe: remove foreground with tracked masks and two-pass VOID; estimate original-camera poses and cleaned-frame depths with DA3; align the cleaned depth to the original camera world; seed at most 200,000 points; train `splatfacto-big` for 80,000 iterations with SO3xR3 camera optimization and confidence-masked L1 depth loss (weight 0.5). Background Gaussians supply appearance, not collision geometry. Moving the cup must reveal an inpainted background rather than a second baked-in cup.
+
+The local preparation completed in **100.37 seconds** (upstream stage timer). The original has 471 frames over 15.7 seconds. The audited 400-frame selection includes both endpoints and covers the entire capture. Frames decode directly from the original, then resize to aspect-preserving 512 × 384. The 12 fps processing video lasts 33.33 seconds: this is a model input clock, **not** the capture clock or inference throughput. `capture_manifest.json` maps every processing row to the original frame/PTS and records hashes. All nine capture checks passed, including direct-source correspondence and byte-exact resizing from the original decoded PNGs. Seventy-one unsampled source frames are reserved for RGB view auditing. They are from the same capture, not independent measured geometry.
+
+The initial 512 × 384 size preserves the upstream 384-pixel image height while retaining this capture's 4:3 aspect ratio. It is a memory-conscious first run, not a demonstrated optimum. Evaluate higher-resolution inpainting and Gaussian training after recording GPU memory/timing and reference-view error. Keep high-resolution originals locally for object crops and final appearance comparison.
+
+### Reproduce on a Linux CUDA machine
+
+Install the pinned upstream checkout and its documented environments/checkpoints, including the optional articulation environments and the supplied Nerfstudio depth-loss patch. The full upstream installation is approximately 250 GB. Its 24 GB GPU recipe requires low-memory object generation; the actual room run has not been profiled. Hugging Face gated model access (including SAM3 and VOID) and authenticated Gemini/Vertex services are also required. Authenticate on the worker; do not put tokens in configs or logs.
+
+```sh
+git clone https://github.com/NVlabs/SimFoundry third_party/SimFoundry
+git -C third_party/SimFoundry checkout 9e34ebefcd020583fbb755a8b57268dce78eca26
+git -C third_party/SimFoundry apply ../../harness/simfoundry/patches/capture-and-paths.patch
+# Follow upstream docs/INSTALL.md and the auto-background README for GPU setup.
+python harness/simfoundry/pipeline.py preflight
+python harness/simfoundry/pipeline.py prepare --video capture.mov --execute
+python harness/simfoundry/audit_capture.py --video capture.mov --scene scenes/test_scene_2/simfoundry/room
+python harness/simfoundry/pipeline.py foreground --video capture.mov --execute
+python harness/simfoundry/pipeline.py background --video capture.mov --execute
+python harness/simfoundry/export_cameras.py --scene scenes/test_scene_2/simfoundry/room --out scenes/test_scene_2/simfoundry/room/web/cameras.json
+```
+
+Use the lightweight preparation Python with NumPy/Pillow/OpenCV/Hydra/OmegaConf installed. GPU phases switch to upstream mamba environments. Preparation is already available locally; transferring the audited prepared scene can avoid repeating it. No cloud instance has been provisioned or capture uploaded. `preflight` currently fails because this execution environment has neither Linux/CUDA nor the required mamba environments/service configuration. A GPU host and service/model access are required to continue actual reconstruction.
+
+### Local fixes and validation
+
+`capture-and-paths.patch` records changes against the pinned upstream code:
+
+- `1b_process_raw_video.py`: uniform endpoint-preserving sampling fixes truncation of 471 frames to the first 400; explicit 12 fps concat input prevents duplicated processing frames; direct original-frame decoding avoids an additional lossy encode. Standardized preview excludes audio and metadata.
+- `stage_utils.py`: JSON bookkeeping no longer imports Open3D/Torch. The original dependency chain crashed before CPU video preparation with an OpenMP shared-memory error.
+- `6_bridge_bg_splat_to_og.py`: camera/world alignment honors `root_dir` instead of silently looking under the checkout's `Data/` directory.
+
+Run `python harness/simfoundry/test_pipeline.py`: three regression tests cover endpoint sampling, every configured override against upstream schemas, and scaled-world/OpenCV/OpenGL camera conventions. The foreground runner dry run resolves its stages locally. Its warning that articulation is "not available in this release" actually means optional dependencies are missing here; the stage script exists. Our execution preflight blocks that silent skip. Neither dry runs nor these tests establish successful model inference.
+
+`export_cameras.py` requires a real trained PLY, the real pose sidecar and matching DA3 rows. It applies the simulator transform once, exports source timestamps and both camera conventions, and leaves Gaussian SH/covariances in their original frame. It currently exports **original DA3 cameras**, not the final optimized splatfacto cameras; final source-view evaluation must extract the trained camera adjustments too.
+
+### Room adaptation and acceptance gates
+
+The paper's tabletop recipe assumes one flat support and closed articulated objects. This capture includes floor-supported chairs, table and backpack, table-supported cup/laptop, and an open laptop. The recipe selects the floor as the scene plane, expands the object-height search and settles all objects together. The support graph in `scene2.json` is a hypothesis to validate, not a constraint already enforced by upstream. Verify all six objects were recovered despite cropping/occlusion in the chosen anchor. Check the laptop's generated base/lid separation, hinge location/direction/limits and collisions explicitly.
+
+Before replacing the website scene or training policies:
+
+1. Compare the prior baseline, full SimFoundry recipe, no-camera-optimization ablation, and no-depth-loss ablation with fixed seeds, selected frames, compute budgets and evaluation cameras. Record actual GPU memory and each stage's wall time. These GPU experiments are pending.
+2. Render identical source cameras and reserved frames. Report PSNR/SSIM/LPIPS and side-by-side crops for observed pixels. Score inferred/previously occluded regions separately. Do not evaluate fit against generated frames as though they were real observations.
+3. Move each entire object and sweep the laptop hinge. Reject fragments left behind, duplicated object images in the background, holes, part detachment or discontinuities at inpainting chunk boundaries. Review original and cleaned masks at every processing frame. This 400-frame reconstruction selection does not replace the existing 471-frame SAM tracking audit.
+4. Verify component ownership, watertight contact geometry, penetration and support stability. Use one fixed floor and separate object roots; the Gaussian background has no contacts. URDF-to-MuJoCo export with texture preservation, local hinge transforms, limits, inertia and contact geometry is **still pending generated assets**. Do not substitute old mesh assets and call them new SimFoundry output.
+5. Resolve metric scale with a measured object dimension before physical training. Recheck contact torque, lifting and settling in MuJoCo, and render through the Gaussian/mesh compositor for visual-policy observations. Standard MuJoCo rasterization alone does not render Gaussians.
+
+The three-image first scene needs its own sparse-view evaluation; it is not equivalent to the paper's video recipe and has not been rebuilt by this adapter. Generative completion proposes hidden surfaces and cannot guarantee the exact unseen room. Promotion requires review of the actual outputs, not installation success.
+
+## Earlier reconstruction baseline
+
 This harness records and reruns the reconstruction experiments for the egocentric room capture. It separates camera calibration, per-frame object tracking, visual reconstruction, object completion, collision geometry, and validation. The current scenes remain research prototypes. A successful export or attractive source-view render does not establish accurate contact geometry or successful robot transfer.
 
 ## Inputs and conventions

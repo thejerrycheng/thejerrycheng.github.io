@@ -1,0 +1,20 @@
+{
+  "method": "NVIDIA SimFoundry automatic background and object reconstruction",
+  "revision": "9e34ebefcd020583fbb755a8b57268dce78eca26",
+  "status": "capture_prepared_waiting_for_cuda_worker",
+  "capture_audit_passed": true,
+  "preparation_wall_seconds": 100.37,
+  "regression_tests_passed": 3,
+  "gaussian_training_executed": false,
+  "new_object_assets_generated": false,
+  "new_mujoco_export_validated": false,
+  "website_scene": "previous reconstruction baseline",
+  "pending": [
+    "Linux CUDA worker and model/service access",
+    "foreground and articulation inference",
+    "two-pass VOID and DA3",
+    "80,000-step depth-supervised Gaussian training",
+    "held-out view and object-removal evaluation",
+    "textured MuJoCo export and contact validation"
+  ]
+}
