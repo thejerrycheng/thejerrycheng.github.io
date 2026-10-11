@@ -1,0 +1,235 @@
+{
+ "what": "Held-out silhouette IoU per object per method. 'iou' = computed here for every method on the same held-out frames (every 8th, eval_final frame list, mask label errors excluded), union-of-triangles silhouette vs SAM2 mask, other instances don't-care, no inter-object occlusion. 'reported' = numbers from earlier pipeline reports, cited by file.",
+ "script": "compare_methods.py",
+ "objects": {
+  "laptop": {
+   "frames": 25,
+   "shown_frames": [
+    "f0056.jpg",
+    "f0377.jpg"
+   ],
+   "methods": {
+    "NeuralFeels-style SDF": {
+     "iou": 0.9748,
+     "reported": {
+      "iou": 0.9783,
+      "surface_err_mm_median": 4.7,
+      "source": "gs_sim/objects_score_splat.json"
+     }
+    },
+    "TSDF fusion": {
+     "iou": 0.8901,
+     "reported": {
+      "iou": 0.9221,
+      "surface_err_mm_median": 4.5,
+      "source": "gs_sim/objects_score_splat.json"
+     }
+    },
+    "AgentSTAR": {
+     "iou": 0.9765,
+     "note": "raw AgentSTAR part model (mesh/object.glb) at the reference-frame pose + captured lid opening"
+    },
+    "Simulator (final)": {
+     "iou": 0.9789,
+     "reported": {
+      "iou": 0.961,
+      "source": "gs_sim/sim/eval_final.json (MuJoCo segmentation, depth-ordered occlusion)"
+     }
+    }
+   },
+   "sim_uses": "AgentSTAR part model (dimensions, pose, hinge) as boxes in the sim",
+   "reason": "best IoU with an articulated, watertight, clean shape; SDF/TSDF are a single fused blob with no hinge"
+  },
+  "cup": {
+   "frames": 29,
+   "shown_frames": [
+    "f0440.jpg",
+    "f0072.jpg"
+   ],
+   "methods": {
+    "NeuralFeels-style SDF": {
+     "iou": 0.9431,
+     "reported": {
+      "iou": 0.9632,
+      "surface_err_mm_median": 6.9,
+      "source": "gs_sim/objects_score_splat.json"
+     }
+    },
+    "TSDF fusion": {
+     "iou": 0.945,
+     "reported": {
+      "iou": 0.939,
+      "surface_err_mm_median": 2.9,
+      "source": "gs_sim/objects_score_splat.json"
+     }
+    },
+    "Simulator (final)": {
+     "iou": 0.9429,
+     "reported": {
+      "iou": 0.8811,
+      "source": "gs_sim/sim/eval_final.json (MuJoCo segmentation, depth-ordered occlusion)"
+     }
+    }
+   },
+   "sim_uses": "revolve fit (fit_revolve)",
+   "reason": "SDF/TSDF tie on IoU but are lumpy and open on the unseen side; a revolved profile is complete and symmetric"
+  },
+  "pedestal": {
+   "frames": 29,
+   "shown_frames": [
+    "f0232.jpg"
+   ],
+   "methods": {
+    "NeuralFeels-style SDF": {
+     "iou": 0.9347,
+     "reported": {
+      "iou": 0.9504,
+      "surface_err_mm_median": 7.7,
+      "source": "gs_sim/objects_score_splat.json"
+     }
+    },
+    "TSDF fusion": {
+     "iou": 0.9667,
+     "reported": {
+      "iou": 0.9762,
+      "surface_err_mm_median": 5.4,
+      "source": "gs_sim/objects_score_splat.json"
+     }
+    },
+    "Simulator (final)": {
+     "iou": 0.9447,
+     "reported": {
+      "iou": 0.8763,
+      "source": "gs_sim/sim/eval_final.json (MuJoCo segmentation, depth-ordered occlusion)"
+     }
+    }
+   },
+   "sim_uses": "gravity-aligned box (fit_box)",
+   "reason": "TSDF is slightly higher on IoU but is open/holed on unseen faces; the box is exact for a cuboid table"
+  },
+  "chair_0": {
+   "frames": 29,
+   "shown_frames": [
+    "f0120.jpg",
+    "f0360.jpg"
+   ],
+   "methods": {
+    "NeuralFeels-style SDF": {
+     "iou": 0.909,
+     "reported": {
+      "iou": 0.9176,
+      "surface_err_mm_median": 16.2,
+      "source": "gs_sim/objects_score_splat.json"
+     }
+    },
+    "TSDF fusion": {
+     "iou": 0.9444,
+     "reported": {
+      "iou": 0.9578,
+      "surface_err_mm_median": 8.4,
+      "source": "gs_sim/objects_score_splat.json"
+     }
+    },
+    "Hunyuan3D generated": {
+     "iou": 0.8361,
+     "reported": {
+      "iou": 0.8573,
+      "surface_err_mm_median": 54.7,
+      "source": "gs_sim/generative_registration.json (before refit)"
+     }
+    },
+    "Simulator (final)": {
+     "iou": 0.8488,
+     "reported": {
+      "iou": 0.8396,
+      "source": "gs_sim/sim/eval_final.json (MuJoCo segmentation, depth-ordered occlusion)"
+     }
+    }
+   },
+   "sim_uses": "Hunyuan3D generated, silhouette refit (fit_mesh)",
+   "reason": "SDF/TSDF score higher on outlines but have no star base and slab-filled backs; generated mesh is complete"
+  },
+  "chair_1": {
+   "frames": 20,
+   "shown_frames": [
+    "f0136.jpg"
+   ],
+   "methods": {
+    "NeuralFeels-style SDF": {
+     "iou": 0.7871,
+     "reported": {
+      "iou": 0.8215,
+      "surface_err_mm_median": 11.1,
+      "source": "gs_sim/objects_score_splat.json"
+     }
+    },
+    "TSDF fusion": {
+     "iou": 0.8194,
+     "reported": {
+      "iou": 0.7841,
+      "surface_err_mm_median": 255.4,
+      "source": "gs_sim/objects_score_splat.json"
+     }
+    },
+    "Hunyuan3D generated": {
+     "iou": 0.6587,
+     "reported": {
+      "iou": 0.6457,
+      "surface_err_mm_median": 70.5,
+      "source": "gs_sim/generative_registration.json (before refit)"
+     }
+    },
+    "Simulator (final)": {
+     "iou": 0.6803,
+     "reported": {
+      "iou": 0.6782,
+      "source": "gs_sim/sim/eval_final.json (MuJoCo segmentation, depth-ordered occlusion)"
+     }
+    }
+   },
+   "sim_uses": "Hunyuan3D generated (chair_0's model), refit",
+   "reason": "same as chair_0; generated shape is the wrong model so IoU is low"
+  },
+  "backpack": {
+   "frames": 20,
+   "shown_frames": [
+    "f0297.jpg"
+   ],
+   "methods": {
+    "NeuralFeels-style SDF": {
+     "iou": 0.7873,
+     "reported": {
+      "iou": 0.7794,
+      "surface_err_mm_median": 11.4,
+      "source": "gs_sim/objects_score_splat.json"
+     }
+    },
+    "TSDF fusion": {
+     "iou": 0.9051,
+     "reported": {
+      "iou": 0.7893,
+      "surface_err_mm_median": 6.7,
+      "source": "gs_sim/objects_score_splat.json"
+     }
+    },
+    "Hunyuan3D generated": {
+     "iou": 0.8302,
+     "reported": {
+      "iou": 0.7304,
+      "surface_err_mm_median": 45.7,
+      "source": "gs_sim/generative_registration.json (before refit)"
+     }
+    },
+    "Simulator (final)": {
+     "iou": 0.8494,
+     "reported": {
+      "iou": 0.8136,
+      "source": "gs_sim/sim/eval_final.json (MuJoCo segmentation, depth-ordered occlusion)"
+     }
+    }
+   },
+   "sim_uses": "Hunyuan3D generated, refit",
+   "reason": "TSDF scores highest on outlines but is an open, shredded shell; generated mesh is closed and clean"
+  }
+ }
+}
