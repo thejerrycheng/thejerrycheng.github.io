@@ -1,0 +1,23 @@
+{
+ "what": "MUJOCO_GL=egl python -m real2sim.s9b_link_finetune --root scenes/test_scene_2/gs_sim [--iters 4000]\nBacks up sim/assets/<link>.ply to sim/assets_pre9b/ and writes sim/link_finetune.json.",
+ "iters": 4000,
+ "train_scale": 0.5,
+ "appearance_only": false,
+ "alpha_w": 1.0,
+ "from_backup": true,
+ "obj_weight": 4.0,
+ "anchor_m": 0.01,
+ "train_views": 207,
+ "heldout_before": {
+  "psnr": 20.470392556026063,
+  "psnr_obj": 18.46196648170208,
+  "views": 29
+ },
+ "heldout_after": {
+  "psnr": 21.91372739857641,
+  "psnr_obj": 21.50839799025963,
+  "views": 29
+ },
+ "result": "applied",
+ "seconds": 152
+}

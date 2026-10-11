@@ -5,42 +5,45 @@
  "njnt": 8,
  "ncollision_geoms": 37,
  "explicit_pairs": 0,
- "penetration_t0_m": -0.0,
- "penetration_t0_geoms": null,
+ "penetration_t0_m": 3.5142908804329626e-05,
+ "penetration_t0_geoms": [
+  "pedestal_col",
+  "laptop_base_col0"
+ ],
  "settle": {
   "laptop_base": {
-   "drift_m": 4.157856336885125e-06,
-   "final_speed_mps": 2.1118245509139893e-14,
+   "drift_m": 3.274752447260986e-05,
+   "final_speed_mps": 1.5706854154164094e-14,
    "mass_kg": 2.1399999999999997,
-   "z": 0.6980336418729303
+   "z": 0.6980337002980419
   },
   "cup": {
-   "drift_m": 1.1658957412054145e-05,
-   "final_speed_mps": 0.00035472868125654256,
+   "drift_m": 1.6299155805144947e-05,
+   "final_speed_mps": 0.0010417195775121433,
    "mass_kg": 0.25,
-   "z": 0.6980253413583469
+   "z": 0.6980207020555356
   },
   "backpack": {
-   "drift_m": 0.003041151663429062,
-   "final_speed_mps": 3.95589401673671e-16,
+   "drift_m": 0.0031632304915862556,
+   "final_speed_mps": 7.508390355891661e-16,
    "mass_kg": 1.2,
-   "z": -0.0029416327990353422
+   "z": -0.0030611857375633816
   },
   "chair_0_base": {
-   "drift_m": 4.222057621523103e-06,
-   "final_speed_mps": 1.0022501755676307e-10,
+   "drift_m": 4.214134917184488e-06,
+   "final_speed_mps": 1.1665595812870787e-11,
    "mass_kg": 16.0,
-   "z": -4.222057620896567e-06
+   "z": -4.214134916507653e-06
   },
   "chair_1_base": {
-   "drift_m": 4.130983686446393e-06,
-   "final_speed_mps": 1.8533188843470556e-11,
+   "drift_m": 4.131666279540602e-06,
+   "final_speed_mps": 6.857388856702795e-13,
    "mass_kg": 16.0,
-   "z": -4.130983686034855e-06
+   "z": -4.131666279147735e-06
   }
  },
  "settle_unstable_resets": 0,
- "penetration_settled_m": 1.1390864694038605e-05,
+ "penetration_settled_m": 1.7416177616635945e-05,
  "penetration_settled_geoms": [
   "pedestal_col",
   "cup_col0"
@@ -48,14 +51,14 @@
  "joints": {
   "laptop_hinge": {
    "range": [
-    -1.86271,
-    0.493482
+    -1.89386,
+    0.462338
    ],
    "reached": [
-    -1.866128241965659,
-    0.4960015385561136
+    -1.8972991549790659,
+    0.4649611039864813
    ],
-   "max_penetration_m": 1.2468836711576612e-05,
+   "max_penetration_m": 2.0197249761433334e-05,
    "unstable_resets": 0,
    "unit": "rad"
   },
@@ -65,10 +68,10 @@
     3.141592653589793
    ],
    "reached": [
-    -3.19631818926881,
-    3.2008764609357088
+    -3.399374879263995,
+    3.1984191521191203
    ],
-   "max_penetration_m": 1.2468836711576612e-05,
+   "max_penetration_m": 0.00045397554992323967,
    "unstable_resets": 0,
    "unit": "rad"
   },
@@ -78,10 +81,10 @@
     3.141592653589793
    ],
    "reached": [
-    -3.1930238010132244,
-    3.196333904252619
+    -3.1938577576078795,
+    3.1978694404526724
    ],
-   "max_penetration_m": 1.2468836711576612e-05,
+   "max_penetration_m": 2.0197249761433334e-05,
    "unstable_resets": 0,
    "unit": "rad"
   }
@@ -89,37 +92,37 @@
  "lift": {
   "laptop_base": {
    "unstable_resets": 0,
-   "lifted_m": 0.13366377576101385,
-   "landed_dz_m": 6.690731613190337e-08,
-   "final_speed_mps": 2.0286469423535232e-14
+   "lifted_m": 0.1317734597812319,
+   "landed_dz_m": -9.729183014783871e-08,
+   "final_speed_mps": 2.5184944021948827e-14
   },
   "cup": {
    "unstable_resets": 0,
-   "lifted_m": 0.10064265791752447,
-   "landed_dz_m": -4.786559371083854e-09,
-   "final_speed_mps": 0.0003538852009237432
+   "lifted_m": 0.10064265253386384,
+   "landed_dz_m": 4.231510405294792e-06,
+   "final_speed_mps": 0.0023916305481053368
   },
   "backpack": {
    "unstable_resets": 0,
    "lifted_m": 0.10064266072049695,
-   "landed_dz_m": 4.163336342344337e-17,
-   "final_speed_mps": 5.037714577870037e-16
+   "landed_dz_m": 9.71445146547012e-17,
+   "final_speed_mps": 2.3537475852981166e-16
   },
   "chair_0_base": {
    "unstable_resets": 0,
-   "lifted_m": 0.18722893776105487,
-   "landed_dz_m": -4.308498002814076e-13,
-   "final_speed_mps": 3.647337649070849e-12
+   "lifted_m": 0.19036647977070054,
+   "landed_dz_m": -4.1092129698938606e-14,
+   "final_speed_mps": 1.1864409365410072e-11
   },
   "chair_1_base": {
    "unstable_resets": 0,
-   "lifted_m": 0.165235774974339,
-   "landed_dz_m": -1.3024303857633868e-14,
-   "final_speed_mps": 5.5017345517383015e-12
+   "lifted_m": 0.16374809483881916,
+   "landed_dz_m": 1.7763568394002505e-15,
+   "final_speed_mps": 4.813493122423175e-12
   }
  },
- "realtime_factor_cpu": 101.94949077562529,
- "wall_s": 0.7545680999755859,
+ "realtime_factor_cpu": 102.65940548015615,
+ "wall_s": 0.7579612731933594,
  "failures": [],
  "passed": true
 }

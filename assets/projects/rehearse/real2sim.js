@@ -16,7 +16,7 @@ const scene=new THREE.Scene(),spark=new SparkRenderer({renderer});scene.add(spar
 const camera=new THREE.PerspectiveCamera(50,4/3,.02,80);camera.up.set(0,0,1);
 const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.minDistance=.15;controls.maxDistance=12;
 const q=w=>new THREE.Quaternion(w[1],w[2],w[3],w[0]);
-let meta,bg,interaction,fills=[],roots=[],aspect=4/3,fillOn=false;
+let meta,bg,interaction,fills=[],roots=[],cover=[],aspect=4/3,fillOn=false;
 
 function resize(){const w=host.clientWidth,h=Math.round(Math.min(w/aspect,innerHeight*.78));host.style.height=h+'px';renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();}
 new ResizeObserver(resize).observe(host);addEventListener('resize',resize);
@@ -36,9 +36,11 @@ async function loadMesh(url,center){ // unlit textured mesh, shrunk slightly so 
 async function buildObject(obj){
   const root=new THREE.Group(),nodes={},waits=[];
   for(const l of obj.links){
-    const content=new THREE.Group();if(l.has_gaussians){const splat=new SplatMesh({url:BASE+l.name+'.spz'});content.add(splat);waits.push(splat.initialized);}
+    const content=new THREE.Group();let splat=null;if(l.has_gaussians){splat=new SplatMesh({url:BASE+l.name+'.spz'});content.add(splat);waits.push(splat.initialized);}
     const lb=new THREE.Box3(new THREE.Vector3(...l.bounds_local[0]),new THREE.Vector3(...l.bounds_local[1]));
-    waits.push(loadMesh(BASE+l.name+'.glb',lb.getCenter(new THREE.Vector3())).then(m=>{m.name='fill';content.add(m);if(l.count<2000)m.userData.always=true;else{fills.push(m);m.visible=fillOn;}}));
+    waits.push(loadMesh(BASE+l.name+'.glb',lb.getCenter(new THREE.Vector3())).then(m=>{m.name='fill';content.add(m);if(l.count<2000)m.userData.always=true;else{fills.push(m);m.visible=fillOn;}
+      // view coverage: outside the directions the capture saw this link from, its Gaussians smear -> draw the mesh
+      if(splat&&l.coverage&&l.count>=2000)cover.push({content,splat,mesh:m,o:new THREE.Vector3(...l.coverage.origin),dirs:l.coverage.dirs.map(d=>new THREE.Vector3(...d)),cos:Math.cos(l.coverage.deg*Math.PI/180),covered:true});}));
     if(l.parent==='world'){root.position.set(...l.pos_world);root.quaternion.copy(q(l.quat_world_wxyz));root.add(content);nodes[l.name]={pivot:root,content};}
     else{const pivot=new THREE.Group();pivot.position.set(...l.pos_in_parent);content.quaternion.copy(q(l.quat_in_parent_wxyz));pivot.add(content);nodes[l.parent].pivot.add(pivot);nodes[l.name]={pivot,content};}
   }
@@ -65,12 +67,15 @@ async function init(){
   const built=await Promise.all([bg.initialized,...meta.objects.map(buildObject)]).then(r=>r.slice(1));
   interaction=directManipulation({scene,camera,renderer,controls,entries:built.map(b=>b.entry),joints:built.flatMap(b=>b.joints),roots:()=>roots,horizontal:true,ui:document.querySelector('#gs-interactions'),up:new THREE.Vector3(0,0,1)});
   const total=Object.values(meta.counts).reduce((a,b)=>a+b,0);document.querySelector('#gs-count').textContent=total.toLocaleString()+' Gaussians';status.hidden=true;
-  window.rehearseReal2Sim={ready:true,meta,scene,camera,renderer,interaction,view,roots,setFill};
+  window.rehearseReal2Sim={ready:true,meta,scene,camera,renderer,interaction,view,roots,setFill,cover};
 }
-function setFill(on){fillOn=on;fills.forEach(m=>m.visible=on);}
+function setFill(on){fillOn=on;fills.forEach(m=>m.visible=on);cover.forEach(c=>{c.covered=true;c.splat.visible=true;});}
+const _v=new THREE.Vector3(),_inv=new THREE.Matrix4();
+function updateCoverage(){for(const c of cover){c.content.updateMatrixWorld();_v.copy(camera.position).applyMatrix4(_inv.copy(c.content.matrixWorld).invert()).sub(c.o).normalize();
+  let best=-1;for(const d of c.dirs){const x=d.dot(_v);if(x>best)best=x;}const ok=best>=c.cos;if(ok!==c.covered){c.covered=ok;c.splat.visible=ok;c.mesh.visible=!ok||fillOn;}}}
 document.querySelector('#gs-fill').onchange=e=>setFill(e.target.checked);
 document.querySelector('#gs-bg').onchange=e=>{if(bg)bg.visible=e.target.checked;};
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>meta&&view(+b.dataset.view));
 document.querySelector('#gs-reset').onclick=()=>{if(!interaction)return;interaction.entries.forEach(e=>e.object.position.copy(e.initial));interaction.joints.forEach(j=>interaction.setJoint(j,0));interaction.select(null);};
-function frame(){requestAnimationFrame(frame);controls.update();interaction?.update();renderer.render(scene,camera);}
+function frame(){requestAnimationFrame(frame);controls.update();interaction?.update();updateCoverage();renderer.render(scene,camera);}
 init().catch(e=>{console.error(e);status.hidden=false;status.textContent='This Gaussian viewer needs WebGL 2.';});frame();

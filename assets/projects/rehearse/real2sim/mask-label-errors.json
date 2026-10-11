@@ -1,0 +1,29 @@
+{
+ "what": "SAM2 instance-mask label errors found while evaluating the simulator (verified by eye on the photos); s13_eval excludes these (object, frame) pairs from that object's silhouette IoU and reports them",
+ "errors": {
+  "chair_1": {
+   "frames": [
+    "f0072.jpg"
+   ],
+   "evidence": "chair_1 is fully visible behind the laptop but its track has no mask there; the only chair_1-labelled pixels are a sliver at the left border"
+  },
+  "backpack": {
+   "frames": [
+    "f0344.jpg",
+    "f0360.jpg",
+    "f0377.jpg",
+    "f0392.jpg"
+   ],
+   "evidence": "the backpack is out of frame or nearly so; the backpack label covers the charging cable and plug instead"
+  },
+  "laptop": {
+   "frames": [
+    "f0072.jpg",
+    "f0088.jpg",
+    "f0104.jpg",
+    "f0120.jpg"
+   ],
+   "evidence": "partial masks: only the screen and keyboard are labelled, the silver palm rest/trackpad (next to the white pedestal) is missing"
+  }
+ }
+}
