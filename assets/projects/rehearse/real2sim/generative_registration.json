@@ -1,0 +1,89 @@
+{
+ "chair_1": {
+  "train_silhouette_iou": 0.6711152062583953,
+  "yaw_deg": 52.99999999999999,
+  "scale": 0.45324951555540893,
+  "fused_to_gen_mm_median": 32.95291699571315,
+  "fused_to_gen_mm_p90": 71.0710501167153,
+  "extent_m": [
+   0.9610611707853335,
+   0.946628514356255,
+   0.9112560948729516
+  ],
+  "heldout_generated": {
+   "silhouette_iou": 0.6457402104264702,
+   "depth_err_vs_da3_mm": 70.47033309936523,
+   "views": 21,
+   "sparse_points": 333,
+   "sparse_to_mesh_mm_median": 70.4784095287323,
+   "sparse_to_mesh_mm_p90": 174.7706949710846
+  },
+  "heldout_sdf": {
+   "silhouette_iou": 0.8215141015115877,
+   "depth_err_vs_da3_mm": 43.54965686798096,
+   "views": 21,
+   "sparse_points": 333,
+   "sparse_to_mesh_mm_median": 11.134633794426918,
+   "sparse_to_mesh_mm_p90": 29.464471712708473
+  },
+  "watertight": false
+ },
+ "chair_0": {
+  "train_silhouette_iou": 0.8424977208038913,
+  "yaw_deg": -40.00000000000002,
+  "scale": 0.4590106964972459,
+  "fused_to_gen_mm_median": 62.03751270634,
+  "fused_to_gen_mm_p90": 159.2610605155861,
+  "extent_m": [
+   0.9632764768764364,
+   0.9554315929267596,
+   0.9758828798353673
+  ],
+  "heldout_generated": {
+   "silhouette_iou": 0.8572844480784454,
+   "depth_err_vs_da3_mm": 130.14590740203857,
+   "views": 29,
+   "sparse_points": 322,
+   "sparse_to_mesh_mm_median": 54.738689213991165,
+   "sparse_to_mesh_mm_p90": 187.45501488447192
+  },
+  "heldout_sdf": {
+   "silhouette_iou": 0.9175859358069051,
+   "depth_err_vs_da3_mm": 40.86172580718994,
+   "views": 29,
+   "sparse_points": 322,
+   "sparse_to_mesh_mm_median": 16.248788684606552,
+   "sparse_to_mesh_mm_p90": 50.04657879471779
+  },
+  "watertight": false
+ },
+ "backpack": {
+  "train_silhouette_iou": 0.8594852962430966,
+  "yaw_deg": -124.00000000000003,
+  "scale": 0.3003305584307547,
+  "fused_to_gen_mm_median": 25.020428382026427,
+  "fused_to_gen_mm_p90": 64.85384700236746,
+  "extent_m": [
+   0.5646747111024739,
+   0.5847764197914187,
+   0.19659089110791683
+  ],
+  "heldout_generated": {
+   "silhouette_iou": 0.7304133435436003,
+   "depth_err_vs_da3_mm": 45.18955945968628,
+   "views": 25,
+   "sparse_points": 868,
+   "sparse_to_mesh_mm_median": 45.744314789772034,
+   "sparse_to_mesh_mm_p90": 106.22719153761867
+  },
+  "heldout_sdf": {
+   "silhouette_iou": 0.7793822445583217,
+   "depth_err_vs_da3_mm": 38.16547989845276,
+   "views": 25,
+   "sparse_points": 868,
+   "sparse_to_mesh_mm_median": 11.352168396115303,
+   "sparse_to_mesh_mm_p90": 35.833213850855856
+  },
+  "watertight": true
+ }
+}

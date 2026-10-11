@@ -1,0 +1,23 @@
+{
+ "method": "background trained from scratch on non-object pixels (gsplat MCMC, DA3 depth) -> haze pruning (support < 0.8) -> support-plane mosaics (floor, pedestal top) with LaMa texture inpainting of object footprints + contact-shadow rings -> flat Gaussians inserted; a border-blending fine-tune was tried and rejected (it re-learned chair shadows)",
+ "stage_A": {
+  "iters": 15000,
+  "seconds": 563.4059734344482,
+  "heldout_outside_R": {
+   "psnr": 23.19838366015204,
+   "ssim": 0.9201342751239908,
+   "views": 29
+  }
+ },
+ "haze_pruned": 431482,
+ "planar": {
+  "deleted_in_hulls_or_slabs": 100334,
+  "inserted_plane_gaussians": 40795
+ },
+ "gaussians": 940461,
+ "heldout_outside_removed_regions": {
+  "psnr": 22.595960090900288,
+  "ssim": 0.9020805441100022,
+  "views": 29
+ }
+}

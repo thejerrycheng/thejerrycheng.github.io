@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 // Shared direct manipulation for textured meshes and Gaussian object groups.
-export function directManipulation({scene,camera,renderer,controls,entries,joints=[],roots,ui,enabled=()=>true,viewport,onChange=()=>{},up=new THREE.Vector3(0,0,1)}) {
+export function directManipulation({scene,camera,renderer,controls,entries,joints=[],roots,ui,enabled=()=>true,viewport,onChange=()=>{},up=new THREE.Vector3(0,0,1),horizontal=false}) {
   const canvas=renderer.domElement,ray=new THREE.Raycaster(),helpers=new THREE.Group();scene.add(helpers);
   let selected=null,drag=null,highlight=false;const cleanups=[];
   canvas.tabIndex=0;canvas.setAttribute('aria-label','3D scene. Drag objects to move; Shift drag to lift. R restores selected pose.');
@@ -17,7 +17,7 @@ export function directManipulation({scene,camera,renderer,controls,entries,joint
     target=THREE.MathUtils.clamp(target,j.min,j.max);const start=j.angle,steps=Math.max(1,Math.ceil(Math.abs(target-start)/(.02)));let accepted=start,contact='';
     for(let i=1;i<=steps;i++){const a=start+(target-start)*i/steps;contact=j.collision?.(a)||'';if(contact){let lo=accepted,hi=a;for(let n=0;n<12;n++){const mid=(lo+hi)/2;if(j.collision(mid))hi=mid;else lo=mid;}accepted=lo;break;}accepted=a;}
     j.angle=accepted;j.object.quaternion.copy(j.initial).multiply(new THREE.Quaternion().setFromAxisAngle(j.axis,accepted));j.object.updateMatrixWorld(true);onChange(j);
-    state.textContent=`${j.label} · ${Math.round((j.closed-accepted)*180/Math.PI)}° open${contact?' · stopped at '+contact:''}`;update();return {angle:accepted,contact};
+    state.textContent=`${j.label} · ${j.describe?j.describe(accepted):Math.round((j.closed-accepted)*180/Math.PI)+'° open'}${contact?' · stopped at '+contact:''}`;update();return {angle:accepted,contact};
   }
   function update(){
     const active=enabled();helpers.visible=active;scene.updateMatrixWorld(true);
@@ -33,7 +33,7 @@ export function directManipulation({scene,camera,renderer,controls,entries,joint
   function down(e){
     if(e.button!==0||!enabled()||!setRay(e))return;update();const hit=pick();if(!hit){select(null);return;}e.preventDefault();e.stopImmediatePropagation();canvas.focus({preventScroll:true});select(hit.entry);const object=selected.object;drag={id:e.pointerId,entry:selected,initial:object.position.clone(),quaternion:object.quaternion.clone(),controls:controls.enabled,start:new THREE.Vector2(e.clientX,e.clientY),angle:selected.angle};controls.enabled=false;canvas.setPointerCapture(e.pointerId);canvas.style.cursor='grabbing';
     if(joints.includes(selected)){const pivot=object.getWorldPosition(new THREE.Vector3()),axis=selected.axis.clone().applyQuaternion(object.parent.getWorldQuaternion(new THREE.Quaternion()));drag.pivot=pivot;drag.axis=axis;drag.plane=new THREE.Plane().setFromNormalAndCoplanarPoint(axis,pivot);drag.radial=ray.ray.intersectPlane(drag.plane,new THREE.Vector3())?.sub(pivot).normalize();const handle=object.localToWorld(selected.handleLocal.clone()),tangent=new THREE.Vector3().crossVectors(axis,handle.clone().sub(pivot));const a=handle.clone().project(camera),b=handle.clone().add(tangent).project(camera),r=viewport?viewport():canvas.getBoundingClientRect();drag.screenTangent=new THREE.Vector2((b.x-a.x)*r.width/2,-(b.y-a.y)*r.height/2);
-    }else{drag.world=object.getWorldPosition(new THREE.Vector3());drag.hit=hit.point;drag.plane=new THREE.Plane().setFromNormalAndCoplanarPoint(camera.getWorldDirection(new THREE.Vector3()),hit.point);drag.vertical=e.shiftKey;drag.scale=2*camera.position.distanceTo(hit.point)*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))/canvas.getBoundingClientRect().height;}
+    }else{drag.world=object.getWorldPosition(new THREE.Vector3());drag.hit=hit.point;drag.plane=new THREE.Plane().setFromNormalAndCoplanarPoint(horizontal&&Math.abs(ray.ray.direction.dot(up))>.15?up:camera.getWorldDirection(new THREE.Vector3()),hit.point);drag.vertical=e.shiftKey;drag.scale=2*camera.position.distanceTo(hit.point)*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))/canvas.getBoundingClientRect().height;}
   }
   function move(e){
     if(!drag||e.pointerId!==drag.id)return;e.preventDefault();e.stopImmediatePropagation();setRay(e);const d=drag,o=d.entry.object;

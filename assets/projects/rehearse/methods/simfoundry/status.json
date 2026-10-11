@@ -1,7 +1,7 @@
 {
   "method": "NVIDIA SimFoundry automatic background and object reconstruction",
   "revision": "9e34ebefcd020583fbb755a8b57268dce78eca26",
-  "status": "capture_prepared_waiting_for_cuda_worker",
+  "status": "paused_superseded",
   "capture_audit_passed": true,
   "preparation_wall_seconds": 100.37,
   "regression_tests_passed": 3,
@@ -16,5 +16,8 @@
     "80,000-step depth-supervised Gaussian training",
     "held-out view and object-removal evaluation",
     "textured MuJoCo export and contact validation"
-  ]
+  ],
+  "superseded_by": "rehearse-real2sim.html: open-source Gaussian real-to-sim pipeline (COLMAP, SAM 2.1, Depth Anything 3, gsplat, neural SDF / TSDF / Hunyuan3D comparison, MuJoCo)",
+  "paused_reason": "gated model access (SAM 3, DINOv3, RMBG) and paid image-editing quota were unavailable",
+  "last_updated": "2026-10-11"
 }
