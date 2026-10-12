@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-12 18:20 EDT",
+ "updated": "2026-10-12 19:20 EDT",
  "stages": [
   {
    "name": "Frames",
@@ -38,8 +38,8 @@
   },
   {
    "name": "Articulated splat",
-   "state": "running",
-   "detail": "Full-scene splat with per-frame joint states for the 25 measured fronts, 0.75 res, 500 k Gaussians"
+   "state": "done",
+   "detail": "500 k Gaussians, 960\u00d71280, per-frame joint states for 25 fronts (held-out PSNR 17.4; limited by the shared GPU budget)"
   },
   {
    "name": "NeuralFeels from hand demonstrations",
@@ -55,6 +55,31 @@
    "name": "MuJoCo + Isaac Sim export",
    "state": "todo",
    "detail": "MJCF and USD (exporter already validated on the room scene)"
+  },
+  {
+   "name": "Per-asset Gaussians + meshes",
+   "state": "running",
+   "detail": "Each front and item gets its own Gaussians and a TSDF mesh from the splat (the measured twin of its Blender model)"
+  },
+  {
+   "name": "Realism QA (photo vs render)",
+   "state": "running",
+   "detail": "GPT-6 re-renders every asset with the capture cameras, grades silhouette/proportions/colour/material/articulation and fixes it; cabinetry being rebuilt"
+  },
+  {
+   "name": "Mechanisms + physics",
+   "state": "running",
+   "detail": "Fridge (gasket latch, bins, drawers) and microwave (two-stage release button, pop-open) pass force tests; range, faucet pull-out head, cabinets, small appliances in progress"
+  },
+  {
+   "name": "Soft bodies",
+   "state": "running",
+   "detail": "Sponge, scourer, towel, bags as MuJoCo flex with literature parameters, calibrated on the video"
+  },
+  {
+   "name": "Interactive scene + asset library + camera replay",
+   "state": "running",
+   "detail": "Scene assembly with MjSpec, web physics, per-body splats; library viewer with joint demos and force arrows; smooth 6-DoF camera replay + video"
   }
  ]
 }
