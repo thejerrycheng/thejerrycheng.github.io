@@ -111,3 +111,8 @@ h3.sub+p{color:var(--muted)}
 .k-progress li.running::before{background:#f08c00;box-shadow:0 0 0 3px rgba(240,140,0,.2)}
 .k-progress li b{font-weight:600;grid-column:2}
 .k-progress li span{grid-column:2;color:var(--muted)}
+.k-assets{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:16px;margin-top:16px;align-items:start}
+.k-asset-stage{position:relative;border-radius:20px;overflow:hidden;background:#eceff3;height:420px}
+#k-asset-view{width:100%;height:100%}#k-asset-view canvas{display:block;touch-action:none}
+.k-asset-list{flex-wrap:wrap}.k-asset-info{font-size:13px;color:var(--muted);line-height:1.45}.k-asset-info b{color:var(--ink);font-weight:600}
+@media(max-width:980px){.k-assets{grid-template-columns:1fr}.k-asset-stage{height:320px}}
