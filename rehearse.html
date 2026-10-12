@@ -22,7 +22,7 @@
  <div class="sim-stage">
   <div id="sim-view" aria-label="Interactive Gaussian splat of the room with movable objects"></div>
   <p id="sim-status" class="sim-status">Loading 0.73 M Gaussians (about 12 MB)…</p>
-  <div class="sim-hud"><div class="seg" role="group" aria-label="Capture camera"><span class="lbl">Camera</span><button data-view="0">A</button><button data-view="7">B</button><button data-view="15">C</button><button data-view="22">D</button></div></div>
+  <div class="sim-hud"><div class="seg" role="group" aria-label="Model"><span class="lbl">Model</span><button data-look="scan" aria-pressed="true">Scan</button><button data-look="polished" aria-pressed="false">Polished</button></div><div class="seg" role="group" aria-label="Capture camera"><span class="lbl">Camera</span><button data-view="0">A</button><button data-view="7">B</button><button data-view="15">C</button><button data-view="22">D</button></div></div>
   <div class="sim-badge"><span class="dot"></span><span id="sim-count"></span><span id="sim-time"></span></div>
   <p class="sim-toast" id="sim-toast" aria-live="polite">Loading…</p>
  </div>
@@ -34,25 +34,25 @@
   <tr class="all" id="sim-all"><td>All objects</td><td><button class="tg" data-all="box" aria-label="All bounding boxes" aria-pressed="false"></button></td><td><button class="tg" data-all="joint" aria-label="All joints" aria-pressed="false"></button></td><td><button class="tg" data-all="col" aria-label="All collision geometry" aria-pressed="false"></button></td></tr></thead>
   <tbody id="sim-layers"></tbody>
   <tfoot><tr><td><span class="name" style="cursor:default"><i style="background:#868e96"></i>Table + floor</span></td><td><span class="na">–</span></td><td><span class="na">–</span></td><td><button class="tg" id="sim-static" aria-label="Table and floor collision" aria-pressed="false"></button></td></tr></tfoot></table></div>
-  <div><h3>View</h3><div class="sim-view-opts"><label><input type="checkbox" id="sim-room" checked> Room</label><label><input type="checkbox" id="sim-mesh"> Meshes under splats</label></div></div>
+  <div><h3>View</h3><div class="sim-view-opts"><label><input type="checkbox" id="sim-room" checked> Room</label><label class="scan-only"><input type="checkbox" id="sim-mesh"> Meshes under splats</label></div></div>
   <p class="sim-help">Click an object (or its name) to select it, then drag the arrows to move it or switch to <b>Rotate</b> and drag the rings. Objects stop at the table, the floor and each other. Turn a joint with its slider or the orange handle. Drag empty space to orbit, scroll to zoom, <kbd>Esc</kbd> deselects.</p>
  </aside>
 </div>
-<p class="note">Everything is rendered from Gaussian splats with Spark; MuJoCo 3.15 (WebAssembly) runs the same model as the exported MJCF: the same bodies, joints, masses, friction and collision shapes (boxes, cylinders and convex hulls). Where you look at a part from a side the video never saw, it is drawn with its mesh instead of a smeared splat. Masses and friction are assumptions. <a href="assets/projects/rehearse/real2sim/physics.xml">Physics model ↗</a></p>
+<p class="note">Everything is rendered from Gaussian splats with Spark; MuJoCo 3.15 (WebAssembly) runs the same model as the exported MJCF: the same bodies, joints, masses, friction and collision shapes (boxes, cylinders and convex hulls). Where you look at a part from a side the video never saw, it is drawn with its mesh instead of a smeared splat. <b>Polished</b> swaps every object for its part model (seat shell, star base, lid, straps), fitted to the same video frames the way the laptop was; physics is identical in both views. Masses and friction are assumptions. <a href="assets/projects/rehearse/real2sim/physics.xml">Physics model ↗</a></p>
 </section>
 
 <section class="band" id="results"><div class="wrap">
 <div class="section-heading"><p class="eyebrow">Results</p><h2>Every method,<br>side by side.</h2><p>Each object was reconstructed several ways and scored on held-out video frames (every 8th frame, never used for fitting). The simulator keeps the shape that is accurate <em>and</em> complete, closed and articulated.</p></div>
 
-<div class="table-scroll"><table class="evidence-table" id="cmp-table"><thead><tr><th>Held-out silhouette IoU</th><th class="num">NeuralFeels-style SDF</th><th class="num">TSDF fusion</th><th class="num">Generated (Hunyuan3D)</th><th class="num">AgentSTAR</th><th class="num">Simulator</th><th>Simulator uses</th></tr></thead><tbody>
-<tr><td>Laptop</td><td class="num">0.975</td><td class="num">0.890</td><td class="num">–</td><td class="num">0.977</td><td class="num used best">0.979</td><td>AgentSTAR part model + hinge</td></tr>
-<tr><td>Coffee cup</td><td class="num">0.943</td><td class="num best">0.945</td><td class="num">–</td><td class="num">–</td><td class="num used">0.943</td><td>Cup profile fitted to 75 silhouettes</td></tr>
+<div class="table-scroll"><table class="evidence-table" id="cmp-table"><thead><tr><th>Held-out silhouette IoU</th><th class="num">NeuralFeels-style SDF</th><th class="num">TSDF fusion</th><th class="num">Generated (Hunyuan3D)</th><th class="num">Part model (polished)</th><th class="num">Scan mesh</th><th>Simulator collides with</th></tr></thead><tbody>
+<tr><td>Laptop</td><td class="num">0.975</td><td class="num">0.890</td><td class="num">–</td><td class="num used">0.977</td><td class="num best">0.979</td><td>AgentSTAR part model: base + lid boxes, hinge</td></tr>
+<tr><td>Coffee cup</td><td class="num">0.943</td><td class="num best">0.945</td><td class="num">–</td><td class="num">0.938</td><td class="num used">0.943</td><td>Cup profile fitted to 75 silhouettes</td></tr>
 <tr><td>Table</td><td class="num">0.935</td><td class="num best">0.967</td><td class="num">–</td><td class="num">–</td><td class="num used">0.945</td><td>Box fitted to 79 silhouettes</td></tr>
-<tr><td>Left chair</td><td class="num">0.909</td><td class="num best">0.944</td><td class="num">0.836</td><td class="num">–</td><td class="num used">0.849</td><td>Generated mesh, refit; swivel joint</td></tr>
-<tr><td>Right chair</td><td class="num">0.787</td><td class="num best">0.819</td><td class="num">0.659</td><td class="num">–</td><td class="num used">0.680</td><td>Generated mesh, refit; swivel joint</td></tr>
-<tr><td>Backpack</td><td class="num">0.787</td><td class="num best">0.905</td><td class="num">0.830</td><td class="num">–</td><td class="num used">0.849</td><td>Generated mesh, refit</td></tr>
+<tr><td>Left chair</td><td class="num">0.909</td><td class="num best">0.944</td><td class="num">0.836</td><td class="num used">0.833</td><td class="num">0.849</td><td>Part model (one shape for both chairs): shell, cushion, column, 4-prong base; swivel</td></tr>
+<tr><td>Right chair</td><td class="num">0.787</td><td class="num best">0.819</td><td class="num">0.659</td><td class="num used">0.765</td><td class="num">0.680</td><td>Same chair model, its own pose</td></tr>
+<tr><td>Backpack</td><td class="num">0.787</td><td class="num best">0.905</td><td class="num">0.830</td><td class="num used">0.858</td><td class="num">0.849</td><td>Part model: rounded body (straps visual only)</td></tr>
 </tbody></table></div>
-<p class="note">Same frames for every method; outline-only silhouettes against SAM 2 masks with other objects ignored, nine verified mask label errors excluded. Bold is the best score, the orange column is what the simulator runs. Fused reconstructions (SDF, TSDF) score highest on outlines because they only have to explain what the camera saw: they are open or slab-filled on the unseen side and have no joints (see the bottom row of each comparison and <a href="#neuralfeels">why</a>). <a href="assets/projects/rehearse/real2sim/compare.json">All numbers ↗</a></p>
+<p class="note">Same frames for every method; outline-only silhouettes against SAM 2 masks with other objects ignored, nine verified mask label errors excluded. Bold is the best score; orange is the shape the simulator collides with. <b>Part model</b> is the clean model behind the simulator’s <b>Polished</b> view: built from parts and fitted to the video like the laptop. The two chairs share one fitted shape; with the swivel axis held under the seat centre, it raises the right chair from 0.680 to 0.765. Fused reconstructions (SDF, TSDF) score highest on outlines because they only have to explain what the camera saw: they are open or slab-filled on the unseen side and have no joints (see the bottom row of each comparison and <a href="#neuralfeels">why</a>). <a href="assets/projects/rehearse/real2sim/compare.json">All numbers ↗</a></p>
 
 <div class="tabs" role="tablist" aria-label="Qualitative comparison">
 <button role="tab" aria-selected="true" data-cmp="laptop">Laptop</button><button role="tab" aria-selected="false" data-cmp="cup">Coffee cup</button><button role="tab" aria-selected="false" data-cmp="pedestal">Table</button><button role="tab" aria-selected="false" data-cmp="chair_0">Left chair</button><button role="tab" aria-selected="false" data-cmp="chair_1">Right chair</button><button role="tab" aria-selected="false" data-cmp="backpack">Backpack</button><button role="tab" aria-selected="false" data-cmp="overview">All, both sides</button></div>
@@ -99,7 +99,7 @@
 <tr><td>Segmentation</td><td>Grounding DINO → SAM 2.1 → 3D instance clustering → video tracking</td><td>Nine label errors found and excluded</td></tr>
 <tr><td>Depth</td><td>Depth Anything 3 giant, aligned per frame to COLMAP</td><td>0.85 % median relative error to SfM points</td></tr>
 <tr><td>Appearance</td><td>gsplat MCMC, 1.2 M Gaussians, depth loss, per-image exposure</td><td>Held-out PSNR 22.2 dB, SSIM 0.907</td></tr>
-<tr><td>Objects</td><td>AgentSTAR (laptop), silhouette fits (cup, table), generated + refit meshes (chairs, backpack)</td><td>Table above</td></tr>
+<tr><td>Objects</td><td>AgentSTAR (laptop) and AgentSTAR-style part models fitted to silhouettes (chairs, backpack, cup); box fit (table); scan meshes for the Scan view</td><td>Table above</td></tr>
 <tr><td>Appearance per link</td><td>Each link's Gaussians fine-tuned in its MuJoCo body frame</td><td>Object PSNR 18.5 → 21.5 dB on held-out frames</td></tr>
 <tr><td>Clean room</td><td>Splat trained without object pixels, haze pruned, planar inpainting of footprints</td><td>22.6 dB outside removed regions</td></tr>
 <tr><td>Simulator</td><td>MJCF: free bodies, hinge + swivels, convex collision; same model in the browser</td><td>102× real time; validation passed</td></tr></tbody></table></div>

@@ -3,7 +3,7 @@
  "mujoco": "3.5.0",
  "nbody": 10,
  "njnt": 8,
- "ncollision_geoms": 37,
+ "ncollision_geoms": 56,
  "explicit_pairs": 0,
  "penetration_t0_m": 3.5142908804329626e-05,
  "penetration_t0_geoms": [
@@ -24,22 +24,22 @@
    "z": 0.6980207020555356
   },
   "backpack": {
-   "drift_m": 0.0031632304915862556,
-   "final_speed_mps": 7.508390355891661e-16,
+   "drift_m": 0.023176343614323122,
+   "final_speed_mps": 2.3178053797625317e-15,
    "mass_kg": 1.2,
-   "z": -0.0030611857375633816
+   "z": -0.022982533638475973
   },
   "chair_0_base": {
-   "drift_m": 4.214134917184488e-06,
-   "final_speed_mps": 1.1665595812870787e-11,
+   "drift_m": 9.482414245089976e-07,
+   "final_speed_mps": 5.934368471019498e-16,
    "mass_kg": 16.0,
-   "z": -4.214134916507653e-06
+   "z": -9.482414245022388e-07
   },
   "chair_1_base": {
-   "drift_m": 4.131666279540602e-06,
-   "final_speed_mps": 6.857388856702795e-13,
+   "drift_m": 9.501145967981568e-07,
+   "final_speed_mps": 2.7359774443338937e-07,
    "mass_kg": 16.0,
-   "z": -4.131666279147735e-06
+   "z": -9.501145885300913e-07
   }
  },
  "settle_unstable_resets": 0,
@@ -68,10 +68,10 @@
     3.141592653589793
    ],
    "reached": [
-    -3.399374879263995,
-    3.1984191521191203
+    -3.1869126034814745,
+    3.1853851640080317
    ],
-   "max_penetration_m": 0.00045397554992323967,
+   "max_penetration_m": 2.0197249761433334e-05,
    "unstable_resets": 0,
    "unit": "rad"
   },
@@ -81,8 +81,8 @@
     3.141592653589793
    ],
    "reached": [
-    -3.1938577576078795,
-    3.1978694404526724
+    -3.1869125975506365,
+    3.1853851523654697
    ],
    "max_penetration_m": 2.0197249761433334e-05,
    "unstable_resets": 0,
@@ -94,7 +94,7 @@
    "unstable_resets": 0,
    "lifted_m": 0.14050862005586118,
    "landed_dz_m": -3.111341987382943e-07,
-   "final_speed_mps": 4.68174556591083e-10
+   "final_speed_mps": 4.681745509068221e-10
   },
   "cup": {
    "unstable_resets": 0,
@@ -105,24 +105,24 @@
   "backpack": {
    "unstable_resets": 0,
    "lifted_m": 0.10064266072049695,
-   "landed_dz_m": 9.71445146547012e-17,
-   "final_speed_mps": 2.3537475852981166e-16
+   "landed_dz_m": -2.7063984386899165e-10,
+   "final_speed_mps": 2.660807061053027e-16
   },
   "chair_0_base": {
    "unstable_resets": 0,
-   "lifted_m": 0.19036647977070054,
-   "landed_dz_m": -4.1092129698938606e-14,
-   "final_speed_mps": 1.1864409365410072e-11
+   "lifted_m": 0.16543667666528,
+   "landed_dz_m": -2.652985470197322e-10,
+   "final_speed_mps": 5.894100134613802e-16
   },
   "chair_1_base": {
    "unstable_resets": 0,
-   "lifted_m": 0.16374809483881916,
-   "landed_dz_m": 1.7763568394002505e-15,
-   "final_speed_mps": 4.813493122423175e-12
+   "lifted_m": 0.12618093268047542,
+   "landed_dz_m": -5.423822502237385e-10,
+   "final_speed_mps": 1.8308125534828014e-07
   }
  },
- "realtime_factor_cpu": 101.29211746522411,
- "wall_s": 0.759227991104126,
+ "realtime_factor_cpu": 73.94687987588262,
+ "wall_s": 1.252516269683838,
  "failures": [],
  "passed": true
 }

@@ -3,6 +3,7 @@ import {OrbitControls} from '../../js/vendor/OrbitControls.js';
 import {TransformControls} from '../../js/vendor/controls/TransformControls.js';
 import {GLTFLoader} from '../../js/vendor/loaders/GLTFLoader.js';
 import {SplatMesh,SparkRenderer} from '../../js/vendor/spark.module.js';
+import {RoomEnvironment} from '../../js/vendor/environments/RoomEnvironment.js';
 
 // Gaussian room + per-link Gaussians in their MuJoCo body frames (metres, z up), driven by MuJoCo (WASM)
 // running real2sim's MJCF with its collision geometry (physics.xml). MuJoCo qpos is the single source of
@@ -22,9 +23,15 @@ const scene=new THREE.Scene(),spark=new SparkRenderer({renderer});scene.add(spar
 const camera=new THREE.PerspectiveCamera(50,4/3,.02,80);camera.up.set(0,0,1);
 const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.minDistance=.15;controls.maxDistance=12;
 const helpers=new THREE.Group();scene.add(helpers);
+// polished view: part models (AgentSTAR-style fits) under studio light, on a clean floor and table
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(),.04).texture;scene.environmentIntensity=.35;
+const sun=new THREE.DirectionalLight(0xfff6ec,1.7);sun.position.set(2.2,-1.6,4.5);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera,{left:-2.5,right:2.5,top:2.5,bottom:-2.5,near:.5,far:12});sun.shadow.bias=-.0004;sun.shadow.normalBias=.02;
+scene.add(sun,sun.target,new THREE.HemisphereLight(0xffffff,0x6f665c,.45));
 const wxyz=w=>new THREE.Quaternion(w[1],w[2],w[3],w[0]);
 const _v=new THREE.Vector3(),_q=new THREE.Quaternion(),_m=new THREE.Matrix4();
-let meta,bg,aspect=4/3,meshOn=false;
+let meta,bg,aspect=4/3,meshOn=false,look='scan',studio=null;
 let mj=null,model=null,data=null,physics=false,simTime=0,lastT=0;
 const objs=[],joints=[],cover=[],pickables=[],staticCol=new THREE.Group();helpers.add(staticCol);staticCol.visible=false;
 let sel=null,hold=null,mode='translate',dragging=false,toastTimer=0,blockedAt=0;
@@ -50,7 +57,7 @@ async function loadMesh(url,center){ // unlit mesh, shrunk slightly so observed 
 function lineMat(color,opacity=1){return new THREE.LineBasicMaterial({color,depthTest:false,transparent:true,opacity});}
 
 async function buildObject(obj){
-  const root=new THREE.Group(),nodes={},waits=[],fills=[];
+  const root=new THREE.Group(),nodes={},waits=[],fills=[],parts=[];
   for(const l of obj.links){
     const content=new THREE.Group();let splat=null;
     if(l.has_gaussians){splat=new SplatMesh({url:BASE+l.name+'.spz'});content.add(splat);waits.push(splat.initialized);}
@@ -61,6 +68,11 @@ async function buildObject(obj){
       // view coverage: outside the directions the capture saw this link from, its Gaussians smear -> draw the mesh
       if(splat&&l.coverage&&l.count>=2000)cover.push({content,splat,mesh:m,o:new THREE.Vector3(...l.coverage.origin),dirs:l.coverage.dirs.map(d=>new THREE.Vector3(...d)),cos:Math.cos(l.coverage.deg*Math.PI/180),covered:true});
     }));
+    if(l.parts)waits.push(new GLTFLoader().loadAsync(BASE+l.name+'.parts.glb').then(gl=>{
+      const g=gl.scene;g.name='parts';g.userData.owner=obj.name;g.visible=look==='polished';
+      g.traverse(m=>{if(m.isMesh){m.castShadow=m.receiveShadow=true;const mt=m.material;mt.color.convertSRGBToLinear();if(mt.metalness>.5){mt.metalness=.75;mt.roughness=.25;}}});
+      content.add(g);pickables.push(g);parts.push({splat,content,parts:g});
+    }));
     if(l.parent==='world'){root.position.set(...l.pos_world);root.quaternion.copy(wxyz(l.quat_world_wxyz));root.add(content);nodes[l.name]={pivot:root,content};}
     else{const pivot=new THREE.Group();pivot.position.set(...l.pos_in_parent);content.quaternion.copy(wxyz(l.quat_in_parent_wxyz));pivot.add(content);nodes[l.parent].pivot.add(pivot);nodes[l.name]={pivot,content};}
   }
@@ -70,7 +82,7 @@ async function buildObject(obj){
   obj.links.forEach(l=>bounds.union(new THREE.Box3().setFromObject(nodes[l.name].content.getObjectByName('fill')).applyMatrix4(inv)));
   const color=COLORS[obj.name]||0x0071e3;
   const box=new THREE.Box3Helper(bounds,color);box.material=lineMat(color);box.renderOrder=1000;root.add(box);
-  const o={name:obj.name,label:NAMES[obj.name]||obj.name,root,nodes,fills,bounds,box,color,center:bounds.getCenter(new THREE.Vector3()),
+  const o={name:obj.name,label:NAMES[obj.name]||obj.name,root,nodes,fills,parts,bounds,box,color,center:bounds.getCenter(new THREE.Vector3()),
     show:{box:false,joint:false,col:false},joints:[],col:new THREE.Group(),bodies:new Set(),validPos:root.position.clone(),validQuat:root.quaternion.clone()};
   o.col.visible=false;helpers.add(o.col);
   for(const j of obj.joints){
@@ -295,7 +307,7 @@ function applyHold(){
 }
 
 // ---------------------------------------------------------------- frame loop
-function updateCoverage(){for(const c of cover){c.content.updateMatrixWorld();_v.copy(camera.position).applyMatrix4(_m.copy(c.content.matrixWorld).invert()).sub(c.o).normalize();
+function updateCoverage(){if(look!=='scan')return;for(const c of cover){c.content.updateMatrixWorld();_v.copy(camera.position).applyMatrix4(_m.copy(c.content.matrixWorld).invert()).sub(c.o).normalize();
   let best=-1;for(const d of c.dirs){const x=d.dot(_v);if(x>best)best=x;}const ok=best>=c.cos;if(ok!==c.covered){c.covered=ok;c.splat.visible=ok;c.mesh.visible=!ok||meshOn;}}}
 let frameN=0;
 function frame(now){
@@ -312,6 +324,31 @@ function frame(now){
   updateCoverage();renderer.render(scene,camera);
 }
 
+function buildStudio(){
+  const g=new THREE.Group(),cv=document.createElement('canvas');cv.width=cv.height=256;const x=cv.getContext('2d');
+  for(let i=0;i<2;i++)for(let j=0;j<2;j++){x.fillStyle=(i+j)%2?'#8c8378':'#9d9489';x.fillRect(i*128,j*128,128,128);}
+  const tex=new THREE.CanvasTexture(cv);tex.wrapS=tex.wrapT=THREE.RepeatWrapping;tex.repeat.set(10,10);tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=8;
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(10,10),new THREE.MeshStandardMaterial({map:tex,roughness:.92}));floor.receiveShadow=true;floor.name='floor';
+  const ped=meta.pedestal.box,c=new THREE.Vector3(...ped.center);floor.position.set(c.x,c.y,0);
+  const table=new THREE.Mesh(new THREE.BoxGeometry(...ped.size),new THREE.MeshStandardMaterial({color:0xe9e7e2,roughness:.65}));
+  table.position.copy(c);table.rotation.z=(ped.yaw_deg||0)*Math.PI/180;table.castShadow=table.receiveShadow=true;
+  sun.target.position.set(c.x+.4,c.y+.6,0);sun.position.set(c.x+2.6,c.y-1.2,4.8);
+  g.add(floor,table);g.visible=false;scene.add(g);return g;
+}
+function setLook(v){
+  look=v;const pol=v==='polished';
+  document.querySelectorAll('[data-look]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.look===v)));
+  $('#sim-root').classList.toggle('polished',pol);
+  const room=$('#sim-room');room.checked=!pol;if(bg)bg.visible=!pol;
+  studio.visible=pol;studio.getObjectByName('floor').visible=true;
+  for(const o of objs){
+    for(const p of o.parts){p.parts.visible=pol;if(p.splat)p.splat.visible=!pol;
+      const f=p.content.getObjectByName('fill');if(f)f.visible=!pol&&(f.userData.always||meshOn);}
+  }
+  if(!pol)cover.forEach(c=>{c.covered=true;c.splat.visible=true;c.mesh.visible=c.mesh.userData.always||meshOn;});
+  try{localStorage.setItem('rehearse-look',v);}catch(e){}
+}
+
 async function init(){
   meta=await fetch(BASE+'scene.json').then(r=>r.json());aspect=meta.intrinsics.width/meta.intrinsics.height;resize();view(0);
   bg=new SplatMesh({url:BASE+'background.spz'});scene.add(bg);
@@ -319,16 +356,20 @@ async function init(){
   await Promise.all([bg.initialized,...meta.objects.map(buildObject)]);
   objs.sort((a,b)=>meta.objects.findIndex(x=>x.name===a.name)-meta.objects.findIndex(x=>x.name===b.name));
   objs.forEach(o=>o.joints.forEach(J=>J.parts.forEach(p=>p.visible=false)));
-  statusEl.hidden=true;buildPanel();hint();
+  studio=buildStudio();statusEl.hidden=true;buildPanel();hint();
+  let saved='scan';try{saved=localStorage.getItem('rehearse-look')||'scan';}catch(e){}
+  if(/[?#&]look=polished/.test(location.href))saved='polished';
+  setLook(saved==='polished'?'polished':'scan');
   const total=Object.values(meta.counts).reduce((a,b)=>a+b,0);$('#sim-count').textContent=(total/1e6).toFixed(2)+' M Gaussians';
   try{await physicsP;bindPhysics();pull();$('#sim-root').classList.add('ready');hint();}
   catch(err){console.error(err);say('Physics could not load in this browser; the scene is view-only.');}
-  window.rehearseSim={ready:!!model,meta,scene,camera,renderer,objs,joints,view,select,setPhysics,reset,tryPose,tryJoint,penetration,get model(){return model;},get data(){return data;},get mj(){return mj;}};
+  window.rehearseSim={ready:!!model,setLook,get look(){return look;},meta,scene,camera,renderer,objs,joints,view,select,setPhysics,reset,tryPose,tryJoint,penetration,get model(){return model;},get data(){return data;},get mj(){return mj;}};
 }
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>meta&&view(+b.dataset.view));
 document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
 $('#sim-physics').onclick=()=>model&&setPhysics(!physics);
 $('#sim-reset').onclick=reset;
-$('#sim-room').onchange=e=>{if(bg)bg.visible=e.target.checked;};
-$('#sim-mesh').onchange=e=>{meshOn=e.target.checked;objs.forEach(o=>o.fills.forEach(m=>m.visible=meshOn));cover.forEach(c=>{c.covered=true;c.splat.visible=true;});};
+$('#sim-room').onchange=e=>{if(bg)bg.visible=e.target.checked;if(studio&&look==='polished')studio.getObjectByName('floor').visible=!e.target.checked;};
+document.querySelectorAll('[data-look]').forEach(b=>b.onclick=()=>studio&&setLook(b.dataset.look));
+$('#sim-mesh').onchange=e=>{meshOn=e.target.checked;if(look!=='scan')return;objs.forEach(o=>o.fills.forEach(m=>m.visible=meshOn));cover.forEach(c=>{c.covered=true;c.splat.visible=true;});};
 init().catch(e=>{console.error(e);statusEl.hidden=false;statusEl.textContent='This viewer needs WebGL 2.';});requestAnimationFrame(frame);

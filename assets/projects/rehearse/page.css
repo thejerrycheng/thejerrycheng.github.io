@@ -58,6 +58,10 @@
 .tg.mixed{background:#9ec5f8}
 .sim-view-opts{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--ink)}
 .sim-view-opts label{display:flex;align-items:center;gap:6px}
+.sim.polished .scan-only{display:none}
+.sim.polished .sim-stage{background:#e9e7e3}
+.sim.polished #sim-count{display:none}
+.sim:not(.running).polished .sim-badge{display:none}
 .sim-help{font-size:12px;color:var(--muted);line-height:1.45;margin:0}
 .sim-help kbd{font:inherit;border:1px solid var(--hair);border-radius:4px;padding:0 4px}
 .sim-legend{font-size:12px;color:var(--muted);margin:0}

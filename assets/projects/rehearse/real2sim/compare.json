@@ -69,6 +69,10 @@
       "iou": 0.8811,
       "source": "gs_sim/sim/eval_final.json (MuJoCo segmentation, depth-ordered occlusion)"
      }
+    },
+    "Part model": {
+     "iou": 0.9378,
+     "note": "AgentSTAR-style parametric part model (real2sim/part_models.py), multi-view silhouette fit (fit_parts / fit_parts_joint; the two chairs share one shape)"
     }
    },
    "sim_uses": "revolve fit (fit_revolve)",
@@ -144,9 +148,13 @@
       "iou": 0.8396,
       "source": "gs_sim/sim/eval_final.json (MuJoCo segmentation, depth-ordered occlusion)"
      }
+    },
+    "Part model": {
+     "iou": 0.8332,
+     "note": "AgentSTAR-style parametric part model (real2sim/part_models.py), multi-view silhouette fit (fit_parts / fit_parts_joint; the two chairs share one shape)"
     }
    },
-   "sim_uses": "Hunyuan3D generated, silhouette refit (fit_mesh)",
+   "sim_uses": "part model collision (shell, cushion, column, 4-prong base) + swivel; scan mesh/splat in the Scan view",
    "reason": "SDF/TSDF score higher on outlines but have no star base and slab-filled backs; generated mesh is complete"
   },
   "chair_1": {
@@ -185,9 +193,13 @@
       "iou": 0.6782,
       "source": "gs_sim/sim/eval_final.json (MuJoCo segmentation, depth-ordered occlusion)"
      }
+    },
+    "Part model": {
+     "iou": 0.7647,
+     "note": "AgentSTAR-style parametric part model (real2sim/part_models.py), multi-view silhouette fit (fit_parts / fit_parts_joint; the two chairs share one shape)"
     }
    },
-   "sim_uses": "Hunyuan3D generated (chair_0's model), refit",
+   "sim_uses": "part model collision (shell, cushion, column, 4-prong base) + swivel; scan mesh/splat in the Scan view",
    "reason": "same as chair_0; generated shape is the wrong model so IoU is low"
   },
   "backpack": {
@@ -226,9 +238,13 @@
       "iou": 0.8136,
       "source": "gs_sim/sim/eval_final.json (MuJoCo segmentation, depth-ordered occlusion)"
      }
+    },
+    "Part model": {
+     "iou": 0.8585,
+     "note": "AgentSTAR-style parametric part model (real2sim/part_models.py), multi-view silhouette fit (fit_parts / fit_parts_joint; the two chairs share one shape)"
     }
    },
-   "sim_uses": "Hunyuan3D generated, refit",
+   "sim_uses": "part model collision; scan mesh/splat in the Scan view",
    "reason": "TSDF scores highest on outlines but is an open, shredded shell; generated mesh is closed and clean"
   }
  }
