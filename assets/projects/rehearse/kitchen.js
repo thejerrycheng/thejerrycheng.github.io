@@ -58,8 +58,12 @@ async function initAssets(){
     const b=new THREE.Box3().setFromObject(cur),c=b.getCenter(new THREE.Vector3()),d=b.getSize(new THREE.Vector3()).length();
     ctl.target.copy(c);cam.position.copy(c).add(new THREE.Vector3(.9,.55,1).multiplyScalar(d));cam.near=d/100;cam.far=d*20;cam.updateProjectionMatrix();
   }
-  const ul=document.querySelector('#k-asset-list');
-  for(const a of list.assets){const b=document.createElement('button');b.dataset.asset=a.id;b.textContent=a.label;b.onclick=()=>show(a);ul.appendChild(b);}
+  const ul=document.querySelector('#k-asset-list'),sel=document.querySelector('#k-asset-set');
+  const fill=setId=>{ul.innerHTML='';for(const a of list.assets.filter(x=>x.set===setId)){const b=document.createElement('button');b.dataset.asset=a.id;b.textContent=a.label;b.onclick=()=>show(a);ul.appendChild(b);}};
+  for(const st of list.sets){const o=document.createElement('option');o.value=st.id;o.textContent=`${st.label} (${list.assets.filter(x=>x.set===st.id).length})`;sel.appendChild(o);}
+  sel.onchange=()=>{fill(sel.value);show(list.assets.find(x=>x.set===sel.value));};
+  fill(list.sets[0].id);
+  document.querySelector('#k-asset-count').textContent=list.assets.length;
   show(list.assets[0]);
   r.setAnimationLoop(()=>{ctl.update();r.render(sc,cam);});
 }

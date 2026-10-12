@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-12 17:10 EDT",
+ "updated": "2026-10-12 18:20 EDT",
  "stages": [
   {
    "name": "Frames",
@@ -33,23 +33,23 @@
   },
   {
    "name": "Joints from observed motion",
-   "state": "running",
-   "detail": "GPT-6 annotates every door/drawer/appliance door (closed + open frames); depth-plane tool turns the clicks into metric rectangles and fits hinge/slide axes"
+   "state": "done",
+   "detail": "26 fronts measured by GPT-6 with the depth-plane tool; hinge/slide axes constrained to the panel edges; 15 parts have measured open states"
   },
   {
    "name": "Articulated splat",
-   "state": "todo",
-   "detail": "Per-part Gaussians with a learned joint state per frame (open doors train the interior)"
+   "state": "running",
+   "detail": "Full-scene splat with per-frame joint states for the 25 measured fronts, 0.75 res, 500 k Gaussians"
   },
   {
    "name": "NeuralFeels from hand demonstrations",
-   "state": "running",
-   "detail": "Objects picked up and turned on camera (can, kettle, bowl): joint object-pose tracking + neural SDF, so hidden sides are reconstructed"
+   "state": "done",
+   "detail": "Tested on the demonstrated can: monocular depth is too noisy for a 6 cm object (held-out IoU 0.67) \u2014 small items use photo-fitted Blender models; kept for large objects"
   },
   {
    "name": "Objects and cabinets (GPT-6, Blender)",
    "state": "running",
-   "detail": "Kettle, espresso machine and wooden bowl modeled by GPT-6 in Blender (below); more objects queued"
+   "detail": "158 Blender assets from 11 GPT-6 set jobs (fridge, range, sink, cabinetry runs, cutlery, dishware, cookware, fridge/pantry/counter contents); mechanism + physics jobs running (latches, buttons, springs, friction)"
   },
   {
    "name": "MuJoCo + Isaac Sim export",

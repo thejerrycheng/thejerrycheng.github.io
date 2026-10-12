@@ -1,8 +1,1476 @@
-{"assets": [
- {"id": "kettle_0", "label": "Gooseneck kettle", "file": "assets/kettle_0.glb", "method": "GPT-6 (Codex) Blender model, render-vs-photo review",
-  "detail": "Kettle, base and lid as separate bodies; 8 convex colliders. Vessel silhouette IoU 0.92 on 4 calibrated views (same views used for fitting).", "size": "0.21 × 0.28 × 0.21 m"},
- {"id": "coffee_machine_0", "label": "Espresso machine", "file": "assets/coffee_machine_0.glb", "method": "GPT-6 (Codex) Blender model, render-vs-photo review",
-  "detail": "Removable portafilter, sliding drip tray (prismatic 0–0.12 m), 8 convex colliders.", "size": "≈0.30 × 0.36 × 0.42 m"},
- {"id": "bowl_1", "label": "Olive-wood bowl", "file": "assets/bowl_1.glb", "method": "GPT-6 (Codex) Blender model, render-vs-photo review",
-  "detail": "Outer silhouette IoU 0.97 / 0.81 / 0.91 on 3 calibrated views; demonstrated by hand (picked up, turned).", "size": "0.28 × 0.28 × 0.09 m"}
-]}
+{
+"sets": [
+{
+"id": "objects",
+"label": "First models"
+},
+{
+"id": "fridge",
+"label": "Fridge"
+},
+{
+"id": "range_oven",
+"label": "Range & oven"
+},
+{
+"id": "sink_faucet",
+"label": "Sink & faucet"
+},
+{
+"id": "small_appliances",
+"label": "Small appliances"
+},
+{
+"id": "cabinetry_shell",
+"label": "Cabinetry & room"
+},
+{
+"id": "cookware",
+"label": "Cookware"
+},
+{
+"id": "dishware",
+"label": "Dishware"
+},
+{
+"id": "cutlery_utensils",
+"label": "Cutlery & utensils"
+},
+{
+"id": "fridge_contents",
+"label": "Fridge contents"
+},
+{
+"id": "pantry_contents",
+"label": "Pantry"
+},
+{
+"id": "counter_items",
+"label": "Counter items"
+}
+],
+"assets": [
+{
+"id": "objects__bowl_1",
+"set": "objects",
+"label": "bowl 1",
+"file": "assets/objects__bowl_1.glb",
+"size": "0.28 \u00d7 0.28 \u00d7 0.09 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "objects__coffee_machine_0",
+"set": "objects",
+"label": "coffee machine 0",
+"file": "assets/objects__coffee_machine_0.glb",
+"size": "0.28 \u00d7 0.26 \u00d7 0.40 m",
+"detail": "3 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "objects__kettle_0",
+"set": "objects",
+"label": "kettle 0",
+"file": "assets/objects__kettle_0.glb",
+"size": "0.21 \u00d7 0.28 \u00d7 0.21 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge__refrigerator",
+"set": "fridge",
+"label": "refrigerator",
+"file": "assets/fridge__refrigerator.glb",
+"size": "0.90 \u00d7 0.86 \u00d7 1.86 m",
+"detail": "11 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "range_oven__oven_storage_drawer",
+"set": "range_oven",
+"label": "oven storage drawer",
+"file": "assets/range_oven__oven_storage_drawer.glb",
+"size": "0.85 \u00d7 0.54 \u00d7 0.21 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "range_oven__oven_towel",
+"set": "range_oven",
+"label": "oven towel",
+"file": "assets/range_oven__oven_towel.glb",
+"size": "0.25 \u00d7 0.09 \u00d7 0.35 m",
+"detail": "0 joints; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "range_oven__oven_wire_rack",
+"set": "range_oven",
+"label": "oven wire rack",
+"file": "assets/range_oven__oven_wire_rack.glb",
+"size": "0.67 \u00d7 0.50 \u00d7 0.01 m",
+"detail": "1 joint; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "range_oven__range_body",
+"set": "range_oven",
+"label": "range body",
+"file": "assets/range_oven__range_body.glb",
+"size": "0.88 \u00d7 0.82 \u00d7 1.22 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "range_oven__range_hood",
+"set": "range_oven",
+"label": "range hood",
+"file": "assets/range_oven__range_hood.glb",
+"size": "0.90 \u00d7 0.48 \u00d7 0.17 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "sink_faucet__counter_sponge",
+"set": "sink_faucet",
+"label": "counter sponge",
+"file": "assets/sink_faucet__counter_sponge.glb",
+"size": "0.12 \u00d7 0.07 \u00d7 0.02 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "sink_faucet__sink_amber_pump_bottle",
+"set": "sink_faucet",
+"label": "sink amber pump bottle",
+"file": "assets/sink_faucet__sink_amber_pump_bottle.glb",
+"size": "0.07 \u00d7 0.08 \u00d7 0.23 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "sink_faucet__sink_auxiliary_fitting",
+"set": "sink_faucet",
+"label": "sink auxiliary fitting",
+"file": "assets/sink_faucet__sink_auxiliary_fitting.glb",
+"size": "0.05 \u00d7 0.05 \u00d7 0.02 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "sink_faucet__sink_double_basin",
+"set": "sink_faucet",
+"label": "sink double basin",
+"file": "assets/sink_faucet__sink_double_basin.glb",
+"size": "0.88 \u00d7 0.58 \u00d7 0.20 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "sink_faucet__sink_drain",
+"set": "sink_faucet",
+"label": "sink drain",
+"file": "assets/sink_faucet__sink_drain.glb",
+"size": "0.11 \u00d7 0.11 \u00d7 0.04 m",
+"detail": "0 joints; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "sink_faucet__sink_faucet",
+"set": "sink_faucet",
+"label": "sink faucet",
+"file": "assets/sink_faucet__sink_faucet.glb",
+"size": "0.29 \u00d7 0.27 \u00d7 0.41 m",
+"detail": "6 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "sink_faucet__sink_green_soap_bottle",
+"set": "sink_faucet",
+"label": "sink green soap bottle",
+"file": "assets/sink_faucet__sink_green_soap_bottle.glb",
+"size": "0.09 \u00d7 0.07 \u00d7 0.27 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "sink_faucet__sink_scourer",
+"set": "sink_faucet",
+"label": "sink scourer",
+"file": "assets/sink_faucet__sink_scourer.glb",
+"size": "0.08 \u00d7 0.07 \u00d7 0.07 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "sink_faucet__sink_wire_caddy",
+"set": "sink_faucet",
+"label": "sink wire caddy",
+"file": "assets/sink_faucet__sink_wire_caddy.glb",
+"size": "0.28 \u00d7 0.13 \u00d7 0.11 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "small_appliances__microwave_body",
+"set": "small_appliances",
+"label": "microwave body",
+"file": "assets/small_appliances__microwave_body.glb",
+"size": "0.60 \u00d7 0.44 \u00d7 0.35 m",
+"detail": "3 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "small_appliances__rice_cooker",
+"set": "small_appliances",
+"label": "rice cooker",
+"file": "assets/small_appliances__rice_cooker.glb",
+"size": "0.31 \u00d7 0.32 \u00d7 0.32 m",
+"detail": "2 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cabinetry_shell__prep_run",
+"set": "cabinetry_shell",
+"label": "prep run",
+"file": "assets/cabinetry_shell__prep_run.glb",
+"size": "0.80 \u00d7 2.84 \u00d7 2.32 m",
+"detail": "10 joints; 21 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cabinetry_shell__rear_run",
+"set": "cabinetry_shell",
+"label": "rear run",
+"file": "assets/cabinetry_shell__rear_run.glb",
+"size": "2.36 \u00d7 0.87 \u00d7 2.31 m",
+"detail": "6 joints; 14 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cabinetry_shell__room_shell",
+"set": "cabinetry_shell",
+"label": "room shell",
+"file": "assets/cabinetry_shell__room_shell.glb",
+"size": "2.74 \u00d7 3.23 \u00d7 2.68 m",
+"detail": "0 joints; 6 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cabinetry_shell__sink_run",
+"set": "cabinetry_shell",
+"label": "sink run",
+"file": "assets/cabinetry_shell__sink_run.glb",
+"size": "0.71 \u00d7 1.36 \u00d7 1.02 m",
+"detail": "2 joints; 5 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cookware__cocktail_jigger",
+"set": "cookware",
+"label": "cocktail jigger",
+"file": "assets/cookware__cocktail_jigger.glb",
+"size": "0.04 \u00d7 0.04 \u00d7 0.09 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cookware__cocktail_shaker",
+"set": "cookware",
+"label": "cocktail shaker",
+"file": "assets/cookware__cocktail_shaker.glb",
+"size": "0.08 \u00d7 0.08 \u00d7 0.21 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cookware__copper_hammered_cup",
+"set": "cookware",
+"label": "copper hammered cup",
+"file": "assets/cookware__copper_hammered_cup.glb",
+"size": "0.08 \u00d7 0.08 \u00d7 0.10 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cookware__dish_middle_metal_bowl",
+"set": "cookware",
+"label": "dish middle metal bowl",
+"file": "assets/cookware__dish_middle_metal_bowl.glb",
+"size": "0.12 \u00d7 0.12 \u00d7 0.05 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cookware__metal_tankard",
+"set": "cookware",
+"label": "metal tankard",
+"file": "assets/cookware__metal_tankard.glb",
+"size": "0.08 \u00d7 0.07 \u00d7 0.09 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cookware__microwave_small_metal_vessel",
+"set": "cookware",
+"label": "microwave small metal vessel",
+"file": "assets/cookware__microwave_small_metal_vessel.glb",
+"size": "0.04 \u00d7 0.03 \u00d7 0.07 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cookware__steamer_bottom_pot",
+"set": "cookware",
+"label": "steamer bottom pot",
+"file": "assets/cookware__steamer_bottom_pot.glb",
+"size": "0.38 \u00d7 0.27 \u00d7 0.08 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cookware__steamer_dome_lid",
+"set": "cookware",
+"label": "steamer dome lid",
+"file": "assets/cookware__steamer_dome_lid.glb",
+"size": "0.29 \u00d7 0.29 \u00d7 0.19 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cookware__steamer_upper_insert",
+"set": "cookware",
+"label": "steamer upper insert",
+"file": "assets/cookware__steamer_upper_insert.glb",
+"size": "0.38 \u00d7 0.27 \u00d7 0.09 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cookware__utensil_pitcher",
+"set": "cookware",
+"label": "utensil pitcher",
+"file": "assets/cookware__utensil_pitcher.glb",
+"size": "0.17 \u00d7 0.13 \u00d7 0.21 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cookware__white_moka_pot",
+"set": "cookware",
+"label": "white moka pot",
+"file": "assets/cookware__white_moka_pot.glb",
+"size": "0.11 \u00d7 0.08 \u00d7 0.15 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__bamboo_lid_storage",
+"set": "dishware",
+"label": "bamboo lid storage",
+"file": "assets/dishware__bamboo_lid_storage.glb",
+"size": "0.16 \u00d7 0.15 \u00d7 0.15 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__ceramic_mug",
+"set": "dishware",
+"label": "ceramic mug",
+"file": "assets/dishware__ceramic_mug.glb",
+"size": "0.11 \u00d7 0.09 \u00d7 0.10 m",
+"detail": "0 joints; 6 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__clear_food_clamshell",
+"set": "dishware",
+"label": "clear food clamshell",
+"file": "assets/dishware__clear_food_clamshell.glb",
+"size": "0.13 \u00d7 0.11 \u00d7 0.06 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__colored_small_bowl",
+"set": "dishware",
+"label": "colored small bowl",
+"file": "assets/dishware__colored_small_bowl.glb",
+"size": "0.12 \u00d7 0.12 \u00d7 0.05 m",
+"detail": "0 joints; 3 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__deep_ceramic_bowl",
+"set": "dishware",
+"label": "deep ceramic bowl",
+"file": "assets/dishware__deep_ceramic_bowl.glb",
+"size": "0.18 \u00d7 0.18 \u00d7 0.07 m",
+"detail": "0 joints; 4 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__dinner_plate",
+"set": "dishware",
+"label": "dinner plate",
+"file": "assets/dishware__dinner_plate.glb",
+"size": "0.26 \u00d7 0.26 \u00d7 0.02 m",
+"detail": "0 joints; 5 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__faceted_tall_glass",
+"set": "dishware",
+"label": "faceted tall glass",
+"file": "assets/dishware__faceted_tall_glass.glb",
+"size": "0.07 \u00d7 0.07 \u00d7 0.17 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__green_straw_tumbler",
+"set": "dishware",
+"label": "green straw tumbler",
+"file": "assets/dishware__green_straw_tumbler.glb",
+"size": "0.09 \u00d7 0.09 \u00d7 0.20 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__hammered_copper_cup",
+"set": "dishware",
+"label": "hammered copper cup",
+"file": "assets/dishware__hammered_copper_cup.glb",
+"size": "0.08 \u00d7 0.08 \u00d7 0.11 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__latching_food_box",
+"set": "dishware",
+"label": "latching food box",
+"file": "assets/dishware__latching_food_box.glb",
+"size": "0.22 \u00d7 0.17 \u00d7 0.07 m",
+"detail": "4 joints; 3 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__matcha_bowl",
+"set": "dishware",
+"label": "matcha bowl",
+"file": "assets/dishware__matcha_bowl.glb",
+"size": "0.14 \u00d7 0.14 \u00d7 0.08 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__matcha_saucer",
+"set": "dishware",
+"label": "matcha saucer",
+"file": "assets/dishware__matcha_saucer.glb",
+"size": "0.18 \u00d7 0.18 \u00d7 0.02 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__ornate_tankard",
+"set": "dishware",
+"label": "ornate tankard",
+"file": "assets/dishware__ornate_tankard.glb",
+"size": "0.13 \u00d7 0.11 \u00d7 0.16 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__oval_platter",
+"set": "dishware",
+"label": "oval platter",
+"file": "assets/dishware__oval_platter.glb",
+"size": "0.28 \u00d7 0.22 \u00d7 0.03 m",
+"detail": "0 joints; 3 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__paper_cup",
+"set": "dishware",
+"label": "paper cup",
+"file": "assets/dishware__paper_cup.glb",
+"size": "0.08 \u00d7 0.08 \u00d7 0.10 m",
+"detail": "0 joints; 4 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__serving_bowl",
+"set": "dishware",
+"label": "serving bowl",
+"file": "assets/dishware__serving_bowl.glb",
+"size": "0.28 \u00d7 0.28 \u00d7 0.10 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__shallow_dinner_bowl",
+"set": "dishware",
+"label": "shallow dinner bowl",
+"file": "assets/dishware__shallow_dinner_bowl.glb",
+"size": "0.26 \u00d7 0.26 \u00d7 0.04 m",
+"detail": "0 joints; 5 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__short_tumbler",
+"set": "dishware",
+"label": "short tumbler",
+"file": "assets/dishware__short_tumbler.glb",
+"size": "0.07 \u00d7 0.07 \u00d7 0.10 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__shot_glass",
+"set": "dishware",
+"label": "shot glass",
+"file": "assets/dishware__shot_glass.glb",
+"size": "0.04 \u00d7 0.04 \u00d7 0.08 m",
+"detail": "0 joints; 3 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__small_ceramic_cup",
+"set": "dishware",
+"label": "small ceramic cup",
+"file": "assets/dishware__small_ceramic_cup.glb",
+"size": "0.06 \u00d7 0.06 \u00d7 0.05 m",
+"detail": "0 joints; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__small_rimmed_plate",
+"set": "dishware",
+"label": "small rimmed plate",
+"file": "assets/dishware__small_rimmed_plate.glb",
+"size": "0.20 \u00d7 0.20 \u00d7 0.02 m",
+"detail": "0 joints; 4 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__steel_bowl",
+"set": "dishware",
+"label": "steel bowl",
+"file": "assets/dishware__steel_bowl.glb",
+"size": "0.13 \u00d7 0.13 \u00d7 0.06 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__straight_drinking_glass",
+"set": "dishware",
+"label": "straight drinking glass",
+"file": "assets/dishware__straight_drinking_glass.glb",
+"size": "0.08 \u00d7 0.08 \u00d7 0.15 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__straight_tumbler",
+"set": "dishware",
+"label": "straight tumbler",
+"file": "assets/dishware__straight_tumbler.glb",
+"size": "0.08 \u00d7 0.08 \u00d7 0.16 m",
+"detail": "0 joints; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__waisted_tumbler",
+"set": "dishware",
+"label": "waisted tumbler",
+"file": "assets/dishware__waisted_tumbler.glb",
+"size": "0.09 \u00d7 0.09 \u00d7 0.15 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__white_nested_cup",
+"set": "dishware",
+"label": "white nested cup",
+"file": "assets/dishware__white_nested_cup.glb",
+"size": "0.09 \u00d7 0.09 \u00d7 0.10 m",
+"detail": "0 joints; 5 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__wide_shallow_bowl",
+"set": "dishware",
+"label": "wide shallow bowl",
+"file": "assets/dishware__wide_shallow_bowl.glb",
+"size": "0.25 \u00d7 0.25 \u00d7 0.04 m",
+"detail": "0 joints; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "dishware__wine_glass",
+"set": "dishware",
+"label": "wine glass",
+"file": "assets/dishware__wine_glass.glb",
+"size": "0.08 \u00d7 0.08 \u00d7 0.21 m",
+"detail": "0 joints; 6 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__bamboo_whisk",
+"set": "cutlery_utensils",
+"label": "bamboo whisk",
+"file": "assets/cutlery_utensils__bamboo_whisk.glb",
+"size": "0.05 \u00d7 0.05 \u00d7 0.11 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__cutlery_organizer",
+"set": "cutlery_utensils",
+"label": "cutlery organizer",
+"file": "assets/cutlery_utensils__cutlery_organizer.glb",
+"size": "0.32 \u00d7 0.39 \u00d7 0.05 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__drawer_rice_paddle",
+"set": "cutlery_utensils",
+"label": "drawer rice paddle",
+"file": "assets/cutlery_utensils__drawer_rice_paddle.glb",
+"size": "0.07 \u00d7 0.20 \u00d7 0.01 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__fork_dessert",
+"set": "cutlery_utensils",
+"label": "fork dessert",
+"file": "assets/cutlery_utensils__fork_dessert.glb",
+"size": "0.02 \u00d7 0.20 \u00d7 0.01 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__fork_dinner",
+"set": "cutlery_utensils",
+"label": "fork dinner",
+"file": "assets/cutlery_utensils__fork_dinner.glb",
+"size": "0.02 \u00d7 0.21 \u00d7 0.01 m",
+"detail": "0 joints; 5 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__fork_long_slim",
+"set": "cutlery_utensils",
+"label": "fork long slim",
+"file": "assets/cutlery_utensils__fork_long_slim.glb",
+"size": "0.02 \u00d7 0.24 \u00d7 0.01 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__gray_spatula",
+"set": "cutlery_utensils",
+"label": "gray spatula",
+"file": "assets/cutlery_utensils__gray_spatula.glb",
+"size": "0.07 \u00d7 0.31 \u00d7 0.01 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__knife_block",
+"set": "cutlery_utensils",
+"label": "knife block",
+"file": "assets/cutlery_utensils__knife_block.glb",
+"size": "0.11 \u00d7 0.17 \u00d7 0.23 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__large_drawer_spoon",
+"set": "cutlery_utensils",
+"label": "large drawer spoon",
+"file": "assets/cutlery_utensils__large_drawer_spoon.glb",
+"size": "0.04 \u00d7 0.21 \u00d7 0.02 m",
+"detail": "0 joints; 5 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__metal_ladle",
+"set": "cutlery_utensils",
+"label": "metal ladle",
+"file": "assets/cutlery_utensils__metal_ladle.glb",
+"size": "0.08 \u00d7 0.30 \u00d7 0.04 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__metal_serving_spoon",
+"set": "cutlery_utensils",
+"label": "metal serving spoon",
+"file": "assets/cutlery_utensils__metal_serving_spoon.glb",
+"size": "0.06 \u00d7 0.26 \u00d7 0.02 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__round_teaspoon",
+"set": "cutlery_utensils",
+"label": "round teaspoon",
+"file": "assets/cutlery_utensils__round_teaspoon.glb",
+"size": "0.03 \u00d7 0.14 \u00d7 0.01 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__table_knife",
+"set": "cutlery_utensils",
+"label": "table knife",
+"file": "assets/cutlery_utensils__table_knife.glb",
+"size": "0.02 \u00d7 0.25 \u00d7 0.01 m",
+"detail": "0 joints; 4 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__tablespoon",
+"set": "cutlery_utensils",
+"label": "tablespoon",
+"file": "assets/cutlery_utensils__tablespoon.glb",
+"size": "0.04 \u00d7 0.19 \u00d7 0.01 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__utensil_pitcher",
+"set": "cutlery_utensils",
+"label": "utensil pitcher",
+"file": "assets/cutlery_utensils__utensil_pitcher.glb",
+"size": "0.18 \u00d7 0.14 \u00d7 0.23 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__white_rice_paddle",
+"set": "cutlery_utensils",
+"label": "white rice paddle",
+"file": "assets/cutlery_utensils__white_rice_paddle.glb",
+"size": "0.04 \u00d7 0.24 \u00d7 0.01 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__wood_spatula",
+"set": "cutlery_utensils",
+"label": "wood spatula",
+"file": "assets/cutlery_utensils__wood_spatula.glb",
+"size": "0.06 \u00d7 0.30 \u00d7 0.01 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "cutlery_utensils__wood_spoon_pale",
+"set": "cutlery_utensils",
+"label": "wood spoon pale",
+"file": "assets/cutlery_utensils__wood_spoon_pale.glb",
+"size": "0.04 \u00d7 0.29 \u00d7 0.01 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__beverage_can",
+"set": "fridge_contents",
+"label": "beverage can",
+"file": "assets/fridge_contents__beverage_can.glb",
+"size": "0.07 \u00d7 0.07 \u00d7 0.17 m",
+"detail": "1 joint; 9 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__blue_ice_cube_tray",
+"set": "fridge_contents",
+"label": "blue ice cube tray",
+"file": "assets/fridge_contents__blue_ice_cube_tray.glb",
+"size": "0.26 \u00d7 0.10 \u00d7 0.04 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__citrus",
+"set": "fridge_contents",
+"label": "citrus",
+"file": "assets/fridge_contents__citrus.glb",
+"size": "0.09 \u00d7 0.09 \u00d7 0.09 m",
+"detail": "0 joints; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__clear_liquid_bottle",
+"set": "fridge_contents",
+"label": "clear liquid bottle",
+"file": "assets/fridge_contents__clear_liquid_bottle.glb",
+"size": "0.09 \u00d7 0.09 \u00d7 0.25 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__cola_pet_bottle",
+"set": "fridge_contents",
+"label": "cola pet bottle",
+"file": "assets/fridge_contents__cola_pet_bottle.glb",
+"size": "0.07 \u00d7 0.07 \u00d7 0.23 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__cork_glass_carafe",
+"set": "fridge_contents",
+"label": "cork glass carafe",
+"file": "assets/fridge_contents__cork_glass_carafe.glb",
+"size": "0.09 \u00d7 0.09 \u00d7 0.24 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__dark_ice_cube_tray",
+"set": "fridge_contents",
+"label": "dark ice cube tray",
+"file": "assets/fridge_contents__dark_ice_cube_tray.glb",
+"size": "0.26 \u00d7 0.10 \u00d7 0.03 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__door_storage_bin",
+"set": "fridge_contents",
+"label": "door storage bin",
+"file": "assets/fridge_contents__door_storage_bin.glb",
+"size": "0.63 \u00d7 0.13 \u00d7 0.10 m",
+"detail": "1 joint; 5 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__dressing_bottle",
+"set": "fridge_contents",
+"label": "dressing bottle",
+"file": "assets/fridge_contents__dressing_bottle.glb",
+"size": "0.07 \u00d7 0.07 \u00d7 0.20 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__egg",
+"set": "fridge_contents",
+"label": "egg",
+"file": "assets/fridge_contents__egg.glb",
+"size": "0.04 \u00d7 0.04 \u00d7 0.06 m",
+"detail": "0 joints; 8 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__freezer_food_container",
+"set": "fridge_contents",
+"label": "freezer food container",
+"file": "assets/fridge_contents__freezer_food_container.glb",
+"size": "0.29 \u00d7 0.22 \u00d7 0.07 m",
+"detail": "1 joint; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__frozen_food_pouch",
+"set": "fridge_contents",
+"label": "frozen food pouch",
+"file": "assets/fridge_contents__frozen_food_pouch.glb",
+"size": "0.25 \u00d7 0.18 \u00d7 0.06 m",
+"detail": "0 joints; 3 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__gable_drink_carton",
+"set": "fridge_contents",
+"label": "gable drink carton",
+"file": "assets/fridge_contents__gable_drink_carton.glb",
+"size": "0.09 \u00d7 0.09 \u00d7 0.24 m",
+"detail": "1 joint; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__glass_shelf",
+"set": "fridge_contents",
+"label": "glass shelf",
+"file": "assets/fridge_contents__glass_shelf.glb",
+"size": "0.66 \u00d7 0.40 \u00d7 0.02 m",
+"detail": "1 joint; 3 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__green_nozzle_sauce",
+"set": "fridge_contents",
+"label": "green nozzle sauce",
+"file": "assets/fridge_contents__green_nozzle_sauce.glb",
+"size": "0.06 \u00d7 0.06 \u00d7 0.20 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__hot_sauce_bottle",
+"set": "fridge_contents",
+"label": "hot sauce bottle",
+"file": "assets/fridge_contents__hot_sauce_bottle.glb",
+"size": "0.05 \u00d7 0.05 \u00d7 0.20 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__molded_pulp_egg_tray",
+"set": "fridge_contents",
+"label": "molded pulp egg tray",
+"file": "assets/fridge_contents__molded_pulp_egg_tray.glb",
+"size": "0.27 \u00d7 0.10 \u00d7 0.04 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__orange_nine_cube_tray",
+"set": "fridge_contents",
+"label": "orange nine cube tray",
+"file": "assets/fridge_contents__orange_nine_cube_tray.glb",
+"size": "0.17 \u00d7 0.17 \u00d7 0.04 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__pickle_jar",
+"set": "fridge_contents",
+"label": "pickle jar",
+"file": "assets/fridge_contents__pickle_jar.glb",
+"size": "0.09 \u00d7 0.09 \u00d7 0.16 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__produce_bag",
+"set": "fridge_contents",
+"label": "produce bag",
+"file": "assets/fridge_contents__produce_bag.glb",
+"size": "0.25 \u00d7 0.17 \u00d7 0.10 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__ribbed_freezer_tub",
+"set": "fridge_contents",
+"label": "ribbed freezer tub",
+"file": "assets/fridge_contents__ribbed_freezer_tub.glb",
+"size": "0.25 \u00d7 0.19 \u00d7 0.12 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__round_ice_mold",
+"set": "fridge_contents",
+"label": "round ice mold",
+"file": "assets/fridge_contents__round_ice_mold.glb",
+"size": "0.09 \u00d7 0.10 \u00d7 0.10 m",
+"detail": "1 joint; 4 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__screw_lid_food_jar",
+"set": "fridge_contents",
+"label": "screw lid food jar",
+"file": "assets/fridge_contents__screw_lid_food_jar.glb",
+"size": "0.08 \u00d7 0.08 \u00d7 0.13 m",
+"detail": "1 joint; 6 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__shallow_food_container",
+"set": "fridge_contents",
+"label": "shallow food container",
+"file": "assets/fridge_contents__shallow_food_container.glb",
+"size": "0.22 \u00d7 0.15 \u00d7 0.04 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__small_green_glass_bottle",
+"set": "fridge_contents",
+"label": "small green glass bottle",
+"file": "assets/fridge_contents__small_green_glass_bottle.glb",
+"size": "0.04 \u00d7 0.04 \u00d7 0.13 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__small_ridged_water_bottle",
+"set": "fridge_contents",
+"label": "small ridged water bottle",
+"file": "assets/fridge_contents__small_ridged_water_bottle.glb",
+"size": "0.06 \u00d7 0.06 \u00d7 0.15 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__square_sauce_bottle",
+"set": "fridge_contents",
+"label": "square sauce bottle",
+"file": "assets/fridge_contents__square_sauce_bottle.glb",
+"size": "0.07 \u00d7 0.06 \u00d7 0.18 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__squeeze_sauce_bottle",
+"set": "fridge_contents",
+"label": "squeeze sauce bottle",
+"file": "assets/fridge_contents__squeeze_sauce_bottle.glb",
+"size": "0.05 \u00d7 0.05 \u00d7 0.17 m",
+"detail": "1 joint; 5 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__tall_frosted_bottle",
+"set": "fridge_contents",
+"label": "tall frosted bottle",
+"file": "assets/fridge_contents__tall_frosted_bottle.glb",
+"size": "0.08 \u00d7 0.08 \u00d7 0.29 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__taupe_nine_cube_tray",
+"set": "fridge_contents",
+"label": "taupe nine cube tray",
+"file": "assets/fridge_contents__taupe_nine_cube_tray.glb",
+"size": "0.14 \u00d7 0.13 \u00d7 0.04 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__wrapped_food",
+"set": "fridge_contents",
+"label": "wrapped food",
+"file": "assets/fridge_contents__wrapped_food.glb",
+"size": "0.20 \u00d7 0.14 \u00d7 0.06 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "fridge_contents__yellow_drink_bottle",
+"set": "fridge_contents",
+"label": "yellow drink bottle",
+"file": "assets/fridge_contents__yellow_drink_bottle.glb",
+"size": "0.09 \u00d7 0.09 \u00d7 0.23 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__bamboo_whisk",
+"set": "pantry_contents",
+"label": "bamboo whisk",
+"file": "assets/pantry_contents__bamboo_whisk.glb",
+"size": "0.11 \u00d7 0.05 \u00d7 0.07 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__blue_flat_carton",
+"set": "pantry_contents",
+"label": "blue flat carton",
+"file": "assets/pantry_contents__blue_flat_carton.glb",
+"size": "0.08 \u00d7 0.15 \u00d7 0.05 m",
+"detail": "4 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__coffee_capsule_carton",
+"set": "pantry_contents",
+"label": "coffee capsule carton",
+"file": "assets/pantry_contents__coffee_capsule_carton.glb",
+"size": "0.08 \u00d7 0.25 \u00d7 0.08 m",
+"detail": "4 joints; 6 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__cracker_bag",
+"set": "pantry_contents",
+"label": "cracker bag",
+"file": "assets/pantry_contents__cracker_bag.glb",
+"size": "0.09 \u00d7 0.07 \u00d7 0.21 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__dark_pantry_canister",
+"set": "pantry_contents",
+"label": "dark pantry canister",
+"file": "assets/pantry_contents__dark_pantry_canister.glb",
+"size": "0.04 \u00d7 0.04 \u00d7 0.17 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__gallon_storage_bag_package",
+"set": "pantry_contents",
+"label": "gallon storage bag package",
+"file": "assets/pantry_contents__gallon_storage_bag_package.glb",
+"size": "0.18 \u00d7 0.07 \u00d7 0.20 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__green_snack_pouch",
+"set": "pantry_contents",
+"label": "green snack pouch",
+"file": "assets/pantry_contents__green_snack_pouch.glb",
+"size": "0.20 \u00d7 0.14 \u00d7 0.05 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__loose_blue_cap",
+"set": "pantry_contents",
+"label": "loose blue cap",
+"file": "assets/pantry_contents__loose_blue_cap.glb",
+"size": "0.05 \u00d7 0.05 \u00d7 0.01 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__matcha_bowl",
+"set": "pantry_contents",
+"label": "matcha bowl",
+"file": "assets/pantry_contents__matcha_bowl.glb",
+"size": "0.12 \u00d7 0.12 \u00d7 0.07 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__matcha_saucer",
+"set": "pantry_contents",
+"label": "matcha saucer",
+"file": "assets/pantry_contents__matcha_saucer.glb",
+"size": "0.15 \u00d7 0.15 \u00d7 0.01 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__metal_tankard",
+"set": "pantry_contents",
+"label": "metal tankard",
+"file": "assets/pantry_contents__metal_tankard.glb",
+"size": "0.14 \u00d7 0.10 \u00d7 0.12 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__microwave_metal_canister",
+"set": "pantry_contents",
+"label": "microwave metal canister",
+"file": "assets/pantry_contents__microwave_metal_canister.glb",
+"size": "0.05 \u00d7 0.05 \u00d7 0.09 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__oil_bottle",
+"set": "pantry_contents",
+"label": "oil bottle",
+"file": "assets/pantry_contents__oil_bottle.glb",
+"size": "0.07 \u00d7 0.07 \u00d7 0.24 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__open_white_carton",
+"set": "pantry_contents",
+"label": "open white carton",
+"file": "assets/pantry_contents__open_white_carton.glb",
+"size": "0.09 \u00d7 0.23 \u00d7 0.15 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__pink_snack_pouch",
+"set": "pantry_contents",
+"label": "pink snack pouch",
+"file": "assets/pantry_contents__pink_snack_pouch.glb",
+"size": "0.17 \u00d7 0.12 \u00d7 0.05 m",
+"detail": "0 joints; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__round_storage_lid",
+"set": "pantry_contents",
+"label": "round storage lid",
+"file": "assets/pantry_contents__round_storage_lid.glb",
+"size": "0.14 \u00d7 0.14 \u00d7 0.01 m",
+"detail": "0 joints; 5 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__sesame_food_bag",
+"set": "pantry_contents",
+"label": "sesame food bag",
+"file": "assets/pantry_contents__sesame_food_bag.glb",
+"size": "0.23 \u00d7 0.09 \u00d7 0.27 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__silver_grinder",
+"set": "pantry_contents",
+"label": "silver grinder",
+"file": "assets/pantry_contents__silver_grinder.glb",
+"size": "0.06 \u00d7 0.06 \u00d7 0.19 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__slender_food_carton",
+"set": "pantry_contents",
+"label": "slender food carton",
+"file": "assets/pantry_contents__slender_food_carton.glb",
+"size": "0.04 \u00d7 0.09 \u00d7 0.22 m",
+"detail": "4 joints; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__small_dark_bottle",
+"set": "pantry_contents",
+"label": "small dark bottle",
+"file": "assets/pantry_contents__small_dark_bottle.glb",
+"size": "0.03 \u00d7 0.03 \u00d7 0.08 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__small_food_carton",
+"set": "pantry_contents",
+"label": "small food carton",
+"file": "assets/pantry_contents__small_food_carton.glb",
+"size": "0.08 \u00d7 0.07 \u00d7 0.10 m",
+"detail": "4 joints; 3 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__small_grinder",
+"set": "pantry_contents",
+"label": "small grinder",
+"file": "assets/pantry_contents__small_grinder.glb",
+"size": "0.05 \u00d7 0.05 \u00d7 0.15 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__small_spice_bottle",
+"set": "pantry_contents",
+"label": "small spice bottle",
+"file": "assets/pantry_contents__small_spice_bottle.glb",
+"size": "0.05 \u00d7 0.05 \u00d7 0.11 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__spice_grinder",
+"set": "pantry_contents",
+"label": "spice grinder",
+"file": "assets/pantry_contents__spice_grinder.glb",
+"size": "0.06 \u00d7 0.06 \u00d7 0.16 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__spice_jar",
+"set": "pantry_contents",
+"label": "spice jar",
+"file": "assets/pantry_contents__spice_jar.glb",
+"size": "0.06 \u00d7 0.06 \u00d7 0.17 m",
+"detail": "0 joints; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__storage_box",
+"set": "pantry_contents",
+"label": "storage box",
+"file": "assets/pantry_contents__storage_box.glb",
+"size": "0.22 \u00d7 0.16 \u00d7 0.05 m",
+"detail": "2 joints; 3 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__tea_basket",
+"set": "pantry_contents",
+"label": "tea basket",
+"file": "assets/pantry_contents__tea_basket.glb",
+"size": "0.18 \u00d7 0.14 \u00d7 0.09 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__tea_sachet",
+"set": "pantry_contents",
+"label": "tea sachet",
+"file": "assets/pantry_contents__tea_sachet.glb",
+"size": "0.06 \u00d7 0.00 \u00d7 0.08 m",
+"detail": "0 joints; 4 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "pantry_contents__white_tube",
+"set": "pantry_contents",
+"label": "white tube",
+"file": "assets/pantry_contents__white_tube.glb",
+"size": "0.04 \u00d7 0.04 \u00d7 0.10 m",
+"detail": "0 joints; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__amber_pump",
+"set": "counter_items",
+"label": "amber pump",
+"file": "assets/counter_items__amber_pump.glb",
+"size": "0.07 \u00d7 0.07 \u00d7 0.23 m",
+"detail": "2 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__bamboo_lid_box",
+"set": "counter_items",
+"label": "bamboo lid box",
+"file": "assets/counter_items__bamboo_lid_box.glb",
+"size": "0.16 \u00d7 0.13 \u00d7 0.11 m",
+"detail": "0 joints; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__bread_bag",
+"set": "counter_items",
+"label": "bread bag",
+"file": "assets/counter_items__bread_bag.glb",
+"size": "0.19 \u00d7 0.13 \u00d7 0.09 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__caddy_cloth",
+"set": "counter_items",
+"label": "caddy cloth",
+"file": "assets/counter_items__caddy_cloth.glb",
+"size": "0.14 \u00d7 0.09 \u00d7 0.08 m",
+"detail": "0 joints; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__cream_jar",
+"set": "counter_items",
+"label": "cream jar",
+"file": "assets/counter_items__cream_jar.glb",
+"size": "0.10 \u00d7 0.10 \u00d7 0.11 m",
+"detail": "0 joints; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__food_clamshell",
+"set": "counter_items",
+"label": "food clamshell",
+"file": "assets/counter_items__food_clamshell.glb",
+"size": "0.13 \u00d7 0.14 \u00d7 0.04 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__green_soap",
+"set": "counter_items",
+"label": "green soap",
+"file": "assets/counter_items__green_soap.glb",
+"size": "0.11 \u00d7 0.07 \u00d7 0.24 m",
+"detail": "1 joint; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__open_trash_bin",
+"set": "counter_items",
+"label": "open trash bin",
+"file": "assets/counter_items__open_trash_bin.glb",
+"size": "0.38 \u00d7 0.40 \u00d7 0.69 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__oven_towel",
+"set": "counter_items",
+"label": "oven towel",
+"file": "assets/counter_items__oven_towel.glb",
+"size": "0.26 \u00d7 0.03 \u00d7 0.41 m",
+"detail": "0 joints; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__paper_towel_roll",
+"set": "counter_items",
+"label": "paper towel roll",
+"file": "assets/counter_items__paper_towel_roll.glb",
+"size": "0.14 \u00d7 0.14 \u00d7 0.31 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__paper_towel_stand",
+"set": "counter_items",
+"label": "paper towel stand",
+"file": "assets/counter_items__paper_towel_stand.glb",
+"size": "0.18 \u00d7 0.19 \u00d7 0.33 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__scourer",
+"set": "counter_items",
+"label": "scourer",
+"file": "assets/counter_items__scourer.glb",
+"size": "0.07 \u00d7 0.06 \u00d7 0.03 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__sink_drape",
+"set": "counter_items",
+"label": "sink drape",
+"file": "assets/counter_items__sink_drape.glb",
+"size": "0.15 \u00d7 0.09 \u00d7 0.16 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__sponge",
+"set": "counter_items",
+"label": "sponge",
+"file": "assets/counter_items__sponge.glb",
+"size": "0.08 \u00d7 0.07 \u00d7 0.03 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__syrup_bottle",
+"set": "counter_items",
+"label": "syrup bottle",
+"file": "assets/counter_items__syrup_bottle.glb",
+"size": "0.06 \u00d7 0.06 \u00d7 0.23 m",
+"detail": "1 joint; 2 instances in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+},
+{
+"id": "counter_items__wire_caddy",
+"set": "counter_items",
+"label": "wire caddy",
+"file": "assets/counter_items__wire_caddy.glb",
+"size": "0.19 \u00d7 0.16 \u00d7 0.10 m",
+"detail": "0 joints; 1 instance in the scene",
+"method": "GPT-6 (Codex) Blender model, photo-checked"
+}
+]
+}
