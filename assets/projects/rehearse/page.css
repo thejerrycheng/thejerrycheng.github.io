@@ -100,3 +100,14 @@ h3.sub+p{color:var(--muted)}
   .nav-links{gap:14px}.nav-links .opt{display:none}
   section{padding:72px 16px}
 }
+
+/* kitchen (work in progress) */
+
+.k-sim{margin-top:20px}
+.k-progress{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.k-progress li{display:grid;grid-template-columns:14px 1fr;column-gap:8px;font-size:13px;line-height:1.35}
+.k-progress li::before{content:"";width:10px;height:10px;border-radius:50%;margin-top:4px;background:#ced4da}
+.k-progress li.done::before{background:#2f9e44}
+.k-progress li.running::before{background:#f08c00;box-shadow:0 0 0 3px rgba(240,140,0,.2)}
+.k-progress li b{font-weight:600;grid-column:2}
+.k-progress li span{grid-column:2;color:var(--muted)}

@@ -1,0 +1,13 @@
+{"updated": "2026-10-12 16:10 EDT",
+ "stages": [
+  {"name": "Frames", "state": "done", "detail": "699 sharpest frames from 6,988 (3:53, 1280×1707)"},
+  {"name": "Camera poses", "state": "done", "detail": "COLMAP global SfM with loop closure: 673 frames, 1.0 px; 12 outlier frames dropped"},
+  {"name": "Hands removed", "state": "done", "detail": "Grounding DINO + SAM 2.1: hands in 366 frames (3.9 % of pixels) ignored in training"},
+  {"name": "Depth and scale", "state": "done", "detail": "Depth Anything 3 per frame, 3.7 % median error vs SfM; camera height 1.1–1.8 m"},
+  {"name": "Gaussian splat (preview)", "state": "done", "detail": "Half resolution, 320 k Gaussians, held-out PSNR 18.3 dB; moved items and opened doors still smear"},
+  {"name": "Object and front detection", "state": "running", "detail": "Doors, drawers, appliance doors and counter items lifted to 3D; GPT-6 inventory: 38 articulated parts"},
+  {"name": "Joints from observed motion", "state": "todo", "detail": "Hinge and slide axes measured from frames where each part was opened"},
+  {"name": "Articulated splat", "state": "todo", "detail": "Per-part Gaussians with a learned joint state per frame (open doors train the interior)"},
+  {"name": "Objects and cabinets (GPT-6, Blender)", "state": "todo", "detail": "Part models with textures, checked against the photos"},
+  {"name": "MuJoCo + Isaac Sim export", "state": "todo", "detail": "MJCF and USD (exporter already validated on the room scene)"}
+ ]}

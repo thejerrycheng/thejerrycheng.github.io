@@ -9,9 +9,10 @@
 <link rel="stylesheet" href="assets/projects/rehearse/page.css">
 <script type="importmap">{"imports":{"three":"./assets/js/vendor/three.module.min.js"}}</script>
 <script type="module" src="assets/projects/rehearse/sim.js"></script>
+<script type="module" src="assets/projects/rehearse/kitchen.js"></script>
 </head>
 <body>
-<nav class="toc"><div class="nav-inner"><a class="brand" href="#top">Rehearse</a><div class="nav-links"><a href="#sim">Simulator</a><a href="#results">Results</a><a href="#neuralfeels" class="opt">Why not NeuralFeels</a><a href="#methods">Methods</a><a href="#limits" class="opt">Limitations</a><a href="projects.html">All projects ↗</a></div></div></nav>
+<nav class="toc"><div class="nav-inner"><a class="brand" href="#top">Rehearse</a><div class="nav-links"><a href="#sim">Simulator</a><a href="#kitchen">Kitchen</a><a href="#results">Results</a><a href="#neuralfeels" class="opt">Why not NeuralFeels</a><a href="#methods">Methods</a><a href="#limits" class="opt">Limitations</a><a href="projects.html">All projects ↗</a></div></div></nav>
 <main id="top">
 
 <section class="hero-sim" id="sim">
@@ -40,6 +41,23 @@
 </div>
 <p class="note">Everything is rendered from Gaussian splats with Spark; MuJoCo 3.15 (WebAssembly) runs the same model as the exported MJCF: the same bodies, joints, masses, friction and collision shapes (boxes, cylinders and convex hulls). Where you look at a part from a side the video never saw, it is drawn with its mesh instead of a smeared splat. <b>Polished</b> swaps every object for its part model (seat shell, star base, lid, straps), fitted to the same video frames the way the laptop was; physics is identical in both views. Masses and friction are assumptions. <a href="assets/projects/rehearse/real2sim/physics.xml">Physics model ↗</a></p>
 </section>
+
+<section id="kitchen"><div class="wrap">
+<p class="eyebrow">Next scene · in progress</p><h2>A real kitchen, as a simulator.</h2>
+<p class="lede">A 3:53 walk-through of a home kitchen in which cabinets, drawers, the oven, the fridge and the freezer are opened and items are moved. The goal: every door, drawer and appliance articulated, every counter item movable, exported to MuJoCo and Isaac Sim for training. This viewer shows the newest result of each stage as it lands.</p>
+<div class="sim k-sim">
+ <div class="sim-stage">
+  <div id="k-view" aria-label="Gaussian splat of the kitchen (work in progress)"></div>
+  <p id="k-status" class="sim-status">Loading…</p>
+  <div class="sim-hud"><div class="seg" role="group" aria-label="Capture camera" id="k-views"><span class="lbl">Camera</span></div></div>
+ </div>
+ <aside class="sim-panel" aria-label="Kitchen pipeline progress">
+  <div><h3>Pipeline</h3><ul class="k-progress" id="k-progress"></ul><p class="sim-help">Updated <span id="k-updated">–</span></p></div>
+  <div><h3>View</h3><div class="sim-view-opts"><label><input type="checkbox" id="k-path"> Camera path</label></div></div>
+  <p class="sim-help">Drag to orbit, scroll to zoom, pick a capture camera to jump to where the phone was.</p>
+ </aside>
+</div>
+</div></section>
 
 <section class="band" id="results"><div class="wrap">
 <div class="section-heading"><p class="eyebrow">Results</p><h2>Every method,<br>side by side.</h2><p>Each object was reconstructed several ways and scored on held-out video frames (every 8th frame, never used for fitting). The simulator keeps the shape that is accurate <em>and</em> complete, closed and articulated.</p></div>
