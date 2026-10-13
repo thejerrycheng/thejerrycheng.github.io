@@ -1,0 +1,45 @@
+{
+  "checkpoint": "milo_wbc_final.pt",
+  "level": 1.0,
+  "domain_randomisation": true,
+  "episodes": 4096,
+  "successes": 4073,
+  "success_rate": 0.994384765625,
+  "termination_counts": {
+    "torque_limit": 4,
+    "joint_pos_limit": 5
+  },
+  "failed_criteria_counts": {
+    "early_termination": 9,
+    "wrist_pos": 10,
+    "head_pos": 8,
+    "wrist_rot": 0,
+    "head_rot": 0
+  },
+  "end_stop_joints": {
+    "left_arm_2 (upper stop)": 4,
+    "right_arm_2 (upper stop)": 1
+  },
+  "torque_limit_joints": {
+    "torso": 4
+  },
+  "mean_pos_err_m": {
+    "left_wrist": 0.014745616354048252,
+    "right_wrist": 0.014114820398390293,
+    "head": 0.019658640027046204
+  },
+  "mean_rot_err_rad": {
+    "left_wrist": 0.04736190289258957,
+    "right_wrist": 0.047331247478723526,
+    "head": 0.03843562304973602
+  },
+  "success_thresholds": {
+    "wrist_pos": 0.05,
+    "head_pos": 0.05,
+    "wrist_rot": 0.25,
+    "head_rot": 0.25
+  },
+  "ik_posture_vs_reference_rad": 0.002598096616566181,
+  "mean_abs_action_change_per_step": 0.1984296414019049,
+  "wall_s": 234.2562973499298
+}

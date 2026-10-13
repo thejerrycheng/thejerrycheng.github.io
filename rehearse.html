@@ -12,7 +12,7 @@
 <script type="module" src="assets/projects/rehearse/kitchen.js"></script>
 </head>
 <body>
-<nav class="toc"><div class="nav-inner"><a class="brand" href="#top">Rehearse</a><div class="nav-links"><a href="#sim">Simulator</a><a href="#kitchen">Kitchen</a><a href="#results">Results</a><a href="#neuralfeels" class="opt">Why not NeuralFeels</a><a href="#methods">Methods</a><a href="#limits" class="opt">Limitations</a><a href="projects.html">All projects ↗</a></div></div></nav>
+<nav class="toc"><div class="nav-inner"><a class="brand" href="#top">Rehearse</a><div class="nav-links"><a href="#sim">Simulator</a><a href="#kitchen">Kitchen</a><a href="#results">Results</a><a href="#neuralfeels" class="opt">Why not NeuralFeels</a><a href="#methods">Methods</a><a href="rehearse-wbc.html">Whole-body control ↗</a><a href="#limits" class="opt">Limitations</a><a href="projects.html">All projects ↗</a></div></div></nav>
 <main id="top">
 
 <section class="hero-sim" id="sim">
@@ -68,7 +68,7 @@ fetch('assets/projects/rehearse/kitchen/progress.json').then(r=>r.json()).then(p
  <aside class="sim-panel" aria-label="Kitchen pipeline progress">
   <div><h3>Pipeline</h3><ul class="k-progress" id="k-progress"></ul><p class="sim-help">Updated <span id="k-updated">–</span></p></div>
   <div><h3>View</h3><div class="sim-view-opts"><label><input type="checkbox" id="k-path"> Camera path</label></div></div>
-  <div><h3>Explore</h3><ul class="k-links"><li><a href="rehearse-library.html">Asset library ↗</a> — every object in 3D: joints, physics, force demos.</li><li><a href="assets/projects/rehearse/replay/rehearse-replay.html">Camera replay ↗</a> — the phone's 6-DoF path through the reconstruction, frame by frame.</li><li><a href="rehearse-robots.html">Robot models ↗</a> — three robots rebuilt in MuJoCo, with a live simulation console (private, passcode).</li></ul></div>
+  <div><h3>Explore</h3><ul class="k-links"><li><a href="rehearse-wbc.html">Whole-body control ↗</a> — a learned controller that tracks MILO's head and wrists with base, lift, torso and arms.</li><li><a href="rehearse-library.html">Asset library ↗</a> — every object in 3D: joints, physics, force demos.</li><li><a href="assets/projects/rehearse/replay/rehearse-replay.html">Camera replay ↗</a> — the phone's 6-DoF path through the reconstruction, frame by frame.</li><li><a href="rehearse-robots.html">Robot models ↗</a> — three robots rebuilt in MuJoCo, with a live simulation console (private, passcode).</li></ul></div>
   <p class="sim-help">Drag to orbit, scroll to zoom, pick a capture camera to jump to where the phone was.</p>
  </aside>
 </div>
