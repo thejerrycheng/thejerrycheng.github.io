@@ -43,11 +43,25 @@
 </section>
 
 <section id="kitchen"><div class="wrap">
+<link rel="stylesheet" href="assets/projects/rehearse/scene/scene.css">
+<script type="module">
+import {mountScene,mountSplatPreview} from './assets/projects/rehearse/scene/scene.js';
+const host=document.querySelector('#kitchen-scene');
+window.kitchenScene=mountScene(host,{dataUrl:'assets/projects/rehearse/kitchen/sim/scene.json'});
+window.kitchenScene.ready.catch(error=>{console.error('Kitchen scene:',error);});
+const section=document.querySelector('#kitchen'),preview=section.querySelector('.kitchen-preview-details');
+let previewStarted=false;
+preview.addEventListener('toggle',()=>{if(!preview.open||previewStarted)return;previewStarted=true;mountSplatPreview(section.querySelector('#k-preview-view'),{dataUrl:'assets/projects/rehearse/kitchen/scene.json',splatUrl:'assets/projects/rehearse/kitchen/scene.spz',camerasEl:section.querySelector('#k-views'),pathInput:section.querySelector('#k-path'),statusEl:section.querySelector('#k-status')}).catch(error=>{section.querySelector('#k-status').textContent=error.message;});});
+fetch('assets/projects/rehearse/kitchen/progress.json').then(r=>r.json()).then(progress=>{const list=section.querySelector('#k-progress');for(const stage of progress.stages){const row=document.createElement('li'),name=document.createElement('b'),detail=document.createElement('span');row.className=stage.state;name.textContent=stage.name;detail.textContent=stage.detail;row.append(name,detail);list.append(row);}section.querySelector('#k-updated').textContent=progress.updated;}).catch(()=>{section.querySelector('#k-updated').textContent='unavailable';});
+</script>
 <p class="eyebrow">Next scene · in progress</p><h2>A real kitchen, as a simulator.</h2>
 <p class="lede">A 3:53 walk-through of a home kitchen in which cabinets, drawers, the oven, the fridge and the freezer are opened and items are moved. The goal: every door, drawer and appliance articulated, every counter item movable, exported to MuJoCo and Isaac Sim for training. This viewer shows the newest result of each stage as it lands.</p>
+<div id="kitchen-scene" class="kitchen-interactive" aria-label="Interactive kitchen simulator"></div>
+<p class="kitchen-scene-note">An offline reconstruction at depth-estimated metric scale. Move an object, open a door or drawer, or press an appliance button. <b>Scan</b> shows the observed Gaussians; <b>Polished</b> shows the textured part models. Physical properties are assumptions. Stored contents activate when their container opens. Physics is experimental; some objects shift substantially during settling. <a href="assets/projects/rehearse/kitchen/sim/physics.xml">Browser physics model ↗</a></p>
+<details class="kitchen-preview-details"><summary>Original splat preview &amp; pipeline progress</summary>
 <div class="sim k-sim">
  <div class="sim-stage">
-  <div id="k-view" aria-label="Gaussian splat of the kitchen (work in progress)"></div>
+  <div id="k-preview-view" aria-label="Gaussian splat of the kitchen (work in progress)"></div>
   <p id="k-status" class="sim-status">Loading…</p>
   <div class="sim-hud"><div class="seg" role="group" aria-label="Capture camera" id="k-views"><span class="lbl">Camera</span></div></div>
  </div>
@@ -58,6 +72,7 @@
   <p class="sim-help">Drag to orbit, scroll to zoom, pick a capture camera to jump to where the phone was.</p>
  </aside>
 </div>
+</details>
 <div class="k-assets">
  <div class="k-asset-stage"><div id="k-asset-view" aria-label="Selected reconstructed asset"></div><p id="k-asset-status" class="sim-status">Loading…</p></div>
  <aside class="sim-panel"><div><h3>Assets · <span id="k-asset-count">–</span> models</h3><select id="k-asset-set" class="k-asset-set" aria-label="Asset set"></select><div class="k-asset-list" id="k-asset-list" role="group" aria-label="Asset"></div></div>

@@ -1,0 +1,32 @@
+{
+  "accepted": false,
+  "browser_status": "Operator test pending; not run in this sandbox",
+  "website_status": "Staged; external checkout outside writable roots; installer does not edit HTML",
+  "native_rest_pass": true,
+  "wasm_rest_pass": true,
+  "wasm_mean_cpu_budget_pass": true,
+  "wasm_p95_cpu_budget_pass": true,
+  "storage_lod_pass": true,
+  "interaction_pass": true,
+  "bundle_static_pass": true,
+  "bundle_bytes": 40282877,
+  "stored_objects": 180,
+  "settled_dynamic_objects": 3,
+  "held_settle_failures": 46,
+  "flexes": 0,
+  "timing": {
+    "native": {
+      "mean": 1.2567729450000014,
+      "p50": 1.2415419999998178,
+      "p95": 1.3329171499999681,
+      "max": 1.8625699999998968
+    },
+    "wasm": {
+      "mean": 2.0701929999999984,
+      "p50": 2.035,
+      "p95": 2.275,
+      "max": 5.595
+    }
+  },
+  "scope": "Offline reconstruction and interactive simulation. Browser operator validation pending."
+}
