@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-13 07:25",
+ "updated": "2026-10-13 08:22",
  "stages": [
   {
    "name": "Frames",
@@ -53,8 +53,8 @@
   },
   {
    "name": "MuJoCo + Isaac Sim export",
-   "state": "running",
-   "detail": "Browser physics model exported; native MuJoCo 3.5 scene rests within 4 mm over 2 s; Isaac USD export pending"
+   "state": "done",
+   "detail": "Native MuJoCo scene rests within 4 mm over 2 s; USD stage for Isaac Sim with 469 rigid bodies, 531 enabled physics joints, latch drives, welded stored contents and the 673 calibrated cameras — masses and limits match MuJoCo to 1e-6; validated with usd-core readback, not yet loaded in Isaac Sim"
   },
   {
    "name": "Per-asset Gaussians + meshes",
