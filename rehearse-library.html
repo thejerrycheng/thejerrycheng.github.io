@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Asset Library — Rehearse</title>
+<meta name="description" content="Explore the objects of a real kitchen. Reconstructed geometry, articulated mechanisms, and interactive MuJoCo physics.">
+<link rel="icon" href="data:,">
+<link rel="canonical" href="https://thejerrycheng.github.io/rehearse-library.html">
+<link rel="stylesheet" href="assets/projects/rehearse/rehearse.css">
+<link rel="stylesheet" href="assets/projects/rehearse/library/library.css">
+<script type="importmap">{"imports":{"three":"./assets/js/vendor/three.module.min.js"}}</script>
+<script type="module" src="assets/projects/rehearse/library/page.js"></script>
+</head>
+<body class="library-page">
+<nav class="library-nav"><div><a class="brand" href="rehearse.html">Rehearse<span class="nav-divider"> / </span><span class="nav-current">Asset library</span></a><a class="back-project" href="rehearse.html">The project <span aria-hidden="true">↗</span></a></div></nav>
+<main id="library-main">
+<div id="catalog">
+<header class="library-intro"><p class="eyebrow">One kitchen. Every little detail.</p><h1>Real objects.<br><span>Ready to explore.</span></h1><p class="library-lede">A library built from a walk through a real kitchen.<br class="wide-only"> Pick an object. Open a door. Feel how it moves.</p><div class="catalog-summary" id="catalog-summary" aria-live="polite">Gathering the collection…</div></header>
+<div class="catalog-toolbar"><label class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="asset-search" type="search" placeholder="Find an object" aria-label="Search assets" autocomplete="off"></label><label class="set-select"><span>Collection</span><select id="asset-set" aria-label="Filter by asset set"><option value="">All collections</option></select></label></div>
+<div class="grid-heading"><h2 id="grid-title">The collection</h2><span id="result-count" aria-live="polite"></span></div>
+<div id="asset-grid" class="library-grid" aria-label="Asset collection"></div>
+<p class="empty-state" id="empty-state" hidden>No objects match that search. Try a different name or collection.</p>
+<p class="catalog-footnote">Geometry comes from video. Hidden details are completed; physical properties are assumptions unless documented. “Measured” refers to geometry or motion evidence, never to measured hand forces.</p>
+</div>
+<article id="asset-detail" hidden aria-label="Asset details"></article>
+</main>
+<footer class="library-footer"><a href="rehearse.html">Rehearse</a><span>A real room, as a simulator.</span><span>Built to look closer.</span></footer>
+<noscript><p>This interactive library needs JavaScript. <a href="assets/projects/rehearse/library/index.json">Browse the asset index</a>.</p></noscript>
+</body></html>

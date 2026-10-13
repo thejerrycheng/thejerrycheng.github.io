@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-12 19:20 EDT",
+ "updated": "2026-10-12 21:09",
  "stages": [
   {
    "name": "Frames",
@@ -68,18 +68,23 @@
   },
   {
    "name": "Mechanisms + physics",
-   "state": "running",
-   "detail": "Fridge (gasket latch, bins, drawers) and microwave (two-stage release button, pop-open) pass force tests; range, faucet pull-out head, cabinets, small appliances in progress"
+   "state": "done",
+   "detail": "Fridge (gasket latch, bins, door drawers), microwave (two-stage release button), range/oven (21 N door breakaway, counterbalanced door, drawer, racks), faucet (swivel, pull-out head, lever), 14 cabinet doors + 4 drawers, kettle/espresso/rice cooker lid pop \u2014 all pass force tests"
   },
   {
    "name": "Soft bodies",
-   "state": "running",
-   "detail": "Sponge, scourer, towel, bags as MuJoCo flex with literature parameters, calibrated on the video"
+   "state": "done",
+   "detail": "Sponge, scourer, oven towel, bread bag, sink cloth as MuJoCo flex; stable at 1 ms, settle and grasp tests pass; parameters from literature, drape shapes calibrated on the video"
   },
   {
    "name": "Interactive scene + asset library + camera replay",
    "state": "running",
-   "detail": "Scene assembly with MjSpec, web physics, per-body splats; library viewer with joint demos and force arrows; smooth 6-DoF camera replay + video"
+   "detail": "Asset library (160 objects, joints, physics, force demos) and 6-DoF camera replay are live; the full interactive kitchen scene (move, articulate, physics, Scan/Polished) is being assembled with MjSpec"
+  },
+  {
+   "name": "Procedural kitchen generator",
+   "state": "done",
+   "detail": "L/U/galley/island layouts; cabinets, drawers, appliances, hinge sides and forces parametrised with this kitchen as default; 20 seeds pass settle + joint checks; MJCF/USD/GLB export"
   }
  ]
 }

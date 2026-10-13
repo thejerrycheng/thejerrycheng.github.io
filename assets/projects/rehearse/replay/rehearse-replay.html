@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kitchen · 3D reconstruction replay — Rehearse</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./replay.css">
+<script type="importmap">{"imports":{"three":"../../../js/vendor/three.module.min.js"}}</script>
+</head>
+<body>
+<main class="replay-page">
+<header class="page-heading"><a href="../../../../rehearse.html">← Rehearse</a><p class="eyebrow">OFFLINE RECONSTRUCTION</p><h1>A walk through the kitchen.</h1><p>The captured camera, its observations, and the reconstructed room — together in space and time.</p></header>
+<div id="replay"></div>
+<p class="page-note">Metric world · z up · scale estimated from DA3. Photos are the nearest registered observations. Projected annotations indicate field of view, not verified visibility.</p>
+</main>
+<script type="module">
+import {mountReplay} from './replay.js';
+if(new URLSearchParams(location.search).has('capture')) document.body.classList.add('capture');
+window.replay = await mountReplay(document.querySelector('#replay'), {dataUrl:'./data/kitchen/'});
+window.replayReady = true;
+</script>
+</body>
+</html>
