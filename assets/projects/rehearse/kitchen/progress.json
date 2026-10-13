@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-13 05:13",
+ "updated": "2026-10-13 07:25",
  "stages": [
   {
    "name": "Frames",
@@ -53,8 +53,8 @@
   },
   {
    "name": "MuJoCo + Isaac Sim export",
-   "state": "todo",
-   "detail": "MJCF and USD (exporter already validated on the room scene)"
+   "state": "running",
+   "detail": "Browser physics model exported; native MuJoCo 3.5 scene rests within 4 mm over 2 s; Isaac USD export pending"
   },
   {
    "name": "Per-asset Gaussians + meshes",
@@ -78,8 +78,8 @@
   },
   {
    "name": "Interactive scene + asset library + camera replay",
-   "state": "running",
-   "detail": "Asset library (160 objects, joints, physics, force demos) and 6-DoF camera replay are live; the full interactive kitchen scene (move, articulate, physics, Scan/Polished) is being assembled with MjSpec"
+   "state": "done",
+   "detail": "Whole kitchen in MuJoCo WASM (240 objects, 123 joints with latches, stored contents released when their door opens); 160-asset library with force demos; 6-DoF camera replay with the real frames blended over the reconstruction"
   },
   {
    "name": "Procedural kitchen generator",
