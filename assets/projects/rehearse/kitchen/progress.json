@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-13 00:23",
+ "updated": "2026-10-13 05:13",
  "stages": [
   {
    "name": "Frames",
@@ -88,13 +88,18 @@
   },
   {
    "name": "Construction fit and articulation audit",
-   "state": "running",
-   "detail": "Cabinet runs and fridge rebuilt with real joinery (2–4 mm reveals, overlay fronts, hinges on the box edge, bins ride on the doors); every joint swept for contacts; oven door re-squared (was 5° off); photo re-projection still 20–45 px because the world frame is tilted 2.8°"
+   "state": "done",
+   "detail": "Cabinet runs and fridge rebuilt with real joinery; oven door re-squared (was 5° off); every joint swept for contacts. Photo overlays still 10–60 px on the long cabinet runs and appliances: monocular depth drifts locally by a few centimetres, the remaining gap to a LiDAR-grade capture"
   },
   {
    "name": "World-frame refinement",
-   "state": "running",
-   "detail": "Gravity from cabinet fronts, floor, walls and appliance edges: 2.8° tilt + 1.2° yaw correction being applied to cameras, joints, layout and poses (upright-built assets keep their authored plumb)"
+   "state": "done",
+   "detail": "Gravity from cabinet fronts, floor, walls and appliance edges: 2.8° tilt and 1.2° yaw removed from cameras, joints, layout and poses; vertical-edge mismatch to the photos dropped to 1–4° on every large asset"
+  },
+  {
+   "name": "Metric scale",
+   "state": "done",
+   "detail": "Standard-size calibrators (30-inch range, wall plates, Nespresso height) give c = 0.943: scene shrunk 5.7 %, all 160 assets rebuilt at true size; a LiDAR capture would pin this to ~1 %"
   }
  ]
 }
