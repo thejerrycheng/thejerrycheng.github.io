@@ -64,7 +64,7 @@ export function mountScene(host,{dataUrl}={}){
   const loaded=[],stored=[],rules=[],collisionBuilt=new Set();
   const url=p=>new URL(p,base).href;
   const say=text=>{toast.textContent=text;};
-  const hint=()=>say(selected?`${selected.label} · ${selected.soft?'drag its surface to press':selected.free_joints.length?'drag arrows to move':'use the joint sliders or orange handles'}`:'Select an object or search by name. Drag empty space to orbit.');
+  const hint=()=>say(selected?`${selected.label} · ${selected.soft?'drag its surface to press':selected.free_joints.length?'drag the arrows or rings to move it':'drag a door, drawer or part directly, or use its slider'}`:'Click an object to select it. Drag a door or drawer to move it. Drag empty space to orbit.');
   const id=(kind,name)=>mj.mj_name2id(model,enumValue(mj.mjtObj[kind]),name);
   const resize=()=>{const w=viewport.clientWidth,h=Math.max(innerWidth<=760?360:320,Math.min(innerHeight*.74,w*.78));viewport.style.height=h+'px';renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();};
   const ro=new ResizeObserver(resize);ro.observe(viewport);resize();
@@ -126,7 +126,7 @@ export function mountScene(host,{dataUrl}={}){
     if(typeof o==='string')o=objects.get(o);
     selected=o||null;tc.detach();
     for(const x of objects.values())x.row?.classList.toggle('selected',x===o);
-    if(o){o.free=rootBody(o,bodyName);if(o.free&&!o.soft&&!meta.fallback_welds?.some(f=>f.asset===o.name)){placeProxy();tc.attach(proxy);tc.setMode(mode);}o.row?.closest('details.scene-category')?.setAttribute('open','');o.row?.setAttribute('open','');}
+    if(o){o.free=rootBody(o,bodyName);if(o.free&&!o.soft){placeProxy();tc.attach(proxy);tc.setMode(mode);}o.row?.closest('details.scene-category')?.setAttribute('open','');o.row?.setAttribute('open','');}
     syncOverlays();hint();
   }
   function focus(name){
@@ -135,15 +135,24 @@ export function mountScene(host,{dataUrl}={}){
     if(box.isEmpty())return;const center=box.getCenter(new THREE.Vector3()),distance=Math.max(.35,box.getSize(new THREE.Vector3()).length()*1.5),direction=camera.position.clone().sub(controls.target).normalize();
     controls.target.copy(center);camera.position.copy(center).addScaledVector(direction,distance);controls.update();select(o);
   }
-  function penetration(o){
+  function penetration(o){return penetrationOf(o.ids);}
+  // Deepest contact between a set of bodies and everything outside it (parent-child pairs are already filtered
+  // by MuJoCo, so a drawer is checked against a closed door of the same appliance but not against its own guide).
+  function penetrationOf(ids){
     mj.mj_kinematics(model,data);mj.mj_collision(model,data);let depth=0;
-    const cs=data.contact;for(let k=0;k<data.ncon;k++){const c=cs.get(k);if(c.geom1>=0&&c.geom2>=0){const a=o.ids.has(model.geom_bodyid[c.geom1]),b=o.ids.has(model.geom_bodyid[c.geom2]);if(a!==b)depth=Math.max(depth,-c.dist);}c.delete?.();}cs.delete?.();return depth;
+    const cs=data.contact;for(let k=0;k<data.ncon;k++){const c=cs.get(k);if(c.geom1>=0&&c.geom2>=0){const a=ids.has(model.geom_bodyid[c.geom1]),b=ids.has(model.geom_bodyid[c.geom2]);if(a!==b)depth=Math.max(depth,-c.dist);}c.delete?.();}cs.delete?.();return depth;
+  }
+  function subtree(J){
+    if(J.subtree)return J.subtree;const root=id('mjOBJ_BODY',J.body),ids=new Set([root]);
+    for(let b=root+1;b<model.nbody;b++){let p=model.body_parentid[b];while(p>root)p=model.body_parentid[p];if(p===root)ids.add(b);}
+    return J.subtree=ids;
   }
   function tryPose(o,p,q){
-    if(typeof o==='string')o=objects.get(o);const f=o.free||rootBody(o);if(!f)return false;if(!runtime.activate(o.name)){say(meta.storage?.[o.name]?'Open the enclosing door before moving this object.':'This object is held because its support fit needs correction.');return false;}
+    if(typeof o==='string')o=objects.get(o);const f=o.free||rootBody(o);if(!f)return false;const held=runtime.isHeld(o.name);if(!runtime.activate(o.name)){say('Open the enclosing door before moving this object.');return false;}
+    if(held){o.row?.querySelector('.scene-stored')?.remove();say(`${o.label} released; it is now free to move and fall.`);}
     const start=Float64Array.from(data.qpos.subarray(f.q,f.q+7)),a=new THREE.Vector3(...start.slice(0,3)),aq=quat(start.slice(3));const baseline=penetration(o),write=(p,q)=>{data.qpos.set([p.x,p.y,p.z,q.w,q.x,q.y,q.z],f.q);};
     write(p,q);let ok=true;if(penetration(o)>Math.max(.001,baseline+.0005)){ok=false;let lo=0,hi=1;const pp=new THREE.Vector3(),qq=new THREE.Quaternion();for(let i=0;i<10;i++){const t=(lo+hi)/2;pp.lerpVectors(a,p,t);qq.slerpQuaternions(aq,q,t);write(pp,qq);if(penetration(o)>Math.max(.001,baseline+.0005))hi=t;else lo=t;}write(pp.lerpVectors(a,p,lo),qq.slerpQuaternions(aq,q,lo));say(`${o.label} stopped at a contact.`);}
-    data.qvel.fill(0,f.v,f.v+6);activate(o.name);mj.mj_forward(model,data);pull();return ok;
+    data.qvel.fill(0,f.v,f.v+6);activate(o.name);mj.mj_kinematics(model,data);runtime.followSupports();mj.mj_forward(model,data);pull();return ok;
   }
   function jointValue(J,target){
     if(typeof J==='string')J=joints.get(J);target=clamp(target,...J.range);
@@ -151,10 +160,10 @@ export function mountScene(host,{dataUrl}={}){
     const latch=rules.find(r=>r.type.endsWith('latch')&&r.joint===J.name);
     if(latch&&data.eq_active[latch.eq]&&target>J.rest+.01){say('Press the release button to unlatch the door.');return data.qpos[J.qadr];}
     if(physics){hold={joint:J,target};if(J.position_actuator!==undefined)data.ctrl[J.position_actuator]=target;return data.qpos[J.qadr];}
-    const o=objects.get(J.asset),old=data.qpos[J.qadr],baseline=penetration(o);let accepted=old;
-    const n=Math.min(100,Math.max(1,Math.ceil(Math.abs(target-old)/(J.type==='slide'?.01:.04))));
-    for(let i=1;i<=n;i++){data.qpos[J.qadr]=old+(target-old)*i/n;if(penetration(o)>Math.max(.001,baseline+.0005)){say(`${J.label} stopped at a contact.`);break;}accepted=data.qpos[J.qadr];}
-    data.qpos[J.qadr]=accepted;data.qvel[J.dadr]=0;if(J.position_actuator!==undefined)data.ctrl[J.position_actuator]=accepted;applyRules();mj.mj_forward(model,data);pull();updateSliders();return accepted;
+    const ids=subtree(J),old=data.qpos[J.qadr],baseline=penetrationOf(ids);let accepted=old;
+    const n=Math.min(100,Math.max(1,Math.ceil(Math.abs(target-old)/(J.type==='slide'?.005:.02))));
+    for(let i=1;i<=n;i++){data.qpos[J.qadr]=old+(target-old)*i/n;if(penetrationOf(ids)>Math.max(.001,baseline+.0005)){say(`${J.label} stopped at a contact.`);break;}accepted=data.qpos[J.qadr];}
+    data.qpos[J.qadr]=accepted;data.qvel[J.dadr]=0;if(J.position_actuator!==undefined)data.ctrl[J.position_actuator]=accepted;mj.mj_kinematics(model,data);runtime.followSupports();applyRules();mj.mj_forward(model,data);pull();updateSliders();return accepted;
   }
   function activate(name){return runtime.activate(name);}
   function applyRules(){runtime.update();}
@@ -197,7 +206,7 @@ export function mountScene(host,{dataUrl}={}){
       const group=groups.get(o.category),row=el('details','scene-object'),summary=el('summary'),name=button(o.label,()=>select(o),'scene-object-name');summary.append(name);row.append(summary);row.dataset.object=o.name;o.row=row;
       const toggles=el('div','scene-object-overlays');o.toggles={};
       toggles.append(button('Focus',()=>focus(o)));
-      if(meta.fallback_welds?.some(f=>f.asset===o.name)){summary.append(el('span','scene-stored','Held'));row.append(el('p','scene-fallback','Held in place; support fit needs correction.'));}
+      if(meta.fallback_welds?.some(f=>f.asset===o.name)){summary.append(el('span','scene-stored','Held'));row.append(el('p','scene-fallback','Held at its measured pose until you move it; its support fit is unverified, so it may settle once released.'));}
       if(o.stored_in){o.storedBadge=el('span','scene-stored','Stored');o.storedBadge.title=`Stored in ${o.stored_in.replaceAll('_',' ')}`;summary.append(o.storedBadge);}
       for(const key of ['box','joint','collision']){if(key==='joint'&&!o.joints.length)continue;const b=button(key==='collision'?'Collision':key==='joint'?'Joint':'Box',()=>{o.show[key]=!o.show[key];syncOverlays();});b.setAttribute('aria-pressed','false');toggles.append(b);o.toggles[key]=b;}row.append(toggles);
       for(const n of o.joints){const J=joints.get(n);if(!J)continue;const label=el('label','scene-joint'),text=el('span',null,J.label),input=el('input'),output=el('output');input.type='range';input.min=J.range[0];input.max=J.range[1];input.step=J.type==='slide'?.0001:.005;input.value=J.rest;input.setAttribute('aria-label',o.label+' '+J.label);input.dataset.joint=n;label.append(text,input,output);row.append(label);J.slider=input;J.output=output;
@@ -230,24 +239,38 @@ export function mountScene(host,{dataUrl}={}){
   function poseCollisions(){const m=new THREE.Matrix4();for(const c of collision){if(!c.mesh.visible)continue;const g=c.g,x=data.geom_xmat,p=data.geom_xpos;m.set(x[9*g],x[9*g+1],x[9*g+2],p[3*g],x[9*g+3],x[9*g+4],x[9*g+5],p[3*g+1],x[9*g+6],x[9*g+7],x[9*g+8],p[3*g+2],0,0,0,1);c.mesh.matrixAutoUpdate=false;c.mesh.matrix.copy(m);c.mesh.matrixWorldNeedsUpdate=true;}}
   const ray=new THREE.Raycaster(),canvas=renderer.domElement;
   const setRay=e=>{const r=canvas.getBoundingClientRect();ray.setFromCamera(new THREE.Vector2(2*(e.clientX-r.left)/r.width-1,1-2*(e.clientY-r.top)/r.height),camera);};
-  tc.addEventListener('dragging-changed',e=>{drag=e.value;controls.enabled=!e.value;if(e.value&&selected&&!activate(selected.name)){drag=false;controls.enabled=true;say('Open the enclosing door first.');}});
+  tc.addEventListener('dragging-changed',e=>{drag=e.value;controls.enabled=!e.value;if(e.value&&selected&&!runtime.canGrab(selected.name)){drag=false;controls.enabled=true;say('Open the enclosing door first.');}});
+  const pickBody=object=>{let n=object;while(n&&!n.userData.body)n=n.parent;return n;};
+  // Back faces are skipped so a camera placed behind a wall still picks what it sees.
+  const backFace=h=>h.face&&h.face.normal.clone().transformDirection(h.object.matrixWorld).dot(ray.ray.direction)>0;
+  const pickHits=()=>ray.intersectObjects(pickables.filter(p=>p.userData.asset!=='room_shell'),true).filter(h=>{if(backFace(h))return false;const n=pickBody(h.object);return n&&shown(bodies.get(n.userData.body)?.root);});
+  function beginJointDrag(J,hitPoint,e){
+    const b=bodies.get(J.body),axis=new THREE.Vector3(...J.axis).applyQuaternion(b.root.quaternion).normalize(),pivot=b.root.localToWorld(new THREE.Vector3(...J.pos));
+    // The joint follows the pose whose grabbed point is nearest to the cursor ray (circle for hinges, line for slides), so dragging works from any viewpoint.
+    select(objects.get(J.asset),J.body);jdrag={J,axis,pivot,start:hitPoint.clone(),q0:data.qpos[J.qadr],moved:false};controls.enabled=false;canvas.setPointerCapture(e.pointerId);e.stopImmediatePropagation();return true;
+  }
   tc.addEventListener('objectChange',()=>{if(drag&&selected){tryPose(selected,proxy.position.clone(),proxy.quaternion.clone());placeProxy();}});
   listen(canvas,'pointerdown',e=>{
     if(e.button!==0||!model)return;down={x:e.clientX,y:e.clientY};if(tc.axis)return;setRay(e);
     const hit=ray.intersectObjects([...joints.values()].filter(j=>j.handle?.visible).map(j=>j.handle),false)[0];
-    if(hit){const J=hit.object.userData.joint,b=bodies.get(J.body),axis=new THREE.Vector3(...J.axis).applyQuaternion(b.root.quaternion).normalize(),pivot=b.root.localToWorld(new THREE.Vector3(...J.pos));
-      const normal=J.type==='hinge'?axis:camera.getWorldDirection(new THREE.Vector3()),plane=new THREE.Plane().setFromNormalAndCoplanarPoint(normal,hit.point),point=ray.ray.intersectPlane(plane,new THREE.Vector3());
-      if(point){select(objects.get(J.asset));jdrag={J,axis,pivot,plane,start:point.clone(),q0:data.qpos[J.qadr]};setPhysics(true);controls.enabled=false;canvas.setPointerCapture(e.pointerId);e.stopImmediatePropagation();}return;
-    }
+    if(hit){beginJointDrag(hit.object.userData.joint,hit.point,e);return;}
+    // Dragging a door, drawer, lid or button directly moves its joint; the hit body must carry the joint and not be free.
+    const body=pickHits()[0];
+    if(body){const name=pickBody(body.object).userData.body,J=[...joints.values()].find(j=>j.body===name&&(j.type==='hinge'||j.type==='slide'));
+      if(J&&beginJointDrag(J,body.point,e))return;}
     const soft=ray.intersectObjects(flexes.map(x=>x.mesh),false)[0];
     if(soft){const f=soft.object.userData.flex;let closest=-1,dist=Infinity;const prefix=f.asset+'__';for(let b=1;b<model.nbody;b++){const name=mj.mj_id2name(model,enumValue(mj.mjtObj.mjOBJ_BODY),b)||'';if(!name.startsWith(prefix)||model.body_dofnum[b]===0)continue;const p=new THREE.Vector3().fromArray(data.xpos,3*b),dd=p.distanceToSquared(soft.point);if(dd<dist){dist=dd;closest=b;}}
       if(closest>=0){setPhysics(true);const target=new THREE.Vector3().fromArray(data.xpos,3*closest);softDrag={body:closest,point:soft.point.clone(),target,start:soft.point.clone(),initial:target.clone(),plane:new THREE.Plane().setFromNormalAndCoplanarPoint(camera.getWorldDirection(new THREE.Vector3()),soft.point)};controls.enabled=false;canvas.setPointerCapture(e.pointerId);e.stopImmediatePropagation();}}
   },{capture:true});
   listen(canvas,'pointermove',e=>{
-    if(jdrag){setRay(e);const p=ray.ray.intersectPlane(jdrag.plane,new THREE.Vector3());if(!p)return;let delta;if(jdrag.J.type==='slide')delta=p.clone().sub(jdrag.start).dot(jdrag.axis);else{const a=jdrag.start.clone().sub(jdrag.pivot).normalize(),b=p.clone().sub(jdrag.pivot).normalize();delta=Math.atan2(new THREE.Vector3().crossVectors(a,b).dot(jdrag.axis),a.dot(b));}jointValue(jdrag.J,jdrag.q0+delta);}
+    if(jdrag){if(!jdrag.moved){if(Math.hypot(e.clientX-down.x,e.clientY-down.y)<4)return;jdrag.moved=true;setPhysics(true);}setRay(e);const J=jdrag.J,o=ray.ray.origin,d=ray.ray.direction,dist=p=>p.clone().sub(o).cross(d).length();let delta;
+      if(J.type==='slide'){const w=jdrag.start.clone().sub(o),a=jdrag.axis,b=a.dot(d),dn=1-b*b;if(dn<1e-6)return;delta=(w.dot(d)*b-w.dot(a))/dn;}
+      else{const a=jdrag.axis,r=jdrag.start.clone().sub(jdrag.pivot),h=r.dot(a),u=r.clone().addScaledVector(a,-h);const R=u.length();if(R<1e-4)return;u.divideScalar(R);const v=new THREE.Vector3().crossVectors(a,u),c=jdrag.pivot.clone().addScaledVector(a,h);let best=Infinity;delta=0;
+        for(let t=J.range[0]-jdrag.q0;t<=J.range[1]-jdrag.q0+1e-9;t+=Math.PI/360){const q=c.clone().addScaledVector(u,R*Math.cos(t)).addScaledVector(v,R*Math.sin(t)),e2=dist(q);if(e2<best){best=e2;delta=t;}}}
+      jointValue(J,jdrag.q0+delta);}
     if(softDrag){setRay(e);const p=ray.ray.intersectPlane(softDrag.plane,new THREE.Vector3());if(p)softDrag.target.copy(softDrag.initial).add(p.sub(softDrag.start));}
   });
-  const release=e=>{if(jdrag||softDrag){jdrag=null;softDrag=null;hold=null;controls.enabled=true;forceArrow.visible=false;return;}if(!down||Math.hypot(e.clientX-down.x,e.clientY-down.y)>5||tc.dragging||!model)return;setRay(e);const hits=ray.intersectObjects(pickables,true).filter(h=>shown(h.object));if(hits.length){let n=hits[0].object;while(n&&!n.userData.asset)n=n.parent;select(objects.get(n?.userData.asset),n?.userData.body);}else select(null);down=null;};
+  const release=e=>{if(jdrag||softDrag){const clicked=jdrag&&!jdrag.moved;jdrag=null;softDrag=null;hold=null;controls.enabled=true;forceArrow.visible=false;if(!clicked)return;}if(!down||Math.hypot(e.clientX-down.x,e.clientY-down.y)>5||tc.dragging||!model)return;setRay(e);const hits=pickHits();if(hits.length){const n=pickBody(hits[0].object);select(objects.get(n.userData.asset),n.userData.body);}else select(null);down=null;};
   listen(canvas,'pointerup',release);listen(canvas,'pointercancel',()=>{jdrag=softDrag=hold=null;drag=false;controls.enabled=true;});
   listen(host,'keydown',e=>{if(e.key==='Escape')select(null);});
 
@@ -260,7 +283,7 @@ export function mountScene(host,{dataUrl}={}){
       // actual simulation / wall-time ratio is measured in metrics below.
       pull();
     }
-    if(now-last<1000){frameSamples.push(now-last);if(frameSamples.length>240)frameSamples.shift();}frames++;last=now;if(model){poseCollisions();if(now-lastPanel>150){updateSliders();timeLabel.textContent=`t ${data.time.toFixed(2)} s${steps?' · '+(stepTotal/steps).toFixed(2)+' ms/step':''}`;lastPanel=now;}}
+    if(now-last>0&&now-last<1000){frameSamples.push(now-last);if(frameSamples.length>240)frameSamples.shift();}frames++;last=now;if(model){poseCollisions();if(now-lastPanel>150){updateSliders();timeLabel.textContent=`t ${data.time.toFixed(2)} s${steps?' · '+(stepTotal/steps).toFixed(2)+' ms/step':''}`;lastPanel=now;}}
     updateCoverage();renderer.render(scene,camera);frameMs=performance.now()-began;
   }
   async function init(){
@@ -273,7 +296,9 @@ export function mountScene(host,{dataUrl}={}){
     status.textContent='Loading geometry and physics…';
     const physicsPromise=(async()=>{const [M,response]=await Promise.all([loadMuJoCo(),fetch(url(meta.physics))]);if(!response.ok)throw new Error('Physics download failed');mj=M;const xml=await response.text();model=(mj.MjModel.from_xml_string||mj.from_xml_string).call(mj.MjModel,xml);data=new mj.MjData(model);mj.mj_resetDataKeyframe(model,data,id('mjOBJ_KEY','rest'));mj.mj_forward(model,data);})();
     const visualsPromise=(async()=>{const gl=await new GLTFLoader().loadAsync(url(meta.polished_pack));for(const b of bodies.values()){const group=gl.scene.getObjectByName(b.name);if(!group)continue;group.removeFromParent();group.position.set(0,0,0);group.quaternion.identity();group.traverse(x=>{if(x.isMesh){x.castShadow=x.receiveShadow=true;if((meta.soft_fallbacks||[]).some(f=>f.asset===b.asset)){const soften=mat=>{mat=mat.clone();mat.metalness=0;mat.roughness=b.asset==='bread_package'?.58:1;mat.flatShading=false;mat.needsUpdate=true;return mat;};x.material=Array.isArray(x.material)?x.material.map(soften):soften(x.material);}}});b.root.add(group);b.polished=group;group.userData.asset=b.asset;group.userData.body=b.name;pickables.push(group);loaded.push(group);}
-      for(const b of bodies.values())if(b.bounds){const box=new THREE.Box3Helper(new THREE.Box3(new THREE.Vector3(...b.bounds[0]),new THREE.Vector3(...b.bounds[1])),0x0071e3);box.material.depthTest=false;box.visible=false;b.root.add(box);b.box=box;}})();
+      for(const b of bodies.values())if(b.bounds){const box=new THREE.Box3Helper(new THREE.Box3(new THREE.Vector3(...b.bounds[0]),new THREE.Vector3(...b.bounds[1])),0x0071e3);box.material.depthTest=false;box.visible=false;b.root.add(box);b.box=box;
+        // Bodies without a packed mesh (Gaussian-only objects) still need a pick target: an invisible box from their bounds.
+        if(!b.polished){const size=new THREE.Vector3(...b.bounds[1]).sub(new THREE.Vector3(...b.bounds[0]));if(size.length()>.005){const pick=new THREE.Mesh(new THREE.BoxGeometry(size.x,size.y,size.z),new THREE.MeshBasicMaterial({visible:false}));pick.position.copy(new THREE.Vector3(...b.bounds[0])).add(size.multiplyScalar(.5));pick.userData.asset=b.asset;pick.userData.body=b.name;pick.userData.pickProxy=true;b.root.add(pick);pickables.push(pick);}}}})();
     const splatsPromise=(async()=>{bg=new SplatMesh({url:url(meta.background)});scene.add(bg);const promises=[bg.initialized];for(const b of bodies.values())if(b.has_gaussians){b.splat=new SplatMesh({url:url(b.name+'.spz')});b.root.add(b.splat);promises.push(b.splat.initialized);}await Promise.all(promises);})();
     await Promise.all([physicsPromise,visualsPromise,splatsPromise]);
     runtime=sceneRuntime(mj,model,data,meta,r=>{const badge=objects.get(r.asset)?.storedBadge;if(badge){badge.textContent=r.opened?'Active':'Stored';badge.dataset.active=String(r.opened);}});rules.push(...runtime.rules);stored.push(...runtime.stored);
@@ -287,9 +312,10 @@ export function mountScene(host,{dataUrl}={}){
   }
   const api={ready:null,view,setLook,select,focus,setPhysics,reset,tryPose,tryJoint:jointValue,press,
     setJoint(name,q){if(!joints.has(name))throw new Error('Unknown joint '+name);return jointValue(name,q);},
+    pick(clientX,clientY){setRay({clientX,clientY});return pickHits().map(h=>[pickBody(h.object).userData.body,+h.distance.toFixed(3)]);},
     getJoint(name){const J=joints.get(name);if(!J)throw new Error('Unknown joint '+name);return data.qpos[J.qadr];},
     bodyPose(name){const b=id('mjOBJ_BODY',name);if(b<0)throw new Error('Unknown body '+name);return {position:Array.from(data.xpos.subarray(3*b,3*b+3)),quaternion:Array.from(data.xquat.subarray(4*b,4*b+4))};},
-    stepMs(){return api.metrics.stepMeanMs;},fps(){return api.metrics.fps;},get meta(){return meta;},get model(){return model;},get data(){return data;},get mj(){return mj;},get look(){return look;},get physics(){return physics;},get selected(){return selected;},get metrics(){const sorted=[...stepSamples].sort((a,b)=>a-b);return {loadMs,stepMeanMs:steps?stepTotal/steps:0,stepP50Ms:sorted[Math.floor(sorted.length*.5)]||0,stepP95Ms:sorted[Math.floor(sorted.length*.95)]||0,stepMaxMs:sorted.at(-1)||0,steps,frameMs,frames,fps:frameSamples.length?1000*frameSamples.length/frameSamples.reduce((a,b)=>a+b,0):0,simulationHz:activeWallMs?1000*steps/activeWallMs:0,realtimeRatio:activeWallMs?steps*(meta?.timing.timestep_s||0)*1000/activeWallMs:0,maxSubstepsPerFrame:4};},objects,joints,bodies,flexes,stored,scene,camera,renderer,transform:tc,
+    stepMs(){return api.metrics.stepMeanMs;},fps(){return api.metrics.fps;},get meta(){return meta;},get model(){return model;},get data(){return data;},get mj(){return mj;},get look(){return look;},get physics(){return physics;},get selected(){return selected;},get metrics(){const sorted=[...stepSamples].sort((a,b)=>a-b);return {loadMs,stepMeanMs:steps?stepTotal/steps:0,stepP50Ms:sorted[Math.floor(sorted.length*.5)]||0,stepP95Ms:sorted[Math.floor(sorted.length*.95)]||0,stepMaxMs:sorted.at(-1)||0,steps,frameMs,frames,fps:frameSamples.length?1000*frameSamples.length/frameSamples.reduce((a,b)=>a+b,0):0,simulationHz:activeWallMs?1000*steps/activeWallMs:0,realtimeRatio:activeWallMs?steps*(meta?.timing.timestep_s||0)*1000/activeWallMs:0,maxSubstepsPerFrame:4};},objects,joints,bodies,flexes,stored,scene,camera,controls,renderer,transform:tc,
     destroy(){alive=false;cancelAnimationFrame(raf);ac.abort();ro.disconnect();io.disconnect();controls.dispose();tc.dispose();scene.traverse(o=>{o.geometry?.dispose();const ms=Array.isArray(o.material)?o.material:[o.material];for(const m of ms)if(m){for(const v of Object.values(m))if(v?.isTexture)v.dispose();m.dispose?.();}if(o instanceof SplatMesh)o.dispose?.();});data?.delete();model?.delete();env.dispose();pmrem.dispose();renderer.dispose();host.replaceChildren();}};
   api.ready=init().catch(error=>{host.dataset.error=String(error);status.hidden=false;status.textContent='Could not load this scene. '+error.message;say('Reload to retry.');throw error;});
   raf=requestAnimationFrame(frame);return api;

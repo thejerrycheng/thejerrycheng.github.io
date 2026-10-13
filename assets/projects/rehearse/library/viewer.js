@@ -112,7 +112,7 @@ export class AssetViewer {
       }
       this.axes.add(g);
       const J={...info,id,body,q,v,site,handleLocal,lever,axisHelper:g,slider:this.$(`#joint-${i}`),readout:this.$(`#joint-value-${i}`),forceReadout:this.$(`#joint-force-${i}`),force:0,index:i};this.joints.push(J);
-      this.listen(J.slider,'input',()=>{this.stopDemo();const target=+J.slider.value;if(this.physics){this.targets.set(J,target);this.say('The joint is driven toward the slider target with a bounded force.');}else{d.qpos[q]=target;d.qvel.fill(0);this.mechanismControllers();this.mj.mj_forward(m,d);this.sync();this.showJointForce(J,0,1);}});
+      this.listen(J.slider,'input',()=>{this.stopDemo();const target=+J.slider.value;if(this.physics){this.targets.set(J,target);this.say('The joint is driven toward the slider target with a bounded force.');}else{const reached=this.kinematicJoint(J,target);d.qvel.fill(0);this.mechanismControllers();this.mj.mj_forward(m,d);this.sync();this.showJointForce(J,0,1);this.say(reached?'Kinematic mode. Sliders place joints directly.':`${J.label} stopped at a contact; collision stays on in kinematic mode.`);}});
     }
     this.latches=[];
     for(let i=0;i<m.neq;i++){
@@ -120,6 +120,28 @@ export class AssetViewer {
       const rice=name.includes('rice'),micro=name.includes('microwave');
       if(rice||micro){const button=this.joints.find(j=>j.name.includes(rice?'rice_button':'release_slide'));const door=this.joints.find(j=>j.name.includes(rice?'rice_lid':'door_hinge'));if(button&&door)this.latches.push({id:i,button,door,release:micro?.0076:.0022,rearm:micro?.001:.0007,relatch:micro?.002:.012,speed:micro?.15:.08});}
     }
+  }
+  /** Bodies moved by joint J: its body and every descendant. */
+  subtree(J){
+    if(J.subtree)return J.subtree;const m=this.model,root=J.body,ids=new Set([root]);
+    for(let b=root+1;b<m.nbody;b++){let p=m.body_parentid[b];while(p>root)p=m.body_parentid[p];if(p===root)ids.add(b);}
+    return J.subtree=ids;
+  }
+  /** Deepest penetration between the subtree and the rest of the model at the current qpos (parent-child pairs
+   * are filtered by MuJoCo, so a drawer is tested against a closed door but not against its own guide). */
+  penetration(ids){
+    const m=this.model,d=this.data;this.mj.mj_kinematics(m,d);this.mj.mj_collision(m,d);let depth=0;const cs=d.contact;
+    for(let k=0;k<d.ncon;k++){const c=cs.get(k);if(c.geom1>=0&&c.geom2>=0){const a=ids.has(m.geom_bodyid[c.geom1]),b=ids.has(m.geom_bodyid[c.geom2]);if(a!==b)depth=Math.max(depth,-c.dist);}c.delete?.();}
+    cs.delete?.();return depth;
+  }
+  /** Kinematic joint motion with collision: walk from the current value toward the target and stop at the first
+   * new contact. Returns true when the target was reached. */
+  kinematicJoint(J,target){
+    const d=this.data,q=J.q,ids=this.subtree(J),start=d.qpos[q],limit=Math.max(.002,this.penetration(ids)+.0005);
+    if(Math.abs(target-start)<1e-9)return true;
+    const n=Math.min(120,Math.max(1,Math.ceil(Math.abs(target-start)/(J.type==='prismatic'?.004:.02))));let accepted=start;
+    for(let i=1;i<=n;i++){d.qpos[q]=start+(target-start)*i/n;if(this.penetration(ids)>limit)break;accepted=d.qpos[q];}
+    d.qpos[q]=accepted;return Math.abs(accepted-target)<1e-9;
   }
   geometry(g){
     const m=this.model,t=m.geom_type[g],s=m.geom_size.subarray(g*3,g*3+3);let geo;
@@ -200,11 +222,11 @@ export class AssetViewer {
     const s=this.selection,m=this.model,d=this.data,drag=this.drag;if(!s)return;const jid=s.joint,q=m.jnt_qposadr[jid],type=m.jnt_type[jid];const delta=this.proxy.position.clone().sub(drag.start);
     d.qpos.set(drag.qpos);
     if(type===0){d.qpos[q]+=delta.x;d.qpos[q+1]+=delta.y;d.qpos[q+2]+=delta.z;if(this.tc.mode==='rotate'){const turn=this.proxy.quaternion.clone().multiply(drag.quat.clone().invert());const rot=turn.multiply(Q(drag.qpos,q+3));d.qpos.set([rot.w,rot.x,rot.y,rot.z],q+3);}}
-    else if(type===2){const axis=V(d.xaxis,3*jid);d.qpos[q]=drag.qpos[q]+delta.dot(axis);}
+    else if(type===2){const axis=V(d.xaxis,3*jid);const J=this.joints.find(j=>j.id===jid);const goal=drag.qpos[q]+delta.dot(axis);if(J)this.kinematicJoint(J,m.jnt_limited[jid]?clamp(goal,m.jnt_range[jid*2],m.jnt_range[jid*2+1]):goal);else d.qpos[q]=goal;}
     else if(type===3){const axis=V(d.xaxis,3*jid),anchor=V(d.xanchor,3*jid);let angle;
       if(this.tc.mode==='rotate'){const turn=this.proxy.quaternion.clone().multiply(drag.quat.clone().invert());angle=2*Math.atan2(new THREE.Vector3(turn.x,turn.y,turn.z).dot(axis),turn.w);}
       else{const a=drag.start.clone().sub(anchor),b=this.proxy.position.clone().sub(anchor);a.addScaledVector(axis,-a.dot(axis));b.addScaledVector(axis,-b.dot(axis));angle=Math.atan2(a.clone().cross(b).dot(axis),a.dot(b));}
-      d.qpos[q]=drag.qpos[q]+angle;
+      const J=this.joints.find(j=>j.id===jid),goal=drag.qpos[q]+angle;if(J)this.kinematicJoint(J,m.jnt_limited[jid]?clamp(goal,m.jnt_range[jid*2],m.jnt_range[jid*2+1]):goal);else d.qpos[q]=goal;
     }
     if(m.jnt_limited[jid])d.qpos[q]=clamp(d.qpos[q],m.jnt_range[jid*2],m.jnt_range[jid*2+1]);d.qvel.fill(0);this.mj.mj_forward(m,d);this.sync();
   }
@@ -219,7 +241,7 @@ export class AssetViewer {
   startDemo(){
     if(!this.model)return;if(this.meta.soft&&!this.physics)this.setPhysics(true);this.tc.detach();this.selection=null;this.targets.clear();
     const order=[...this.joints].sort((a,b)=>Number(/button|release/.test(b.name))-Number(/button|release/.test(a.name)));
-    this.demo={start:performance.now(),order,baseline:Float64Array.from(this.data.qpos),previous:new Map()};this.$('#demo-toggle').setAttribute('aria-pressed','true');this.$('#demo-toggle').innerHTML='<span aria-hidden="true">Ⅱ</span> Stop demo';this.say(this.meta.soft?'Demonstrating a gentle press and release.':this.physics?'Force-driven demonstration; contacts and joint stops remain active.':'Kinematic demonstration; force comes from mechanism evidence or the static spring/friction model.');
+    this.demoBlocked=null;this.demo={start:performance.now(),order,baseline:Float64Array.from(this.data.qpos),previous:new Map()};this.$('#demo-toggle').setAttribute('aria-pressed','true');this.$('#demo-toggle').innerHTML='<span aria-hidden="true">Ⅱ</span> Stop demo';this.say(this.meta.soft?'Demonstrating a gentle press and release.':this.physics?'Force-driven demonstration; contacts and joint stops remain active.':'Kinematic demonstration; force comes from mechanism evidence or the static spring/friction model.');
   }
   stopDemo(){const wasDemo=!!this.demo;this.demo=null;if(wasDemo&&this.meta.soft)this.press=null;if(this.data&&!this.physics){this.data.qvel.fill(0);this.joints.forEach(j=>{j.force=0;j.displayForce=0;});this.forceFilter=null;}this.targets.clear();const b=this.$('#demo-toggle');if(b){b.setAttribute('aria-pressed','false');if(this.joints.length||this.meta.soft)b.innerHTML='<span aria-hidden="true">▶</span> Play demo';}this.hideForce();}
   mechanismControllers(){
@@ -239,7 +261,7 @@ export class AssetViewer {
   step(now,dt){
     const m=this.model,d=this.data,target=this.demoTarget(now);
     if(!this.physics){
-      if(target){const {j,q,velocity}=target;d.qvel.fill(0);d.qpos[j.q]=q;for(const l of this.latches)if(l.door===j)d.qpos[l.button.q]=l.button.range[1];this.mechanismControllers();this.mj.mj_forward(m,d);this.showJointForce(j,0,velocity);}
+      if(target){const {j,q,velocity}=target;d.qvel.fill(0);for(const l of this.latches)if(l.door===j)d.qpos[l.button.q]=l.button.range[1];const reached=this.kinematicJoint(j,q);this.mechanismControllers();this.mj.mj_forward(m,d);this.showJointForce(j,0,velocity);if(!reached&&this.demoBlocked!==j){this.demoBlocked=j;this.say(`${j.label} is obstructed in this state (collision stays on); the demo holds it at the contact.`);}}
       return;
     }
     const timestep=m.opt.timestep;this.accumulator=Math.min(this.accumulator+dt,.08);const steps=Math.min(80,Math.floor(this.accumulator/timestep));this.accumulator-=steps*timestep;

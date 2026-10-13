@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-13 08:22",
+ "updated": "2026-10-13 15:05",
  "stages": [
   {
    "name": "Frames",
@@ -100,6 +100,11 @@
    "name": "Metric scale",
    "state": "done",
    "detail": "Standard-size calibrators (30-inch range, wall plates, Nespresso height) give c = 0.943: scene shrunk 5.7 %, all 160 assets rebuilt at true size; a LiDAR capture would pin this to ~1 %"
+  },
+  {
+   "name": "Interaction and connection fixes",
+   "state": "in progress",
+   "detail": "Viewer: every object selectable and movable in both looks (held objects release on grab), doors and drawers drag directly, stored contents ride with their doors and stay put until grabbed, kinematic joints stop at contacts (fridge sliders blocked by a closed door). Running: GPT-6 connection audit across all assets (faucet head on spout, towels on the oven handle, hinge clearances, support geometry) and a bundle rebuild with full Polished meshes."
   }
  ]
 }
