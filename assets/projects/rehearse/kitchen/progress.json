@@ -4,7 +4,7 @@
   {
    "name": "Frames",
    "state": "done",
-   "detail": "699 sharpest frames from 6,988 (3:53, 1280×1707)"
+   "detail": "699 sharpest frames from 6,988 (3:53, 1280\u00d71707)"
   },
   {
    "name": "Camera poses",
@@ -19,7 +19,7 @@
   {
    "name": "Depth and scale",
    "state": "done",
-   "detail": "Depth Anything 3 per frame, 3.7 % median error vs SfM; camera height 1.1–1.8 m"
+   "detail": "Depth Anything 3 per frame, 3.7 % median error vs SfM; camera height 1.1\u20131.8 m"
   },
   {
    "name": "Gaussian splat (preview)",
@@ -39,12 +39,12 @@
   {
    "name": "Articulated splat",
    "state": "done",
-   "detail": "500 k Gaussians, 960×1280, per-frame joint states for 25 fronts (held-out PSNR 17.4; limited by the shared GPU budget)"
+   "detail": "500 k Gaussians, 960\u00d71280, per-frame joint states for 25 fronts (held-out PSNR 17.4; limited by the shared GPU budget)"
   },
   {
    "name": "NeuralFeels from hand demonstrations",
    "state": "done",
-   "detail": "Tested on the demonstrated can: monocular depth is too noisy for a 6 cm object (held-out IoU 0.67) — small items use photo-fitted Blender models; kept for large objects"
+   "detail": "Tested on the demonstrated can: monocular depth is too noisy for a 6 cm object (held-out IoU 0.67) \u2014 small items use photo-fitted Blender models; kept for large objects"
   },
   {
    "name": "Objects and cabinets (GPT-6, Blender)",
@@ -54,7 +54,7 @@
   {
    "name": "MuJoCo + Isaac Sim export",
    "state": "done",
-   "detail": "Native MuJoCo scene rests within 4 mm over 2 s; USD stage for Isaac Sim with 469 rigid bodies, 531 enabled physics joints, latch drives, welded stored contents and the 673 calibrated cameras — masses and limits match MuJoCo to 1e-6; validated with usd-core readback, not yet loaded in Isaac Sim"
+   "detail": "Native MuJoCo scene rests within 4 mm over 2 s; USD stage for Isaac Sim with 469 rigid bodies, 531 enabled physics joints, latch drives, welded stored contents and the 673 calibrated cameras \u2014 masses and limits match MuJoCo to 1e-6; validated with usd-core readback, not yet loaded in Isaac Sim"
   },
   {
    "name": "Per-asset Gaussians + meshes",
@@ -69,7 +69,7 @@
   {
    "name": "Mechanisms + physics",
    "state": "done",
-   "detail": "Fridge (gasket latch, bins, door drawers), microwave (two-stage release button), range/oven (21 N door breakaway, counterbalanced door, drawer, racks), faucet (swivel, pull-out head, lever), 14 cabinet doors + 4 drawers, kettle/espresso/rice cooker lid pop — all pass force tests"
+   "detail": "Fridge (gasket latch, bins, door drawers), microwave (two-stage release button), range/oven (21 N door breakaway, counterbalanced door, drawer, racks), faucet (swivel, pull-out head, lever), 14 cabinet doors + 4 drawers, kettle/espresso/rice cooker lid pop \u2014 all pass force tests"
   },
   {
    "name": "Soft bodies",
@@ -89,12 +89,12 @@
   {
    "name": "Construction fit and articulation audit",
    "state": "done",
-   "detail": "Cabinet runs and fridge rebuilt with real joinery; oven door re-squared (was 5° off); every joint swept for contacts. Photo overlays still 10–60 px on the long cabinet runs and appliances: monocular depth drifts locally by a few centimetres, the remaining gap to a LiDAR-grade capture"
+   "detail": "Cabinet runs and fridge rebuilt with real joinery; oven door re-squared (was 5\u00b0 off); every joint swept for contacts. Photo overlays still 10\u201360 px on the long cabinet runs and appliances: monocular depth drifts locally by a few centimetres, the remaining gap to a LiDAR-grade capture"
   },
   {
    "name": "World-frame refinement",
    "state": "done",
-   "detail": "Gravity from cabinet fronts, floor, walls and appliance edges: 2.8° tilt and 1.2° yaw removed from cameras, joints, layout and poses; vertical-edge mismatch to the photos dropped to 1–4° on every large asset"
+   "detail": "Gravity from cabinet fronts, floor, walls and appliance edges: 2.8\u00b0 tilt and 1.2\u00b0 yaw removed from cameras, joints, layout and poses; vertical-edge mismatch to the photos dropped to 1\u20134\u00b0 on every large asset"
   },
   {
    "name": "Metric scale",
@@ -103,8 +103,8 @@
   },
   {
    "name": "Interaction and connection fixes",
-   "state": "in progress",
-   "detail": "Viewer: every object selectable and movable in both looks (held objects release on grab), doors and drawers drag directly, stored contents ride with their doors and stay put until grabbed, kinematic joints stop at contacts (fridge sliders blocked by a closed door). Running: GPT-6 connection audit across all assets (faucet head on spout, towels on the oven handle, hinge clearances, support geometry) and a bundle rebuild with full Polished meshes."
+   "state": "done",
+   "detail": "Viewer: every object selectable and movable in both looks (held objects release on grab), doors and drawers drag directly on the model, stored contents ride with their doors, kinematic motion stops at any contact (fridge sliders no longer pass through a closed door; library too). GPT-6 connection audit over all 160 asset packages and 125 joints at 1 deg / 2 mm: faucet head docked on the spout tip (0.6 mm), towels folded over the oven handle and following the door, fridge hinge axes moved so both doors and the flap clear the cabinet, closed-door slider stops verified (33 / 159 mm), container supports realigned. Bundle rebuilt with textured meshes for all 679 bodies (62 MB). Release policy from a full-scene test: 146 stored items come free when their door opens, 31 stay held until grabbed because they would fall (side-drawer cutlery, crisper citrus, a few pantry and snack items). Known limits: 11 counter items still fail the rest audit and are held until grabbed; towels are rigid drapes."
   }
  ]
 }
