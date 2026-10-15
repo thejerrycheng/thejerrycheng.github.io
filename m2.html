@@ -125,10 +125,30 @@
   function reveal(){
     err.textContent = 'Decrypting\u2026';
     return window.JCPrivate.text('assets/private/m2.enc').then(function(html){
+      /* private media is published only as .enc: park its paths so the browser does not request them */
+      html = html.replace(/ (src|poster)="(assets\/private\/[^"]+)"/g, ' data-p$1="$2"');
       document.open(); document.write(html); document.close();
       wirePdfs();
+      /* the written page parses asynchronously, so swap the media only once it has been parsed */
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', decryptMedia);
+      else decryptMedia();
     }).catch(function(e){
       err.textContent = 'Could not open it: ' + e.message;
+    });
+  }
+
+  /* The videos and images are encrypted too: swap each private src/poster for a decrypted blob URL. */
+  function decryptMedia(){
+    var TYPES = {mp4:'video/mp4', jpg:'image/jpeg', jpeg:'image/jpeg', png:'image/png', svg:'image/svg+xml'};
+    ['src','poster'].forEach(function(attr){
+      document.querySelectorAll('[data-p'+attr+']').forEach(function(el){
+        var u = el.getAttribute('data-p'+attr), ext = u.split('.').pop().toLowerCase();
+        el.removeAttribute('data-p'+attr);
+        window.JCPrivate.blobUrl(u + '.enc', TYPES[ext] || 'application/octet-stream').then(function(b){
+          el.setAttribute(attr, b);
+          var v = el.closest && el.closest('video'); if (v && attr === 'src') v.load();
+        });
+      });
     });
   }
 
