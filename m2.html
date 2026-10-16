@@ -137,19 +137,35 @@
     });
   }
 
-  /* The videos and images are encrypted too: swap each private src/poster for a decrypted blob URL. */
+  /* The videos and images are encrypted too: swap each private src/poster for a decrypted blob URL.
+     Speed: the ciphertext is fetched through the normal HTTP cache (revalidated by ETag, so a repeat visit costs a 304,
+     not the download), images / posters first, and every video only once it is near the viewport (the hero at once). */
+  window.M2Enc = function(u, type){
+    return fetch(u + '.enc').then(function(r){ if(!r.ok) throw new Error(u + ' ' + r.status); return r.blob(); })
+      .then(function(b){ var c = URL.createObjectURL(b);
+        return window.JCPrivate.blobUrl(c, type).then(function(x){ URL.revokeObjectURL(c); return x; }); });
+  };
   function decryptMedia(){
     var TYPES = {mp4:'video/mp4', jpg:'image/jpeg', jpeg:'image/jpeg', png:'image/png', svg:'image/svg+xml'};
-    ['src','poster'].forEach(function(attr){
-      document.querySelectorAll('[data-p'+attr+']').forEach(function(el){
-        var u = el.getAttribute('data-p'+attr), ext = u.split('.').pop().toLowerCase();
-        el.removeAttribute('data-p'+attr);
-        window.JCPrivate.blobUrl(u + '.enc', TYPES[ext] || 'application/octet-stream').then(function(b){
-          el.setAttribute(attr, b);
-          var v = el.closest && el.closest('video'); if (v && attr === 'src') v.load();
-        });
-      });
-    });
+    function swap(el, attr){
+      var u = el.getAttribute('data-p'+attr); if(!u) return;
+      var ext = u.split('.').pop().toLowerCase();
+      el.removeAttribute('data-p'+attr);
+      window.M2Enc(u, TYPES[ext] || 'application/octet-stream').then(function(b){
+        el.setAttribute(attr, b);
+        var v = el.closest && el.closest('video'); if (v && attr === 'src') v.load();
+      }).catch(function(){});
+    }
+    document.querySelectorAll('[data-pposter], img[data-psrc]').forEach(function(el){
+      if (el.hasAttribute('data-pposter')) swap(el, 'poster'); if (el.hasAttribute('data-psrc')) swap(el, 'src'); });
+    var vids = document.querySelectorAll('[data-psrc]');
+    if (!('IntersectionObserver' in window)) { vids.forEach(function(el){ swap(el, 'src'); }); return; }
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){
+      if (!e.isIntersecting) return; io.unobserve(e.target);
+      e.target.querySelectorAll ? (e.target.matches('[data-psrc]') ? swap(e.target, 'src') : null) : null;
+      (e.target.querySelectorAll('[data-psrc]') || []).forEach(function(c){ swap(c, 'src'); });
+    }); }, {rootMargin: '600px'});
+    vids.forEach(function(el){ var v = (el.closest && el.closest('video')) || el; io.observe(v); });
   }
 
   /* The PDFs are encrypted too, so a click has to fetch and decrypt first. */
