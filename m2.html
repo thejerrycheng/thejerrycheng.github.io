@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- The page itself is published encrypted; the key turns it back into HTML. -->
   <script src="assets/js/private.js"></script>
+  <script>
+  /* Speed: a reader who already holds the key never needs this gate, so start downloading the page and its runtime
+     now (through the HTTP cache), and keep the gate itself invisible while it turns into the page. */
+  (function(){
+    var has = false; try { has = !!localStorage.getItem('jc-private-key'); } catch(e){}
+    if (!has && !/[?&]key=/.test(location.search)) return;
+    document.documentElement.className += ' m2-opening';
+    function get(u){ return fetch(u).then(function(r){ if(!r.ok) throw new Error(u + ' ' + r.status); return r.blob(); }); }
+    window.M2Pre = { page: get('assets/private/m2.enc'), boot: get('assets/private/m2/m2-boot.js.enc') };
+    window.M2Pre.page.catch(function(){}); window.M2Pre.boot.catch(function(){});
+    setTimeout(function(){ document.documentElement.classList.remove('m2-opening'); }, 6000);   /* never hide it for long */
+  })();
+  </script>
+  <style>.m2-opening body{visibility:hidden}</style>
   <title>Read the Room — Coming soon</title>
   <meta name="description" content="Read the Room: cooperative multi-robot transport. This page is private.">
   <meta name="author" content="Jerry Cheng">
@@ -122,50 +136,91 @@
 
   /* Decrypt the page and become it. document.open() clears the document but
      leaves the window — JCPrivate, and the key it holds, survive the swap. */
+  /* Fetch a .enc through the HTTP cache (a repeat visit costs a 304, not the download) and decrypt it to a blob URL.
+     Prefetched blobs (window.M2Pre) are used when present. */
+  function decryptBlob(blob, type){
+    var c = URL.createObjectURL(blob);
+    return window.JCPrivate.blobUrl(c, type).then(function(x){ URL.revokeObjectURL(c); return x; });
+  }
+  var encMemo = {};
+  window.M2Enc = function(u, type){
+    var k = u + '|' + (type || '');
+    return encMemo[k] || (encMemo[k] = fetch(u + '.enc').then(function(r){ if(!r.ok) throw new Error(u + ' ' + r.status); return r.blob(); })
+      .then(function(b){ return decryptBlob(b, type); }));
+  };
+  function pre(name, url){
+    var p = window.M2Pre && window.M2Pre[name];
+    return (p ? p.catch(function(){ return fetch(url).then(function(r){ return r.blob(); }); })
+              : fetch(url).then(function(r){ if(!r.ok) throw new Error(url + ' ' + r.status); return r.blob(); }));
+  }
+
+  /* Whatever version of the page the updater publishes, it runs with the current runtime: drop any inline copy of
+     the 3-D replay or of the prototype-script loader (m2-boot.js.enc replaces both), park private media so nothing
+     is downloaded before it is needed, serve the figures as WebP (PNG on error), and keep the web font off the
+     critical path. */
+  function prepare(html){
+    html = html.replace(/<script>((?:(?!<\/script>)[\s\S])*?)<\/script>/g, function(all, body){
+      return /M2 policy-rollout replay|window\.M2Load\s*=/.test(body) ? '' : all;
+    });
+    html = html.replace(/ (src|poster)="(assets\/private\/[^"]+)"/g, ' data-p$1="$2"');
+    html = html.replace(/<img([^>]*?) src="(assets\/projects\/m2\/figures\/[^"]+)\.png"/g,
+      '<img$1 decoding="async" src="$2.webp" onerror="this.onerror=null;this.src=this.src.replace(/\\.webp$/,\'.png\')"');
+    html = html.replace(/<link href="(https:\/\/fonts\.googleapis\.com\/[^"]+)" rel="stylesheet">/g,
+      '<link href="$1" rel="stylesheet" media="print" onload="this.media=\'all\'">');
+    return html;
+  }
+
   function reveal(){
     err.textContent = 'Decrypting\u2026';
-    return window.JCPrivate.text('assets/private/m2.enc').then(function(html){
-      /* private media is published only as .enc: park its paths so the browser does not request them */
-      html = html.replace(/ (src|poster)="(assets\/private\/[^"]+)"/g, ' data-p$1="$2"');
-      document.open(); document.write(html); document.close();
+    var boot = pre('boot', 'assets/private/m2/m2-boot.js.enc').then(function(b){ return decryptBlob(b, 'text/javascript'); });
+    boot.catch(function(){});
+    return pre('page', 'assets/private/m2.enc').then(function(b){
+      var c = URL.createObjectURL(b);
+      return window.JCPrivate.text(c).then(function(t){ URL.revokeObjectURL(c); return t; });
+    }).then(function(html){
+      document.open(); document.write(prepare(html)); document.close();
+      document.documentElement.classList.remove('m2-opening');
       wirePdfs();
-      /* the written page parses asynchronously, so swap the media only once it has been parsed */
-      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', decryptMedia);
-      else decryptMedia();
+      /* the written page parses asynchronously, so start the media and the runtime once it has been parsed */
+      function go(){
+        decryptMedia();
+        boot.then(function(u){ var s = document.createElement('script'); s.src = u; document.body.appendChild(s); })
+            .catch(function(e){ console.error('m2-boot', e); });
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
     }).catch(function(e){
+      document.documentElement.classList.remove('m2-opening');
       err.textContent = 'Could not open it: ' + e.message;
     });
   }
 
   /* The videos and images are encrypted too: swap each private src/poster for a decrypted blob URL.
-     Speed: the ciphertext is fetched through the normal HTTP cache (revalidated by ETag, so a repeat visit costs a 304,
-     not the download), images / posters first, and every video only once it is near the viewport (the hero at once). */
-  window.M2Enc = function(u, type){
-    return fetch(u + '.enc').then(function(r){ if(!r.ok) throw new Error(u + ' ' + r.status); return r.blob(); })
-      .then(function(b){ var c = URL.createObjectURL(b);
-        return window.JCPrivate.blobUrl(c, type).then(function(x){ URL.revokeObjectURL(c); return x; }); });
-  };
+     The hero (poster, then video) goes first and alone; every other image and video only once it is near the
+     viewport, so nothing below the fold competes with what the reader is looking at. */
   function decryptMedia(){
-    var TYPES = {mp4:'video/mp4', jpg:'image/jpeg', jpeg:'image/jpeg', png:'image/png', svg:'image/svg+xml'};
+    var TYPES = {mp4:'video/mp4', jpg:'image/jpeg', jpeg:'image/jpeg', png:'image/png', svg:'image/svg+xml', webp:'image/webp'};
     function swap(el, attr){
-      var u = el.getAttribute('data-p'+attr); if(!u) return;
+      var u = el.getAttribute('data-p'+attr); if(!u) return Promise.resolve();
       var ext = u.split('.').pop().toLowerCase();
       el.removeAttribute('data-p'+attr);
-      window.M2Enc(u, TYPES[ext] || 'application/octet-stream').then(function(b){
+      return window.M2Enc(u, TYPES[ext] || 'application/octet-stream').then(function(b){
         el.setAttribute(attr, b);
         var v = el.closest && el.closest('video'); if (v && attr === 'src') v.load();
       }).catch(function(){});
     }
-    document.querySelectorAll('[data-pposter], img[data-psrc]').forEach(function(el){
-      if (el.hasAttribute('data-pposter')) swap(el, 'poster'); if (el.hasAttribute('data-psrc')) swap(el, 'src'); });
-    var vids = document.querySelectorAll('[data-psrc]');
-    if (!('IntersectionObserver' in window)) { vids.forEach(function(el){ swap(el, 'src'); }); return; }
+    function swapAll(el){                      /* an element and everything private inside it */
+      var list = [el].concat([].slice.call(el.querySelectorAll('[data-psrc],[data-pposter]')));
+      return Promise.all(list.map(function(x){ return Promise.all([swap(x, 'poster'), swap(x, 'src')]); }));
+    }
+    var hero = document.querySelector('header video');
+    var heroDone = hero ? swap(hero, 'poster').then(function(){ return swapAll(hero); }) : Promise.resolve();
+    var rest = [].slice.call(document.querySelectorAll('[data-psrc],[data-pposter]')).map(function(el){
+      return (el.closest && el.closest('video,picture')) || el; }).filter(function(el, i, a){ return a.indexOf(el) === i && el !== hero; });
+    if (!('IntersectionObserver' in window)) { heroDone.then(function(){ rest.forEach(swapAll); }); return; }
     var io = new IntersectionObserver(function(es){ es.forEach(function(e){
-      if (!e.isIntersecting) return; io.unobserve(e.target);
-      e.target.querySelectorAll ? (e.target.matches('[data-psrc]') ? swap(e.target, 'src') : null) : null;
-      (e.target.querySelectorAll('[data-psrc]') || []).forEach(function(c){ swap(c, 'src'); });
-    }); }, {rootMargin: '600px'});
-    vids.forEach(function(el){ var v = (el.closest && el.closest('video')) || el; io.observe(v); });
+      if (!e.isIntersecting) return; io.unobserve(e.target); swapAll(e.target);
+    }); }, {rootMargin: '700px'});
+    rest.forEach(function(el){ io.observe(el); });
   }
 
   /* The PDFs are encrypted too, so a click has to fetch and decrypt first. */
