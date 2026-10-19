@@ -31,7 +31,7 @@
     if (ws && ws.readyState === WebSocket.OPEN && role === 'controller') { ws.send(JSON.stringify(msg)); return true; }
     return false;
   }
-  function pump() {                       // 20 Hz while keys are held; the server stops the goal 0.3 s after silence
+  function pump() {                       // 20 Hz while keys are held; the server stops the goal 1 s after silence
     if (!held.size) { clearInterval(sendTimer); sendTimer = null; send({type: 'teleop', axes: [0, 0, 0, 0, 0, 0]}); return; }
     if (canControl()) send({type: 'teleop', axes: axes()});
   }
