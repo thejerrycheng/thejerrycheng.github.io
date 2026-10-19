@@ -14,7 +14,8 @@
 #live-gripper .lg-grid{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(260px,1fr);gap:18px;align-items:start}
 @media (max-width:860px){#live-gripper .lg-grid{grid-template-columns:1fr}}
 #live-gripper .lg-view{position:relative;border-radius:14px;overflow:hidden;background:var(--surface,#111);aspect-ratio:16/10}
-#live-gripper .lg-canvas{display:block;width:100%;height:100%;object-fit:contain}
+#live-gripper .lg-3d{position:absolute;inset:0}
+#live-gripper .lg-3d canvas{display:block;width:100%!important;height:100%!important;touch-action:none}
 #live-gripper .lg-placeholder{position:absolute;inset:0;display:grid;place-content:center;gap:8px;text-align:center;padding:24px;color:var(--ink-2)}
 #live-gripper .lg-placeholder strong{font:600 20px/1.2 var(--display);color:var(--ink)}
 #live-gripper .lg-placeholder p{margin:0 auto;max-width:46ch;font-size:14px}
@@ -38,3 +39,15 @@
 #live-gripper .lg-levels{display:flex;flex-wrap:wrap;gap:6px}
 #live-gripper .lg-levels button{font-size:12px;padding:7px 10px}
 #live-gripper[data-armed="true"] .lg-view{outline:2px solid #2fb36b;outline-offset:-2px}
+/* sliders (WUJI live-sim style: label · range · value) */
+#live-gripper .lg-sliders{display:grid;gap:4px;margin-top:10px}
+#live-gripper .lg-slider{display:grid;grid-template-columns:72px 1fr 78px;gap:8px;align-items:center;font-size:12.5px;color:var(--ink-2)}
+#live-gripper .lg-slider output{font:500 12px/1 var(--mono);font-variant-numeric:tabular-nums;text-align:right;color:var(--ink)}
+#live-gripper input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:22px;background:transparent;cursor:pointer;margin:0}
+#live-gripper input[type=range]:disabled{opacity:.45;cursor:default}
+#live-gripper input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--hair)}
+#live-gripper input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:var(--hair)}
+#live-gripper input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;margin-top:-7px;border-radius:50%;background:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+#live-gripper input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radius:50%;background:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+#live-gripper input[type=range]:focus-visible{outline:2px solid #3b82f6;outline-offset:2px;border-radius:4px}
+#live-gripper .lg-center{justify-self:end;margin-top:4px;font-size:12px;padding:6px 12px;min-height:30px}
