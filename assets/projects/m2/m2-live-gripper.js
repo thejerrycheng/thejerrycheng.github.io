@@ -111,12 +111,16 @@
       metalness: 0.05, transparent: op < 1, opacity: op, depthWrite: op >= 1}));
   }
   function geometries(meta, buf) {
-    const V = new Float32Array(buf, 4, meta.vbytes / 4), I = new Uint32Array(buf.slice(4 + meta.vbytes));
+    // buf: 4-byte tag, float32 positions, [int8 normals (meta.nbytes)], uint32 indices
+    const nb = meta.nbytes || 0, V = new Float32Array(buf, 4, meta.vbytes / 4);
+    const N = nb ? new Int8Array(buf, 4 + meta.vbytes, nb) : null, I = new Uint32Array(buf.slice(4 + meta.vbytes + nb));
     return meta.meshes.map(m => {
       const g = new THREE.BufferGeometry();
       g.setAttribute('position', new THREE.BufferAttribute(V.slice(m.v, m.v + 3 * m.nv), 3));
       g.setIndex(new THREE.BufferAttribute(I.slice(m.i, m.i + m.ni), 1));
-      g.computeVertexNormals(); return g;
+      if (N) g.setAttribute('normal', new THREE.BufferAttribute(N.slice(m.v, m.v + 3 * m.nv), 3, true));
+      else g.computeVertexNormals();
+      return g;
     });
   }
   function buildRobots(meta, buf) {
@@ -352,13 +356,16 @@
     if (!connected) { t = 'OFFLINE'; sub = 'launch the live sim to start'; }
     else if (mode === 'setup') { t = 'SETUP · PHYSICS OFF'; sub = 'arrange the scene, nothing is simulated yet'; }
     else if (ended) { b.classList.add('st-end'); t = 'TRIAL ENDED'; sub = 'carry again or edit the setup'; }
+    else if (s && s.regrasping) { b.classList.add('st-start'); t = 'RE-GRASPING';
+      sub = s.regrasp_phase === 'lift' ? 'grasped again: lifting from where it landed' : 'box dropped: the planner sends the grippers to where it is now'; }
     else if (!unlocked) { b.classList.add('st-start'); t = 'CARRY · PHYSICS ON'; sub = 'the robots drive in, close their grippers and lift'; }
     else { b.classList.add('st-live'); t = 'LIVE · PHYSICS ON'; sub = paused ? 'paused' : 'the box follows your pose'; }
     $('.lg-bdg-t').textContent = t; $('.lg-bdg-s').textContent = sub;
   }
   function hud(s) {
     if (!s || !connected) { $('.lg-hud').replaceChildren(); return; }
-    const phase = {setup: 'Setup', grasp: 'Driving in · closing', lift: 'Lifting', teleop: 'Teleop', ended: 'Ended', paused: 'Paused'}[s.phase] || s.phase;
+    const phase = {setup: 'Setup', grasp: 'Driving in · closing', lift: 'Lifting', teleop: 'Teleop', ended: 'Ended', paused: 'Paused',
+                   regrasp: 'Re-grasping'}[s.phase] || s.phase;
     const left = Math.max(0, s.session_left_s || 0);
     const err = s.tracking_error_m * 100;
     $('.lg-hud').innerHTML = `<b>${phase}</b> · ${s.t.toFixed(1)} s<br>load <b>${s.mass_kg.toFixed(1)} kg</b>`
@@ -452,6 +459,12 @@
       const tag = String.fromCharCode(...new Uint8Array(ev.data, 0, 4));
       if (tag === 'POSE') onPose(ev.data);
       else if (tag === 'MESH' && expect === 'scene' && view) { buildRobots(sceneMsg, ev.data); expect = null; }
+      else if (tag === 'MSHZ' && expect === 'scene' && view) {     // gzipped robot meshes: inflate off the socket
+        const msg = sceneMsg; expect = null;
+        new Response(new Blob([new Uint8Array(ev.data, 4)]).stream().pipeThrough(new DecompressionStream('gzip')))
+          .arrayBuffer().then(b => { const u = new Uint8Array(b.byteLength + 4); u.set([77, 83, 72, 90]); u.set(new Uint8Array(b), 4);
+            if (sceneMsg === msg) buildRobots(msg, u.buffer); });
+      }
       else if (tag === 'PAYM' && expect === 'payload' && view) { buildPayload(payloadMsg, ev.data); expect = null; }
       if (poses === 1) updateControls();
       return;
