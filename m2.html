@@ -155,12 +155,14 @@
   }
 
   /* Whatever version of the page the updater publishes, it runs with the current runtime: drop any inline copy of
-     the 3-D replay or of the prototype-script loader (m2-boot.js.enc replaces both), park private media so nothing
+     the prototype-script loader (m2-boot.js.enc replaces it). The page's inline 3-D replay is KEPT: it is the
+     maintained copy (policy chips for every rollout set in viewer/index.json, camera modes, four-hand plots), and the
+     boot runtime's older replay skips itself when it sees window.M2ReplayInline. Park private media so nothing
      is downloaded before it is needed, serve the figures as WebP (PNG on error), and keep the web font off the
      critical path. */
   function prepare(html){
     html = html.replace(/<script>((?:(?!<\/script>)[\s\S])*?)<\/script>/g, function(all, body){
-      return /M2 policy-rollout replay|window\.M2Load\s*=/.test(body) ? '' : all;
+      return /window\.M2Load\s*=/.test(body) ? '' : all;
     });
     html = html.replace(/ (src|poster)="(assets\/private\/[^"]+)"/g, ' data-p$1="$2"');
     html = html.replace(/<img([^>]*?) src="(assets\/projects\/m2\/figures\/[^"]+)\.png"/g,
