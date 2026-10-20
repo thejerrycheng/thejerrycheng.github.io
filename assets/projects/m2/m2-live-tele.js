@@ -261,7 +261,7 @@
       const col = new T3.Color(hd.col);
       const mk = (n, mat) => { const g = new T3.BufferGeometry(); g.setAttribute('position', new T3.BufferAttribute(new Float32Array(3 * n), 3));
         g.setDrawRange(0, 0); const l = new T3.Line(g, mat); l.frustumCulled = false; planG.add(l); return l; };
-      const fut = mk(16, new T3.LineBasicMaterial({color: col, transparent: true, opacity: 0.95, depthTest: false}));
+      const fut = mk(64, new T3.LineBasicMaterial({color: col, transparent: true, opacity: 0.95, depthTest: false}));
       const tr = mk(TRAIL, new T3.LineBasicMaterial({vertexColors: true, transparent: true, depthTest: false}));
       tr.geometry.setAttribute('color', new T3.BufferAttribute(new Float32Array(4 * TRAIL), 4));
       const err = mk(2, new T3.LineBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.9, depthTest: false}));
@@ -280,7 +280,7 @@
     const mm = 0.001;
     P.tgt.forEach((p, i) => { trail[i].push(p.map(x => x * mm)); if (trail[i].length > TRAIL) trail[i].shift(); });
     G.userData.hands.forEach((hd, i) => {
-      const fp = hd.fut.geometry.attributes.position, pts = [P.tgt[i], ...P.fut[i]].slice(0, 16);
+      const fp = hd.fut.geometry.attributes.position, pts = [P.tgt[i], ...P.fut[i]].slice(0, 64);
       pts.forEach((p, j) => fp.setXYZ(j, p[0] * mm, p[1] * mm, p[2] * mm)); fp.needsUpdate = true; hd.fut.geometry.setDrawRange(0, pts.length);
       const tp = hd.tr.geometry.attributes.position, tc = hd.tr.geometry.attributes.color, n = trail[i].length;
       trail[i].forEach((p, j) => { tp.setXYZ(j, p[0], p[1], p[2]); tc.setXYZW(j, hd.col.r, hd.col.g, hd.col.b, 0.05 + 0.75 * (j + 1) / n); });
