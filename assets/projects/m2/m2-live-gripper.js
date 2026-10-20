@@ -1,71 +1,102 @@
-/* Live teleop of the gripper carry policy (#live-gripper). The simulation and the shared policy (both robots) run on
- * the lab computer (~/M2/mjlab/scripts/live_server.py, CPU only, user unit m2-live.service); this page renders the
- * scene itself with three.js from the meshes and body poses the server streams, and sends the desired pose:
- * held keys (arrows = horizontal, camera-relative; W/S = up/down; E/D = yaw; R/F = pitch; T/G = roll) or the sliders
- * (absolute offset from the start pose). Endpoints + token come from data attributes of the (encrypted) section:
- * the local server is tried first (this page opened on the lab computer), then the public one. */
+/* Live gripper-carry demo (#live-gripper), WUJI live-section style. The simulation and the shared policy (both robots)
+ * run on the lab computer (~/M2/mjlab/scripts/live_server.py, CPU only, user unit m2-live.service); this page renders
+ * the scene itself with three.js from the meshes and body poses the server streams.
+ *   SETUP (physics off): pick an object in the carousel, drag the box and each robot (TransformControls gizmos, or the
+ *     sliders) inside the trained start regions; the server clamps every request and previews it.
+ *   CARRY: physics on from exactly that setup: the robots drive in, close, lift; then the visitor drives the desired
+ *     box pose with the sliders (absolute offset; roll first) or held keys (arrows = horizontal, camera-relative;
+ *     W/S = up/down; T/G = roll; R/F = pitch; E/D = yaw).
+ * Endpoints + token come from data attributes of the (encrypted) section: the local server first, then the public one. */
 (() => {
   'use strict';
   const root = document.getElementById('live-gripper');
   if (!root) return;
   const $ = s => root.querySelector(s);
+  const $$ = s => [...root.querySelectorAll(s)];
+  const THREE_V = '0.147.0';
+  const IMG = 'assets/projects/m2/live_objects/';
   const KEYS = {                                  // key -> [axis, sign]; axes = [forward, left, up, roll, pitch, yaw]
     ArrowUp: [0, 1], ArrowDown: [0, -1], ArrowLeft: [1, 1], ArrowRight: [1, -1],
     w: [2, 1], s: [2, -1], t: [3, 1], g: [3, -1], r: [4, 1], f: [4, -1], e: [5, 1], d: [5, -1]
   };
-  const SLIDERS = [                               // offset index, label, unit, decimals
-    [0, 'X', 'm', 2], [1, 'Y', 'm', 2], [2, 'Lift', 'm', 3], [3, 'Roll', '°', 1], [4, 'Pitch', '°', 1], [5, 'Yaw', '°', 0]];
+  const DRIVE = {0: ['m', 2], 1: ['m', 2], 2: ['m', 3], 3: ['°', 1], 4: ['°', 1], 5: ['°', 0]};   // unit, decimals
+  const TINT = [[0.95, 0.55, 0.16], [0.13, 0.75, 0.75]];                                        // MABEL, MILO regions
   const held = new Set();
-  let ws = null, role = null, connected = false, connecting = false, ended = false, paused = false, unlocked = false;
-  let sendTimer = null, lastPoseAt = 0, poses = 0, level = null, limits = null, trial = -1, camTrial = -1;
-  let view = null, sceneMsg = null, payloadMsg = null, expect = null, lastState = null;
-  const sliderTouched = new Array(6).fill(0);     // last user input time per slider (ms)
-  let goalTimer = null, goalDirty = false;
+  let ws = null, role = null, connected = false, connecting = false;
+  let mode = 'setup', ended = false, paused = false, unlocked = false, level = null, limits = null, bounds = null;
+  let presets = [], setup = null, placement = null, lastState = null, trial = -1, framed = false;
+  let view = null, sceneMsg = null, payloadMsg = null, expect = null, poses = 0, lastPoseAt = 0;
+  let pick = 'payload', tmode = 'translate', dragging = false;
+  let sendTimer = null, goalTimer = null, goalDirty = false, setupTimer = null, setupDirty = null;
+  const touched = {};                              // last user input time per slider key (ms)
 
-  const status = (text, kind = 'idle') => { const n = $('.lg-status'); n.textContent = text; n.dataset.kind = kind; };
   const fmt = (v, d = 2) => Number.isFinite(v) ? (v >= 0 ? '+' : '') + v.toFixed(d) : '—';
   const keyOf = e => (e.key && e.key.length === 1 ? e.key.toLowerCase() : e.key);
-  const canControl = () => connected && role === 'controller' && !ended && !paused && unlocked;
+  const wrap = a => Math.atan2(Math.sin(a), Math.cos(a));
+  const rad = d => d * Math.PI / 180, deg = r => r * 180 / Math.PI;
+  const isCtl = () => connected && role === 'controller';
+  const canSetup = () => isCtl() && mode === 'setup';
+  const canControl = () => isCtl() && mode === 'run' && !ended && !paused && unlocked;
+  function status(text, kind = 'idle') { const n = $('.lg-status'); n.dataset.kind = kind; $('.lg-st').textContent = text; }
 
-  // ---------------------------------------------------------------- three.js view
+  // ---------------------------------------------------------------- three.js
   function whenThree() {
-    const src = 'https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js';
-    if (!window.THREE && !document.querySelector(`script[src="${src}"]`)) {
-      const list = [src, 'https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js'];
-      if (window.M2Load) window.M2Load(list);
-      else (function load(l) { if (!l.length) return; const sc = document.createElement('script'); sc.src = l[0]; sc.onload = sc.onerror = () => load(l.slice(1)); document.body.appendChild(sc); })(list);
+    const base = `https://cdn.jsdelivr.net/npm/three@${THREE_V}/`;
+    const list = [base + 'build/three.min.js', base + 'examples/js/controls/OrbitControls.js',
+                  base + 'examples/js/controls/TransformControls.js'];
+    const need = () => !(window.THREE && THREE.OrbitControls && THREE.TransformControls);
+    if (need()) {
+      const todo = list.filter((u, i) => !(i === 0 && window.THREE) && !(i === 1 && window.THREE && THREE.OrbitControls)
+                                         && !document.querySelector(`script[src="${u}"]`));
+      (function load(l) { if (!l.length) return; const sc = document.createElement('script'); sc.src = l[0];
+        sc.onload = sc.onerror = () => load(l.slice(1)); document.body.appendChild(sc); })(todo);
     }
     return new Promise((res, rej) => {
       const t0 = performance.now();
-      (function poll() { if (window.THREE && THREE.OrbitControls) res(); else if (performance.now() - t0 > 20000) rej(new Error('three.js did not load')); else setTimeout(poll, 60); })();
+      (function poll() { if (!need()) res(); else if (performance.now() - t0 > 25000) rej(new Error('three.js did not load'));
+        else setTimeout(poll, 60); })();
     });
   }
-  const dark = () => { const t = document.documentElement.getAttribute('data-theme');
-    return t === 'dark' || (t !== 'light' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches); };
-
   function makeView() {
     const el = $('.lg-3d');
     const r = new THREE.WebGLRenderer({antialias: true, alpha: true});
     r.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
     el.replaceChildren(r.domElement);
     const s = new THREE.Scene();
-    const cam = new THREE.PerspectiveCamera(35, 1, 0.05, 80); cam.up.set(0, 0, 1);
-    s.add(new THREE.HemisphereLight(0xffffff, 0x445566, 0.85));
-    const d1 = new THREE.DirectionalLight(0xffffff, 0.85); d1.position.set(3, -4, 8); s.add(d1);
-    const d2 = new THREE.DirectionalLight(0xffffff, 0.3); d2.position.set(-4, 3, 2); s.add(d2);
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.MeshStandardMaterial({color: dark() ? 0x2b3440 : 0xdfe4ea, roughness: 0.95}));
-    floor.position.z = -0.002; s.add(floor);
-    const grid = new THREE.GridHelper(40, 80, dark() ? 0x55606e : 0xb8c0ca, dark() ? 0x3a4350 : 0xcdd3da); grid.rotation.x = Math.PI / 2;
-    grid.material.transparent = true; grid.material.opacity = 0.6; s.add(grid);
+    const cam = new THREE.PerspectiveCamera(35, 1, 0.05, 120); cam.up.set(0, 0, 1);
+    cam.position.set(-3.6, -4.2, 2.6);
+    s.add(new THREE.HemisphereLight(0xffffff, 0x8a96a6, 0.9));
+    const d1 = new THREE.DirectionalLight(0xffffff, 0.8); d1.position.set(3, -4, 8); s.add(d1);
+    const d2 = new THREE.DirectionalLight(0xffffff, 0.28); d2.position.set(-4, 3, 2); s.add(d2);
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshStandardMaterial({color: 0xe3e6ea, roughness: 0.95}));
+    floor.position.z = -0.003; s.add(floor);
+    const grid = new THREE.GridHelper(60, 120, 0xb4bcc6, 0xcfd4db); grid.rotation.x = Math.PI / 2;
+    grid.material.transparent = true; grid.material.opacity = 0.7; s.add(grid);
     const ctl = new THREE.OrbitControls(cam, r.domElement); ctl.enableDamping = true; ctl.dampingFactor = 0.12;
-    ctl.maxPolarAngle = Math.PI * 0.495;
-    const v = {r, s, cam, ctl, el, dirty: true, groups: [], payload: new THREE.Group(), ghost: new THREE.Group(), ref: new THREE.Group()};
-    s.add(v.payload); s.add(v.ghost); s.add(v.ref);
+    ctl.maxPolarAngle = Math.PI * 0.495; ctl.target.set(0, 0, 0.5);
+    const v = {r, s, cam, ctl, el, dirty: true, groups: [], payload: new THREE.Group(), ghost: new THREE.Group(),
+               ref: new THREE.Group(), regions: new THREE.Group(), proxies: {}, ring: null, tc: null};
+    [v.payload, v.ghost, v.ref, v.regions].forEach(g => s.add(g));
     ctl.addEventListener('change', () => { v.dirty = true; });
-    const size = () => { const w = el.clientWidth || 640, h = el.clientHeight || Math.round(w * 0.625);
-      r.setSize(w, h, false);
-      cam.aspect = w / h; cam.updateProjectionMatrix(); v.dirty = true; };
+    // arena outline (where the box may be placed)
+    const A = 2.5, pts = [[-A, -A], [A, -A], [A, A], [-A, A], [-A, -A]].map(p => new THREE.Vector3(p[0], p[1], 0.002));
+    const arena = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineDashedMaterial({color: 0x7d8794, dashSize: 0.12, gapSize: 0.08}));
+    arena.computeLineDistances(); v.arena = arena; s.add(arena);
+    // setup proxies: the gizmo moves an invisible object; its pose becomes a (clamped) setup request
+    for (const k of ['payload', '0', '1']) { const o = new THREE.Object3D(); o.position.set(0, 0, 0.3); v.proxies[k] = o; s.add(o); }
+    v.ring = new THREE.Mesh(new THREE.RingGeometry(0.42, 0.48, 48), new THREE.MeshBasicMaterial({color: 0x0a84ff, transparent: true, opacity: 0.85, depthWrite: false}));
+    v.ring.position.z = 0.004; s.add(v.ring);
+    const tc = new THREE.TransformControls(cam, r.domElement);
+    tc.setSize(1.05); tc.setSpace('world');
+    tc.addEventListener('dragging-changed', e => { ctl.enabled = !e.value; dragging = e.value;
+      if (!e.value) { onGizmo(true); } v.dirty = true; });
+    tc.addEventListener('objectChange', () => { onGizmo(false); v.dirty = true; });
+    tc.addEventListener('change', () => { v.dirty = true; });
+    s.add(tc); v.tc = tc;
+    const size = () => { const w = el.clientWidth || 800, h = el.clientHeight || 500;
+      r.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); v.dirty = true; };
     size(); window.addEventListener('resize', size);
+    if ('ResizeObserver' in window) new ResizeObserver(size).observe(el);
     let visible = true;
     if ('IntersectionObserver' in window) new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(el);
     (function loop() { requestAnimationFrame(loop); if (!visible) return; if (ctl.update()) v.dirty = true;
@@ -109,7 +140,7 @@
       view.payload.add(new THREE.Mesh(geos[e.mesh], mat(e.rgba)));
       view.ghost.add(new THREE.Mesh(geos[e.mesh], new THREE.MeshBasicMaterial({color: blue, transparent: true, opacity: 0.2, depthWrite: false})));
       view.ghost.add(new THREE.LineSegments(new THREE.EdgesGeometry(geos[e.mesh], 35), new THREE.LineBasicMaterial({color: blue, transparent: true, opacity: 0.75})));
-      view.ref.add(new THREE.LineSegments(new THREE.EdgesGeometry(geos[e.mesh], 35), new THREE.LineBasicMaterial({color: dark() ? 0xffffff : 0x333333, transparent: true, opacity: 0.25})));
+      view.ref.add(new THREE.LineSegments(new THREE.EdgesGeometry(geos[e.mesh], 35), new THREE.LineBasicMaterial({color: 0x333333, transparent: true, opacity: 0.25})));
     });
     trial = meta.trial; view.dirty = true;
   }
@@ -121,102 +152,291 @@
       view.groups[b].position.set(F[o], F[o + 1], F[o + 2]); view.groups[b].quaternion.set(F[o + 4], F[o + 5], F[o + 6], F[o + 3]); }
     const put = (g, o) => { g.position.set(F[o], F[o + 1], F[o + 2]); g.quaternion.set(F[o + 4], F[o + 5], F[o + 6], F[o + 3]); };
     put(view.payload, 7 * NB); put(view.ghost, 7 * NB + 7); put(view.ref, 7 * NB + 14);
-    view.ghost.visible = unlocked;
-    if (camTrial !== trial && lastState) {                 // a new trial: frame both robots from the payload's side
-      camTrial = trial;
-      const c = [F[7 * NB], F[7 * NB + 1], Math.max(0.5, F[7 * NB + 2])], az = lastState.camera_azimuth_deg * Math.PI / 180;
-      view.cam.position.set(c[0] - 4.2 * Math.cos(az), c[1] - 4.2 * Math.sin(az), c[2] + 1.9);
-      view.ctl.target.set(c[0], c[1], c[2]); view.ctl.update();
+    view.ghost.visible = mode === 'run' && unlocked;
+    view.ref.visible = mode === 'run';
+    if (!framed && lastState) {                    // first frame after connecting: frame the pair from the box's side
+      framed = true;
+      const c = [F[7 * NB], F[7 * NB + 1], Math.max(0.5, F[7 * NB + 2])], az = rad(lastState.camera_azimuth_deg);
+      view.cam.position.set(c[0] - 5.0 * Math.cos(az), c[1] - 5.0 * Math.sin(az), c[2] + 2.6);
+      view.ctl.target.set(c[0], c[1], c[2] * 0.8); view.ctl.update();
     }
     view.dirty = true; poses += 1; lastPoseAt = performance.now();
-    $('.lg-placeholder').hidden = true;
   }
   function camAzimuthDeg() {                               // horizontal direction the camera looks: "forward" for the arrows
     if (!view) return null;
     const d = new THREE.Vector3().subVectors(view.ctl.target, view.cam.position);
-    return (Math.atan2(d.y, d.x) * 180 / Math.PI + 360) % 360;
+    return (deg(Math.atan2(d.y, d.x)) + 360) % 360;
+  }
+
+  // ---------------------------------------------------------------- setup: regions, proxies, gizmo
+  function stationFrame(k) {
+    const st = placement.robots[k].station, f = rad(st.face_deg);
+    return {S: [st.x, st.y], f: [Math.cos(f), Math.sin(f)], L: [-Math.sin(f), Math.cos(f)], face: f};
+  }
+  function drawRegions() {
+    if (!view || !placement || !bounds) return;
+    view.regions.clear();
+    for (let k = 0; k < 2; k++) {
+      const {S, f, L, face} = stationFrame(k);
+      const [b0, b1] = bounds.back, [s0, s1] = bounds.side;
+      const g = new THREE.PlaneGeometry(b1 - b0, s1 - s0);
+      const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({color: new THREE.Color(...TINT[k]), transparent: true, opacity: 0.32, depthWrite: false}));
+      const cb = (b0 + b1) / 2, cs = (s0 + s1) / 2;            // region centre: S - cb f + cs L (events.place_pair)
+      m.position.set(S[0] - cb * f[0] + cs * L[0], S[1] - cb * f[1] + cs * L[1], 0.003);
+      m.rotation.z = face;
+      view.regions.add(m);
+      const edge = new THREE.LineSegments(new THREE.EdgesGeometry(g), new THREE.LineBasicMaterial({color: new THREE.Color(...TINT[k])}));
+      edge.position.copy(m.position); edge.rotation.z = face; view.regions.add(edge);
+      // turn wedge: the allowed facing (+-dyaw) drawn at the robot's chassis
+      const R = placement.robots[k], d0 = rad(bounds.dyaw_deg[0]), d1 = rad(bounds.dyaw_deg[1]);
+      const w = new THREE.Mesh(new THREE.CircleGeometry(0.42, 32, face + d0, d1 - d0),
+        new THREE.MeshBasicMaterial({color: new THREE.Color(...TINT[k]), transparent: true, opacity: 0.22, depthWrite: false}));
+      w.position.set(R.x, R.y, 0.005); view.regions.add(w);
+      const pt = rad(R.yaw_deg), arrow = new THREE.Line(new THREE.BufferGeometry().setFromPoints(
+        [new THREE.Vector3(R.x, R.y, 0.006), new THREE.Vector3(R.x + 0.48 * Math.cos(pt), R.y + 0.48 * Math.sin(pt), 0.006)]),
+        new THREE.LineBasicMaterial({color: new THREE.Color(...TINT[k])}));
+      view.regions.add(arrow);
+    }
+    view.regions.visible = mode === 'setup';
+    view.dirty = true;
+  }
+  function boxTop() {                                      // the box's gizmo floats just above it (not hidden inside)
+    const pr = setup && presets.find(p => p.id === setup.object);
+    return pr ? Math.max(pr.height, pr.bar_height) + 0.12 : 1.0;
+  }
+  function syncProxies() {                                 // proxies follow the server's (clamped) placement unless dragged
+    if (!view || !placement || dragging) return;
+    const P = placement.payload;
+    view.proxies.payload.position.set(P.x, P.y, boxTop()); view.proxies.payload.rotation.set(0, 0, rad(P.yaw_deg));
+    for (let k = 0; k < 2; k++) { const R = placement.robots[k];
+      view.proxies[String(k)].position.set(R.x, R.y, 0.3); view.proxies[String(k)].rotation.set(0, 0, rad(R.yaw_deg)); }
+    placeRing();
+  }
+  function placeRing() {
+    if (!view) return;
+    const o = view.proxies[pick];
+    view.ring.position.set(o.position.x, o.position.y, 0.004);
+    const pr = setup && presets.find(p => p.id === setup.object);
+    const r = pick === 'payload' && pr ? 0.5 * Math.hypot(pr.length, pr.width) + 0.12 : 0.45;   // ring radius, m
+    view.ring.scale.setScalar(r / 0.45);
+    view.ring.visible = mode === 'setup' && isCtl();
+    view.dirty = true;
+  }
+  function attachGizmo() {
+    if (!view) return;
+    const on = canSetup();
+    if (!on) { view.tc.detach(); view.tc.visible = false; placeRing(); return; }
+    view.tc.attach(view.proxies[pick]); view.tc.visible = true;
+    view.tc.setMode(tmode);
+    view.tc.showX = tmode === 'translate'; view.tc.showY = tmode === 'translate'; view.tc.showZ = tmode === 'rotate';
+    placeRing();
+  }
+  function clampRobot(k, x, y, yaw) {                       // world pose -> clamped {back, side, dyaw_deg} + its pose
+    const {S, f, L, face} = stationFrame(k);
+    const d = [S[0] - x, S[1] - y];
+    let back = d[0] * f[0] + d[1] * f[1], side = -(d[0] * L[0] + d[1] * L[1]);
+    back = Math.min(bounds.back[1], Math.max(bounds.back[0], back));
+    side = Math.min(bounds.side[1], Math.max(bounds.side[0], side));
+    let dy = deg(wrap(yaw - face));
+    dy = Math.min(bounds.dyaw_deg[1], Math.max(bounds.dyaw_deg[0], dy));
+    return {back, side, dyaw_deg: dy, x: S[0] - back * f[0] + side * L[0], y: S[1] - back * f[1] + side * L[1], yaw: face + rad(dy)};
+  }
+  function onGizmo(final) {
+    if (!canSetup() || !placement) return;
+    const o = view.proxies[pick];
+    if (pick === 'payload') {
+      const A = 2.5;
+      o.position.x = Math.min(A, Math.max(-A, o.position.x)); o.position.y = Math.min(A, Math.max(-A, o.position.y));
+      o.position.z = boxTop();
+      const yaw = deg(wrap(o.rotation.z));
+      queueSetup({payload: {x: o.position.x, y: o.position.y, yaw_deg: yaw}}, final);
+    } else {
+      const k = Number(pick), c = clampRobot(k, o.position.x, o.position.y, o.rotation.z);
+      o.position.set(c.x, c.y, 0.3); o.rotation.set(0, 0, c.yaw);           // the gizmo cannot leave the trained region
+      const rb = [{}, {}]; rb[k] = {back: c.back, side: c.side, dyaw_deg: c.dyaw_deg};
+      queueSetup({robots: rb}, final);
+    }
+    placeRing();
+  }
+  function merge(a, b) {                                   // shallow-deep merge of setup requests (robots by index)
+    const out = Object.assign({}, a);
+    for (const k of Object.keys(b)) {
+      if (k === 'robots') { out.robots = [Object.assign({}, (a.robots || [])[0], b.robots[0]), Object.assign({}, (a.robots || [])[1], b.robots[1])]; }
+      else if (k === 'payload') out.payload = Object.assign({}, a.payload, b.payload);
+      else out[k] = b[k];
+    }
+    return out;
+  }
+  function flushSetup() {
+    if (setupDirty && canSetup()) { send(Object.assign({type: 'setup'}, setupDirty)); }
+    setupDirty = null; clearInterval(setupTimer); setupTimer = null;
+  }
+  function queueSetup(req, now) {                           // ~8 Hz while dragging; the server previews the newest
+    setupDirty = merge(setupDirty || {}, req);
+    if (now) { flushSetup(); return; }
+    if (!setupTimer) setupTimer = setInterval(flushSetup, 120);
+  }
+
+  // ---------------------------------------------------------------- object carousel
+  function buildCarousel() {
+    const box = $('.lg-objects');
+    box.replaceChildren();
+    for (const p of presets) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'lg-tile'; b.dataset.obj = p.id;
+      b.setAttribute('aria-label', `${p.name}: ${p.length}×${p.width}×${p.height} m, ${p.mass} kg`);
+      const im = document.createElement('img');
+      im.src = IMG + p.id + '.webp'; im.srcset = `${IMG}${p.id}.webp 1x, ${IMG}${p.id}@2x.webp 2x`;
+      im.alt = ''; im.loading = 'lazy'; im.width = 320; im.height = 200;
+      const t = document.createElement('span'); t.className = 't'; t.textContent = p.name;
+      const s = document.createElement('span'); s.className = 's';
+      s.textContent = `${p.length.toFixed(2)} × ${p.width.toFixed(2)} × ${p.height.toFixed(2)} m`;
+      const badge = document.createElement('span'); badge.className = 'badge'; badge.textContent = p.mass + ' kg';
+      b.append(im, badge, t, s);
+      b.addEventListener('click', () => { if (canSetup()) { queueSetup({object: p.id}, true); markObject(p.id); } });
+      box.append(b);
+    }
+    const strip = box, endc = () => strip.classList.toggle('end', strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 4);
+    strip.addEventListener('scroll', endc, {passive: true}); endc();
+  }
+  function markObject(id) {
+    $$('.lg-tile').forEach(b => b.classList.toggle('on', b.dataset.obj === id));
+    const p = presets.find(q => q.id === id);
+    $('.lg-osel').textContent = p ? `${p.name} · ${p.mass} kg` : '';
   }
 
   // ---------------------------------------------------------------- UI state
   function updateControls() {
-    $('.lg-connect').textContent = connecting ? 'Connecting…' : connected ? 'Stop' : 'Launch live sim';
-    $('.lg-connect').disabled = connecting;
-    $('.lg-pause').disabled = !(connected && role === 'controller' && !ended);
+    const ctl = isCtl(), su = canSetup(), run = mode === 'run';
+    $('.lg-launch').hidden = connected || connecting;
+    $('.lg-ph').hidden = (connected && poses > 0) || connecting;
+    $('.lg-load').classList.toggle('on', connecting || (connected && !poses));
+    $('.lg-stop').hidden = !connected;
+    $('.lg-carry').disabled = !su;
+    $('.lg-carry').hidden = run && connected;
+    $('.lg-edit').hidden = !(run && connected);
+    $('.lg-edit').disabled = !ctl;
+    $('.lg-pause').hidden = !(run && connected && !ended);
+    $('.lg-pause').disabled = !ctl;
     $('.lg-pause').textContent = paused ? 'Resume' : 'Pause';
-    $('.lg-reset').disabled = !(connected && role === 'controller');
-    root.querySelectorAll('[data-lg-key]').forEach(b => { b.disabled = !canControl(); });
-    root.querySelectorAll('.lg-slider input').forEach(i => { i.disabled = !canControl(); });
+    $('.lg-shuffle').disabled = !su; $('.lg-reset').disabled = !su;
+    $$('.lg-modes button').forEach(b => { b.classList.toggle('on', b.dataset.mode === mode); b.disabled = !ctl; });
+    $('.lg-tools').hidden = !su; $('.lg-legend').hidden = !(connected && poses);
+    if (!su) $('.lg-tip').hidden = true;                    // the placement tip belongs to setup
+    $$('.lg-tile').forEach(b => { b.disabled = !su; });
+    $$('.lg-c-place input').forEach(i => { i.disabled = !su; });
+    $$('.lg-pick2 button, .lg-pick button, .lg-tmode button').forEach(b => { b.disabled = !su; });
+    $('.lg-c-place').classList.toggle('off', !su);
+    $('.lg-c-obj').classList.toggle('off', !su && connected);
+    $('.lg-c-drive').classList.toggle('off', !canControl());
+    $$('[data-lg-key]').forEach(b => { b.disabled = !canControl(); });
+    $$('.lg-slider input').forEach(i => { i.disabled = !canControl(); });
     $('.lg-center').disabled = !canControl();
-    root.querySelectorAll('[data-lg-level]').forEach(b => {
-      b.disabled = !(connected && role === 'controller');
-      b.setAttribute('aria-pressed', String(Number(b.dataset.lgLevel) === level));
-    });
-    root.dataset.armed = String(canControl());
-    $('.lg-role').textContent = !connected ? 'Not connected' : role === 'controller' ? 'You have control' : 'Watching · another visitor has control';
-    $('.lg-keynote').textContent = !connected ? 'Controls unlock once the robots have grasped and lifted the load.'
-      : ended ? 'Trial ended. Reset to start a new one.'
+    $$('.lg-levels button').forEach(b => { b.disabled = !su; b.classList.toggle('on', Number(b.dataset.level) === level); });
+    $('.lg-dsel').textContent = canControl() ? 'live' : run && !ended ? 'unlocking…' : 'after Carry';
+    $('.lg-role').textContent = !connected ? '' : role === 'controller' ? 'You have control' : 'Watching · another visitor has control';
+    $('.lg-keynote').textContent = !connected ? 'Controls unlock once the robots have grasped and lifted the box.'
+      : mode === 'setup' ? 'Press Carry: the robots drive in, close and lift; then the box follows these controls.'
+      : ended ? 'Trial ended. Carry again, or edit the setup.'
       : paused ? 'Paused. Resume to move the goal.'
-      : !unlocked ? 'Grasping and lifting… pose control unlocks in a moment.'
-      : role === 'controller' ? 'Drag the sliders, or hold keys / buttons. Release to hold the pose.' : 'Another visitor is driving.';
+      : !unlocked ? 'Grasping and lifting… the controls unlock in a moment.'
+      : role === 'controller' ? 'Drag the sliders, or hold keys / buttons; release to hold. Roll, pitch and yaw turn the box about its own axes.'
+      : 'Another visitor is driving.';
+    const vw = $('.lg-vw'); vw.classList.toggle('st-setup', mode === 'setup'); vw.classList.toggle('st-live', mode === 'run' && !ended);
+    attachGizmo();
+    if (view) { view.regions.visible = mode === 'setup'; view.dirty = true; }
+  }
+  function badge(s) {
+    const b = $('.lg-bdg'); b.classList.remove('st-start', 'st-live', 'st-end');
+    let t, sub;
+    if (!connected) { t = 'OFFLINE'; sub = 'launch the live sim to start'; }
+    else if (mode === 'setup') { t = 'SETUP · PHYSICS OFF'; sub = 'arrange the scene, nothing is simulated yet'; }
+    else if (ended) { b.classList.add('st-end'); t = 'TRIAL ENDED'; sub = 'carry again or edit the setup'; }
+    else if (!unlocked) { b.classList.add('st-start'); t = 'CARRY · PHYSICS ON'; sub = 'the robots drive in, close their grippers and lift'; }
+    else { b.classList.add('st-live'); t = 'LIVE · PHYSICS ON'; sub = paused ? 'paused' : 'the box follows your pose'; }
+    $('.lg-bdg-t').textContent = t; $('.lg-bdg-s').textContent = sub;
+  }
+  function hud(s) {
+    if (!s || !connected) { $('.lg-hud').replaceChildren(); return; }
+    const phase = {setup: 'Setup', grasp: 'Driving in · closing', lift: 'Lifting', teleop: 'Teleop', ended: 'Ended', paused: 'Paused'}[s.phase] || s.phase;
+    const left = Math.max(0, s.session_left_s || 0);
+    const err = s.tracking_error_m * 100;
+    $('.lg-hud').innerHTML = `<b>${phase}</b> · ${s.t.toFixed(1)} s<br>load <b>${s.mass_kg.toFixed(1)} kg</b>`
+      + (s.mode === 'run' ? ` · error <span class="${err < 3 ? 'ok' : err < 8 ? 'w' : 'bad'}">${err.toFixed(1)} cm</span>` : '')
+      + `<br>${s.rtf ? s.rtf.toFixed(2) + '× real time' : 'physics off'} · session ${Math.floor(left / 60)}:${String(Math.floor(left % 60)).padStart(2, '0')}`;
   }
   function showPose(kind, p) {
     const xyz = (p && p.position) || [];
     ['x', 'y', 'z'].forEach((a, i) => { $(`.lg-${kind}-${a}`).textContent = fmt(xyz[i]); });
     ['roll', 'pitch', 'yaw'].forEach(a => { $(`.lg-${kind}-${a}`).textContent = fmt(p ? p[a + '_deg'] : NaN, 1); });
   }
+  function setRanges(L) {
+    limits = L;
+    const rng = {0: [-L.move_m, L.move_m], 1: [-L.move_m, L.move_m], 2: [L.lift_m[0], L.lift_m[1]],
+                 3: [-L.roll_deg, L.roll_deg], 4: [-L.pitch_deg, L.pitch_deg], 5: [-L.yaw_deg, L.yaw_deg]};
+    $$('.lg-slider').forEach(row => { const i = Number(row.dataset.i), inp = row.querySelector('input');
+      inp.min = rng[i][0]; inp.max = rng[i][1]; inp.step = 'any'; });   // "any": no grid anchored at min (exact 0)
+    $('.lg-limits').textContent = `Goal limits: roll ±${L.roll_deg}° · pitch ±${L.pitch_deg}° · yaw ±${L.yaw_deg}° · `
+      + `move ≤ ${L.move_m} m · lift ${L.lift_m[0]}–${L.lift_m[1]} m · handles ≤ ${L.bar_z_max_m} m; the box follows at up to `
+      + `${L.speed_m_s} m/s and ${L.turn_deg_s}°/s.`;
+  }
+  function placeSliders() {                                // card 2 follows the server's setup unless just touched
+    if (!setup) return;
+    const now = performance.now(), k = pick === 'payload' ? null : Number(pick);
+    $('.lg-place-box').hidden = k !== null; $('.lg-place-rob').hidden = k === null;
+    $('.lg-psel').textContent = k === null ? 'Box' : (k === 0 ? 'MABEL' : 'MILO');
+    $$('.lg-c-place input').forEach(inp => {
+      const [grp, key] = inp.dataset.set.split('.');
+      const src = grp === 'payload' ? setup.payload : (k === null ? null : setup.robots[k]);
+      if (!src) return;
+      if (now - (touched[inp.id] || 0) > 700) inp.value = src[key];
+      const v = Number(inp.value), out = inp.nextElementSibling;
+      out.textContent = key.endsWith('deg') ? v.toFixed(0) + '°' : (grp === 'robot' ? (v * 100).toFixed(0) + ' cm' : v.toFixed(2) + ' m');
+    });
+  }
   function onState(s) {
     lastState = s;
+    root.dataset.phase = s.phase; root.dataset.t = s.t; root.dataset.mode = s.mode || 'run';      // (read by the tests)
     role = s.role; ended = !!s.ended; paused = !!s.paused; unlocked = !!s.unlocked; level = s.level;
+    const newMode = s.mode || 'run';
+    if (newMode !== mode) { mode = newMode; if (mode === 'run') releaseAll(); }
+    if (s.limits) setRanges(s.limits);
+    const prevPlace = JSON.stringify(placement);
+    setup = s.setup || setup; placement = s.placement || placement;
+    if (JSON.stringify(placement) !== prevPlace) { drawRegions(); syncProxies(); }
+    if (setup) markObject(setup.object);
+    placeSliders();
     showPose('des', s.desired); showPose('mea', s.measured);
-    const phase = {grasp: 'Grasping', lift: 'Lifting', teleop: 'Teleop', ended: 'Ended', paused: 'Paused'}[s.phase] || s.phase;
-    $('.lg-phase').textContent = phase;
-    $('.lg-clock').textContent = s.t.toFixed(1) + ' s';
-    $('.lg-err').textContent = (s.tracking_error_m * 100).toFixed(1) + ' cm';
-    $('.lg-rtf').textContent = s.rtf ? s.rtf.toFixed(2) + '× real time' : '—';
-    $('.lg-mass').textContent = s.mass_kg.toFixed(1) + ' kg';
-    $('.lg-left').textContent = Math.floor(s.session_left_s / 60) + ':' + String(Math.floor(s.session_left_s % 60)).padStart(2, '0');
-    // sliders follow the goal offset unless the visitor touched them in the last moment
     const now = performance.now();
-    root.querySelectorAll('.lg-slider').forEach(row => {
+    $$('.lg-slider').forEach(row => {
       const i = Number(row.dataset.i), inp = row.querySelector('input');
-      if (now - sliderTouched[i] > 600 && Number.isFinite(s.offset[i])) inp.value = s.offset[i];
-      row.querySelector('output').textContent = fmt(Number(inp.value), SLIDERS[i][3]) + ' ' + SLIDERS[i][2];
+      if (now - (touched['d' + i] || 0) > 600 && Number.isFinite(s.offset[i])) inp.value = s.offset[i];
+      row.querySelector('output').textContent = fmt(Number(inp.value), DRIVE[i][1]) + ' ' + DRIVE[i][0];
     });
-    const notice = $('.lg-notice');
-    notice.hidden = !(ended || paused);
-    if (ended) {
-      const why = {gripper_lost: 'A gripper lost the handle', payload_off_reference: 'The load left the planned pose',
-        'session time limit': 'Session time is up', 'server error': 'The simulation hit an error'}[s.outcome] || (s.outcome || 'Trial ended');
-      $('.lg-notice-title').textContent = 'Trial ended';
-      $('.lg-notice-text').textContent = why + '. Reset to start a new trial.';
-    } else if (paused) {
-      $('.lg-notice-title').textContent = 'Paused';
-      $('.lg-notice-text').textContent = 'Resume to keep going.';
-    }
+    const res = $('.lg-res');
+    if (ended && mode === 'run') {
+      const why = {gripper_lost: 'A gripper lost the handle', payload_off_reference: 'The box left the planned pose',
+        'session time limit': 'Session time is up', 'server error': 'The simulation hit an error',
+        time_out_success: 'Episode time is up'}[s.outcome] || (s.outcome || 'Trial ended');
+      res.classList.add('on', 'bad'); $('.lg-res-t').textContent = 'Trial ended';
+      $('.lg-res-d').textContent = why + '. Carry again from the same setup, or edit it.';
+      $('.lg-res .ic').textContent = '!';
+    } else res.classList.remove('on', 'bad');
     if (!canControl()) releaseAll();
-    status(ended ? 'Trial ended' : paused ? 'Paused' : unlocked ? 'Live · teleop' : 'Live · ' + phase.toLowerCase(), ended ? 'error' : 'live');
+    badge(s); hud(s);
+    status(mode === 'setup' ? 'Live · set up the scene' : ended ? 'Trial ended' : paused ? 'Paused' : unlocked ? 'Live · you are driving' : 'Live · grasping and lifting',
+           ended ? 'error' : 'live');
     updateControls();
   }
   function onHello(h) {
-    role = h.role; level = h.level; limits = h.limits;
+    role = h.role; level = h.level; bounds = h.bounds; presets = h.presets || [];
+    if (h.limits) setRanges(h.limits);
     $('.lg-policy').textContent = h.policy;
-    const L = h.limits;
-    $('.lg-limits').textContent = `Goal limits at this level: move ≤ ${L.move_m} m, lift ${L.lift_m[0]}–${L.lift_m[1]} m, `
-      + `yaw ±${L.yaw_deg}°, roll/pitch ±${L.tilt_deg}°, handles ≤ ${L.bar_z_max_m} m; the load follows at up to `
-      + `${L.speed_m_s} m/s and ${L.turn_deg_s}°/s. Session ${Math.round(h.session_limit_s / 60)} min.`;
-    // step "any": a range input snaps to a grid anchored at min, so with min -8.6 and step 0.5 there is no exact 0
-    const rng = [[-L.move_m, L.move_m], [-L.move_m, L.move_m], [L.lift_m[0], L.lift_m[1]],
-                 [-L.tilt_deg, L.tilt_deg], [-L.tilt_deg, L.tilt_deg], [-L.yaw_deg, L.yaw_deg]];
-    root.querySelectorAll('.lg-slider').forEach(row => {
-      const i = Number(row.dataset.i), inp = row.querySelector('input'), [lo, hi] = rng[i];
-      inp.min = lo; inp.max = hi; inp.step = 'any';
-    });
-    const box = $('.lg-levels');
-    box.replaceChildren();
+    buildCarousel();
+    const box = $('.lg-levels'); box.replaceChildren();
     for (const l of h.levels) {
-      const b = document.createElement('button');
-      b.type = 'button'; b.dataset.lgLevel = l.id; b.textContent = 'L' + l.id + ' · ' + l.label;
-      b.addEventListener('click', () => send({type: 'reset', level: l.id}));
+      const b = document.createElement('button'); b.type = 'button'; b.dataset.level = l.id; b.textContent = 'L' + l.id; b.title = l.label;
+      b.addEventListener('click', () => { if (canSetup()) queueSetup({level: l.id}, true); });
       box.append(b);
     }
     updateControls();
@@ -233,6 +453,7 @@
       if (tag === 'POSE') onPose(ev.data);
       else if (tag === 'MESH' && expect === 'scene' && view) { buildRobots(sceneMsg, ev.data); expect = null; }
       else if (tag === 'PAYM' && expect === 'payload' && view) { buildPayload(payloadMsg, ev.data); expect = null; }
+      if (poses === 1) updateControls();
       return;
     }
     let m; try { m = JSON.parse(ev.data); } catch (_) { return; }
@@ -246,7 +467,7 @@
     if (ws) { const w = ws; ws = null; try { w.close(); } catch (_) {} }
     connected = false; connecting = false; role = null; releaseAll();
     if (message) status(message, kind);
-    if (!poses) $('.lg-placeholder').hidden = false;
+    badge(null); hud(null);
     updateControls();
   }
   function endpoints() {
@@ -280,22 +501,26 @@
     });
   }
   async function connect() {
-    connecting = true; updateControls(); status('Finding the live simulation…', 'waiting');
+    connecting = true; poses = 0; framed = false; updateControls(); status('Finding the live simulation…', 'waiting');
+    $('.lg-load-t').textContent = 'Connecting to the lab computer…';
     const eps = endpoints();
     if (!eps.length) { disconnect('Live simulation is not configured on this page.', 'error'); return; }
     try { await whenThree(); if (!view) view = makeView(); } catch (e) { disconnect('3-D view unavailable: ' + e.message, 'error'); return; }
     for (const ep of eps) {
-      if (!connecting) return;                    // the visitor pressed Stop meanwhile
+      if (!connecting) return;                    // the visitor pressed Disconnect meanwhile
       try {
         const {sock, first} = await open(ep);
         if (!connecting) { sock.close(); return; }
-        ws = sock; connected = true; connecting = false; poses = 0; camTrial = -1;
+        ws = sock; connected = true; connecting = false;
+        $('.lg-load-t').textContent = 'Loading the robots…';
         sock.onmessage = ev => { if (ws === sock) onMessage(ev); };
         sock.onclose = () => { if (ws === sock) disconnect('Disconnected.', 'idle'); };
         sock.onerror = () => {};
         onMessage(first);
         status('Connected · ' + (ep.local ? 'local server' : 'lab server') + ' · loading the scene', 'live');
         updateControls();
+        let seen = '1'; try { seen = localStorage.getItem('m2LgTip'); } catch (_) {}
+        if (!seen) $('.lg-tip').hidden = false;
         return;
       } catch (_) { /* try the next endpoint */ }
     }
@@ -319,12 +544,12 @@
   }
   function release(k) { if (held.delete(k)) { showKeys(); if (!held.size) pump(); } }
   function releaseAll() { if (held.size) { held.clear(); showKeys(); pump(); } }
-  function showKeys() { root.querySelectorAll('[data-lg-key]').forEach(b => b.classList.toggle('is-held', held.has(b.dataset.lgKey))); }
+  function showKeys() { $$('[data-lg-key]').forEach(b => b.classList.toggle('is-held', held.has(b.dataset.lgKey))); }
 
-  // ---------------------------------------------------------------- input: sliders (absolute goal offset)
+  // ---------------------------------------------------------------- input: drive sliders (absolute goal offset)
   function sliderOffset() {
     const o = [0, 0, 0, 0, 0, 0];
-    root.querySelectorAll('.lg-slider').forEach(row => { o[Number(row.dataset.i)] = Number(row.querySelector('input').value); });
+    $$('.lg-slider').forEach(row => { o[Number(row.dataset.i)] = Number(row.querySelector('input').value); });
     return o;
   }
   function flushGoal() {
@@ -332,42 +557,92 @@
     if (!goalDirty) { clearInterval(goalTimer); goalTimer = null; }
   }
   function queueGoal() { goalDirty = true; if (!goalTimer) { flushGoal(); goalTimer = setInterval(flushGoal, 100); } }  // ~10 Hz
-  root.querySelectorAll('.lg-slider').forEach(row => {
+  $$('.lg-slider').forEach(row => {
     const i = Number(row.dataset.i), inp = row.querySelector('input');
-    inp.addEventListener('input', () => { sliderTouched[i] = performance.now();
-      row.querySelector('output').textContent = fmt(Number(inp.value), SLIDERS[i][3]) + ' ' + SLIDERS[i][2]; queueGoal(); });
-    inp.addEventListener('change', () => { sliderTouched[i] = performance.now(); queueGoal(); });
+    inp.addEventListener('input', () => { touched['d' + i] = performance.now();
+      row.querySelector('output').textContent = fmt(Number(inp.value), DRIVE[i][1]) + ' ' + DRIVE[i][0]; queueGoal(); });
+    inp.addEventListener('change', () => { touched['d' + i] = performance.now(); queueGoal(); });
   });
   $('.lg-center').addEventListener('click', () => {
     if (!limits) return;
     const lift = Math.min(limits.lift_m[1], Math.max(limits.lift_m[0], limits.live_lift_m || 0.1));
-    root.querySelectorAll('.lg-slider').forEach(row => { const i = Number(row.dataset.i);
-      row.querySelector('input').value = i === 2 ? lift : 0; sliderTouched[i] = performance.now(); });
+    $$('.lg-slider').forEach(row => { const i = Number(row.dataset.i);
+      row.querySelector('input').value = i === 2 ? lift : 0; touched['d' + i] = performance.now(); });
     queueGoal();
   });
 
+  // ---------------------------------------------------------------- input: setup sliders + pickers
+  $$('.lg-c-place input').forEach(inp => {
+    const go = final => {
+      touched[inp.id] = performance.now();
+      if (!canSetup()) return;
+      const [grp, key] = inp.dataset.set.split('.'), v = Number(inp.value);
+      if (grp === 'payload') queueSetup({payload: {[key]: v}}, final);
+      else { const k = Number(pick); if (!(k === 0 || k === 1)) return; const rb = [{}, {}]; rb[k] = {[key]: v}; queueSetup({robots: rb}, final); }
+      placeSliders();
+    };
+    inp.addEventListener('input', () => go(false));
+    inp.addEventListener('change', () => go(true));
+  });
+  function setPick(t) {
+    pick = t;
+    $$('.lg-pick button, .lg-pick2 button').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+    placeSliders(); attachGizmo();
+  }
+  $$('.lg-pick button, .lg-pick2 button').forEach(b => b.addEventListener('click', () => setPick(b.dataset.t)));
+  $$('.lg-tmode button').forEach(b => b.addEventListener('click', () => {
+    tmode = b.dataset.m; $$('.lg-tmode button').forEach(x => x.classList.toggle('on', x === b)); attachGizmo(); }));
+  $('.lg-tip button').addEventListener('click', () => { $('.lg-tip').hidden = true; try { localStorage.setItem('m2LgTip', '1'); } catch (_) {} });
+
   // ---------------------------------------------------------------- wiring
-  $('.lg-connect').addEventListener('click', () => (connected || connecting) ? disconnect('Stopped.') : connect());
+  $('.lg-launch').addEventListener('click', () => { if (!connected && !connecting) connect(); });
+  $('.lg-stop').addEventListener('click', () => disconnect('Disconnected.'));
+  $('.lg-carry').addEventListener('click', () => { if (canSetup()) { flushSetup(); send({type: 'carry'}); } });
+  $('.lg-edit').addEventListener('click', () => send({type: 'reset'}));
+  $('.lg-edit2').addEventListener('click', () => send({type: 'reset'}));
+  $('.lg-again').addEventListener('click', () => { send({type: 'reset'}); setTimeout(() => send({type: 'carry'}), 400); });
   $('.lg-pause').addEventListener('click', () => send({type: 'pause', paused: !paused}));
-  $('.lg-reset').addEventListener('click', () => send({type: 'reset', level}));
-  $('.lg-notice-action').addEventListener('click', () => (ended ? send({type: 'reset', level}) : send({type: 'pause', paused: false})));
-  root.querySelectorAll('[data-lg-key]').forEach(b => {
+  $('.lg-shuffle').addEventListener('click', () => { if (canSetup()) send({type: 'shuffle'}); });
+  $('.lg-reset').addEventListener('click', () => { if (canSetup()) queueSetup({payload: {x: 0, y: 0, yaw_deg: 0},
+    robots: [{back: 0.2, side: 0, dyaw_deg: 0}, {back: 0.2, side: 0, dyaw_deg: 0}]}, true); });
+  $$('.lg-modes button').forEach(b => b.addEventListener('click', () => {
+    if (!isCtl() || b.dataset.mode === mode) return;
+    if (b.dataset.mode === 'run') { flushSetup(); send({type: 'carry'}); } else send({type: 'reset'});
+  }));
+  $$('[data-lg-key]').forEach(b => {
     const k = b.dataset.lgKey;
     b.addEventListener('pointerdown', e => { if (!b.disabled) { e.preventDefault(); b.setPointerCapture && b.setPointerCapture(e.pointerId); press(k); } });
     ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(t => b.addEventListener(t, () => release(k)));
   });
   document.addEventListener('keydown', e => {
     const k = keyOf(e);
-    if (!KEYS[k] || !(connected && role === 'controller') || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!KEYS[k] || !canControl() || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.target.closest && e.target.closest('input:not([type=range]), textarea, select, [contenteditable="true"]')) return;
     e.preventDefault();                       // arrows must not scroll the page (or nudge a slider) while driving
-    if (canControl()) press(k);
+    press(k);
   });
   document.addEventListener('keyup', e => release(keyOf(e)));
   window.addEventListener('blur', releaseAll);
   document.addEventListener('visibilitychange', () => { if (document.hidden) releaseAll(); });
   setInterval(() => {                         // stale stream
-    if (connected && poses && !paused && !ended && performance.now() - lastPoseAt > 3000) status('Waiting for the simulation…', 'waiting');
+    if (connected && poses && mode === 'run' && !paused && !ended && performance.now() - lastPoseAt > 3000) status('Waiting for the simulation…', 'waiting');
   }, 1000);
+  // test hook (scripts/tests/test_live_browser.py drags the real gizmo handles): screen points of world points and of the
+  // TransformControls pickers of the selected proxy (r147 gizmo: world size = factor * size / 4 per gizmo unit, the
+  // X / Y translate pickers span 0..0.6 units along their axis, the Z rotate picker is a ring of radius 0.5)
+  root.lgDebug = {
+    project(x, y, z) { const v = new THREE.Vector3(x, y, z).project(view.cam), b = view.r.domElement.getBoundingClientRect();
+      return [b.left + (v.x + 1) / 2 * b.width, b.top + (1 - v.y) / 2 * b.height]; },
+    unit() { const o = view.proxies[pick], p = new THREE.Vector3(); o.getWorldPosition(p);
+      const factor = p.distanceTo(view.cam.position) * Math.min(1.9 * Math.tan(Math.PI * view.cam.fov / 360) / view.cam.zoom, 7);
+      return factor * view.tc.size / 4; },
+    handle(kind, a = 0) { const o = view.proxies[pick], u = this.unit();
+      if (kind === 'x') return this.project(o.position.x + a * u, o.position.y, o.position.z);
+      if (kind === 'y') return this.project(o.position.x, o.position.y + a * u, o.position.z);
+      return this.project(o.position.x + 0.5 * u * Math.cos(a), o.position.y + 0.5 * u * Math.sin(a), o.position.z); },
+    proxy() { const o = view.proxies[pick]; return [o.position.x, o.position.y, o.rotation.z]; },
+    state() { return {pick, tmode, mode, setup, placement, limits}; }
+  };
+  badge(null);
   updateControls();
 })();
