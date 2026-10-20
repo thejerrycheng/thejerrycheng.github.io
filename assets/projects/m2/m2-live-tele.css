@@ -41,3 +41,42 @@
 @media (max-width:1280px){#live-gripper .lg-tgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:700px){#live-gripper .lg-tgrid{grid-template-columns:minmax(0,1fr)}#live-gripper .lg-tele{padding:12px}
   #live-gripper .lg-base canvas{max-height:160px}}
+/* one-screen layout: mounted in the stage column under the run row (m2-live-gripper.css "one screen") */
+#live-gripper .lg-tlg i.ln.dash.red{background:repeating-linear-gradient(90deg,rgba(210,59,42,.85) 0 4px,transparent 4px 7px)}
+#live-gripper .lg-tele>summary{font-size:13px}
+#live-gripper .lg-tele .lg-tgrid{margin-top:8px;gap:10px}
+#live-gripper .lg-tele .lg-chart{padding:8px 8px 6px}
+#live-gripper .lg-tele .lg-tlg{margin-top:4px}
+#live-gripper .lg-tele .lg-tnote{margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#live-gripper .lg-base canvas{max-height:132px}
+#live-gripper .lg-base figcaption{font-size:10px;line-height:1.35}
+@media (min-width:1101px) and (max-width:1250px){#live-gripper .lg-tgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1251px){#live-gripper .lg-tgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+/* planner status: stage chip (top centre), panel line + 20 s phase strip; Plan toggle (stage, bottom right) */
+#live-gripper .lg-pchip{position:absolute;top:74px;left:16px;z-index:3;display:flex;align-items:center;gap:9px;padding:8px 13px;border-radius:999px;background:var(--lg-glass,rgba(28,28,30,.62));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#fff;font:600 12.5px/1.2 var(--lg-font);white-space:nowrap;max-width:calc(100% - 300px);overflow:hidden;text-overflow:ellipsis}
+#live-gripper .lg-pchip small{font:500 11.5px/1.2 var(--lg-font);color:var(--lg-ink2,rgba(255,255,255,.62))}
+#live-gripper .lg-pdot{width:9px;height:9px;border-radius:50%;background:#8e8e93;flex:none;display:inline-block}
+#live-gripper .lg-pdot.pulse{animation:lgpulse 1.1s ease-in-out infinite}
+@keyframes lgpulse{50%{box-shadow:0 0 0 5px rgba(255,255,255,.12);opacity:.65}}
+#live-gripper .lg-held{display:inline-flex;gap:4px;margin-left:2px}
+#live-gripper .lg-held i{width:8px;height:8px;border-radius:2px;border:1.5px solid transparent;display:inline-block}
+#live-gripper .lg-tele>summary .lg-pline{display:inline-flex;align-items:center;gap:7px;margin-left:10px;font:600 12px/1.2 var(--lg-font);white-space:nowrap}
+#live-gripper .lg-tele>summary .lg-pline small{font:500 11px var(--lg-font);color:var(--t-ash)}
+#live-gripper .lg-tele>summary .lg-ptl{flex:1 1 auto;min-width:80px;height:8px;border-radius:4px;align-self:center}
+#live-gripper .lg-tele>summary .lg-tsub{font:400 10.5px var(--t-mono);color:var(--t-ash)}
+#live-gripper .lg-planbtn{position:absolute;right:16px;bottom:16px;z-index:3;appearance:none;border:0;display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:999px;background:var(--lg-glass,rgba(28,28,30,.62));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:rgba(255,255,255,.7);font:600 12px/1 var(--lg-font);cursor:pointer}
+#live-gripper .lg-planbtn i{width:16px;height:3px;border-radius:2px;background:linear-gradient(90deg,#f28c28 50%,#20bebe 50%);opacity:.45}
+#live-gripper .lg-planbtn.on{color:#fff}#live-gripper .lg-planbtn.on i{opacity:1}
+@media (max-width:760px){#live-gripper .lg-pchip{top:auto;bottom:58px;max-width:calc(100% - 24px);font-size:11.5px}#live-gripper .lg-pchip small{display:none}
+  #live-gripper .lg-planbtn{bottom:auto;top:84px;right:auto;left:12px;padding:6px 10px}#live-gripper .lg-tele>summary .lg-ptl,#live-gripper .lg-tele>summary .lg-tsub{display:none}}
+/* compact in the stage column: one-line legends (scroll sideways if they must), one-line base readouts */
+#live-gripper .lg-stage>.lg-tele{margin:0}
+#live-gripper .lg-tele>summary .lg-tsub{white-space:nowrap}
+@media (min-width:1101px){
+  #live-gripper .lg-tele .lg-tlg{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  #live-gripper .lg-tele .lg-tlg::-webkit-scrollbar{display:none}
+  #live-gripper .lg-tele .lg-tlg button,#live-gripper .lg-tele .lg-tlg span{flex:none}
+  #live-gripper .lg-base figcaption .lg-bread{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #live-gripper .lg-base canvas{max-height:118px}
+  #live-gripper .lg-blg{display:none}
+}

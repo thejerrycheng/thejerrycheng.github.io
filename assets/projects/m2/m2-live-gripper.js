@@ -307,6 +307,21 @@
     $$('.lg-tile').forEach(b => b.classList.toggle('on', b.dataset.obj === id));
     const p = presets.find(q => q.id === id);
     $('.lg-osel').textContent = p ? `${p.name} · ${p.mass} kg` : '';
+    setSummary();
+  }
+  // CARRY folds Object + Place to one line: the object and the robots' start offsets, with Edit setup
+  function setSummary() {
+    let el = $('.lg-setsum');
+    if (!el) {
+      el = document.createElement('span'); el.className = 'lg-setsum';
+      el.innerHTML = '<span></span><button type="button" class="lg-btn lg-edit3">Edit setup</button>';
+      $('.lg-c-obj h3').appendChild(el);
+      el.querySelector('button').addEventListener('click', () => send({type: 'reset'}));
+    }
+    const p = setup && presets.find(q => q.id === setup.object);
+    const rb = setup && setup.robots ? setup.robots.map((r, k) => `${k ? 'MILO' : 'MABEL'} ${Math.round(r.back * 100)} cm`).join(', ') : '';
+    el.querySelector('span').textContent = [p ? p.name : '', rb].filter(Boolean).join(' · ');
+    el.querySelector('button').disabled = !isCtl();
   }
 
   // ---------------------------------------------------------------- UI state
@@ -645,6 +660,7 @@
   // test hook (scripts/tests/test_live_browser.py drags the real gizmo handles): screen points of world points and of the
   // TransformControls pickers of the selected proxy (r147 gizmo: world size = factor * size / 4 per gizmo unit, the
   // X / Y translate pickers span 0..0.6 units along their axis, the Z rotate picker is a ring of radius 0.5)
+  root.lgView = () => view;                   // m2-live-tele.js draws the planner's per-hand trajectories into this scene
   root.lgDebug = {
     project(x, y, z) { const v = new THREE.Vector3(x, y, z).project(view.cam), b = view.r.domElement.getBoundingClientRect();
       return [b.left + (v.x + 1) / 2 * b.width, b.top + (1 - v.y) / 2 * b.height]; },

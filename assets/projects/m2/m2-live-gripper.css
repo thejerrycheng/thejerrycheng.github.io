@@ -161,3 +161,54 @@
   #live-gripper .lg-tools{bottom:10px;padding:5px 6px}#live-gripper .lg-tools>span{display:none}#live-gripper .lg-row{grid-template-columns:82px minmax(0,1fr) 58px}
   #live-gripper .lg-strip{grid-auto-columns:calc((100% - 8px) / 1.6)}}
 @media (prefers-reduced-motion:reduce){#live-gripper *{animation:none!important;transition:none!important}}
+/* ---------------------------------------------------------------------------------------------------- one screen
+ * (user 2026-10-20: "put [the telemetry] right under the scene ... keep things on one page"). Desktop: the section is
+ * one viewport tall; the left column is stage (flexes) + run row + telemetry (m2-live-tele.js mounts it here), the
+ * right column is the step cards, scrolling inside itself if it must. Only the current mode's cards are open:
+ * SETUP = Object + Place (Drive folded to its title), CARRY = Drive + pose (Object / Place folded to one line). */
+#live-gripper .lg-keyd{margin-top:10px;border-top:1px solid var(--lg-line);padding-top:8px}
+#live-gripper .lg-keyd>summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:8px;font:650 12px/1.3 var(--lg-font);color:#fff}
+#live-gripper .lg-keyd>summary::-webkit-details-marker{display:none}
+#live-gripper .lg-keyd>summary::before{content:"▸";font-size:10px;color:var(--lg-ink2);transition:transform .18s;display:inline-block}
+#live-gripper .lg-keyd[open]>summary::before{transform:rotate(90deg)}
+#live-gripper .lg-keyd>summary small{font:500 11px/1.3 var(--lg-font);color:var(--lg-ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#live-gripper .lg-keyd .lg-pad{margin-top:8px}
+#live-gripper table.lg-pose{margin-top:10px;font-size:11.5px}
+#live-gripper table.lg-pose th,#live-gripper table.lg-pose td{padding:3px 5px}
+#live-gripper table.lg-pose th:first-child{font-size:11.5px}
+#live-gripper .lg-setsum{margin-left:auto;display:none;align-items:center;gap:8px;min-width:0}
+#live-gripper .lg-setsum span{font:500 12px/1.2 var(--lg-font);color:var(--lg-ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#live-gripper .lg-setsum button{flex:none;padding:6px 11px;font-size:12px}
+/* mode folding */
+#live-gripper[data-mode="run"] .lg-c-place{display:none}
+#live-gripper[data-mode="run"] .lg-c-obj>:not(h3){display:none}
+#live-gripper[data-mode="run"] .lg-c-obj h3{margin:0}
+#live-gripper[data-mode="run"] .lg-c-obj h3 .sel{display:none}
+#live-gripper[data-mode="run"] .lg-c-obj .lg-setsum{display:flex}
+#live-gripper:not([data-mode="run"]) .lg-c-drive>:not(h3){display:none}
+#live-gripper:not([data-mode="run"]) .lg-c-drive h3{margin:0}
+@media (min-width:1101px){
+  /* margin-top / -bottom only: a `margin` shorthand here would reset the full-bleed margin-left (50% - 50vw) */
+  #live-gripper{padding:16px 0 16px!important;margin-top:12px;margin-bottom:32px;scroll-margin-top:52px}
+  /* one viewport under the page's sticky nav (51 px): section padding 32 + nav 52 */
+  #live-gripper .lg-wrap{display:flex;flex-direction:column;height:max(620px,calc(100vh - 84px))}
+  #live-gripper .lg-head{margin:0 0 14px;flex:none}
+  #live-gripper .lg-kick{margin:0 0 8px;font-size:11px}
+  #live-gripper .lg-title{font-size:clamp(26px,2.4vw,38px);margin:0 0 6px}
+  #live-gripper .lg-lead{font-size:14.5px;line-height:1.45;max-width:900px}
+  #live-gripper .lg-grid{flex:1 1 auto;min-height:0;align-items:stretch;gap:16px;grid-template-columns:minmax(0,1fr) 380px}
+  #live-gripper .lg-stage{display:flex;flex-direction:column;min-height:0;gap:10px}
+  #live-gripper .lg-vw{flex:1 1 auto;height:auto;min-height:300px}
+  #live-gripper .lg-run{flex:none;margin:0}
+  #live-gripper .lg-tele{flex:none;margin:0;padding:10px 12px 12px}
+  #live-gripper .lg-panel{min-height:0;overflow-y:auto;gap:8px;padding-right:2px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.22) transparent}
+  #live-gripper .lg-card{padding:12px 14px;border-radius:18px}
+  #live-gripper .lg-card h3{font-size:14px;margin:0 0 8px}
+  #live-gripper .lg-hint{font-size:11.5px;margin:6px 0 0}
+  #live-gripper .lg-row{margin:3px 0;grid-template-columns:84px minmax(0,1fr) 60px}
+  #live-gripper .lg-row.lg-hero{margin:2px 0 6px;padding:7px 10px}
+  #live-gripper h5{margin:8px 0 3px}
+  #live-gripper details.lg-adv{border-radius:18px;padding:0 14px}
+  #live-gripper details.lg-adv>summary{padding:11px 0;font-size:14px}
+  #live-gripper .lg-strip{grid-auto-columns:calc((100% - 16px) / 2.6)}
+}

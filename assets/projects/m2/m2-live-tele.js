@@ -3,7 +3,11 @@
  * vector"). Charts in the WUJI Training Studio style (uPlot, mono axes, faint grid, swatch-toggle legends, hover tip);
  * the base widget is a top-down chassis circle per robot with the velocity vector and an angular-velocity arc,
  * commanded (dashed) vs measured (solid). Data: the `tele` block of the server's state messages (~10 Hz,
- * scripts/live_server.py Tele), re-dispatched by m2-live-gripper.js as the root's `lg-state` event. */
+ * scripts/live_server.py Tele), re-dispatched by m2-live-gripper.js as the root's `lg-state` event.
+ * Planner (user 2026-10-20: "indication of the planner status if it is planning or replanning and plot the trajectory
+ * planner for each hand"): a status chip on the stage + a phase timeline in the panel (state.planner), and per hand
+ * (MABEL / MILO x L / R) the planner's gripper targets in the 3-D view (tele.plan): the next 3 s as a line, a fading
+ * trail of past targets, the current target (sphere), the measured grasp site (white) and the error between them. */
 (() => {
   'use strict';
   const root = document.getElementById('live-gripper');
@@ -17,29 +21,34 @@
   const MONO = '10px "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
   const AX = {stroke: C.ash, grid: {stroke: C.grid, width: 1}, ticks: {stroke: C.tick, width: 1, size: 4}, font: MONO, gap: 4};
   const ROBOT = ['MABEL', 'MILO'];
+  const HANDS = [{name: 'MABEL L', col: '#f28c28'}, {name: 'MABEL R', col: '#f7bd7f'}, {name: 'MILO L', col: '#20bebe'}, {name: 'MILO R', col: '#86dcdc'}];
+  const PSTATE = {SETUP: ['#8e8e93', 'Setup'], GRASPING: ['#E9C46A', 'Grasping'], LIFTING: ['#6FA8DC', 'Lifting'],
+                  TRACKING: ['#3FB56B', 'Tracking your pose'], 'RE-GRASPING': ['#ff6961', 'Re-planning · re-grasp'],
+                  'RE-PLANNED': ['#B48EAD', 'Re-planned · carrying'], PAUSED: ['#8e8e93', 'Paused'], DONE: ['#cfc8be', 'Done']};
+  const trail = [[], [], [], []];                             // past planned targets per hand (display frame, m)
 
   // ---------------------------------------------------------------- DOM
   const box = document.createElement('details');
   box.className = 'lg-tele'; box.open = true; box.hidden = true;
-  box.innerHTML = `<summary><span>Telemetry</span><small>live from the simulation · last ${WIN} s</small></summary>
+  box.innerHTML = `<summary><span>Telemetry</span><span class="lg-pline" title="planner state; the strip is the last ${WIN} s"><i class="lg-pdot"></i><b class="lg-pst">—</b><small class="lg-psub"></small></span><canvas class="lg-ptl"></canvas><small class="lg-tsub">last ${WIN} s</small></summary>
     <div class="lg-tgrid">
-      <div class="lg-chart" data-k="err"><div class="ct"><span class="t">tracking error · box vs plan</span><span class="v"></span></div><div class="cv"></div><div class="lg-tlg"></div></div>
-      <div class="lg-chart" data-k="grip"><div class="ct"><span class="t">grip force · weaker pad, N</span><span class="v"></span></div><div class="cv"></div><div class="lg-tlg"></div><div class="lg-tnote lg-gap"></div></div>
-      <div class="lg-chart" data-k="tau"><div class="ct"><span class="t">arm torque · % of rated</span><span class="v"></span></div><div class="cv"></div><div class="lg-tlg"></div><div class="lg-tnote">RMS over 2 s of each robot's most loaded arm joint (the training's motor model); dashed red: the 80 % continuous limit</div></div>
-      <div class="lg-chart lg-basec" data-k="base"><div class="ct"><span class="t">mobile base · top view</span><span class="v"></span></div>
+      <div class="lg-chart" data-k="err"><div class="ct"><span class="t" title="box position (blue, cm) and orientation (gold, deg, right axis) vs the planner's reference; thin: each gripper vs its planned target (cm)">tracking error · box + hands</span><span class="v"></span></div><div class="cv"></div><div class="lg-tlg"></div></div>
+      <div class="lg-chart" data-k="grip"><div class="ct"><span class="t">grip force · weaker pad, N</span><span class="v"></span></div><div class="cv"></div><div class="lg-tlg"></div><div class="lg-tnote lg-gap" title="finger gap of each gripper vs the bar diameter (a closed grasp sits at it)"></div></div>
+      <div class="lg-chart" data-k="tau"><div class="ct"><span class="t" title="RMS over 2 s of each robot's most loaded arm joint, % of its rated continuous torque (the training's motor model); dashed red: the 80 % limit">arm torque · RMS % rated</span><span class="v"></span></div><div class="cv"></div><div class="lg-tlg" data-extra='<span><i class="ln dash red"></i>80 % limit</span>'></div></div>
+      <div class="lg-chart lg-basec" data-k="base"><div class="ct"><span class="t" title="top view per robot, ↑ = forward. White solid: measured velocity; orange dashed: commanded; green arc: turn rate (solid measured, dashed commanded). Length ∝ √speed: full arrow 0.8 m/s, full arc 1 rad/s">mobile base · v, ω</span><span class="v"></span></div>
         <div class="lg-bases">${ROBOT.map((n, k) => `<figure class="lg-base" data-r="${k}"><canvas></canvas><figcaption><b style="color:${k ? C.milo : C.mabel}">${n}</b><span class="lg-bread"></span></figcaption></figure>`).join('')}</div>
-        <div class="lg-tlg lg-blg"><span><i class="ln"></i>measured</span><span><i class="ln dash"></i>commanded</span><span><i class="ln" style="background:${C.green}"></i>turn rate ω</span><span class="mono dim">↑ forward · length ∝ √speed: full arrow 0.8 m/s, full arc 1 rad/s</span></div>
+        <div class="lg-tlg lg-blg"><span><i class="ln"></i>measured</span><span><i class="ln dash"></i>commanded</span><span><i class="ln" style="background:${C.green}"></i>turn</span><span class="dim" title="↑ = forward; length ∝ √speed: full arrow 0.8 m/s, full arc 1 rad/s">ω arc</span></div>
       </div>
     </div>`;
-  const note = root.querySelector('.lg-note');
-  (note ? note.parentNode : root.querySelector('.lg-wrap')).insertBefore(box, note || null);
+  root.querySelector('.lg-stage').appendChild(box);            // right under the stage and its button row
   const $ = s => box.querySelector(s);
 
   // ---------------------------------------------------------------- data
-  const H = {t: [], pe: [], re: [], g: [[], [], [], []], rms: [[], []], pk: [[], []]};
+  const H = {t: [], pe: [], re: [], g: [[], [], [], []], rms: [[], []], pk: [[], []], he: [[], [], [], []], ps: []};
   let lastT = -1, trial = null, charts = null, uplotP = null, latest = null;
   function clear() { H.t.length = 0; H.pe.length = 0; H.re.length = 0; H.g.forEach(a => a.length = 0);
-    H.rms.forEach(a => a.length = 0); H.pk.forEach(a => a.length = 0); lastT = -1; }
+    H.rms.forEach(a => a.length = 0); H.pk.forEach(a => a.length = 0); H.he.forEach(a => a.length = 0); H.ps.length = 0;
+    lastT = -1; trail.forEach(a => a.length = 0); }
   function push(s) {
     const T = s.tele;
     if (s.trial !== trial || T.t < lastT) { clear(); trial = s.trial; }
@@ -48,8 +57,11 @@
     H.t.push(T.t); H.pe.push(T.err[0]); H.re.push(T.err[1]);
     T.grip.forEach((v, i) => H.g[i].push(v));
     T.tau.forEach((r, k) => { H.rms[k].push(r[0]); H.pk[k].push(r[1]); });
+    (T.plan ? T.plan.err : [null, null, null, null]).forEach((v, i) => H.he[i].push(v));
+    H.ps.push(s.planner ? s.planner.state : '');
     while (H.t.length && H.t[0] < T.t - WIN - 1) {
       H.t.shift(); H.pe.shift(); H.re.shift(); H.g.forEach(a => a.shift()); H.rms.forEach(a => a.shift()); H.pk.forEach(a => a.shift());
+      H.he.forEach(a => a.shift()); H.ps.shift();
     }
     return true;
   }
@@ -94,13 +106,15 @@
   const line = (label, color, o = {}) => ({label, _label: label, _color: color, stroke: color, width: o.width || 1.6,
     dash: o.dash, scale: o.scale || 'y', points: {show: false}, spanGaps: true});
   function legend(el, u, items) {
-    el.innerHTML = items.map((it, k) => `<button class="on" data-i="${k + 1}"><i style="background:${it._color}${it.dash ? ';opacity:.6' : ''}"></i>${it._label}</button>`).join('');
+    el.innerHTML = items.map((it, k) => `<button class="on" data-i="${k + 1}"><i style="background:${it._color}${it.dash ? ';opacity:.6' : ''}"></i>${it._label}</button>`).join('')
+      + (el.dataset.extra || '');
     el.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
       const i = +b.dataset.i, show = !b.classList.contains('on'); b.classList.toggle('on', show); u.setSeries(i, {show}); }));
   }
   function build() {
     const hostOf = k => $(`.lg-chart[data-k="${k}"] .cv`), lgOf = k => $(`.lg-chart[data-k="${k}"] .lg-tlg`);
-    const errS = [line('position, cm', C.blue), line('orientation, °', C.gold, {scale: 'y2'})];
+    const errS = [line('box, cm', C.blue, {width: 1.8}), line('box, °', C.gold, {scale: 'y2'}),
+                  ...HANDS.map(h => line(h.name, h.col, {width: 1}))];
     const gripS = [line('MABEL L', C.accent), line('MABEL R', C.accentSoft), line('MILO L', C.blue), line('MILO R', C.teal)];
     const tauS = [line('MABEL', C.accent, {width: 1.8}), line('MILO', C.blue, {width: 1.8})];
     const mk = (k, series, extra) => { const u = new uPlot(opts(hostOf(k), series, extra), [[]].concat(series.map(() => [])), hostOf(k)); legend(lgOf(k), u, series); return u; };
@@ -114,7 +128,7 @@
   }
   function redraw() {
     if (!charts) return;
-    charts.err.setData([H.t, H.pe, H.re]);
+    charts.err.setData([H.t, H.pe, H.re, ...H.he]);
     charts.grip.setData([H.t, ...H.g]);
     charts.tau.setData([H.t, H.rms[0], H.rms[1]]);
   }
@@ -124,7 +138,7 @@
   function drawBase(cv, b, color) {
     const d = Math.min(2, devicePixelRatio || 1), w = cv.clientWidth, h = cv.clientHeight;
     if (!w) return;
-    if (cv.width !== w * d) { cv.width = w * d; cv.height = h * d; }
+    if (cv.width !== Math.round(w * d) || cv.height !== Math.round(h * d)) { cv.width = Math.round(w * d); cv.height = Math.round(h * d); }
     const g = cv.getContext('2d'); g.setTransform(d, 0, 0, d, 0, 0); g.clearRect(0, 0, w, h);
     const cx = w / 2, cy = h / 2, R = Math.min(w, h) / 2 - 22;
     // chassis circle, forward tick, faint cross
@@ -177,7 +191,7 @@
     box.querySelectorAll('.lg-base').forEach((f, k) => {
       const b = T ? T.base[k] : null;
       drawBase(f.querySelector('canvas'), b, k ? C.milo : C.mabel);
-      f.querySelector('.lg-bread').innerHTML = b ? `v <b>${Math.hypot(b.meas[0], b.meas[1]).toFixed(2)}</b> m/s · ω <b>${(b.meas[2] * 180 / Math.PI).toFixed(0)}</b>°/s<br>lift <b>${b.lift[0].toFixed(2)}</b> m · <b>${(b.lift[1] * 1000).toFixed(0)}</b> mm/s` : '—';
+      f.querySelector('.lg-bread').innerHTML = b ? `<b>${Math.hypot(b.meas[0], b.meas[1]).toFixed(2)}</b> m/s · <b>${(b.meas[2] * 180 / Math.PI).toFixed(0)}</b>°/s<br>lift <b>${b.lift[0].toFixed(2)}</b> m · <b>${(b.lift[1] * 1000).toFixed(0)}</b> mm/s` : '—';
     });
   }
 
@@ -188,21 +202,118 @@
     v('grip', T.grip.map(x => x.toFixed(0)).join(' / ') + ' N');
     const worst = T.tau[0][0] >= T.tau[1][0] ? 0 : 1;
     v('tau', `<span class="${T.tau[worst][0] > 80 ? 'hot' : ''}">${T.tau[worst][0].toFixed(0)} %</span> ${ROBOT[worst]} ${T.tau[worst][2]}`);
-    $('.lg-gap').innerHTML = 'finger gap · bar ' + T.bar_mm.toFixed(0) + ' mm: ' + ['MABEL L', 'MABEL R', 'MILO L', 'MILO R']
-      .map((n, i) => `${n} <b class="${Math.abs(T.gap[i] - T.bar_mm) < 6 ? 'ok' : ''}">${T.gap[i].toFixed(0)}</b>`).join(' · ');
+    $('.lg-gap').innerHTML = 'gap mm (bar ' + T.bar_mm.toFixed(0) + '): ' + T.gap
+      .map(g => `<b class="${Math.abs(g - T.bar_mm) < 6 ? 'ok' : ''}">${g.toFixed(0)}</b>`).join(' · ');
     const b = T.base.map(x => Math.hypot(x.meas[0], x.meas[1]).toFixed(2));
     v('base', `${b[0]} / ${b[1]} m/s`);
   }
+  // ---------------------------------------------------------------- planner status: stage chip + panel line + timeline
+  const vw = root.querySelector('.lg-vw');
+  const chip = document.createElement('div'); chip.className = 'lg-pchip'; chip.hidden = true;
+  chip.innerHTML = '<i class="lg-pdot"></i><span><b class="lg-pst">—</b><small class="lg-psub"></small></span><span class="lg-held" title="grasp monitor: MABEL L, MABEL R, MILO L, MILO R (filled = grasp established)"></span>';
+  vw.appendChild(chip);
+  let pstate = null;
+  function showPlanner(P) {
+    pstate = P;
+    const [col, label] = PSTATE[P.state] || ['#8e8e93', P.state];
+    const sub = P.state === 'RE-GRASPING' ? `${P.sub}${P.cause ? ' · ' + P.cause : ''}` :
+                P.state === 'DONE' ? (P.outcome || '') : P.state === 'GRASPING' ? 'waiting for all four grasps' : '';
+    const rp = P.replans ? ` · re-plans ${P.replans}` : '';
+    [chip, box].forEach(el => { el.querySelectorAll('.lg-pdot').forEach(d => { d.style.background = col; d.classList.toggle('pulse', /RE-|GRASPING|LIFTING/.test(P.state)); });
+      el.querySelectorAll('.lg-pst').forEach(n => { n.textContent = label; n.style.color = el === chip ? '#fff' : col; });
+      el.querySelectorAll('.lg-psub').forEach(n => { n.textContent = (sub ? ' · ' + sub : '') + rp; }); });
+    chip.dataset.state = P.state; root.dataset.planner = P.state;                   // (read by the tests)
+    chip.querySelector('.lg-held').innerHTML = (P.held || []).map((h, i) => `<i style="${h ? 'background:' + HANDS[i].col : 'border-color:' + HANDS[i].col}"></i>`).join('');
+    chip.hidden = P.state === 'SETUP';
+  }
+  function drawTimeline() {
+    const cv = $('.lg-ptl'), d = Math.min(2, devicePixelRatio || 1), w = cv.clientWidth, h = cv.clientHeight;
+    if (!w) return;
+    if (cv.width !== Math.round(w * d) || cv.height !== Math.round(h * d)) { cv.width = Math.round(w * d); cv.height = Math.round(h * d); }
+    const g = cv.getContext('2d'); g.setTransform(d, 0, 0, d, 0, 0); g.clearRect(0, 0, w, h);
+    g.fillStyle = 'rgba(242,238,230,.06)'; g.fillRect(0, 0, w, h);
+    if (!H.t.length) return;
+    const t1 = H.t[H.t.length - 1], t0 = Math.max(0, t1 - WIN), X = t => (t - t0) / Math.max(WIN, t1 - t0) * w;
+    for (let i = 0; i < H.t.length; i++) {
+      if (H.t[i] < t0) continue;
+      const x0 = X(H.t[i]), x1 = i + 1 < H.t.length ? X(H.t[i + 1]) : X(t1) + 2;
+      g.fillStyle = (PSTATE[H.ps[i]] || ['#555'])[0]; g.fillRect(x0, 0, Math.max(1, x1 - x0 + 0.5), h);
+    }
+  }
+
+  // ---------------------------------------------------------------- planner trajectories in the 3-D view
+  let planOn = true, planG = null;
+  try { planOn = localStorage.getItem('m2LgPlan') !== '0'; } catch (_) {}
+  const pbtn = document.createElement('button'); pbtn.type = 'button'; pbtn.className = 'lg-planbtn' + (planOn ? ' on' : '');
+  pbtn.title = "the planner's gripper targets: next 3 s (line), past targets (fading), target (ball), measured gripper (white)";
+  pbtn.innerHTML = '<i></i>Plan'; pbtn.hidden = true; vw.appendChild(pbtn);
+  pbtn.addEventListener('click', () => { planOn = !planOn; pbtn.classList.toggle('on', planOn);
+    try { localStorage.setItem('m2LgPlan', planOn ? '1' : '0'); } catch (_) {}
+    const v = root.lgView && root.lgView(); if (planG) { planG.visible = planOn; if (v) v.dirty = true; } });
+  const TRAIL = 40;                                           // past targets kept (4 s at 10 Hz)
+  function planGroup() {
+    const v = root.lgView && root.lgView();
+    if (!v || !window.THREE) return null;
+    if (planG && planG.parent === v.s) return planG;
+    const T3 = window.THREE;
+    planG = new T3.Group(); planG.visible = planOn; planG.renderOrder = 5;
+    planG.userData.hands = HANDS.map(hd => {
+      const col = new T3.Color(hd.col);
+      const mk = (n, mat) => { const g = new T3.BufferGeometry(); g.setAttribute('position', new T3.BufferAttribute(new Float32Array(3 * n), 3));
+        g.setDrawRange(0, 0); const l = new T3.Line(g, mat); l.frustumCulled = false; planG.add(l); return l; };
+      const fut = mk(16, new T3.LineBasicMaterial({color: col, transparent: true, opacity: 0.95, depthTest: false}));
+      const tr = mk(TRAIL, new T3.LineBasicMaterial({vertexColors: true, transparent: true, depthTest: false}));
+      tr.geometry.setAttribute('color', new T3.BufferAttribute(new Float32Array(4 * TRAIL), 4));
+      const err = mk(2, new T3.LineBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.9, depthTest: false}));
+      const tgt = new T3.Mesh(new T3.SphereGeometry(0.018, 14, 10), new T3.MeshBasicMaterial({color: col, depthTest: false, transparent: true, opacity: 0.95}));
+      const ee = new T3.Mesh(new T3.SphereGeometry(0.011, 12, 8), new T3.MeshBasicMaterial({color: 0xffffff, depthTest: false}));
+      const dots = new T3.Points(fut.geometry, new T3.PointsMaterial({color: col, size: 5, sizeAttenuation: false, depthTest: false}));
+      [tgt, ee, dots].forEach(o => { o.frustumCulled = false; o.renderOrder = 6; planG.add(o); });
+      return {fut, tr, err, tgt, ee, col};
+    });
+    v.s.add(planG);
+    return planG;
+  }
+  function drawPlan(P) {
+    const G = planGroup();
+    if (!G) return;
+    const mm = 0.001;
+    P.tgt.forEach((p, i) => { trail[i].push(p.map(x => x * mm)); if (trail[i].length > TRAIL) trail[i].shift(); });
+    G.userData.hands.forEach((hd, i) => {
+      const fp = hd.fut.geometry.attributes.position, pts = [P.tgt[i], ...P.fut[i]].slice(0, 16);
+      pts.forEach((p, j) => fp.setXYZ(j, p[0] * mm, p[1] * mm, p[2] * mm)); fp.needsUpdate = true; hd.fut.geometry.setDrawRange(0, pts.length);
+      const tp = hd.tr.geometry.attributes.position, tc = hd.tr.geometry.attributes.color, n = trail[i].length;
+      trail[i].forEach((p, j) => { tp.setXYZ(j, p[0], p[1], p[2]); tc.setXYZW(j, hd.col.r, hd.col.g, hd.col.b, 0.05 + 0.75 * (j + 1) / n); });
+      tp.needsUpdate = true; tc.needsUpdate = true; hd.tr.geometry.setDrawRange(0, n);
+      const ep = hd.err.geometry.attributes.position;
+      ep.setXYZ(0, P.tgt[i][0] * mm, P.tgt[i][1] * mm, P.tgt[i][2] * mm); ep.setXYZ(1, P.ee[i][0] * mm, P.ee[i][1] * mm, P.ee[i][2] * mm);
+      ep.needsUpdate = true; hd.err.geometry.setDrawRange(0, 2);
+      hd.tgt.position.set(P.tgt[i][0] * mm, P.tgt[i][1] * mm, P.tgt[i][2] * mm);
+      hd.ee.position.set(P.ee[i][0] * mm, P.ee[i][1] * mm, P.ee[i][2] * mm);
+    });
+    G.visible = planOn;
+    const v = root.lgView(); if (v) v.dirty = true;
+  }
+  function hidePlan() { if (planG) { planG.visible = false; const v = root.lgView && root.lgView(); if (v) v.dirty = true; } trail.forEach(a => a.length = 0); }
+
   let raf = 0;
   root.addEventListener('lg-state', e => {
     const s = e.detail;
-    if (!s || !s.tele) { if (s && s.mode === 'setup') { clear(); redraw(); drawBases(null); } return; }
+    if (s && s.planner) showPlanner(s.planner);
+    if (!s || !s.tele) { if (s && s.mode === 'setup') { clear(); redraw(); drawBases(null); drawTimeline(); hidePlan(); pbtn.hidden = true;
+      box.querySelectorAll('.ct .v').forEach(v => { v.textContent = ''; }); latest = null; } return; }
     box.hidden = false; latest = s.tele;
     if (!push(s)) return;
+    if (s.tele.plan) { pbtn.hidden = false; drawPlan(s.tele.plan); }
     if (!charts) { loadUplot().then(() => { if (!charts) build(); redraw(); }).catch(() => {}); }
-    if (!raf) raf = requestAnimationFrame(() => { raf = 0; redraw(); values(latest); drawBases(latest); });
+    if (!raf) raf = requestAnimationFrame(() => { raf = 0; redraw(); values(latest); drawBases(latest); drawTimeline(); });
   });
-  root.addEventListener('lg-connected', e => { box.hidden = !e.detail; if (!e.detail) { clear(); redraw(); } });
+  root.addEventListener('lg-connected', e => { box.hidden = !e.detail; if (!e.detail) { clear(); redraw(); hidePlan(); chip.hidden = true; pbtn.hidden = true; } });
   box.addEventListener('toggle', () => { if (box.open) requestAnimationFrame(() => { if (charts) Object.values(charts).forEach(u => u.redraw()); drawBases(latest); }); });
-  root.lgTele = {history: H, charts: () => charts, latest: () => latest};      // (read by the tests)
+  if ('ResizeObserver' in window) {                         // canvases are sized from CSS: redraw on any resize
+    const ro2 = new ResizeObserver(() => { drawBases(latest); drawTimeline(); });
+    box.querySelectorAll('.lg-base canvas, .lg-ptl').forEach(c => ro2.observe(c));
+  }
+  root.lgTele = {history: H, charts: () => charts, latest: () => latest, planner: () => pstate,       // (read by the tests)
+                 plan: () => planG ? {visible: planG.visible, lines: planG.children.filter(o => o.isLine && o.geometry.drawRange.count > 1).length} : null};
 })();
