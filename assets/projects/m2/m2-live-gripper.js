@@ -36,7 +36,7 @@
   const rad = d => d * Math.PI / 180, deg = r => r * 180 / Math.PI;
   const isCtl = () => connected && role === 'controller';
   const canSetup = () => isCtl() && mode === 'setup';
-  const canControl = () => isCtl() && mode === 'run' && !ended && !paused && unlocked;
+  const canControl = () => isCtl() && mode === 'run' && !ended && !paused;   // any time: the planner stores the goal
   function status(text, kind = 'idle') { const n = $('.lg-status'); n.dataset.kind = kind; $('.lg-st').textContent = text; }
 
   // ---------------------------------------------------------------- three.js
@@ -156,7 +156,7 @@
       view.groups[b].position.set(F[o], F[o + 1], F[o + 2]); view.groups[b].quaternion.set(F[o + 4], F[o + 5], F[o + 6], F[o + 3]); }
     const put = (g, o) => { g.position.set(F[o], F[o + 1], F[o + 2]); g.quaternion.set(F[o + 4], F[o + 5], F[o + 6], F[o + 3]); };
     put(view.payload, 7 * NB); put(view.ghost, 7 * NB + 7); put(view.ref, 7 * NB + 14);
-    view.ghost.visible = mode === 'run' && unlocked;
+    view.ghost.visible = mode === 'run';
     view.ref.visible = mode === 'run';
     if (!framed && lastState) {                    // first frame after connecting: frame the pair from the box's side
       framed = true;
@@ -352,13 +352,13 @@
     $$('.lg-slider input').forEach(i => { i.disabled = !canControl(); });
     $('.lg-center').disabled = !canControl();
     $$('.lg-levels button').forEach(b => { b.disabled = !su; b.classList.toggle('on', Number(b.dataset.level) === level); });
-    $('.lg-dsel').textContent = canControl() ? 'live' : run && !ended ? 'unlocking…' : 'after Carry';
+    $('.lg-dsel').textContent = canControl() ? (unlocked ? 'live' : 'planned ahead') : 'after Carry';
     $('.lg-role').textContent = !connected ? '' : role === 'controller' ? 'You have control' : 'Watching · another visitor has control';
-    $('.lg-keynote').textContent = !connected ? 'Controls unlock once the robots have grasped and lifted the box.'
-      : mode === 'setup' ? 'Press Carry: the robots drive in, close and lift; then the box follows these controls.'
+    $('.lg-keynote').textContent = !connected ? 'Set the goal pose at any time once Carry is pressed.'
+      : mode === 'setup' ? 'Press Carry: the robots drive in, close and lift; you can set the goal right away; the box goes there once the grasp is secure.'
       : ended ? 'Trial ended. Carry again, or edit the setup.'
       : paused ? 'Paused. Resume to move the goal.'
-      : !unlocked ? 'Grasping and lifting… the controls unlock in a moment.'
+      : !unlocked && role === 'controller' ? 'Set the goal now: the planner plans ahead and carries the box there as soon as the grasp is secure.'
       : role === 'controller' ? 'Drag the sliders, or hold keys / buttons; release to hold. Roll, pitch and yaw turn the box about its own axes.'
       : 'Another visitor is driving.';
     const vw = $('.lg-vw'); vw.classList.toggle('st-setup', mode === 'setup'); vw.classList.toggle('st-live', mode === 'run' && !ended);
@@ -373,7 +373,7 @@
     else if (ended) { b.classList.add('st-end'); t = 'TRIAL ENDED'; sub = 'carry again or edit the setup'; }
     else if (s && s.regrasping) { b.classList.add('st-start'); t = 'RE-GRASPING';
       sub = s.regrasp_phase === 'lift' ? 'grasped again: lifting from where it landed' : 'box dropped: the planner sends the grippers to where it is now'; }
-    else if (!unlocked) { b.classList.add('st-start'); t = 'CARRY · PHYSICS ON'; sub = 'the robots drive in, close their grippers and lift'; }
+    else if (!unlocked) { b.classList.add('st-start'); t = 'CARRY · PHYSICS ON'; sub = 'grasping: the lift starts once every grip is secure'; }
     else { b.classList.add('st-live'); t = 'LIVE · PHYSICS ON'; sub = paused ? 'paused' : 'the box follows your pose'; }
     $('.lg-bdg-t').textContent = t; $('.lg-bdg-s').textContent = sub;
   }
