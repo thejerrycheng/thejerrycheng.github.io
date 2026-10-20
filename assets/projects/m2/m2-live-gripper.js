@@ -434,6 +434,7 @@
     status(mode === 'setup' ? 'Live · set up the scene' : ended ? 'Trial ended' : paused ? 'Paused' : unlocked ? 'Live · you are driving' : 'Live · grasping and lifting',
            ended ? 'error' : 'live');
     updateControls();
+    root.dispatchEvent(new CustomEvent('lg-state', {detail: s}));          // telemetry plots (m2-live-tele.js)
   }
   function onHello(h) {
     role = h.role; level = h.level; bounds = h.bounds; presets = h.presets || [];
@@ -482,6 +483,7 @@
     if (message) status(message, kind);
     badge(null); hud(null);
     updateControls();
+    root.dispatchEvent(new CustomEvent('lg-connected', {detail: false}));
   }
   function endpoints() {
     const tok = root.dataset.lgToken || '', out = [];

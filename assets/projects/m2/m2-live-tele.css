@@ -1,0 +1,43 @@
+/* Live telemetry under the #live-gripper stage (m2-live-tele.js), in the WUJI Training Studio chart style
+ * (assets/studio/app/studio.css .chart / .pl-legend / .tip): hairline cards, mono titles with the live value on the
+ * right, uPlot bodies, pill legends that toggle series. Dark in both page themes, like the section's step cards. */
+#live-gripper .lg-tele{--t-ink:#efeae3;--t-soft:#cfc8be;--t-ash:#97908a;--t-ash2:#6b655f;--t-hair:rgba(242,238,230,.09);
+  --t-bd:rgba(242,238,230,.14);--t-mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  margin:20px 0 0;border-radius:22px;background:var(--lg-card,#2c2c2e);padding:14px 16px 16px;color:var(--t-ink);position:relative}
+#live-gripper .lg-tele>summary{display:flex;align-items:baseline;gap:12px;cursor:pointer;list-style:none;font:650 15px/1.2 var(--lg-font);color:#fff;padding:2px 0}
+#live-gripper .lg-tele>summary::-webkit-details-marker{display:none}
+#live-gripper .lg-tele>summary::before{content:"▸";font-size:12px;color:var(--t-ash);transition:transform .18s;display:inline-block}
+#live-gripper .lg-tele[open]>summary::before{transform:rotate(90deg)}
+#live-gripper .lg-tele>summary small{font:400 11px var(--t-mono);color:var(--t-ash)}
+#live-gripper .lg-tgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:12px}
+#live-gripper .lg-chart{border:1px solid var(--t-hair);border-radius:14px;background:linear-gradient(180deg,rgba(242,238,230,.03),rgba(242,238,230,.01));padding:10px 10px 8px;min-width:0}
+#live-gripper .lg-chart .ct{display:flex;align-items:baseline;gap:8px;margin:0 2px 4px}
+#live-gripper .lg-chart .ct .t{font:11px var(--t-mono);color:var(--t-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+#live-gripper .lg-chart .ct .v{font:500 12px var(--t-mono);font-variant-numeric:tabular-nums;color:var(--t-ink);white-space:nowrap}
+#live-gripper .lg-chart .ct .v .hot{color:#ff6961}
+#live-gripper .lg-chart .cv{min-height:150px}
+#live-gripper .lg-tlg{display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:6px}
+#live-gripper .lg-tlg button{appearance:none;background:transparent;font:10px var(--t-mono);padding:2px 8px;border-radius:999px;border:1px solid var(--t-hair);color:var(--t-ash2);cursor:pointer}
+#live-gripper .lg-tlg button.on{color:var(--t-soft);border-color:var(--t-bd)}
+#live-gripper .lg-tlg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+#live-gripper .lg-tlg span{font:10px var(--t-mono);color:var(--t-soft);display:inline-flex;align-items:center;gap:5px;padding:2px 4px}
+#live-gripper .lg-tlg .dim,#live-gripper .lg-tele .dim{color:var(--t-ash)}
+#live-gripper .lg-tlg i.ln{width:14px;height:2px;border-radius:1px;background:var(--t-ink);margin:0}
+#live-gripper .lg-tlg i.ln.dash{background:repeating-linear-gradient(90deg,#f0b68b 0 4px,transparent 4px 7px)}
+#live-gripper .lg-tnote{font:10.5px/1.45 var(--t-mono);color:var(--t-ash);margin:6px 2px 0}
+#live-gripper .lg-tnote b{color:var(--t-soft);font-weight:500}#live-gripper .lg-tnote b.ok{color:#3FB56B}
+#live-gripper .lg-bases{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#live-gripper .lg-base{margin:0;min-width:0;text-align:center}
+#live-gripper .lg-base canvas{display:block;width:100%;aspect-ratio:1/1;max-height:190px}
+#live-gripper .lg-base figcaption{font:10.5px/1.45 var(--t-mono);color:var(--t-ash);margin-top:2px}
+#live-gripper .lg-base figcaption b{font-weight:600}
+#live-gripper .lg-base figcaption .lg-bread{display:block;font-variant-numeric:tabular-nums}
+#live-gripper .lg-base figcaption .lg-bread b{color:var(--t-ink);font-weight:500}
+#live-gripper .lg-blg{justify-content:center}
+#live-gripper .lg-ttip{position:absolute;z-index:6;pointer-events:none;font:11px var(--t-mono);background:rgba(21,19,17,.96);border:1px solid var(--t-bd);border-radius:8px;padding:6px 9px;color:var(--t-ink);box-shadow:0 12px 30px -12px rgba(0,0,0,.7);white-space:nowrap}
+#live-gripper .lg-ttip .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px}
+#live-gripper .lg-tele .u-legend{display:none}
+#live-gripper .lg-tele .uplot .u-cursor-x,#live-gripper .lg-tele .uplot .u-cursor-y{border-color:rgba(242,238,230,.25)!important}
+@media (max-width:1280px){#live-gripper .lg-tgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:700px){#live-gripper .lg-tgrid{grid-template-columns:minmax(0,1fr)}#live-gripper .lg-tele{padding:12px}
+  #live-gripper .lg-base canvas{max-height:160px}}
