@@ -155,7 +155,6 @@
     lastTrigger = trigger || null;
     modal.hidden = false;
     flyFrom(trigger);
-    burst(FX[fxIndex++ % FX.length]);
     document.body.classList.add("modal-open");
     closeBtn.focus();
     return true;
@@ -172,7 +171,6 @@
     lastTrigger = link;
     modal.hidden = false;
     flyFrom(link);
-    burst("TA-DA!");
     document.body.classList.add("modal-open");
     closeBtn.focus();
   }

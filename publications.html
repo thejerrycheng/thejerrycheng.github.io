@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="night">
+<html lang="en" data-theme="day">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,13 +12,13 @@
   <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
   <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
   <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
-  <meta name="theme-color" content="#151820">
+  <meta name="theme-color" content="#F5F5F7">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/gotham.css">
   <script>document.documentElement.classList.add('js');</script>
-  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <script>(function(){try{var t=localStorage.getItem("theme-v2");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 
 </head>
 <body>
@@ -67,6 +67,17 @@
 <section class="section" id="publications">
   <div class="pub-list">
 <!-- catalog:pub-list -->
+    <div class="pub card card-hover" id="mabel-paper">
+      <div class="pub-thumb"><img src="assets/images/projects/mabel/mabel_hero.jpg" alt="MABEL, an open-source anthropomorphic mobile bimanual robot (paper Figure 1)" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/projects/mabel/mabel_hero.jpg" data-src="assets/videos/mabel_visionpro_teleop.mp4"></video></div></div>
+      <div class="pub-meta">
+        <a href="https://arxiv.org/abs/2611.04083" target="_blank" rel="noopener"><span class="papertitle">MABEL: An Open Anthropomorphic Mobile Bimanual Platform for Teleoperation and Learning</span></a><span class="proj-year">2026</span>
+        <span class="authors"><b>Q. Cheng</b>*, R. Khorrambakht*, M. Y. Kabouri, Q. N. Nguyen, L. Macesanu, H. Zhou, Y. Wang, and L. Righetti</span>
+        <span class="venue"><em>arXiv preprint</em>, 2026 &middot; arXiv:2611.04083 &middot; * equal contribution</span>
+        <div class="links"><a href="https://robotmabel.github.io/website/" target="_blank" rel="noopener">Website</a><a href="https://arxiv.org/abs/2611.04083" target="_blank" rel="noopener">arXiv</a><a href="https://arxiv.org/pdf/2611.04083" target="_blank" rel="noopener">PDF</a><a href="https://robotmabel.github.io/website/assets/overview/submission-final-v3-web.mp4" target="_blank" rel="noopener">Video</a><a href="https://github.com/robotmabel/open_mabel" target="_blank" rel="noopener">Code</a></div>
+        <p class="pub-desc">An open-source anthropomorphic mobile bimanual robot with 56 degrees of freedom and a US$8.1k parts cost: two 7-DOF arms with 17-DOF hands, a pitching torso, a lift, a 3-DOF neck and a holonomic base. Back-drivable arms and torso support compliant interaction, with fingertip reach from floor level to 2.23&nbsp;m. Apple Vision Pro head and hand tracking gives whole-body teleoperation without handheld controllers, at 137&nbsp;ms mean glass-to-glass stereo video latency, and the same command interface carries an imitation-learning pipeline from teleoperated data to deployed policy.</p>
+      </div>
+    </div>
+
     <div class="pub card card-hover" id="locomotion-survey">
       <div class="pub-thumb"><div class="pub-carousel" data-carousel><div class="carousel-track"><div class="slide"><img src="assets/images/publications/sr_fig1.jpg" alt="Fig. 1 — Evolution of humanoid locomotion control across classical, learning-based, and emerging eras" decoding="async" class="fit-contain"></div><div class="slide"><img src="assets/images/publications/sr_fig2.jpg" alt="Fig. 2 — Modeling landscape, from physics-based models to data-driven world models" decoding="async" class="fit-contain"></div><div class="slide"><img src="assets/images/publications/sr_fig3.jpg" alt="Fig. 3 — Taxonomy of control methods and the deployment-time signal flow of each era" decoding="async" class="fit-contain"></div><div class="slide"><img src="assets/images/publications/sr_fig4.jpg" alt="Fig. 4 — Classical control versus reinforcement learning pipelines" decoding="async" class="fit-contain"></div><div class="slide"><img src="assets/images/publications/sr_fig5.jpg" alt="Fig. 5 — Emerging shifts: generative models, multimodality, multitask, loco-manipulation, test-time adaptation" decoding="async" class="fit-contain"></div></div><button class="c-btn prev" aria-label="Previous slide"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg></button><button class="c-btn next" aria-label="Next slide"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div></div>
       <div class="pub-meta">

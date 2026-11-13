@@ -1,6 +1,48 @@
 {
  "publications": [
   {
+   "id": "mabel-paper",
+   "title": "MABEL: An Open Anthropomorphic Mobile Bimanual Platform for Teleoperation and Learning",
+   "short": "MABEL: An Open Anthropomorphic Mobile Bimanual Platform for Teleoperation and Learning",
+   "authors": "<b>Q. Cheng</b>*, R. Khorrambakht*, M. Y. Kabouri, Q. N. Nguyen, L. Macesanu, H. Zhou, Y. Wang, and L. Righetti",
+   "venue": "arXiv preprint",
+   "venue_short": "arXiv",
+   "year": 2026,
+   "note": "arXiv:2611.04083 &middot; * equal contribution",
+   "href": "https://arxiv.org/abs/2611.04083",
+   "images": [
+    "assets/images/projects/mabel/mabel_hero.jpg"
+   ],
+   "alts": [
+    "MABEL, an open-source anthropomorphic mobile bimanual robot (paper Figure 1)"
+   ],
+   "video": "assets/videos/mabel_visionpro_teleop.mp4",
+   "fit": "cover",
+   "links": [
+    {
+     "label": "Website",
+     "href": "https://robotmabel.github.io/website/"
+    },
+    {
+     "label": "arXiv",
+     "href": "https://arxiv.org/abs/2611.04083"
+    },
+    {
+     "label": "PDF",
+     "href": "https://arxiv.org/pdf/2611.04083"
+    },
+    {
+     "label": "Video",
+     "href": "https://robotmabel.github.io/website/assets/overview/submission-final-v3-web.mp4"
+    },
+    {
+     "label": "Code",
+     "href": "https://github.com/robotmabel/open_mabel"
+    }
+   ],
+   "desc": "An open-source anthropomorphic mobile bimanual robot with 56 degrees of freedom and a US$8.1k parts cost: two 7-DOF arms with 17-DOF hands, a pitching torso, a lift, a 3-DOF neck and a holonomic base. Back-drivable arms and torso support compliant interaction, with fingertip reach from floor level to 2.23&nbsp;m. Apple Vision Pro head and hand tracking gives whole-body teleoperation without handheld controllers, at 137&nbsp;ms mean glass-to-glass stereo video latency, and the same command interface carries an imitation-learning pipeline from teleoperated data to deployed policy."
+  },
+  {
    "id": "locomotion-survey",
    "title": "Evolution of Humanoid Locomotion Control",
    "authors": "Y. Gu, G. Shi, F. Shi, I. Chang, Y. Wang, <b>Q. Cheng</b>, Z. Olkin, I. Lopez-Sanchez, Y. Feng, J. Zhang, A. D. Ames, H. Su, and K. Sreenath",
@@ -411,8 +453,8 @@
  "projects": [
   {
    "id": "m2",
-   "title": "Read the Room: Cooperative Multi-Robot Transport",
-   "short": "Read the Room: shared policy, shared load",
+   "title": "M2",
+   "short": "M2",
    "year": 2026,
    "tag": "Robot learning",
    "images": [
@@ -421,7 +463,7 @@
    "alts": [
     "Two mobile manipulators carrying a shared object in MuJoCo"
    ],
-   "video": "assets/projects/m2/media/aea3157089c0.mp4",
+   "video": "assets/videos/card_m2.mp4",
    "fit": "contain",
    "links": [
     {
@@ -430,12 +472,12 @@
      "internal": true
     }
    ],
-   "desc": "Grasp-aware planning and shared learned local control for cooperative transport. Explore the paper, seven-stage task visualization, 35/40 frozen missions across ten scenes, and interactive trajectories. Separate development experiments study recovery and local coordination."
+   "desc": "Coming soon."
   },
   {
    "id": "wuji",
-   "title": "WUJI Chopsticks: Dexterous Tool Use (Coming Soon)",
-   "short": "WUJI Chopsticks: coming soon",
+   "title": "ChopChop",
+   "short": "ChopChop",
    "year": 2026,
    "tag": "Dexterous manipulation",
    "images": [
@@ -452,7 +494,8 @@
      "internal": true
     }
    ],
-   "desc": "Coming soon. An ongoing project on dexterous tool use with a multi-fingered hand; the page opens with a passcode."
+   "desc": "Coming soon.",
+   "video": "assets/videos/card_chopchop.mp4"
   },
   {
    "id": "rehearse",
@@ -461,10 +504,10 @@
    "year": 2026,
    "tag": "Real to sim to real",
    "images": [
-    "assets/projects/rehearse/capture-1207.webp"
+    "assets/projects/rehearse/card-kitchen-replay.jpg"
    ],
    "alts": [
-    "A takeaway coffee cup on a white table, the first Rehearse reconstruction example"
+    "A reconstructed kitchen with the full egocentric camera path drawn through it, coloured by time"
    ],
    "fit": "cover",
    "links": [
@@ -474,7 +517,8 @@
      "internal": true
     }
    ],
-   "desc": "An early research project turning egocentric observations into interactive 3D scenes. Start with imitation learning, fine-tune contact-rich manipulation in simulation, and evaluate transfer back to the robot. Explore the first three-photo scene, estimated camera poses, movable cup and reconstruction limitations."
+   "desc": "An early research project turning egocentric observations into interactive 3D scenes. Start with imitation learning, fine-tune contact-rich manipulation in simulation, and evaluate transfer back to the robot. Explore the first three-photo scene, estimated camera poses, movable cup and reconstruction limitations.",
+   "video": "assets/videos/card_rehearse.mp4"
   },
   {
    "id": "mabel",
@@ -496,8 +540,12 @@
      "href": "https://robotmabel.github.io/website/"
     },
     {
+     "label": "Paper",
+     "href": "https://arxiv.org/abs/2611.04083"
+    },
+    {
      "label": "Code",
-     "href": "https://github.com/robotmabel/MABEL"
+     "href": "https://github.com/robotmabel/open_mabel"
     },
     {
      "label": "Build guide",

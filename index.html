@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="night">
+<html lang="en" data-theme="day">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,7 +17,7 @@
   <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
   <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
   <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
-  <meta name="theme-color" content="#151820">
+  <meta name="theme-color" content="#F5F5F7">
 
   <!-- Social preview -->
   <meta property="og:site_name" content="Jerry (Qilong) Cheng">
@@ -34,10 +34,10 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/gotham.css">
   <script>document.documentElement.classList.add('js');</script>
-  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <script>(function(){try{var t=localStorage.getItem("theme-v2");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 
 
   <script type="application/ld+json">
@@ -166,6 +166,15 @@
     <button class="strip-btn next" type="button" aria-label="Scroll publications right"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
     <div class="strip" aria-label="Publications">
 <!-- catalog:pub-strip -->
+      <a class="slide" href="publications.html#mabel-paper" data-kind="publications" data-id="mabel-paper">
+        <span class="slide-media"><img src="assets/images/projects/mabel/mabel_hero.jpg" alt="MABEL, an open-source anthropomorphic mobile bimanual robot (paper Figure 1)" loading="lazy" decoding="async" class="fit-cover"><span class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/projects/mabel/mabel_hero.jpg" data-src="assets/videos/mabel_visionpro_teleop.mp4"></video></span></span>
+        <span class="slide-tag">arXiv 2026</span>
+        <span class="slide-body">
+          <span class="slide-title">MABEL: An Open Anthropomorphic Mobile Bimanual Platform for Teleoperation and Learning</span>
+          <span class="slide-sub"><b>Q. Cheng</b>*, R. Khorrambakht*, M. Y. Kabouri, Q. N. Nguyen, L. Macesanu, H. Zhou, Y. Wang, and L. Righetti</span>
+          <span class="slide-cta">Quick look</span>
+        </span>
+      </a>
       <a class="slide" href="publications.html#locomotion-survey" data-kind="publications" data-id="locomotion-survey">
         <span class="slide-media"><img src="assets/images/publications/sr_fig1.jpg" alt="Fig. 1 — Evolution of humanoid locomotion control across classical, learning-based, and emerging eras" loading="lazy" decoding="async" class="fit-contain"></span>
         <span class="slide-tag">Science Robotics 2026</span>
@@ -282,25 +291,25 @@
     <div class="strip" aria-label="Projects">
 <!-- catalog:proj-strip -->
       <a class="slide" href="projects.html#m2" data-kind="projects" data-id="m2">
-        <span class="slide-media"><img src="assets/projects/m2/figures/iros_01_task.png" alt="Two mobile manipulators carrying a shared object in MuJoCo" loading="lazy" decoding="async" class="fit-contain"><span class="hover-video"><video muted loop playsinline preload="none" poster="assets/projects/m2/figures/iros_01_task.png" data-src="assets/projects/m2/media/aea3157089c0.mp4"></video></span></span>
+        <span class="slide-media"><img src="assets/projects/m2/figures/iros_01_task.png" alt="Two mobile manipulators carrying a shared object in MuJoCo" loading="lazy" decoding="async" class="fit-contain"><span class="hover-video"><video muted loop playsinline preload="none" poster="assets/projects/m2/figures/iros_01_task.png" data-src="assets/videos/card_m2.mp4"></video></span></span>
         <span class="slide-tag">Robot learning 2026</span>
         <span class="slide-body">
-          <span class="slide-title">Read the Room: shared policy, shared load</span>
-          <span class="slide-sub">Grasp-aware planning and shared learned local control for cooperative transport. Explore the paper, seven-stage task visualization, 35/40 frozen missions across ten scenes, and interactive trajectories. Separate development experiments study recovery and local coordination.</span>
+          <span class="slide-title">M2</span>
+          <span class="slide-sub">Coming soon.</span>
           <span class="slide-cta">Quick look</span>
         </span>
       </a>
       <a class="slide" href="projects.html#wuji" data-kind="projects" data-id="wuji">
-        <span class="slide-media"><img src="assets/projects/wuji/card.jpg" alt="A Franka Panda arm with a dexterous hand above a table set with food and blocks" loading="lazy" decoding="async" class="fit-cover"></span>
+        <span class="slide-media"><img src="assets/projects/wuji/card.jpg" alt="A Franka Panda arm with a dexterous hand above a table set with food and blocks" loading="lazy" decoding="async" class="fit-cover"><span class="hover-video"><video muted loop playsinline preload="none" poster="assets/projects/wuji/card.jpg" data-src="assets/videos/card_chopchop.mp4"></video></span></span>
         <span class="slide-tag">Dexterous manipulation 2026</span>
         <span class="slide-body">
-          <span class="slide-title">WUJI Chopsticks: coming soon</span>
-          <span class="slide-sub">Coming soon. An ongoing project on dexterous tool use with a multi-fingered hand; the page opens with a passcode.</span>
+          <span class="slide-title">ChopChop</span>
+          <span class="slide-sub">Coming soon.</span>
           <span class="slide-cta">Quick look</span>
         </span>
       </a>
       <a class="slide" href="projects.html#rehearse" data-kind="projects" data-id="rehearse">
-        <span class="slide-media"><img src="assets/projects/rehearse/capture-1207.webp" alt="A takeaway coffee cup on a white table, the first Rehearse reconstruction example" loading="lazy" decoding="async" class="fit-cover"></span>
+        <span class="slide-media"><img src="assets/projects/rehearse/card-kitchen-replay.jpg" alt="A reconstructed kitchen with the full egocentric camera path drawn through it, coloured by time" loading="lazy" decoding="async" class="fit-cover"><span class="hover-video"><video muted loop playsinline preload="none" poster="assets/projects/rehearse/card-kitchen-replay.jpg" data-src="assets/videos/card_rehearse.mp4"></video></span></span>
         <span class="slide-tag">Real to sim to real 2026</span>
         <span class="slide-body">
           <span class="slide-title">Rehearse: learn from people, practice in simulation</span>
@@ -420,14 +429,26 @@
     <button class="strip-btn next" type="button" aria-label="Scroll news right"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
   <div id="news-horizontal" class="news-scroll">
 
+    <div class="news-card card card-hover" id="news-iros-2026">
+      <div class="news-media" data-carousel>
+        <button class="c-btn prev" aria-label="Previous"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg></button>
+        <button class="c-btn next" aria-label="Next"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+        <div class="carousel-track">
+          <div><img class="fit-cover" style="object-position:50% 42%" src="assets/images/news/iros_2026/poster.jpg" alt="Jerry beside the MABEL poster and the robot at IROS 2026"></div>
+          <div><img class="fit-cover" src="assets/images/news/iros_2026/team.jpg" alt="Jerry and two co-authors with MABEL in front of the poster at IROS 2026"></div>
+          <div><img class="fit-cover" style="object-position:50% 20%" src="assets/images/news/iros_2026/demo.jpg" alt="Showing MABEL to visitors on the IROS 2026 exhibition floor"></div>
+          <div><img class="fit-cover" style="object-position:50% 28%" src="assets/images/news/iros_2026/prep.jpg" alt="Getting MABEL dressed and ready the night before the session"></div>
+        </div>
+      </div>
+      <div class="news-text"><p><b>[10/2026]</b> Presented <a href="https://arxiv.org/abs/2611.04083" target="_blank" rel="noopener"><b>MABEL</b></a> at <a href="https://2026.ieee-iros.org/" target="_blank" rel="noopener">IROS 2026</a> in Pittsburgh.</p></div>
+    </div>
+
     <div class="news-card card card-hover" id="news-1">
       <div class="news-media" data-carousel>
         <button class="c-btn prev" aria-label="Previous"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg></button>
         <button class="c-btn next" aria-label="Next"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
         <div class="carousel-track">
-          <!-- UofT University College — photo by GoginkLobabi, Wikimedia Commons, CC BY-SA 4.0 -->
-          <div><img src="assets/images/news/uoft_stars/uoft_campus.jpg" title="University of Toronto (University College). Photo: GoginkLobabi / Wikimedia Commons, CC BY-SA 4.0" alt="University of Toronto campus, University College"></div>
-          <div><img src="assets/images/news/uoft_stars/stars_logo.png" alt="STARS Laboratory logo"></div>
+          <div><img class="fit-cover" src="assets/images/news/uoft_stars/stars_group.jpg" alt="The STARS Lab group on the Toronto Islands, with the city skyline behind"></div>
         </div>
       </div>
       <div class="news-text"><p><b>[09/2026]</b> Transferring my Ph.D. to the <b>University of Toronto</b> to work with <a href="https://starslab.ca/people/prof-jonathan-kelly/" target="_blank" rel="noopener">Prof. Jonathan Kelly</a> at the <a href="https://starslab.ca/" target="_blank" rel="noopener">STARS Laboratory</a> (UTIAS) — building dexterous manipulation on the road to solving robotics.</p></div>

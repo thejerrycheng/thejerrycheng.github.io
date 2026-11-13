@@ -11,30 +11,19 @@
   var themeMeta = document.querySelector('meta[name="theme-color"]');
   function applyTheme(mode, persist) {
     root.setAttribute("data-theme", mode);
-    if (themeMeta) themeMeta.setAttribute("content", mode === "day" ? "#7FB6DF" : "#151820");
+    if (themeMeta) themeMeta.setAttribute("content", mode === "day" ? "#F5F5F7" : "#000000");
     [].forEach.call(document.querySelectorAll(".theme-btn"), function (b) { b.setAttribute("aria-pressed", String(mode === "day")); });
-    if (persist) { try { localStorage.setItem("theme", mode); } catch (e) {} }
+    if (persist) { try { localStorage.setItem("theme-v2", mode); } catch (e) {} }
   }
   applyTheme(root.getAttribute("data-theme") === "day" ? "day" : "night", false);
   [].forEach.call(document.querySelectorAll(".theme-btn"), function (btn) {
     btn.addEventListener("click", function () { applyTheme(root.getAttribute("data-theme") === "day" ? "night" : "day", true); });
   });
 
-  /* ---- Critters: bats after dark, pigeons by day; one flock per sky ---- */
-  [].forEach.call(document.querySelectorAll(".night-sky"), function (sky) {
-    for (var i = 1; i <= 5; i++) {
-      var c = document.createElement("i"); c.className = "critter c" + i; c.setAttribute("aria-hidden", "true"); sky.appendChild(c);
-    }
-  });
-  var portrait = document.querySelector(".cover .photo-panel");
-  if (portrait) ["p1", "p2"].forEach(function (k) {
-    var b = document.createElement("i"); b.className = "perch " + k; b.setAttribute("aria-hidden", "true"); portrait.appendChild(b);
-  });
-
   /* ---- Nav: tighten the masthead once the page scrolls ---- */
   var navEl = document.querySelector(".nav");
   if (navEl) {
-    var onScroll = function () { navEl.classList.toggle("scrolled", window.scrollY > 24); };
+    var onScroll = function () { navEl.classList.toggle("scrolled", window.scrollY > 4); };
     window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
   }
 
@@ -122,10 +111,6 @@
         for (var i = 1; i <= spell.length; i++) (function (n) {
           timers.push(setTimeout(function () { typed.textContent = spell.slice(0, n); if (n === spell.length) typed.classList.add("done"); }, 70 * n));
         })(i);
-        ["HEY!", "YO!"].forEach(function (w, k) {
-          var f = document.createElement("span"); f.className = "pop-fx pop-fx-mini say-fx f" + k; f.textContent = w; wrap.appendChild(f);
-          timers.push(setTimeout(function () { f.remove(); }, 1100));
-        });
       }
       timers.push(setTimeout(function () { bubble.classList.add("gone"); }, 70 * spell.length + 2200));
       timers.push(setTimeout(function () { bubble.remove(); }, 70 * spell.length + 2500));

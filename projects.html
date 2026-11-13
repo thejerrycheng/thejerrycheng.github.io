@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="night">
+<html lang="en" data-theme="day">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,13 +12,13 @@
   <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
   <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
   <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
-  <meta name="theme-color" content="#151820">
+  <meta name="theme-color" content="#F5F5F7">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Bangers&family=Jost:ital,wght@0,300..800;1,300..800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/gotham.css">
   <script>document.documentElement.classList.add('js');</script>
-  <script>(function(){try{var t=localStorage.getItem("theme");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <script>(function(){try{var t=localStorage.getItem("theme-v2");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 
 </head>
 <body>
@@ -68,25 +68,25 @@
   <div class="pub-list">
 <!-- catalog:proj-list -->
     <div class="pub card card-hover" id="m2">
-      <div class="pub-thumb"><img src="assets/projects/m2/figures/iros_01_task.png" alt="Two mobile manipulators carrying a shared object in MuJoCo" loading="lazy" decoding="async" class="fit-contain"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/projects/m2/figures/iros_01_task.png" data-src="assets/projects/m2/media/aea3157089c0.mp4"></video></div></div>
+      <div class="pub-thumb"><img src="assets/projects/m2/figures/iros_01_task.png" alt="Two mobile manipulators carrying a shared object in MuJoCo" loading="lazy" decoding="async" class="fit-contain"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/projects/m2/figures/iros_01_task.png" data-src="assets/videos/card_m2.mp4"></video></div></div>
       <div class="pub-meta">
-        <span class="papertitle">Read the Room: Cooperative Multi-Robot Transport</span><span class="proj-year">2026</span>
-        <p class="proj-body">Grasp-aware planning and shared learned local control for cooperative transport. Explore the paper, seven-stage task visualization, 35/40 frozen missions across ten scenes, and interactive trajectories. Separate development experiments study recovery and local coordination.</p>
+        <span class="papertitle">M2</span><span class="proj-year">2026</span>
+        <p class="proj-body">Coming soon.</p>
         <div class="links"><a href="m2.html">Website</a></div>
       </div>
     </div>
 
     <div class="pub card card-hover" id="wuji">
-      <div class="pub-thumb"><img src="assets/projects/wuji/card.jpg" alt="A Franka Panda arm with a dexterous hand above a table set with food and blocks" loading="lazy" decoding="async" class="fit-cover"></div>
+      <div class="pub-thumb"><img src="assets/projects/wuji/card.jpg" alt="A Franka Panda arm with a dexterous hand above a table set with food and blocks" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/projects/wuji/card.jpg" data-src="assets/videos/card_chopchop.mp4"></video></div></div>
       <div class="pub-meta">
-        <span class="papertitle">WUJI Chopsticks: Dexterous Tool Use (Coming Soon)</span><span class="proj-year">2026</span>
-        <p class="proj-body">Coming soon. An ongoing project on dexterous tool use with a multi-fingered hand; the page opens with a passcode.</p>
+        <span class="papertitle">ChopChop</span><span class="proj-year">2026</span>
+        <p class="proj-body">Coming soon.</p>
         <div class="links"><a href="wuji.html">Coming soon</a></div>
       </div>
     </div>
 
     <div class="pub card card-hover" id="rehearse">
-      <div class="pub-thumb"><img src="assets/projects/rehearse/capture-1207.webp" alt="A takeaway coffee cup on a white table, the first Rehearse reconstruction example" loading="lazy" decoding="async" class="fit-cover"></div>
+      <div class="pub-thumb"><img src="assets/projects/rehearse/card-kitchen-replay.jpg" alt="A reconstructed kitchen with the full egocentric camera path drawn through it, coloured by time" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/projects/rehearse/card-kitchen-replay.jpg" data-src="assets/videos/card_rehearse.mp4"></video></div></div>
       <div class="pub-meta">
         <span class="papertitle">Rehearse: Real Scenes for Robot Learning</span><span class="proj-year">2026</span>
         <p class="proj-body">An early research project turning egocentric observations into interactive 3D scenes. Start with imitation learning, fine-tune contact-rich manipulation in simulation, and evaluate transfer back to the robot. Explore the first three-photo scene, estimated camera poses, movable cup and reconstruction limitations.</p>
@@ -99,7 +99,7 @@
       <div class="pub-meta">
         <span class="papertitle">MABEL: An Open Mobile Anthropomorphic Bimanual Robot</span><span class="proj-year">2026</span>
         <p class="proj-body">Open-source (MIT) whole-body robot: a 3-module holonomic swerve base, a 0.635&nbsp;m lift with actuated torso, two 7-DOF arms, two 17-DOF ORCA hands, and a 3-DOF active head. 56 DOF from $8,722, with no machine shop. Teleoperated from Apple Vision Pro, iPhone, browser, or gamepad; full MuJoCo digital twin; demonstration-to-policy pipeline (ACT, Diffusion Policy, π0) deployed onboard. System paper under review.</p>
-        <div class="links"><a href="https://robotmabel.github.io/website/" target="_blank" rel="noopener">Website</a><a href="https://github.com/robotmabel/MABEL" target="_blank" rel="noopener">Code</a><a href="https://robotmabel.github.io/website/docs/" target="_blank" rel="noopener">Build guide</a></div>
+        <div class="links"><a href="https://robotmabel.github.io/website/" target="_blank" rel="noopener">Website</a><a href="https://arxiv.org/abs/2611.04083" target="_blank" rel="noopener">Paper</a><a href="https://github.com/robotmabel/open_mabel" target="_blank" rel="noopener">Code</a><a href="https://robotmabel.github.io/website/docs/" target="_blank" rel="noopener">Build guide</a></div>
       </div>
     </div>
 
