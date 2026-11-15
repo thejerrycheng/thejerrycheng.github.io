@@ -302,23 +302,23 @@ html[data-theme="night"] :is(.btn-primary, .btn-pop):hover { color: #000; }
 .night > .wrap, .night .cover-inner { position: relative; z-index: 2; }
 
 /* ---- Home cover ---- */
-.cover { margin-top: calc(-1 * (var(--nav-h) + 24px)); padding: calc(var(--nav-h) + clamp(44px, 7vw, 84px)) 0 clamp(48px, 7vw, 84px); }
+.cover { margin-top: calc(-1 * (var(--nav-h) + 24px)); padding: calc(var(--nav-h) + clamp(36px, 5vw, 60px)) 0 clamp(40px, 5vw, 60px); }
 .cover-inner { max-width: var(--maxw); margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: 1.45fr 1fr; gap: 48px; align-items: center; }
 .cover .kicker { color: var(--ash); margin-bottom: 14px; text-shadow: none; -webkit-text-stroke: 0; }
 .cover-name {
-  font-family: var(--font-display); font-weight: 700; font-size: clamp(46px, 6.6vw, 84px);
-  line-height: 1.02; letter-spacing: -0.035em; color: var(--ink);
+  font-family: var(--font-display); font-weight: 700; font-size: clamp(36px, 4.4vw, 56px);
+  line-height: 1.05; letter-spacing: -0.03em; color: var(--ink);
   text-shadow: none;
 }
 .cover-sc {
   display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; margin-top: 14px;
   font-family: var(--sans-sc); font-weight: 500;
-  font-size: clamp(22px, 2.6vw, 30px); line-height: 1.1; letter-spacing: .14em; color: var(--ash);
+  font-size: clamp(19px, 2vw, 24px); line-height: 1.1; letter-spacing: .14em; color: var(--ash);
   text-shadow: none;
 }
 .cover-tag {
-  font-family: var(--font-display); font-weight: 600; font-size: clamp(21px, 2.5vw, 28px); line-height: 1.14; letter-spacing: -0.02em;
-  color: var(--ink); margin-top: 20px; max-width: 22ch;
+  font-family: var(--font-display); font-weight: 600; font-size: clamp(19px, 2vw, 23px); line-height: 1.2; letter-spacing: -0.018em;
+  color: var(--ink-soft); margin-top: 16px; max-width: 22ch;
 }
 /* Pronunciation control */
 .say-wrap { position: relative; display: flex; flex-direction: row; align-items: center; gap: 8px; font-size: 14px; line-height: 1; letter-spacing: 0; text-shadow: none; font-family: var(--font-sans); }
@@ -353,7 +353,7 @@ html[data-theme="night"] :is(.btn-primary, .btn-pop):hover { color: #000; }
 .cover-lead { font-size: 17px; line-height: 1.5; color: var(--ash); max-width: 48ch; margin-top: 14px; }
 .cover .btn { background: var(--bone); color: var(--ink); border: 0; box-shadow: none; }
 .cover .btn:hover { background: var(--paper-2); color: var(--ink); box-shadow: none; }
-.cover-photo { justify-self: end; width: min(100%, 340px); }
+.cover-photo { justify-self: end; width: min(100%, 300px); }
 .photo-panel {
   position: relative; margin: 0; background: transparent; padding: 0; border: 0; border-radius: 28px; overflow: hidden;
   box-shadow: var(--sh-night); transform: none;
@@ -382,7 +382,7 @@ html.js .cover-photo { animation: rise .9s var(--ease-out) .18s both; }
 /* =============================================================================
    HOME — about panel
    ============================================================================= */
-.about-panel { background: transparent; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; max-width: 780px; }
+.about-panel { background: transparent; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; }
 .about-panel .lead { font-size: 19px; line-height: 1.5; letter-spacing: -0.014em; color: var(--ink); }
 .about-panel .lead + .lead { margin-top: 14px; }
 .about-panel .lead a, .vision a, .lead a { color: var(--link); font-weight: 500; text-decoration: none; }
@@ -714,7 +714,7 @@ a .papertitle:hover { color: var(--link); }
   .slide-sub { font-size: 13px; }
   .slide-body { padding: 15px 17px 17px; }
   .strip, .news-scroll { gap: 12px; }
-  .cover-name { font-size: clamp(40px, 12.5vw, 60px); }
+  .cover-name { font-size: clamp(34px, 9.5vw, 44px); }
   .cover .kicker, .page-cover .kicker { font-size: 14px; }
 }
 

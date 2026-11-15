@@ -40,7 +40,8 @@
      "href": "https://github.com/robotmabel/open_mabel"
     }
    ],
-   "desc": "An open-source anthropomorphic mobile bimanual robot with 56 degrees of freedom and a US$8.1k parts cost: two 7-DOF arms with 17-DOF hands, a pitching torso, a lift, a 3-DOF neck and a holonomic base. Back-drivable arms and torso support compliant interaction, with fingertip reach from floor level to 2.23&nbsp;m. Apple Vision Pro head and hand tracking gives whole-body teleoperation without handheld controllers, at 137&nbsp;ms mean glass-to-glass stereo video latency, and the same command interface carries an imitation-learning pipeline from teleoperated data to deployed policy."
+   "desc": "An open-source anthropomorphic mobile bimanual robot with 56 degrees of freedom and a US$8.1k parts cost: two 7-DOF arms with 17-DOF hands, a pitching torso, a lift, a 3-DOF neck and a holonomic base. Back-drivable arms and torso support compliant interaction, with fingertip reach from floor level to 2.23&nbsp;m. Apple Vision Pro head and hand tracking gives whole-body teleoperation without handheld controllers, at 137&nbsp;ms mean glass-to-glass stereo video latency, and the same command interface carries an imitation-learning pipeline from teleoperated data to deployed policy.",
+   "thumb": "assets/images/cards/mabel-paper.jpg"
   },
   {
    "id": "locomotion-survey",
@@ -85,7 +86,8 @@
     }
    ],
    "desc": "My reading companion turns the survey into a searchable library: all 280 references categorised by the method family the paper cites them under, by subject and by year, each linked to the paper itself, with the equations behind the classical methods and a vertical timeline of the field's milestones.",
-   "venue_short": "Science Robotics"
+   "venue_short": "Science Robotics",
+   "thumb": "assets/images/cards/locomotion-survey.jpg"
   },
   {
    "id": "iris-crv",
@@ -122,7 +124,8 @@
      "href": "https://github.com/thejerrycheng/IRIS"
     }
    ],
-   "desc": "IRIS is a low-cost 3D-printed 6-DOF cinema robot that uses goal-conditioned transformer-based imitation learning to autonomously generate smooth, object-aware camera motion."
+   "desc": "IRIS is a low-cost 3D-printed 6-DOF cinema robot that uses goal-conditioned transformer-based imitation learning to autonomously generate smooth, object-aware camera motion.",
+   "thumb": "assets/images/cards/iris-crv.jpg"
   },
   {
    "id": "calibration-ijrr",
@@ -157,7 +160,8 @@
    ],
    "desc": "Generalized robot-world and hand-eye calibration (many sensors, many targets, unknown monocular scale) solved to certified global optimality by a semidefinite relaxation over the rotations. Re-implemented in Python in 2026: the paper's simulation studies, and the real 8-camera / 16-tag rig data solved with a duality gap of 1e-8, recovering the paper's 2.5 % tag-scale finding.",
    "video": "assets/videos/rwhe_thumb.mp4",
-   "short": "Certifiably correct hand-eye calibration"
+   "short": "Certifiably correct hand-eye calibration",
+   "thumb": "assets/images/cards/calibration-ijrr.jpg"
   },
   {
    "id": "iris-thesis",
@@ -200,7 +204,8 @@
     }
    ],
    "desc": "Low-cost, fully 3D-printed 6-DoF cinema robot arm (IRIS) with FOC actuators, differential wrist, and a vision-conditioned imitation-learning stack in ROS.",
-   "venue_short": "M.Eng. Thesis"
+   "venue_short": "M.Eng. Thesis",
+   "thumb": "assets/images/cards/iris-thesis.jpg"
   },
   {
    "id": "vibraforge",
@@ -236,7 +241,8 @@
      "href": "https://www.youtube.com/watch?v=uVssIDGKS-U&list=PL5hrJ0xlpQr9NXqQIKAuI2mUovgFscNgk"
     }
    ],
-   "desc": "An open-source toolkit for spatialized vibrotactile feedback that scales to <b>128 actuators</b> by putting a microcontroller inside every one and daisy-chaining them &mdash; a chain of sixteen is one cable, not sixteen. Measured at 16&nbsp;ms to skin and one command every 5&nbsp;ms. The page carries a pattern editor: paint a spatiotemporal pattern, play it on a sleeve, and find out whether the link can carry it."
+   "desc": "An open-source toolkit for spatialized vibrotactile feedback that scales to <b>128 actuators</b> by putting a microcontroller inside every one and daisy-chaining them &mdash; a chain of sixteen is one cable, not sixteen. Measured at 16&nbsp;ms to skin and one command every 5&nbsp;ms. The page carries a pattern editor: paint a spatiotemporal pattern, play it on a sleeve, and find out whether the link can carry it.",
+   "thumb": "assets/images/cards/vibraforge.jpg"
   },
   {
    "id": "aerohaptix",
@@ -276,7 +282,8 @@
      "href": "https://ieeexplore.ieee.org/document/10916921"
     }
    ],
-   "desc": "A wearable suit with 32 vibration units renders obstacle directions on the upper body while a drone is teleoperated; a multi-obstacle control barrier function (MultiCBF) decides which unit vibrates and how hard. Fewer collisions and less input disagreement than no feedback in a 12-participant AirSim study."
+   "desc": "A wearable suit with 32 vibration units renders obstacle directions on the upper body while a drone is teleoperated; a multi-obstacle control barrier function (MultiCBF) decides which unit vibrates and how hard. Fewer collisions and less input disagreement than no feedback in a 12-participant AirSim study.",
+   "thumb": "assets/images/cards/aerohaptix.jpg"
   },
   {
    "id": "bipednav",
@@ -314,7 +321,8 @@
      "href": "https://www.researchgate.net/publication/382269581_Monocular_depth_estimation_of_human-robot_walking_environments_using_deep_learning"
     }
    ],
-   "desc": "Metric3D v2 fine-tuned on 16,780 RGB-D stair images recovers stair rise and run from a single image (1.7 cm / 2.5 cm mean error on the archived scenes). BipedNav feeds that geometry to a five-link biped walking by virtual holonomic constraints; the page has an in-browser demo that runs the pipeline on your own photo."
+   "desc": "Metric3D v2 fine-tuned on 16,780 RGB-D stair images recovers stair rise and run from a single image (1.7 cm / 2.5 cm mean error on the archived scenes). BipedNav feeds that geometry to a five-link biped walking by virtual holonomic constraints; the page has an in-browser demo that runs the pipeline on your own photo.",
+   "thumb": "assets/images/cards/bipednav.jpg"
   },
   {
    "id": "radar-radar",
@@ -353,7 +361,8 @@
    ],
    "desc": "Two Doppler radars on one vehicle calibrate each other from their own ego-velocities: the yaw and the translation axis are identifiable without targets or overlapping views. Re-implemented in Python and re-run in 2026: simulation sweep inside the paper's 2°/3° envelope, and the Endeavour bus pairs reproduced to 0.01 rad, with the weakly identifiable short-baseline pair called out.",
    "video": "assets/videos/radar2d_thumb.mp4",
-   "short": "Radar-to-radar calibration from ego-velocity"
+   "short": "Radar-to-radar calibration from ego-velocity",
+   "thumb": "assets/images/cards/radar-radar.jpg"
   },
   {
    "id": "radar-camera",
@@ -388,7 +397,8 @@
    ],
    "desc": "Targetless spatiotemporal calibration of a 3D radar and a monocular camera: radar ego-velocity and scaled camera poses fused on a continuous-time B-spline trajectory to estimate the extrinsics, the scale and the time offset. Re-implemented in Python in 2026 with the paper's simulation studies, an identifiability check, and the radar front end run on the original handheld-rig recordings.",
    "video": "assets/videos/radarcam_thumb.mp4",
-   "short": "Radar-camera spatiotemporal calibration"
+   "short": "Radar-camera spatiotemporal calibration",
+   "thumb": "assets/images/cards/radar-camera.jpg"
   },
   {
    "id": "wsadm",
@@ -410,7 +420,8 @@
      "href": "https://ieeexplore.ieee.org/document/9745100"
     }
    ],
-   "desc": "Proposes a weakly supervised attention-guided data augmentation strategy for fine-grained image classification tasks."
+   "desc": "Proposes a weakly supervised attention-guided data augmentation strategy for fine-grained image classification tasks.",
+   "thumb": "assets/images/cards/wsadm.jpg"
   },
   {
    "id": "unicycle",
@@ -447,7 +458,8 @@
    ],
    "desc": "Generative design (Fusion 360) of a 3-D-printed chassis for a self-balancing unicycle robot: seven brackets carved by topology optimisation, a lighter body with a higher centre of mass, and a Simulink comparison of the generative and conventional chassis under the same PID controllers. Re-run on the website with an interactive twin.",
    "venue_short": "SPIE ACAIB",
-   "video": "assets/videos/unicycle_prototype.mp4"
+   "video": "assets/videos/unicycle_prototype.mp4",
+   "thumb": "assets/images/cards/unicycle.jpg"
   }
  ],
  "projects": [
@@ -472,7 +484,8 @@
      "internal": true
     }
    ],
-   "desc": "Coming soon."
+   "desc": "Coming soon.",
+   "thumb": "assets/images/cards/m2.jpg"
   },
   {
    "id": "wuji",
@@ -495,7 +508,8 @@
     }
    ],
    "desc": "Coming soon.",
-   "video": "assets/videos/card_chopchop.mp4"
+   "video": "assets/videos/card_chopchop.mp4",
+   "thumb": "assets/images/cards/wuji.jpg"
   },
   {
    "id": "rehearse",
@@ -518,7 +532,8 @@
     }
    ],
    "desc": "An early research project turning egocentric observations into interactive 3D scenes. Start with imitation learning, fine-tune contact-rich manipulation in simulation, and evaluate transfer back to the robot. Explore the first three-photo scene, estimated camera poses, movable cup and reconstruction limitations.",
-   "video": "assets/videos/card_rehearse.mp4"
+   "video": "assets/videos/card_rehearse.mp4",
+   "thumb": "assets/images/cards/rehearse.jpg"
   },
   {
    "id": "mabel",
@@ -552,7 +567,8 @@
      "href": "https://robotmabel.github.io/website/docs/"
     }
    ],
-   "desc": "Open-source (MIT) whole-body robot: a 3-module holonomic swerve base, a 0.635&nbsp;m lift with actuated torso, two 7-DOF arms, two 17-DOF ORCA hands, and a 3-DOF active head. 56 DOF from $8,722, with no machine shop. Teleoperated from Apple Vision Pro, iPhone, browser, or gamepad; full MuJoCo digital twin; demonstration-to-policy pipeline (ACT, Diffusion Policy, π0) deployed onboard. System paper under review."
+   "desc": "Open-source (MIT) whole-body robot: a 3-module holonomic swerve base, a 0.635&nbsp;m lift with actuated torso, two 7-DOF arms, two 17-DOF ORCA hands, and a 3-DOF active head. 56 DOF from $8,722, with no machine shop. Teleoperated from Apple Vision Pro, iPhone, browser, or gamepad; full MuJoCo digital twin; demonstration-to-policy pipeline (ACT, Diffusion Policy, π0) deployed onboard. System paper under review.",
+   "thumb": "assets/images/cards/mabel.jpg"
   },
   {
    "id": "geodex",
@@ -583,7 +599,8 @@
      "href": "https://github.com/thejerrycheng/GeoDEX"
     }
    ],
-   "desc": "Apple Vision Pro demonstrations retargeted onto a 23-DoF xArm + ORCA hand by a bifurcated SE(3) optimisation, then cloned by a chunked transformer with a grasp-weighted loss. State Bottlenecking — a mandatory home pose between sub-tasks — takes two-object clearing from 22&nbsp;% to 88&nbsp;%. The page lets you switch each term of the retargeting cost off and watch the pinch geometry come apart."
+   "desc": "Apple Vision Pro demonstrations retargeted onto a 23-DoF xArm + ORCA hand by a bifurcated SE(3) optimisation, then cloned by a chunked transformer with a grasp-weighted loss. State Bottlenecking — a mandatory home pose between sub-tasks — takes two-object clearing from 22&nbsp;% to 88&nbsp;%. The page lets you switch each term of the retargeting cost off and watch the pinch geometry come apart.",
+   "thumb": "assets/images/cards/geodex.jpg"
   },
   {
    "id": "tintin",
@@ -622,7 +639,8 @@
     }
    ],
    "desc": "6-DoF variable-mass lunar lander in MuJoCo with a 2-DoF gimbaled engine. A SAC policy learns guidance and control as one map; a cascaded PD baseline, re-run for 500 descents, lands 70.2&nbsp;% of the time and comes apart above 50&nbsp;m/s entry speed. The page lets you fly the lander and re-run the Monte&nbsp;Carlo in your browser.",
-   "short": "TINTIN: fly the lunar lander yourself"
+   "short": "TINTIN: fly the lunar lander yourself",
+   "thumb": "assets/images/cards/tintin.jpg"
   },
   {
    "id": "mono-depth",
@@ -654,7 +672,8 @@
     }
    ],
    "desc": "Monocular depth pipeline for human-robot walking environments: Metric3D v2 fine-tuned on 16,780 RGB-D stair images, metric reprojection to 3D point clouds, and plane extraction for stair rise and run. Re-run in 2026 on the archived scenes: 1.7 cm rise / 2.5 cm run mean error against a tape measure.",
-   "video": "assets/videos/bipednav_perception.mp4"
+   "video": "assets/videos/bipednav_perception.mp4",
+   "thumb": "assets/images/cards/mono-depth.jpg"
   },
   {
    "id": "clear-net",
@@ -689,7 +708,8 @@
      "href": "https://github.com/thejerrycheng/RL_project"
     }
    ],
-   "desc": "Tabular Q-learning, DQN, PPO and SAC on a cart-pole whose every observation is corrupted by Gaussian noise. A five-seed re-run found the released bin limits collapse cart position into two of eight bins and double the drift, that survival peaks at &sigma;&nbsp;=&nbsp;0.1 rather than at zero noise, and that a coarse grid beats a fine one fifteen-fold at a fixed budget. The whole tabular experiment runs live in the page."
+   "desc": "Tabular Q-learning, DQN, PPO and SAC on a cart-pole whose every observation is corrupted by Gaussian noise. A five-seed re-run found the released bin limits collapse cart position into two of eight bins and double the drift, that survival peaks at &sigma;&nbsp;=&nbsp;0.1 rather than at zero noise, and that a coarse grid beats a fine one fifteen-fold at a fixed budget. The whole tabular experiment runs live in the page.",
+   "thumb": "assets/images/cards/clear-net.jpg"
   },
   {
    "id": "biped-vhc",
@@ -724,7 +744,8 @@
     }
    ],
    "desc": "Monocular stair/obstacle geometry from one image feeds a five-link biped with knees walking by virtual holonomic constraints (hybrid limit cycles, verified against their return maps). From one view of an obstacle the planner schedules the approach and two step-over gaits chained through the impact map. Includes the re-test of the two-link ECE1658 design and an in-browser demo.",
-   "short": "BipedNav: see the stairs once, then walk"
+   "short": "BipedNav: see the stairs once, then walk",
+   "thumb": "assets/images/cards/biped-vhc.jpg"
   },
   {
    "id": "aero-localization",
@@ -755,7 +776,8 @@
     }
    ],
    "desc": "Maximum-a-posteriori estimation over every pose at once, on SE(3), with a stereo camera and an IMU — and the sliding window that approximates it. A four-seed re-run found batch is both more accurate <em>and</em> cheaper than a wide window over a whole trajectory, and that a window looks over-confident only when its noise model is wrong. Drag the window size in the page and watch the estimate move.",
-   "short": "Where am I? Batch vs sliding window"
+   "short": "Where am I? Batch vs sliding window",
+   "thumb": "assets/images/cards/aero-localization.jpg"
   },
   {
    "id": "mobile-robot",
@@ -786,7 +808,8 @@
     }
    ],
    "desc": "A 170&nbsp;mm robot finds itself in an 8&nbsp;&times;&nbsp;4 maze using four ultrasonics and nothing else: a tile is four bits of wall, and because the bits run around the tile, turning 90&deg; is a bit rotation. Localization becomes a set intersection over 24 tiles &times; 4 headings. Swept exhaustively, no single reading ever localizes it &mdash; but with the gyro trusted, <em>every</em> start resolves in one tile-move. Drive it on the page and watch the candidates disappear.",
-   "short": "Four ultrasonics, no compass, one bit rotation"
+   "short": "Four ultrasonics, no compass, one bit rotation",
+   "thumb": "assets/images/cards/mobile-robot.jpg"
   },
   {
    "id": "led-cube",
@@ -826,7 +849,8 @@
     }
    ],
    "desc": "512 hand-soldered LEDs driven by nine daisy-chained shift registers over one SPI bus. Only one of the eight layers is ever lit; the cube is an illusion held together by refreshing faster than the eye can follow. Twelve animations and a shallow-water liquid you tip by dragging &mdash; volume held to 10<sup>&minus;13</sup>, surface level to 0.008&nbsp;cells per column &mdash; plus 3-D Snake with wrap-around walls and Pong against a machine that solves for where the ball will cross its own face. Drag the refresh rate down and watch persistence of vision give out.",
-   "short": "512 lights, nine chips, one illusion"
+   "short": "512 lights, nine chips, one illusion",
+   "thumb": "assets/images/cards/led-cube.jpg"
   },
   {
    "id": "turtlebot",
@@ -857,7 +881,8 @@
     }
    ],
    "desc": "A TurtleBot 2 mapping an unknown 6&times;6&nbsp;m room with a Kinect, three bumpers and GMapping, switching between reactive, behaviour and deliberate control. A six-room re-run found the four strategies are separated by less than their own variance, and that the hybrid controller is simultaneously the best and the worst of them. Watch the occupancy grid fill in live, and race all four.",
-   "short": "Where am I? Exploring an unknown room"
+   "short": "Where am I? Exploring an unknown room",
+   "thumb": "assets/images/cards/turtlebot.jpg"
   },
   {
    "id": "formula",
@@ -892,7 +917,8 @@
     }
    ],
    "desc": "Custom 4:1 planetary reduction for the UofT Formula team's first electric car, quadrupling torque at an estimated 91&nbsp;% efficiency. Re-checking the design against its own numbers: the gearbox cuts the motor-to-differential span from 273&nbsp;mm to 96&nbsp;mm, two of the four shortlisted tooth sets cannot take four equally spaced planets, and a rad/s-labelled-Hz slip put the system's natural frequency 2&pi; too high. Spin the gear set on the page.",
-   "short": "Four times the torque, 176 mm of wheelbase back"
+   "short": "Four times the torque, 176 mm of wheelbase back",
+   "thumb": "assets/images/cards/formula.jpg"
   }
  ]
 }

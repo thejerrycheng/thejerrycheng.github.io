@@ -27,7 +27,8 @@ def links_html(item):
     return '<div class="links">' + "".join(link_html(l) for l in item["links"]) + "</div>"
 
 def thumb_html(item):
-    imgs, alts = item["images"], item.get("alts", [])
+    imgs, alts = list(item["images"]), item.get("alts", [])
+    if item.get("thumb"): imgs[0] = item["thumb"]   # light copy of the same figure; the popup keeps the original
     fit = f' class="fit-{item.get("fit", "cover")}"'
     clip = (f'<div class="hover-video"><video muted loop playsinline preload="none" poster="{attr(imgs[0])}" data-src="{attr(item["video"])}"></video></div>'
             if item.get("video") else "")
@@ -66,10 +67,10 @@ def strip_card(kind, p):
     sub = p["authors"] if kind == "publications" else p["desc"]
     fit = f' class="fit-{p.get("fit", "cover")}"'
     alt = (p.get("alts") or [""])[0]
-    clip = (f'<span class="hover-video"><video muted loop playsinline preload="none" poster="{attr(p["images"][0])}" data-src="{attr(p["video"])}"></video></span>'
+    clip = (f'<span class="hover-video"><video muted loop playsinline preload="none" poster="{attr(p.get("thumb", p["images"][0]))}" data-src="{attr(p["video"])}"></video></span>'
             if p.get("video") else "")
     return f'''      <a class="slide" href="{page}#{p["id"]}" data-kind="{kind}" data-id="{p["id"]}">
-        <span class="slide-media"><img src="{attr(p["images"][0])}" alt="{attr(alt)}" loading="lazy" decoding="async"{fit}>{clip}</span>
+        <span class="slide-media"><img src="{attr(p.get("thumb", p["images"][0]))}" alt="{attr(alt)}" decoding="async"{fit}>{clip}</span>
         <span class="slide-tag">{tag}</span>
         <span class="slide-body">
           <span class="slide-title">{p.get("short", p["title"])}</span>
