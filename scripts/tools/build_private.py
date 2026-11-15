@@ -104,6 +104,11 @@ for dirpath, _, files in os.walk(p("assets", "private", "wuji")):      # the pag
         if not name.endswith(".enc"):
             f = os.path.join(dirpath, name); enc(f, f + ".enc")
 
+# ---- 4. the Rehearse pages (coming soon; plaintext kept local as <slug>-private.html) ----
+for slug in ("rehearse", "rehearse-wbc", "rehearse-library"):
+    if os.path.exists(p(slug + "-private.html")):
+        enc(p(slug + "-private.html"), p("assets", "private", slug + ".enc"))
+
 json.dump(MANIFEST, open(MANIFEST_PATH, "w"), indent=1)
 
 print("\ndone — now regenerate the XMind/Markdown downloads if the ideas moved:")
