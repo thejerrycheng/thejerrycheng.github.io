@@ -40,13 +40,13 @@ def thumb_html(item):
 
 def pub_row(p):
     venue = f'<em>{p["venue"]}</em>, {p["year"]}' + (f' &middot; {p["note"]}' if p.get("note") else "")
+    venue_line = "" if p.get("hide_venue") else f'        <span class="venue">{venue}</span>\n'
     return f'''    <div class="pub card card-hover" id="{p["id"]}">
       {thumb_html(p)}
       <div class="pub-meta">
         <a href="{attr(p["href"])}" target="_blank" rel="noopener"><span class="papertitle">{p["title"]}</span></a><span class="proj-year">{p["year"]}</span>
         <span class="authors">{p["authors"]}</span>
-        <span class="venue">{venue}</span>
-        {links_html(p)}
+{venue_line}        {links_html(p)}
         <p class="pub-desc">{p["desc"]}</p>
       </div>
     </div>'''

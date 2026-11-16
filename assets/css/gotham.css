@@ -942,3 +942,105 @@ html:not([data-theme="night"]) .theme-btn .if-day { display: inline-flex; }
 .tl-logos .tl-item.rv.rv-in .tl-logo { transform: none; opacity: 1; transition: transform .6s cubic-bezier(0.34, 1.45, 0.64, 1) calc(var(--rv-d, 0ms) + 80ms), opacity .4s ease calc(var(--rv-d, 0ms) + 80ms); }
 @media print { .rv { opacity: 1 !important; transform: none !important; } }
 @media (prefers-reduced-motion: reduce) { .tl-logos .tl-item.now .tl-logo::after { animation: none; } }
+
+/* =============================================================================
+   PHONE — compact. The home hero puts the portrait beside the name, the type
+   steps down, and sections close up, so the bio and the start of Research
+   Vision are on the first screen of an ordinary phone.
+   ============================================================================= */
+@media (max-width: 620px) {
+  .wrap, .section, .cover-inner { padding-left: 16px; padding-right: 16px; }
+  .cover { padding: calc(var(--nav-h) + 16px) 0 16px; }
+  .cover-inner { grid-template-columns: minmax(0, 1fr) auto; gap: 0 14px; align-items: center; }
+  .cover-copy { display: contents; }
+  .cover-copy > * { grid-column: 1; min-width: 0; }
+  .cover-copy > .kicker { grid-column: 1 / -1; font-size: 12px; margin-bottom: 9px; letter-spacing: 0; }
+  .cover-name { font-size: clamp(21px, 6.3vw, 26px); line-height: 1.1; letter-spacing: -0.025em; white-space: nowrap; }
+  .cover-sc { font-size: 16px; margin-top: 6px; gap: 6px 10px; letter-spacing: .12em; }
+  .say-name { width: 24px; height: 24px; }
+  .say-cap { font-size: 11.5px; }
+  .say-bubble { font-size: 14px; padding: 7px 11px 6px; left: 0; right: auto; }
+  .cover-tag { font-size: 15px; margin-top: 7px; max-width: none; letter-spacing: -0.012em; }
+  .cover-photo { grid-column: 2; grid-row: 2 / span 3; justify-self: end; align-self: center; width: clamp(84px, 24vw, 100px); margin: 0; }
+  .photo-panel { border-radius: 20px; box-shadow: 0 8px 22px rgba(0,0,0,0.14); }
+  .cover-copy > .btn-row { grid-column: 1 / -1; margin-top: 13px; gap: 6px; flex-wrap: nowrap; }
+  .btn-row-social .btn { flex: 1 1 auto; padding: 7px 8px; font-size: 12.5px; gap: 5px; }
+  .btn-row-social .btn svg { width: 13px; height: 13px; }
+
+  .section { padding-top: 30px; }
+  .section:last-of-type { padding-bottom: 36px; }
+  #story.section { padding-top: 18px; }
+  .about-panel .lead { font-size: 15px; line-height: 1.46; letter-spacing: -0.008em; }
+  .about-panel .lead + .lead { margin-top: 9px; }
+  .subhead { font-size: 17px; margin: 18px 0 8px; }
+  .vision { font-size: 14.5px; line-height: 1.5; margin-bottom: 10px; }
+  .quote { font-size: 13.5px; line-height: 1.45; margin: 10px 0; padding-left: 12px; }
+  .quote + .quote, .vision + .quote { margin-top: 10px; }
+  .last-updated { margin-top: 12px; font-size: 11px; }
+
+  .section-title { font-size: 22px; margin-bottom: 14px; }
+  .section-head { margin-bottom: 14px; gap: 4px 14px; }
+  .section-head .section-title { flex: 1 1 auto; }
+  .see-all { font-size: 13.5px; }
+  .strip, .news-scroll { padding-left: 16px; padding-right: 16px; margin-left: -16px; margin-right: -16px; scroll-padding-left: 16px; gap: 10px; }
+  .slide, .news-card { flex-basis: min(250px, 68vw); height: 352px; }
+  .slide-body { padding: 11px 13px 13px; gap: 4px; }
+  .slide-title { font-size: 14.5px; }
+  .slide-sub { font-size: 12.5px; }
+  .slide-cta { font-size: 13px; padding-top: 5px; }
+  .slide-tag { font-size: 10.5px; top: 8px; left: 8px; padding: 3px 8px; }
+  .news-text { padding: 11px 13px 13px; }
+  .news-text p { font-size: 13px; }
+  .connect-card { padding: 26px 18px; }
+  .connect-card p { font-size: 15px; }
+
+  .page-cover { padding: calc(var(--nav-h) + 22px) 0 20px; }
+  .page-cover h1 { font-size: 30px; }
+  .page-cover p { font-size: 15px; margin-top: 8px; }
+  .card-pad { padding: 16px 14px; }
+  .pub { padding: 12px; gap: 12px; }
+  .papertitle { font-size: 16px; }
+  .site-footer { margin-top: 44px; padding: 22px 0 26px; }
+  .brand { font-size: 16px; }
+  .brand img { width: 22px; height: 22px; }
+}
+
+/* =============================================================================
+   HOME STRIPS — publication, project and news cards are one size (the news
+   card's): same width, same fixed height, 3:2 picture on top.
+   ============================================================================= */
+.slide, .news-card { height: 404px; }
+.slide-media, .news-media { flex: none; }
+.news-text { overflow: hidden; }
+.news-text p { -webkit-line-clamp: 7; }
+@media (max-width: 620px) { .slide, .news-card { height: 352px; } }
+
+/* =============================================================================
+   PHONE MENU — a small popover under the Menu button, top right. It scales
+   out of the button's corner and back into it; the page dims slightly behind.
+   ============================================================================= */
+.mobile-menu {
+  top: calc(var(--nav-h) + 6px); left: auto; right: 10px; width: 184px; padding: 6px;
+  border-radius: 16px; border: 1px solid var(--line-soft);
+  background: var(--glass); -webkit-backdrop-filter: saturate(180%) blur(28px); backdrop-filter: saturate(180%) blur(28px);
+  box-shadow: 0 18px 44px rgba(0,0,0,0.20), 0 2px 8px rgba(0,0,0,0.08);
+  transform-origin: calc(100% - 28px) -8px;
+  animation: menuIn .34s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+.mobile-menu.closing { animation: menuOut .2s cubic-bezier(0.4, 0, 1, 1) both; pointer-events: none; }
+.mobile-menu a { padding: 9px 12px; border-radius: 10px; font-size: 15px; font-weight: 500; letter-spacing: -0.01em; animation: menuItem .36s cubic-bezier(0.32, 0.72, 0, 1) both; }
+.mobile-menu a:nth-child(1) { animation-delay: .03s; } .mobile-menu a:nth-child(2) { animation-delay: .06s; }
+.mobile-menu a:nth-child(3) { animation-delay: .09s; } .mobile-menu a:nth-child(4) { animation-delay: .12s; }
+.mobile-menu a:nth-child(5) { animation-delay: .15s; } .mobile-menu a:nth-child(n+6) { animation-delay: .18s; }
+.mobile-menu.closing a { animation: none; }
+.mobile-menu a:active { background: var(--wash); }
+.mobile-menu hr { margin: 4px 10px; }
+@keyframes menuIn  { from { opacity: 0; transform: scale(0.72); } to { opacity: 1; transform: none; } }
+@keyframes menuOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: scale(0.82); } }
+@keyframes menuItem { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.nav-backdrop { background: rgba(0,0,0,0.14); animation: popFade .25s ease both; }
+.nav-backdrop.closing { animation: menuFadeOut .2s ease both; }
+@keyframes menuFadeOut { to { opacity: 0; } }
+.menu-btn { transition: background .15s ease, transform .2s cubic-bezier(0.32, 0.72, 0, 1); }
+.menu-btn:active { transform: scale(0.94); }
+@media (prefers-reduced-motion: reduce) { .mobile-menu, .mobile-menu a, .mobile-menu.closing, .nav-backdrop, .nav-backdrop.closing { animation: none; } }
