@@ -1070,3 +1070,35 @@ html[data-theme="night"] .modal-panel { background: var(--panel); }
 html[data-theme="night"] .cover .btn { background: var(--panel-2); }
 html[data-theme="night"] :is(.tl-logo, .edu-logo, .exp-mark.logo) { box-shadow: 0 0 0 1px rgba(244,238,226,0.14); }
 html[data-theme="night"] .tl-logos .tl-item.now .tl-logo { box-shadow: 0 0 0 2px var(--hi); }
+
+/* =====================================================================
+   CV: each research / work entry opens its full write-up in a popup.
+   ===================================================================== */
+.tl-logos .tl-item[data-xp] { cursor: pointer; position: relative; padding-right: 34px; }
+.tl-logos .tl-item[data-xp]::after {
+  content: ""; position: absolute; right: 14px; top: 50%; width: 7px; height: 7px; margin-top: -4px;
+  border-right: 1.8px solid var(--ash-light); border-top: 1.8px solid var(--ash-light);
+  transform: rotate(45deg); transition: transform .2s var(--ease-out), border-color .2s ease;
+}
+.tl-logos .tl-item[data-xp]:hover::after { transform: translateX(3px) rotate(45deg); border-color: var(--imp); }
+.tl-logos .tl-item[data-xp]:focus-visible { outline: 3px solid color-mix(in srgb, var(--hi) 60%, transparent); outline-offset: 2px; }
+.xp-hint { cursor: default; pointer-events: none; color: var(--ash); }
+.modal-xp .modal-panel { width: min(860px, 100%); }
+.xp-head {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "mark id date";
+  align-items: center; gap: 4px 16px; padding: 22px 64px 18px 24px;
+}
+.xp-head .exp-mark { grid-area: mark; }
+.xp-head .exp-date .second { display: block; }
+.xp-body .exp-panel { padding: 18px 24px 26px; }
+@media (max-width: 620px) {
+  .tl-logos .tl-item[data-xp] { padding-right: 26px; }
+  .tl-logos .tl-item[data-xp]::after { right: 10px; }
+  .xp-head { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "mark id" "date date"; padding: 18px 56px 14px 16px; gap: 8px 12px; }
+  .xp-head .exp-date { white-space: normal; }
+  .xp-head .exp-date .second { display: inline; }
+  .xp-head .exp-date .second::before { content: " · "; }
+  .xp-body .exp-panel { padding: 14px 16px 22px; }
+  .xp-hint { display: none; }
+}
+.xp-hint::after { content: none; }
