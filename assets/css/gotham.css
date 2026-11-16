@@ -86,32 +86,36 @@
 }
 
 html[data-theme="night"] {
-  --bone:      #000000;
-  --paper:     #0E0E10;
-  --paper-2:   #2C2C2E;
-  --panel:     #161617;
-  --panel-2:   #1D1D1F;
-  --ink:       #F5F5F7;
-  --ink-soft:  #D2D2D7;
-  --ash:       #A1A1A6;
-  --ash-light: #86868B;
+  /* the same warm paper system after dark: brown-black ground, lifted warm tiles, cream type */
+  --bone:      #191612;
+  --paper:     #221E18;
+  --paper-2:   #3A342A;
+  --panel:     #26211B;
+  --panel-2:   #2F2A22;
+  --ink:       #F4EEE2;
+  --ink-soft:  #DCD3C3;
+  --night-2:   #221E18;
+  --night-3:   #26211B;
+  --ash:       #B3A998;
+  --ash-light: #8F8676;
   --hi:        #FF9F0A;
   --hi-deep:   #FFB340;
   --pop:       #FF9F0A;
   --pop-deep:  #FFB340;
   --rust:      #FF9F0A;
-  --yellow:    #2C2C2E;
-  --blue:      #0A84FF;
-  --green:     #30D158;
-  --line:      #38383C;
-  --line-soft: rgba(255,255,255,0.12);
-  --wash:      rgba(255,255,255,0.07);
-  --imp:       #FF9F0A;
-  --tint:      rgba(255,159,10,0.18);
-  --glass:     rgba(18,18,20,0.72);
-  --sh-sm:     0 1px 3px rgba(0,0,0,0.5);
-  --sh-lg:     0 14px 38px rgba(0,0,0,0.6);
-  --sh-night:  0 18px 50px rgba(0,0,0,0.6);
+  --yellow:    #3A342A;
+  --gold:      #8F8676;
+  --blue:      #6CB2F5;
+  --green:     #5FCB7C;
+  --line:      #40392E;
+  --line-soft: rgba(244,238,226,0.12);
+  --wash:      rgba(244,238,226,0.07);
+  --imp:       #FFA834;
+  --tint:      rgba(255,159,10,0.16);
+  --glass:     rgba(25,22,18,0.78);
+  --sh-sm:     0 1px 3px rgba(0,0,0,0.45);
+  --sh-lg:     0 14px 38px rgba(0,0,0,0.5);
+  --sh-night:  0 18px 50px rgba(0,0,0,0.5);
   color-scheme: dark;
 }
 
@@ -1060,3 +1064,9 @@ html:not([data-theme="night"]) .theme-btn .if-day { display: inline-flex; }
 .btn-primary, .btn-pop, .btn-primary:hover, .btn-pop:hover, .links a:hover, .say-name:hover, .say-name:focus-visible, .say-name.playing { color: #1D1D1F; }
 html[data-theme="night"] :is(.btn-primary, .btn-pop) { color: #1D1D1F; }
 ::selection { background: var(--hi); color: #1D1D1F; }
+
+.pub[data-go] { cursor: pointer; }
+html[data-theme="night"] .modal-panel { background: var(--panel); }
+html[data-theme="night"] .cover .btn { background: var(--panel-2); }
+html[data-theme="night"] :is(.tl-logo, .edu-logo, .exp-mark.logo) { box-shadow: 0 0 0 1px rgba(244,238,226,0.14); }
+html[data-theme="night"] .tl-logos .tl-item.now .tl-logo { box-shadow: 0 0 0 2px var(--hi); }

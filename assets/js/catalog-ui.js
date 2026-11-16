@@ -192,7 +192,7 @@
     var photo = e.target.closest(".photo-panel a");
     if (photo) { e.preventDefault(); openPhoto(photo); return; }
     var card = e.target.closest(".slide[data-id]");
-    if (card && open(card.dataset.kind, card.dataset.id, card)) e.preventDefault();
+    if (card && !card.hasAttribute("data-direct") && open(card.dataset.kind, card.dataset.id, card)) e.preventDefault();
   });
   modal.querySelectorAll("[data-close]").forEach(function (el) { el.addEventListener("click", close); });
   document.addEventListener("keydown", function (e) {

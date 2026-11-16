@@ -38,13 +38,21 @@ def thumb_html(item):
     out = f'<img src="{attr(imgs[0])}" alt="{attr(alts[0] if alts else "")}" loading="lazy" decoding="async"{fit}>'
     return f'<div class="pub-thumb">{out}{clip}</div>'
 
+def target(p):
+    """Where a publication card leads: its project page if it has one, else the paper itself."""
+    for l in p["links"]:
+        if l["label"] == "Website": return l["href"], bool(l.get("internal"))
+    return p["href"], not p["href"].startswith("http")
+
 def pub_row(p):
+    go, internal = target(p)
+    ext = "" if internal else ' target="_blank" rel="noopener"'
     venue = f'<em>{p["venue"]}</em>, {p["year"]}' + (f' &middot; {p["note"]}' if p.get("note") else "")
     venue_line = "" if p.get("hide_venue") else f'        <span class="venue">{venue}</span>\n'
-    return f'''    <div class="pub card card-hover" id="{p["id"]}">
+    return f'''    <div class="pub card card-hover" id="{p["id"]}" data-go="{attr(go)}"{' data-go-new' if not internal else ''}>
       {thumb_html(p)}
       <div class="pub-meta">
-        <a href="{attr(p["href"])}" target="_blank" rel="noopener"><span class="papertitle">{p["title"]}</span></a><span class="proj-year">{p["year"]}</span>
+        <a href="{attr(go)}"{ext}><span class="papertitle">{p["title"]}</span></a><span class="proj-year">{p["year"]}</span>
         <span class="authors">{p["authors"]}</span>
 {venue_line}        {links_html(p)}
         <p class="pub-desc">{p["desc"]}</p>
@@ -63,19 +71,23 @@ def proj_row(p):
 
 def strip_card(kind, p):
     page = "publications.html" if kind == "publications" else "projects.html"
+    href, extra = f'{page}#{p["id"]}', ""
+    if kind == "publications":
+        go, internal = target(p)
+        href, extra = go, ' data-direct' + ("" if internal else ' target="_blank" rel="noopener"')
     tag = f'{p.get("venue_short", p["venue"])} {p["year"]}' if kind == "publications" else f'{p.get("tag", "Project")} {p["year"]}'
     sub = p["authors"] if kind == "publications" else p["desc"]
     fit = f' class="fit-{p.get("fit", "cover")}"'
     alt = (p.get("alts") or [""])[0]
     clip = (f'<span class="hover-video"><video muted loop playsinline preload="none" poster="{attr(p.get("thumb", p["images"][0]))}" data-src="{attr(p["video"])}"></video></span>'
             if p.get("video") else "")
-    return f'''      <a class="slide" href="{page}#{p["id"]}" data-kind="{kind}" data-id="{p["id"]}">
+    return f'''      <a class="slide" href="{attr(href)}" data-kind="{kind}" data-id="{p["id"]}"{extra}>
         <span class="slide-media"><img src="{attr(p.get("thumb", p["images"][0]))}" alt="{attr(alt)}" decoding="async"{fit}>{clip}</span>
         <span class="slide-tag">{tag}</span>
         <span class="slide-body">
           <span class="slide-title">{p.get("short", p["title"])}</span>
           <span class="slide-sub">{sub}</span>
-          <span class="slide-cta">Quick look</span>
+          <span class="slide-cta">{"Open" if kind == "publications" else "Quick look"}</span>
         </span>
       </a>'''
 

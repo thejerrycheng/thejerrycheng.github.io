@@ -11,7 +11,7 @@
   var themeMeta = document.querySelector('meta[name="theme-color"]');
   function applyTheme(mode, persist) {
     root.setAttribute("data-theme", mode);
-    if (themeMeta) themeMeta.setAttribute("content", mode === "day" ? "#F4EEE2" : "#000000");
+    if (themeMeta) themeMeta.setAttribute("content", mode === "day" ? "#F4EEE2" : "#191612");
     [].forEach.call(document.querySelectorAll(".theme-btn"), function (b) { b.setAttribute("aria-pressed", String(mode === "day")); });
     if (persist) { try { localStorage.setItem("theme-v2", mode); } catch (e) {} }
   }
@@ -202,6 +202,15 @@
     });
   })();
 
+
+  /* ---- List rows: the whole card leads where its title does ---- */
+  document.addEventListener("click", function (e) {
+    var row = e.target.closest && e.target.closest(".pub[data-go]");
+    if (!row || e.target.closest("a, button, video, input, select")) return;
+    if (window.getSelection && String(window.getSelection())) return;      /* the reader was selecting text */
+    var url = row.getAttribute("data-go");
+    if (row.hasAttribute("data-go-new")) window.open(url, "_blank", "noopener"); else location.href = url;
+  });
 
   /* ---- Last updated ---- */
   var lu = document.querySelector("#last-updated time");
