@@ -205,11 +205,34 @@
     sync();
   });
 
+  /* ---- News timeline: the thread fills and the dots light as the page scrolls ---- */
+  (function () {
+    var nt = document.getElementById("newsTimeline");
+    if (!nt) return;
+    var items = [].slice.call(nt.querySelectorAll(".nt-item"));
+    var tick = false;
+    function paint() {
+      tick = false;
+      var r = nt.getBoundingClientRect();
+      var mark = (window.innerHeight || 800) * 0.62;
+      var p = Math.max(0, Math.min(1, (mark - r.top - 14) / Math.max(1, r.height - 14)));
+      nt.style.setProperty("--nt-p", p.toFixed(4));
+      items.forEach(function (it) {
+        it.classList.toggle("is-on", it.getBoundingClientRect().top + 28 < mark);
+      });
+    }
+    function ask() { if (!tick) { tick = true; requestAnimationFrame(paint); } }
+    window.addEventListener("scroll", ask, { passive: true });
+    window.addEventListener("resize", ask);
+    window.addEventListener("load", ask);
+    paint();
+  })();
+
   /* ---- Scroll reveal: blocks rise in as they enter the viewport, once ---- */
   (function () {
     var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (still || !("IntersectionObserver" in window)) return;
-    var SEL = ".section > *, .pub-list > *, .tl-item, .exp-stack > *, .blog-grid > *, .grid-2 > *, .site-footer .wrap";
+    var SEL = ".section > *, .pub-list > *, .nt > *, .tl-item, .exp-stack > *, .blog-grid > *, .grid-2 > *, .site-footer .wrap";
     var all = [].slice.call(document.querySelectorAll(SEL));
     /* only the innermost match animates, so a list and its rows never fade twice */
     var set = all.filter(function (el) {
