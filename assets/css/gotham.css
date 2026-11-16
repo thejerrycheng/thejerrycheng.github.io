@@ -13,18 +13,18 @@
 
 :root {
   /* grounds */
-  --bone:      #FFFFFF;   /* page */
-  --paper:     #F5F5F7;   /* bands: covers, footer */
-  --paper-2:   #E8E8ED;
-  --panel:     #F5F5F7;   /* tiles */
-  --panel-2:   #EFEFF2;   /* tile hover */
+  --bone:      #FBF8F3;   /* page: the warm off-white of the PhD interview deck */
+  --paper:     #F4EEE2;   /* bands: covers, footer (the earlier site's beige) */
+  --paper-2:   #E9E1D2;
+  --panel:     #F4EEE2;   /* tiles */
+  --panel-2:   #EEE7D9;   /* tile hover */
   /* type */
   --ink:       #1D1D1F;
   --ink-soft:  #424245;
   --night-2:   #161617;
   --night-3:   #1D1D1F;
-  --ash:       #6E6E73;
-  --ash-light: #86868B;
+  --ash:       #6B665E;
+  --ash-light: #8A847A;
   /* accent: one blue */
   --hi:        #0071E3;
   --hi-deep:   #0058B0;
@@ -32,7 +32,7 @@
   --pop-deep:  #0058B0;
   --rust:      #BF4800;
   /* support */
-  --yellow:    #E8E8ED;   /* was the narration-box yellow: now a neutral label fill */
+  --yellow:    #E9E1D2;   /* was the narration-box yellow: now a neutral label fill */
   --gold:      #86868B;
   --gold-deep: #6E6E73;
   --blue:      #0071E3;
@@ -45,7 +45,7 @@
   --sans-sc:      -apple-system, "PingFang SC", "Noto Sans SC", sans-serif;
 
   --line-w:    1px;
-  --line:      #D2D2D7;                    /* hairline */
+  --line:      #DCD3C3;                    /* hairline */
   --line-soft: rgba(0,0,0,0.10);
   --wash:      rgba(0,0,0,0.045);          /* hover wash */
   --sh-c:      transparent;                /* old hard-offset shadows: gone */
@@ -53,7 +53,7 @@
   --link:      var(--imp);
   --cream:     var(--ink);                 /* was "type on the night sky": covers follow the theme now */
   --tint:      rgba(0,113,227,0.10);       /* accent wash */
-  --glass:     rgba(255,255,255,0.78);
+  --glass:     rgba(251,248,243,0.80);
   --sh-xs:     0 0 0 0 transparent;
   --sh-sm:     0 1px 3px rgba(0,0,0,0.06);
   --sh:        0 0 0 0 transparent;
@@ -371,7 +371,7 @@ html.js .cover-photo { animation: rise .9s var(--ease-out) .18s both; }
 @media (prefers-reduced-motion: reduce) { html.js .cover-copy > *, html.js .cover-photo { animation: none; } }
 
 /* ---- Page cover (sub-pages) ---- */
-.page-cover { margin-top: calc(-1 * (var(--nav-h) + 24px)); padding: calc(var(--nav-h) + clamp(36px, 5vw, 60px)) 0 clamp(36px, 5vw, 56px); }
+.page-cover { margin-top: calc(-1 * (var(--nav-h) + 24px)); padding: calc(var(--nav-h) + clamp(32px, 4.4vw, 52px)) 0 clamp(30px, 4vw, 44px); }
 .page-cover .kicker { color: var(--ash); margin-bottom: 8px; text-shadow: none; -webkit-text-stroke: 0; }
 .page-cover h1 {
   font-family: var(--font-display); font-weight: 700; font-size: clamp(36px, 5.2vw, 60px);
@@ -887,3 +887,62 @@ html:not([data-theme="night"]) .theme-btn .if-day { display: inline-flex; }
   .pub-list .pub:is(:hover, :focus-within) :is(.authors, .venue) { white-space: normal; }
   .pub-list .pub:is(:hover, :focus-within) .links { flex-wrap: wrap; }
 }
+
+/* =============================================================================
+   CV TIMELINE WITH LOGOS (.tl.tl-logos) — date · logo on the thread · entry.
+   The thread is drawn between logo tiles; a role that is still running gets
+   an accent ring and a live dot. Rows wash on hover.
+   ============================================================================= */
+.tl-logos .tl-item {
+  position: relative; grid-template-columns: 150px 48px minmax(0, 1fr); gap: 18px; align-items: start;
+  padding: 12px 12px 12px 0; margin: 0 -12px 0 0; border-radius: 14px; transition: background .2s ease;
+}
+.tl-logos .tl-item:hover { background: var(--wash); }
+.tl-logos .tl-when { padding-top: 14px; font-size: 13px; white-space: nowrap; }
+.tl-logos .tl-body { border-left: 0; padding: 3px 0 0 0; }
+.tl-logos .tl-body::before { content: none; }
+.tl-logos .tl-item:last-child .tl-body { padding-bottom: 0; }
+.tl-logo {
+  position: relative; z-index: 1; width: 48px; height: 48px; border-radius: 12px; overflow: hidden;
+  display: grid; place-items: center; background: #FFFFFF;
+  box-shadow: 0 0 0 1px var(--line-soft), 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform .3s var(--ease-out), box-shadow .3s ease;
+}
+.tl-logo img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
+.tl-logo.bleed img { padding: 0; object-fit: cover; }
+.tl-logos .tl-item:hover .tl-logo { transform: scale(1.07); box-shadow: 0 0 0 1px var(--line-soft), 0 6px 18px rgba(0,0,0,0.12); }
+/* the thread: from under this logo to the next one */
+.tl-logos .tl-item::before {
+  content: ""; position: absolute; left: calc(150px + 18px + 23.5px); top: 60px; bottom: -12px; width: 1px;
+  background: var(--line); transform-origin: top; transition: transform .9s var(--ease-out) .15s;
+}
+.tl-logos .tl-item:last-child::before { content: none; }
+/* still running */
+.tl-logos .tl-item.now .tl-logo { box-shadow: 0 0 0 2px var(--hi), 0 2px 10px var(--tint); }
+.tl-logos .tl-item.now .tl-logo::after {
+  content: ""; position: absolute; right: 3px; bottom: 3px; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 0 2px #FFFFFF; animation: tlNow 2.4s ease-in-out infinite;
+}
+@keyframes tlNow { 50% { opacity: .35; } }
+@media (max-width: 620px) {
+  .tl-logos .tl-item { grid-template-columns: 44px minmax(0, 1fr); gap: 2px 14px; padding: 10px 8px 10px 0; margin-right: -8px; }
+  .tl-logos .tl-when { grid-column: 2; grid-row: 1; text-align: left; padding: 0; margin: 0; border: 0 !important; font-size: 12.5px; }
+  .tl-logos .tl-logo { grid-column: 1; grid-row: 1 / span 2; width: 44px; height: 44px; }
+  .tl-logos .tl-body { grid-column: 2; grid-row: 2; padding: 0; }
+  .tl-logos .tl-item::before { left: 21.5px; top: 58px; bottom: -10px; }
+}
+
+/* =============================================================================
+   SCROLL REVEAL — site.js marks blocks .rv as the page loads and adds .rv-in
+   when each one scrolls into view; both classes come off once it has settled.
+   No JS, no IntersectionObserver or reduced motion: nothing is ever hidden.
+   ============================================================================= */
+.rv { opacity: 0; transform: translateY(22px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); transition-delay: var(--rv-d, 0ms); will-change: opacity, transform; }
+.rv.rv-in { opacity: 1; transform: none; }
+.tl-logos .tl-item.rv { transform: translateY(14px); }
+.tl-logos .tl-item.rv::before { transform: scaleY(0); }
+.tl-logos .tl-item.rv.rv-in::before { transform: scaleY(1); }
+.tl-logos .tl-item.rv .tl-logo { transform: scale(.55); opacity: 0; }
+.tl-logos .tl-item.rv.rv-in .tl-logo { transform: none; opacity: 1; transition: transform .6s cubic-bezier(0.34, 1.45, 0.64, 1) calc(var(--rv-d, 0ms) + 80ms), opacity .4s ease calc(var(--rv-d, 0ms) + 80ms); }
+@media print { .rv { opacity: 1 !important; transform: none !important; } }
+@media (prefers-reduced-motion: reduce) { .tl-logos .tl-item.now .tl-logo::after { animation: none; } }
