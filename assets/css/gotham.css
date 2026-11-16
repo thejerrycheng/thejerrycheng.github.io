@@ -866,8 +866,7 @@ html:not([data-theme="night"]) .theme-btn .if-day { display: inline-flex; }
 
 /* =============================================================================
    LIST ROWS (publications.html, projects.html): every card the same size.
-   Title, authors and description are clamped; pointing at a card (or tabbing
-   into it) lets that one open to its full text. Phones keep the full text.
+   Title, authors and description are clamped, so the size never changes. Phones keep the full text.
    ============================================================================= */
 @media (min-width: 621px) {
   .pub-list .pub { height: 212px; align-items: center; overflow: hidden; }
@@ -882,10 +881,7 @@ html:not([data-theme="night"]) .theme-btn .if-day { display: inline-flex; }
   .pub-list .pub-desc { margin-top: 9px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .pub-list .proj-body { margin-top: 6px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
   .pub-list .proj-body + .links { margin-top: 10px; }
-  .pub-list .pub:hover, .pub-list .pub:focus-within { height: auto; min-height: 212px; }
-  .pub-list .pub:is(:hover, :focus-within) :is(.pub-meta > a > .papertitle, .pub-desc, .proj-body) { display: block; -webkit-line-clamp: unset; }
-  .pub-list .pub:is(:hover, :focus-within) :is(.authors, .venue) { white-space: normal; }
-  .pub-list .pub:is(:hover, :focus-within) .links { flex-wrap: wrap; }
+}
 }
 
 /* =============================================================================
