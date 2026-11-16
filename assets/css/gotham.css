@@ -842,9 +842,9 @@ html[data-theme="night"] .modal-panel { background: var(--panel-2); }
 @media (prefers-reduced-motion: reduce) { .modal-panel { animation: popFade .2s ease both; } }
 body.modal-open { overflow: hidden; }
 @media (max-width: 620px) {
-  .modal { padding: 0; align-items: end; }
-  .modal-panel { max-height: 94vh; border-radius: 22px 22px 0 0; }
-  .modal-photo .modal-panel { max-height: 94vh; }
+  .modal { padding: 16px; align-items: center; }
+  .modal-panel { max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); border-radius: 22px; }
+  .modal-photo .modal-panel { max-height: calc(100dvh - 32px); }
   .modal-body { padding: 18px 18px 26px; }
   .sticker-nyc { margin: 8px 0 0; }
 }
