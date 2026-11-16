@@ -25,11 +25,11 @@
   --night-3:   #1D1D1F;
   --ash:       #6B665E;
   --ash-light: #8A847A;
-  /* accent: one blue */
-  --hi:        #0071E3;
-  --hi-deep:   #0058B0;
-  --pop:       #0071E3;
-  --pop-deep:  #0058B0;
+  /* accent: Apple orange. #FF9500 for fills and marks; a deeper orange for text on beige */
+  --hi:        #FF9500;
+  --hi-deep:   #E9850A;
+  --pop:       #FF9500;
+  --pop-deep:  #E9850A;
   --rust:      #BF4800;
   /* support */
   --yellow:    #E9E1D2;   /* was the narration-box yellow: now a neutral label fill */
@@ -49,10 +49,10 @@
   --line-soft: rgba(0,0,0,0.10);
   --wash:      rgba(0,0,0,0.045);          /* hover wash */
   --sh-c:      transparent;                /* old hard-offset shadows: gone */
-  --imp:       #0066CC;                    /* emphasised text and links */
+  --imp:       #C45A00;                    /* emphasised text and links: orange that still reads on beige */
   --link:      var(--imp);
   --cream:     var(--ink);                 /* was "type on the night sky": covers follow the theme now */
-  --tint:      rgba(0,113,227,0.10);       /* accent wash */
+  --tint:      rgba(255,149,0,0.15);       /* accent wash */
   --glass:     rgba(251,248,243,0.80);
   --sh-xs:     0 0 0 0 transparent;
   --sh-sm:     0 1px 3px rgba(0,0,0,0.06);
@@ -95,10 +95,10 @@ html[data-theme="night"] {
   --ink-soft:  #D2D2D7;
   --ash:       #A1A1A6;
   --ash-light: #86868B;
-  --hi:        #0A84FF;
-  --hi-deep:   #409CFF;
-  --pop:       #0A84FF;
-  --pop-deep:  #409CFF;
+  --hi:        #FF9F0A;
+  --hi-deep:   #FFB340;
+  --pop:       #FF9F0A;
+  --pop-deep:  #FFB340;
   --rust:      #FF9F0A;
   --yellow:    #2C2C2E;
   --blue:      #0A84FF;
@@ -106,8 +106,8 @@ html[data-theme="night"] {
   --line:      #38383C;
   --line-soft: rgba(255,255,255,0.12);
   --wash:      rgba(255,255,255,0.07);
-  --imp:       #2997FF;
-  --tint:      rgba(41,151,255,0.16);
+  --imp:       #FF9F0A;
+  --tint:      rgba(255,159,10,0.18);
   --glass:     rgba(18,18,20,0.72);
   --sh-sm:     0 1px 3px rgba(0,0,0,0.5);
   --sh-lg:     0 14px 38px rgba(0,0,0,0.6);
@@ -1043,3 +1043,20 @@ html:not([data-theme="night"]) .theme-btn .if-day { display: inline-flex; }
 .menu-btn { transition: background .15s ease, transform .2s cubic-bezier(0.32, 0.72, 0, 1); }
 .menu-btn:active { transform: scale(0.94); }
 @media (prefers-reduced-motion: reduce) { .mobile-menu, .mobile-menu a, .mobile-menu.closing, .nav-backdrop, .nav-backdrop.closing { animation: none; } }
+
+/* =============================================================================
+   PAGE HEADS — just the title on the page's own ground, close to the content.
+   (The home hero keeps its band.)
+   ============================================================================= */
+.page-cover, .page-cover.night { background: transparent; padding: calc(var(--nav-h) + clamp(22px, 3vw, 34px)) 0 0; }
+.page-cover h1 { font-size: clamp(30px, 3.8vw, 44px); }
+.page-cover + .section, .page-cover + .deco-band + .section, .page-cover + .deco-band + main > .section:first-child, .page-cover + main > .section:first-child { padding-top: clamp(16px, 2.2vw, 24px); }
+@media (max-width: 620px) {
+  .page-cover, .page-cover.night { padding: calc(var(--nav-h) + 16px) 0 0; }
+  .page-cover h1 { font-size: 26px; }
+  .page-cover + .section, .page-cover + .deco-band + .section { padding-top: 14px; }
+}
+/* orange fills carry dark type: white on #FF9500 is too faint to read */
+.btn-primary, .btn-pop, .btn-primary:hover, .btn-pop:hover, .links a:hover, .say-name:hover, .say-name:focus-visible, .say-name.playing { color: #1D1D1F; }
+html[data-theme="night"] :is(.btn-primary, .btn-pop) { color: #1D1D1F; }
+::selection { background: var(--hi); color: #1D1D1F; }
