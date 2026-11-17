@@ -7,9 +7,9 @@
   <meta name="description" content="A MicroDuck replica built on Feetech HD1910 servos: seven reinforcement-learning policies on one interface, a 1.3 m/s sprint, a front flip that lands standing, and a duck that gets itself up after every fall.">
   <meta name="author" content="Jerry Cheng">
   <link rel="canonical" href="https://thejerrycheng.github.io/microduck.html">
-  <meta property="og:title" content="Where am I? Autonomous exploration with a TurtleBot">
-  <meta property="og:description" content="Four exploration strategies, one unknown room, and a map you can watch being built.">
-  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/turtlebot/poster.jpg">
+  <meta property="og:title" content="MicroDuck on Feetech servos">
+  <meta property="og:description" content="A palm-sized biped that walks, sprints, flips and gets back up, retrained for slower servos.">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/projects/microduck/card.jpg">
   <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
   <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
@@ -19,19 +19,126 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/gotham.css?v=20261117b">
-  <link rel="stylesheet" href="assets/css/project-page.css">
+  <link rel="stylesheet" href="assets/css/gotham.css?v=20261117c">
   <script>document.documentElement.classList.add('js');</script>
   <script>(function(){try{var t=localStorage.getItem("theme-v2");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
   <style>
-    .md-clips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
-    .md-clips.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .md-clip { overflow: hidden; display: flex; flex-direction: column; }
-    .md-clip video { width: 100%; display: block; aspect-ratio: 16 / 9; object-fit: cover; background: #dfe3e8; }
-    .md-clip.wide video { aspect-ratio: 32 / 9; }
-    .md-clip p { padding: 12px 14px 14px; font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
-    .md-clip p b { color: var(--ink); }
-    @media (max-width: 820px) { .md-clips, .md-clips.two { grid-template-columns: minmax(0, 1fr); } }
+    /* MicroDuck page. Dark "stages" match the simulator backdrop; glass sits on top of them. */
+    .md { --stage: #1c1e22; --stage-2: #3a3f4b; --on: #fff; --on-soft: rgba(255,255,255,.72); }
+    .md h1, .md h2 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.03em; line-height: 1.04; text-wrap: balance; }
+    .md-wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+    .md-sec { padding-top: clamp(72px, 11vw, 136px); }
+    .md-sec > .md-wrap > h2 { font-size: clamp(34px, 5.4vw, 60px); max-width: 16ch; }
+    .md-sub { margin-top: 16px; max-width: 46ch; font-size: clamp(17px, 1.7vw, 20px); line-height: 1.45; color: var(--ash); letter-spacing: -0.01em; }
+    .md-note { margin-top: 14px; font-size: 13px; color: var(--ash); }
+
+    /* liquid glass */
+    .lg {
+      position: relative; isolation: isolate; color: var(--on);
+      background: linear-gradient(180deg, rgba(255,255,255,.20), rgba(255,255,255,.07));
+      -webkit-backdrop-filter: blur(22px) saturate(190%); backdrop-filter: blur(22px) saturate(190%);
+      border: 1px solid rgba(255,255,255,.24);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.45), inset 0 -1px 0 rgba(255,255,255,.08), inset 0 0 14px rgba(255,255,255,.06), 0 10px 34px rgba(0,0,0,.28);
+    }
+    .lg::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
+      background: radial-gradient(120% 90% at 12% 0%, rgba(255,255,255,.30), transparent 46%), radial-gradient(90% 70% at 100% 100%, rgba(255,149,0,.16), transparent 55%); }
+
+    /* hero: full-bleed video that settles into a rounded card as the page scrolls */
+    .md-hero { position: relative; margin-top: calc(-1 * (var(--nav-h) + 24px)); --p: 0; }
+    .md-hero-media { position: absolute; inset: 0; background: var(--stage); overflow: hidden;
+      clip-path: inset(calc(var(--p) * 56px) calc(var(--p) * max(20px, (100vw - 1080px) / 2 + 20px)) calc(var(--p) * 24px) round calc(var(--p) * 34px)); will-change: clip-path; }
+    .md-hero-media video { position: absolute; left: 0; bottom: 0; width: 100%; height: var(--vh); object-fit: cover; object-position: 55% 6%; display: block;
+      -webkit-mask-image: linear-gradient(180deg, transparent, #000 16%); mask-image: linear-gradient(180deg, transparent, #000 16%);
+      transform: scale(calc(1 + var(--p) * .05)); transform-origin: 50% 100%; }
+    .md-hero { --vh: clamp(380px, 62svh, 56.25vw); }
+    .md-hero-text { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center;
+      padding: calc(var(--nav-h) + clamp(30px, 6svh, 64px)) 20px 30px; color: var(--on);
+      opacity: calc(1 - var(--p) * 1.25); transform: translateY(calc(var(--p) * -26px)); }
+    .md-hero h1 { font-size: clamp(54px, 9.5vw, 120px); letter-spacing: -0.045em; color: var(--on); margin: 0; }
+    .md-hero-text p { margin-top: 14px; max-width: 30ch; font-size: clamp(18px, 2.1vw, 25px); line-height: 1.3; letter-spacing: -0.015em; color: var(--on-soft); text-wrap: balance; }
+    .md-pills { margin-top: calc(var(--vh) - 74px); display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .md-pill { display: inline-flex; align-items: center; height: 44px; padding: 0 20px; border-radius: 999px; font-size: 15px; font-weight: 500; text-decoration: none; transition: transform .25s cubic-bezier(.2,.8,.2,1), background .25s; }
+    a.md-pill:hover { transform: scale(1.05); }
+    .md-pill.quiet { font-weight: 400; color: var(--on-soft); }
+    .md-pill.quiet i { width: 7px; height: 7px; border-radius: 50%; background: var(--hi); margin-right: 9px; }
+
+    /* moves: one stage, a glass switch, a number that changes with it */
+    .md-stage { position: relative; margin-top: 34px; aspect-ratio: 16 / 9; border-radius: 34px; overflow: hidden; background: var(--stage); }
+    .md-stage video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.05); filter: blur(14px);
+      transition: opacity .6s ease, transform .9s cubic-bezier(.2,.8,.2,1), filter .6s ease; }
+    .md-stage video.on { opacity: 1; transform: none; filter: none; }
+    .md-stat { position: absolute; left: 22px; top: 22px; padding: 16px 22px 15px; border-radius: 26px; min-width: 150px; }
+    .md-stat b { display: block; font-family: var(--font-display); font-weight: 600; font-size: clamp(34px, 5vw, 58px); line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+    .md-stat b small { font-size: .42em; font-weight: 500; letter-spacing: -0.01em; margin-left: 4px; color: var(--on-soft); }
+    .md-stat .l { display: block; margin-top: 7px; font-size: 14px; color: var(--on-soft); }
+    .md-stat b, .md-stat .l { transition: opacity .28s ease, filter .28s ease, transform .28s ease; }
+    .md-stat.swap b, .md-stat.swap .l { opacity: 0; filter: blur(10px); transform: translateY(6px) scale(.96); }
+    .md-seg { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); display: flex; padding: 5px; border-radius: 999px; }
+    .md-seg button { position: relative; z-index: 1; appearance: none; border: 0; background: none; cursor: pointer; font: inherit; font-size: 15px; font-weight: 500; color: var(--on-soft);
+      height: 40px; padding: 0 20px; border-radius: 999px; white-space: nowrap; transition: color .3s; }
+    .md-seg button[aria-selected="true"] { color: #1d1d1f; }
+    .md-seg button:focus-visible, .md-pill:focus-visible { outline: 2px solid var(--hi); outline-offset: 3px; }
+    .md-seg .ind { position: absolute; z-index: 0; top: 5px; left: 0; height: 40px; width: 60px; border-radius: 999px; background: rgba(255,255,255,.94);
+      box-shadow: 0 2px 10px rgba(0,0,0,.25), inset 0 1px 0 #fff; transition: transform .5s cubic-bezier(.3,1.35,.5,1), width .5s cubic-bezier(.3,1.35,.5,1); }
+
+    /* servos */
+    .md-split { margin-top: 40px; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(24px, 4vw, 56px); align-items: center; }
+    .md-bars { display: grid; gap: 26px; }
+    .md-bar .row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+    .md-bar .name { font-size: 15px; color: var(--ash); }
+    .md-bar .val { font-family: var(--font-display); font-weight: 600; font-size: clamp(30px, 4vw, 44px); letter-spacing: -0.035em; line-height: 1; }
+    .md-bar .val small { font-size: .4em; font-weight: 500; color: var(--ash); margin-left: 5px; letter-spacing: 0; }
+    .md-bar .track { margin-top: 10px; height: 14px; border-radius: 999px; background: var(--wash); overflow: hidden; }
+    .md-bar .fill { height: 100%; width: var(--w); border-radius: 999px; background: var(--ash-light); transform: scaleX(0); transform-origin: left; transition: transform 1.3s cubic-bezier(.2,.8,.2,1); }
+    .md-bar.mine .fill { background: linear-gradient(90deg, #ffb340, var(--hi)); transition-delay: .18s; }
+    .in .md-bar .fill { transform: none; }
+    .md-facts { margin-top: 34px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+    .md-facts div { padding: 18px 14px 0 0; }
+    .md-facts b { display: block; font-family: var(--font-display); font-weight: 600; font-size: clamp(22px, 2.6vw, 30px); letter-spacing: -0.03em; line-height: 1.1; }
+    .md-facts span { display: block; margin-top: 5px; font-size: 13.5px; line-height: 1.35; color: var(--ash); }
+    .md-photo { position: relative; margin: 0; border-radius: 34px; overflow: hidden; background: var(--panel); }
+    .md-photo img { display: block; width: 100%; height: auto; }
+    .md-photo figcaption { position: absolute; left: 16px; bottom: 16px; padding: 10px 16px; border-radius: 999px; font-size: 14px; background: linear-gradient(180deg, rgba(40,40,44,.42), rgba(40,40,44,.30)); }
+
+    /* app */
+    .md-window { margin-top: 34px; border-radius: 22px; overflow: hidden; background: var(--stage); box-shadow: 0 30px 80px -30px rgba(0,0,0,.45); }
+    .md-window video { display: block; width: 100%; height: auto; aspect-ratio: 1600 / 940; }
+    .md-facts.four { grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 0; margin-top: 18px; }
+
+    /* data */
+    .md-rail { margin-top: 34px; display: grid; grid-auto-flow: column; grid-auto-columns: min(560px, 84vw); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;
+      padding: 0 max(20px, (100vw - 1040px) / 2) 14px; scrollbar-width: none; }
+    .md-rail::-webkit-scrollbar { display: none; }
+    .md-rail figure { margin: 0; scroll-snap-align: center; border-radius: 26px; background: #fff; border: 1px solid var(--line-soft); overflow: hidden; display: flex; flex-direction: column; }
+    .md-rail img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: contain; padding: 16px 16px 4px; }
+    .md-rail figcaption { margin-top: auto; padding: 8px 20px 18px; font-size: 14.5px; line-height: 1.4; color: #424245; }
+    .md-rail figcaption b { color: #1d1d1f; }
+    .md-wrap.md-end { padding-top: clamp(56px, 8vw, 96px); padding-bottom: clamp(48px, 7vw, 80px); }
+    .md-end p { max-width: 68ch; font-size: 14px; line-height: 1.6; color: var(--ash); }
+    .md-end p + p { margin-top: 10px; }
+    .md-end a { color: var(--link); text-decoration: none; }
+    .md-end a:hover { text-decoration: underline; }
+    .md-links { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .md-links a { display: inline-flex; align-items: center; height: 42px; padding: 0 18px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); color: var(--ink); font-size: 14.5px; font-weight: 500; text-decoration: none; transition: background .2s; }
+    .md-links a:hover { background: var(--panel-2); }
+
+    @media (max-width: 760px) {
+      .md-hero-media { clip-path: inset(calc(var(--p) * 40px) calc(var(--p) * 16px) calc(var(--p) * 16px) round calc(var(--p) * 26px)); }
+      .md-stage { aspect-ratio: 4 / 5; border-radius: 26px; }
+      .md-stage video { object-position: 50% 50%; }
+      .md-stat { left: 14px; top: 14px; padding: 12px 16px; border-radius: 20px; min-width: 0; }
+      .md-seg { bottom: 14px; }
+      .md-seg button { padding: 0 13px; font-size: 14px; }
+      .md-split { grid-template-columns: minmax(0, 1fr); }
+      .md-photo { border-radius: 26px; }
+      .md-facts.four { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 6px; }
+      .md-window { border-radius: 14px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .md-hero { --p: 0 !important; }
+      .md *, .md *::before { transition: none !important; }
+      .md-bar .fill { transform: none; }
+    }
   </style>
 </head>
 <body>
@@ -62,184 +169,108 @@
       <a href="cv.html">CV</a>
 </div>
 
-<header class="page-cover night">
-  <div class="wrap">
-    <p class="kicker">Reinforcement learning ◆ Legged robots ◆ Replication ◆ 2026</p>
-    <h1>A MicroDuck that runs on the wrong servos</h1>
-    <p>MicroDuck is Pollen Robotics' palm-sized open-source biped, designed around Dynamixel XL330 servos. I am building one from the community replica files with <b>Feetech HD1910</b> servos instead: heavier and about 40 % slower. This page is what it took to make the published training recipes work on that plant, and what the slower duck can still be taught to do. Everything measured here is in simulation; the hardware is being assembled.</p>
+<main class="md">
+
+<header class="md-hero" id="top">
+  <div class="md-hero-media">
+    <video autoplay muted loop playsinline preload="auto" poster="assets/projects/microduck/live_poster.jpg" aria-label="The simulated MicroDuck walking and turning">
+      <source src="assets/projects/microduck/live_walk.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="md-hero-text">
+    <h1>MicroDuck</h1>
+    <p>Walks, sprints, flips and gets back up. On servos it was never designed for.</p>
+    <div class="md-pills">
+      <a class="md-pill lg" href="https://github.com/thejerrycheng/microduck_replication_feetech" target="_blank" rel="noopener">Code</a>
+      <a class="md-pill lg" href="assets/projects/microduck/duck_live_app.pdf" target="_blank" rel="noopener">Report</a>
+      <span class="md-pill lg quiet"><i></i>Simulation for now</span>
+    </div>
   </div>
 </header>
 
-<section class="section" id="demo">
-  <div class="hero-video">
-    <video controls muted loop playsinline preload="metadata" poster="assets/projects/microduck/poster_roll.jpg">
-      <source src="assets/projects/microduck/roulade_head_7000.mp4" type="video/mp4">
-    </video>
-  </div>
-  <div class="hero-caption">
-    <p>The front flip: a forward roll over the top of the head that lands back on the feet with the head straight. Standing start, mean action, three takes.</p>
-    <div class="links">
-      <a href="https://github.com/thejerrycheng/microduck_replication_feetech" target="_blank" rel="noopener">Code</a>
-      <a href="assets/projects/microduck/duck_live_app.pdf" target="_blank" rel="noopener">Report: policies and app (PDF)</a>
-      <a href="assets/projects/microduck/duck_live_animation.pdf" target="_blank" rel="noopener">Report: character layer (PDF)</a>
+<section class="md-sec" id="moves">
+  <div class="md-wrap">
+    <h2>Seven skills. One small duck.</h2>
+    <div class="md-stage">
+      <video class="on" muted loop playsinline autoplay preload="metadata" data-n="1.33" data-u="m/s" data-l="Top speed"><source src="assets/projects/microduck/live_sprint.mp4" type="video/mp4"></video>
+      <video muted loop playsinline preload="none" data-n="12" data-u="of 12" data-l="Flips landed standing"><source src="assets/projects/microduck/live_flip.mp4" type="video/mp4"></video>
+      <video muted loop playsinline preload="none" data-n="24" data-u="of 24" data-l="Falls recovered alone"><source src="assets/projects/microduck/live_getup.mp4" type="video/mp4"></video>
+      <video muted loop playsinline preload="none" data-n="0.28" data-u="s" data-l="To sit down"><source src="assets/projects/microduck/live_sit.mp4" type="video/mp4"></video>
+      <div class="md-stat lg" aria-live="polite"><b><span class="n">1.33</span><small>m/s</small></b><span class="l">Top speed</span></div>
+      <div class="md-seg lg" role="tablist" aria-label="Choose a move">
+        <span class="ind" aria-hidden="true"></span>
+        <button type="button" role="tab" aria-selected="true">Sprint</button>
+        <button type="button" role="tab" aria-selected="false">Flip</button>
+        <button type="button" role="tab" aria-selected="false">Get up</button>
+        <button type="button" role="tab" aria-selected="false">Sit</button>
+      </div>
     </div>
-  </div>
-
-  <div class="stat-row">
-    <div class="card stat-tile"><div class="num">7</div><div class="lab">Policies, one interface</div><div class="sub">61 observations in, 14 joint targets out</div></div>
-    <div class="card stat-tile"><div class="num">1.33<small>m/s</small></div><div class="lab">Sprint</div><div class="sub">0 falls in 4; the run policy tops out at 0.71</div></div>
-    <div class="card stat-tile"><div class="num">12<small>/12</small></div><div class="lab">Front flips landed</div><div class="sub">368° mean roll, back on the feet</div></div>
-    <div class="card stat-tile"><div class="num">24<small>/24</small></div><div class="lab">Get-ups from the floor</div><div class="sub">Prone, supine and side, within 0.78 s</div></div>
-    <div class="card stat-tile"><div class="num">0.62<small>ms</small></div><div class="lab">Per control tick</div><div class="sub">Physics and policy on a laptop CPU, 32× real time</div></div>
-    <div class="card stat-tile"><div class="num">1<small>/920</small></div><div class="lab">Falls while acting</div><div class="sub">27 emotion clips played on top of the policies</div></div>
+    <p class="md-note">Numbers come from separate simulation trials, not from these clips.</p>
   </div>
 </section>
 
-<!-- =================== WHAT IS NEW =================== -->
-<section class="section" id="novelty">
-  <h2 class="section-title">What is new here</h2>
-  <p class="lead">The walking recipe is NVIDIA and Hugging Face's Isaac Lab port of Pollen's task, and the sit, stand, roll and jump tasks are ports of open-source MicroDuck work, credited below. These four things are mine.</p>
-
-  <div class="grid-2" style="margin-top:24px">
-    <div class="card finding">
-      <div class="no">1</div>
-      <h3>A different actuator, modelled instead of hoped for</h3>
-      <p>The official robot is trained against a fitted model of the XL330. I swapped in a fitted model of the HD1910 (the Rhoban BAM m6 fit published by LuwuDynamics) and wrote the drive the way Feetech firmware computes it: duty = error × P × 0.166 × gain ratio, a 0.97 duty ceiling, no current limiter, a 7.4 to 8.0 V supply that sags under load and a 3 to 6 step command delay. Stall torque comes out at <b>1.02 N·m</b> and no-load speed near <b>12 rad/s</b>, against 20.2 for the XL330.</p>
-      <p>What I could not model, I randomised. The replica is about 75 g heavier, and its computer, battery and IMU sit in different places, so every body's mass is scaled 0.90 to 1.25 (official: trunk only, 0.95 to 1.05), the trunk's centre of mass moves up to ±25 mm, and sole friction spans 0.5 to 1.3.</p>
-    </div>
-    <div class="card finding">
-      <div class="no">2</div>
-      <h3>One network that walks, stands and gets up</h3>
-      <p>The walking policy is also the standing policy and the recovery policy. It tracks forward speed from −0.4 to 0.6 m/s to within <b>0.05 m/s</b>, balances at zero command at 116 mm without the squat earlier exports settled into, and after a fall it gets the duck up by itself. In the app a fall is never undone by a reset.</p>
-      <p>Getting there took a change of training settings as much as a change of reward: at the walking policy's entropy and learning rate the action noise blew up and the duck spent 65 % of its frames on the floor. Dropping both, and cloning the upright frames from a separate stand-up expert, is what removed the squat.</p>
-    </div>
-    <div class="card finding">
-      <div class="no">3</div>
-      <h3>Agility on a servo that is too slow to jump</h3>
-      <p>Community attempts at a standing aerial flip on the faster XL330 never succeeded unassisted, and an open-loop crouch-and-extend on my plant does not leave the ground. So the flip is Pollen's roulade, a roll over the flat top of the head. Ported to the HD1910 it lands standing <b>12 times in 12</b>.</p>
-      <p>The first version landed with the head 58° away from home. A Gaussian reward for returning it paid almost nothing at that error, so it had no gradient to follow; adding a plain L1 cost that switches on after landing brought the head to <b>3.7°</b>. A separate sprint policy, with the forward-speed weight raised from 3 to 15, runs at 1.33 m/s where the general run policy collapses above 0.9.</p>
-    </div>
-    <div class="card finding">
-      <div class="no">4</div>
-      <h3>A character on top, and tools underneath</h3>
-      <p><b>Duck Live</b> is a Mac app that puts all seven policies under the keyboard: arrows walk and turn, a modifier runs, one key each for sit, jump and flip, and the mouse pulls the duck with a spring. The same plant the policies trained on runs on the laptop's CPU.</p>
-      <p>A character layer moves only the head, neck and beak and chooses when to fire the policies: 27 emotion clips (14 from Pollen, 13 written here), an idle life that looks around, breathes and dozes off, and reactions to being pushed. Across 920 jittered trials the duck fell once. <b>Duck Servo Studio</b> is the browser tool for the real servos: find them, assign IDs, zero them, plot them live.</p>
-    </div>
-  </div>
-</section>
-
-<!-- =================== CLIPS =================== -->
-<section class="section" id="clips">
-  <h2 class="section-title">What it does</h2>
-  <p class="lead">Every clip is the policy's mean action from a standing start, not a training rollout. A policy that only works with exploration noise switched on is not one that can be deployed, and one early sitting policy was exactly that: 3 of 16 seated without noise, 16 of 16 with it.</p>
-  <div class="md-clips">
-    <div class="card md-clip">
-      <video muted loop playsinline controls preload="metadata"><source src="assets/projects/microduck/sprint_max_7998_vx1_2.mp4" type="video/mp4"></video>
-      <p><b>Sprint.</b> Commanded 1.2 m/s, measured 1.29 m/s in this clip.</p>
-    </div>
-    <div class="card md-clip">
-      <video muted loop playsinline controls preload="metadata"><source src="assets/projects/microduck/jump_1500.mp4" type="video/mp4"></video>
-      <p><b>Jump.</b> A 22 to 27 mm hop, 12 take-offs and 12 standing landings in 12.</p>
-    </div>
-    <div class="card md-clip">
-      <video muted loop playsinline controls preload="metadata"><source src="assets/projects/microduck/velstand_21495_getup.mp4" type="video/mp4"></video>
-      <p><b>Getting up.</b> The walking policy at zero command, from prone, supine and side.</p>
-    </div>
-  </div>
-  <div class="md-clips two">
-    <div class="card md-clip wide">
-      <video muted loop playsinline controls preload="metadata"><source src="assets/projects/microduck/run_before_after_vx0_9.mp4" type="video/mp4"></video>
-      <p><b>Run, before and after.</b> At a 0.9 m/s command the earlier policy reaches 0.45 m/s and the retrained one 0.62.</p>
-    </div>
-    <div class="card md-clip wide">
-      <video muted loop playsinline controls preload="metadata"><source src="assets/projects/microduck/sitstand_before_after.mp4" type="video/mp4"></video>
-      <p><b>Sit and stand, before and after.</b> A 0.4 s posture ramp cut the transitions from about 1.0 s and 0.62 s to 0.32 s and 0.26 s.</p>
-    </div>
-  </div>
-</section>
-
-<!-- =================== RESULTS =================== -->
-<section class="section" id="results">
-  <h2 class="section-title">Measured</h2>
-  <p class="lead">These numbers come from the app's plant: C MuJoCo with the HD1910 actuator model, backlash, battery sag and command delay. Training ran on Isaac Lab 3.0 with the Newton backend, so they are success rates for this simulator, not for a robot.</p>
-
-  <div class="grid-2" style="margin-top:24px">
-    <figure class="fig">
-      <img src="assets/projects/microduck/figures/duck_app_speed_tracking.png" alt="Achieved against commanded forward speed for the walk, run and sprint policies" class="pad" loading="lazy">
-      <figcaption><b>Three gaits, one speed dial.</b> The walk tracks its whole band. The run follows up to about 0.8 m/s and then falls. The sprint is a single fixed command, and it overshoots it.</figcaption>
-    </figure>
-    <figure class="fig">
-      <img src="assets/projects/microduck/figures/duck_app_roulade.png" alt="Rolled angle and trunk height through twelve front flips" class="pad" loading="lazy">
-      <figcaption><b>Twelve front flips.</b> Each one passes 360° and settles at standing height. A few take a second attempt at the roll before going over.</figcaption>
-    </figure>
-  </div>
-
-  <div class="table-wrap" style="margin-top:24px">
-    <table class="data-table">
-      <thead><tr><th>Behaviour</th><th>Policy</th><th>Result</th><th>Trials</th></tr></thead>
-      <tbody>
-        <tr><td>Walk, −0.4 to 0.6 m/s</td><td>VelStand</td><td>within 0.05 m/s of the command, 0 falls</td><td>4 per speed</td></tr>
-        <tr><td>Run</td><td>run v3</td><td>0.71 m/s at a 0.8 command; falls at 0.9 and above</td><td>4 per speed</td></tr>
-        <tr><td>Sprint</td><td>sprint-max</td><td class="hi">1.33 m/s (1.24 to 1.39), 0 falls</td><td>4</td></tr>
-        <tr><td>Sit / stand</td><td>fast sit-stand</td><td>0.28 s to seated, 0.19 s to standing</td><td>6</td></tr>
-        <tr><td>Jump</td><td>jump</td><td>22 to 27 mm rise, back under the walk policy in 0.48 s</td><td>12 of 12</td></tr>
-        <tr><td>Front flip</td><td>roulade, straight head</td><td class="hi">368° mean roll, standing after 1.94 s</td><td>12 of 12</td></tr>
-        <tr><td>Get up from the floor</td><td>VelStand or stand-up</td><td>upright in 0.40 to 0.78 s</td><td class="ok">24 of 24</td></tr>
-        <tr><td>Stop from the sprint</td><td>sprint to VelStand</td><td class="bad">ends on the floor once, then gets up</td><td>1 of 6</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="grid-2" style="margin-top:24px">
-    <figure class="fig">
-      <img src="assets/projects/microduck/figures/duck_app_recovery.png" alt="Fraction of pushes that end in a fall and that are upright two seconds later; time to get up from three poses" class="pad" loading="lazy">
-      <figcaption><b>Pushed over, and up again.</b> Harder pushes knock the duck down more often (dashed), yet two seconds later it is upright in every condition but one (solid). Of 63 falls in the push test, 62 were recovered.</figcaption>
-    </figure>
-    <div class="card md-clip">
-      <video muted loop playsinline controls preload="metadata"><source src="assets/projects/microduck/push_velstand.mp4" type="video/mp4"></video>
-      <p><b>Push test while walking at 0.3 m/s.</b> No reset between pushes: when the duck goes down, the same policy gets it up and carries on.</p>
-    </div>
-  </div>
-</section>
-
-<!-- =================== HARDWARE =================== -->
-<section class="section" id="hardware">
-  <h2 class="section-title">The real servo</h2>
-  <div class="grid-2">
-    <div class="prose">
-      <p>The one hardware measurement so far is a step response. One unloaded HD1910 at 7.6 V is stepped ±10° under a grid of position gains.</p>
-      <p>At the replica's gains, <b>P 5 and D 20</b>, the servo takes <b>261 ms</b> to cover 90 % of the step, with no overshoot. At the factory P 32 it takes 35 ms. Above that the servo is speed-limited: it gets no faster, only more overshoot, 27 % at P 80.</p>
-      <p>The policies were trained against P 5, so that is what the robot will run. It is a soft, slow joint, and it is the reason the delay and supply sag are in the training model at all.</p>
-      <figure class="fig" style="margin:6px 0 18px">
-        <img src="assets/projects/microduck/build.jpg" alt="The MicroDuck replica partly assembled on a workbench, with Feetech HD1910 servos in the legs and neck" loading="lazy">
-        <figcaption><b>The build so far.</b> The replica on the bench, with the HD1910 servos fitted in the legs and neck.</figcaption>
+<section class="md-sec" id="servos">
+  <div class="md-wrap">
+    <h2>Same duck. Slower muscles.</h2>
+    <p class="md-sub">The original MicroDuck runs on Dynamixel XL330 servos. This one runs on Feetech HD1910s, so every skill was retrained against a model of the slower servo.</p>
+    <div class="md-split">
+      <div>
+        <div class="md-bars" id="mdBars">
+          <div class="md-bar"><div class="row"><span class="name">Dynamixel XL330, the original</span><span class="val">20.2<small>rad/s</small></span></div><div class="track"><div class="fill" style="--w:100%"></div></div></div>
+          <div class="md-bar mine"><div class="row"><span class="name">Feetech HD1910, this build</span><span class="val">12<small>rad/s</small></span></div><div class="track"><div class="fill" style="--w:59.4%"></div></div></div>
+        </div>
+        <div class="md-facts">
+          <div><b>40%</b><span>slower at top speed</span></div>
+          <div><b>1.02 N·m</b><span>stall torque in the model</span></div>
+          <div><b>261 ms</b><span>for a 10° step, measured on a real servo</span></div>
+        </div>
+      </div>
+      <figure class="md-photo">
+        <img src="assets/projects/microduck/build.jpg" alt="The MicroDuck replica partly assembled on a workbench, with Feetech HD1910 servos in the legs and neck" width="1500" height="2000" loading="lazy">
+        <figcaption class="lg">The real one, on the bench</figcaption>
       </figure>
-      <p>Servo Studio's scan, ID assignment and live read-out have run on a real HD1910. Zeroing, the range limits and the test motion have only run against a mock bus. No policy has been deployed on the physical duck yet.</p>
     </div>
-    <figure class="fig">
-      <img src="assets/projects/microduck/figures/servo_step_response.png" alt="Step response of one HD1910 servo under different P and D gains" class="pad" loading="lazy">
-      <figcaption><b>One servo, eighteen gain settings.</b> Blue is P 5, the gain the policies were trained with.</figcaption>
-    </figure>
   </div>
 </section>
 
-<!-- =================== LIMITS AND CREDITS =================== -->
-<section class="section" id="limits">
-  <h2 class="section-title">What this does not show</h2>
-  <div class="grid-2">
-    <div class="prose">
-      <p><b>No real-robot result.</b> Every success rate above is from simulation, and the evaluation plant differs from the training one: the run policy is faster in MuJoCo than in Newton, for instance.</p>
-      <p><b>The actuator fit is borrowed.</b> It was identified by LuwuDynamics on their test bench, not on my servos. The wide randomisation is there to cover the gap, and whether it does is the first thing the hardware will answer.</p>
-      <p><b>Clean observations at evaluation.</b> No sensor noise, IMU misalignment or encoder bias is applied when the numbers are measured.</p>
-      <p><b>Small samples.</b> Most rows are 4 to 12 trials.</p>
-      <p><b>Run and sprint go straight.</b> Neither takes a turn command, and the jump is a hop of a few centimetres.</p>
+<section class="md-sec" id="app">
+  <div class="md-wrap">
+    <h2>Drive it from the keyboard.</h2>
+    <p class="md-sub">Duck Live is a Mac app that puts every skill under a key and lets you shove the duck around with the mouse.</p>
+    <div class="md-window">
+      <video muted loop playsinline controls preload="none" poster="assets/projects/microduck/duck_live_poster.jpg"><source src="assets/projects/microduck/duck_live.mp4" type="video/mp4"></video>
     </div>
-    <div class="prose">
-      <p><b>Built on:</b> <a href="https://github.com/pollen-robotics/microduck_rl" target="_blank" rel="noopener">Pollen Robotics' MicroDuck and its training tasks</a> (VelStand, stand-up, roulade, sit-stand and 14 of the emotion clips); the <a href="https://huggingface.co/blog/nvidia/microduck-isaac-lab-sim-to-real" target="_blank" rel="noopener">NVIDIA and Hugging Face Isaac Lab port</a> of the walking task; <a href="https://github.com/kissqy/Microduck-kissqy" target="_blank" rel="noopener">kissqy's HD1910 replica</a>; the HD1910 actuator fit from <a href="https://github.com/LuwuDynamics/xgoduck_rl" target="_blank" rel="noopener">LuwuDynamics</a> and the <a href="https://github.com/Rhoban/bam" target="_blank" rel="noopener">Rhoban BAM</a> servo model; and <a href="https://github.com/ThomasBurgess2000/microduck-max-height-jump" target="_blank" rel="noopener">Thomas Burgess's jump recipe</a>.</p>
-      <p>Code is Apache-2.0. The MicroDuck meshes are Pollen Robotics', CC BY-NC-SA 4.0.</p>
+    <div class="md-facts four">
+      <div><b>7</b><span>policies, one interface</span></div>
+      <div><b>27</b><span>emotion clips</span></div>
+      <div><b>1 in 920</b><span>falls while acting</span></div>
+      <div><b>0.62 ms</b><span>per control tick on a laptop</span></div>
     </div>
   </div>
 </section>
+
+<section class="md-sec" id="data">
+  <div class="md-wrap">
+    <h2>Measured, not promised.</h2>
+  </div>
+  <div class="md-rail" tabindex="0" aria-label="Result figures, scroll sideways">
+    <figure><img src="assets/projects/microduck/figures/duck_app_speed_tracking.png" alt="Achieved against commanded forward speed for the walk, run and sprint policies" loading="lazy"><figcaption><b>Speed.</b> The walk tracks its command, the run fades above 0.8 m/s, the sprint reaches 1.33.</figcaption></figure>
+    <figure><img src="assets/projects/microduck/figures/duck_app_roulade.png" alt="Rolled angle and trunk height through twelve front flips" loading="lazy"><figcaption><b>Flips.</b> Twelve attempts, twelve full rolls, all back at standing height.</figcaption></figure>
+    <figure><img src="assets/projects/microduck/figures/duck_app_recovery.png" alt="Falls and recoveries under pushes of increasing strength" loading="lazy"><figcaption><b>Pushes.</b> Of 63 falls in the push test, 62 ended back on its feet.</figcaption></figure>
+    <figure><img src="assets/projects/microduck/figures/servo_step_response.png" alt="Step response of one HD1910 servo under different gains" loading="lazy"><figcaption><b>The servo.</b> One real HD1910, eighteen gain settings. Blue is the one the policies use.</figcaption></figure>
+  </div>
+  <div class="md-wrap md-end">
+    <p>Everything on this page is simulation. No policy has run on the physical duck yet.</p>
+    <p>Built on <a href="https://github.com/pollen-robotics/microduck_rl" target="_blank" rel="noopener">Pollen Robotics' MicroDuck</a>, the <a href="https://huggingface.co/blog/nvidia/microduck-isaac-lab-sim-to-real" target="_blank" rel="noopener">NVIDIA and Hugging Face Isaac Lab port</a>, <a href="https://github.com/kissqy/Microduck-kissqy" target="_blank" rel="noopener">kissqy's HD1910 replica</a>, the servo fit from <a href="https://github.com/LuwuDynamics/xgoduck_rl" target="_blank" rel="noopener">LuwuDynamics</a> and <a href="https://github.com/Rhoban/bam" target="_blank" rel="noopener">Rhoban BAM</a>, and <a href="https://github.com/ThomasBurgess2000/microduck-max-height-jump" target="_blank" rel="noopener">Thomas Burgess's jump recipe</a>.</p>
+    <div class="md-links">
+      <a href="assets/projects/microduck/duck_live_app.pdf" target="_blank" rel="noopener">Policies and app (PDF)</a>
+      <a href="assets/projects/microduck/duck_live_animation.pdf" target="_blank" rel="noopener">Character layer (PDF)</a>
+      <a href="https://github.com/thejerrycheng/microduck_replication_feetech" target="_blank" rel="noopener">Code on GitHub</a>
+    </div>
+  </div>
+</section>
+
+</main>
 
 <footer class="site-footer night">
   <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
@@ -252,6 +283,55 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=20261117b"></script>
+<script>
+(function () {
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // hero: full-bleed video settles into a rounded card
+  var hero = document.querySelector(".md-hero");
+  if (hero && !reduce) {
+    var tick = false;
+    var set = function () { tick = false; var p = Math.max(0, Math.min(1, window.scrollY / (hero.offsetHeight * 0.55))); hero.style.setProperty("--p", p.toFixed(3)); };
+    window.addEventListener("scroll", function () { if (!tick) { tick = true; requestAnimationFrame(set); } }, { passive: true });
+    set();
+  }
+  // moves: glass switch
+  var stage = document.querySelector(".md-stage");
+  if (stage) {
+    var vids = [].slice.call(stage.querySelectorAll("video"));
+    var tabs = [].slice.call(stage.querySelectorAll(".md-seg button"));
+    var ind = stage.querySelector(".ind"), stat = stage.querySelector(".md-stat");
+    var cur = 0, timer;
+    var place = function () { var b = tabs[cur]; ind.style.width = b.offsetWidth + "px"; ind.style.transform = "translateX(" + b.offsetLeft + "px)"; };
+    var fill = function () { var v = vids[cur]; stat.querySelector(".n").textContent = v.dataset.n; stat.querySelector("small").textContent = v.dataset.u; stat.querySelector(".l").textContent = v.dataset.l; };
+    var go = function (i) {
+      if (i === cur) return;
+      vids[cur].classList.remove("on"); vids[cur].pause();
+      tabs[cur].setAttribute("aria-selected", "false");
+      cur = i;
+      tabs[cur].setAttribute("aria-selected", "true");
+      var v = vids[cur]; v.classList.add("on"); try { v.currentTime = 0; } catch (e) {} var pr = v.play(); if (pr && pr.catch) pr.catch(function () {});
+      place();
+      clearTimeout(timer); stat.classList.add("swap");
+      timer = setTimeout(function () { fill(); stat.classList.remove("swap"); }, reduce ? 0 : 280);
+    };
+    tabs.forEach(function (b, i) {
+      b.addEventListener("click", function () { go(i); });
+      b.addEventListener("keydown", function (e) {
+        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+        var n = (i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length; tabs[n].focus(); go(n);
+      });
+    });
+    place(); window.addEventListener("resize", place); window.addEventListener("load", place);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+  }
+  // servo bars grow when they come into view
+  var bars = document.getElementById("mdBars");
+  if (bars) {
+    if (!("IntersectionObserver" in window)) bars.classList.add("in");
+    else new IntersectionObserver(function (es, o) { es.forEach(function (e) { if (e.isIntersecting) { bars.classList.add("in"); o.disconnect(); } }); }, { threshold: 0.5 }).observe(bars);
+  }
+})();
+</script>
+<script src="assets/js/site.js?v=20261117c"></script>
 </body>
 </html>
