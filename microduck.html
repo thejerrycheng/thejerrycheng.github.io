@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MicroDuck on Feetech servos — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="A MicroDuck replica built on Feetech HD1910 servos: seven reinforcement-learning policies on one interface, a 1.3 m/s sprint, a front flip that lands standing, and a duck that gets itself up after every fall.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/microduck.html">
+  <meta property="og:title" content="Where am I? Autonomous exploration with a TurtleBot">
+  <meta property="og:description" content="Four exploration strategies, one unknown room, and a map you can watch being built.">
+  <meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/turtlebot/poster.jpg">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/favicon.v4-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/images/favicon.v4-16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+  <meta name="theme-color" content="#F4EEE2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css?v=20261117a">
+  <link rel="stylesheet" href="assets/css/project-page.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){try{var t=localStorage.getItem("theme-v2");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <style>
+    .md-clips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
+    .md-clips.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .md-clip { overflow: hidden; display: flex; flex-direction: column; }
+    .md-clip video { width: 100%; display: block; aspect-ratio: 16 / 9; object-fit: cover; background: #dfe3e8; }
+    .md-clip.wide video { aspect-ratio: 32 / 9; }
+    .md-clip p { padding: 12px 14px 14px; font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
+    .md-clip p b { color: var(--ink); }
+    @media (max-width: 820px) { .md-clips, .md-clips.two { grid-template-columns: minmax(0, 1fr); } }
+  </style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span><img src="assets/images/favicon.v4.svg" alt="" width="24" height="24">Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="news.html">News</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button type="button" class="theme-btn" aria-label="Switch between day and night" aria-pressed="false">
+      <span class="if-night"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Day</span></span>
+      <span class="if-day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="lbl">Night</span></span>
+    </button>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+      <a href="news.html">News</a>
+      <a href="cv.html">CV</a>
+</div>
+
+<header class="page-cover night">
+  <div class="wrap">
+    <p class="kicker">Reinforcement learning ◆ Legged robots ◆ Replication ◆ 2026</p>
+    <h1>A MicroDuck that runs on the wrong servos</h1>
+    <p>MicroDuck is Pollen Robotics' palm-sized open-source biped, designed around Dynamixel XL330 servos. I am building one from the community replica files with <b>Feetech HD1910</b> servos instead: heavier and about 40 % slower. This page is what it took to make the published training recipes work on that plant, and what the slower duck can still be taught to do. Everything measured here is in simulation; the hardware is being assembled.</p>
+  </div>
+</header>
+
+<section class="section" id="demo">
+  <div class="hero-video">
+    <video controls muted loop playsinline preload="metadata" poster="assets/projects/microduck/poster_roll.jpg">
+      <source src="assets/projects/microduck/roulade_head_7000.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-caption">
+    <p>The front flip: a forward roll over the top of the head that lands back on the feet with the head straight. Standing start, mean action, three takes.</p>
+    <div class="links">
+      <a href="https://github.com/thejerrycheng/microduck_replication_feetech" target="_blank" rel="noopener">Code</a>
+      <a href="assets/projects/microduck/duck_live_app.pdf" target="_blank" rel="noopener">Report: policies and app (PDF)</a>
+      <a href="assets/projects/microduck/duck_live_animation.pdf" target="_blank" rel="noopener">Report: character layer (PDF)</a>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="card stat-tile"><div class="num">7</div><div class="lab">Policies, one interface</div><div class="sub">61 observations in, 14 joint targets out</div></div>
+    <div class="card stat-tile"><div class="num">1.33<small>m/s</small></div><div class="lab">Sprint</div><div class="sub">0 falls in 4; the run policy tops out at 0.71</div></div>
+    <div class="card stat-tile"><div class="num">12<small>/12</small></div><div class="lab">Front flips landed</div><div class="sub">368° mean roll, back on the feet</div></div>
+    <div class="card stat-tile"><div class="num">24<small>/24</small></div><div class="lab">Get-ups from the floor</div><div class="sub">Prone, supine and side, within 0.78 s</div></div>
+    <div class="card stat-tile"><div class="num">0.62<small>ms</small></div><div class="lab">Per control tick</div><div class="sub">Physics and policy on a laptop CPU, 32× real time</div></div>
+    <div class="card stat-tile"><div class="num">1<small>/920</small></div><div class="lab">Falls while acting</div><div class="sub">27 emotion clips played on top of the policies</div></div>
+  </div>
+</section>
+
+<!-- =================== WHAT IS NEW =================== -->
+<section class="section" id="novelty">
+  <h2 class="section-title">What is new here</h2>
+  <p class="lead">The walking recipe is NVIDIA and Hugging Face's Isaac Lab port of Pollen's task, and the sit, stand, roll and jump tasks are ports of open-source MicroDuck work, credited below. These four things are mine.</p>
+
+  <div class="grid-2" style="margin-top:24px">
+    <div class="card finding">
+      <div class="no">1</div>
+      <h3>A different actuator, modelled instead of hoped for</h3>
+      <p>The official robot is trained against a fitted model of the XL330. I swapped in a fitted model of the HD1910 (the Rhoban BAM m6 fit published by LuwuDynamics) and wrote the drive the way Feetech firmware computes it: duty = error × P × 0.166 × gain ratio, a 0.97 duty ceiling, no current limiter, a 7.4 to 8.0 V supply that sags under load and a 3 to 6 step command delay. Stall torque comes out at <b>1.02 N·m</b> and no-load speed near <b>12 rad/s</b>, against 20.2 for the XL330.</p>
+      <p>What I could not model, I randomised. The replica is about 75 g heavier, and its computer, battery and IMU sit in different places, so every body's mass is scaled 0.90 to 1.25 (official: trunk only, 0.95 to 1.05), the trunk's centre of mass moves up to ±25 mm, and sole friction spans 0.5 to 1.3.</p>
+    </div>
+    <div class="card finding">
+      <div class="no">2</div>
+      <h3>One network that walks, stands and gets up</h3>
+      <p>The walking policy is also the standing policy and the recovery policy. It tracks forward speed from −0.4 to 0.6 m/s to within <b>0.05 m/s</b>, balances at zero command at 116 mm without the squat earlier exports settled into, and after a fall it gets the duck up by itself. In the app a fall is never undone by a reset.</p>
+      <p>Getting there took a change of training settings as much as a change of reward: at the walking policy's entropy and learning rate the action noise blew up and the duck spent 65 % of its frames on the floor. Dropping both, and cloning the upright frames from a separate stand-up expert, is what removed the squat.</p>
+    </div>
+    <div class="card finding">
+      <div class="no">3</div>
+      <h3>Agility on a servo that is too slow to jump</h3>
+      <p>Community attempts at a standing aerial flip on the faster XL330 never succeeded unassisted, and an open-loop crouch-and-extend on my plant does not leave the ground. So the flip is Pollen's roulade, a roll over the flat top of the head. Ported to the HD1910 it lands standing <b>12 times in 12</b>.</p>
+      <p>The first version landed with the head 58° away from home. A Gaussian reward for returning it paid almost nothing at that error, so it had no gradient to follow; adding a plain L1 cost that switches on after landing brought the head to <b>3.7°</b>. A separate sprint policy, with the forward-speed weight raised from 3 to 15, runs at 1.33 m/s where the general run policy collapses above 0.9.</p>
+    </div>
+    <div class="card finding">
+      <div class="no">4</div>
+      <h3>A character on top, and tools underneath</h3>
+      <p><b>Duck Live</b> is a Mac app that puts all seven policies under the keyboard: arrows walk and turn, a modifier runs, one key each for sit, jump and flip, and the mouse pulls the duck with a spring. The same plant the policies trained on runs on the laptop's CPU.</p>
+      <p>A character layer moves only the head, neck and beak and chooses when to fire the policies: 27 emotion clips (14 from Pollen, 13 written here), an idle life that looks around, breathes and dozes off, and reactions to being pushed. Across 920 jittered trials the duck fell once. <b>Duck Servo Studio</b> is the browser tool for the real servos: find them, assign IDs, zero them, plot them live.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== CLIPS =================== -->
+<section class="section" id="clips">
+  <h2 class="section-title">What it does</h2>
+  <p class="lead">Every clip is the policy's mean action from a standing start, not a training rollout. A policy that only works with exploration noise switched on is not one that can be deployed, and one early sitting policy was exactly that: 3 of 16 seated without noise, 16 of 16 with it.</p>
+  <div class="md-clips">
+    <div class="card md-clip">
+      <video muted loop playsinline controls preload="metadata"><source src="assets/projects/microduck/sprint_max_7998_vx1_2.mp4" type="video/mp4"></video>
+      <p><b>Sprint.</b> Commanded 1.2 m/s, measured 1.29 m/s in this clip.</p>
+    </div>
+    <div class="card md-clip">
+      <video muted loop playsinline controls preload="metadata"><source src="assets/projects/microduck/jump_1500.mp4" type="video/mp4"></video>
+      <p><b>Jump.</b> A 22 to 27 mm hop, 12 take-offs and 12 standing landings in 12.</p>
+    </div>
+    <div class="card md-clip">
+      <video muted loop playsinline controls preload="metadata"><source src="assets/projects/microduck/velstand_21495_getup.mp4" type="video/mp4"></video>
+      <p><b>Getting up.</b> The walking policy at zero command, from prone, supine and side.</p>
+    </div>
+  </div>
+  <div class="md-clips two">
+    <div class="card md-clip wide">
+      <video muted loop playsinline controls preload="metadata"><source src="assets/projects/microduck/run_before_after_vx0_9.mp4" type="video/mp4"></video>
+      <p><b>Run, before and after.</b> At a 0.9 m/s command the earlier policy reaches 0.45 m/s and the retrained one 0.62.</p>
+    </div>
+    <div class="card md-clip wide">
+      <video muted loop playsinline controls preload="metadata"><source src="assets/projects/microduck/sitstand_before_after.mp4" type="video/mp4"></video>
+      <p><b>Sit and stand, before and after.</b> A 0.4 s posture ramp cut the transitions from about 1.0 s and 0.62 s to 0.32 s and 0.26 s.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== RESULTS =================== -->
+<section class="section" id="results">
+  <h2 class="section-title">Measured</h2>
+  <p class="lead">These numbers come from the app's plant: C MuJoCo with the HD1910 actuator model, backlash, battery sag and command delay. Training ran on Isaac Lab 3.0 with the Newton backend, so they are success rates for this simulator, not for a robot.</p>
+
+  <div class="grid-2" style="margin-top:24px">
+    <figure class="fig">
+      <img src="assets/projects/microduck/figures/duck_app_speed_tracking.png" alt="Achieved against commanded forward speed for the walk, run and sprint policies" class="pad" loading="lazy">
+      <figcaption><b>Three gaits, one speed dial.</b> The walk tracks its whole band. The run follows up to about 0.8 m/s and then falls. The sprint is a single fixed command, and it overshoots it.</figcaption>
+    </figure>
+    <figure class="fig">
+      <img src="assets/projects/microduck/figures/duck_app_roulade.png" alt="Rolled angle and trunk height through twelve front flips" class="pad" loading="lazy">
+      <figcaption><b>Twelve front flips.</b> Each one passes 360° and settles at standing height. A few take a second attempt at the roll before going over.</figcaption>
+    </figure>
+  </div>
+
+  <div class="table-wrap" style="margin-top:24px">
+    <table class="data-table">
+      <thead><tr><th>Behaviour</th><th>Policy</th><th>Result</th><th>Trials</th></tr></thead>
+      <tbody>
+        <tr><td>Walk, −0.4 to 0.6 m/s</td><td>VelStand</td><td>within 0.05 m/s of the command, 0 falls</td><td>4 per speed</td></tr>
+        <tr><td>Run</td><td>run v3</td><td>0.71 m/s at a 0.8 command; falls at 0.9 and above</td><td>4 per speed</td></tr>
+        <tr><td>Sprint</td><td>sprint-max</td><td class="hi">1.33 m/s (1.24 to 1.39), 0 falls</td><td>4</td></tr>
+        <tr><td>Sit / stand</td><td>fast sit-stand</td><td>0.28 s to seated, 0.19 s to standing</td><td>6</td></tr>
+        <tr><td>Jump</td><td>jump</td><td>22 to 27 mm rise, back under the walk policy in 0.48 s</td><td>12 of 12</td></tr>
+        <tr><td>Front flip</td><td>roulade, straight head</td><td class="hi">368° mean roll, standing after 1.94 s</td><td>12 of 12</td></tr>
+        <tr><td>Get up from the floor</td><td>VelStand or stand-up</td><td>upright in 0.40 to 0.78 s</td><td class="ok">24 of 24</td></tr>
+        <tr><td>Stop from the sprint</td><td>sprint to VelStand</td><td class="bad">ends on the floor once, then gets up</td><td>1 of 6</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-2" style="margin-top:24px">
+    <figure class="fig">
+      <img src="assets/projects/microduck/figures/duck_app_recovery.png" alt="Fraction of pushes that end in a fall and that are upright two seconds later; time to get up from three poses" class="pad" loading="lazy">
+      <figcaption><b>Pushed over, and up again.</b> Harder pushes knock the duck down more often (dashed), yet two seconds later it is upright in every condition but one (solid). Of 63 falls in the push test, 62 were recovered.</figcaption>
+    </figure>
+    <div class="card md-clip">
+      <video muted loop playsinline controls preload="metadata"><source src="assets/projects/microduck/push_velstand.mp4" type="video/mp4"></video>
+      <p><b>Push test while walking at 0.3 m/s.</b> No reset between pushes: when the duck goes down, the same policy gets it up and carries on.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== HARDWARE =================== -->
+<section class="section" id="hardware">
+  <h2 class="section-title">The real servo</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p>The one hardware measurement so far is a step response. One unloaded HD1910 at 7.6 V is stepped ±10° under a grid of position gains.</p>
+      <p>At the replica's gains, <b>P 5 and D 20</b>, the servo takes <b>261 ms</b> to cover 90 % of the step, with no overshoot. At the factory P 32 it takes 35 ms. Above that the servo is speed-limited: it gets no faster, only more overshoot, 27 % at P 80.</p>
+      <p>The policies were trained against P 5, so that is what the robot will run. It is a soft, slow joint, and it is the reason the delay and supply sag are in the training model at all.</p>
+      <p>Servo Studio's scan, ID assignment and live read-out have run on a real HD1910. Zeroing, the range limits and the test motion have only run against a mock bus. No policy has been deployed on the physical duck yet.</p>
+    </div>
+    <figure class="fig">
+      <img src="assets/projects/microduck/figures/servo_step_response.png" alt="Step response of one HD1910 servo under different P and D gains" class="pad" loading="lazy">
+      <figcaption><b>One servo, eighteen gain settings.</b> Blue is P 5, the gain the policies were trained with.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- =================== LIMITS AND CREDITS =================== -->
+<section class="section" id="limits">
+  <h2 class="section-title">What this does not show</h2>
+  <div class="grid-2">
+    <div class="prose">
+      <p><b>No real-robot result.</b> Every success rate above is from simulation, and the evaluation plant differs from the training one: the run policy is faster in MuJoCo than in Newton, for instance.</p>
+      <p><b>The actuator fit is borrowed.</b> It was identified by LuwuDynamics on their test bench, not on my servos. The wide randomisation is there to cover the gap, and whether it does is the first thing the hardware will answer.</p>
+      <p><b>Clean observations at evaluation.</b> No sensor noise, IMU misalignment or encoder bias is applied when the numbers are measured.</p>
+      <p><b>Small samples.</b> Most rows are 4 to 12 trials.</p>
+      <p><b>Run and sprint go straight.</b> Neither takes a turn command, and the jump is a hop of a few centimetres.</p>
+    </div>
+    <div class="prose">
+      <p><b>Built on:</b> <a href="https://github.com/pollen-robotics/microduck_rl" target="_blank" rel="noopener">Pollen Robotics' MicroDuck and its training tasks</a> (VelStand, stand-up, roulade, sit-stand and 14 of the emotion clips); the <a href="https://huggingface.co/blog/nvidia/microduck-isaac-lab-sim-to-real" target="_blank" rel="noopener">NVIDIA and Hugging Face Isaac Lab port</a> of the walking task; <a href="https://github.com/kissqy/Microduck-kissqy" target="_blank" rel="noopener">kissqy's HD1910 replica</a>; the HD1910 actuator fit from <a href="https://github.com/LuwuDynamics/xgoduck_rl" target="_blank" rel="noopener">LuwuDynamics</a> and the <a href="https://github.com/Rhoban/bam" target="_blank" rel="noopener">Rhoban BAM</a> servo model; and <a href="https://github.com/ThomasBurgess2000/microduck-max-height-jump" target="_blank" rel="noopener">Thomas Burgess's jump recipe</a>.</p>
+      <p>Code is Apache-2.0. The MicroDuck meshes are Pollen Robotics', CC BY-NC-SA 4.0.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js?v=20261117a"></script>
+</body>
+</html>
