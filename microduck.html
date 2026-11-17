@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/gotham.css?v=20261117a">
+  <link rel="stylesheet" href="assets/css/gotham.css?v=20261117b">
   <link rel="stylesheet" href="assets/css/project-page.css">
   <script>document.documentElement.classList.add('js');</script>
   <script>(function(){try{var t=localStorage.getItem("theme-v2");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
@@ -210,6 +210,10 @@
       <p>The one hardware measurement so far is a step response. One unloaded HD1910 at 7.6 V is stepped ±10° under a grid of position gains.</p>
       <p>At the replica's gains, <b>P 5 and D 20</b>, the servo takes <b>261 ms</b> to cover 90 % of the step, with no overshoot. At the factory P 32 it takes 35 ms. Above that the servo is speed-limited: it gets no faster, only more overshoot, 27 % at P 80.</p>
       <p>The policies were trained against P 5, so that is what the robot will run. It is a soft, slow joint, and it is the reason the delay and supply sag are in the training model at all.</p>
+      <figure class="fig" style="margin:6px 0 18px">
+        <img src="assets/projects/microduck/build.jpg" alt="The MicroDuck replica partly assembled on a workbench, with Feetech HD1910 servos in the legs and neck" loading="lazy">
+        <figcaption><b>The build so far.</b> The replica on the bench, with the HD1910 servos fitted in the legs and neck.</figcaption>
+      </figure>
       <p>Servo Studio's scan, ID assignment and live read-out have run on a real HD1910. Zeroing, the range limits and the test motion have only run against a mock bus. No policy has been deployed on the physical duck yet.</p>
     </div>
     <figure class="fig">
@@ -248,6 +252,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=20261117a"></script>
+<script src="assets/js/site.js?v=20261117b"></script>
 </body>
 </html>
