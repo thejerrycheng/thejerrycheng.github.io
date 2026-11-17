@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/gotham.css?v=20261117c">
+  <link rel="stylesheet" href="assets/css/gotham.css?v=20261117d">
   <script>document.documentElement.classList.add('js');</script>
   <script>(function(){try{var t=localStorage.getItem("theme-v2");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
   <style>
@@ -43,43 +43,77 @@
     .lg::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
       background: radial-gradient(120% 90% at 12% 0%, rgba(255,255,255,.30), transparent 46%), radial-gradient(90% 70% at 100% 100%, rgba(255,149,0,.16), transparent 55%); }
 
-    /* hero: full-bleed video that settles into a rounded card as the page scrolls */
-    .md-hero { position: relative; margin-top: calc(-1 * (var(--nav-h) + 24px)); --p: 0; }
+    /* hero: fills the window; the video settles into a rounded card as the page scrolls */
+    .md-hero { position: relative; margin-top: calc(-1 * (var(--nav-h) + 24px)); height: 100vh; height: 100svh; min-height: 560px; --p: 0; }
     .md-hero-media { position: absolute; inset: 0; background: var(--stage); overflow: hidden;
       clip-path: inset(calc(var(--p) * 56px) calc(var(--p) * max(20px, (100vw - 1080px) / 2 + 20px)) calc(var(--p) * 24px) round calc(var(--p) * 34px)); will-change: clip-path; }
-    .md-hero-media video { position: absolute; left: 0; bottom: 0; width: 100%; height: var(--vh); object-fit: cover; object-position: 55% 6%; display: block;
-      -webkit-mask-image: linear-gradient(180deg, transparent, #000 16%); mask-image: linear-gradient(180deg, transparent, #000 16%);
+    .md-hero-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 78%; display: block;
       transform: scale(calc(1 + var(--p) * .05)); transform-origin: 50% 100%; }
-    .md-hero { --vh: clamp(380px, 62svh, 56.25vw); }
-    .md-hero-text { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center;
-      padding: calc(var(--nav-h) + clamp(30px, 6svh, 64px)) 20px 30px; color: var(--on);
+    .md-hero-media video.ph { display: none; }
+    .md-hero-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(22,24,28,.55), rgba(22,24,28,0) 42%); pointer-events: none; }
+    .md-hero-text { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; align-items: center; text-align: center;
+      padding: calc(var(--nav-h) + clamp(28px, 7svh, 72px)) 20px clamp(26px, 5svh, 44px); color: var(--on);
       opacity: calc(1 - var(--p) * 1.25); transform: translateY(calc(var(--p) * -26px)); }
     .md-hero h1 { font-size: clamp(54px, 9.5vw, 120px); letter-spacing: -0.045em; color: var(--on); margin: 0; }
     .md-hero-text p { margin-top: 14px; max-width: 30ch; font-size: clamp(18px, 2.1vw, 25px); line-height: 1.3; letter-spacing: -0.015em; color: var(--on-soft); text-wrap: balance; }
-    .md-pills { margin-top: calc(var(--vh) - 74px); display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .md-pills { margin-top: auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
     .md-pill { display: inline-flex; align-items: center; height: 44px; padding: 0 20px; border-radius: 999px; font-size: 15px; font-weight: 500; text-decoration: none; transition: transform .25s cubic-bezier(.2,.8,.2,1), background .25s; }
     a.md-pill:hover { transform: scale(1.05); }
     .md-pill.quiet { font-weight: 400; color: var(--on-soft); }
     .md-pill.quiet i { width: 7px; height: 7px; border-radius: 50%; background: var(--hi); margin-right: 9px; }
 
-    /* moves: one stage, a glass switch, a number that changes with it */
-    .md-stage { position: relative; margin-top: 34px; aspect-ratio: 16 / 9; border-radius: 34px; overflow: hidden; background: var(--stage); }
-    .md-stage video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.05); filter: blur(14px);
+    /* headings ease in once */
+    .js .md-sec h2, .js .md-sec .md-sub { opacity: 0; filter: blur(12px); transform: translateY(18px); transition: opacity .9s ease, filter .9s ease, transform .9s cubic-bezier(.2,.8,.2,1); }
+    .js .md-sec .md-sub { transition-delay: .12s; }
+    .js .md-sec.seen h2, .js .md-sec.seen .md-sub { opacity: 1; filter: none; transform: none; }
+
+    /* teleop: the app on top, the keys being pressed underneath */
+    .md-deck { margin-top: 34px; border-radius: 34px; overflow: hidden; background: var(--stage); }
+    .md-stage { position: relative; aspect-ratio: 16 / 9; background: var(--stage); }
+    .md-stage video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.04); filter: blur(14px);
       transition: opacity .6s ease, transform .9s cubic-bezier(.2,.8,.2,1), filter .6s ease; }
     .md-stage video.on { opacity: 1; transform: none; filter: none; }
-    .md-stat { position: absolute; left: 22px; top: 22px; padding: 16px 22px 15px; border-radius: 26px; min-width: 150px; }
-    .md-stat b { display: block; font-family: var(--font-display); font-weight: 600; font-size: clamp(34px, 5vw, 58px); line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
-    .md-stat b small { font-size: .42em; font-weight: 500; letter-spacing: -0.01em; margin-left: 4px; color: var(--on-soft); }
-    .md-stat .l { display: block; margin-top: 7px; font-size: 14px; color: var(--on-soft); }
-    .md-stat b, .md-stat .l { transition: opacity .28s ease, filter .28s ease, transform .28s ease; }
-    .md-stat.swap b, .md-stat.swap .l { opacity: 0; filter: blur(10px); transform: translateY(6px) scale(.96); }
-    .md-seg { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); display: flex; padding: 5px; border-radius: 999px; }
+    .md-panel { position: relative; padding: 18px 22px 22px; display: grid; gap: 18px;
+      background: radial-gradient(60% 140% at 12% 120%, rgba(255,149,0,.34), transparent 60%), radial-gradient(50% 120% at 92% -20%, rgba(96,140,255,.30), transparent 62%), #23262e; }
+    .md-segwrap { overflow-x: auto; scrollbar-width: none; margin: 0 -22px; padding: 0 22px; }
+    .md-segwrap::-webkit-scrollbar { display: none; }
+    .md-seg { position: relative; display: inline-flex; padding: 5px; border-radius: 999px; }
     .md-seg button { position: relative; z-index: 1; appearance: none; border: 0; background: none; cursor: pointer; font: inherit; font-size: 15px; font-weight: 500; color: var(--on-soft);
-      height: 40px; padding: 0 20px; border-radius: 999px; white-space: nowrap; transition: color .3s; }
+      height: 40px; padding: 0 18px; border-radius: 999px; white-space: nowrap; transition: color .3s; }
     .md-seg button[aria-selected="true"] { color: #1d1d1f; }
-    .md-seg button:focus-visible, .md-pill:focus-visible { outline: 2px solid var(--hi); outline-offset: 3px; }
+    .md-seg button:focus-visible, .md-pill:focus-visible, .md-arrows button:focus-visible { outline: 2px solid var(--hi); outline-offset: 3px; }
     .md-seg .ind { position: absolute; z-index: 0; top: 5px; left: 0; height: 40px; width: 60px; border-radius: 999px; background: rgba(255,255,255,.94);
       box-shadow: 0 2px 10px rgba(0,0,0,.25), inset 0 1px 0 #fff; transition: transform .5s cubic-bezier(.3,1.35,.5,1), width .5s cubic-bezier(.3,1.35,.5,1); }
+    .md-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+    .md-kb { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; color: var(--on); }
+    .md-kg { display: grid; justify-items: center; gap: 7px; }
+    .md-kg > span { font-size: 11.5px; color: rgba(255,255,255,.55); letter-spacing: .01em; }
+    .md-keys { display: grid; grid-template-columns: repeat(3, 40px); gap: 5px; }
+    .md-keys.one { display: flex; }
+    .md-key { font-family: inherit; height: 40px; min-width: 40px; padding: 0 10px; border-radius: 11px; display: grid; place-items: center; font-size: 14px; font-weight: 500; line-height: 1; color: var(--on);
+      transition: transform .14s ease, background .14s ease, box-shadow .14s ease, color .14s ease; }
+    .md-key.w { min-width: 92px; }
+    .md-key.hit { background: linear-gradient(180deg, #ffbe55, #ff9500); color: #1d1d1f; border-color: rgba(255,255,255,.6); transform: translateY(2px) scale(.96);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 0 26px rgba(255,149,0,.6); }
+    .md-read { text-align: right; color: var(--on); margin-left: auto; }
+    .md-read b { display: block; font-family: var(--font-display); font-weight: 600; font-size: clamp(34px, 4.4vw, 52px); line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+    .md-read b small { font-size: .42em; font-weight: 500; letter-spacing: -0.01em; margin-left: 5px; color: var(--on-soft); }
+    .md-read .l { display: block; margin-top: 6px; font-size: 14px; color: var(--on-soft); }
+    .md-hint { font-size: 15px; color: var(--on-soft); min-height: 1.5em; }
+    .md-read b, .md-read .l, .md-hint { transition: opacity .28s ease, filter .28s ease, transform .28s ease; }
+    .md-deck.swap .md-read b, .md-deck.swap .md-read .l, .md-deck.swap .md-hint { opacity: 0; filter: blur(10px); transform: translateY(6px); }
+
+    /* moods: a sideways rail */
+    .md-moods { margin-top: 34px; display: grid; grid-auto-flow: column; grid-auto-columns: clamp(220px, 26vw, 310px); gap: 16px; overflow-x: auto; scroll-snap-type: x proximity;
+      padding: 10px max(20px, (100vw - 1040px) / 2) 18px; scrollbar-width: none; }
+    .md-moods::-webkit-scrollbar { display: none; }
+    .md-mood { position: relative; margin: 0; aspect-ratio: 1; border-radius: 30px; overflow: hidden; background: var(--stage-2); scroll-snap-align: center;
+      transform: scale(var(--s, 1)); transition: transform .25s ease-out; }
+    .md-mood video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .md-mood figcaption { position: absolute; left: 12px; bottom: 12px; height: 38px; padding: 0 14px 0 11px; border-radius: 999px; display: inline-flex; align-items: center; gap: 7px; font-size: 14.5px; font-weight: 500; }
+    .md-arrows { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
+    .md-arrows button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-size: 18px; cursor: pointer; transition: background .2s, transform .2s; }
+    .md-arrows button:hover { background: var(--panel-2); transform: scale(1.06); }
 
     /* servos */
     .md-split { margin-top: 40px; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(24px, 4vw, 56px); align-items: center; }
@@ -100,10 +134,7 @@
     .md-photo img { display: block; width: 100%; height: auto; }
     .md-photo figcaption { position: absolute; left: 16px; bottom: 16px; padding: 10px 16px; border-radius: 999px; font-size: 14px; background: linear-gradient(180deg, rgba(40,40,44,.42), rgba(40,40,44,.30)); }
 
-    /* app */
-    .md-window { margin-top: 34px; border-radius: 22px; overflow: hidden; background: var(--stage); box-shadow: 0 30px 80px -30px rgba(0,0,0,.45); }
-    .md-window video { display: block; width: 100%; height: auto; aspect-ratio: 1600 / 940; }
-    .md-facts.four { grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 0; margin-top: 18px; }
+    .md-facts.four { grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 0; margin-top: 22px; }
 
     /* data */
     .md-rail { margin-top: 34px; display: grid; grid-auto-flow: column; grid-auto-columns: min(560px, 84vw); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;
@@ -124,19 +155,29 @@
 
     @media (max-width: 760px) {
       .md-hero-media { clip-path: inset(calc(var(--p) * 40px) calc(var(--p) * 16px) calc(var(--p) * 16px) round calc(var(--p) * 26px)); }
-      .md-stage { aspect-ratio: 4 / 5; border-radius: 26px; }
-      .md-stage video { object-position: 50% 50%; }
-      .md-stat { left: 14px; top: 14px; padding: 12px 16px; border-radius: 20px; min-width: 0; }
-      .md-seg { bottom: 14px; }
-      .md-seg button { padding: 0 13px; font-size: 14px; }
+      .md-hero-media video.wd { display: none; }
+      .md-hero-media video.ph { display: block; top: auto; bottom: 0; height: 72%; object-position: 50% 100%;
+        -webkit-mask-image: linear-gradient(180deg, transparent, #000 14%); mask-image: linear-gradient(180deg, transparent, #000 14%); }
+      .md-hero-media { background: #1c1e23; }
+      .md-deck { border-radius: 26px; }
+      .md-panel { padding: 14px 14px 18px; gap: 14px; }
+      .md-segwrap { margin: 0 -14px; padding: 0 14px; }
+      .md-seg button { padding: 0 14px; font-size: 14px; }
+      .md-kb { gap: 10px 12px; }
+      .md-keys { grid-template-columns: repeat(3, 34px); gap: 4px; }
+      .md-key { height: 34px; min-width: 34px; padding: 0 8px; border-radius: 9px; font-size: 13px; }
+      .md-key.w { min-width: 70px; }
+      .md-read { text-align: left; margin-left: 0; }
       .md-split { grid-template-columns: minmax(0, 1fr); }
       .md-photo { border-radius: 26px; }
       .md-facts.four { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 6px; }
-      .md-window { border-radius: 14px; }
+      .md-mood { border-radius: 24px; }
     }
     @media (prefers-reduced-motion: reduce) {
       .md-hero { --p: 0 !important; }
       .md *, .md *::before { transition: none !important; }
+      .js .md-sec h2, .js .md-sec .md-sub { opacity: 1; filter: none; transform: none; }
+      .md-mood { --s: 1 !important; }
       .md-bar .fill { transform: none; }
     }
   </style>
@@ -173,9 +214,8 @@
 
 <header class="md-hero" id="top">
   <div class="md-hero-media">
-    <video autoplay muted loop playsinline preload="auto" poster="assets/projects/microduck/live_poster.jpg" aria-label="The simulated MicroDuck walking and turning">
-      <source src="assets/projects/microduck/live_walk.mp4" type="video/mp4">
-    </video>
+    <video class="wd" autoplay muted loop playsinline preload="auto" poster="assets/projects/microduck/hero_poster.jpg" aria-label="The simulated MicroDuck walking a curve, then saying hello"></video>
+    <video class="ph" autoplay muted loop playsinline preload="auto" poster="assets/projects/microduck/hero_phone.jpg" aria-label="The simulated MicroDuck saying hello"></video>
   </div>
   <div class="md-hero-text">
     <h1>MicroDuck</h1>
@@ -188,25 +228,87 @@
   </div>
 </header>
 
-<section class="md-sec" id="moves">
+<section class="md-sec" id="teleop">
   <div class="md-wrap">
-    <h2>Seven skills. One small duck.</h2>
-    <div class="md-stage">
-      <video class="on" muted loop playsinline autoplay preload="metadata" data-n="1.33" data-u="m/s" data-l="Top speed"><source src="assets/projects/microduck/live_sprint.mp4" type="video/mp4"></video>
-      <video muted loop playsinline preload="none" data-n="12" data-u="of 12" data-l="Flips landed standing"><source src="assets/projects/microduck/live_flip.mp4" type="video/mp4"></video>
-      <video muted loop playsinline preload="none" data-n="24" data-u="of 24" data-l="Falls recovered alone"><source src="assets/projects/microduck/live_getup.mp4" type="video/mp4"></video>
-      <video muted loop playsinline preload="none" data-n="0.28" data-u="s" data-l="To sit down"><source src="assets/projects/microduck/live_sit.mp4" type="video/mp4"></video>
-      <div class="md-stat lg" aria-live="polite"><b><span class="n">1.33</span><small>m/s</small></b><span class="l">Top speed</span></div>
-      <div class="md-seg lg" role="tablist" aria-label="Choose a move">
-        <span class="ind" aria-hidden="true"></span>
-        <button type="button" role="tab" aria-selected="true">Sprint</button>
-        <button type="button" role="tab" aria-selected="false">Flip</button>
-        <button type="button" role="tab" aria-selected="false">Get up</button>
-        <button type="button" role="tab" aria-selected="false">Sit</button>
+    <h2>Seven skills. One keyboard.</h2>
+    <p class="md-sub">Every clip is a fresh run of the current policies in Duck Live, driven by the keys lighting up below.</p>
+    <div class="md-deck">
+      <div class="md-stage">
+      <video class="on" autoplay muted loop playsinline preload="metadata" poster="assets/projects/microduck/app_walk.jpg" data-k="walk" data-n="0.6" data-u="m/s" data-l="Top walking speed, across four levels" data-h="Hold ▲ or ▼. Tap A and D to change speed."><source src="assets/projects/microduck/app_walk.mp4" type="video/mp4"></video>
+      <video muted loop playsinline preload="none" poster="assets/projects/microduck/app_steer.jpg" data-k="steer" data-n="1.0" data-u="rad/s" data-l="Turning on the spot" data-h="◀ ▶ turn. Add ▲ to curve. Hold ⌥ to sidestep."><source src="assets/projects/microduck/app_steer.mp4" type="video/mp4"></video>
+      <video muted loop playsinline preload="none" poster="assets/projects/microduck/app_run.jpg" data-k="run" data-n="1.33" data-u="m/s" data-l="Sprint" data-h="Hold ⌘ with ▲ to run. At speed 5 it sprints."><source src="assets/projects/microduck/app_run.mp4" type="video/mp4"></video>
+      <video muted loop playsinline preload="none" poster="assets/projects/microduck/app_sit.jpg" data-k="sit" data-n="0.28" data-u="s" data-l="To sit down" data-h="S sits. S again, or ▲, stands it back up."><source src="assets/projects/microduck/app_sit.mp4" type="video/mp4"></video>
+      <video muted loop playsinline preload="none" poster="assets/projects/microduck/app_jump.jpg" data-k="jump" data-n="12" data-u="of 12" data-l="Jumps landed standing" data-h="Space."><source src="assets/projects/microduck/app_jump.mp4" type="video/mp4"></video>
+      <video muted loop playsinline preload="none" poster="assets/projects/microduck/app_flip.jpg" data-k="flip" data-n="12" data-u="of 12" data-l="Front flips landed standing" data-h="R."><source src="assets/projects/microduck/app_flip.mp4" type="video/mp4"></video>
+      <video muted loop playsinline preload="none" poster="assets/projects/microduck/app_push.jpg" data-k="push" data-n="62" data-u="of 63" data-l="Falls it got up from" data-h="Hold ⌘ and drag the duck. Let go and it recovers."><source src="assets/projects/microduck/app_push.mp4" type="video/mp4"></video>
+      <video muted loop playsinline preload="none" poster="assets/projects/microduck/app_emote.jpg" data-k="emote" data-n="27" data-u="clips" data-l="Played on top of the walking policy" data-h="Number and letter keys."><source src="assets/projects/microduck/app_emote.mp4" type="video/mp4"></video>
+      </div>
+      <div class="md-panel">
+        <div class="md-segwrap"><div class="md-seg lg" role="tablist" aria-label="Choose a skill">
+            <span class="ind" aria-hidden="true"></span>
+            <button type="button" role="tab" aria-selected="true">Walk</button>
+            <button type="button" role="tab" aria-selected="false">Turn and sidestep</button>
+            <button type="button" role="tab" aria-selected="false">Run and sprint</button>
+            <button type="button" role="tab" aria-selected="false">Sit</button>
+            <button type="button" role="tab" aria-selected="false">Jump</button>
+            <button type="button" role="tab" aria-selected="false">Flip</button>
+            <button type="button" role="tab" aria-selected="false">Push</button>
+            <button type="button" role="tab" aria-selected="false">Emotions</button>
+        </div></div>
+        <div class="md-row">
+          <div class="md-kb" aria-hidden="true">
+            <div class="md-kg"><div class="md-keys"><i></i><kbd class="md-key lg" data-key="up">▲</kbd><i></i><kbd class="md-key lg" data-key="left">◀</kbd><kbd class="md-key lg" data-key="down">▼</kbd><kbd class="md-key lg" data-key="right">▶</kbd></div><span>walk, turn</span></div>
+            <div class="md-kg"><div class="md-keys one"><kbd class="md-key lg" data-key="meta">⌘</kbd></div><span>run</span></div>
+            <div class="md-kg"><div class="md-keys one"><kbd class="md-key lg" data-key="alt">⌥</kbd></div><span>sidestep</span></div>
+            <div class="md-kg"><div class="md-keys one" style="gap:5px"><kbd class="md-key lg" data-key="a">A</kbd><kbd class="md-key lg" data-key="d">D</kbd></div><span>slower, faster</span></div>
+            <div class="md-kg"><div class="md-keys one"><kbd class="md-key lg" data-key="s">S</kbd></div><span>sit</span></div>
+            <div class="md-kg"><div class="md-keys one"><kbd class="md-key lg w" data-key="space">space</kbd></div><span>jump</span></div>
+            <div class="md-kg"><div class="md-keys one"><kbd class="md-key lg" data-key="r">R</kbd></div><span>flip</span></div>
+            <div class="md-kg"><div class="md-keys one"><kbd class="md-key lg w" data-key="drag">⌘ drag</kbd></div><span>push</span></div>
+            <div class="md-kg"><div class="md-keys one"><kbd class="md-key lg" data-key="emo">Q</kbd></div><span>emotion</span></div>
+          </div>
+          <div class="md-read" aria-live="polite"><b><span class="n">0.6</span><small>m/s</small></b><span class="l">Top walking speed, across four levels</span></div>
+        </div>
+        <p class="md-hint">Hold ▲ or ▼. Tap A and D to change speed.</p>
       </div>
     </div>
-    <p class="md-note">Numbers come from separate simulation trials, not from these clips.</p>
+    <div class="md-facts four">
+      <div><b>7</b><span>policies, one interface</span></div>
+      <div><b>27</b><span>emotion clips</span></div>
+      <div><b>1 in 920</b><span>falls while acting</span></div>
+      <div><b>0.62 ms</b><span>per control tick on a laptop</span></div>
+    </div>
+    <p class="md-note">The numbers come from separate simulation trials, not from these clips. Each clip is one good take.</p>
   </div>
+</section>
+
+<section class="md-sec" id="moods">
+  <div class="md-wrap">
+    <h2>It has moods.</h2>
+    <p class="md-sub">Head, neck and beak act out 27 emotions while the legs stay on the learned policy. Here are 19 of them.</p>
+  </div>
+  <div class="md-moods" id="mdMoods" tabindex="0" aria-label="Emotion clips, scroll sideways">
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_hello.jpg" aria-label="Looks at you, tilts its head one way then the other on two cheerful quacks, and nods."><source src="assets/projects/microduck/emo_hello.mp4" type="video/mp4"></video><figcaption class="lg"><span>👋</span>Hello</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_love.jpg" aria-label="Looks at you, then goes shy: head tilted and turned away, a slow sway on two soft coos, and a peek back."><source src="assets/projects/microduck/emo_love.mp4" type="video/mp4"></video><figcaption class="lg"><span>🥰</span>Love</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_laugh.jpg" aria-label="Beak up, the head wagging with a body dip on every 'ha': one long 'haaa', then seven short ones dying out."><source src="assets/projects/microduck/emo_laugh.mp4" type="video/mp4"></video><figcaption class="lg"><span>😂</span>Laugh</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_dance.jpg" aria-label="Side-steps left and right on a beat (the walk policy's lateral command), bobs its head and sings an eight-note tune."><source src="assets/projects/microduck/emo_dance.mp4" type="video/mp4"></video><figcaption class="lg"><span>💃</span>Dance</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_excited.jpg" aria-label="Six faster and faster head swings with a body bob on each, and a run of quacks climbing in pitch."><source src="assets/projects/microduck/emo_excited.mp4" type="video/mp4"></video><figcaption class="lg"><span>🤩</span>Excited</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_curious.jpg" aria-label="'What? what?': the head comes forward and tilts one way, then the other, on two rising chirps."><source src="assets/projects/microduck/emo_curious.mp4" type="video/mp4"></video><figcaption class="lg"><span>🤔</span>Curious</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_sing.jpg" aria-label="Beak up, sways and sings a ten-note phrase; the beak follows every note."><source src="assets/projects/microduck/emo_sing.mp4" type="video/mp4"></video><figcaption class="lg"><span>🎤</span>Sing</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_proud.jpg" aria-label="Beak high on a two-note fanfare, then looks slowly over its audience."><source src="assets/projects/microduck/emo_proud.mp4" type="video/mp4"></video><figcaption class="lg"><span>😎</span>Proud</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_happy.jpg" aria-label="Wiggles on the spot (the walk policy turning left-right), chirps climbing in pitch, then jumps for joy (the jump policy)."><source src="assets/projects/microduck/emo_happy.mp4" type="video/mp4"></video><figcaption class="lg"><span>😄</span>Happy</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_peck.jpg" aria-label="Head down to the floor, three pecks with a beak click each, then beak up to swallow with a content hum."><source src="assets/projects/microduck/emo_peck.mp4" type="video/mp4"></video><figcaption class="lg"><span>🌾</span>Peck</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_yawn.jpg" aria-label="A long yawn: the beak opens wide as the head tips back, then it droops, drowsy, and shakes itself awake."><source src="assets/projects/microduck/emo_yawn.mp4" type="video/mp4"></video><figcaption class="lg"><span>🥱</span>Yawn</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_sneeze.jpg" aria-label="'Ah... ah...': the head tips back in two steps, then snaps down on the sneeze and shakes it off."><source src="assets/projects/microduck/emo_sneeze.mp4" type="video/mp4"></video><figcaption class="lg"><span>🤧</span>Sneeze</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_startled.jpg" aria-label="Head snaps back with an alarm call, a quick step backwards (the walk policy), looks left and right, then creeps forward."><source src="assets/projects/microduck/emo_startled.mp4" type="video/mp4"></video><figcaption class="lg"><span>😱</span>Startled</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_angry.jpg" aria-label="Beak-up glare, then four head snaps with a hard bark on each and a small body pulse. Two voicings."><source src="assets/projects/microduck/emo_angry.mp4" type="video/mp4"></video><figcaption class="lg"><span>😠</span>Angry</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_sad.jpg" aria-label="Standing, the head droops while a low coo glides down with it, two slow silent head shakes, then back up."><source src="assets/projects/microduck/emo_sad.mp4" type="video/mp4"></video><figcaption class="lg"><span>😢</span>Sad</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_mock.jpg" aria-label="'Gnagnagnagna': beak up, the head rolling side to side on a staccato mocking run."><source src="assets/projects/microduck/emo_mock.mp4" type="video/mp4"></video><figcaption class="lg"><span>😜</span>Mock</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_showoff.jpg" aria-label="'Watch this': two quacks, a front flip (the front-flip policy), then the proud pose and its fanfare."><source src="assets/projects/microduck/emo_showoff.mp4" type="video/mp4"></video><figcaption class="lg"><span>🤸</span>Show off</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_nap.jpg" aria-label="Sits down (the sit-stand policy), the head sinks and it snores twice. It stays seated; S or an arrow wakes it."><source src="assets/projects/microduck/emo_nap.mp4" type="video/mp4"></video><figcaption class="lg"><span>😴</span>Nap</figcaption></figure>
+    <figure class="md-mood"><video muted loop playsinline preload="none" poster="assets/projects/microduck/emo_play_dead.jpg" aria-label="Alarm call while the head whips to the side and the duck sits, then it goes limp, rolls onto its back and lifts its legs, with a dying quack. Needs a mat."><source src="assets/projects/microduck/emo_play_dead.mp4" type="video/mp4"></video><figcaption class="lg"><span>💀</span>Play dead</figcaption></figure>
+  </div>
+  <div class="md-wrap"><div class="md-arrows"><button type="button" data-dir="-1" aria-label="Previous clips">‹</button><button type="button" data-dir="1" aria-label="Next clips">›</button></div></div>
 </section>
 
 <section class="md-sec" id="servos">
@@ -229,22 +331,6 @@
         <img src="assets/projects/microduck/build.jpg" alt="The MicroDuck replica partly assembled on a workbench, with Feetech HD1910 servos in the legs and neck" width="1500" height="2000" loading="lazy">
         <figcaption class="lg">The real one, on the bench</figcaption>
       </figure>
-    </div>
-  </div>
-</section>
-
-<section class="md-sec" id="app">
-  <div class="md-wrap">
-    <h2>Drive it from the keyboard.</h2>
-    <p class="md-sub">Duck Live is a Mac app that puts every skill under a key and lets you shove the duck around with the mouse.</p>
-    <div class="md-window">
-      <video muted loop playsinline controls preload="none" poster="assets/projects/microduck/duck_live_poster.jpg"><source src="assets/projects/microduck/duck_live.mp4" type="video/mp4"></video>
-    </div>
-    <div class="md-facts four">
-      <div><b>7</b><span>policies, one interface</span></div>
-      <div><b>27</b><span>emotion clips</span></div>
-      <div><b>1 in 920</b><span>falls while acting</span></div>
-      <div><b>0.62 ms</b><span>per control tick on a laptop</span></div>
     </div>
   </div>
 </section>
@@ -286,33 +372,46 @@
 <script>
 (function () {
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  // hero: full-bleed video settles into a rounded card
+  var D = "assets/projects/microduck/";
+  // hero: only the clip that fits this screen is downloaded
   var hero = document.querySelector(".md-hero");
-  if (hero && !reduce) {
-    var tick = false;
-    var set = function () { tick = false; var p = Math.max(0, Math.min(1, window.scrollY / (hero.offsetHeight * 0.55))); hero.style.setProperty("--p", p.toFixed(3)); };
-    window.addEventListener("scroll", function () { if (!tick) { tick = true; requestAnimationFrame(set); } }, { passive: true });
-    set();
+  if (hero) {
+    var phone = window.matchMedia("(max-width: 760px)").matches;
+    var hv = hero.querySelector(phone ? "video.ph" : "video.wd");
+    hv.src = D + (phone ? "hero_phone.mp4" : "hero.mp4"); var hp = hv.play(); if (hp && hp.catch) hp.catch(function () {});
+    if (!reduce) {
+      var tick = false;
+      var set = function () { tick = false; var p = Math.max(0, Math.min(1, window.scrollY / (hero.offsetHeight * 0.55))); hero.style.setProperty("--p", p.toFixed(3)); };
+      window.addEventListener("scroll", function () { if (!tick) { tick = true; requestAnimationFrame(set); } }, { passive: true });
+      set();
+    }
   }
-  // moves: glass switch
-  var stage = document.querySelector(".md-stage");
-  if (stage) {
-    var vids = [].slice.call(stage.querySelectorAll("video"));
-    var tabs = [].slice.call(stage.querySelectorAll(".md-seg button"));
-    var ind = stage.querySelector(".ind"), stat = stage.querySelector(".md-stat");
+  // headings
+  var secs = [].slice.call(document.querySelectorAll(".md-sec"));
+  if ("IntersectionObserver" in window) {
+    var so = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("seen"); so.unobserve(e.target); } }); }, { rootMargin: "0px 0px -18% 0px" });
+    secs.forEach(function (x) { so.observe(x); });
+  } else secs.forEach(function (x) { x.classList.add("seen"); });
+
+  // teleop: a glass switch, and a keyboard that follows the clip
+  var KEYS = {"walk":[[0.58,"down","up"],[3.18,"tap","d"],[5.78,"tap","d"],[8.39,"tap","d"],[10.99,"up","up"],[12.02,"down","down"],[14.63,"up","down"]],"steer":[[0.57,"down","left"],[2.77,"up","left"],[3.18,"down","right"],[5.38,"up","right"],[5.78,"down","up"],[6.78,"down","left"],[9.19,"up","left"],[9.19,"down","right"],[11.59,"up","right"],[11.59,"up","up"],[12.39,"down","alt"],[12.4,"down","left"],[14.8,"up","left"],[15.1,"down","right"],[17.5,"up","right"],[17.5,"up","alt"]],"run":[[0.56,"down","meta"],[0.56,"down","up"],[3.97,"up","up"],[3.97,"up","meta"],[5.57,"tap","d"],[6.08,"tap","d"],[6.68,"down","meta"],[6.68,"down","up"],[10.28,"up","up"],[10.28,"up","meta"]],"sit":[[0.57,"tap","s"],[2.77,"tap","s"],[4.57,"tap","s"],[6.78,"down","up"],[9.38,"up","up"]],"jump":[[0.97,"tap","space"],[5.17,"tap","space"]],"flip":[[0.97,"tap","r"],[5.97,"tap","r"]],"push":[[0.99,"down","meta"],[1.02,"down","drag"],[2.94,"up","drag"],[2.95,"up","meta"],[6.15,"down","meta"],[6.18,"down","drag"],[7.74,"up","drag"],[7.74,"up","meta"],[11.16,"down","up"],[12.57,"down","meta"],[12.6,"down","drag"],[13.94,"up","drag"],[13.94,"up","meta"],[16.96,"up","up"]],"emote":[[0.88,"tap","q"],[4.28,"tap","e"],[11.08,"tap","5"],[14.79,"tap","o"]]};
+  var deck = document.querySelector(".md-deck");
+  if (deck) {
+    var vids = [].slice.call(deck.querySelectorAll("video"));
+    var tabs = [].slice.call(deck.querySelectorAll(".md-seg button"));
+    var ind = deck.querySelector(".ind"), read = deck.querySelector(".md-read"), hint = deck.querySelector(".md-hint");
+    var caps = {}; [].forEach.call(deck.querySelectorAll(".md-key"), function (k) { caps[k.dataset.key] = k; });
     var cur = 0, timer;
     var place = function () { var b = tabs[cur]; ind.style.width = b.offsetWidth + "px"; ind.style.transform = "translateX(" + b.offsetLeft + "px)"; };
-    var fill = function () { var v = vids[cur]; stat.querySelector(".n").textContent = v.dataset.n; stat.querySelector("small").textContent = v.dataset.u; stat.querySelector(".l").textContent = v.dataset.l; };
+    var fill = function () { var v = vids[cur]; read.querySelector(".n").textContent = v.dataset.n; read.querySelector("small").textContent = v.dataset.u; read.querySelector(".l").textContent = v.dataset.l; hint.textContent = v.dataset.h; };
     var go = function (i) {
       if (i === cur) return;
-      vids[cur].classList.remove("on"); vids[cur].pause();
-      tabs[cur].setAttribute("aria-selected", "false");
-      cur = i;
-      tabs[cur].setAttribute("aria-selected", "true");
+      vids[cur].classList.remove("on"); vids[cur].pause(); tabs[cur].setAttribute("aria-selected", "false");
+      cur = i; tabs[cur].setAttribute("aria-selected", "true");
       var v = vids[cur]; v.classList.add("on"); try { v.currentTime = 0; } catch (e) {} var pr = v.play(); if (pr && pr.catch) pr.catch(function () {});
-      place();
-      clearTimeout(timer); stat.classList.add("swap");
-      timer = setTimeout(function () { fill(); stat.classList.remove("swap"); }, reduce ? 0 : 280);
+      place(); if (tabs[cur].scrollIntoView) tabs[cur].scrollIntoView({ block: "nearest", inline: "center", behavior: reduce ? "auto" : "smooth" });
+      clearTimeout(timer); deck.classList.add("swap");
+      timer = setTimeout(function () { fill(); deck.classList.remove("swap"); }, reduce ? 0 : 280);
     };
     tabs.forEach(function (b, i) {
       b.addEventListener("click", function () { go(i); });
@@ -323,7 +422,42 @@
     });
     place(); window.addEventListener("resize", place); window.addEventListener("load", place);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+    // which keys are down at time t of the current clip
+    var paint = function () {
+      requestAnimationFrame(paint);
+      var v = vids[cur], t = v.currentTime, ev = KEYS[v.dataset.k] || [], on = {}, emo = null;
+      for (var i = 0; i < ev.length && ev[i][0] <= t; i++) {
+        var a = ev[i][1], k = ev[i][2];
+        if (a === "down") on[k] = 1; else if (a === "up") on[k] = 0;
+        else if (t - ev[i][0] < 0.45) { if (caps[k]) on[k] = 1; else { on.emo = 1; } }
+        if (a === "tap" && !caps[k]) emo = k;
+      }
+      if (on.drag) on.meta = 0;
+      if (emo) caps.emo.textContent = emo.toUpperCase();
+      for (var c in caps) caps[c].classList.toggle("hit", !!on[c]);
+    };
+    requestAnimationFrame(paint);
+    // play only while on screen
+    if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { es.forEach(function (e) { var v = vids[cur]; if (e.isIntersecting) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } else v.pause(); }); }, { threshold: 0.2 }).observe(deck);
   }
+
+  // moods rail: clips play while visible, the centre card sits forward, arrows page it
+  var rail = document.getElementById("mdMoods");
+  if (rail) {
+    var cards = [].slice.call(rail.children);
+    if ("IntersectionObserver" in window) {
+      var mo = new IntersectionObserver(function (es) { es.forEach(function (e) { var v = e.target.querySelector("video"); if (e.isIntersecting) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } else v.pause(); }); }, { root: null, threshold: 0.35 });
+      cards.forEach(function (c) { mo.observe(c); });
+    }
+    var rt = false;
+    var focus = function () { rt = false; var r = rail.getBoundingClientRect(), mid = r.left + r.width / 2;
+      cards.forEach(function (c) { var b = c.getBoundingClientRect(), d = Math.min(1, Math.abs(b.left + b.width / 2 - mid) / (r.width / 2)); c.style.setProperty("--s", (1 - d * d * 0.1).toFixed(3)); }); };
+    if (!reduce) { rail.addEventListener("scroll", function () { if (!rt) { rt = true; requestAnimationFrame(focus); } }, { passive: true }); window.addEventListener("resize", focus); focus(); }
+    [].forEach.call(document.querySelectorAll(".md-arrows button"), function (b) {
+      b.addEventListener("click", function () { rail.scrollBy({ left: +b.dataset.dir * rail.clientWidth * 0.7, behavior: reduce ? "auto" : "smooth" }); });
+    });
+  }
+
   // servo bars grow when they come into view
   var bars = document.getElementById("mdBars");
   if (bars) {
@@ -332,6 +466,6 @@
   }
 })();
 </script>
-<script src="assets/js/site.js?v=20261117c"></script>
+<script src="assets/js/site.js?v=20261117d"></script>
 </body>
 </html>
