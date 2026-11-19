@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/gotham.css?v=20261117d">
+  <link rel="stylesheet" href="assets/css/gotham.css?v=20261119a">
   <script>document.documentElement.classList.add('js');</script>
   <script>(function(){try{var t=localStorage.getItem("theme-v2");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
   <style>
@@ -136,6 +136,17 @@
 
     .md-facts.four { grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 0; margin-top: 22px; }
 
+    /* hardware: three portrait clips */
+    .md-real { margin-top: 34px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .md-real figure { position: relative; margin: 0; aspect-ratio: 3 / 4; border-radius: 30px; overflow: hidden; background: var(--stage-2); }
+    .md-real video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .md-real figcaption { position: absolute; left: 12px; bottom: 12px; height: 38px; padding: 0 14px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 14.5px; font-weight: 500; }
+    @media (max-width: 760px) {
+      .md-real { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 74vw; overflow-x: auto; scroll-snap-type: x mandatory; margin-left: -20px; margin-right: -20px; padding: 0 20px 8px; scrollbar-width: none; }
+      .md-real::-webkit-scrollbar { display: none; }
+      .md-real figure { scroll-snap-align: center; border-radius: 24px; }
+    }
+
     /* data */
     .md-rail { margin-top: 34px; display: grid; grid-auto-flow: column; grid-auto-columns: min(560px, 84vw); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;
       padding: 0 max(20px, (100vw - 1040px) / 2) 14px; scrollbar-width: none; }
@@ -223,7 +234,7 @@
     <div class="md-pills">
       <a class="md-pill lg" href="https://github.com/thejerrycheng/microduck_replication_feetech" target="_blank" rel="noopener">Code</a>
       <a class="md-pill lg" href="assets/projects/microduck/duck_live_app.pdf" target="_blank" rel="noopener">Report</a>
-      <span class="md-pill lg quiet"><i></i>Simulation for now</span>
+      <a class="md-pill lg quiet" href="#hardware"><i></i>Hardware: iteration 1</a>
     </div>
   </div>
 </header>
@@ -335,6 +346,19 @@
   </div>
 </section>
 
+<section class="md-sec" id="hardware">
+  <div class="md-wrap">
+    <h2>Off the screen. Iteration one.</h2>
+    <p class="md-sub">The first hardware build, on real Feetech servos. Three clips: standing, sitting down and standing back up, and a flip.</p>
+    <div class="md-real" id="mdReal">
+      <figure><video muted loop playsinline preload="none" poster="assets/projects/microduck/real_v1_stand.jpg" aria-label="The real MicroDuck, iteration one, set down on a desk and standing on its own"><source src="assets/projects/microduck/real_v1_stand.mp4" type="video/mp4"></video><figcaption class="lg">Standing</figcaption></figure>
+      <figure><video muted loop playsinline preload="none" poster="assets/projects/microduck/real_v1_sitstand.jpg" aria-label="The real MicroDuck, iteration one, sitting down and standing back up on a desk"><source src="assets/projects/microduck/real_v1_sitstand.mp4" type="video/mp4"></video><figcaption class="lg">Sit and stand</figcaption></figure>
+      <figure><video muted loop playsinline preload="none" poster="assets/projects/microduck/real_v1_flip.jpg" aria-label="The real MicroDuck, iteration one, doing a flip on a desk"><source src="assets/projects/microduck/real_v1_flip.mp4" type="video/mp4"></video><figcaption class="lg">Flip</figcaption></figure>
+    </div>
+    <p class="md-note">Iteration one, filmed on the bench. These are single takes, not measured trials; the numbers on this page are still from simulation.</p>
+  </div>
+</section>
+
 <section class="md-sec" id="data">
   <div class="md-wrap">
     <h2>Measured, not promised.</h2>
@@ -346,7 +370,7 @@
     <figure><img src="assets/projects/microduck/figures/servo_step_response.png" alt="Step response of one HD1910 servo under different gains" loading="lazy"><figcaption><b>The servo.</b> One real HD1910, eighteen gain settings. Blue is the one the policies use.</figcaption></figure>
   </div>
   <div class="md-wrap md-end">
-    <p>Everything on this page is simulation. No policy has run on the physical duck yet.</p>
+    <p>The measured numbers on this page all come from simulation. The hardware clips are from iteration one of the physical build and have not been measured yet.</p>
     <p>Built on <a href="https://github.com/pollen-robotics/microduck_rl" target="_blank" rel="noopener">Pollen Robotics' MicroDuck</a>, the <a href="https://huggingface.co/blog/nvidia/microduck-isaac-lab-sim-to-real" target="_blank" rel="noopener">NVIDIA and Hugging Face Isaac Lab port</a>, <a href="https://github.com/kissqy/Microduck-kissqy" target="_blank" rel="noopener">kissqy's HD1910 replica</a>, the servo fit from <a href="https://github.com/LuwuDynamics/xgoduck_rl" target="_blank" rel="noopener">LuwuDynamics</a> and <a href="https://github.com/Rhoban/bam" target="_blank" rel="noopener">Rhoban BAM</a>, and <a href="https://github.com/ThomasBurgess2000/microduck-max-height-jump" target="_blank" rel="noopener">Thomas Burgess's jump recipe</a>.</p>
     <div class="md-links">
       <a href="assets/projects/microduck/duck_live_app.pdf" target="_blank" rel="noopener">Policies and app (PDF)</a>
@@ -458,6 +482,13 @@
     });
   }
 
+  // hardware clips play while visible
+  var real = document.getElementById("mdReal");
+  if (real && "IntersectionObserver" in window) {
+    var ro = new IntersectionObserver(function (es) { es.forEach(function (e) { var v = e.target.querySelector("video"); if (e.isIntersecting) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } else v.pause(); }); }, { threshold: 0.35 });
+    [].forEach.call(real.children, function (c) { ro.observe(c); });
+  }
+
   // servo bars grow when they come into view
   var bars = document.getElementById("mdBars");
   if (bars) {
@@ -466,6 +497,6 @@
   }
 })();
 </script>
-<script src="assets/js/site.js?v=20261117d"></script>
+<script src="assets/js/site.js?v=20261119a"></script>
 </body>
 </html>

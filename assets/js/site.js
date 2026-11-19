@@ -251,7 +251,13 @@
         var d = Math.min(k++, 6) * 70;
         el.style.setProperty("--rv-d", d + "ms");
         el.classList.add("rv-in");
-        setTimeout(function () { done(el); }, d + 1300);
+        /* tidy up once the entrance has fully settled; the timer is only a backstop */
+        var t, fin = function (ev) {
+          if (ev && (ev.target !== el || ev.propertyName !== "transform")) return;
+          el.removeEventListener("transitionend", fin); clearTimeout(t); done(el);
+        };
+        el.addEventListener("transitionend", fin);
+        t = setTimeout(fin, d + 1600);
       });
     }, { rootMargin: "0px 0px -7% 0px", threshold: 0.01 });
     set.forEach(function (el) {
