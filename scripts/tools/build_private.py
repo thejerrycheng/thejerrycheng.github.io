@@ -109,6 +109,11 @@ for slug in ("rehearse", "rehearse-wbc", "rehearse-library"):
     if os.path.exists(p(slug + "-private.html")):
         enc(p(slug + "-private.html"), p("assets", "private", slug + ".enc"))
 
+# ---- 5. the SuperDexterity page (coming soon). Its plaintext is generated, not hand-edited:
+#         python3 ~/Desktop/SuperDexterity/scripts/tools/build_site.py   writes superdexterity-private.html ----
+if os.path.exists(p("superdexterity-private.html")):
+    enc(p("superdexterity-private.html"), p("assets", "private", "superdexterity.enc"))
+
 json.dump(MANIFEST, open(MANIFEST_PATH, "w"), indent=1)
 
 print("\ndone — now regenerate the XMind/Markdown downloads if the ideas moved:")
