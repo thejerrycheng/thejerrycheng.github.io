@@ -111,8 +111,24 @@ for slug in ("rehearse", "rehearse-wbc", "rehearse-library"):
 
 # ---- 5. the SuperDexterity page (coming soon). Its plaintext is generated, not hand-edited:
 #         python3 ~/Desktop/SuperDexterity/scripts/tools/build_site.py   writes superdexterity-private.html ----
+#         Its media (hero still, thumbnails, videos) is never copied here in the clear: the page names each
+#         file in a data-sd / data-sd-poster attribute, and those files are encrypted straight from the
+#         project checkout (SD_MEDIA, default ~/Desktop/SuperDexterity/site/media) to
+#         assets/private/superdexterity/<name>.enc, which the page decrypts to blob URLs once unlocked.
 if os.path.exists(p("superdexterity-private.html")):
     enc(p("superdexterity-private.html"), p("assets", "private", "superdexterity.enc"))
+    import re
+    sd_names = sorted(set(re.findall(r'data-sd(?:-poster)?="([\w.-]+)"',
+                                     open(p("superdexterity-private.html"), encoding="utf-8").read())))
+    sd_media = os.path.expanduser(os.environ.get("SD_MEDIA") or "~/Desktop/SuperDexterity/site/media")
+    if sd_names:
+        os.makedirs(p("assets", "private", "superdexterity"), exist_ok=True)
+    sd_missing = [n for n in sd_names if not os.path.exists(os.path.join(sd_media, n))]
+    for n in sd_names:
+        if n not in sd_missing:
+            enc(os.path.join(sd_media, n), p("assets", "private", "superdexterity", n + ".enc"))
+    if sd_missing:
+        print(f"superdexterity: {len(sd_missing)} media file(s) not found in {sd_media}: {', '.join(sd_missing)}")
 
 json.dump(MANIFEST, open(MANIFEST_PATH, "w"), indent=1)
 
