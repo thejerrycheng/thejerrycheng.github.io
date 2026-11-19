@@ -1282,3 +1282,17 @@ details.exp[open]::details-content { height: auto; }
   .modal-panel, .mobile-menu { animation-duration: .01s; }
 }
 @media print { .rv { filter: none !important; } }
+
+/* ---- GitHub stars / forks on repo buttons (filled live by site.js) ---- */
+a.has-gh { display: inline-flex; align-items: center; gap: 7px; }
+.gh-stats { display: inline-flex; align-items: center; gap: 2px; margin-left: 1px; height: 20px; padding: 0 2px; border-radius: 999px;
+  background: radial-gradient(120% 90% at 15% 0%, rgba(255,255,255,0.6), transparent 55%), var(--wash);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), inset 0 0 0 0.5px var(--line-soft);
+  font-size: 11.5px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: 0; line-height: 1; color: var(--ink-soft, var(--ink)); text-decoration: none; }
+html[data-theme="night"] .gh-stats { background: var(--wash); box-shadow: inset 0 1px 0 rgba(255,240,220,0.08), inset 0 0 0 0.5px var(--line-soft); }
+.gh-stats > span { padding: 0 5px; white-space: nowrap; }
+.gh-stats .gh-s { color: #B7791F; }
+html[data-theme="night"] .gh-stats .gh-s { color: #F0B54A; }
+.gh-stats .gh-f { opacity: .75; }
+.gh-stats { animation: ghIn .5s var(--morph, ease) both; }
+@keyframes ghIn { from { opacity: 0; filter: blur(4px); transform: scale(.9); } to { opacity: 1; filter: none; transform: none; } }

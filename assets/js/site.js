@@ -282,6 +282,57 @@
     if (row.hasAttribute("data-go-new")) window.open(url, "_blank", "noopener"); else location.href = url;
   });
 
+  /* ---- GitHub repos: live stars and forks on every repo button ----
+     Shows the committed snapshot (assets/data/repo_stats.json) at once, then the
+     live count from the GitHub API, cached per browser for 30 min so a visitor
+     stays far below the 60-requests-an-hour anonymous limit. Prose credits to
+     other people's repos are left alone. */
+  (function () {
+    var OWN = /^(thejerrycheng|robotmabel|huangbj16|utiasstars|purdue-tracelab)$/i;
+    var RE = /^https?:\/\/github\.com\/([\w.-]+)\/([\w.-]+?)(?:\.git)?\/?(?:[#?].*)?$/i;
+    var TTL = 30 * 60 * 1000, KEY = "ghstats-v1";
+    var snap = {}, live = {}, pending = {};
+    try { live = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { live = {}; }
+    var base = (document.querySelector('script[src*="assets/js/site.js"]') || {}).getAttribute ? document.querySelector('script[src*="assets/js/site.js"]').getAttribute("src").replace(/assets\/js\/site\.js.*$/, "") : "";
+    function fmt(n) { return n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, "") + "k" : String(n); }
+    function repoOf(a) {
+      var m = RE.exec(a.getAttribute("href") || ""); if (!m || !OWN.test(m[1])) return null;
+      if (a.closest("p, figcaption, td, blockquote, .md-end, .nav, .site-footer")) return null;
+      return (m[1] + "/" + m[2]).toLowerCase();
+    }
+    function paint(a, d) {
+      var b = a.querySelector(".gh-stats"), k = d.s + "/" + d.f;
+      if (b && b.getAttribute("data-k") === k) return;      /* unchanged: no DOM write, so the observer stays quiet */
+      if (!b) { b = document.createElement("span"); b.className = "gh-stats"; a.appendChild(b); a.classList.add("has-gh"); }
+      b.innerHTML = '<span class="gh-s" title="GitHub stars">\u2605 ' + fmt(d.s) + '</span><span class="gh-f" title="GitHub forks">\u2442 ' + fmt(d.f) + "</span>";
+      b.setAttribute("aria-label", d.s + " stars, " + d.f + " forks on GitHub");
+      b.setAttribute("data-k", k);
+    }
+    function all(repo) { return [].filter.call(document.querySelectorAll('a[href*="github.com/"]'), function (a) { return repoOf(a) === repo; }); }
+    function show(repo) { var d = (live[repo] && live[repo].d) || snap[repo]; if (d) all(repo).forEach(function (a) { paint(a, d); }); }
+    function fetchLive(repo) {
+      if (pending[repo]) return; var c = live[repo];
+      if (c && Date.now() - c.t < TTL) return;
+      if (c && c.miss && Date.now() - c.t < TTL) return;
+      pending[repo] = 1;
+      fetch("https://api.github.com/repos/" + repo, { headers: { Accept: "application/vnd.github+json" } })
+        .then(function (r) { if (r.status === 404) { live[repo] = { t: Date.now(), miss: 1 }; throw 0; } if (!r.ok) throw 0; return r.json(); })
+        .then(function (j) { live[repo] = { t: Date.now(), d: { s: j.stargazers_count, f: j.forks_count } }; try { localStorage.setItem(KEY, JSON.stringify(live)); } catch (e) {} show(repo); })
+        .catch(function () {});
+    }
+    function scan(scope) {
+      var seen = {};
+      [].forEach.call((scope || document).querySelectorAll('a[href*="github.com/"]'), function (a) { var r = repoOf(a); if (r && !seen[r]) { seen[r] = 1; show(r); fetchLive(r); } });
+    }
+    fetch(base + "assets/data/repo_stats.json", { cache: "no-cache" }).then(function (r) { return r.ok ? r.json() : {}; })
+      .then(function (j) { snap = (j && j.repos) || {}; }).catch(function () {}).then(function () { scan(); });
+    /* the publication / project popup fills its links after the page loads */
+    if ("MutationObserver" in window) {
+      var t; new MutationObserver(function () { clearTimeout(t); t = setTimeout(function () { scan(); }, 60); })
+        .observe(document.body, { childList: true, subtree: true });
+    }
+  })();
+
   /* ---- Last updated ---- */
   var lu = document.querySelector("#last-updated time");
   if (lu) {
