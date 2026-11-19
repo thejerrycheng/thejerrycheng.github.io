@@ -1296,3 +1296,38 @@ html[data-theme="night"] .gh-stats .gh-s { color: #F0B54A; }
 .gh-stats .gh-f { opacity: .75; }
 .gh-stats { animation: ghIn .5s var(--morph, ease) both; }
 @keyframes ghIn { from { opacity: 0; filter: blur(4px); transform: scale(.9); } to { opacity: 1; filter: none; transform: none; } }
+
+/* =============================================================================
+   PHONE HOME COVER — exactly one screen, whatever the phone. Sizes follow the
+   small-viewport height (svh) so a tall phone gets a bigger portrait and a short
+   one still fits; a cue at the bottom invites the scroll and fades once it starts.
+   ============================================================================= */
+.scroll-cue { display: none; }
+@media (max-width: 620px) {
+  .cover { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column;
+    padding: calc(var(--nav-h) + clamp(10px, 2svh, 20px)) 0 0; }
+  .cover-inner { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0; }
+  .cover-copy { display: contents; }
+  .cover-copy > * { min-width: 0; max-width: 100%; }
+  .cover-photo { order: -1; width: clamp(112px, min(62vw, 33svh), 300px); margin: 0 auto clamp(16px, 3.4svh, 34px); align-self: center; }
+  .photo-panel { border-radius: clamp(22px, 4svh, 34px); box-shadow: 0 14px 40px rgba(60,40,10,0.18), inset 0 1px 0 rgba(255,255,255,0.4); }
+  .cover-copy > .kicker { font-size: clamp(12px, 3.3vw, 14px); margin-bottom: clamp(6px, 1.4svh, 12px); }
+  .cover-name { font-size: clamp(24px, min(7.6vw, 4.8svh), 38px); white-space: nowrap; }
+  .cover-sc { justify-content: center; font-size: clamp(16px, 2.6svh, 20px); margin-top: clamp(6px, 1.2svh, 12px); }
+  .cover-tag { font-size: clamp(15px, min(4.4vw, 2.6svh), 20px); margin-top: clamp(6px, 1.4svh, 14px); }
+  .cover-copy > .btn-row { width: 100%; justify-content: center; margin-top: clamp(16px, 3.6svh, 34px); }
+  .btn-row-social .btn { padding: clamp(7px, 1.2svh, 11px) 8px; font-size: clamp(12.5px, 3.4vw, 14px); }
+  .say-bubble { left: 50%; transform: translateX(-50%); }
+
+  .scroll-cue { display: flex; flex-direction: column; align-items: center; gap: 2px; align-self: center;
+    margin: clamp(10px, 2svh, 20px) auto calc(env(safe-area-inset-bottom, 0px) + clamp(14px, 2.6svh, 26px));
+    padding: 8px 16px 6px; border-radius: 999px; color: var(--ash); text-decoration: none; font-size: 12.5px; letter-spacing: 0.01em;
+    background: var(--lg-sheen, none), var(--lg-fill, var(--glass)); -webkit-backdrop-filter: var(--lg-blur, blur(20px)); backdrop-filter: var(--lg-blur, blur(20px));
+    border: 1px solid var(--lg-rim, var(--line-soft)); box-shadow: var(--lg-edge, none), var(--lg-float, none);
+    transition: opacity .5s var(--morph, ease), transform .6s var(--morph, ease), filter .5s var(--morph, ease); }
+  .scroll-cue svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; animation: cueNudge 1.8s var(--morph, ease) infinite; }
+  html.past-cover .scroll-cue { opacity: 0; transform: translateY(8px); filter: blur(4px); pointer-events: none; }
+  #story.section { padding-top: 26px; }
+}
+@keyframes cueNudge { 0%, 100% { transform: translateY(-2px); opacity: .55; } 50% { transform: translateY(3px); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .scroll-cue svg { animation: none; } }

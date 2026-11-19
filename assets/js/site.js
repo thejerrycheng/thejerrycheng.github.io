@@ -23,7 +23,7 @@
   /* ---- Nav: tighten the masthead once the page scrolls ---- */
   var navEl = document.querySelector(".nav");
   if (navEl) {
-    var onScroll = function () { navEl.classList.toggle("scrolled", window.scrollY > 4); };
+    var onScroll = function () { navEl.classList.toggle("scrolled", window.scrollY > 4); root.classList.toggle("past-cover", window.scrollY > 40); };
     window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
   }
 
