@@ -1331,3 +1331,107 @@ html[data-theme="night"] .gh-stats .gh-s { color: #F0B54A; }
 }
 @keyframes cueNudge { 0%, 100% { transform: translateY(-2px); opacity: .55; } 50% { transform: translateY(3px); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .scroll-cue svg { animation: none; } }
+
+/* =============================================================================
+   MOTION v3 — the Duck Servo Studio feel, site-wide. One spring that slightly
+   overshoots; every control presses in (scale .92) and springs back; a single
+   highlight slides between choices instead of one switching off and another on;
+   things arrive out of a blur and leave into one. UI only, content untouched.
+   ============================================================================= */
+:root { --pop: cubic-bezier(.3, 1.5, .5, 1); --pop-soft: cubic-bezier(.3, 1.25, .6, 1); }
+@keyframes sPop { from { opacity: 0; filter: blur(6px); transform: scale(.55) translateY(8px); } }
+
+/* --- press + hover, one language for every control --- */
+.btn, .links a, .see-all, .slide-cta, .say-name, .exp-tog, .nav-links a, .nav-links button, .mobile-menu a, .scroll-cue {
+  transition: transform .45s var(--pop), background .25s ease, color .25s ease, box-shadow .3s ease, opacity .25s ease;
+}
+.btn:hover, .links a:hover { transform: translateY(-1px) scale(1.04); }
+.btn:active, .links a:active, .see-all:active, .say-name:active, .nav-links a:active, .nav-links button:active,
+.mobile-menu a:active, .scroll-cue:active { transform: scale(.92); transition-duration: .12s; }
+.say-name:hover, .say-name:focus-visible { transform: scale(1.1); }
+.slide { transition: background .25s ease, transform .45s var(--pop); }
+.slide:active { transform: scale(.975); transition-duration: .15s; }
+
+/* --- front-page social buttons: one size, Studio pills that pop in one after another --- */
+.btn-row-social { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); width: min(100%, 560px); gap: 8px; }
+.btn-row-social .btn { width: 100%; padding: 9px 10px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.5); }
+html[data-theme="night"] .btn-row-social .btn { box-shadow: inset 0 1px 0 rgba(255,240,220,0.07); }
+.btn-row-social .btn:hover { background: var(--tint); color: var(--ink); }
+html.js .btn-row-social .btn { animation: sPop .7s var(--pop) backwards; animation-delay: calc(var(--i, 0) * 55ms + .45s); }
+.btn-row-social .btn:nth-child(2) { --i: 1; } .btn-row-social .btn:nth-child(3) { --i: 2; }
+.btn-row-social .btn:nth-child(4) { --i: 3; } .btn-row-social .btn:nth-child(5) { --i: 4; } .btn-row-social .btn:nth-child(6) { --i: 5; }
+@media (max-width: 620px) {
+  .cover .btn-row-social { grid-template-columns: repeat(5, minmax(0, 1fr)); width: 100%; gap: clamp(6px, 2vw, 10px); }
+  .cover .btn-row-social .btn { flex-direction: column; gap: 5px; padding: clamp(9px, 1.6svh, 14px) 2px; border-radius: 18px;
+    font-size: clamp(11px, 3vw, 12.5px); letter-spacing: 0; }
+  .cover .btn-row-social .btn svg { width: clamp(17px, 2.6svh, 21px); height: clamp(17px, 2.6svh, 21px); }
+}
+
+/* --- "Open" / "Quick look" on cards: a soft pill whose arrow springs forward --- */
+.slide-cta {
+  display: inline-flex; align-items: center; align-self: flex-start; gap: 0;
+  margin-top: auto; padding: 5px 12px; border-top: 7px solid transparent; background-clip: padding-box;
+  border-radius: 980px; background-color: var(--tint); color: var(--link); font-weight: 500; font-size: 13px; text-decoration: none;
+}
+.slide-cta::after, .see-all::after { content: "\203A"; display: inline-block; margin-left: 5px; font-size: 1.15em; line-height: 1; transition: transform .5s var(--pop); }
+.slide:hover .slide-cta, .slide:focus-visible .slide-cta { text-decoration: none; background-color: color-mix(in srgb, var(--hi) 26%, transparent); color: var(--ink); }
+.slide:hover .slide-cta::after, .slide:focus-visible .slide-cta::after, .see-all:hover::after, .see-all:focus-visible::after { transform: translateX(4px); }
+
+/* --- "All publications" / "Expand all": a link that becomes a pill under the pointer --- */
+.see-all { display: inline-flex; align-items: center; padding: 6px 12px; margin: -6px -12px; border-radius: 980px; }
+.see-all:hover, .see-all:focus-visible { text-decoration: none; background: var(--tint); color: var(--link); }
+
+/* --- nav: one glass highlight that slides and stretches between links --- */
+.nav-links { position: relative; }
+.nav-links > a, .nav-links > .dropdown { position: relative; z-index: 1; }
+.nav-blob { position: absolute; left: 0; top: 0; width: 0; height: 0; border-radius: 980px; pointer-events: none; opacity: 0; z-index: 0;
+  background: var(--wash); box-shadow: inset 0 1px 0 rgba(255,255,255,0.55);
+  transition: left .5s var(--pop), width .5s var(--pop), top .5s var(--pop), height .5s var(--pop), opacity .25s ease; }
+html[data-theme="night"] .nav-blob { background: rgba(244,238,226,0.10); box-shadow: inset 0 1px 0 rgba(255,240,220,0.08); }
+.nav-links a:hover, .nav-links button:hover { background: transparent; }
+.caret { display: inline-block; transition: transform .5s var(--pop); }
+[aria-expanded="true"] > .caret { transform: rotate(180deg); }
+
+/* --- day / night: the icons trade places with a spin, and the new theme spreads out from the button --- */
+.theme-btn { display: inline-grid; place-items: center; }
+.theme-btn .if-day, .theme-btn .if-night, html[data-theme="night"] .theme-btn .if-night, html:not([data-theme="night"]) .theme-btn .if-day {
+  display: inline-flex; grid-area: 1 / 1; transition: opacity .3s ease, transform .6s var(--pop), filter .3s ease; }
+html[data-theme="night"] .theme-btn .if-day, html:not([data-theme="night"]) .theme-btn .if-night {
+  opacity: 0; transform: rotate(-120deg) scale(.3); filter: blur(4px); pointer-events: none; }
+html.theme-vt .nav { view-transition-name: none; }
+html.theme-vt::view-transition-old(root) { animation: none; }
+html.theme-vt::view-transition-new(root) { animation: themeReveal .75s cubic-bezier(.22, 1, .36, 1) both; }
+@keyframes themeReveal { from { clip-path: circle(0 at var(--vx, 100%) var(--vy, 0)); } to { clip-path: circle(150vmax at var(--vx, 100%) var(--vy, 0)); } }
+
+/* --- menu button: pressed glass while open --- */
+.menu-btn[aria-expanded="true"] { background: var(--tint); color: var(--ink); }
+
+/* --- CV cards: the + springs into an × --- */
+.exp-tog { transition: background .2s ease, color .2s ease, transform .45s var(--pop); }
+.exp-tog::before { transition: transform .55s var(--pop); }
+.exp > summary:hover .exp-tog { transform: scale(1.1); }
+.exp > summary:active .exp-tog { transform: scale(.85); transition-duration: .12s; }
+.exp[open] .exp-tog { background: var(--tint); color: var(--link); }
+
+/* --- quick look: the sheet grows out of the card you clicked and shrinks back into it --- */
+.modal-panel { animation: qlIn .62s var(--pop-soft) both; }
+@keyframes qlIn {
+  0% { opacity: 0; transform: translate(var(--from-x, 0px), var(--from-y, 24px)) scale(.4); filter: blur(16px); }
+  55% { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: none; filter: none; }
+}
+.modal.closing .modal-panel { animation: qlOut .3s cubic-bezier(.5, 0, .75, 0) both; }
+.modal.closing .modal-backdrop { animation: qlFade .3s ease both; }
+.modal.closing { pointer-events: none; }
+@keyframes qlOut { to { opacity: 0; transform: translate(calc(var(--from-x, 0px) * .55), calc(var(--from-y, 24px) * .55)) scale(.6); filter: blur(12px); } }
+@keyframes qlFade { to { opacity: 0; } }
+.modal-panel .links a { animation: sPop .55s var(--pop) backwards; animation-delay: calc(var(--i, 0) * 40ms + .22s); }
+.modal-panel .links a:nth-child(2) { --i: 1; } .modal-panel .links a:nth-child(3) { --i: 2; } .modal-panel .links a:nth-child(4) { --i: 3; }
+.modal-panel .links a:nth-child(5) { --i: 4; } .modal-panel .links a:nth-child(n+6) { --i: 5; }
+.modal-close:hover { transform: scale(1.1) rotate(90deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn, .links a, .see-all, .slide-cta, .slide, .say-name, .exp-tog, .nav-blob, .caret, .theme-btn *, .modal-panel, .modal-panel .links a, .btn-row-social .btn,
+  .modal.closing .modal-panel, .modal.closing .modal-backdrop { animation: none !important; transition: none !important; }
+  .btn:hover, .links a:hover, .say-name:hover, .exp > summary:hover .exp-tog, .modal-close:hover { transform: none; }
+}

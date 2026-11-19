@@ -17,7 +17,43 @@
   }
   applyTheme(root.getAttribute("data-theme") === "day" ? "day" : "night", false);
   [].forEach.call(document.querySelectorAll(".theme-btn"), function (btn) {
-    btn.addEventListener("click", function () { applyTheme(root.getAttribute("data-theme") === "day" ? "night" : "day", true); });
+    btn.addEventListener("click", function () {
+      var next = root.getAttribute("data-theme") === "day" ? "night" : "day";
+      var swap = function () { applyTheme(next, true); };
+      if (!document.startViewTransition || matchMedia("(prefers-reduced-motion: reduce)").matches) return swap();
+      var r = btn.getBoundingClientRect();                 /* the new theme spreads out from the button */
+      root.style.setProperty("--vx", Math.round(r.left + r.width / 2) + "px");
+      root.style.setProperty("--vy", Math.round(r.top + r.height / 2) + "px");
+      root.classList.add("theme-vt");
+      var t = document.startViewTransition(swap);
+      t.finished.then(function () { root.classList.remove("theme-vt"); }, function () { root.classList.remove("theme-vt"); });
+    });
+  });
+
+  /* ---- Nav: one highlight that slides and stretches between links (as in Duck Servo Studio) ---- */
+  [].forEach.call(document.querySelectorAll(".nav-links"), function (box) {
+    var blob = document.createElement("span");
+    blob.className = "nav-blob"; blob.setAttribute("aria-hidden", "true");
+    box.insertBefore(blob, box.firstChild);
+    var items = [].slice.call(box.querySelectorAll(":scope > a, :scope > .dropdown > button"));
+    var home = box.querySelector('a[aria-current="page"]');
+    function to(el, instant) {
+      if (!el || !el.offsetWidth) { blob.style.opacity = 0; return; }
+      var b = box.getBoundingClientRect(), r = el.getBoundingClientRect();
+      if (instant || blob.style.opacity !== "1") blob.style.transition = "opacity .25s";   /* first showing: appear in place */
+      blob.style.left = (r.left - b.left) + "px"; blob.style.top = (r.top - b.top) + "px";
+      blob.style.width = r.width + "px"; blob.style.height = r.height + "px";
+      void blob.offsetWidth; blob.style.transition = ""; blob.style.opacity = 1;
+    }
+    items.forEach(function (a) {
+      a.addEventListener("mouseenter", function () { to(a); });
+      a.addEventListener("focus", function () { to(a); });
+    });
+    box.addEventListener("mouseleave", function () { to(home); });
+    box.addEventListener("focusout", function (e) { if (!box.contains(e.relatedTarget)) to(home); });
+    to(home, true);
+    window.addEventListener("resize", function () { to(home, true); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { to(home, true); });
   });
 
   /* ---- Nav: tighten the masthead once the page scrolls ---- */
@@ -148,6 +184,7 @@
     function openXp(key, from) {
       var t = document.getElementById("xp-" + key);
       if (!t) return false;
+      clearTimeout(xt); xm.classList.remove("closing");
       xb.innerHTML = "";
       xb.appendChild(t.content.cloneNode(true));
       last = from || null;
@@ -157,12 +194,14 @@
       xm.querySelector(".modal-close").focus({ preventScroll: true });
       return true;
     }
+    var xt = null;
     function closeXp() {
-      if (xm.hidden) return;
-      xm.hidden = true;
-      xb.innerHTML = "";
+      if (xm.hidden || xm.classList.contains("closing")) return;
       document.body.classList.remove("modal-open");
       if (last) last.focus({ preventScroll: true });
+      var done = function () { xm.classList.remove("closing"); xm.hidden = true; xb.innerHTML = ""; };
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) return done();
+      xm.classList.add("closing"); xt = setTimeout(done, 300);   /* the sheet blurs away before it goes */
     }
     [].forEach.call(document.querySelectorAll(".tl-item[data-xp]"), function (li) {
       li.addEventListener("click", function (e) {

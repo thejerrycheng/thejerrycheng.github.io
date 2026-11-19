@@ -136,6 +136,7 @@
   function open(kind, id, trigger) {
     var item = find(kind, id);
     if (!item) return false;
+    unclose();
     var isPub = kind === "publications";
     media.innerHTML = renderMedia(item);
     bindCarousel();
@@ -162,6 +163,7 @@
 
   /* portrait lightbox */
   function openPhoto(link) {
+    unclose();
     var img = link.querySelector("img");
     media.innerHTML = '<img src="' + esc(link.getAttribute("href")) + '" alt="' + esc(img ? img.alt : "") + '">';
     tag.textContent = "Portrait";
@@ -175,17 +177,24 @@
     closeBtn.focus();
   }
 
+  var closeT = null;
   function close() {
-    if (modal.hidden) return;
+    if (modal.hidden || modal.classList.contains("closing")) return;
     var v = media.querySelector("video");
     if (v) v.pause();
-    media.innerHTML = "";
-    modal.classList.remove("modal-photo");
-    var b = modal.querySelector(".modal-burst"); if (b) b.remove();
-    modal.hidden = true;
     document.body.classList.remove("modal-open");
-    if (lastTrigger && lastTrigger.focus) lastTrigger.focus();
+    if (lastTrigger && lastTrigger.focus) lastTrigger.focus({ preventScroll: true });
+    var done = function () {
+      modal.classList.remove("closing");
+      media.innerHTML = "";
+      modal.classList.remove("modal-photo");
+      var b = modal.querySelector(".modal-burst"); if (b) b.remove();
+      modal.hidden = true;
+    };
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return done();
+    modal.classList.add("closing"); closeT = setTimeout(done, 300);   /* shrink back toward the card, then go */
   }
+  function unclose() { clearTimeout(closeT); modal.classList.remove("closing"); }
 
   document.addEventListener("click", function (e) {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1 || !e.target.closest) return;
