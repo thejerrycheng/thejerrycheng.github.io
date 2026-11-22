@@ -63,6 +63,40 @@
     window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
   }
 
+  /* ---- Social dock: the cover's links come back as a glass stack at the top left once they scroll away ---- */
+  (function () {
+    var row = document.querySelector(".cover .btn-row-social");
+    var inner = document.querySelector(".nav-inner"), brand = inner && inner.querySelector(".brand");
+    if (!row || !brand || !("IntersectionObserver" in window)) return;
+    var dock = document.createElement("div");
+    dock.className = "dock"; dock.id = "socialDock"; dock.setAttribute("role", "group"); dock.setAttribute("aria-label", "Links");
+    [].forEach.call(row.querySelectorAll("a.btn"), function (a, i) {
+      var c = document.createElement("a"), svg = a.querySelector("svg"), label = a.textContent.trim();
+      c.href = a.getAttribute("href");
+      if (a.target) { c.target = a.target; c.rel = "noopener"; }
+      c.setAttribute("aria-label", label); c.style.setProperty("--i", i);
+      if (svg) c.appendChild(svg.cloneNode(true));
+      var sp = document.createElement("span"); sp.textContent = label; c.appendChild(sp);
+      dock.appendChild(c);
+    });
+    document.body.appendChild(dock);
+    [].forEach.call(dock.children, function (c) { c.style.setProperty("--w", (36 + c.lastChild.offsetWidth) + "px"); });   /* icon + its label */
+    var more = document.createElement("button");
+    more.type = "button"; more.className = "dock-more"; more.setAttribute("aria-label", "Links: email, GitHub, X, CV, Scholar");
+    more.setAttribute("aria-controls", "socialDock"); more.setAttribute("aria-expanded", "false");
+    more.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="19" cy="12" r="1.9"/></svg>';
+    brand.parentNode.insertBefore(more, brand.nextSibling);
+    function setOpen(on) { root.classList.toggle("dock-open", on); more.setAttribute("aria-expanded", String(on)); }
+    more.addEventListener("click", function (e) { e.stopPropagation(); setOpen(!root.classList.contains("dock-open")); });
+    document.addEventListener("click", function (e) { if (!dock.contains(e.target)) setOpen(false); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") setOpen(false); });
+    new IntersectionObserver(function (es) {
+      var gone = !es[0].isIntersecting && es[0].boundingClientRect.top < 60;
+      root.classList.toggle("dock-on", gone);
+      if (!gone) setOpen(false);
+    }, { rootMargin: "-48px 0px 0px 0px" }).observe(row);
+  })();
+
   /* ---- Mobile menu ---- */
   var menuBtn  = document.getElementById("menuButton");
   var menu     = document.getElementById("mobileMenu");

@@ -1435,3 +1435,95 @@ html.theme-vt::view-transition-new(root) { animation: themeReveal .75s cubic-bez
   .modal.closing .modal-panel, .modal.closing .modal-backdrop { animation: none !important; transition: none !important; }
   .btn:hover, .links a:hover, .say-name:hover, .exp > summary:hover .exp-tog, .modal-close:hover { transform: none; }
 }
+
+/* =============================================================================
+   HOME STEPS — the front page reads as five full-height pages that the scroll
+   settles on: intro + research vision, publications, projects, news, coffee chat.
+   Every step shares one frame (same height, same title size, content centred).
+   ============================================================================= */
+html:has(.step) { scroll-snap-type: y proximity; scroll-padding-top: var(--nav-h); }
+@media (min-width: 861px) and (min-height: 700px) { html:has(.step) { scroll-snap-type: y mandatory; } }
+@media (prefers-reduced-motion: reduce) { html:has(.step) { scroll-snap-type: none; } }
+.step { min-height: calc(100vh - var(--nav-h)); min-height: calc(100svh - var(--nav-h)); display: flex; flex-direction: column; justify-content: center;
+  scroll-snap-align: start; scroll-snap-stop: always; padding: clamp(24px, 5vh, 64px) 0; }
+.step > .section { width: 100%; padding-top: 0; padding-bottom: 0; }
+.step > .section + .section { margin-top: clamp(20px, 4vh, 40px); }
+.step:nth-of-type(even) { background: var(--paper); }
+.step .section-title { font-size: clamp(30px, 4.2vw, 48px); letter-spacing: -0.03em; }
+.step .section-head { margin-bottom: clamp(18px, 3.4vh, 34px); align-items: flex-end; }
+
+/* step 1: who I am on top, what I am after underneath, one screen */
+.step-intro { margin-top: calc(-1 * (var(--nav-h) + 24px)); min-height: 100vh; min-height: 100svh; background: var(--paper); }
+.step-intro .cover { margin-top: 0; background: transparent; }
+.step-intro #story { padding-bottom: 0; }
+@media (min-width: 621px) {
+  .step-intro { padding: calc(var(--nav-h) + clamp(16px, 3.4vh, 44px)) 0 clamp(16px, 3vh, 36px); }
+  .step-intro .cover { padding: 0 0 clamp(14px, 3vh, 44px); overflow: visible; }
+  .step-intro .cover-photo { width: min(100%, clamp(170px, 30vh, 280px)); }
+  .step-intro .cover-name { font-size: clamp(34px, min(4.3vw, 7.4vh), 56px); white-space: nowrap; }
+  .step-intro .about-panel { border-top: 1px solid var(--line-soft); border-radius: 0; box-shadow: none; padding-top: clamp(14px, 2.6vh, 34px); }
+}
+@media (min-width: 861px) {
+  .step-intro .about-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); gap: clamp(32px, 5vw, 64px); align-items: start; }
+  .step-intro .about-panel .lead { font-size: clamp(16px, 2.2vh, 18.5px); }
+  .step-intro .subhead { margin-top: 0; font-size: 19px; }
+  .step-intro .vision { font-size: clamp(14px, 1.95vh, 15.5px); margin-bottom: 10px; }
+  .step-intro .quote { font-size: clamp(13px, 1.8vh, 14.5px); }
+  .step-intro .quote + .quote, .step-intro .vision + .quote { margin-top: 10px; }
+  .step-intro .last-updated { margin-top: clamp(8px, 1.6vh, 18px); }
+}
+@media (max-width: 620px) {
+  .step-intro { display: block; padding: 0 0 30px; }
+  .step { min-height: 0; padding: 34px 0; }
+  .step .section-title { font-size: 28px; }
+}
+
+/* last step: coffee chat, the visitor map, then the footer sits on the floor */
+.step-last { padding-bottom: 0; justify-content: flex-start; padding-top: clamp(32px, 7vh, 84px); }
+.step-last .site-footer { margin-top: auto; width: 100%; }
+.step-last > .section:last-of-type { margin-bottom: clamp(28px, 5vh, 56px); }
+
+/* =============================================================================
+   SOCIAL DOCK — once the first page's buttons leave the screen they come back
+   as one glass capsule at the top left. Wide screens: a vertical stack in the
+   empty left gutter, each icon stretching into its label on hover. Narrower
+   screens and phones: a ··· button beside the name that pours the stack out.
+   ============================================================================= */
+.dock { position: fixed; z-index: 900; top: calc(var(--nav-h) + 16px); left: 16px; display: flex; flex-direction: column; gap: 2px; padding: 5px;
+  border-radius: 24px; background: var(--lg-sheen), var(--lg-fill); -webkit-backdrop-filter: var(--lg-blur); backdrop-filter: var(--lg-blur);
+  border: 1px solid var(--lg-rim); box-shadow: var(--lg-edge), var(--lg-glow), var(--lg-float);
+  transform-origin: 22px 0; opacity: 0; transform: translateY(-34px) scale(.3, .12); filter: blur(12px); pointer-events: none;
+  transition: opacity .3s ease, filter .4s ease, transform .75s var(--pop-soft); }
+html.dock-on .dock { opacity: 1; transform: none; filter: none; pointer-events: auto; }
+.dock a { display: flex; align-items: center; height: 36px; width: 36px; border-radius: 18px; overflow: hidden; white-space: nowrap; text-decoration: none; color: var(--ink);
+  font-size: 13.5px; font-weight: 500; letter-spacing: -0.01em;
+  opacity: 0; transform: scale(.3); filter: blur(6px);
+  transition: width .5s var(--pop-soft), background .25s ease, opacity .3s ease, filter .3s ease, transform .6s var(--pop); }
+html.dock-on .dock a { opacity: 1; transform: none; filter: none; transition-delay: 0s, 0s, calc(var(--i, 0) * 55ms + .12s), calc(var(--i, 0) * 55ms + .12s), calc(var(--i, 0) * 55ms + .12s); }
+.dock a svg { flex: none; width: 17px; height: 17px; margin: 0 9.5px; }
+.dock a span { padding-right: 14px; opacity: 0; transition: opacity .25s ease; }
+.dock a:hover, .dock a:focus-visible { width: var(--w, 110px); background: var(--tint); transition-delay: 0s; }
+.dock a:hover span, .dock a:focus-visible span { opacity: 1; transition-delay: .08s; }
+.dock a:active { transform: scale(.92); transition-duration: .12s; transition-delay: 0s; }
+
+.dock-more { display: none; flex: none; align-items: center; justify-content: center; width: 0; height: 30px; padding: 0; margin: 0; border: 0; border-radius: 15px; cursor: pointer;
+  color: var(--ink); background: var(--wash); overflow: hidden; opacity: 0; transform: scale(.3); filter: blur(6px);
+  transition: width .55s var(--pop-soft), margin .55s var(--pop-soft), opacity .3s ease, filter .3s ease, transform .6s var(--pop), background .25s ease; }
+.dock-more svg { flex: none; width: 18px; height: 18px; fill: currentColor; transition: transform .55s var(--pop); }
+.dock-more[aria-expanded="true"] { background: var(--tint); }
+.dock-more[aria-expanded="true"] svg { transform: rotate(90deg); }
+.dock-more:active { transform: scale(.9); }
+@media (max-width: 1199px) {
+  .dock { top: calc(var(--nav-h) + 8px); left: 12px; border-radius: 22px; transform-origin: 60px -20px; }
+  html.dock-on .dock { opacity: 0; transform: translateY(-14px) scale(.4, .2); filter: blur(12px); pointer-events: none; }
+  html.dock-on .dock a { opacity: 0; transform: scale(.3); filter: blur(6px); transition-delay: 0s; }
+  html.dock-on.dock-open .dock { opacity: 1; transform: none; filter: none; pointer-events: auto; }
+  html.dock-on.dock-open .dock a { opacity: 1; transform: none; filter: none; width: var(--w, 110px);
+    transition-delay: 0s, 0s, calc(var(--i, 0) * 45ms + .08s), calc(var(--i, 0) * 45ms + .08s), calc(var(--i, 0) * 45ms + .08s); }
+  .dock a span { opacity: 1; }
+  .dock-more { display: inline-flex; margin-right: auto; }
+  .nav .brand:has(+ .dock-more) { margin-right: 0; }
+  html.dock-on .dock-more { width: 30px; margin-left: 8px; opacity: .85; transform: none; filter: none; }
+}
+@media (prefers-reduced-motion: reduce) { .dock, .dock a, .dock-more, .dock-more svg { transition: none !important; } }
+@media print { .dock, .dock-more { display: none !important; } }

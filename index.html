@@ -35,7 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/gotham.css?v=20261119d">
+  <link rel="stylesheet" href="assets/css/gotham.css?v=20261121a">
   <script>document.documentElement.classList.add('js');</script>
   <script>(function(){try{var t=localStorage.getItem("theme-v2");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 
@@ -90,7 +90,8 @@
       <a href="cv.html">CV</a>
 </div>
 
-<!-- =================== COVER =================== -->
+<!-- =================== STEP 1: INTRO + RESEARCH VISION =================== -->
+<div class="step step-intro" data-step="About">
 <header class="cover night" id="about">
   <div class="night-sky" aria-hidden="true"><span class="beam"></span><span class="beam b2"></span></div>
   <div class="skyline" aria-hidden="true"></div>
@@ -130,6 +131,7 @@
 <section class="section" id="story">
   <div class="card card-pad about-panel has-sticker">
     <img class="sticker sticker-corner" src="assets/images/stickers/brownstone.svg" alt="" aria-hidden="true" loading="lazy" style="transform:rotate(7deg)">
+    <div class="about-col">
     <p class="lead">
           I’m <strong>Jerry (Qilong) Cheng</strong>, a Robotics Ph.D. student at the <a href="https://www.utoronto.ca/" target="_blank" rel="noopener"><strong>University of Toronto</strong></a> trying to solve <strong>Robotics</strong> and <strong>Embodied intelligence</strong>.
           I work with <a href="https://starslab.ca/people/prof-jonathan-kelly/" target="_blank" rel="noopener">Prof. Jonathan Kelly</a> in the <a href="https://starslab.ca/" target="_blank" rel="noopener">STARS Lab</a> (UTIAS), and began my Ph.D. at <a href="https://www.nyu.edu/" target="_blank" rel="noopener">New York University</a> with <a href="https://righetti.github.io/" target="_blank" rel="noopener">Prof. Ludovic Righetti</a> (<a href="https://www.machinesinmotion.org/" target="_blank" rel="noopener">Machines in Motion</a>).
@@ -139,6 +141,8 @@
           I want to build generalized robots for the homes, automate daily tasks, save us time and enrich our lives.
         </p>
 
+    </div>
+    <div class="about-col">
     <p class="subhead">Research Vision</p>
 
     <p class="quote">“We are born too late to explore the Earth and too early to explore the stars — but just in time to solve AI and robotics.” — Jim Fan</p>
@@ -148,11 +152,14 @@
         </p>
 
     <p class="quote">“Those who are truly serious about software should design their own hardware.” — Steve Jobs</p>
+    </div>
   </div>
   <p id="last-updated" class="last-updated"><time aria-label="Last updated"></time></p>
 </section>
+</div>
 
 <!-- =================== PUBLICATIONS (card strip) =================== -->
+<div class="step" data-step="Publications">
 <section class="section" id="publications">
   <div class="section-head">
     <h2 class="section-title">Publications<img class="sticker" src="assets/images/stickers/empirestate.svg" alt="" aria-hidden="true" loading="lazy" style="transform:rotate(-6deg)"></h2>
@@ -275,8 +282,10 @@
     </div>
   </div>
 </section>
+</div>
 
 <!-- =================== PROJECTS (card strip) =================== -->
+<div class="step" data-step="Projects">
 <section class="section" id="projects">
   <div class="section-head">
     <h2 class="section-title">Projects<img class="sticker" src="assets/images/stickers/watertower.svg" alt="" aria-hidden="true" loading="lazy" style="transform:rotate(5deg)"></h2>
@@ -426,8 +435,10 @@
     </div>
   </div>
 </section>
+</div>
 
 <!-- =================== NEWS =================== -->
+<div class="step" data-step="News">
 <section class="section" id="news">
   <div class="section-head">
     <h2 class="section-title">News</h2>
@@ -600,8 +611,10 @@
   </div>
   </div>
 </section>
+</div>
 
 <!-- =================== CONNECT / COFFEE CHAT =================== -->
+<div class="step step-last" data-step="Coffee Chat">
 <section class="section" id="coffee-chat">
   <h2 class="section-title">Coffee Chat<img class="sticker" src="assets/images/stickers/bagel.svg" alt="" aria-hidden="true" loading="lazy" style="transform:rotate(8deg)"></h2>
   <div class="card connect-card">
@@ -642,6 +655,7 @@
     <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
   </div>
 </footer>
+</div>
 
 <script type="application/ld+json">
 { "@context":"https://schema.org","@type":"WebSite","name":"Jerry (Qilong) Cheng","url":"https://thejerrycheng.github.io/" }
@@ -667,7 +681,7 @@
   </div>
 </div>
 
-<script src="assets/js/site.js?v=20261119d"></script>
+<script src="assets/js/site.js?v=20261121a"></script>
 <script src="assets/js/catalog.js?v=20261119e"></script>
 <script src="assets/js/catalog-ui.js?v=20261119d"></script>
 </body>
