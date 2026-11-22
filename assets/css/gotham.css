@@ -1472,10 +1472,17 @@ html:has(.step) { scroll-snap-type: y proximity; scroll-padding-top: var(--nav-h
   .step-intro .quote + .quote, .step-intro .vision + .quote { margin-top: 10px; }
   .step-intro .last-updated { margin-top: clamp(8px, 1.6vh, 18px); }
 }
+/* phones: the intro alone on page one, then the research vision as its own page, then one page per section */
 @media (max-width: 620px) {
-  .step-intro { display: block; padding: 0 0 30px; }
-  .step { min-height: 0; padding: 34px 0; }
+  .step { padding: 28px 0; }
   .step .section-title { font-size: 28px; }
+  .step-intro { display: block; padding: 0; min-height: 0; scroll-snap-align: none; }
+  .step-intro .cover { scroll-snap-align: start; }
+  .step-intro #story { min-height: calc(100vh - var(--nav-h)); min-height: calc(100svh - var(--nav-h)); display: flex; flex-direction: column; justify-content: center;
+    padding-top: 28px; padding-bottom: 28px; scroll-snap-align: start; }
+  .step-intro .about-panel { padding: 0; }
+  .step-intro .about-panel .lead { font-size: 16.5px; line-height: 1.5; }
+  .step-intro .subhead { margin-top: 26px; }
 }
 
 /* last step: coffee chat, the visitor map, then the footer sits on the floor */
