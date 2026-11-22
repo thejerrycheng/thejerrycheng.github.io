@@ -81,21 +81,26 @@
     });
     document.body.appendChild(dock);
     [].forEach.call(dock.children, function (c) { c.style.setProperty("--w", (36 + c.lastChild.offsetWidth) + "px"); });   /* icon + its label */
-    var more = document.createElement("button");
-    more.type = "button"; more.className = "dock-more"; more.setAttribute("aria-label", "Links: email, GitHub, X, CV, Scholar");
-    more.setAttribute("aria-controls", "socialDock"); more.setAttribute("aria-expanded", "false");
-    more.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="19" cy="12" r="1.9"/></svg>';
-    brand.parentNode.insertBefore(more, brand.nextSibling);
-    function setOpen(on) { root.classList.toggle("dock-open", on); more.setAttribute("aria-expanded", String(on)); }
-    more.addEventListener("click", function (e) { e.stopPropagation(); setOpen(!root.classList.contains("dock-open")); });
-    document.addEventListener("click", function (e) { if (!dock.contains(e.target)) setOpen(false); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape") setOpen(false); });
+    /* narrower screens and phones: the same five icons sit in the nav bar itself, beside the name */
+    var bar = document.createElement("div");
+    bar.className = "nav-dock"; bar.setAttribute("role", "group"); bar.setAttribute("aria-label", "Links");
+    [].forEach.call(dock.children, function (c) { var d = c.cloneNode(true); d.removeChild(d.lastChild); bar.appendChild(d); });
+    brand.parentNode.insertBefore(bar, brand.nextSibling);
     new IntersectionObserver(function (es) {
       var gone = !es[0].isIntersecting && es[0].boundingClientRect.top < 60;
       root.classList.toggle("dock-on", gone);
-      if (!gone) setOpen(false);
     }, { rootMargin: "-48px 0px 0px 0px" }).observe(row);
   })();
+
+  /* ---- "Scroll to continue": go to the next step ---- */
+  [].forEach.call(document.querySelectorAll(".scroll-cue"), function (cue) {
+    cue.addEventListener("click", function (e) {
+      if (!window.matchMedia("(min-width: 621px)").matches) return;
+      var here = cue.closest(".step"), next = here && here.nextElementSibling;
+      while (next && !next.classList.contains("step")) next = next.nextElementSibling;
+      if (next) { e.preventDefault(); next.scrollIntoView({ behavior: "smooth", block: "start" }); }
+    });
+  });
 
   /* ---- Mobile menu ---- */
   var menuBtn  = document.getElementById("menuButton");

@@ -1448,7 +1448,6 @@ html:has(.step) { scroll-snap-type: y proximity; scroll-padding-top: var(--nav-h
   scroll-snap-align: start; scroll-snap-stop: always; padding: clamp(24px, 5vh, 64px) 0; }
 .step > .section { width: 100%; padding-top: 0; padding-bottom: 0; }
 .step > .section + .section { margin-top: clamp(20px, 4vh, 40px); }
-.step:nth-of-type(even) { background: var(--paper); }
 .step .section-title { font-size: clamp(30px, 4.2vw, 48px); letter-spacing: -0.03em; }
 .step .section-head { margin-bottom: clamp(18px, 3.4vh, 34px); align-items: flex-end; }
 
@@ -1513,24 +1512,137 @@ html.dock-on .dock a { opacity: 1; transform: none; filter: none; transition-del
 .dock a:hover span, .dock a:focus-visible span { opacity: 1; transition-delay: .08s; }
 .dock a:active { transform: scale(.92); transition-duration: .12s; transition-delay: 0s; }
 
-.dock-more { display: none; flex: none; align-items: center; justify-content: center; width: 0; height: 30px; padding: 0; margin: 0; border: 0; border-radius: 15px; cursor: pointer;
-  color: var(--ink); background: var(--wash); overflow: hidden; opacity: 0; transform: scale(.3); filter: blur(6px);
-  transition: width .55s var(--pop-soft), margin .55s var(--pop-soft), opacity .3s ease, filter .3s ease, transform .6s var(--pop), background .25s ease; }
-.dock-more svg { flex: none; width: 18px; height: 18px; fill: currentColor; transition: transform .55s var(--pop); }
-.dock-more[aria-expanded="true"] { background: var(--tint); }
-.dock-more[aria-expanded="true"] svg { transform: rotate(90deg); }
-.dock-more:active { transform: scale(.9); }
+.nav-dock { display: none; align-items: center; gap: 2px; flex: none; max-width: 0; margin: 0 auto 0 0; overflow: hidden; opacity: 0; filter: blur(8px);
+  transition: max-width .7s var(--pop-soft), margin .6s var(--pop-soft), opacity .3s ease, filter .4s ease; }
+.nav-dock a { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: var(--ink); opacity: 0; transform: scale(.3);
+  transition: transform .6s var(--pop), opacity .3s ease, background .25s ease; }
+.nav-dock a svg { width: 16px; height: 16px; }
+.nav-dock a:hover { background: var(--tint); }
+.nav-dock a:active { transform: scale(.88); transition-duration: .12s; transition-delay: 0s; }
+html.dock-on .nav-dock { max-width: 170px; margin-left: 6px; opacity: 1; filter: none; }
+html.dock-on .nav-dock a { opacity: .85; transform: none; transition-delay: calc(var(--i, 0) * 50ms + .1s), calc(var(--i, 0) * 50ms + .1s), 0s; }
 @media (max-width: 1199px) {
-  .dock { top: calc(var(--nav-h) + 8px); left: 12px; border-radius: 22px; transform-origin: 60px -20px; }
-  html.dock-on .dock { opacity: 0; transform: translateY(-14px) scale(.4, .2); filter: blur(12px); pointer-events: none; }
-  html.dock-on .dock a { opacity: 0; transform: scale(.3); filter: blur(6px); transition-delay: 0s; }
-  html.dock-on.dock-open .dock { opacity: 1; transform: none; filter: none; pointer-events: auto; }
-  html.dock-on.dock-open .dock a { opacity: 1; transform: none; filter: none; width: var(--w, 110px);
-    transition-delay: 0s, 0s, calc(var(--i, 0) * 45ms + .08s), calc(var(--i, 0) * 45ms + .08s), calc(var(--i, 0) * 45ms + .08s); }
-  .dock a span { opacity: 1; }
-  .dock-more { display: inline-flex; margin-right: auto; }
-  .nav .brand:has(+ .dock-more) { margin-right: 0; }
-  html.dock-on .dock-more { width: 30px; margin-left: 8px; opacity: .85; transform: none; filter: none; }
+  .dock { display: none; }
+  .nav-dock { display: flex; }
+  .nav .brand { margin-right: 0; }
 }
-@media (prefers-reduced-motion: reduce) { .dock, .dock a, .dock-more, .dock-more svg { transition: none !important; } }
-@media print { .dock, .dock-more { display: none !important; } }
+@media (max-width: 620px) {
+  /* on a phone the name folds down to the logo to make room for the icons */
+  .nav .brand { transition: font-size .55s var(--pop-soft), gap .55s var(--pop-soft); }
+  html.dock-on .nav .brand { font-size: 0; gap: 0; }
+  html.dock-on .nav-dock { margin-left: 4px; }
+  .nav-inner { gap: 6px; }
+}
+@media (prefers-reduced-motion: reduce) { .dock, .dock a, .nav-dock, .nav-dock a, .nav .brand { transition: none !important; } }
+@media print { .dock, .nav-dock { display: none !important; } }
+
+/* =============================================================================
+   HOME STEPS v2 — the scroll really snaps, and each page has its own layout:
+   publications = an editorial shelf led by one wide feature; projects = a
+   two-row poster wall; news = a timeline. All three run edge to edge and fade
+   out at the sides. After the first page everything sits on the light beige.
+   ============================================================================= */
+/* body was a scroll container (overflow-x: hidden), which swallowed the snap points; clip does not make one */
+html:has(.step) body { overflow: visible; overflow-x: clip; }
+.step { background: var(--bone); --bleed: max(20px, calc((100vw - var(--maxw)) / 2 + 20px)); }
+.step-intro { background: var(--paper); position: relative; }
+
+/* a small step number above each title */
+.step-pubs, .step-projects, .step-news, .step-last { counter-increment: step; }
+body { counter-reset: step; }
+.step > .section:first-child .section-title { flex-direction: column; align-items: flex-start; gap: 8px; }
+.step > .section:first-child .section-title::before { content: "0" counter(step); display: block; font-family: var(--font-sans); font-size: 13px; font-weight: 600;
+  letter-spacing: 0.08em; color: var(--link); font-variant-numeric: tabular-nums; line-height: 1; }
+
+/* edge-to-edge scrollers that dissolve at the sides (so nothing runs under the dock) */
+.step .strip, .step .news-scroll {
+  margin: -18px calc(-1 * var(--bleed)) -30px; padding: 18px var(--bleed) 30px; scroll-padding-left: var(--bleed); gap: 16px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 calc(var(--bleed) - 20px), #000 calc(100% - var(--bleed) + 20px), transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 calc(var(--bleed) - 20px), #000 calc(100% - var(--bleed) + 20px), transparent 100%);
+}
+
+/* ---- 01 Publications: tall editorial cards, the newest one wide; hover lifts the card ---- */
+.step-pubs .slide { flex-basis: clamp(280px, 25vw, 372px); height: clamp(404px, 58vh, 660px); border-radius: 24px;
+  transition: transform .55s var(--pop-soft), box-shadow .4s ease, background .25s ease; }
+.step-pubs .slide-media { flex: 1 1 0; aspect-ratio: auto; min-height: 0; }
+.step-pubs .slide-body { flex: none; padding: 16px 18px 18px; }
+@media (hover: hover) {
+  .step-pubs .slide:hover { transform: translateY(-8px); box-shadow: 0 24px 48px rgba(60,40,10,0.14), inset 0 1px 0 rgba(255,255,255,0.55); }
+  html[data-theme="night"] .step-pubs .slide:hover { box-shadow: 0 24px 48px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,220,0.06); }
+  .step-pubs .slide:hover .slide-cta { background-color: var(--hi); color: #1D1D1F; }
+}
+@media (min-width: 861px) {
+  .step-pubs .slide:first-child { flex-basis: clamp(600px, 58vw, 880px); flex-direction: row; }
+  .step-pubs .slide:first-child .slide-media { flex: 1.4 1 0; height: 100%; }
+  .step-pubs .slide:first-child .slide-body { flex: 1 1 0; justify-content: center; padding: clamp(20px, 2.4vw, 34px); gap: 10px; }
+  .step-pubs .slide:first-child .slide-title { font-size: clamp(22px, 2.3vw, 31px); line-height: 1.14; letter-spacing: -0.028em; -webkit-line-clamp: 6; }
+  .step-pubs .slide:first-child .slide-sub { font-size: 14.5px; -webkit-line-clamp: 4; }
+  .step-pubs .slide:first-child .slide-cta { margin-top: 10px; font-size: 14px; padding: 7px 15px; }
+}
+
+/* ---- 02 Projects: a poster wall, two rows, the first tile large; hover zooms the picture and slides the caption up ---- */
+.step-projects .strip { display: grid; grid-auto-flow: column; grid-template-rows: repeat(2, minmax(0, 1fr)); grid-auto-columns: clamp(210px, 20.5vw, 320px);
+  gap: 12px; height: calc(clamp(420px, 60vh, 700px) + 48px); }
+.step-projects .slide { height: auto; flex: none; border-radius: 22px; isolation: isolate; background: #1b1814; }
+.step-projects .slide:first-child { grid-row: span 2; grid-column: span 2; }
+.step-projects .slide-media { position: absolute; inset: 0; aspect-ratio: auto; height: 100%; }
+.step-projects .slide-media img, .step-projects .slide-media img.fit-contain { object-fit: cover; padding: 0; transition: transform .9s var(--morph), filter .5s ease; }
+.step-projects .slide-body { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; flex: none; gap: 0; padding: 54px 16px 14px;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.62) 58%, rgba(0,0,0,0.78) 100%); }
+.step-projects .slide-title { color: #fff; font-size: 16.5px; -webkit-line-clamp: 2; text-shadow: 0 1px 10px rgba(0,0,0,0.35); }
+.step-projects .slide:first-child .slide-title { font-size: clamp(24px, 2.4vw, 34px); letter-spacing: -0.03em; }
+.step-projects .slide:first-child .slide-body { padding: 80px 24px 22px; }
+.step-projects .slide-sub { color: rgba(255,255,255,0.82); }
+.step-projects .slide-cta { color: #fff; background-color: rgba(255,255,255,0.22); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.step-projects .slide:hover .slide-cta, .step-projects .slide:focus-visible .slide-cta { background-color: #fff; color: #1D1D1F; }
+@media (hover: hover) {
+  .step-projects .slide-sub, .step-projects .slide-cta { max-height: 0; opacity: 0; overflow: hidden; border-top-width: 0; padding-top: 0; padding-bottom: 0; transform: translateY(10px);
+    transition: max-height .55s var(--morph), opacity .35s ease, transform .55s var(--pop-soft), padding .55s var(--morph), border-width .55s var(--morph), background-color .25s ease, color .25s ease; }
+  .step-projects .slide:hover .slide-sub, .step-projects .slide:focus-visible .slide-sub { max-height: 3em; opacity: 1; transform: none; margin-top: 4px; }
+  .step-projects .slide:hover .slide-cta, .step-projects .slide:focus-visible .slide-cta { max-height: 44px; opacity: 1; transform: none; border-top-width: 9px; padding-top: 5px; padding-bottom: 5px; }
+  .step-projects .slide:hover .slide-media img { transform: scale(1.08); filter: brightness(.86); }
+  .step-projects .slide:hover { box-shadow: 0 18px 40px rgba(0,0,0,0.22); }
+}
+
+/* ---- 03 News: a timeline. Each item hangs from a dot on one continuous rail; hover lights its dot ---- */
+.step-news .news-scroll { gap: 16px; }
+.step-news .news-card { position: relative; overflow: visible; flex-basis: clamp(270px, 23vw, 340px); height: calc(clamp(360px, 50vh, 580px) + 58px); padding-top: 58px;
+  background: transparent; box-shadow: none; border-radius: 0; transition: transform .55s var(--pop-soft); }
+.step-news .news-card:hover { background: transparent; }
+.step-news .news-card::before { content: ""; position: absolute; top: 8px; left: 0; right: -16px; height: 2px; border-radius: 2px; background: var(--line-soft); transition: background .3s ease; }
+.step-news .news-card::after { content: ""; position: absolute; top: 2px; left: 0; width: 14px; height: 14px; border-radius: 50%; box-sizing: border-box;
+  background: var(--bone); border: 2.5px solid var(--hi); transition: transform .5s var(--pop), background .25s ease, box-shadow .3s ease; }
+.step-news .news-card:first-child::after { background: var(--hi); box-shadow: 0 0 0 5px var(--tint); }
+.step-news .news-text p > b:first-child { position: absolute; top: 26px; left: 0; margin: 0; font-size: 13.5px; font-weight: 600; color: var(--ink); letter-spacing: -0.005em; }
+.step-news .news-media { border-radius: 20px 20px 0 0; }
+.step-news .news-text { background: var(--panel); border-radius: 0 0 20px 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.4); transition: background .25s ease; }
+.step-news .news-media img { transition: transform .9s var(--morph); }
+@media (hover: hover) {
+  .step-news .news-card:hover { transform: translateY(-6px); }
+  .step-news .news-card:hover::after { transform: scale(1.35); background: var(--hi); box-shadow: 0 0 0 6px var(--tint); }
+  .step-news .news-card:hover::before { background: var(--hi); }
+  .step-news .news-card:hover .news-text { background: var(--panel-2); }
+  .step-news .news-card:hover .news-media img { transform: scale(1.05); }
+}
+
+/* the "scroll to continue" cue stays on every screen size */
+@media (min-width: 621px) {
+  .step-intro .cover { position: static; }
+  .step-intro .scroll-cue { display: inline-flex; flex-direction: row; align-items: center; gap: 6px; position: absolute; left: 50%; bottom: clamp(8px, 1.6vh, 20px); margin: 0 0 0 -92px; width: 184px; justify-content: center;
+    padding: 7px 14px; border-radius: 999px; color: var(--ash); text-decoration: none; font-size: 12.5px; z-index: 3;
+    background: var(--lg-sheen), var(--lg-fill); -webkit-backdrop-filter: var(--lg-blur); backdrop-filter: var(--lg-blur); border: 1px solid var(--lg-rim); box-shadow: var(--lg-edge), var(--lg-float);
+    transition: opacity .5s var(--morph), transform .6s var(--pop), filter .5s var(--morph), color .25s ease; }
+  .step-intro .scroll-cue:hover { color: var(--ink); transform: scale(1.05); }
+  .step-intro .scroll-cue svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; animation: cueNudge 1.8s var(--morph) infinite; }
+  html.past-cover .step-intro .scroll-cue { opacity: 0; transform: translateY(8px); filter: blur(4px); pointer-events: none; }
+}
+
+@media (max-width: 620px) {
+  .step-projects .strip { grid-auto-columns: 62vw; height: 470px; }
+  .step-projects .slide:first-child { grid-column: span 1; }
+  .step-projects .slide:first-child .slide-title { font-size: 22px; }
+  .step-projects .slide:first-child .slide-body { padding: 60px 16px 14px; }
+  .step-pubs .slide { flex-basis: 78vw; height: 440px; }
+  .step-news .news-card { flex-basis: 76vw; height: 470px; }
+}
+@media (prefers-reduced-motion: reduce) { .step .slide, .step .news-card, .step .slide-media img, .step .news-media img { transition: none !important; } }
