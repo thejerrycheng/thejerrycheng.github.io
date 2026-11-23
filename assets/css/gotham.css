@@ -1370,9 +1370,11 @@ html.js .btn-row-social .btn { animation: sPop .7s var(--pop) backwards; animati
 /* --- "Open" / "Quick look" on cards: a soft pill whose arrow springs forward --- */
 .slide-cta {
   display: inline-flex; align-items: center; align-self: flex-start; gap: 0;
-  margin-top: auto; padding: 5px 12px; border-top: 7px solid transparent; background-clip: padding-box;
+  margin-top: auto; padding: 5px 12px; border: 0;   /* the gap above is a margin on the line before it: a one-sided border bent the pill's corners */
   border-radius: 980px; background-color: var(--tint); color: var(--link); font-weight: 500; font-size: 13px; text-decoration: none;
 }
+.slide-body > :nth-last-child(2) { margin-bottom: 7px; }
+.step-projects .slide-body > :nth-last-child(2) { margin-bottom: 0; }
 .slide-cta::after, .see-all::after { content: "\203A"; display: inline-block; margin-left: 5px; font-size: 1.15em; line-height: 1; transition: transform .5s var(--pop); }
 .slide:hover .slide-cta, .slide:focus-visible .slide-cta { text-decoration: none; background-color: color-mix(in srgb, var(--hi) 26%, transparent); color: var(--ink); }
 .slide:hover .slide-cta::after, .slide:focus-visible .slide-cta::after, .see-all:hover::after, .see-all:focus-visible::after { transform: translateX(4px); }
@@ -1596,10 +1598,10 @@ body { counter-reset: step; }
 .step-projects .slide-cta { color: #fff; background-color: rgba(255,255,255,0.22); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
 .step-projects .slide:hover .slide-cta, .step-projects .slide:focus-visible .slide-cta { background-color: #fff; color: #1D1D1F; }
 @media (hover: hover) {
-  .step-projects .slide-sub, .step-projects .slide-cta { max-height: 0; opacity: 0; overflow: hidden; border-top-width: 0; padding-top: 0; padding-bottom: 0; transform: translateY(10px);
-    transition: max-height .55s var(--morph), opacity .35s ease, transform .55s var(--pop-soft), padding .55s var(--morph), border-width .55s var(--morph), background-color .25s ease, color .25s ease; }
+  .step-projects .slide-sub, .step-projects .slide-cta { max-height: 0; opacity: 0; overflow: hidden; margin-top: 0; padding-top: 0; padding-bottom: 0; transform: translateY(10px);
+    transition: max-height .55s var(--morph), opacity .35s ease, transform .55s var(--pop-soft), padding .55s var(--morph), margin .55s var(--morph), background-color .25s ease, color .25s ease; }
   .step-projects .slide:hover .slide-sub, .step-projects .slide:focus-visible .slide-sub { max-height: 3em; opacity: 1; transform: none; margin-top: 4px; }
-  .step-projects .slide:hover .slide-cta, .step-projects .slide:focus-visible .slide-cta { max-height: 44px; opacity: 1; transform: none; border-top-width: 9px; padding-top: 5px; padding-bottom: 5px; }
+  .step-projects .slide:hover .slide-cta, .step-projects .slide:focus-visible .slide-cta { max-height: 44px; opacity: 1; transform: none; margin-top: 9px; padding-top: 5px; padding-bottom: 5px; }
   .step-projects .slide:hover .slide-media img { transform: scale(1.08); filter: brightness(.86); }
   .step-projects .slide:hover { box-shadow: 0 18px 40px rgba(0,0,0,0.22); }
 }
