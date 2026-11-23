@@ -49,7 +49,8 @@ def pub_row(p):
     ext = "" if internal else ' target="_blank" rel="noopener"'
     venue = f'<em>{p["venue"]}</em>, {p["year"]}' + (f' &middot; {p["note"]}' if p.get("note") else "")
     venue_line = "" if p.get("hide_venue") else f'        <span class="venue">{venue}</span>\n'
-    return f'''    <div class="pub card card-hover" id="{p["id"]}" data-go="{attr(go)}"{' data-go-new' if not internal else ''}>
+    first = ' data-first' if p["authors"].lstrip().startswith("<b>") else ""      # listing.js filters on these
+    return f'''    <div class="pub card card-hover" id="{p["id"]}" data-go="{attr(go)}"{' data-go-new' if not internal else ''} data-year="{p["year"]}"{first}>
       {thumb_html(p)}
       <div class="pub-meta">
         <a href="{attr(go)}"{ext}><span class="papertitle">{p["title"]}</span></a><span class="proj-year">{p["year"]}</span>
@@ -60,7 +61,10 @@ def pub_row(p):
     </div>'''
 
 def proj_row(p):
-    return f'''    <div class="pub card card-hover" id="{p["id"]}">
+    l0 = p["links"][0]
+    go = f' data-go="{attr(l0["href"])}"' + ("" if l0.get("internal") else " data-go-new")
+    tag = f'\n      <span class="proj-tag">{p["tag"]}</span>' if p.get("tag") else ""
+    return f'''    <div class="pub card card-hover" id="{p["id"]}"{go} data-year="{p["year"]}" data-tag="{attr(p.get("tag", ""))}">{tag}
       {thumb_html(p)}
       <div class="pub-meta">
         <span class="papertitle">{p["title"]}</span><span class="proj-year">{p["year"]}</span>
