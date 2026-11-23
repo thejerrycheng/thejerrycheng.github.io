@@ -69,6 +69,7 @@
     if (lead && (isPubs || state.filter !== "all")) lead.classList.add("is-lead");
     heads.forEach(function (h) { h.hidden = state.filter !== "all"; });
     tally.textContent = shown === rows.length ? rows.length + (isPubs ? " papers" : " projects") : shown + " of " + rows.length;
+    list.classList.toggle("lt-cited", state.sort === "cited");
     root.classList.toggle("rail-off", isProj && state.filter !== "all");     /* the group marks only make sense on the full list */
   }
   function apply(animate) {
@@ -97,7 +98,12 @@
     var t0 = performance.now(), D = 700;
     (function step(now) { var t = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - t, 3); el.textContent = Math.round(from + (to - from) * e); if (t < 1) requestAnimationFrame(step); })(t0);
   }
-  function paint(id, n) { counts[id] = n; }             /* per-paper numbers only feed the "Most cited" order; the page shows the total alone */
+  function paint(id, n) {                               /* a small number after the title, shown only under "Most cited" */
+    counts[id] = n;
+    var t = n && document.querySelector("#" + CSS.escape(id) + " .papertitle"); if (!t || t.querySelector(".cite-n")) return;
+    var c = document.createElement("span"); c.className = "cite-n"; c.textContent = n; c.title = n + (n === 1 ? " citation" : " citations") + " on Google Scholar";
+    t.appendChild(c);
+  }
   fetch("assets/data/citations.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (j) {
     papers = j.papers || {}; profile = j.profile || "";
     Object.keys(papers).forEach(function (id) { paint(id, papers[id].count); });

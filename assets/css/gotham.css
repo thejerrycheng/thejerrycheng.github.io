@@ -1787,6 +1787,10 @@ html:has(.lt-bar) body { overflow: visible; overflow-x: clip; }
   .lt-rows .pub:hover .pub-thumb img:not(.fit-contain), .lt-grid .pub:hover .pub-thumb img:not(.fit-contain) { transform: scale(1.05); }
 }
 
+/* ---- publications: under "Most cited", a quiet number after each title ---- */
+.cite-n { display: none; margin-left: 8px; font-family: var(--font-display); font-size: 12.5px; font-weight: 500; letter-spacing: 0; line-height: 1; color: var(--ash); font-variant-numeric: tabular-nums; vertical-align: 0.12em; white-space: nowrap; }
+.lt-cited .cite-n { display: inline; }
+.lt-rows .pub.is-lead .cite-n { font-size: 14px; }
 /* ---- publications: the lead row ---- */
 @media (min-width: 861px) {
   .lt-rows .pub.is-lead { height: auto; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 30px; padding: 18px; }
