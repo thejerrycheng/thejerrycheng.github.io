@@ -49,7 +49,7 @@ def pub_row(p):
     ext = "" if internal else ' target="_blank" rel="noopener"'
     venue = f'<em>{p["venue"]}</em>, {p["year"]}' + (f' &middot; {p["note"]}' if p.get("note") else "")
     venue_line = "" if p.get("hide_venue") else f'        <span class="venue">{venue}</span>\n'
-    first = ' data-first' if p["authors"].lstrip().startswith("<b>") else ""      # listing.js filters on these
+    first = ' data-first' if p.get("first_author") or p["authors"].lstrip().startswith("<b>") else ""      # listing.js filters on these
     return f'''    <div class="pub card card-hover" id="{p["id"]}" data-go="{attr(go)}"{' data-go-new' if not internal else ''} data-year="{p["year"]}"{first}>
       {thumb_html(p)}
       <div class="pub-meta">

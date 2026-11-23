@@ -1759,6 +1759,9 @@ html.dock-still .dock, html.dock-still .dock a, html.dock-still .nav-dock, html.
 html:has(.lt-bar) body { overflow: visible; overflow-x: clip; }
 .lt-stat { color: var(--ash); font-size: 15px; margin-top: 8px; font-variant-numeric: tabular-nums; }
 .lt-stat b { color: var(--ink); font-weight: 600; }
+.lt-cites { color: inherit; text-decoration: none; border-radius: 6px; transition: color .2s ease; }
+.lt-cites:hover { color: var(--hi); }
+.lt-cites:hover b { color: inherit; }
 .lt-src { font-size: 13px; }
 .lt-src.is-live::before { content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 6px 1px 2px; border-radius: 50%; background: #34C759; box-shadow: 0 0 0 3px rgba(52,199,89,0.18); }
 

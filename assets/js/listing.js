@@ -1,5 +1,5 @@
 /* Publications and Projects pages: a filter bar that re-flows the list, a lead entry, and
-   (publications) citation counts — a committed snapshot shown at once, then refreshed live (OpenAlex). */
+   (publications) citation counts from Google Scholar (assets/data/citations.json, refreshed daily). */
 (function () {
   "use strict";
   var page = (location.pathname.split("/").pop() || "").toLowerCase();
@@ -87,9 +87,8 @@
   }
   if (!isPubs) return;
 
-  /* ---- citations: snapshot first, then live from OpenAlex (one request for all papers) ---- */
-  var API = "https://api.openalex.org/works?per-page=50&select=id,cited_by_count&filter=openalex:", KEY = "cites-v2", FRESH = 6 * 3600e3;
-  var papers = {}, chips = {};
+  /* ---- citations: Google Scholar numbers, refreshed daily into assets/data/citations.json (Scholar cannot be asked from a browser) ---- */
+  var papers = {}, chips = {}, profile = "";
   function countUp(el, to) {
     var from = +el.getAttribute("data-n") || 0; el.setAttribute("data-n", to);
     if (calm.matches || from === to) { el.textContent = to; return; }
@@ -98,47 +97,26 @@
   }
   function paint(id, n) {
     counts[id] = n;
-    var row = document.getElementById(id); if (!row) return;
-    if (!chips[id]) {
-      if (!n) return;                                   /* nothing to show yet for a paper with no citations */
-      var a = document.createElement("a"); a.className = "cite"; a.target = "_blank"; a.rel = "noopener";
-      a.href = "https://openalex.org/works/" + papers[id].oa;
-      a.innerHTML = "<b>0</b><span>citations</span>"; a.title = "Citations counted by OpenAlex";
-      row.appendChild(a); chips[id] = a;
+    var row = document.getElementById(id); if (!row || !n) return;      /* no chip for a paper with no citations yet */
+    var a = chips[id];
+    if (!a) {
+      a = chips[id] = document.createElement("a"); a.className = "cite"; a.target = "_blank"; a.rel = "noopener";
+      a.href = papers[id].url || profile; a.title = "Citations on Google Scholar";
+      a.innerHTML = "<b>0</b><span>citations</span>"; row.appendChild(a);
     }
-    chips[id].lastChild.textContent = n === 1 ? "citation" : "citations";
-    countUp(chips[id].firstChild, n);
+    a.lastChild.textContent = n === 1 ? "citation" : "citations";
+    countUp(a.firstChild, n);
   }
-  function total(note) {
-    if (!stat) return;
-    var sum = Object.keys(counts).reduce(function (s, k) { return s + (counts[k] || 0); }, 0);
-    if (!stat._n) { stat.innerHTML += ' · <b class="lt-n">0</b> citations <span class="lt-src"></span>'; stat._n = stat.querySelector(".lt-n"); stat._s = stat.querySelector(".lt-src"); }
-    countUp(stat._n, sum); stat._s.textContent = note;
-  }
-  function live() {
-    var ids = Object.keys(papers), byWork = {};
-    ids.forEach(function (id) { byWork[papers[id].oa] = id; });
-    if (!ids.length) return;
-    fetch(API + Object.keys(byWork).join("|")).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
-      var out = {}, got = 0;
-      ((j && j.results) || []).forEach(function (w) {
-        var id = byWork[String(w.id).split("/").pop()];
-        if (id && typeof w.cited_by_count === "number") { got++; out[id] = w.cited_by_count; paint(id, w.cited_by_count); }
-      });
-      if (!got) return;
-      total("\u00b7 live, OpenAlex"); if (stat) stat._s.classList.add("is-live");
-      try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), c: out })); } catch (e) {}
-      if (state.sort === "cited") apply(true);
-    }).catch(function () {});
-  }
-  fetch("assets/data/citations.json").then(function (r) { return r.json(); }).then(function (j) {
-    papers = j.papers || {};
+  fetch("assets/data/citations.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (j) {
+    papers = j.papers || {}; profile = j.profile || "";
     Object.keys(papers).forEach(function (id) { paint(id, papers[id].count); });
-    total("· as of " + j.updated);
-    var cached = null; try { cached = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) {}
-    if (cached && Date.now() - cached.t < FRESH) {       /* a recent live reading on this device: reuse it, ask again later */
-      Object.keys(cached.c).forEach(function (id) { if (papers[id]) paint(id, cached.c[id]); });
-      total("· live, OpenAlex"); stat && stat._s.classList.add("is-live");
-    } else live();
+    if (stat && j.total) {
+      var day = new Date(j.updated + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
+      stat.insertAdjacentHTML("beforeend", ' · <a class="lt-cites" target="_blank" rel="noopener" title="Google Scholar profile"><b class="lt-n">0</b> citations</a> <span class="lt-src is-live">Google Scholar, ' + day + "</span>");
+      stat.querySelector(".lt-cites").href = profile;
+      countUp(stat.querySelector(".lt-n"), j.total);
+    }
+    if (state.sort === "cited") apply(true);
+    try { localStorage.removeItem("cites-v2"); } catch (e) {}
   }).catch(function () {});
 })();
