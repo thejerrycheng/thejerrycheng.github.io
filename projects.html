@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/gotham.css?v=20261123j">
+  <link rel="stylesheet" href="assets/css/gotham.css?v=20261123k">
   <script>document.documentElement.classList.add('js');</script>
   <script>(function(){try{var t=localStorage.getItem("theme-v2");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 
@@ -61,7 +61,9 @@
 <section class="section" id="projects">
   <div class="pub-list">
 <!-- catalog:proj-list -->
-    <div class="pub card card-hover" id="m2" data-go="m2.html" data-year="2026" data-tag="Robot learning">
+    <h2 class="lt-head" id="group-rl" data-group="rl">Reinforcement learning <span>5</span></h2>
+
+    <div class="pub card card-hover" id="m2" data-go="m2.html" data-year="2026" data-tag="Robot learning" data-group="rl">
       <span class="proj-tag">Robot learning</span>
       <div class="pub-thumb"><img src="assets/images/cards/m2.jpg" alt="Two mobile manipulators carrying a shared object in MuJoCo" loading="lazy" decoding="async" class="fit-contain"></div>
       <div class="pub-meta">
@@ -71,7 +73,7 @@
       </div>
     </div>
 
-    <div class="pub card card-hover" id="wuji" data-go="wuji.html" data-year="2026" data-tag="Dexterous manipulation">
+    <div class="pub card card-hover" id="wuji" data-go="wuji.html" data-year="2026" data-tag="Dexterous manipulation" data-group="rl">
       <span class="proj-tag">Dexterous manipulation</span>
       <div class="pub-thumb"><img src="assets/images/cards/wuji.jpg" alt="A Franka Panda arm with a dexterous hand above a table set with food and blocks" loading="lazy" decoding="async" class="fit-cover"></div>
       <div class="pub-meta">
@@ -81,17 +83,7 @@
       </div>
     </div>
 
-    <div class="pub card card-hover" id="rehearse" data-go="rehearse.html" data-year="2026" data-tag="Real to sim to real">
-      <span class="proj-tag">Real to sim to real</span>
-      <div class="pub-thumb"><img src="assets/images/cards/rehearse.jpg" alt="A reconstructed kitchen with the full egocentric camera path drawn through it, coloured by time" loading="lazy" decoding="async" class="fit-cover"></div>
-      <div class="pub-meta">
-        <span class="papertitle">Rehearse</span><span class="proj-year">2026</span>
-        <p class="proj-body">Coming soon.</p>
-        <div class="links"><a href="rehearse.html">Coming soon</a></div>
-      </div>
-    </div>
-
-    <div class="pub card card-hover" id="superdexterity" data-go="superdexterity.html" data-year="2026" data-tag="Dexterous manipulation">
+    <div class="pub card card-hover" id="superdexterity" data-go="superdexterity.html" data-year="2026" data-tag="Dexterous manipulation" data-group="rl">
       <span class="proj-tag">Dexterous manipulation</span>
       <div class="pub-thumb"><img src="assets/images/cards/superdexterity.jpg" alt="Abstract drawing: a rounded square turning step by step until it reaches an orange target" loading="lazy" decoding="async" class="fit-cover"></div>
       <div class="pub-meta">
@@ -101,27 +93,7 @@
       </div>
     </div>
 
-    <div class="pub card card-hover" id="microduck" data-go="microduck.html" data-year="2026" data-tag="Reinforcement learning">
-      <span class="proj-tag">Reinforcement learning</span>
-      <div class="pub-thumb"><img src="assets/images/cards/microduck.jpg" alt="The MicroDuck replica partly assembled on a workbench, with Feetech HD1910 servos in the legs and neck" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/microduck.jpg" data-src="assets/videos/card_microduck.mp4"></video></div></div>
-      <div class="pub-meta">
-        <span class="papertitle">MicroDuck Replica on Feetech Servos</span><span class="proj-year">2026</span>
-        <p class="proj-body">A replica of Pollen Robotics' MicroDuck built on slower, heavier Feetech HD1910 servos. The actuator is modelled with the Feetech firmware law and the rest of the build is covered by wide randomisation. Seven policies share one interface: one network walks, stands and gets up after every fall; a sprint reaches 1.33&nbsp;m/s; a front flip lands standing 12 times in 12. All results are in simulation.</p>
-        <div class="links"><a href="microduck.html">Website</a><a href="assets/projects/microduck/duck_live_app.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/microduck_replication_feetech" target="_blank" rel="noopener">Code</a></div>
-      </div>
-    </div>
-
-    <div class="pub card card-hover" id="geodex" data-go="geodex.html" data-year="2026" data-tag="Robot learning">
-      <span class="proj-tag">Robot learning</span>
-      <div class="pub-thumb"><img src="assets/images/cards/geodex.jpg" alt="GeoDEX dexterous manipulation" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/geodex.jpg" data-src="assets/videos/robust_test_get_a_grip.mp4"></video></div></div>
-      <div class="pub-meta">
-        <span class="papertitle">GeoDEX: A Geometric ACT Policy for Contact-Rich Dexterous Manipulation</span><span class="proj-year">2026</span>
-        <p class="proj-body">Apple Vision Pro demonstrations retargeted onto a 23-DoF xArm + ORCA hand by a bifurcated SE(3) optimisation, then cloned by a chunked transformer with a grasp-weighted loss. State Bottlenecking — a mandatory home pose between sub-tasks — takes two-object clearing from 22&nbsp;% to 88&nbsp;%. The page lets you switch each term of the retargeting cost off and watch the pinch geometry come apart.</p>
-        <div class="links"><a href="geodex.html">Website</a><a href="assets/pdf/projects/GeoDEX_DS_GA_3001_Course_Project_Final_Report.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/GeoDEX" target="_blank" rel="noopener">Code</a></div>
-      </div>
-    </div>
-
-    <div class="pub card card-hover" id="tintin" data-go="tintin.html" data-year="2025" data-tag="Reinforcement learning">
+    <div class="pub card card-hover" id="tintin" data-go="tintin.html" data-year="2025" data-tag="Reinforcement learning" data-group="rl">
       <span class="proj-tag">Reinforcement learning</span>
       <div class="pub-thumb"><img src="assets/images/cards/tintin.jpg" alt="TINTIN lunar landing RL" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/tintin.jpg" data-src="assets/videos/1mill_step.mp4"></video></div></div>
       <div class="pub-meta">
@@ -131,17 +103,7 @@
       </div>
     </div>
 
-    <div class="pub card card-hover" id="mono-depth" data-go="bipednav.html#perception" data-year="2024" data-tag="Perception">
-      <span class="proj-tag">Perception</span>
-      <div class="pub-thumb"><div class="pub-carousel" data-carousel><div class="carousel-track"><div class="slide"><img src="assets/images/cards/mono-depth.jpg" alt="Stair point-cloud profile with fitted tread and riser planes" decoding="async" class="fit-contain"></div><div class="slide"><img src="assets/images/publications/mono_dep_pipeline.png" alt="Monocular depth estimation pipeline" decoding="async" class="fit-contain"></div></div><button class="c-btn prev" aria-label="Previous slide"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg></button><button class="c-btn next" aria-label="Next slide"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/mono-depth.jpg" data-src="assets/videos/bipednav_perception.mp4"></video></div></div>
-      <div class="pub-meta">
-        <span class="papertitle">Monocular Depth Estimation for Human-Robot Locomotion</span><span class="proj-year">2024</span>
-        <p class="proj-body">Monocular depth pipeline for human-robot walking environments: Metric3D v2 fine-tuned on 16,780 RGB-D stair images, metric reprojection to 3D point clouds, and plane extraction for stair rise and run. Re-run in 2026 on the archived scenes: 1.7 cm rise / 2.5 cm run mean error against a tape measure.</p>
-        <div class="links"><a href="bipednav.html#perception">Website</a><a href="https://www.researchgate.net/publication/382269581_Monocular_depth_estimation_of_human-robot_walking_environments_using_deep_learning" target="_blank" rel="noopener">PDF</a><a href="assets/pdf/projects/mono_est_poster.pdf" target="_blank" rel="noopener">Poster</a></div>
-      </div>
-    </div>
-
-    <div class="pub card card-hover" id="clear-net" data-go="clearnet.html" data-year="2024" data-tag="Reinforcement learning">
+    <div class="pub card card-hover" id="clear-net" data-go="clearnet.html" data-year="2024" data-tag="Reinforcement learning" data-group="rl">
       <span class="proj-tag">Reinforcement learning</span>
       <div class="pub-thumb"><img src="assets/images/cards/clear-net.jpg" alt="CLEAR-Net cart-pole reinforcement learning" loading="lazy" decoding="async" class="fit-contain"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/clear-net.jpg" data-src="assets/videos/RL_demo.mp4"></video></div></div>
       <div class="pub-meta">
@@ -151,7 +113,41 @@
       </div>
     </div>
 
-    <div class="pub card card-hover" id="biped-vhc" data-go="bipednav.html" data-year="2024" data-tag="Perception + Control">
+    <h2 class="lt-head" id="group-learning" data-group="learning">Robot learning <span>3</span></h2>
+
+    <div class="pub card card-hover" id="rehearse" data-go="rehearse.html" data-year="2026" data-tag="Real to sim to real" data-group="learning">
+      <span class="proj-tag">Real to sim to real</span>
+      <div class="pub-thumb"><img src="assets/images/cards/rehearse.jpg" alt="A reconstructed kitchen with the full egocentric camera path drawn through it, coloured by time" loading="lazy" decoding="async" class="fit-cover"></div>
+      <div class="pub-meta">
+        <span class="papertitle">Rehearse</span><span class="proj-year">2026</span>
+        <p class="proj-body">Coming soon.</p>
+        <div class="links"><a href="rehearse.html">Coming soon</a></div>
+      </div>
+    </div>
+
+    <div class="pub card card-hover" id="geodex" data-go="geodex.html" data-year="2026" data-tag="Robot learning" data-group="learning">
+      <span class="proj-tag">Robot learning</span>
+      <div class="pub-thumb"><img src="assets/images/cards/geodex.jpg" alt="GeoDEX dexterous manipulation" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/geodex.jpg" data-src="assets/videos/robust_test_get_a_grip.mp4"></video></div></div>
+      <div class="pub-meta">
+        <span class="papertitle">GeoDEX: A Geometric ACT Policy for Contact-Rich Dexterous Manipulation</span><span class="proj-year">2026</span>
+        <p class="proj-body">Apple Vision Pro demonstrations retargeted onto a 23-DoF xArm + ORCA hand by a bifurcated SE(3) optimisation, then cloned by a chunked transformer with a grasp-weighted loss. State Bottlenecking — a mandatory home pose between sub-tasks — takes two-object clearing from 22&nbsp;% to 88&nbsp;%. The page lets you switch each term of the retargeting cost off and watch the pinch geometry come apart.</p>
+        <div class="links"><a href="geodex.html">Website</a><a href="assets/pdf/projects/GeoDEX_DS_GA_3001_Course_Project_Final_Report.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/GeoDEX" target="_blank" rel="noopener">Code</a></div>
+      </div>
+    </div>
+
+    <div class="pub card card-hover" id="mono-depth" data-go="bipednav.html#perception" data-year="2024" data-tag="Perception" data-group="learning">
+      <span class="proj-tag">Perception</span>
+      <div class="pub-thumb"><div class="pub-carousel" data-carousel><div class="carousel-track"><div class="slide"><img src="assets/images/cards/mono-depth.jpg" alt="Stair point-cloud profile with fitted tread and riser planes" decoding="async" class="fit-contain"></div><div class="slide"><img src="assets/images/publications/mono_dep_pipeline.png" alt="Monocular depth estimation pipeline" decoding="async" class="fit-contain"></div></div><button class="c-btn prev" aria-label="Previous slide"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg></button><button class="c-btn next" aria-label="Next slide"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/mono-depth.jpg" data-src="assets/videos/bipednav_perception.mp4"></video></div></div>
+      <div class="pub-meta">
+        <span class="papertitle">Monocular Depth Estimation for Human-Robot Locomotion</span><span class="proj-year">2024</span>
+        <p class="proj-body">Monocular depth pipeline for human-robot walking environments: Metric3D v2 fine-tuned on 16,780 RGB-D stair images, metric reprojection to 3D point clouds, and plane extraction for stair rise and run. Re-run in 2026 on the archived scenes: 1.7 cm rise / 2.5 cm run mean error against a tape measure.</p>
+        <div class="links"><a href="bipednav.html#perception">Website</a><a href="https://www.researchgate.net/publication/382269581_Monocular_depth_estimation_of_human-robot_walking_environments_using_deep_learning" target="_blank" rel="noopener">PDF</a><a href="assets/pdf/projects/mono_est_poster.pdf" target="_blank" rel="noopener">Poster</a></div>
+      </div>
+    </div>
+
+    <h2 class="lt-head" id="group-classical" data-group="classical">Classical robotics <span>3</span></h2>
+
+    <div class="pub card card-hover" id="biped-vhc" data-go="bipednav.html" data-year="2024" data-tag="Perception + Control" data-group="classical">
       <span class="proj-tag">Perception + Control</span>
       <div class="pub-thumb"><img src="assets/images/cards/biped-vhc.jpg" alt="Five-link biped with knees walking under virtual holonomic constraints" loading="lazy" decoding="async" class="fit-contain"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/biped-vhc.jpg" data-src="assets/videos/bipednav_preview.mp4"></video></div></div>
       <div class="pub-meta">
@@ -161,7 +157,7 @@
       </div>
     </div>
 
-    <div class="pub card card-hover" id="aero-localization" data-go="localization.html" data-year="2023" data-tag="State estimation">
+    <div class="pub card card-hover" id="aero-localization" data-go="localization.html" data-year="2023" data-tag="State estimation" data-group="classical">
       <span class="proj-tag">State estimation</span>
       <div class="pub-thumb"><img src="assets/images/cards/aero-localization.jpg" alt="Ground truth, dead reckoning and two estimates among landmarks" loading="lazy" decoding="async" class="fit-contain"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/aero-localization.jpg" data-src="assets/videos/localization_lost_woods.mp4"></video></div></div>
       <div class="pub-meta">
@@ -171,27 +167,7 @@
       </div>
     </div>
 
-    <div class="pub card card-hover" id="mobile-robot" data-go="mobilerobot.html" data-year="2022" data-tag="Mechatronics">
-      <span class="proj-tag">Mechatronics</span>
-      <div class="pub-thumb"><img src="assets/images/cards/mobile-robot.jpg" alt="Arduino mobile robot" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/mobile-robot.jpg" data-src="assets/videos/mie444_card.mp4"></video></div></div>
-      <div class="pub-meta">
-        <span class="papertitle">Maze Localization with Four Ultrasonics and No Compass</span><span class="proj-year">2022</span>
-        <p class="proj-body">A 170&nbsp;mm robot finds itself in an 8&nbsp;&times;&nbsp;4 maze using four ultrasonics and nothing else: a tile is four bits of wall, and because the bits run around the tile, turning 90&deg; is a bit rotation. Localization becomes a set intersection over 24 tiles &times; 4 headings. Swept exhaustively, no single reading ever localizes it &mdash; but with the gyro trusted, <em>every</em> start resolves in one tile-move. Drive it on the page and watch the candidates disappear.</p>
-        <div class="links"><a href="mobilerobot.html">Website</a><a href="assets/pdf/projects/MIE444 - Group 1 - Final Report.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/mie444-maze-localization" target="_blank" rel="noopener">Code</a></div>
-      </div>
-    </div>
-
-    <div class="pub card card-hover" id="led-cube" data-go="ledcube.html" data-year="2022" data-tag="Embedded">
-      <span class="proj-tag">Embedded</span>
-      <div class="pub-thumb"><img src="assets/images/cards/led-cube.jpg" alt="8x8x8 LED cube" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/led-cube.jpg" data-src="assets/videos/led_cube.mp4"></video></div></div>
-      <div class="pub-meta">
-        <span class="papertitle">8×8×8 LED Cube Game Console</span><span class="proj-year">2022</span>
-        <p class="proj-body">512 hand-soldered LEDs driven by nine daisy-chained shift registers over one SPI bus. Only one of the eight layers is ever lit; the cube is an illusion held together by refreshing faster than the eye can follow. Twelve animations and a shallow-water liquid you tip by dragging &mdash; volume held to 10<sup>&minus;13</sup>, surface level to 0.008&nbsp;cells per column &mdash; plus 3-D Snake with wrap-around walls and Pong against a machine that solves for where the ball will cross its own face. Drag the refresh rate down and watch persistence of vision give out.</p>
-        <div class="links"><a href="ledcube.html">Website</a><a href="ledcube_games.html">Games</a><a href="assets/pdf/projects/MIE438_Final_Report.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/MIE438_LED_cubic_console" target="_blank" rel="noopener">Code</a><a href="https://www.youtube.com/watch?v=cC_NXlKTEwk&amp;list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV" target="_blank" rel="noopener">Video</a></div>
-      </div>
-    </div>
-
-    <div class="pub card card-hover" id="turtlebot" data-go="turtlebot.html" data-year="2022" data-tag="SLAM">
+    <div class="pub card card-hover" id="turtlebot" data-go="turtlebot.html" data-year="2022" data-tag="SLAM" data-group="classical">
       <span class="proj-tag">SLAM</span>
       <div class="pub-thumb"><img src="assets/images/cards/turtlebot.jpg" alt="Turtlebot2 SLAM and navigation" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/turtlebot.jpg" data-src="assets/videos/turtlebot_localization.mp4"></video></div></div>
       <div class="pub-meta">
@@ -201,7 +177,39 @@
       </div>
     </div>
 
-    <div class="pub card card-hover" id="formula" data-go="formulacar.html" data-year="2022" data-tag="Mechanical design">
+    <h2 class="lt-head" id="group-hardware" data-group="hardware">Hardware <span>4</span></h2>
+
+    <div class="pub card card-hover" id="microduck" data-go="microduck.html" data-year="2026" data-tag="Reinforcement learning" data-group="hardware">
+      <span class="proj-tag">Reinforcement learning</span>
+      <div class="pub-thumb"><img src="assets/images/cards/microduck.jpg" alt="The MicroDuck replica partly assembled on a workbench, with Feetech HD1910 servos in the legs and neck" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/microduck.jpg" data-src="assets/videos/card_microduck.mp4"></video></div></div>
+      <div class="pub-meta">
+        <span class="papertitle">MicroDuck Replica on Feetech Servos</span><span class="proj-year">2026</span>
+        <p class="proj-body">A replica of Pollen Robotics' MicroDuck built on slower, heavier Feetech HD1910 servos. The actuator is modelled with the Feetech firmware law and the rest of the build is covered by wide randomisation. Seven policies share one interface: one network walks, stands and gets up after every fall; a sprint reaches 1.33&nbsp;m/s; a front flip lands standing 12 times in 12. All results are in simulation.</p>
+        <div class="links"><a href="microduck.html">Website</a><a href="assets/projects/microduck/duck_live_app.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/microduck_replication_feetech" target="_blank" rel="noopener">Code</a></div>
+      </div>
+    </div>
+
+    <div class="pub card card-hover" id="mobile-robot" data-go="mobilerobot.html" data-year="2022" data-tag="Mechatronics" data-group="hardware">
+      <span class="proj-tag">Mechatronics</span>
+      <div class="pub-thumb"><img src="assets/images/cards/mobile-robot.jpg" alt="Arduino mobile robot" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/mobile-robot.jpg" data-src="assets/videos/mie444_card.mp4"></video></div></div>
+      <div class="pub-meta">
+        <span class="papertitle">Maze Localization with Four Ultrasonics and No Compass</span><span class="proj-year">2022</span>
+        <p class="proj-body">A 170&nbsp;mm robot finds itself in an 8&nbsp;&times;&nbsp;4 maze using four ultrasonics and nothing else: a tile is four bits of wall, and because the bits run around the tile, turning 90&deg; is a bit rotation. Localization becomes a set intersection over 24 tiles &times; 4 headings. Swept exhaustively, no single reading ever localizes it &mdash; but with the gyro trusted, <em>every</em> start resolves in one tile-move. Drive it on the page and watch the candidates disappear.</p>
+        <div class="links"><a href="mobilerobot.html">Website</a><a href="assets/pdf/projects/MIE444 - Group 1 - Final Report.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/mie444-maze-localization" target="_blank" rel="noopener">Code</a></div>
+      </div>
+    </div>
+
+    <div class="pub card card-hover" id="led-cube" data-go="ledcube.html" data-year="2022" data-tag="Embedded" data-group="hardware">
+      <span class="proj-tag">Embedded</span>
+      <div class="pub-thumb"><img src="assets/images/cards/led-cube.jpg" alt="8x8x8 LED cube" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/led-cube.jpg" data-src="assets/videos/led_cube.mp4"></video></div></div>
+      <div class="pub-meta">
+        <span class="papertitle">8×8×8 LED Cube Game Console</span><span class="proj-year">2022</span>
+        <p class="proj-body">512 hand-soldered LEDs driven by nine daisy-chained shift registers over one SPI bus. Only one of the eight layers is ever lit; the cube is an illusion held together by refreshing faster than the eye can follow. Twelve animations and a shallow-water liquid you tip by dragging &mdash; volume held to 10<sup>&minus;13</sup>, surface level to 0.008&nbsp;cells per column &mdash; plus 3-D Snake with wrap-around walls and Pong against a machine that solves for where the ball will cross its own face. Drag the refresh rate down and watch persistence of vision give out.</p>
+        <div class="links"><a href="ledcube.html">Website</a><a href="ledcube_games.html">Games</a><a href="assets/pdf/projects/MIE438_Final_Report.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/MIE438_LED_cubic_console" target="_blank" rel="noopener">Code</a><a href="https://www.youtube.com/watch?v=cC_NXlKTEwk&amp;list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV" target="_blank" rel="noopener">Video</a></div>
+      </div>
+    </div>
+
+    <div class="pub card card-hover" id="formula" data-go="formulacar.html" data-year="2022" data-tag="Mechanical design" data-group="hardware">
       <span class="proj-tag">Mechanical design</span>
       <div class="pub-thumb"><img src="assets/images/cards/formula.jpg" alt="Formula racing car drivetrain" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/formula.jpg" data-src="assets/videos/fsae_card.mp4"></video></div></div>
       <div class="pub-meta">
@@ -225,8 +233,8 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=20261123j"></script>
+<script src="assets/js/site.js?v=20261123k"></script>
 <script src="assets/js/catalog-ui.js?v=20261119d"></script>
-<script src="assets/js/listing.js?v=20261123j"></script>
+<script src="assets/js/listing.js?v=20261123k"></script>
 </body>
 </html>

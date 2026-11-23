@@ -13,15 +13,16 @@
   list.classList.add(isPubs ? "lt-rows" : "lt-grid");
 
   /* ---- what can be filtered ---- */
-  var GROUPS = [["Learning", /learning|manipulation|sim/i], ["Perception", /perception|slam|estimation/i], ["Hardware", /mechatronic|embedded|mechanical/i]];
-  function groupOf(r) { var t = r.getAttribute("data-tag") || ""; for (var i = 0; i < GROUPS.length; i++) if (GROUPS[i][1].test(t)) return GROUPS[i][0]; return "Other"; }
+  var GROUPS = [["rl", "RL"], ["learning", "Robot learning"], ["classical", "Classical"], ["hardware", "Hardware"]];
+  var heads = [].slice.call(list.querySelectorAll(".lt-head"));                /* projects: one heading per group, written by build_catalog.py */
+  function groupOf(r) { return r.getAttribute("data-group") || ""; }
   var filters = [["all", "All", function () { return true; }]];
   if (isPubs) {
     filters.push(["first", "First author", function (r) { return r.hasAttribute("data-first"); }]);
     filters.push(["co", "Co-author", function (r) { return !r.hasAttribute("data-first"); }]);
   } else {
-    GROUPS.map(function (g) { return g[0]; }).concat(["Other"]).forEach(function (name) {
-      if (rows.some(function (r) { return groupOf(r) === name; })) filters.push([name.toLowerCase(), name, function (r) { return groupOf(r) === name; }]);
+    GROUPS.forEach(function (g) {
+      if (rows.some(function (r) { return groupOf(r) === g[0]; })) filters.push([g[0], g[1], function (r) { return groupOf(r) === g[0]; }]);
     });
   }
   var sorts = isPubs ? [["new", "Newest"], ["cited", "Most cited"]] : [];
@@ -63,11 +64,12 @@
     order.forEach(function (r) {
       var ok = pass(r); r.hidden = !ok; r.classList.remove("is-lead");
       if (ok) { shown++; if (!lead) lead = r; }
-      list.appendChild(r);
+      if (isPubs) list.appendChild(r);                    /* projects stay in their groups */
     });
-    if (lead) lead.classList.add("is-lead");
+    if (lead && (isPubs || state.filter !== "all")) lead.classList.add("is-lead");
+    heads.forEach(function (h) { h.hidden = state.filter !== "all"; });
     tally.textContent = shown === rows.length ? rows.length + (isPubs ? " papers" : " projects") : shown + " of " + rows.length;
-    root.classList.toggle("rail-off", isProj && state.filter !== "all");     /* the year marks only make sense on the full list */
+    root.classList.toggle("rail-off", isProj && state.filter !== "all");     /* the group marks only make sense on the full list */
   }
   function apply(animate) {
     if (!animate || calm.matches || !document.startViewTransition) { layout(); return; }
