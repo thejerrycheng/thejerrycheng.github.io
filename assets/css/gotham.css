@@ -1673,3 +1673,36 @@ body { counter-reset: step; }
   .step-intro .cover, .step-intro #story { scroll-margin-top: 0; }
 }
 @media (max-width: 860px) and (prefers-reduced-motion: reduce) { html:has(.step) body { scroll-snap-type: none; scroll-behavior: auto; } }
+
+/* =============================================================================
+   PAGE RAIL — desktop only. A glass capsule on the right edge with one mark per
+   home page. The mark of the page on screen stretches into an orange bar; hover
+   pours the names out to the left; a click goes to that page.
+   ============================================================================= */
+.rail { display: none; }
+@media (min-width: 861px) {
+  .rail { position: fixed; z-index: 900; right: 14px; top: 50%; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; padding: 8px 5px;
+    border-radius: 22px; background: var(--lg-sheen), var(--lg-fill); -webkit-backdrop-filter: var(--lg-blur); backdrop-filter: var(--lg-blur);
+    border: 1px solid var(--lg-rim); box-shadow: var(--lg-edge), var(--lg-glow), var(--lg-float);
+    transform: translateY(-50%); transform-origin: 100% 50%; animation: railIn .8s var(--pop-soft) .25s both;
+    transition: padding .5s var(--pop-soft), border-radius .5s var(--pop-soft); }
+  .rail button { all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; justify-content: flex-end; height: 28px; padding: 0 7px; border-radius: 14px;
+    color: var(--ash); font-family: var(--font-sans); font-size: 13px; font-weight: 500; letter-spacing: -0.01em; white-space: nowrap;
+    transition: background .25s ease, color .25s ease, transform .5s var(--pop), padding .5s var(--pop-soft); }
+  .rail button span { max-width: 0; opacity: 0; overflow: hidden; filter: blur(6px); transform: translateX(8px);
+    transition: max-width .55s var(--pop-soft), margin .55s var(--pop-soft), opacity .3s ease, filter .35s ease, transform .55s var(--pop-soft); }
+  .rail button i { flex: none; display: block; width: 6px; height: 6px; border-radius: 3px; background: currentColor; opacity: .45;
+    transition: height .6s var(--pop), opacity .3s ease, background .3s ease, transform .5s var(--pop); }
+  .rail button.is-on { color: var(--ink); }
+  .rail button.is-on i { height: 20px; opacity: 1; background: var(--hi); }
+  .rail:hover, .rail:focus-within { padding: 8px 6px; border-radius: 24px; }
+  .rail:hover button, .rail:focus-within button { padding: 0 9px 0 12px; }
+  .rail:hover button span, .rail:focus-within button span { max-width: 140px; margin-right: 10px; opacity: 1; filter: none; transform: none; transition-delay: calc(var(--i, 0) * 30ms); }
+  .rail button:hover, .rail button:focus-visible { background: var(--tint); color: var(--ink); }
+  .rail button:hover i { opacity: 1; transform: scale(1.25); }
+  .rail button:active { transform: scale(.94); transition-duration: .12s; }
+  body.modal-open .rail { opacity: 0; pointer-events: none; }
+}
+@keyframes railIn { from { opacity: 0; filter: blur(10px); transform: translateY(-50%) translateX(26px) scale(.5, .3); } to { opacity: 1; filter: none; transform: translateY(-50%); } }
+@media (prefers-reduced-motion: reduce) { .rail, .rail * { animation: none !important; transition: none !important; } }
+@media print { .rail { display: none !important; } }

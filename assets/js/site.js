@@ -105,6 +105,31 @@
     }, { rootMargin: "-48px 0px 0px 0px" }).observe(row);
   })();
 
+  /* ---- Page rail: one clickable mark per home page, on the right edge (desktop) ---- */
+  (function () {
+    var steps = [].slice.call(document.querySelectorAll(".step[data-step]"));
+    if (steps.length < 2 || !("IntersectionObserver" in window)) return;
+    var rail = document.createElement("nav");
+    rail.className = "rail"; rail.setAttribute("aria-label", "Pages");
+    var marks = steps.map(function (st, i) {
+      var b = document.createElement("button");
+      b.type = "button"; b.style.setProperty("--i", i);
+      var t = document.createElement("span"); t.textContent = st.getAttribute("data-step");
+      b.appendChild(t); b.appendChild(document.createElement("i"));
+      b.addEventListener("click", function () { st.scrollIntoView({ behavior: "smooth", block: "start" }); b.blur(); });
+      rail.appendChild(b);
+      return b;
+    });
+    document.body.appendChild(rail);
+    var on = function (k) { marks.forEach(function (b, i) { b.classList.toggle("is-on", i === k); if (i === k) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current"); }); };
+    on(0);
+    /* the page that crosses the middle of the screen is the current one */
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) on(steps.indexOf(e.target)); });
+    }, { rootMargin: "-50% 0px -50% 0px" });
+    steps.forEach(function (st) { io.observe(st); });
+  })();
+
   /* ---- "Scroll to continue": go to the next step ---- */
   [].forEach.call(document.querySelectorAll(".scroll-cue"), function (cue) {
     cue.addEventListener("click", function (e) {
