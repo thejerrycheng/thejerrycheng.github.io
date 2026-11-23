@@ -1681,36 +1681,43 @@ body { counter-reset: step; }
    page (home) or per titled section (every other page). The mark of the part on screen stretches into an orange bar; hover
    pours the names out to the left; a click goes to that page.
    ============================================================================= */
-@media all {
-  .rail { position: fixed; z-index: 900; right: 14px; top: 50%; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; padding: 8px 5px;
-    border-radius: 22px; background: var(--lg-sheen), var(--lg-fill); -webkit-backdrop-filter: var(--lg-blur); backdrop-filter: var(--lg-blur);
-    border: 1px solid var(--lg-rim); box-shadow: var(--lg-edge), var(--lg-glow), var(--lg-float);
-    transform: translateY(-50%); transform-origin: 100% 50%; animation: railIn .8s var(--pop-soft) .25s both;
-    transition: padding .5s var(--pop-soft), border-radius .5s var(--pop-soft); }
-  .rail button { all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; justify-content: flex-end; height: 28px; padding: 0 7px; border-radius: 14px;
-    color: var(--ash); font-family: var(--font-sans); font-size: 13px; font-weight: 500; letter-spacing: -0.01em; white-space: nowrap;
-    transition: background .25s ease, color .25s ease, transform .5s var(--pop), padding .5s var(--pop-soft); }
-  .rail button span { max-width: 0; opacity: 0; overflow: hidden; filter: blur(6px); transform: translateX(8px);
-    transition: max-width .55s var(--pop-soft), margin .55s var(--pop-soft), opacity .3s ease, filter .35s ease, transform .55s var(--pop-soft); }
-  .rail button i { flex: none; display: block; width: 6px; height: 6px; border-radius: 3px; background: currentColor; opacity: .45;
-    transition: height .6s var(--pop), opacity .3s ease, background .3s ease, transform .5s var(--pop); }
-  .rail button.is-on { color: var(--ink); }
-  .rail button.is-on i { height: 20px; opacity: 1; background: var(--hi); }
+.rail { position: fixed; z-index: 900; right: 14px; top: 50%; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; padding: 8px 5px;
+  border-radius: 22px; background: var(--lg-sheen), var(--lg-fill); -webkit-backdrop-filter: var(--lg-blur); backdrop-filter: var(--lg-blur);
+  border: 1px solid var(--lg-rim); box-shadow: var(--lg-edge), var(--lg-glow), var(--lg-float);
+  transform: translateY(-50%); transform-origin: 100% 50%; animation: railIn .8s var(--pop-soft) .25s both;
+  transition: padding .5s var(--pop-soft), border-radius .5s var(--pop-soft); -webkit-tap-highlight-color: transparent; }
+.rail button { all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; justify-content: flex-end; height: 28px; padding: 0 7px; border-radius: 14px;
+  color: var(--ash); font-family: var(--font-sans); font-size: 13px; font-weight: 500; letter-spacing: -0.01em; white-space: nowrap; -webkit-tap-highlight-color: transparent;
+  transition: background .25s ease, color .25s ease, transform .5s var(--pop), padding .5s var(--pop-soft); }
+.rail button span { max-width: 0; opacity: 0; overflow: hidden; text-overflow: ellipsis; filter: blur(6px); transform: translateX(8px);
+  transition: max-width .55s var(--pop-soft), margin .55s var(--pop-soft), opacity .3s ease, filter .35s ease, transform .55s var(--pop-soft); }
+.rail button i { flex: none; display: block; width: 6px; height: 6px; border-radius: 3px; background: currentColor; opacity: .45;
+  transition: height .6s var(--pop), opacity .3s ease, background .3s ease, transform .5s var(--pop); }
+.rail button.is-on { color: var(--ink); }
+.rail button.is-on i { height: 20px; opacity: 1; background: var(--hi); }
+/* opened: by hover with a mouse, by a tap on a touch screen (site.js adds .open) */
+.rail.open { padding: 8px 6px; border-radius: 24px; }
+.rail.open button { padding: 0 9px 0 12px; }
+.rail.open button span { max-width: 230px; margin-right: 10px; opacity: 1; filter: none; transform: none; transition-delay: calc(var(--i, 0) * 30ms); }
+.rail button:active { transform: scale(.94); transition-duration: .12s; }
+@media (hover: hover) {
   .rail:hover, .rail:focus-within { padding: 8px 6px; border-radius: 24px; }
   .rail:hover button, .rail:focus-within button { padding: 0 9px 0 12px; }
-  .rail:hover button span, .rail:focus-within button span { max-width: 140px; margin-right: 10px; opacity: 1; filter: none; transform: none; transition-delay: calc(var(--i, 0) * 30ms); }
+  .rail:hover button span, .rail:focus-within button span { max-width: 230px; margin-right: 10px; opacity: 1; filter: none; transform: none; transition-delay: calc(var(--i, 0) * 30ms); }
   .rail button:hover, .rail button:focus-visible { background: var(--tint); color: var(--ink); }
   .rail button:hover i { opacity: 1; transform: scale(1.25); }
-  .rail button:active { transform: scale(.94); transition-duration: .12s; }
-  body.modal-open .rail { opacity: 0; pointer-events: none; }
-  /* long section names are cut with an ellipsis; pages with many sections get a tighter rail */
-  .rail button span { text-overflow: ellipsis; }
-  .rail:hover button span, .rail:focus-within button span { max-width: 230px; }
-  .rail-dense { gap: 0; padding: 6px 5px; }
-  .rail-dense button { height: 22px; }
-  .rail-dense button.is-on i { height: 14px; }
-  .rail-dense:hover, .rail-dense:focus-within { padding: 6px 6px; }
-  @media (max-height: 560px) { .rail-dense { display: none; } }
+}
+body.modal-open .rail { opacity: 0; pointer-events: none; }
+html.rail-off .rail { display: none; }
+.rail-dense { gap: 0; padding: 6px 5px; }
+.rail-dense button { height: 22px; }
+.rail-dense button.is-on i { height: 14px; }
+@media (max-height: 560px) { .rail-dense { display: none; } }
+/* phones: the same rail, a little further in from the edge, with a wider invisible tap area on every mark */
+@media (max-width: 860px) {
+  .rail { right: 10px; }
+  .rail button { position: relative; height: 30px; }
+  .rail button::before { content: ""; position: absolute; top: 0; bottom: 0; right: -10px; left: -14px; }
 }
 @keyframes railIn { from { opacity: 0; filter: blur(10px); transform: translateY(-50%) translateX(26px) scale(.5, .3); } to { opacity: 1; filter: none; transform: translateY(-50%); } }
 @media (prefers-reduced-motion: reduce) { .rail, .rail * { animation: none !important; transition: none !important; } }
@@ -1723,27 +1730,20 @@ body { counter-reset: step; }
   .strip .slide, .news-scroll .news-card { scroll-snap-align: none; }
 }
 
-/* PAGE RAIL on phones and touch screens: a slim strip of marks in the right gutter. No names (there is
-   no hover); each mark has a wider invisible tap area. */
-@media (max-width: 860px), (hover: none) {
-  .rail { right: 2px; padding: 5px 1px; gap: 0; border-radius: 12px; }
-  .rail button { height: 24px; padding: 0 4px; position: relative; }
-  .rail button::before { content: ""; position: absolute; top: 0; bottom: 0; right: -3px; width: 34px; }
-  .rail button i { width: 5px; height: 5px; }
-  .rail button.is-on i { height: 16px; }
-  .rail:hover, .rail:focus-within { padding: 5px 1px; border-radius: 12px; }
-  .rail:hover button, .rail:focus-within button { padding: 0 4px; }
-  .rail button span, .rail:hover button span, .rail:focus-within button span { display: none; }
-  .rail button:hover, .rail button:focus-visible { background: transparent; }
-  .rail-dense button { height: 20px; }
-}
-
-/* SOCIAL DOCK flight (site.js): while the buttons travel, the real ones at both ends are hidden and
-   fixed copies fly between the two places. */
+/* SOCIAL DOCK flight (site.js): while the buttons travel, the real ones at both ends are hidden and a fixed
+   copy of each button is moved frame by frame between the two places. */
 .btn-row-social.is-docked .btn { opacity: 0; pointer-events: none; transition: none; }
+.btn-row-social.no-anim .btn { transition: none !important; }
 html.dock-fly .dock a, html.dock-fly .nav-dock a { opacity: 0 !important; transition: none !important; }
 html.dock-still .dock, html.dock-still .dock a, html.dock-still .nav-dock, html.dock-still .nav-dock a, html.dock-still .nav .brand { transition: none !important; }
-.dock-flyer { position: fixed; left: 0; top: 0; z-index: 1100; margin: 0; border-radius: 999px; pointer-events: none; transform-origin: 0 0; will-change: transform; }
-.dock-flyer-icon { background: none !important; box-shadow: none !important; border-radius: 0; }
-/* the capsule itself now simply fades in around the arriving icons instead of popping out of a corner */
+.dock-flyer { position: fixed; left: 0; top: 0; z-index: 1100; margin: 0; box-sizing: border-box; pointer-events: none; isolation: isolate; text-decoration: none;
+  background: none; box-shadow: none; border: 0; will-change: transform; }
+.dock-flyer-bg { position: absolute; inset: 0; z-index: -1; border-radius: inherit; }
+.dock-flyer svg { transform-origin: 50% 50%; }
+/* the capsule itself simply fades in around the arriving icons instead of popping out of a corner */
 .dock { transform: none; filter: none; transition: opacity .45s ease .12s; }
+
+/* NAV on phones and narrow windows: logo (home) · my links · — · theme · menu. The name is dropped on phones;
+   on pages without the link icons the logo itself pushes theme and menu to the right edge. */
+@media (max-width: 1199px) { .nav-inner > .brand:not(:has(+ .nav-dock)) { margin-right: auto; } }
+@media (max-width: 620px) { .nav .brand, html.dock-on .nav .brand { font-size: 0; gap: 0; transition: none; } }

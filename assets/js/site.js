@@ -76,84 +76,120 @@
     }
   }
 
-  /* ---- Social dock: the cover's links come back as a glass stack at the top left once they scroll away ---- */
+  /* ---- Social dock: my links (email, GitHub, X, CV, Scholar) stay within reach on every personal page.
+     Wide screens: a glass stack at the top left. Narrower screens and phones: icons in the nav bar, beside the logo.
+     On the home page they start as the big buttons on the cover and fly into the dock when the cover is left. ---- */
   (function () {
-    var row = document.querySelector(".cover .btn-row-social");
     var inner = document.querySelector(".nav-inner"), brand = inner && inner.querySelector(".brand");
-    if (!row || !brand || !("IntersectionObserver" in window)) return;
+    var row = document.querySelector(".cover .btn-row-social");
+    var page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+    var personal = ["index.html", "publications.html", "projects.html", "news.html", "cv.html"].indexOf(page) >= 0;
+    if (!brand || (!row && !personal)) return;
+    var LINKS = [["Email", "mailto:qilong.cheng@mail.utoronto.ca", false, "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"3.5\"/><path d=\"M4 8l7.3 5a1.2 1.2 0 0 0 1.4 0L20 8\"/></svg>"], ["GitHub", "https://github.com/thejerrycheng", true, "<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M12 2C6.48 2 2 6.58 2 12.26c0 4.5 2.87 8.32 6.84 9.67.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.35-3.37-1.35-.46-1.18-1.11-1.49-1.11-1.49-.91-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.36-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.05a9.3 9.3 0 0 1 5 0c1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.59.69.48A10.02 10.02 0 0 0 22 12.26C22 6.58 17.52 2 12 2z\"/></svg>"], ["X", "https://x.com/thejerrycheng", true, "<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M17.53 3h2.97l-6.49 7.41L21.75 21h-6.02l-4.71-6.16L5.6 21H2.63l6.94-7.93L2.25 3h6.17l4.26 5.63L17.53 3zm-1.05 16.2h1.65L7.6 4.71H5.83L16.48 19.2z\"/></svg>"], ["CV", "assets/pdf/Academic_Resume-10.pdf", true, "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5\"/><path d=\"M9 13h6M9 17h4\"/></svg>"], ["Scholar", "https://scholar.google.com/citations?user=iQuHS3MAAAAJ", true, "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 4 2 9l10 5 10-5-10-5z\"/><path d=\"M6 11v4c0 1.6 2.7 3 6 3s6-1.4 6-3v-4\"/></svg>"]];   /* label, href, opens a new tab, icon: the same five as the cover buttons in index.html */
     var dock = document.createElement("div");
     dock.className = "dock"; dock.id = "socialDock"; dock.setAttribute("role", "group"); dock.setAttribute("aria-label", "Links");
-    [].forEach.call(row.querySelectorAll("a.btn"), function (a, i) {
-      var c = document.createElement("a"), svg = a.querySelector("svg"), label = a.textContent.trim();
-      c.href = a.getAttribute("href");
-      if (a.target) { c.target = a.target; c.rel = "noopener"; }
-      c.setAttribute("aria-label", label); c.style.setProperty("--i", i);
-      if (svg) c.appendChild(svg.cloneNode(true));
-      var sp = document.createElement("span"); sp.textContent = label; c.appendChild(sp);
+    var items = row ? [].map.call(row.querySelectorAll("a.btn"), function (a) { var g = a.querySelector("svg"); return [a.textContent.trim(), a.getAttribute("href"), !!a.target, g ? g.outerHTML : ""]; }) : LINKS;
+    items.forEach(function (it, i) {
+      var c = document.createElement("a");
+      c.href = it[1]; if (it[2]) { c.target = "_blank"; c.rel = "noopener"; }
+      c.setAttribute("aria-label", it[0]); c.style.setProperty("--i", i);
+      c.innerHTML = it[3];
+      var sp = document.createElement("span"); sp.textContent = it[0]; c.appendChild(sp);
       dock.appendChild(c);
     });
     document.body.appendChild(dock);
     [].forEach.call(dock.children, function (c) { c.style.setProperty("--w", (36 + c.lastChild.offsetWidth) + "px"); });   /* icon + its label */
-    /* narrower screens and phones: the same five icons sit in the nav bar itself, beside the name */
     var bar = document.createElement("div");
     bar.className = "nav-dock"; bar.setAttribute("role", "group"); bar.setAttribute("aria-label", "Links");
     [].forEach.call(dock.children, function (c) { var d = c.cloneNode(true); d.removeChild(d.lastChild); bar.appendChild(d); });
     brand.parentNode.insertBefore(bar, brand.nextSibling);
-    /* The buttons do not vanish and reappear: each one lifts off the cover and flies to its place in the
-       dock (wide screens) or the nav bar (narrower screens, phones), shrinking from a pill to a bare icon.
-       Scrolling back sends them home the same way. */
-    var srcs = [].slice.call(row.querySelectorAll("a.btn"));
-    var EASE = "cubic-bezier(.3, 1.25, .6, 1)", DUR = 640, GAP = 38;
+
+    function still(fn) {
+      root.classList.add("dock-still"); if (row) row.classList.add("no-anim");
+      fn(); void dock.offsetWidth;
+      requestAnimationFrame(function () { root.classList.remove("dock-still"); if (row) row.classList.remove("no-anim"); });
+    }
+    if (!row) { still(function () { root.classList.add("dock-on"); }); return; }      /* no cover on this page: the links are simply there */
+
+    /* Home. Each button is carried by a fixed copy of itself that is re-aimed every frame at where the real
+       button is right now, so it lands exactly on it even while the page is still scrolling. On the way to
+       the dock the pill and its label fade and the icon shrinks; on the way home they come back together. */
+    var srcs = [].slice.call(row.querySelectorAll("a.btn")), icons = srcs.map(function (a) { return a.querySelector("svg"); });
+    var COPY = ["display", "flexDirection", "alignItems", "justifyContent", "gap", "padding", "fontFamily", "fontSize", "fontWeight", "letterSpacing", "lineHeight", "color", "borderRadius", "whiteSpace"];
     var calm = window.matchMedia("(prefers-reduced-motion: reduce)");
     var snapPage = window.matchMedia("(max-width: 620px), (min-width: 861px) and (min-height: 700px)");   /* the cover is a page of its own */
-    var isOn = false, flyers = [], endTimer = 0, tick = false;
+    var isOn = false, flyers = [], raf = 0, tick = false, lastY = null;
     function cells() { return [].slice.call((getComputedStyle(dock).display !== "none" ? dock : bar).children); }
-    function boxes(els) { return els.map(function (el) { var g = el.querySelector("svg"); return { box: el.getBoundingClientRect(), icon: (g || el).getBoundingClientRect() }; }); }
-    function clearFly() { clearTimeout(endTimer); flyers.forEach(function (f) { if (f.parentNode) f.parentNode.removeChild(f); }); flyers = []; }
-    function still(fn) { root.classList.add("dock-still"); fn(); void dock.offsetWidth; requestAnimationFrame(function () { root.classList.remove("dock-still"); }); }
+    function iconRects(els) { return els.map(function (el) { return (el.querySelector("svg") || el).getBoundingClientRect(); }); }
+    function clearFly() { cancelAnimationFrame(raf); flyers.forEach(function (f) { if (f.el.parentNode) f.el.parentNode.removeChild(f.el); }); flyers = []; }
     function seen(r) { return r.bottom > 0 && r.top < window.innerHeight && r.width > 0; }
+    function copyOf(a, i) {
+      var cs = getComputedStyle(a), r = a.getBoundingClientRect(), el = a.cloneNode(true), labels = [];
+      el.removeAttribute("href"); el.removeAttribute("aria-label"); el.setAttribute("aria-hidden", "true"); el.className = "dock-flyer";
+      COPY.forEach(function (k) { el.style[k] = cs[k]; });
+      el.style.width = r.width + "px"; el.style.height = r.height + "px";
+      [].slice.call(el.childNodes).forEach(function (n) {
+        if (n.nodeType === 3) { var t = n.nodeValue.trim(); if (!t) { el.removeChild(n); return; } var sp = document.createElement("span"); sp.textContent = t; el.replaceChild(sp, n); labels.push(sp); }
+        else if (n.nodeType === 1 && n.tagName.toLowerCase() !== "svg") labels.push(n);
+      });
+      var bg = document.createElement("i"); bg.className = "dock-flyer-bg"; bg.style.background = cs.backgroundColor; bg.style.boxShadow = cs.boxShadow;
+      el.insertBefore(bg, el.firstChild);
+      var g = el.querySelector("svg");
+      if (g && icons[i]) { var gs = getComputedStyle(icons[i]); g.style.width = gs.width; g.style.height = gs.height; g.style.flex = "none"; }
+      document.body.appendChild(el);
+      return { el: el, bg: bg, g: g, labels: labels };
+    }
+    function finish(on) { clearFly(); still(function () { root.classList.remove("dock-fly"); row.classList.toggle("is-docked", on); }); }
+    /* Motion = a spring-mass-damper per button: m'' = -W^2 (m - goal) - 2 Z W m'. m is 0 at home, 1 in the dock.
+       Slightly under-damped (Z < 1), so a button arrives fast, runs a hair past its place and settles. Because
+       position and velocity are kept, turning round in mid-flight just moves the goal: nothing ever jumps. */
+    var W = 17, Z = 0.82, GAP = 0.03, there = [], goal = 0, tPrev = 0;
+    function place(f, i) {
+      var m = f.m, sb = srcs[i].getBoundingClientRect(), si = (icons[i] || srcs[i]).getBoundingClientRect(), d = there[i];
+      var x = (d.left + d.width / 2 - si.left - si.width / 2) * m, y = (d.top + d.height / 2 - si.top - si.height / 2) * m;
+      f.el.style.transform = "translate3d(" + (sb.left + x) + "px," + (sb.top + y) + "px,0)";
+      if (f.g) f.g.style.transform = "scale(" + Math.max(0.2, 1 + (d.width / Math.max(1, si.width) - 1) * m) + ")";
+      var o = Math.max(0, Math.min(1, 1 - m * 1.25));
+      f.bg.style.opacity = o; f.labels.forEach(function (l) { l.style.opacity = o; });
+    }
+    function frame(now) {
+      var dt = Math.min(0.05, (now - tPrev) / 1000); tPrev = now;
+      var rest = true;
+      flyers.forEach(function (f, i) {
+        if (f.wait > 0) { f.wait -= dt; rest = false; }
+        else {
+          for (var left = dt; left > 1e-6; left -= 1 / 240) {            /* fixed small steps keep the spring stable */
+            var h = Math.min(left, 1 / 240);
+            f.v += (-W * W * (f.m - goal) - 2 * Z * W * f.v) * h; f.m += f.v * h;
+          }
+          if (Math.abs(f.m - goal) > 0.002 || Math.abs(f.v) > 0.03) rest = false; else { f.m = goal; f.v = 0; }
+        }
+        place(f, i);
+      });
+      if (rest) finish(goal === 1); else raf = requestAnimationFrame(frame);
+    }
     function set(on) {
-      isOn = on; clearFly();
-      var tg = cells(), home, there;
+      isOn = on; goal = on ? 1 : 0;
+      var tg = cells(), flying = flyers.length > 0;
       if (on) {
-        home = boxes(srcs);
-        root.classList.add("dock-still"); root.classList.add("dock-on"); there = boxes(tg);              /* where the dock will be, measured without motion */
+        root.classList.add("dock-still"); root.classList.add("dock-on"); there = iconRects(tg);            /* where the dock will be, measured without motion */
         root.classList.remove("dock-on"); void dock.offsetWidth; root.classList.remove("dock-still"); void dock.offsetWidth;
         root.classList.add("dock-on");
-      } else {
-        there = boxes(tg); home = boxes(srcs);
-        root.classList.remove("dock-on");
-      }
-      var ok = !calm.matches && tg.length === srcs.length && srcs.length && srcs[0].animate && seen(home[0].box) && there[0].box.width > 0;
-      if (!ok) { still(function () { root.classList.remove("dock-fly"); row.classList.toggle("is-docked", on); }); return; }
+      } else { if (!flying) there = iconRects(tg); root.classList.remove("dock-on"); }
+      if (flying) return;                                                 /* already in the air: the springs simply pull the other way */
+      if (calm.matches || tg.length !== srcs.length || !srcs.length || !seen(srcs[0].getBoundingClientRect()) || !there[0].width) { finish(on); return; }
+      flyers = srcs.map(copyOf);
+      flyers.forEach(function (f, i) { f.m = on ? 0 : 1; f.v = 0; f.wait = i * GAP; place(f, i); });
       root.classList.add("dock-fly"); row.classList.add("is-docked");
-      srcs.forEach(function (a, i) {
-        var cs = getComputedStyle(a), h = home[i], t = there[i], g = a.querySelector("svg");
-        var from = on ? h : t, to = on ? t : h, opt = { duration: DUR, delay: i * GAP, easing: EASE, fill: "both" };
-        var bg = document.createElement("div"); bg.className = "dock-flyer"; bg.style.background = cs.backgroundColor; bg.style.boxShadow = cs.boxShadow;
-        bg.animate([
-          { transform: "translate(" + from.box.left + "px," + from.box.top + "px)", width: from.box.width + "px", height: from.box.height + "px", opacity: on ? 1 : 0 },
-          { transform: "translate(" + to.box.left + "px," + to.box.top + "px)", width: to.box.width + "px", height: to.box.height + "px", opacity: on ? 0 : 1 }], opt);
-        document.body.appendChild(bg); flyers.push(bg);
-        if (!g) return;
-        var ic = g.cloneNode(true); ic.setAttribute("class", "dock-flyer dock-flyer-icon"); ic.style.color = cs.color;
-        ic.style.width = h.icon.width + "px"; ic.style.height = h.icon.height + "px";
-        var k = t.icon.width / Math.max(1, h.icon.width);
-        var atHome = "translate(" + h.icon.left + "px," + h.icon.top + "px) scale(1)", atDock = "translate(" + t.icon.left + "px," + t.icon.top + "px) scale(" + k + ")";
-        ic.animate([{ transform: on ? atHome : atDock }, { transform: on ? atDock : atHome }], opt);
-        document.body.appendChild(ic); flyers.push(ic);
-      });
-      endTimer = setTimeout(function () {
-        clearFly();
-        still(function () { root.classList.remove("dock-fly"); row.classList.toggle("is-docked", on); });
-      }, DUR + GAP * srcs.length + 40);
+      tPrev = performance.now(); raf = requestAnimationFrame(frame);
     }
     function check() {
       tick = false;
-      var y = window.scrollY || document.body.scrollTop || 0, top = row.getBoundingClientRect().top, on;
-      if (snapPage.matches) on = isOn ? y > 12 : y > 40;                 /* leaving / coming back to the first page */
-      else on = y > 12 && (isOn ? top < 130 : top < 100);               /* free scroll: just before the row slides under the bar */
-      if (on !== isOn) set(on);
+      var y = window.scrollY || document.body.scrollTop || 0, top = row.getBoundingClientRect().top, snap = snapPage.matches;
+      var dy = lastY === null ? 1 : y - lastY; lastY = y;
+      if (!isOn) { if (snap ? (y > 40 && dy > 0) : (y > 12 && top < 100)) set(true); }
+      /* going back up: as soon as the row is clear of the bar again, the buttons leave for home and meet it there */
+      else if (y <= 12 || (snap ? (dy < 0 && top > 70 && y < window.innerHeight * 0.4) : top > 130)) set(false);
     }
     function ask() { if (!tick) { tick = true; requestAnimationFrame(check); } }
     document.addEventListener("scroll", ask, { passive: true, capture: true });
@@ -203,14 +239,19 @@
       var t = document.createElement("span"); t.textContent = m.label;
       b.appendChild(t); b.appendChild(document.createElement("i"));
       b.addEventListener("click", function () {
+        if (touch.matches && !rail.classList.contains("open")) { openRail(); return; }     /* touch: the first tap shows the names */
         if (m.el) m.el.scrollIntoView({ behavior: "smooth", block: "start" });
         else (scroller() || window).scrollTo({ top: 0, behavior: "smooth" });
-        b.blur();
+        b.blur(); closeRail();
       });
       rail.appendChild(b);
       return b;
     });
     document.body.appendChild(rail);
+    var touch = window.matchMedia("(hover: none)"), shut = 0;
+    function closeRail() { clearTimeout(shut); rail.classList.remove("open"); }
+    function openRail() { rail.classList.add("open"); clearTimeout(shut); shut = setTimeout(closeRail, 4500); }
+    document.addEventListener("pointerdown", function (e) { if (rail.classList.contains("open") && !rail.contains(e.target)) closeRail(); }, { passive: true });
     /* current = the last section whose top has passed the middle of the screen */
     var cur = -1, tick = false;
     function paint() {
