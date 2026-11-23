@@ -59,8 +59,21 @@
   /* ---- Nav: tighten the masthead once the page scrolls ---- */
   var navEl = document.querySelector(".nav");
   if (navEl) {
-    var onScroll = function () { navEl.classList.toggle("scrolled", window.scrollY > 4); root.classList.toggle("past-cover", window.scrollY > 40); };
-    window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+    /* on phones the home page scrolls inside <body> (see HOME STEPS v3), so read both and listen in the capture phase */
+    var onScroll = function () { var y = window.scrollY || document.body.scrollTop || 0; navEl.classList.toggle("scrolled", y > 4); root.classList.toggle("past-cover", y > 40); };
+    document.addEventListener("scroll", onScroll, { passive: true, capture: true }); onScroll();
+    /* a scrolling <body> is not restored by the browser on Back: remember where the visitor was */
+    if (document.querySelector(".step")) {
+      var key = "home-y";
+      window.addEventListener("pagehide", function () { try { sessionStorage.setItem(key, String(document.body.scrollTop || 0)); } catch (e) {} });
+      var back = function () {
+        var nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+        if (!nav || nav.type !== "back_forward" || location.hash) return;
+        var y = 0; try { y = +sessionStorage.getItem(key) || 0; } catch (e) {}
+        if (y > 0 && !window.scrollY) { var b = document.body, sb = b.style.scrollBehavior; b.style.scrollBehavior = "auto"; b.scrollTop = y; b.style.scrollBehavior = sb; onScroll(); }
+      };
+      window.addEventListener("load", back);
+    }
   }
 
   /* ---- Social dock: the cover's links come back as a glass stack at the top left once they scroll away ---- */
@@ -300,7 +313,7 @@
       });
     }
     function ask() { if (!tick) { tick = true; requestAnimationFrame(paint); } }
-    window.addEventListener("scroll", ask, { passive: true });
+    document.addEventListener("scroll", ask, { passive: true, capture: true });
     window.addEventListener("resize", ask);
     window.addEventListener("load", ask);
     paint();

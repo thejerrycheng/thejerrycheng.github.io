@@ -1561,7 +1561,7 @@ body { counter-reset: step; }
           mask-image: linear-gradient(90deg, transparent 0, #000 calc(var(--bleed) - 20px), #000 calc(100% - var(--bleed) + 20px), transparent 100%);
 }
 
-/* ---- 01 Publications: tall editorial cards, the newest one wide; hover lifts the card ---- */
+/* ---- 01 Publications: wide editorial cards, all the size of the lead one; hover lifts the card ---- */
 .step-pubs .slide { flex-basis: clamp(280px, 25vw, 372px); height: clamp(404px, 58vh, 660px); border-radius: 24px;
   transition: transform .55s var(--pop-soft), box-shadow .4s ease, background .25s ease; }
 .step-pubs .slide-media { flex: 1 1 0; aspect-ratio: auto; min-height: 0; }
@@ -1572,12 +1572,12 @@ body { counter-reset: step; }
   .step-pubs .slide:hover .slide-cta { background-color: var(--hi); color: #1D1D1F; }
 }
 @media (min-width: 861px) {
-  .step-pubs .slide:first-child { flex-basis: clamp(600px, 58vw, 880px); flex-direction: row; }
-  .step-pubs .slide:first-child .slide-media { flex: 1.4 1 0; height: 100%; }
-  .step-pubs .slide:first-child .slide-body { flex: 1 1 0; justify-content: center; padding: clamp(20px, 2.4vw, 34px); gap: 10px; }
-  .step-pubs .slide:first-child .slide-title { font-size: clamp(22px, 2.3vw, 31px); line-height: 1.14; letter-spacing: -0.028em; -webkit-line-clamp: 6; }
-  .step-pubs .slide:first-child .slide-sub { font-size: 14.5px; -webkit-line-clamp: 4; }
-  .step-pubs .slide:first-child .slide-cta { margin-top: 10px; font-size: 14px; padding: 7px 15px; }
+  .step-pubs .slide { flex-basis: clamp(600px, 58vw, 880px); flex-direction: row; }
+  .step-pubs .slide .slide-media { flex: 1.4 1 0; height: 100%; }
+  .step-pubs .slide .slide-body { flex: 1 1 0; justify-content: center; padding: clamp(20px, 2.4vw, 34px); gap: 10px; }
+  .step-pubs .slide .slide-title { font-size: clamp(22px, 2.3vw, 31px); line-height: 1.14; letter-spacing: -0.028em; -webkit-line-clamp: 6; }
+  .step-pubs .slide .slide-sub { font-size: 14.5px; -webkit-line-clamp: 4; }
+  .step-pubs .slide .slide-cta { margin-top: 10px; font-size: 14px; padding: 7px 15px; }
 }
 
 /* ---- 02 Projects: a poster wall, two rows, the first tile large; hover zooms the picture and slides the caption up ---- */
@@ -1646,3 +1646,30 @@ body { counter-reset: step; }
   .step-news .news-card { flex-basis: 76vw; height: 470px; }
 }
 @media (prefers-reduced-motion: reduce) { .step .slide, .step .news-card, .step .slide-media img, .step .news-media img { transition: none !important; } }
+
+/* =============================================================================
+   HOME STEPS v3 — phones and narrow windows. The document no longer scrolls:
+   <body> is a fixed, screen-high scroller with mandatory snap. Because the
+   document itself never moves, the browser's address bar stays put, so the
+   visible height never changes mid-scroll and each page fills the screen
+   exactly (before, the bar collapsed, the screen grew taller than a page, and
+   the top of the next page showed underneath).
+   ============================================================================= */
+@media (max-width: 860px) {
+  html:has(.step) { height: 100%; overflow: hidden; scroll-snap-type: none; }
+  html:has(.step) body { height: 100vh; height: 100dvh; overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    scroll-snap-type: y mandatory; scroll-padding-top: var(--nav-h); scroll-behavior: smooth; overscroll-behavior-y: none; }
+  html:has(.step) body.modal-open { overflow: hidden; }
+  .step { min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); }
+  .step-intro { min-height: 100vh; min-height: 100dvh; }
+  /* a page never shows through the one before it */
+  .step, .step-intro #story { position: relative; overflow: hidden; overflow: clip; }
+}
+@media (max-width: 620px) {
+  .step-intro { min-height: 0; overflow: visible; }
+  .step-intro .cover { min-height: 100vh; min-height: 100dvh; }
+  .step-intro #story { min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); background: var(--paper); }
+  /* the site-wide [id] scroll-margin (72px) moved these two snap points, leaving a band of the page before on screen */
+  .step-intro .cover, .step-intro #story { scroll-margin-top: 0; }
+}
+@media (max-width: 860px) and (prefers-reduced-motion: reduce) { html:has(.step) body { scroll-snap-type: none; scroll-behavior: auto; } }
