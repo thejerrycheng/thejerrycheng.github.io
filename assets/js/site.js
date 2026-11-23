@@ -99,35 +99,134 @@
     bar.className = "nav-dock"; bar.setAttribute("role", "group"); bar.setAttribute("aria-label", "Links");
     [].forEach.call(dock.children, function (c) { var d = c.cloneNode(true); d.removeChild(d.lastChild); bar.appendChild(d); });
     brand.parentNode.insertBefore(bar, brand.nextSibling);
-    new IntersectionObserver(function (es) {
-      var gone = !es[0].isIntersecting && es[0].boundingClientRect.top < 60;
-      root.classList.toggle("dock-on", gone);
-    }, { rootMargin: "-48px 0px 0px 0px" }).observe(row);
+    /* The buttons do not vanish and reappear: each one lifts off the cover and flies to its place in the
+       dock (wide screens) or the nav bar (narrower screens, phones), shrinking from a pill to a bare icon.
+       Scrolling back sends them home the same way. */
+    var srcs = [].slice.call(row.querySelectorAll("a.btn"));
+    var EASE = "cubic-bezier(.3, 1.25, .6, 1)", DUR = 640, GAP = 38;
+    var calm = window.matchMedia("(prefers-reduced-motion: reduce)");
+    var snapPage = window.matchMedia("(max-width: 620px), (min-width: 861px) and (min-height: 700px)");   /* the cover is a page of its own */
+    var isOn = false, flyers = [], endTimer = 0, tick = false;
+    function cells() { return [].slice.call((getComputedStyle(dock).display !== "none" ? dock : bar).children); }
+    function boxes(els) { return els.map(function (el) { var g = el.querySelector("svg"); return { box: el.getBoundingClientRect(), icon: (g || el).getBoundingClientRect() }; }); }
+    function clearFly() { clearTimeout(endTimer); flyers.forEach(function (f) { if (f.parentNode) f.parentNode.removeChild(f); }); flyers = []; }
+    function still(fn) { root.classList.add("dock-still"); fn(); void dock.offsetWidth; requestAnimationFrame(function () { root.classList.remove("dock-still"); }); }
+    function seen(r) { return r.bottom > 0 && r.top < window.innerHeight && r.width > 0; }
+    function set(on) {
+      isOn = on; clearFly();
+      var tg = cells(), home, there;
+      if (on) {
+        home = boxes(srcs);
+        root.classList.add("dock-still"); root.classList.add("dock-on"); there = boxes(tg);              /* where the dock will be, measured without motion */
+        root.classList.remove("dock-on"); void dock.offsetWidth; root.classList.remove("dock-still"); void dock.offsetWidth;
+        root.classList.add("dock-on");
+      } else {
+        there = boxes(tg); home = boxes(srcs);
+        root.classList.remove("dock-on");
+      }
+      var ok = !calm.matches && tg.length === srcs.length && srcs.length && srcs[0].animate && seen(home[0].box) && there[0].box.width > 0;
+      if (!ok) { still(function () { root.classList.remove("dock-fly"); row.classList.toggle("is-docked", on); }); return; }
+      root.classList.add("dock-fly"); row.classList.add("is-docked");
+      srcs.forEach(function (a, i) {
+        var cs = getComputedStyle(a), h = home[i], t = there[i], g = a.querySelector("svg");
+        var from = on ? h : t, to = on ? t : h, opt = { duration: DUR, delay: i * GAP, easing: EASE, fill: "both" };
+        var bg = document.createElement("div"); bg.className = "dock-flyer"; bg.style.background = cs.backgroundColor; bg.style.boxShadow = cs.boxShadow;
+        bg.animate([
+          { transform: "translate(" + from.box.left + "px," + from.box.top + "px)", width: from.box.width + "px", height: from.box.height + "px", opacity: on ? 1 : 0 },
+          { transform: "translate(" + to.box.left + "px," + to.box.top + "px)", width: to.box.width + "px", height: to.box.height + "px", opacity: on ? 0 : 1 }], opt);
+        document.body.appendChild(bg); flyers.push(bg);
+        if (!g) return;
+        var ic = g.cloneNode(true); ic.setAttribute("class", "dock-flyer dock-flyer-icon"); ic.style.color = cs.color;
+        ic.style.width = h.icon.width + "px"; ic.style.height = h.icon.height + "px";
+        var k = t.icon.width / Math.max(1, h.icon.width);
+        var atHome = "translate(" + h.icon.left + "px," + h.icon.top + "px) scale(1)", atDock = "translate(" + t.icon.left + "px," + t.icon.top + "px) scale(" + k + ")";
+        ic.animate([{ transform: on ? atHome : atDock }, { transform: on ? atDock : atHome }], opt);
+        document.body.appendChild(ic); flyers.push(ic);
+      });
+      endTimer = setTimeout(function () {
+        clearFly();
+        still(function () { root.classList.remove("dock-fly"); row.classList.toggle("is-docked", on); });
+      }, DUR + GAP * srcs.length + 40);
+    }
+    function check() {
+      tick = false;
+      var y = window.scrollY || document.body.scrollTop || 0, top = row.getBoundingClientRect().top, on;
+      if (snapPage.matches) on = isOn ? y > 12 : y > 40;                 /* leaving / coming back to the first page */
+      else on = y > 12 && (isOn ? top < 130 : top < 100);               /* free scroll: just before the row slides under the bar */
+      if (on !== isOn) set(on);
+    }
+    function ask() { if (!tick) { tick = true; requestAnimationFrame(check); } }
+    document.addEventListener("scroll", ask, { passive: true, capture: true });
+    window.addEventListener("resize", ask); window.addEventListener("load", ask);
+    check();
   })();
 
-  /* ---- Page rail: one clickable mark per home page, on the right edge (desktop) ---- */
+  /* ---- Page rail: one clickable mark per page section, on the right edge (desktop).
+     Home: one mark per full-height step. Every other page: one mark per titled section, plus "Top". ---- */
   (function () {
-    var steps = [].slice.call(document.querySelectorAll(".step[data-step]"));
-    if (steps.length < 2 || !("IntersectionObserver" in window)) return;
+    var marksFor = [], home = [].slice.call(document.querySelectorAll(".step[data-step]"));
+    var scroller = function () { return window.scrollY ? null : (document.body.scrollTop ? document.body : null); };
+    var page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+    if (["index.html", "publications.html", "projects.html", "news.html", "cv.html"].indexOf(page) < 0) return;   /* the personal site only, not the project pages */
+    if (home.length) {
+      home.forEach(function (st) { marksFor.push({ el: st, label: st.getAttribute("data-step") }); });
+    } else {
+      var textOf = function (h) { var t = ""; [].forEach.call(h.childNodes, function (n) { if (n.nodeType === 3) t += n.nodeValue; }); return t.replace(/\s+/g, " ").trim() || h.textContent.replace(/\s+/g, " ").trim(); };
+      var shown = function (el) { return el.getClientRects().length && !el.closest(".modal, nav, footer, template"); };
+      [].forEach.call(document.querySelectorAll("section"), function (sec) {
+        if (!shown(sec) || (sec.parentElement && sec.parentElement.closest("section"))) return;
+        var h = sec.querySelector(".section-title, h2"), label = h ? textOf(h) : "";
+        if (!label && sec.id) label = sec.id.replace(/[-_]+/g, " ").replace(/^./, function (c) { return c.toUpperCase(); });
+        if (label) marksFor.push({ el: sec, label: label });
+      });
+      /* a page that is one long section (the news timeline): mark its headings instead */
+      if (marksFor.length < 2) {
+        marksFor = [];
+        [].forEach.call(document.querySelectorAll("h2"), function (h) { var label = shown(h) ? textOf(h) : ""; if (label) marksFor.push({ el: h, label: label }); });
+      }
+      /* a plain dated list (the projects page): one mark per year */
+      if (marksFor.length < 2) {
+        marksFor = []; var yearSeen = {};
+        [].forEach.call(document.querySelectorAll(".proj-year"), function (y) {
+          var t = y.textContent.trim(); if (!t || yearSeen[t] || !shown(y)) return; yearSeen[t] = 1;
+          marksFor.push({ el: y.closest("article, li, .pub, .proj, a") || y, label: t });
+        });
+      }
+      if (marksFor.length && marksFor[0].el.getBoundingClientRect().top + window.scrollY > window.innerHeight * 0.5) marksFor.unshift({ el: null, label: "Top" });
+    }
+    if (marksFor.length < 2) return;
     var rail = document.createElement("nav");
-    rail.className = "rail"; rail.setAttribute("aria-label", "Pages");
-    var marks = steps.map(function (st, i) {
+    rail.className = "rail" + (marksFor.length > 9 ? " rail-dense" : ""); rail.setAttribute("aria-label", "On this page");
+    var marks = marksFor.map(function (m, i) {
       var b = document.createElement("button");
       b.type = "button"; b.style.setProperty("--i", i);
-      var t = document.createElement("span"); t.textContent = st.getAttribute("data-step");
+      var t = document.createElement("span"); t.textContent = m.label;
       b.appendChild(t); b.appendChild(document.createElement("i"));
-      b.addEventListener("click", function () { st.scrollIntoView({ behavior: "smooth", block: "start" }); b.blur(); });
+      b.addEventListener("click", function () {
+        if (m.el) m.el.scrollIntoView({ behavior: "smooth", block: "start" });
+        else (scroller() || window).scrollTo({ top: 0, behavior: "smooth" });
+        b.blur();
+      });
       rail.appendChild(b);
       return b;
     });
     document.body.appendChild(rail);
-    var on = function (k) { marks.forEach(function (b, i) { b.classList.toggle("is-on", i === k); if (i === k) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current"); }); };
-    on(0);
-    /* the page that crosses the middle of the screen is the current one */
-    var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) on(steps.indexOf(e.target)); });
-    }, { rootMargin: "-50% 0px -50% 0px" });
-    steps.forEach(function (st) { io.observe(st); });
+    /* current = the last section whose top has passed the middle of the screen */
+    var cur = -1, tick = false;
+    function paint() {
+      tick = false;
+      var mid = window.innerHeight * 0.5, k = 0;
+      marksFor.forEach(function (m, i) { if (m.el && m.el.getBoundingClientRect().top < mid) k = i; });
+      /* at the very bottom the last mark wins, even if its section is too short to reach the middle */
+      var sc = scroller() || document.documentElement, y = sc === document.body ? sc.scrollTop : window.scrollY;
+      if (y > 40 && y + window.innerHeight >= sc.scrollHeight - 4) k = marksFor.length - 1;
+      if (k === cur) return; cur = k;
+      marks.forEach(function (b, i) { b.classList.toggle("is-on", i === k); if (i === k) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current"); });
+    }
+    function ask() { if (!tick) { tick = true; requestAnimationFrame(paint); } }
+    document.addEventListener("scroll", ask, { passive: true, capture: true });
+    window.addEventListener("resize", ask); window.addEventListener("load", ask);
+    paint();
   })();
 
   /* ---- "Scroll to continue": go to the next step ---- */
@@ -206,12 +305,14 @@
     /* drag or swipe across the media to step it as well */
     var x0 = null, y0 = null;
     wrap.addEventListener("pointerdown", function (e) { x0 = e.clientX; y0 = e.clientY; }, { passive: true });
+    var inRow = !!wrap.closest(".strip, .news-scroll");
     wrap.addEventListener("pointerup", function (e) {
       if (x0 === null) return;
       var dx = e.clientX - x0, dy = e.clientY - y0; x0 = y0 = null;
+      if (inRow && e.pointerType === "touch") return;      /* inside a card row the finger scrolls the row; the arrows flip the photo */
       if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1);
     });
-    wrap.style.touchAction = "pan-y";
+    if (!(inRow && window.matchMedia("(pointer: coarse)").matches)) wrap.style.touchAction = "pan-y";
   });
 
   /* ---- Name pronunciation (hero): play the clip, type out how it sounds, fling a word or two ---- */
