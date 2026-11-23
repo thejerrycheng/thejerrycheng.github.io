@@ -88,25 +88,14 @@
   if (!isPubs) return;
 
   /* ---- citations: Google Scholar numbers, refreshed daily into assets/data/citations.json (Scholar cannot be asked from a browser) ---- */
-  var papers = {}, chips = {}, profile = "";
+  var papers = {}, profile = "";
   function countUp(el, to) {
     var from = +el.getAttribute("data-n") || 0; el.setAttribute("data-n", to);
     if (calm.matches || from === to) { el.textContent = to; return; }
     var t0 = performance.now(), D = 700;
     (function step(now) { var t = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - t, 3); el.textContent = Math.round(from + (to - from) * e); if (t < 1) requestAnimationFrame(step); })(t0);
   }
-  function paint(id, n) {
-    counts[id] = n;
-    var row = document.getElementById(id); if (!row || !n) return;      /* no chip for a paper with no citations yet */
-    var a = chips[id];
-    if (!a) {
-      a = chips[id] = document.createElement("a"); a.className = "cite"; a.target = "_blank"; a.rel = "noopener";
-      a.href = papers[id].url || profile; a.title = "Citations on Google Scholar";
-      a.innerHTML = "<b>0</b><span>citations</span>"; row.appendChild(a);
-    }
-    a.lastChild.textContent = n === 1 ? "citation" : "citations";
-    countUp(a.firstChild, n);
-  }
+  function paint(id, n) { counts[id] = n; }             /* per-paper numbers only feed the "Most cited" order; the page shows the total alone */
   fetch("assets/data/citations.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (j) {
     papers = j.papers || {}; profile = j.profile || "";
     Object.keys(papers).forEach(function (id) { paint(id, papers[id].count); });
