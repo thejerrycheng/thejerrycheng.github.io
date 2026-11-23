@@ -14,19 +14,20 @@
 
   /* ---- what can be filtered ---- */
   var GROUPS = [["rl", "RL"], ["learning", "Robot learning"], ["classical", "Classical"], ["hardware", "Hardware"]];
-  var heads = [].slice.call(list.querySelectorAll(".lt-head"));                /* projects: one heading per group, written by build_catalog.py */
-  function groupOf(r) { return r.getAttribute("data-group") || ""; }
+  function inGroup(r, g) { return (" " + (r.getAttribute("data-group") || "") + " ").indexOf(" " + g + " ") >= 0; }   /* a project can sit in several groups */
   var filters = [["all", "All", function () { return true; }]];
   if (isPubs) {
     filters.push(["first", "First author", function (r) { return r.hasAttribute("data-first"); }]);
     filters.push(["co", "Co-author", function (r) { return !r.hasAttribute("data-first"); }]);
   } else {
     GROUPS.forEach(function (g) {
-      if (rows.some(function (r) { return groupOf(r) === g[0]; })) filters.push([g[0], g[1], function (r) { return groupOf(r) === g[0]; }]);
+      if (rows.some(function (r) { return inGroup(r, g[0]); })) filters.push([g[0], g[1], function (r) { return inGroup(r, g[0]); }]);
     });
   }
   var sorts = isPubs ? [["new", "Newest"], ["cited", "Most cited"]] : [];
-  var state = { filter: "all", sort: "new" }, counts = {};
+  var years = [["all", "Any year"]];                      /* projects: a second control, by year */
+  if (isProj) rows.forEach(function (r) { var y = r.getAttribute("data-year"); if (y && !years.some(function (i) { return i[0] === y; })) years.push([y, y]); });
+  var state = { filter: "all", sort: "new", year: "all" }, counts = {};
 
   /* ---- the bar: segmented controls with a highlight that slides between the choices ---- */
   function segment(items, key, label) {
@@ -48,6 +49,7 @@
   var bar = document.createElement("div"); bar.className = "lt-bar";
   var segs = [segment(filters, "filter", "Show")];
   if (sorts.length) segs.push(segment(sorts, "sort", "Order"));
+  if (years.length > 2) segs.push(segment(years, "year", "Year"));
   segs.forEach(function (s) { bar.appendChild(s); });
   var tally = document.createElement("span"); tally.className = "lt-count"; tally.setAttribute("aria-live", "polite"); bar.appendChild(tally);
   list.parentNode.insertBefore(bar, list);
@@ -62,15 +64,14 @@
     if (state.sort === "cited") order.sort(function (a, b) { return (counts[b.id] || 0) - (counts[a.id] || 0) || rows.indexOf(a) - rows.indexOf(b); });
     var shown = 0, lead = null;
     order.forEach(function (r) {
-      var ok = pass(r); r.hidden = !ok; r.classList.remove("is-lead");
+      var ok = pass(r) && (state.year === "all" || r.getAttribute("data-year") === state.year); r.hidden = !ok; r.classList.remove("is-lead");
       if (ok) { shown++; if (!lead) lead = r; }
-      if (isPubs) list.appendChild(r);                    /* projects stay in their groups */
+      list.appendChild(r);
     });
-    if (lead && (isPubs || state.filter !== "all")) lead.classList.add("is-lead");
-    heads.forEach(function (h) { h.hidden = state.filter !== "all"; });
+    if (lead) lead.classList.add("is-lead");
     tally.textContent = shown === rows.length ? rows.length + (isPubs ? " papers" : " projects") : shown + " of " + rows.length;
     list.classList.toggle("lt-cited", state.sort === "cited");
-    root.classList.toggle("rail-off", isProj && state.filter !== "all");     /* the group marks only make sense on the full list */
+    root.classList.toggle("rail-off", isProj && (state.filter !== "all" || state.year !== "all"));     /* the year marks only make sense on the full list */
   }
   function apply(animate) {
     if (!animate || calm.matches || !document.startViewTransition) { layout(); return; }

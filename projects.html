@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/gotham.css?v=20261123l">
+  <link rel="stylesheet" href="assets/css/gotham.css?v=20261123m">
   <script>document.documentElement.classList.add('js');</script>
   <script>(function(){try{var t=localStorage.getItem("theme-v2");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 
@@ -61,8 +61,6 @@
 <section class="section" id="projects">
   <div class="pub-list">
 <!-- catalog:proj-list -->
-    <h2 class="lt-head" id="group-rl" data-group="rl">Reinforcement learning <span>5</span></h2>
-
     <div class="pub card card-hover" id="m2" data-go="m2.html" data-year="2026" data-tag="Robot learning" data-group="rl">
       <span class="proj-tag">Robot learning</span>
       <div class="pub-thumb"><img src="assets/images/cards/m2.jpg" alt="Two mobile manipulators carrying a shared object in MuJoCo" loading="lazy" decoding="async" class="fit-contain"></div>
@@ -83,6 +81,16 @@
       </div>
     </div>
 
+    <div class="pub card card-hover" id="rehearse" data-go="rehearse.html" data-year="2026" data-tag="Real to sim to real" data-group="learning">
+      <span class="proj-tag">Real to sim to real</span>
+      <div class="pub-thumb"><img src="assets/images/cards/rehearse.jpg" alt="A reconstructed kitchen with the full egocentric camera path drawn through it, coloured by time" loading="lazy" decoding="async" class="fit-cover"></div>
+      <div class="pub-meta">
+        <span class="papertitle">Rehearse</span><span class="proj-year">2026</span>
+        <p class="proj-body">Coming soon.</p>
+        <div class="links"><a href="rehearse.html">Coming soon</a></div>
+      </div>
+    </div>
+
     <div class="pub card card-hover" id="superdexterity" data-go="superdexterity.html" data-year="2026" data-tag="Dexterous manipulation" data-group="rl">
       <span class="proj-tag">Dexterous manipulation</span>
       <div class="pub-thumb"><img src="assets/images/cards/superdexterity.jpg" alt="Abstract drawing: a rounded square turning step by step until it reaches an orange target" loading="lazy" decoding="async" class="fit-cover"></div>
@@ -93,35 +101,13 @@
       </div>
     </div>
 
-    <div class="pub card card-hover" id="tintin" data-go="tintin.html" data-year="2025" data-tag="Reinforcement learning" data-group="rl">
+    <div class="pub card card-hover" id="microduck" data-go="microduck.html" data-year="2026" data-tag="Reinforcement learning" data-group="hardware rl">
       <span class="proj-tag">Reinforcement learning</span>
-      <div class="pub-thumb"><img src="assets/images/cards/tintin.jpg" alt="TINTIN lunar landing RL" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/tintin.jpg" data-src="assets/videos/1mill_step.mp4"></video></div></div>
+      <div class="pub-thumb"><img src="assets/images/cards/microduck.jpg" alt="The MicroDuck replica partly assembled on a workbench, with Feetech HD1910 servos in the legs and neck" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/microduck.jpg" data-src="assets/videos/card_microduck.mp4"></video></div></div>
       <div class="pub-meta">
-        <span class="papertitle">TINTIN: Reinforcement Learning for Lunar Rocket Landing</span><span class="proj-year">2025</span>
-        <p class="proj-body">6-DoF variable-mass lunar lander in MuJoCo with a 2-DoF gimbaled engine. A SAC policy learns guidance and control as one map; a cascaded PD baseline, re-run for 500 descents, lands 70.2&nbsp;% of the time and comes apart above 50&nbsp;m/s entry speed. The page lets you fly the lander and re-run the Monte&nbsp;Carlo in your browser.</p>
-        <div class="links"><a href="tintin.html">Website</a><a href="assets/pdf/projects/Space_Robot_Course_Project_2_Report-3.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/space_robot_mujoco" target="_blank" rel="noopener">Code</a><a href="https://youtube.com/shorts/YfmAeDVPjt4?feature=share" target="_blank" rel="noopener">Video</a><a href="assets/pdf/projects/Space_Robot_Course_Project_1-6.pdf" target="_blank" rel="noopener">Modelling report</a></div>
-      </div>
-    </div>
-
-    <div class="pub card card-hover" id="clear-net" data-go="clearnet.html" data-year="2024" data-tag="Reinforcement learning" data-group="rl">
-      <span class="proj-tag">Reinforcement learning</span>
-      <div class="pub-thumb"><img src="assets/images/cards/clear-net.jpg" alt="CLEAR-Net cart-pole reinforcement learning" loading="lazy" decoding="async" class="fit-contain"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/clear-net.jpg" data-src="assets/videos/RL_demo.mp4"></video></div></div>
-      <div class="pub-meta">
-        <span class="papertitle">CLEAR-Net: Cart-Pole Reinforcement Learning under Sensor Noise</span><span class="proj-year">2024</span>
-        <p class="proj-body">Tabular Q-learning, DQN, PPO and SAC on a cart-pole whose every observation is corrupted by Gaussian noise. A five-seed re-run found the released bin limits collapse cart position into two of eight bins and double the drift, that survival peaks at &sigma;&nbsp;=&nbsp;0.1 rather than at zero noise, and that a coarse grid beats a fine one fifteen-fold at a fixed budget. The whole tabular experiment runs live in the page.</p>
-        <div class="links"><a href="clearnet.html">Website</a><a href="assets/pdf/projects/ECE1508_Project_Poster.pdf" target="_blank" rel="noopener">Poster</a><a href="assets/pdf/projects/ECE1508__Project_Progress_Report.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/RL_project" target="_blank" rel="noopener">Code</a></div>
-      </div>
-    </div>
-
-    <h2 class="lt-head" id="group-learning" data-group="learning">Robot learning <span>3</span></h2>
-
-    <div class="pub card card-hover" id="rehearse" data-go="rehearse.html" data-year="2026" data-tag="Real to sim to real" data-group="learning">
-      <span class="proj-tag">Real to sim to real</span>
-      <div class="pub-thumb"><img src="assets/images/cards/rehearse.jpg" alt="A reconstructed kitchen with the full egocentric camera path drawn through it, coloured by time" loading="lazy" decoding="async" class="fit-cover"></div>
-      <div class="pub-meta">
-        <span class="papertitle">Rehearse</span><span class="proj-year">2026</span>
-        <p class="proj-body">Coming soon.</p>
-        <div class="links"><a href="rehearse.html">Coming soon</a></div>
+        <span class="papertitle">MicroDuck Replica on Feetech Servos</span><span class="proj-year">2026</span>
+        <p class="proj-body">A replica of Pollen Robotics' MicroDuck built on slower, heavier Feetech HD1910 servos. The actuator is modelled with the Feetech firmware law and the rest of the build is covered by wide randomisation. Seven policies share one interface: one network walks, stands and gets up after every fall; a sprint reaches 1.33&nbsp;m/s; a front flip lands standing 12 times in 12. All results are in simulation.</p>
+        <div class="links"><a href="microduck.html">Website</a><a href="assets/projects/microduck/duck_live_app.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/microduck_replication_feetech" target="_blank" rel="noopener">Code</a></div>
       </div>
     </div>
 
@@ -135,6 +121,16 @@
       </div>
     </div>
 
+    <div class="pub card card-hover" id="tintin" data-go="tintin.html" data-year="2025" data-tag="Reinforcement learning" data-group="rl">
+      <span class="proj-tag">Reinforcement learning</span>
+      <div class="pub-thumb"><img src="assets/images/cards/tintin.jpg" alt="TINTIN lunar landing RL" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/tintin.jpg" data-src="assets/videos/1mill_step.mp4"></video></div></div>
+      <div class="pub-meta">
+        <span class="papertitle">TINTIN: Reinforcement Learning for Lunar Rocket Landing</span><span class="proj-year">2025</span>
+        <p class="proj-body">6-DoF variable-mass lunar lander in MuJoCo with a 2-DoF gimbaled engine. A SAC policy learns guidance and control as one map; a cascaded PD baseline, re-run for 500 descents, lands 70.2&nbsp;% of the time and comes apart above 50&nbsp;m/s entry speed. The page lets you fly the lander and re-run the Monte&nbsp;Carlo in your browser.</p>
+        <div class="links"><a href="tintin.html">Website</a><a href="assets/pdf/projects/Space_Robot_Course_Project_2_Report-3.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/space_robot_mujoco" target="_blank" rel="noopener">Code</a><a href="https://youtube.com/shorts/YfmAeDVPjt4?feature=share" target="_blank" rel="noopener">Video</a><a href="assets/pdf/projects/Space_Robot_Course_Project_1-6.pdf" target="_blank" rel="noopener">Modelling report</a></div>
+      </div>
+    </div>
+
     <div class="pub card card-hover" id="mono-depth" data-go="bipednav.html#perception" data-year="2024" data-tag="Perception" data-group="learning">
       <span class="proj-tag">Perception</span>
       <div class="pub-thumb"><div class="pub-carousel" data-carousel><div class="carousel-track"><div class="slide"><img src="assets/images/cards/mono-depth.jpg" alt="Stair point-cloud profile with fitted tread and riser planes" decoding="async" class="fit-contain"></div><div class="slide"><img src="assets/images/publications/mono_dep_pipeline.png" alt="Monocular depth estimation pipeline" decoding="async" class="fit-contain"></div></div><button class="c-btn prev" aria-label="Previous slide"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg></button><button class="c-btn next" aria-label="Next slide"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/mono-depth.jpg" data-src="assets/videos/bipednav_perception.mp4"></video></div></div>
@@ -145,7 +141,15 @@
       </div>
     </div>
 
-    <h2 class="lt-head" id="group-classical" data-group="classical">Classical robotics <span>3</span></h2>
+    <div class="pub card card-hover" id="clear-net" data-go="clearnet.html" data-year="2024" data-tag="Reinforcement learning" data-group="rl">
+      <span class="proj-tag">Reinforcement learning</span>
+      <div class="pub-thumb"><img src="assets/images/cards/clear-net.jpg" alt="CLEAR-Net cart-pole reinforcement learning" loading="lazy" decoding="async" class="fit-contain"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/clear-net.jpg" data-src="assets/videos/RL_demo.mp4"></video></div></div>
+      <div class="pub-meta">
+        <span class="papertitle">CLEAR-Net: Cart-Pole Reinforcement Learning under Sensor Noise</span><span class="proj-year">2024</span>
+        <p class="proj-body">Tabular Q-learning, DQN, PPO and SAC on a cart-pole whose every observation is corrupted by Gaussian noise. A five-seed re-run found the released bin limits collapse cart position into two of eight bins and double the drift, that survival peaks at &sigma;&nbsp;=&nbsp;0.1 rather than at zero noise, and that a coarse grid beats a fine one fifteen-fold at a fixed budget. The whole tabular experiment runs live in the page.</p>
+        <div class="links"><a href="clearnet.html">Website</a><a href="assets/pdf/projects/ECE1508_Project_Poster.pdf" target="_blank" rel="noopener">Poster</a><a href="assets/pdf/projects/ECE1508__Project_Progress_Report.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/RL_project" target="_blank" rel="noopener">Code</a></div>
+      </div>
+    </div>
 
     <div class="pub card card-hover" id="biped-vhc" data-go="bipednav.html" data-year="2024" data-tag="Perception + Control" data-group="classical">
       <span class="proj-tag">Perception + Control</span>
@@ -167,29 +171,7 @@
       </div>
     </div>
 
-    <div class="pub card card-hover" id="turtlebot" data-go="turtlebot.html" data-year="2022" data-tag="SLAM" data-group="classical">
-      <span class="proj-tag">SLAM</span>
-      <div class="pub-thumb"><img src="assets/images/cards/turtlebot.jpg" alt="Turtlebot2 SLAM and navigation" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/turtlebot.jpg" data-src="assets/videos/turtlebot_localization.mp4"></video></div></div>
-      <div class="pub-meta">
-        <span class="papertitle">Where Am I? TurtleBot SLAM, Navigation and Autonomous Exploration</span><span class="proj-year">2022</span>
-        <p class="proj-body">A TurtleBot 2 mapping an unknown 6&times;6&nbsp;m room with a Kinect, three bumpers and GMapping, switching between reactive, behaviour and deliberate control. A six-room re-run found the four strategies are separated by less than their own variance, and that the hybrid controller is simultaneously the best and the worst of them. Watch the occupancy grid fill in live, and race all four.</p>
-        <div class="links"><a href="turtlebot.html">Website</a><a href="assets/pdf/projects/mie443_merged_contest_1_2.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/turtlebot-exploration" target="_blank" rel="noopener">Code</a></div>
-      </div>
-    </div>
-
-    <h2 class="lt-head" id="group-hardware" data-group="hardware">Hardware <span>4</span></h2>
-
-    <div class="pub card card-hover" id="microduck" data-go="microduck.html" data-year="2026" data-tag="Reinforcement learning" data-group="hardware">
-      <span class="proj-tag">Reinforcement learning</span>
-      <div class="pub-thumb"><img src="assets/images/cards/microduck.jpg" alt="The MicroDuck replica partly assembled on a workbench, with Feetech HD1910 servos in the legs and neck" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/microduck.jpg" data-src="assets/videos/card_microduck.mp4"></video></div></div>
-      <div class="pub-meta">
-        <span class="papertitle">MicroDuck Replica on Feetech Servos</span><span class="proj-year">2026</span>
-        <p class="proj-body">A replica of Pollen Robotics' MicroDuck built on slower, heavier Feetech HD1910 servos. The actuator is modelled with the Feetech firmware law and the rest of the build is covered by wide randomisation. Seven policies share one interface: one network walks, stands and gets up after every fall; a sprint reaches 1.33&nbsp;m/s; a front flip lands standing 12 times in 12. All results are in simulation.</p>
-        <div class="links"><a href="microduck.html">Website</a><a href="assets/projects/microduck/duck_live_app.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/microduck_replication_feetech" target="_blank" rel="noopener">Code</a></div>
-      </div>
-    </div>
-
-    <div class="pub card card-hover" id="mobile-robot" data-go="mobilerobot.html" data-year="2022" data-tag="Mechatronics" data-group="hardware">
+    <div class="pub card card-hover" id="mobile-robot" data-go="mobilerobot.html" data-year="2022" data-tag="Mechatronics" data-group="classical hardware">
       <span class="proj-tag">Mechatronics</span>
       <div class="pub-thumb"><img src="assets/images/cards/mobile-robot.jpg" alt="Arduino mobile robot" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/mobile-robot.jpg" data-src="assets/videos/mie444_card.mp4"></video></div></div>
       <div class="pub-meta">
@@ -206,6 +188,16 @@
         <span class="papertitle">8×8×8 LED Cube Game Console</span><span class="proj-year">2022</span>
         <p class="proj-body">512 hand-soldered LEDs driven by nine daisy-chained shift registers over one SPI bus. Only one of the eight layers is ever lit; the cube is an illusion held together by refreshing faster than the eye can follow. Twelve animations and a shallow-water liquid you tip by dragging &mdash; volume held to 10<sup>&minus;13</sup>, surface level to 0.008&nbsp;cells per column &mdash; plus 3-D Snake with wrap-around walls and Pong against a machine that solves for where the ball will cross its own face. Drag the refresh rate down and watch persistence of vision give out.</p>
         <div class="links"><a href="ledcube.html">Website</a><a href="ledcube_games.html">Games</a><a href="assets/pdf/projects/MIE438_Final_Report.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/MIE438_LED_cubic_console" target="_blank" rel="noopener">Code</a><a href="https://www.youtube.com/watch?v=cC_NXlKTEwk&amp;list=PL5hrJ0xlpQr8SxBvYJAg1WvAlzILiglhV" target="_blank" rel="noopener">Video</a></div>
+      </div>
+    </div>
+
+    <div class="pub card card-hover" id="turtlebot" data-go="turtlebot.html" data-year="2022" data-tag="SLAM" data-group="classical">
+      <span class="proj-tag">SLAM</span>
+      <div class="pub-thumb"><img src="assets/images/cards/turtlebot.jpg" alt="Turtlebot2 SLAM and navigation" loading="lazy" decoding="async" class="fit-cover"><div class="hover-video"><video muted loop playsinline preload="none" poster="assets/images/cards/turtlebot.jpg" data-src="assets/videos/turtlebot_localization.mp4"></video></div></div>
+      <div class="pub-meta">
+        <span class="papertitle">Where Am I? TurtleBot SLAM, Navigation and Autonomous Exploration</span><span class="proj-year">2022</span>
+        <p class="proj-body">A TurtleBot 2 mapping an unknown 6&times;6&nbsp;m room with a Kinect, three bumpers and GMapping, switching between reactive, behaviour and deliberate control. A six-room re-run found the four strategies are separated by less than their own variance, and that the hybrid controller is simultaneously the best and the worst of them. Watch the occupancy grid fill in live, and race all four.</p>
+        <div class="links"><a href="turtlebot.html">Website</a><a href="assets/pdf/projects/mie443_merged_contest_1_2.pdf" target="_blank" rel="noopener">PDF</a><a href="https://github.com/thejerrycheng/turtlebot-exploration" target="_blank" rel="noopener">Code</a></div>
       </div>
     </div>
 
@@ -233,8 +225,8 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=20261123l"></script>
+<script src="assets/js/site.js?v=20261123m"></script>
 <script src="assets/js/catalog-ui.js?v=20261119d"></script>
-<script src="assets/js/listing.js?v=20261123l"></script>
+<script src="assets/js/listing.js?v=20261123m"></script>
 </body>
 </html>
