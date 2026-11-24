@@ -556,6 +556,34 @@
    "thumb": "assets/images/cards/superdexterity.jpg"
   },
   {
+   "id": "humanego-stack",
+   "group": "learning",
+   "title": "Human Video to Robot Policy with a Fixed Magic Leap 2",
+   "short": "Human video to robot policy",
+   "year": 2026,
+   "tag": "Robot learning",
+   "images": [
+    "assets/humanego-stack/card.jpg"
+   ],
+   "alts": [
+    "A rendered Franka arm carrying a yellow cube toward a blue cube on an optical table, rebuilt from a recorded human demonstration"
+   ],
+   "fit": "cover",
+   "links": [
+    {
+     "label": "Website",
+     "href": "humanego-stack.html",
+     "internal": true
+    },
+    {
+     "label": "PDF",
+     "href": "assets/humanego-stack/ml2_stack.pdf"
+    }
+   ],
+   "desc": "A CSC2626 course project that replicates HumanEgo with one fixed Magic Leap 2. 57 human cube-stacking demonstrations are rebuilt frame by frame with a Franka in the person's place, and 55 of 57 stack again when replayed in a MuJoCo twin. The trained policy does not complete the stack yet: 0 of 6 in simulation so far. Nothing has been run on the real robot.",
+   "thumb": "assets/images/cards/humanego-stack.jpg"
+  },
+  {
    "id": "microduck",
    "group": "hardware rl",
    "title": "MicroDuck Replica on Feetech Servos",
