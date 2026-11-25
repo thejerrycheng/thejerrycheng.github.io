@@ -52,3 +52,4 @@
 .hl-view button[aria-pressed="true"] { background: rgba(255,255,255,.92); color: #141210; }
 .hl-view button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 @media (max-width: 560px) { .hl-view { left: 10px; top: 10px; } .hl-view button { font-size: 12px; height: 30px; padding: 0 11px; } .hl-cam { top: 52px; } }
+.hl-view button:disabled { opacity: .45; cursor: default; }

@@ -19,7 +19,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   // ---------- DOM
   root.classList.add('hl');
   root.innerHTML =
-    '<div class="hl-stage" aria-label="3-D scene: Franka arm, table, a yellow and a blue cube"><div class="hl-veil"><span></span><b></b></div><div class="hl-note" hidden></div><div class="hl-view" role="group" aria-label="View" hidden><button type="button" data-view="3d" aria-pressed="true">3-D view</button><button type="button" data-view="cam" aria-pressed="false">Camera view</button></div><button type="button" class="hl-cam" hidden aria-label="Camera view: what the policy sees. Click to enlarge."><img alt=""><span>Camera view · what the policy sees</span></button></div>' +
+    '<div class="hl-stage" aria-label="3-D scene: Franka arm, table, a yellow and a blue cube"><div class="hl-veil"><span></span><b></b></div><div class="hl-note" hidden></div><div class="hl-view" role="group" aria-label="View"><button type="button" data-view="3d" aria-pressed="true">3-D view</button><button type="button" data-view="cam" aria-pressed="false">Camera view</button></div><button type="button" class="hl-cam" hidden aria-label="Camera view: what the policy sees. Click to enlarge."><img alt=""><span>Camera view · what the policy sees</span></button></div>' +
     '<div class="hl-bar"><p class="hl-status" role="status" aria-live="polite"><i></i><span></span><button type="button" class="hl-retry" hidden>Try again</button></p>' +
     '<div class="hl-btns"><button type="button" data-act="run" class="main">Run</button><button type="button" data-act="pause">Pause</button><button type="button" data-act="reset">Reset</button></div></div>' +
     '<p class="hl-hint"></p>';
@@ -42,8 +42,12 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     camBox.classList.toggle('only', full);
     if (full) camBox.classList.remove('big');
     camBox.setAttribute('aria-label', full ? 'Camera view: what the policy sees.' : 'Camera view: what the policy sees. Click to enlarge.');
-    viewBox.hidden = !camFrames || glBroken || conn !== 'open';
-    viewBox.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === viewMode)));
+    viewBox.hidden = false;                           // always offered; an option that cannot work right now is disabled, not hidden
+    viewBox.querySelectorAll('button').forEach(b => {
+      b.setAttribute('aria-pressed', String(b.dataset.view === (full ? 'cam' : '3d')));
+      b.disabled = b.dataset.view === '3d' ? glBroken : !camFrames;
+      b.title = b.disabled ? (b.dataset.view === '3d' ? '3-D graphics are not available in this browser' : 'The camera view starts once the simulation is connected') : '';
+    });
   }
   viewBox.onclick = ev => { const b = ev.target.closest('button[data-view]'); if (b) setView(b.dataset.view); };
   viewBox.onpointerdown = ev => ev.stopPropagation();
