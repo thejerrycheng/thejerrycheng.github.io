@@ -19,7 +19,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   // ---------- DOM
   root.classList.add('hl');
   root.innerHTML =
-    '<div class="hl-stage" aria-label="3-D scene: Franka arm, table, a yellow and a blue cube"><div class="hl-veil"><span></span><b></b></div><div class="hl-note" hidden></div><button type="button" class="hl-cam" hidden aria-label="Camera view: what the policy sees. Click to enlarge."><img alt=""><span>Camera view · what the policy sees</span></button></div>' +
+    '<div class="hl-stage" aria-label="3-D scene: Franka arm, table, a yellow and a blue cube"><div class="hl-veil"><span></span><b></b></div><div class="hl-note" hidden></div><div class="hl-view" role="group" aria-label="View" hidden><button type="button" data-view="3d" aria-pressed="true">3-D view</button><button type="button" data-view="cam" aria-pressed="false">Camera view</button></div><button type="button" class="hl-cam" hidden aria-label="Camera view: what the policy sees. Click to enlarge."><img alt=""><span>Camera view · what the policy sees</span></button></div>' +
     '<div class="hl-bar"><p class="hl-status" role="status" aria-live="polite"><i></i><span></span><button type="button" class="hl-retry" hidden>Try again</button></p>' +
     '<div class="hl-btns"><button type="button" data-act="run" class="main">Run</button><button type="button" data-act="pause">Pause</button><button type="button" data-act="reset">Reset</button></div></div>' +
     '<p class="hl-hint"></p>';
@@ -28,7 +28,26 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     veil = root.querySelector('.hl-veil'), veilTxt = veil.querySelector('span'), note = root.querySelector('.hl-note'),
     camBox = root.querySelector('.hl-cam'), camImg = camBox.querySelector('img');
   let camUrl = null, camTex = null, camFrames = 0;
-  camBox.onclick = () => { camBox.classList.toggle('big'); };
+  const viewBox = root.querySelector('.hl-view');
+  let viewMode = '3d';                                  // '3d' = orbit scene with a small camera inset; 'cam' = the policy's camera fills the stage
+  try { viewMode = localStorage.getItem('hl-view') === 'cam' ? 'cam' : '3d'; } catch (e) {}
+  function setView(v) {
+    viewMode = v;
+    try { localStorage.setItem('hl-view', v); } catch (e) {}
+    viewBox.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === v)));
+    applyView();
+  }
+  function applyView() {
+    const full = !!camFrames && (glBroken || viewMode === 'cam');
+    camBox.classList.toggle('only', full);
+    if (full) camBox.classList.remove('big');
+    camBox.setAttribute('aria-label', full ? 'Camera view: what the policy sees.' : 'Camera view: what the policy sees. Click to enlarge.');
+    viewBox.hidden = !camFrames || glBroken || conn !== 'open';
+    viewBox.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === viewMode)));
+  }
+  viewBox.onclick = ev => { const b = ev.target.closest('button[data-view]'); if (b) setView(b.dataset.view); };
+  viewBox.onpointerdown = ev => ev.stopPropagation();
+  camBox.onclick = () => { if (!camBox.classList.contains('only')) camBox.classList.toggle('big'); };
   camImg.onload = () => { if (camTex) { camTex.image = camImg; camTex.needsUpdate = true; dirty = 2; } };
   function camFrame(blob) {                          // one JPEG from the server: the image the policy is given, live
     const u = URL.createObjectURL(blob), old = camUrl; camUrl = u; camImg.src = u; if (old) setTimeout(() => URL.revokeObjectURL(old), 500);
@@ -58,7 +77,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     const phase = noView ? 'nogl' : conn !== 'open' ? conn : !st ? 'connecting' : st.phase === 'done' ? (st.result || 'missed') : st.phase === 'running' && st.result === 'stacked' ? 'stacked' : st.phase;
     const [label, cls] = STATUS[phase] || STATUS.connecting;
     statusTxt.textContent = label;                    // no timer: the policy runs until Pause or Reset
-    camBox.hidden = !camFrames || conn !== 'open'; camBox.classList.toggle('only', glBroken && !!camFrames);
+    camBox.hidden = !camFrames || conn !== 'open'; applyView();
     statusEl.dataset.s = cls;
     retry.hidden = !(conn === 'offline' || conn === 'busy');
     const live = conn === 'open' && st && !noView;        // no blind runs: without any view the controls stay off
@@ -289,5 +308,5 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     visible = es[0].isIntersecting; if (visible) dirty = 3;
     if (visible && !started) { started = true; build(); connect(); }
   }, { rootMargin: '200px' }).observe(stage);
-  window.heLive = { get state() { return st; }, get conn() { return conn; }, get meshes() { return mesh; }, get view() { return view; }, get ready() { return ready; }, get glLost() { return glLost; }, get camFrames() { return camFrames; } };   // for tests
+  window.heLive = { get state() { return st; }, get conn() { return conn; }, get meshes() { return mesh; }, get view() { return view; }, get viewMode() { return viewMode; }, get ready() { return ready; }, get glLost() { return glLost; }, get camFrames() { return camFrames; } };   // for tests
 })();
