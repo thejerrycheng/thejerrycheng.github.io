@@ -201,7 +201,7 @@ async function openTrial(n){cur=n;renderList();show('t');const rec=DS.trials.fin
 const curK=()=>+$('scrub').value;
 function setK(k){k=Math.max(0,Math.min(T.t.length-1,k|0));$('scrub').value=k;$('tRead').textContent=T.t[k].toFixed(2)+' s';update3d(k);drawPlots(k);}
 $('scrub').oninput=()=>{const k=curK();$('vid').currentTime=T.t[k];setK(k);};
-$('vid').ontimeupdate=()=>{if(T&&!$('vid').paused)setK(Math.round($('vid').currentTime*30));};
+$('vid').ontimeupdate=()=>{if(T&&!$('vid').paused){const k=Math.max(0,Math.min(T.t.length-1,Math.round($('vid').currentTime*30)));$('scrub').value=k;$('tRead').textContent=T.t[k].toFixed(2)+' s';drawPlots(k);}};   // scrubber and plots only; the 3D view is driven per frame
 $('cCloud').onchange=()=>{if($('cCloud').checked&&three&&three.loadClouds)three.loadClouds();update3d(curK());};$('cArm').onchange=()=>update3d(curK());
 function drawPlots(k){if(!T||$('trial').hidden)return;const t=T.t,te=t[t.length-1];
   let [g,w,h]=ctx2($('pJ'));let [X,Y]=axes(g,w,h,0,te,0,95,'s','jaw gap mm');
@@ -274,7 +274,7 @@ async function buildScene(){const S=DS.scene3d;if(!S||sceneView)return;const el=
 
 // ---------- trial 3D
 async function build3d(){const el=$('view3d');if(!three){const v=orbit(el,[0.35,0,0.1],[0.95,-0.75,0.75]);three=Object.assign(v,{scene:null});
-    (function loop(){requestAnimationFrame(loop);if(three.scene&&!$('trial').hidden)three.r.render(three.scene,three.cam);})();
+    (function loop(){requestAnimationFrame(loop);if(three.scene&&!$('trial').hidden){if(T&&!$('vid').paused)update3d($('vid').currentTime*30);three.r.render(three.scene,three.cam);}})();   // 3D follows the video clock every display frame, not the sparse timeupdate events
     $('btnML2').onclick=()=>three.fromHeadset(DS.scene3d);$('btnOrbit2').onclick=()=>three.reset();}
   three.size();const sc=new THREE.Scene();sc.background=new THREE.Color(0x0a0908);three.scene=sc;const S=DS.scene3d;
   const vt=new THREE.VideoTexture($('vid'));vt.encoding=THREE.sRGBEncoding;vt.repeat.set(1/3,1);vt.offset.set(2/3,0);     // right third of the video = robot view
@@ -290,11 +290,16 @@ async function build3d(){const el=$('view3d');if(!three){const v=orbit(el,[0.35,
     const pts=new THREE.Points(g,new THREE.PointsMaterial({size:0.004,vertexColors:true}));pts.visible=false;sc.add(pts);return {k:c.k,pts};});update3d(curK());};
   if($('cCloud').checked)three.loadClouds();
   const mine=sc;try{const fr=makeFranka(await pandaAsset());if(three.scene===mine){sc.add(fr.root);three.franka=fr;update3d(curK());}}catch(err){three.arm.visible=true;console.log('franka meshes not loaded',err);}}
-function update3d(k){if(!three||!three.scene||!three.yel)return;three.yel.position.set(...T.yellow[k]);three.yel.quaternion.set(...T.yellow_q[k]);
-  if(three.franka){three.franka.root.visible=$('cArm').checked;poseFranka(three.franka,T.q[k],T.width_mm[k]/1e3);}
-  else{three.arm.geometry.setFromPoints(T.skel[k].map(p=>new THREE.Vector3(...p)));three.arm.visible=$('cArm').checked;}
-  three.grip.position.set(...T.cad[k]);three.grip.quaternion.set(...T.cad_q[k]);three.tcpAx.position.set(...T.tcp[k]);three.tcpAx.quaternion.set(...T.tcp_q[k]);
-  if(three.clouds.length){let best=three.clouds[0];three.clouds.forEach(c=>{if(Math.abs(c.k-k)<Math.abs(best.k-k))best=c;});three.clouds.forEach(c=>c.pts.visible=$('cCloud').checked&&c===best);}}
+function update3d(kf){if(!three||!three.scene||!three.yel)return;
+  // kf may be fractional: poses are interpolated between the 30 Hz samples so playback is smooth at the display's
+  // frame rate (positions and joint angles linearly, orientations by normalised quaternion interpolation)
+  const n=T.t.length,k0=Math.max(0,Math.min(n-1,Math.floor(kf))),k1=Math.min(n-1,k0+1),a=Math.max(0,Math.min(1,kf-k0));
+  const L=(A,B)=>A.map((v,i)=>v+(B[i]-v)*a),Q=(A,B)=>{const d=A[0]*B[0]+A[1]*B[1]+A[2]*B[2]+A[3]*B[3],sg=d<0?-1:1,q=A.map((v,i)=>v+(sg*B[i]-v)*a),m=Math.hypot(q[0],q[1],q[2],q[3])||1;return q.map(v=>v/m);};
+  three.yel.position.set(...L(T.yellow[k0],T.yellow[k1]));three.yel.quaternion.set(...Q(T.yellow_q[k0],T.yellow_q[k1]));
+  if(three.franka){three.franka.root.visible=$('cArm').checked;poseFranka(three.franka,L(T.q[k0],T.q[k1]),(T.width_mm[k0]+(T.width_mm[k1]-T.width_mm[k0])*a)/1e3);}
+  else{three.arm.geometry.setFromPoints(T.skel[k0].map(p=>new THREE.Vector3(...p)));three.arm.visible=$('cArm').checked;}
+  three.grip.position.set(...L(T.cad[k0],T.cad[k1]));three.grip.quaternion.set(...Q(T.cad_q[k0],T.cad_q[k1]));three.tcpAx.position.set(...L(T.tcp[k0],T.tcp[k1]));three.tcpAx.quaternion.set(...Q(T.tcp_q[k0],T.tcp_q[k1]));
+  const k=Math.round(kf);if(three.clouds.length){let best=three.clouds[0];three.clouds.forEach(c=>{if(Math.abs(c.k-k)<Math.abs(best.k-k))best=c;});three.clouds.forEach(c=>c.pts.visible=$('cCloud').checked&&c===best);}}
 
 fetch('dataset.json').then(r=>r.json()).then(d=>{DS=d;const dl=d.trials.filter(t=>t.downloaded).length;$('sub').textContent+=` · ${dl} of ${d.share_trials} trials on disk`;renderList();overview();})
   .catch(e=>{$('kpis').innerHTML='<div class="empty">dataset.json could not be loaded: '+e+'</div>';});
