@@ -180,8 +180,11 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   }
   function cube(sc, e, mat) { const m = new THREE.Mesh(new THREE.BoxGeometry(e, e, e), mat); m.castShadow = true; m.receiveShadow = true; sc.add(m); return m; }
 
+  // Safari can hand back a dead WebGL context when the power preference is left at its default (measured on Safari 26.5:
+  // 'default' -> lost at creation, 'high-performance' and 'low-power' -> fine), so ask explicitly and fall back in turn.
+  function makeGL(opts){let r=null,err=null;for(const pp of ['high-performance','low-power','default']){try{r=new THREE.WebGLRenderer(Object.assign({},opts,{powerPreference:pp}));if(!r.getContext().isContextLost())return r;r.dispose();}catch(e){err=e;r=null;}}if(r)return r;throw err||new Error('no WebGL');}
   function orbit(el, target, pos) {
-    const r = new THREE.WebGLRenderer({ antialias: true }); r.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+    const r = makeGL({ antialias: true }); r.setPixelRatio(Math.min(devicePixelRatio, 1.5));
     // a lost WebGL context (GPU busy, tab in the background, driver reset) would leave a black stage for good:
     // keep it restorable, say so, and draw again when it is back
     r.domElement.addEventListener('webglcontextlost', ev => { ev.preventDefault(); glLost = true; ui(); });
