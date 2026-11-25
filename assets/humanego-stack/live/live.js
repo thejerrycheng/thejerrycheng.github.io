@@ -20,6 +20,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   root.classList.add('hl');
   root.innerHTML =
     '<div class="hl-stage" aria-label="3-D scene: Franka arm, table, a yellow and a blue cube"><div class="hl-veil"><span></span><b></b></div><div class="hl-note" hidden></div><div class="hl-view" role="group" aria-label="View"><button type="button" data-view="3d" aria-pressed="true">3-D view</button><button type="button" data-view="cam" aria-pressed="false">Camera view</button></div><button type="button" class="hl-cam" hidden aria-label="Camera view: what the policy sees. Click to enlarge."><img alt=""><span>Camera view · what the policy sees</span></button></div>' +
+    '<div class="hl-pol" role="radiogroup" aria-label="Policy" hidden><span>Policy</span><div></div></div>' +
     '<div class="hl-bar"><p class="hl-status" role="status" aria-live="polite"><i></i><span></span><button type="button" class="hl-retry" hidden>Try again</button></p>' +
     '<div class="hl-btns"><button type="button" data-act="run" class="main">Run</button><button type="button" data-act="pause">Pause</button><button type="button" data-act="reset">Reset</button></div></div>' +
     '<p class="hl-hint"></p>';
@@ -96,6 +97,29 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
       : touch ? 'Drag a cube to push it.' : 'Hold ⌘ or Ctrl and drag a cube to push it.';
   }
   const send = m => { if (ws && ws.readyState === 1) ws.send(JSON.stringify(m)); };
+  // policy picker: the server lists the policies it has loaded; choosing one restarts the scene with the same cube layout
+  const polBox = root.querySelector('.hl-pol'), polList = polBox.querySelector('div');
+  let policyId = null;
+  function drawPolicies(list, current) {
+    polList.textContent = '';
+    (list || []).forEach(p => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('role', 'radio'); b.dataset.id = p.id; b.textContent = p.label;
+      polList.appendChild(b);
+    });
+    polBox.hidden = !list || list.length < 2;
+    markPolicy(current);
+  }
+  function markPolicy(id) {
+    if (!id || id === policyId && polList.querySelector('[aria-checked="true"]')) return;
+    policyId = id;
+    polList.querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.id === id)));
+  }
+  polList.onclick = ev => {
+    const b = ev.target.closest('button[data-id]');
+    if (!b || b.dataset.id === policyId) return;
+    markPolicy(b.dataset.id); send({ type: 'policy', id: b.dataset.id });
+  };
   function act(a) { if (a === 'reset') { hold = {}; waitRun = 0; send({ type: 'reset', random: true }); ui(); return; } if (a === 'run' && st && st.phase !== 'paused') waitRun = performance.now(); if (a !== 'run') waitRun = 0; send({ type: a }); ui(); }
 
   // ---------- connection
@@ -110,8 +134,8 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
       if (ws !== sock) return;
       if (typeof ev.data !== 'string') { camFrame(ev.data); return; }
       let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
-      if (m.type === 'state') { st = m; if (conn !== 'open') { conn = 'open'; } apply(); ui(); }
-      else if (m.type === 'hello') { settled = true; clearTimeout(timer); hello = m; conn = 'open'; drawRegions(m.bounds); ui(); }
+      if (m.type === 'state') { st = m; if (m.policy) markPolicy(m.policy); if (conn !== 'open') { conn = 'open'; } apply(); ui(); }
+      else if (m.type === 'hello') { settled = true; clearTimeout(timer); hello = m; conn = 'open'; drawPolicies(m.policies, policyId && (m.policies || []).some(p => p.id === policyId) ? policyId : m.policy); if (policyId && policyId !== m.policy) send({ type: 'policy', id: policyId }); drawRegions(m.bounds); ui(); }
       else if (m.type === 'busy') { settled = true; clearTimeout(timer); conn = 'busy'; ui(); }
       else if (m.type === 'bye') { settled = true; conn = 'offline'; ui(); }
       else if (m.type === 'error' && drag) { hold[drag.cube] = null; }
