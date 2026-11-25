@@ -55,12 +55,19 @@ tbody tr{cursor:pointer} tbody tr:hover{background:var(--glass)}
 video{width:100%;display:block;border-radius:10px;background:#000}
 .vlabels{display:grid;grid-template-columns:repeat(3,1fr);font-size:11px;color:var(--ash);margin:5px 0 0;text-align:center}
 .tgrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:12px;margin-top:12px}
-#view3d{width:100%;height:430px;border-radius:10px;overflow:hidden;background:#0a0908;position:relative}
+#view3d{width:100%;height:min(430px,70vh);border-radius:10px;overflow:hidden;background:#0a0908;position:relative}
 #view3d canvas{display:block}
 .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--ash);margin-top:6px}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
 .ctl{display:flex;gap:10px;align-items:center;margin-top:8px;flex-wrap:wrap}
 .ctl input[type=range]{flex:1;min-width:140px;accent-color:var(--accent)}
+/* nothing may be wider than the screen: a WebGL canvas keeps the pixel width it was created with and
+   would otherwise push its card (and the page) to ~2000 px on a phone, leaving an empty black view */
+html,body{max-width:100%;overflow-x:hidden}
+.grid>main,.grid>aside,.card,.kpis,.cards,.tgrid>*{min-width:0}
+.card{overflow:hidden}
+#scene3d,#view3d{max-width:100%}
+#scene3d canvas,#view3d canvas{width:100%!important;height:100%!important;display:block}
 .vbtn{padding:5px 11px;border:1px solid var(--glass-bd);border-radius:8px;font-size:12px;color:var(--ink-soft);background:var(--glass)}.vbtn:hover{background:var(--glass-2);color:var(--ink)}
 .note{color:var(--ash);font-size:12px;line-height:1.5;max-width:75ch}
 .empty{padding:40px 10px;color:var(--ash);text-align:center}
@@ -82,7 +89,7 @@ video{width:100%;display:block;border-radius:10px;background:#000}
         <div class="kpis" id="kpis"></div>
         <h2>The set-up in 3D (robot base frame)</h2>
         <div class="card"><h3>Magic Leap camera, robot, table and cubes</h3><p>Built from the same real-to-sim assets as the dataset: the Franka meshes at the registered base pose, the real table (camera pixels re-projected onto the table plane), cubes with the measured size and colour, the fitted light with cast shadows, and the Magic Leap 2 at its calibrated pose with its true field of view and the real image on its image plane. Every start position of the two cubes in the usable trials is shown. Drag to orbit, scroll to zoom.</p>
-          <div id="scene3d" style="width:100%;height:480px;border-radius:10px;overflow:hidden;background:#0a0908"></div>
+          <div id="scene3d" style="width:100%;height:min(480px,70vh);border-radius:10px;overflow:hidden;background:#0a0908"></div>
           <div class="ctl"><button class="vbtn" id="btnML">View from the Magic Leap</button><button class="vbtn" id="btnOrbit">Orbit view</button></div>
           <div class="legend"><span><i style="background:var(--accent)"></i>Magic Leap 2 camera and view frustum</span><span><i style="background:#efeae3"></i>Franka (home pose)</span><span><i style="background:#3a3632"></i>real table texture</span><span><i style="background:var(--yellow)"></i>yellow cube starts</span><span><i style="background:var(--blue)"></i>blue cube starts</span><span><i style="background:var(--sx)"></i>x <i style="background:var(--sy);margin-left:6px"></i>y <i style="background:var(--sz);margin-left:6px"></i>z of the robot base</span></div>
           <p class="note" id="sceneNote" style="margin-top:6px"></p></div>
@@ -249,7 +256,7 @@ function addSetup(sc,S,imageTex){if(!S)return {};const zt=S.table_z,out={};
   return out;}
 function orbit(el,target,pos){const r=new THREE.WebGLRenderer({antialias:true});r.setPixelRatio(Math.min(devicePixelRatio,2));r.outputEncoding=THREE.sRGBEncoding;r.shadowMap.enabled=true;r.shadowMap.type=THREE.PCFSoftShadowMap;el.appendChild(r.domElement);
   const cam=new THREE.PerspectiveCamera(45,1,0.01,12);cam.up.set(0,0,1);cam.position.set(...pos);const ctl=new THREE.OrbitControls(cam,r.domElement);ctl.target.set(...target);ctl.update();
-  const size=()=>{const b=el.getBoundingClientRect();if(b.width<2)return;r.setSize(b.width,b.height);cam.aspect=b.width/b.height;cam.updateProjectionMatrix();};size();addEventListener('resize',size);
+  const size=()=>{const w=el.clientWidth,h=el.clientHeight;if(w<2||h<2)return;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();};size();addEventListener('resize',size);if(window.ResizeObserver)new ResizeObserver(size).observe(el);
   const v={r,cam,ctl,size,home:{pos,target}};
   v.fromHeadset=(S)=>{const T=S.T_base_cam,o=new THREE.Vector3(T[0][3],T[1][3],T[2][3]),f=new THREE.Vector3(T[0][2],T[1][2],T[2][2]);cam.position.copy(o);cam.up.set(-T[0][1],-T[1][1],-T[2][1]);ctl.target.copy(o.clone().add(f.multiplyScalar(0.6)));cam.fov=2*Math.atan(S.image_size[1]/2/S.fy)*180/Math.PI;cam.updateProjectionMatrix();ctl.update();};
   v.reset=()=>{cam.up.set(0,0,1);cam.position.set(...v.home.pos);ctl.target.set(...v.home.target);cam.fov=45;cam.updateProjectionMatrix();ctl.update();};
