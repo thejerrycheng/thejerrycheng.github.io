@@ -1,0 +1,257 @@
+/* Live scene: place the two cubes, press Run, the learned policy stacks them in a MuJoCo twin on the server.
+   Needs three.js r128 + OrbitControls (loaded before this file) and an element <div id="he-live"></div>.
+   Protocol: real_stack/live_server.py. The 3-D look is the Stack Data Studio's (same meshes, table, light). */
+
+// The one switch: where the simulation server is. Tailscale address now; a public wss:// address later.
+const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
+
+(function () {
+  'use strict';
+  const root = document.getElementById('he-live');
+  if (!root) return;
+  const here = document.currentScript ? new URL('.', document.currentScript.src).href : '';
+  const A = { robots: root.dataset.robots || here + 'robots', scene: root.dataset.scene || here + 'scene', json: root.dataset.json || here + 'scene.json' };
+  const local = /^(localhost|127\.0\.0\.1|\[::1\]|)$/.test(location.hostname);
+  const WS_URL = (local && new URLSearchParams(location.search).get('ws')) || root.dataset.ws || LIVE_WS_URL;   // ?ws= only on a local page (testing)
+  const CONNECT_TIMEOUT_MS = 5000, PLACE_MS = 33, FORCE_MS = 100;
+  const touch = matchMedia('(pointer: coarse)').matches;
+
+  // ---------- DOM
+  root.classList.add('hl');
+  root.innerHTML =
+    '<div class="hl-stage" aria-label="3-D scene: Franka arm, table, a yellow and a blue cube"></div>' +
+    '<div class="hl-bar"><p class="hl-status" role="status" aria-live="polite"><i></i><span></span><button type="button" class="hl-retry" hidden>Try again</button></p>' +
+    '<div class="hl-btns"><button type="button" data-act="run" class="main">Run</button><button type="button" data-act="pause">Pause</button><button type="button" data-act="reset">Reset</button></div></div>' +
+    '<p class="hl-hint"></p>';
+  const stage = root.querySelector('.hl-stage'), statusEl = root.querySelector('.hl-status'), statusTxt = statusEl.querySelector('span'),
+    retry = root.querySelector('.hl-retry'), hint = root.querySelector('.hl-hint'), btn = {};
+  root.querySelectorAll('[data-act]').forEach(b => { btn[b.dataset.act] = b; b.onclick = () => act(b.dataset.act); });
+
+  // ---------- state
+  let S = null, view = null, sc = null, franka = null, mesh = {}, regions = {}, pullLine = null, pullDot = null;
+  let ws = null, conn = 'connecting', hello = null, st = null, visible = false, started = false;
+  let drag = null, pull = null, hold = {};            // hold[cube] = {x, y, until}: optimistic placement shown until the server confirms
+
+  const STATUS = {
+    connecting: ['Connecting', ''], offline: ['The live server is offline right now', 'off'], busy: ['Busy · both simulations are in use', 'off'],
+    idle: ['Idle', ''], running: ['Running', 'on'], paused: ['Paused', ''], stacked: ['Stacked', 'ok'], missed: ['Missed', 'off'], nogl: ['3-D is not available in this browser', 'off'],
+  };
+  function ui() {
+    const phase = conn !== 'open' ? conn : !st ? 'connecting' : st.phase === 'done' ? (st.result || 'missed') : st.phase;
+    const [label, cls] = STATUS[phase] || STATUS.connecting;
+    statusTxt.textContent = label + (phase === 'running' || phase === 'paused' ? ' · ' + st.t.toFixed(1) + ' s' : '');
+    statusEl.dataset.s = cls;
+    retry.hidden = !(conn === 'offline' || conn === 'busy');
+    const live = conn === 'open' && st;
+    btn.run.disabled = !live || st.phase === 'running';
+    btn.pause.disabled = !live || st.phase !== 'running';
+    btn.reset.disabled = !live;
+    btn.run.textContent = live && st.phase === 'paused' ? 'Resume' : live && st.phase === 'done' ? 'Run again' : 'Run';
+    hint.textContent = !live ? (conn === 'offline' || conn === 'busy' ? 'You can still look around the scene.' : ' ')
+      : st.phase === 'idle' ? 'Drag a cube to place it, then press Run. Drag anywhere else to look around.'
+      : st.phase === 'done' ? (st.result === 'stacked' ? 'The policy stacked the cubes on its own. Reset to place them again.' : 'Not this time. The policy does not succeed from every placement. Reset to try another.')
+      : touch ? 'Drag a cube to push it.' : 'Hold ⌘ or Ctrl and drag a cube to push it.';
+  }
+  const send = m => { if (ws && ws.readyState === 1) ws.send(JSON.stringify(m)); };
+  function act(a) { if (a === 'reset') hold = {}; send({ type: a }); }
+
+  // ---------- connection
+  function connect() {
+    if (ws) { ws.onclose = ws.onmessage = ws.onerror = null; try { ws.close(); } catch (e) {} }
+    conn = 'connecting'; st = null; ui();
+    let sock, settled = false;
+    try { sock = new WebSocket(WS_URL); } catch (e) { conn = 'offline'; ui(); return; }
+    ws = sock;
+    const timer = setTimeout(() => { if (!settled && ws === sock) { settled = true; conn = 'offline'; ui(); try { sock.close(); } catch (e) {} } }, CONNECT_TIMEOUT_MS);
+    sock.onmessage = ev => {
+      if (ws !== sock) return;
+      let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
+      if (m.type === 'state') { st = m; if (conn !== 'open') { conn = 'open'; } apply(); ui(); }
+      else if (m.type === 'hello') { settled = true; clearTimeout(timer); hello = m; conn = 'open'; drawRegions(m.bounds); ui(); }
+      else if (m.type === 'busy') { settled = true; clearTimeout(timer); conn = 'busy'; ui(); }
+      else if (m.type === 'bye') { settled = true; conn = 'offline'; ui(); }
+      else if (m.type === 'error' && drag) { hold[drag.cube] = null; }
+    };
+    sock.onclose = () => { if (ws !== sock) return; clearTimeout(timer); settled = true; drag = null; endPull(); if (conn !== 'busy') conn = 'offline'; ui(); if (view) view.ctl.enabled = true; };
+    sock.onerror = () => {};
+  }
+  retry.onclick = connect;
+  addEventListener('pagehide', () => { if (ws) try { ws.close(); } catch (e) {} });
+
+  // ---------- 3-D scene (functions from the Stack Data Studio, unchanged in look)
+  const TEX = new THREE.TextureLoader();
+  function tex(url) { const t = TEX.load(url); t.encoding = THREE.sRGBEncoding; t.anisotropy = 8; return t; }
+  async function pandaAsset() { const meta = await fetch(A.robots + '/panda.json').then(r => r.json()), buf = await fetch(A.robots + '/panda.bin').then(r => r.arrayBuffer()); return { meta, buf }; }
+  function makeFranka(P) {
+    const g0 = new THREE.Group(), nodes = {}, byJoint = {};
+    for (const b of P.meta.bodies) {
+      const fixed = new THREE.Group(); fixed.position.set(...b.pos); fixed.quaternion.set(b.quat[1], b.quat[2], b.quat[3], b.quat[0]); const jg = new THREE.Group(); fixed.add(jg);
+      if (b.mesh) {
+        const g = new THREE.BufferGeometry(), m = b.mesh; g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(P.buf, m.offset, m.nv * 3), 3));
+        g.setAttribute('color', new THREE.BufferAttribute(new Uint8Array(P.buf, m.offset + m.nv * 12, m.nv * 3), 3, true)); g.setIndex(new THREE.BufferAttribute(new Uint32Array(P.buf, m.index_offset, m.nt * 3), 1)); g.computeVertexNormals();
+        const me = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: .42, metalness: .12 })); me.castShadow = true; me.receiveShadow = true; jg.add(me);
+      }
+      nodes[b.id] = { fixed, jg, b }; if (b.joint) byJoint[b.joint.name] = { jg, b }; (b.parent < 0 || !nodes[b.parent] ? g0 : nodes[b.parent].jg).add(fixed);
+    }
+    return { root: g0, byJoint };
+  }
+  const AX = new THREE.Vector3();
+  function poseFranka(fr, q, widthM) {
+    if (!fr) return;
+    for (let i = 0; i < 7; i++) { const n = fr.byJoint['joint' + (i + 1)]; if (n) n.jg.quaternion.setFromAxisAngle(AX.set(...n.b.joint.axis), q[i]); }
+    ['finger_joint1', 'finger_joint2'].forEach(nm => { const n = fr.byJoint[nm]; if (n) n.jg.position.set(...n.b.joint.axis).multiplyScalar(Math.max(0, Math.min(0.04, widthM / 2))); });
+  }
+  function headset() { // stylised Magic Leap 2: visor, two lens pods, temple arms, rear band
+    const g = new THREE.Group(), dark = new THREE.MeshStandardMaterial({ color: 0x2b2b2e, roughness: .5, metalness: .4 }), glass = new THREE.MeshStandardMaterial({ color: 0x0b0d12, roughness: .08, metalness: .9 });
+    const visor = new THREE.Mesh(new THREE.BoxGeometry(0.155, 0.042, 0.022), dark); visor.position.set(0, 0, -0.011); g.add(visor);
+    [-0.036, 0.036].forEach(x => { const l = new THREE.Mesh(new THREE.CylinderGeometry(0.021, 0.021, 0.006, 28), glass); l.rotation.x = Math.PI / 2; l.position.set(x, 0.002, 0.002); g.add(l); });
+    [-0.079, 0.079].forEach(x => { const arm = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.02, 0.15), dark); arm.position.set(x, -0.004, -0.092); g.add(arm); });
+    const band = new THREE.Mesh(new THREE.TorusGeometry(0.079, 0.007, 10, 28, Math.PI), dark); band.rotation.x = Math.PI / 2; band.rotation.z = Math.PI; band.position.set(0, -0.004, -0.167); g.add(band);
+    g.traverse(o => { if (o.isMesh) o.castShadow = true; }); return g;
+  }
+  function camPose(S) { const T = S.T_base_cam, m = new THREE.Matrix4(); m.set(T[0][0], T[0][1], T[0][2], T[0][3], T[1][0], T[1][1], T[1][2], T[1][3], T[2][0], T[2][1], T[2][2], T[2][3], 0, 0, 0, 1); return m; }
+  function addSetup(sc, S) {
+    const zt = S.table_z, out = {};
+    sc.add(new THREE.HemisphereLight(0xffffff, 0x3a3632, 0.55));
+    const L = new THREE.DirectionalLight(0xffffff, 0.95), l = S.light_base || [0, -0.5, -0.86], ctr = new THREE.Vector3(0.38, -0.05, zt);
+    L.position.set(ctr.x - l[0] * 2.2, ctr.y - l[1] * 2.2, ctr.z - l[2] * 2.2); L.target.position.copy(ctr); L.castShadow = true; L.shadow.mapSize.set(2048, 2048);
+    Object.assign(L.shadow.camera, { left: -0.9, right: 0.9, top: 0.9, bottom: -0.9, near: 0.2, far: 5 }); L.shadow.bias = -0.0006; L.shadow.radius = 4; sc.add(L, L.target);
+    const tt = S.table_texture; if (tt) {           // the REAL table: clean-background pixels re-projected onto the table plane
+      const w = tt.x[1] - tt.x[0], h = tt.y[1] - tt.y[0];
+      const top = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshStandardMaterial({ map: tex(A.scene + '/table.jpg'), roughness: .55, metalness: .25 })); top.position.set((tt.x[0] + tt.x[1]) / 2, (tt.y[0] + tt.y[1]) / 2, zt); top.receiveShadow = true; sc.add(top);
+      const slab = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.05), new THREE.MeshStandardMaterial({ color: 0x161412, roughness: .8 })); slab.position.set(top.position.x, top.position.y, zt - 0.0255); sc.add(slab);
+    }
+    // the camera the policy sees through: headset model, frustum, and the real image on its image plane
+    const T = S.T_base_cam, W = S.image_size[0], H = S.image_size[1], o = new THREE.Vector3(T[0][3], T[1][3], T[2][3]);
+    const pt = (u, v, d) => { const x = (u - S.cx) / S.fx * d, y = (v - S.cy) / S.fy * d; return new THREE.Vector3(T[0][0] * x + T[0][1] * y + T[0][2] * d + T[0][3], T[1][0] * x + T[1][1] * y + T[1][2] * d + T[1][3], T[2][0] * x + T[2][1] * y + T[2][2] * d + T[2][3]); };
+    const c = [pt(0, 0, .22), pt(W, 0, .22), pt(W, H, .22), pt(0, H, .22)], g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array([].concat(...c.map(p => [p.x, p.y, p.z]))), 3));
+    g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array([0, 1, 1, 1, 1, 0, 0, 0]), 2)); g.setIndex([0, 1, 2, 0, 2, 3]); sc.add(new THREE.Mesh(g, new THREE.MeshBasicMaterial({ map: tex(A.scene + '/bg.jpg'), side: THREE.DoubleSide, transparent: true, opacity: .96 })));
+    const pts = []; c.forEach((p, i) => { pts.push(o, p, p, c[(i + 1) % 4]); }); sc.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xC25B2A })));
+    const hs = headset(); hs.applyMatrix4(camPose(S).multiply(new THREE.Matrix4().makeRotationZ(Math.PI))); sc.add(hs);
+    out.cubeMat = (rgb, fallback) => new THREE.MeshStandardMaterial({ color: rgb ? new THREE.Color(rgb[0], rgb[1], rgb[2]).convertSRGBToLinear() : fallback, roughness: .7 });
+    return out;
+  }
+  function cube(sc, e, mat) { const m = new THREE.Mesh(new THREE.BoxGeometry(e, e, e), mat); m.castShadow = true; m.receiveShadow = true; sc.add(m); return m; }
+
+  function orbit(el, target, pos) {
+    const r = new THREE.WebGLRenderer({ antialias: true }); r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.outputEncoding = THREE.sRGBEncoding; r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap; el.appendChild(r.domElement);
+    const cam = new THREE.PerspectiveCamera(38, 1, 0.01, 12); cam.up.set(0, 0, 1); cam.position.set(...pos);
+    pointer(r.domElement, cam);                      // registered BEFORE OrbitControls so a cube grab can switch the orbit off first
+    const ctl = new THREE.OrbitControls(cam, r.domElement); ctl.target.set(...target); ctl.enablePan = false; ctl.minDistance = 0.35; ctl.maxDistance = 2.6; ctl.maxPolarAngle = Math.PI * 0.495; ctl.update();
+    let fit = 0;                                     // a portrait stage needs the camera further back to keep the arm in view (until the visitor moves it)
+    const size = () => { const b = el.getBoundingClientRect(); if (b.width < 2) return; r.setSize(b.width, b.height); cam.aspect = b.width / b.height; cam.updateProjectionMatrix();
+      const k = cam.aspect < 1 ? 1.45 : 1; if (k !== fit && !moved) { fit = k; cam.position.set(...pos).sub(ctl.target).multiplyScalar(k).add(ctl.target); ctl.update(); } };
+    let moved = false; ctl.addEventListener('start', () => { moved = true; });
+    size(); new ResizeObserver(size).observe(el);
+    return { r, cam, ctl };
+  }
+
+  // ---------- pointer: place (idle) and push (running), mouse and touch
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), plane = new THREE.Plane(), hit = new THREE.Vector3(), tmp = new THREE.Vector3();
+  function cast(ev, cam, el) { const b = el.getBoundingClientRect(); ndc.set((ev.clientX - b.left) / b.width * 2 - 1, -(ev.clientY - b.top) / b.height * 2 + 1); ray.setFromCamera(ndc, cam); }
+  function pick() { const h = ray.intersectObjects([mesh.yellow, mesh.blue].filter(Boolean)); return h.length ? h[0] : null; }
+  function allowed(c, x, y) {                        // clamp to the region, keep clear of the other cube; null = no valid spot
+    const b = hello.bounds[c], o = mesh[c === 'yellow' ? 'blue' : 'yellow'].position, dmin = hello.edge * Math.SQRT2 + 0.006;
+    const cl = () => { x = Math.min(Math.max(x, b.x[0]), b.x[1]); y = Math.min(Math.max(y, b.y[0]), b.y[1]); };
+    cl();
+    let d = Math.hypot(x - o.x, y - o.y);
+    if (d < dmin) { const ux = d > 1e-6 ? (x - o.x) / d : 0, uy = d > 1e-6 ? (y - o.y) / d : -1; x = o.x + ux * dmin; y = o.y + uy * dmin; cl(); d = Math.hypot(x - o.x, y - o.y); if (d < dmin - 1e-6) return null; }
+    return [x, y];
+  }
+  function pointer(el, cam) {
+    el.addEventListener('pointerdown', ev => {
+      if (conn !== 'open' || !st || !mesh.yellow || (ev.pointerType === 'mouse' && ev.button !== 0)) return;
+      cast(ev, cam, el); const h = pick(); if (!h) return;
+      const c = h.object === mesh.yellow ? 'yellow' : 'blue', mod = ev.ctrlKey || ev.metaKey || ev.pointerType !== 'mouse';
+      if (st.phase === 'idle' && !(ev.ctrlKey || ev.metaKey)) {
+        drag = { cube: c, id: ev.pointerId, dx: h.point.x - h.object.position.x, dy: h.point.y - h.object.position.y, z: h.point.z, last: 0 };
+      } else if ((st.phase === 'running' || st.phase === 'paused') && mod) {
+        pull = { cube: c, id: ev.pointerId, local: h.object.worldToLocal(h.point.clone()), point: h.point.clone(), target: h.point.clone(), timer: 0 };
+        send({ type: 'force', cube: c, target: pull.target.toArray(), point: pull.point.toArray() });
+        pull.timer = setInterval(() => pull && send({ type: 'force', cube: pull.cube, target: pull.target.toArray() }), FORCE_MS);   // the server drops a force that is not refreshed
+      } else return;
+      view.ctl.enabled = false; el.setPointerCapture(ev.pointerId); ev.preventDefault(); el.style.cursor = 'grabbing';
+    });
+    el.addEventListener('pointermove', ev => {
+      if (drag && ev.pointerId === drag.id) {
+        cast(ev, cam, el); plane.set(tmp.set(0, 0, 1), -drag.z);
+        if (!ray.ray.intersectPlane(plane, hit)) return;
+        const p = allowed(drag.cube, hit.x - drag.dx, hit.y - drag.dy); if (!p) return;
+        hold[drag.cube] = { x: p[0], y: p[1], until: Infinity }; mesh[drag.cube].position.x = p[0]; mesh[drag.cube].position.y = p[1];
+        const now = performance.now(); if (now - drag.last > PLACE_MS) { drag.last = now; send({ type: 'place', cube: drag.cube, x: p[0], y: p[1] }); }
+      } else if (pull && ev.pointerId === pull.id) {
+        cast(ev, cam, el); cam.getWorldDirection(tmp); plane.setFromNormalAndCoplanarPoint(tmp, pull.point);   // drag in the plane facing the viewer
+        if (ray.ray.intersectPlane(plane, hit)) { pull.target.copy(hit); pull.target.z = Math.max(pull.target.z, S.table_z + 0.005); }
+      } else if (!drag && !pull && ev.pointerType === 'mouse' && mesh.yellow && conn === 'open' && st) {
+        cast(ev, cam, el); const can = st.phase === 'idle' || ((st.phase === 'running' || st.phase === 'paused') && (ev.ctrlKey || ev.metaKey));
+        el.style.cursor = can && pick() ? 'grab' : '';
+      }
+    });
+    const up = ev => {
+      if (drag && ev.pointerId === drag.id) {
+        const h = hold[drag.cube]; if (h) { send({ type: 'place', cube: drag.cube, x: h.x, y: h.y }); h.until = performance.now() + 400; }
+        drag = null;
+      } else if (pull && ev.pointerId === pull.id) endPull(); else return;
+      view.ctl.enabled = true; el.style.cursor = '';
+    };
+    el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+    el.addEventListener('contextmenu', ev => ev.preventDefault());
+  }
+  function endPull() { if (!pull) return; clearInterval(pull.timer); pull = null; send({ type: 'release' }); if (pullLine) pullLine.visible = pullDot.visible = false; }
+
+  // ---------- drawing
+  function drawRegions(bounds) {                     // where each cube may go: the area the training demonstrations cover
+    if (!sc) return;
+    for (const c of ['yellow', 'blue']) {
+      if (regions[c]) sc.remove(regions[c]);
+      const b = bounds[c], z = S.table_z + 0.0012, e = hello ? hello.edge / 2 : S.cube_edge / 2;
+      const pts = [[b.x[0] - e, b.y[0] - e], [b.x[1] + e, b.y[0] - e], [b.x[1] + e, b.y[1] + e], [b.x[0] - e, b.y[1] + e], [b.x[0] - e, b.y[0] - e]].map(p => new THREE.Vector3(p[0], p[1], z));
+      const col = new THREE.Color(...S[c + '_rgb']).convertSRGBToLinear();
+      regions[c] = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineDashedMaterial({ color: col, dashSize: 0.012, gapSize: 0.01, transparent: true, opacity: 0.75 }));
+      regions[c].computeLineDistances(); regions[c].visible = false; sc.add(regions[c]);
+    }
+  }
+  function apply() {
+    if (!sc || !st) return;
+    const now = performance.now();
+    for (const c of ['yellow', 'blue']) {
+      const m = mesh[c], s = st[c], h = hold[c];
+      m.position.set(...s.pos); m.quaternion.set(...s.quat);
+      if (h && st.phase === 'idle') { if (now < h.until) { m.position.x = h.x; m.position.y = h.y; } else hold[c] = null; }
+    }
+    poseFranka(franka, st.q, st.width);
+  }
+  function frame() {
+    requestAnimationFrame(frame);
+    if (!visible || !view) return;
+    for (const c of ['yellow', 'blue']) if (regions[c]) regions[c].visible = !!(drag && drag.cube === c);
+    if (pull && mesh[pull.cube]) {
+      const a = mesh[pull.cube].localToWorld(tmp.copy(pull.local));
+      pullLine.geometry.setFromPoints([a.clone(), pull.target]); pullLine.visible = pullDot.visible = true; pullDot.position.copy(pull.target);
+    }
+    view.r.render(sc, view.cam);
+  }
+
+  async function build() {
+    try { S = await fetch(A.json).then(r => r.json()); } catch (e) { conn = 'offline'; ui(); return; }
+    try { view = orbit(stage, [0.26, -0.14, 0.16], [1.12, -1.22, 0.86]); } catch (e) { conn = 'nogl'; ui(); return; }
+    sc = new THREE.Scene(); sc.background = new THREE.Color(0x0a0908);
+    const U = addSetup(sc, S), e = S.cube_edge, z = S.table_z + e / 2, P = S.live.place;
+    mesh.yellow = cube(sc, e, U.cubeMat(S.yellow_rgb, 0xe7c24b)); mesh.blue = cube(sc, e, U.cubeMat(S.blue_rgb, 0x2a55c0));
+    for (const c of ['yellow', 'blue']) { mesh[c].position.set(P[c].x, P[c].y, z); mesh[c].rotation.z = P[c].yaw; }
+    const accent = new THREE.Color(getComputedStyle(root).getPropertyValue('--hl-accent').trim() || '#FF9500');
+    pullLine = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: accent, depthTest: false })); pullLine.renderOrder = 9; pullLine.visible = false; pullLine.frustumCulled = false; sc.add(pullLine);
+    pullDot = new THREE.Mesh(new THREE.SphereGeometry(0.004, 16, 12), new THREE.MeshBasicMaterial({ color: accent, depthTest: false })); pullDot.renderOrder = 9; pullDot.visible = false; sc.add(pullDot);
+    if (hello) drawRegions(hello.bounds);
+    frame();
+    try { franka = makeFranka(await pandaAsset()); sc.add(franka.root); poseFranka(franka, S.live.q_start, 0.08); apply(); } catch (err) { console.warn('Franka meshes not loaded', err); }
+  }
+
+  // start (scene + connection) only when the section comes into view: a visitor who never scrolls here takes no simulation
+  ui();
+  new IntersectionObserver(es => {
+    visible = es[0].isIntersecting;
+    if (visible && !started) { started = true; build(); connect(); }
+  }, { rootMargin: '200px' }).observe(stage);
+  window.heLive = { get state() { return st; }, get conn() { return conn; }, get meshes() { return mesh; }, get view() { return view; } };   // for tests
+})();

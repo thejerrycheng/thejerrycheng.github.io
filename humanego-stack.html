@@ -20,6 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/gotham.css?v=20261123m">
+  <link rel="stylesheet" href="assets/humanego-stack/live/live.css?v=1">
   <script>document.documentElement.classList.add('js');</script>
   <script>(function(){try{var t=localStorage.getItem("theme-v2");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
   <style>
@@ -201,6 +202,15 @@
   </div>
 </section>
 
+<section class="he-sec" id="live">
+  <div class="he-wrap">
+    <h2>Run the policy yourself.</h2>
+    <p class="he-sub">Put the two cubes where you like and press Run. The learned policy does the rest, live, in the simulator.</p>
+    <div id="he-live" data-robots="assets/humanego-stack/studio/robots" data-scene="assets/humanego-stack/studio/scene" data-json="assets/humanego-stack/live/scene.json" data-ws="wss://jerrys-5080-desktop.taile5c63a.ts.net/stack/ws"></div>
+    <p class="he-note">The simulation runs on one desktop computer, for two visitors at a time. The policy only knows the part of the table the demonstrations covered, so the cubes stay inside it, and it does not succeed from every placement.</p>
+  </div>
+</section>
+
 <section class="he-sec" id="studio">
   <div class="he-wrap">
     <h2>Every trial, open to inspect.</h2>
@@ -230,7 +240,7 @@
       <div class="he-card open">
         <h3>Not yet</h3>
         <ul>
-          <li><b>The policy does not complete the stack.</b> In closed loop in the simulator it is 0 of 6 from held-out starts so far. It reaches, and sometimes lifts and carries the cube, but misplaces it.</li>
+          <li><b>The policy does not complete the stack.</b> In closed loop in the simulator the 6,000-step policy stacks 4 of 6 held-out starts when each plan is the mean of 8 samples, and 0 of 6 with a single sample. In the live scene above it stacked 5 of 12 runs. Expect it to miss often.</li>
           <li><b>Cause under investigation.</b> Single policy samples scatter by about 15&nbsp;mm even on training data. Longer training and sample averaging are being tested.</li>
           <li><b>No real-robot rollout has been run.</b></li>
           <li><b>The robot-to-camera transform is not a hand-eye calibration.</b> It is a depth-based registration with about 1° of uncertainty.</li>
@@ -269,6 +279,9 @@
   if (v && window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) { v.removeAttribute("autoplay"); v.pause(); v.controls = true; }
 })();
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" defer></script>
+<script src="assets/humanego-stack/live/live.js?v=1" defer></script>
 <script src="assets/js/site.js?v=20261123m"></script>
 </body>
 </html>

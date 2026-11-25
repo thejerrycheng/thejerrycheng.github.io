@@ -1,0 +1,30 @@
+/* Live scene. Colours come from the site tokens (gotham.css) when present, so both themes work; the fallbacks
+   are the site's day values, for the standalone page. One accent (--hl-accent), no boxes around things. */
+.hl { --hl-ink: var(--ink, #1D1D1F); --hl-ash: var(--ash, #6B665E); --hl-line: var(--line, #DCD3C3); --hl-panel: var(--panel, #F4EEE2); --hl-panel-2: var(--panel-2, #EEE7D9);
+  --hl-bone: var(--bone, #FBF8F3); --hl-accent: var(--hi, #FF9500); margin-top: clamp(30px, 4.5vw, 52px); min-width: 0; }
+.hl-stage { position: relative; width: 100%; aspect-ratio: 16 / 9; max-height: 78vh; border-radius: 22px; overflow: hidden; background: #0a0908; touch-action: none; }
+.hl-stage canvas { display: block; width: 100% !important; height: 100% !important; outline: none; }
+.hl-bar { margin-top: 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; }
+.hl-status { margin: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 0 10px; min-height: 44px; font-size: 16px; font-weight: 500; letter-spacing: -0.01em; color: var(--hl-ink); font-variant-numeric: tabular-nums; }
+.hl-status i { width: 8px; height: 8px; border-radius: 50%; background: var(--hl-ash); opacity: .55; flex: none; transition: background .2s, opacity .2s; }
+.hl-status[data-s="on"] i, .hl-status[data-s="ok"] i { background: var(--hl-accent); opacity: 1; }
+.hl-status[data-s="on"] i { animation: hl-pulse 1.4s ease-in-out infinite; }
+.hl-status[data-s="off"] { color: var(--hl-ash); font-weight: 400; }
+@keyframes hl-pulse { 50% { opacity: .35; } }
+.hl-retry { font: inherit; font-weight: 500; color: var(--link, #C45A00); background: none; border: 0; padding: 10px 0; cursor: pointer; }
+.hl-retry:hover { text-decoration: underline; }
+.hl-btns { display: flex; gap: 8px; }
+.hl-btns button { font: inherit; font-size: 15px; font-weight: 500; height: 44px; min-width: 84px; padding: 0 20px; border-radius: 999px; border: 0; background: var(--hl-panel); color: var(--hl-ink); cursor: pointer; transition: background .2s, opacity .2s; }
+.hl-btns button:hover:not(:disabled) { background: var(--hl-panel-2); }
+.hl-btns button.main { background: var(--hl-ink); color: var(--hl-bone); min-width: 116px; }
+.hl-btns button.main:hover:not(:disabled) { background: var(--ink-soft, #424245); }
+.hl-btns button:disabled { opacity: .38; cursor: default; }
+.hl-btns button:focus-visible, .hl-retry:focus-visible { outline: 2px solid var(--hl-accent); outline-offset: 3px; }
+.hl-hint { margin: 6px 0 0; min-height: 1.5em; max-width: 72ch; font-size: 13.5px; line-height: 1.5; color: var(--hl-ash); }
+@media (max-width: 760px) {
+  .hl-stage { aspect-ratio: 4 / 5; border-radius: 16px; max-height: 70svh; }
+  .hl-bar { margin-top: 14px; }
+  .hl-btns { width: 100%; }
+  .hl-btns button { flex: 1; min-width: 0; padding: 0 8px; }
+}
+@media (prefers-reduced-motion: reduce) { .hl-status[data-s="on"] i { animation: none; } }
