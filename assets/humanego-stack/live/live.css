@@ -28,3 +28,13 @@
   .hl-btns button { flex: 1; min-width: 0; padding: 0 8px; }
 }
 @media (prefers-reduced-motion: reduce) { .hl-status[data-s="on"] i { animation: none; } }
+
+/* loading / restoring veil over the stage, and the small note while the first plan is computed */
+.hl-veil { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: #0a0908; color: rgba(255,255,255,.72); font-size: 14px; letter-spacing: -0.005em; pointer-events: none; }
+.hl-veil b { width: 96px; height: 2px; border-radius: 2px; background: rgba(255,255,255,.14); overflow: hidden; position: relative; }
+.hl-veil b::after { content: ""; position: absolute; inset: 0; width: 40%; background: var(--hl-accent); border-radius: 2px; animation: hl-slide 1.1s ease-in-out infinite; }
+.hl-veil[data-s="off"] b { display: none; }
+.hl-note { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 2; padding: 8px 14px; border-radius: 999px; background: rgba(20,18,16,.72); color: rgba(255,255,255,.86); font-size: 13px; white-space: nowrap; pointer-events: none; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+@keyframes hl-slide { 0% { transform: translateX(-110%); } 100% { transform: translateX(260%); } }
+@media (prefers-reduced-motion: reduce) { .hl-veil b::after { animation: none; width: 100%; opacity: .5; } }
+.hl-veil span { max-width: 34ch; text-align: center; line-height: 1.5; padding: 0 20px; }

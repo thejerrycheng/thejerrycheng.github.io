@@ -254,7 +254,8 @@ function addSetup(sc,S,imageTex){if(!S)return {};const zt=S.table_z,out={};
   const hs=headset();hs.applyMatrix4(camPose(S).multiply(new THREE.Matrix4().makeRotationZ(Math.PI)));sc.add(hs);   // model: lenses towards +z, +y up; OpenCV camera: +z forward, +y DOWN -> turn about z only (a turn about x pointed the lenses backwards)
   out.cubeMat=(rgb,fallback)=>new THREE.MeshStandardMaterial({color:rgb?new THREE.Color(rgb[0],rgb[1],rgb[2]).convertSRGBToLinear():fallback,roughness:.7});
   return out;}
-function orbit(el,target,pos){const r=new THREE.WebGLRenderer({antialias:true});r.setPixelRatio(Math.min(devicePixelRatio,2));r.outputEncoding=THREE.sRGBEncoding;r.shadowMap.enabled=true;r.shadowMap.type=THREE.PCFSoftShadowMap;el.appendChild(r.domElement);
+function orbit(el,target,pos){let r;try{r=new THREE.WebGLRenderer({antialias:true});if(r.getContext().isContextLost())throw new Error('lost');}catch(e){el.innerHTML='<div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 24px;color:#b9b2a6;font-size:13px;line-height:1.5">3-D graphics could not start in this browser. Close other tabs that use 3-D, or restart the browser, then reload this page.</div>';throw e;}
+  r.domElement.addEventListener('webglcontextlost',ev=>ev.preventDefault());r.setPixelRatio(Math.min(devicePixelRatio,2));r.outputEncoding=THREE.sRGBEncoding;r.shadowMap.enabled=true;r.shadowMap.type=THREE.PCFSoftShadowMap;el.appendChild(r.domElement);
   const cam=new THREE.PerspectiveCamera(45,1,0.01,12);cam.up.set(0,0,1);cam.position.set(...pos);const ctl=new THREE.OrbitControls(cam,r.domElement);ctl.target.set(...target);ctl.update();
   const size=()=>{const w=el.clientWidth,h=el.clientHeight;if(w<2||h<2)return;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();};size();addEventListener('resize',size);if(window.ResizeObserver)new ResizeObserver(size).observe(el);
   const v={r,cam,ctl,size,home:{pos,target}};

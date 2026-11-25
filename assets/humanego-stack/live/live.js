@@ -19,17 +19,19 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   // ---------- DOM
   root.classList.add('hl');
   root.innerHTML =
-    '<div class="hl-stage" aria-label="3-D scene: Franka arm, table, a yellow and a blue cube"></div>' +
+    '<div class="hl-stage" aria-label="3-D scene: Franka arm, table, a yellow and a blue cube"><div class="hl-veil"><span></span><b></b></div><div class="hl-note" hidden></div></div>' +
     '<div class="hl-bar"><p class="hl-status" role="status" aria-live="polite"><i></i><span></span><button type="button" class="hl-retry" hidden>Try again</button></p>' +
     '<div class="hl-btns"><button type="button" data-act="run" class="main">Run</button><button type="button" data-act="pause">Pause</button><button type="button" data-act="reset">Reset</button></div></div>' +
     '<p class="hl-hint"></p>';
   const stage = root.querySelector('.hl-stage'), statusEl = root.querySelector('.hl-status'), statusTxt = statusEl.querySelector('span'),
-    retry = root.querySelector('.hl-retry'), hint = root.querySelector('.hl-hint'), btn = {};
+    retry = root.querySelector('.hl-retry'), hint = root.querySelector('.hl-hint'), btn = {},
+    veil = root.querySelector('.hl-veil'), veilTxt = veil.querySelector('span'), note = root.querySelector('.hl-note');
   root.querySelectorAll('[data-act]').forEach(b => { btn[b.dataset.act] = b; b.onclick = () => act(b.dataset.act); });
 
   // ---------- state
   let S = null, view = null, sc = null, franka = null, mesh = {}, regions = {}, pullLine = null, pullDot = null;
   let ws = null, conn = 'connecting', hello = null, st = null, visible = false, started = false;
+  let ready = false, glLost = false, glBroken = false, waitRun = 0;     // scene assets loaded; WebGL context lost; render failed; time Run was pressed
   let drag = null, pull = null, hold = {};            // hold[cube] = {x, y, until}: optimistic placement shown until the server confirms
 
   const STATUS = {
@@ -37,12 +39,19 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     idle: ['Idle', ''], running: ['Running', 'on'], paused: ['Paused', ''], stacked: ['Stacked', 'ok'], missed: ['Missed', 'off'], nogl: ['3-D is not available in this browser', 'off'],
   };
   function ui() {
-    const phase = conn !== 'open' ? conn : !st ? 'connecting' : st.phase === 'done' ? (st.result || 'missed') : st.phase;
+    // the stage never sits there black and silent: a veil while the scene loads or the 3-D context is being
+    // restored, and a small note between pressing Run and the arm's first motion (the first plan takes ~0.3 s,
+    // longer on a slow connection)
+    const v = glBroken ? '3-D graphics could not start in this browser. Close other tabs that use 3-D, or restart the browser, then reload this page.' : glLost ? 'Restoring the 3-D view' : !ready ? 'Loading the scene' : conn === 'connecting' ? 'Connecting to the simulation' : '';
+    veil.hidden = !v; veilTxt.textContent = v; veil.dataset.s = glBroken ? 'off' : '';
+    if (waitRun && (conn !== 'open' || !st || st.phase === 'done' || (st.phase === 'running' && st.t > 0.4) || performance.now() - waitRun > 8000)) waitRun = 0;
+    note.hidden = !waitRun; note.textContent = 'The policy is planning its first move';
+    const phase = glBroken ? 'nogl' : conn !== 'open' ? conn : !st ? 'connecting' : st.phase === 'done' ? (st.result || 'missed') : st.phase;
     const [label, cls] = STATUS[phase] || STATUS.connecting;
     statusTxt.textContent = label + (phase === 'running' || phase === 'paused' ? ' · ' + st.t.toFixed(1) + ' s' : '');
     statusEl.dataset.s = cls;
     retry.hidden = !(conn === 'offline' || conn === 'busy');
-    const live = conn === 'open' && st;
+    const live = conn === 'open' && st && !glBroken;      // no blind runs: without the 3-D view the controls stay off
     btn.run.disabled = !live || st.phase === 'running';
     btn.pause.disabled = !live || st.phase !== 'running';
     btn.reset.disabled = !live;
@@ -53,7 +62,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
       : touch ? 'Drag a cube to push it.' : 'Hold ⌘ or Ctrl and drag a cube to push it.';
   }
   const send = m => { if (ws && ws.readyState === 1) ws.send(JSON.stringify(m)); };
-  function act(a) { if (a === 'reset') hold = {}; send({ type: a }); }
+  function act(a) { if (a === 'reset') hold = {}; if (a === 'run' && st && st.phase !== 'paused') waitRun = performance.now(); if (a !== 'run') waitRun = 0; send({ type: a }); ui(); }
 
   // ---------- connection
   function connect() {
@@ -79,8 +88,9 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   addEventListener('pagehide', () => { if (ws) try { ws.close(); } catch (e) {} });
 
   // ---------- 3-D scene (functions from the Stack Data Studio, unchanged in look)
+  let dirty = 3;                                    // frames still to draw; the scene is redrawn only when something changed
   const TEX = new THREE.TextureLoader();
-  function tex(url) { const t = TEX.load(url); t.encoding = THREE.sRGBEncoding; t.anisotropy = 8; return t; }
+  function tex(url) { const t = TEX.load(url, () => { dirty = 3; }); t.encoding = THREE.sRGBEncoding; t.anisotropy = 8; return t; }
   async function pandaAsset() { const meta = await fetch(A.robots + '/panda.json').then(r => r.json()), buf = await fetch(A.robots + '/panda.bin').then(r => r.arrayBuffer()); return { meta, buf }; }
   function makeFranka(P) {
     const g0 = new THREE.Group(), nodes = {}, byJoint = {};
@@ -114,7 +124,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     const zt = S.table_z, out = {};
     sc.add(new THREE.HemisphereLight(0xffffff, 0x3a3632, 0.55));
     const L = new THREE.DirectionalLight(0xffffff, 0.95), l = S.light_base || [0, -0.5, -0.86], ctr = new THREE.Vector3(0.38, -0.05, zt);
-    L.position.set(ctr.x - l[0] * 2.2, ctr.y - l[1] * 2.2, ctr.z - l[2] * 2.2); L.target.position.copy(ctr); L.castShadow = true; L.shadow.mapSize.set(2048, 2048);
+    L.position.set(ctr.x - l[0] * 2.2, ctr.y - l[1] * 2.2, ctr.z - l[2] * 2.2); L.target.position.copy(ctr); L.castShadow = true; L.shadow.mapSize.set(1024, 1024);
     Object.assign(L.shadow.camera, { left: -0.9, right: 0.9, top: 0.9, bottom: -0.9, near: 0.2, far: 5 }); L.shadow.bias = -0.0006; L.shadow.radius = 4; sc.add(L, L.target);
     const tt = S.table_texture; if (tt) {           // the REAL table: clean-background pixels re-projected onto the table plane
       const w = tt.x[1] - tt.x[0], h = tt.y[1] - tt.y[0];
@@ -134,12 +144,16 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   function cube(sc, e, mat) { const m = new THREE.Mesh(new THREE.BoxGeometry(e, e, e), mat); m.castShadow = true; m.receiveShadow = true; sc.add(m); return m; }
 
   function orbit(el, target, pos) {
-    const r = new THREE.WebGLRenderer({ antialias: true }); r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.outputEncoding = THREE.sRGBEncoding; r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap; el.appendChild(r.domElement);
+    const r = new THREE.WebGLRenderer({ antialias: true }); r.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+    // a lost WebGL context (GPU busy, tab in the background, driver reset) would leave a black stage for good:
+    // keep it restorable, say so, and draw again when it is back
+    r.domElement.addEventListener('webglcontextlost', ev => { ev.preventDefault(); glLost = true; ui(); });
+    r.domElement.addEventListener('webglcontextrestored', () => { glLost = false; dirty = 3; ui(); }); r.outputEncoding = THREE.sRGBEncoding; r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap; el.appendChild(r.domElement);
     const cam = new THREE.PerspectiveCamera(38, 1, 0.01, 12); cam.up.set(0, 0, 1); cam.position.set(...pos);
     pointer(r.domElement, cam);                      // registered BEFORE OrbitControls so a cube grab can switch the orbit off first
-    const ctl = new THREE.OrbitControls(cam, r.domElement); ctl.target.set(...target); ctl.enablePan = false; ctl.minDistance = 0.35; ctl.maxDistance = 2.6; ctl.maxPolarAngle = Math.PI * 0.495; ctl.update();
+    const ctl = new THREE.OrbitControls(cam, r.domElement); ctl.target.set(...target); ctl.enablePan = false; ctl.minDistance = 0.35; ctl.maxDistance = 2.6; ctl.maxPolarAngle = Math.PI * 0.495; ctl.update(); ctl.addEventListener('change', () => { dirty = 2; });
     let fit = 0;                                     // a portrait stage needs the camera further back to keep the arm in view (until the visitor moves it)
-    const size = () => { const b = el.getBoundingClientRect(); if (b.width < 2) return; r.setSize(b.width, b.height); cam.aspect = b.width / b.height; cam.updateProjectionMatrix();
+    const size = () => { const b = el.getBoundingClientRect(); if (b.width < 2 || b.height < 2) return; dirty = 3; r.setSize(b.width, b.height, false); cam.aspect = b.width / b.height; cam.updateProjectionMatrix();
       const k = cam.aspect < 1 ? 1.45 : 1; if (k !== fit && !moved) { fit = k; cam.position.set(...pos).sub(ctl.target).multiplyScalar(k).add(ctl.target); ctl.update(); } };
     let moved = false; ctl.addEventListener('start', () => { moved = true; });
     size(); new ResizeObserver(size).observe(el);
@@ -197,7 +211,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
     el.addEventListener('contextmenu', ev => ev.preventDefault());
   }
-  function endPull() { if (!pull) return; clearInterval(pull.timer); pull = null; send({ type: 'release' }); if (pullLine) pullLine.visible = pullDot.visible = false; }
+  function endPull() { if (!pull) return; clearInterval(pull.timer); pull = null; send({ type: 'release' }); if (pullLine) pullLine.visible = pullDot.visible = false; dirty = 2; }
 
   // ---------- drawing
   function drawRegions(bounds) {                     // where each cube may go: the area the training demonstrations cover
@@ -213,6 +227,9 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   }
   function apply() {
     if (!sc || !st) return;
+    const fin = a => Array.isArray(a) && a.every(Number.isFinite);
+    if (!fin(st.q) || !fin(st.yellow.pos) || !fin(st.yellow.quat) || !fin(st.blue.pos) || !fin(st.blue.quat)) return;   // never draw a broken state
+    dirty = 2;
     const now = performance.now();
     for (const c of ['yellow', 'blue']) {
       const m = mesh[c], s = st[c], h = hold[c];
@@ -223,18 +240,22 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   }
   function frame() {
     requestAnimationFrame(frame);
-    if (!visible || !view) return;
+    if (!visible || !view || glLost || glBroken) return;
+    if (drag || pull) dirty = 2;
+    if (dirty <= 0) return;
+    dirty--;
     for (const c of ['yellow', 'blue']) if (regions[c]) regions[c].visible = !!(drag && drag.cube === c);
     if (pull && mesh[pull.cube]) {
       const a = mesh[pull.cube].localToWorld(tmp.copy(pull.local));
       pullLine.geometry.setFromPoints([a.clone(), pull.target]); pullLine.visible = pullDot.visible = true; pullDot.position.copy(pull.target);
     }
-    view.r.render(sc, view.cam);
+    try { view.r.render(sc, view.cam); } catch (e) { glBroken = true; console.error('live scene render failed', e); ui(); }
   }
 
   async function build() {
     try { S = await fetch(A.json).then(r => r.json()); } catch (e) { conn = 'offline'; ui(); return; }
-    try { view = orbit(stage, [0.26, -0.14, 0.16], [1.12, -1.22, 0.86]); } catch (e) { conn = 'nogl'; ui(); return; }
+    try { view = orbit(stage, [0.26, -0.14, 0.16], [1.12, -1.22, 0.86]); if (view.r.getContext().isContextLost()) throw new Error('WebGL context lost at creation'); }
+    catch (e) { view = null; glBroken = true; ready = true; stage.querySelectorAll('canvas').forEach(c => c.remove()); ui(); return; }   // e.g. the browser's GPU process is out of contexts
     sc = new THREE.Scene(); sc.background = new THREE.Color(0x0a0908);
     const U = addSetup(sc, S), e = S.cube_edge, z = S.table_z + e / 2, P = S.live.place;
     mesh.yellow = cube(sc, e, U.cubeMat(S.yellow_rgb, 0xe7c24b)); mesh.blue = cube(sc, e, U.cubeMat(S.blue_rgb, 0x2a55c0));
@@ -245,13 +266,14 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     if (hello) drawRegions(hello.bounds);
     frame();
     try { franka = makeFranka(await pandaAsset()); sc.add(franka.root); poseFranka(franka, S.live.q_start, 0.08); apply(); } catch (err) { console.warn('Franka meshes not loaded', err); }
+    ready = true; dirty = 3; ui();
   }
 
   // start (scene + connection) only when the section comes into view: a visitor who never scrolls here takes no simulation
   ui();
   new IntersectionObserver(es => {
-    visible = es[0].isIntersecting;
+    visible = es[0].isIntersecting; if (visible) dirty = 3;
     if (visible && !started) { started = true; build(); connect(); }
   }, { rootMargin: '200px' }).observe(stage);
-  window.heLive = { get state() { return st; }, get conn() { return conn; }, get meshes() { return mesh; }, get view() { return view; } };   // for tests
+  window.heLive = { get state() { return st; }, get conn() { return conn; }, get meshes() { return mesh; }, get view() { return view; }, get ready() { return ready; }, get glLost() { return glLost; } };   // for tests
 })();
