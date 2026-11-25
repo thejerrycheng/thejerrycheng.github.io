@@ -38,3 +38,12 @@
 @keyframes hl-slide { 0% { transform: translateX(-110%); } 100% { transform: translateX(260%); } }
 @media (prefers-reduced-motion: reduce) { .hl-veil b::after { animation: none; width: 100%; opacity: .5; } }
 .hl-veil span { max-width: 34ch; text-align: center; line-height: 1.5; padding: 0 20px; }
+
+/* live camera view: the image the policy is given, streamed from the server; click to enlarge */
+.hl-cam { position: absolute; right: 14px; top: 14px; z-index: 3; width: min(34%, 300px); padding: 0; border: 0; border-radius: 12px; overflow: hidden; background: #000; cursor: zoom-in; box-shadow: 0 6px 24px rgba(0,0,0,.45); line-height: 0; transition: width .25s ease; }
+.hl-cam img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.hl-cam span { position: absolute; left: 8px; bottom: 7px; padding: 3px 8px; border-radius: 999px; background: rgba(20,18,16,.62); color: rgba(255,255,255,.88); font: 500 11px/1.4 inherit; font-family: inherit; white-space: nowrap; }
+.hl-cam.big { width: min(72%, 760px); cursor: zoom-out; }
+.hl-cam.only, .hl-cam.only.big { inset: 0; width: 100%; height: 100%; border-radius: 0; cursor: default; box-shadow: none; }
+.hl-cam.only img { height: 100%; aspect-ratio: auto; object-fit: contain; }
+@media (max-width: 560px) { .hl-cam { width: 44%; right: 10px; top: 10px; } .hl-cam span { display: none; } }

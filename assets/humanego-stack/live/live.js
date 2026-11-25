@@ -19,13 +19,21 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   // ---------- DOM
   root.classList.add('hl');
   root.innerHTML =
-    '<div class="hl-stage" aria-label="3-D scene: Franka arm, table, a yellow and a blue cube"><div class="hl-veil"><span></span><b></b></div><div class="hl-note" hidden></div></div>' +
+    '<div class="hl-stage" aria-label="3-D scene: Franka arm, table, a yellow and a blue cube"><div class="hl-veil"><span></span><b></b></div><div class="hl-note" hidden></div><button type="button" class="hl-cam" hidden aria-label="Camera view: what the policy sees. Click to enlarge."><img alt=""><span>Camera view · what the policy sees</span></button></div>' +
     '<div class="hl-bar"><p class="hl-status" role="status" aria-live="polite"><i></i><span></span><button type="button" class="hl-retry" hidden>Try again</button></p>' +
     '<div class="hl-btns"><button type="button" data-act="run" class="main">Run</button><button type="button" data-act="pause">Pause</button><button type="button" data-act="reset">Reset</button></div></div>' +
     '<p class="hl-hint"></p>';
   const stage = root.querySelector('.hl-stage'), statusEl = root.querySelector('.hl-status'), statusTxt = statusEl.querySelector('span'),
     retry = root.querySelector('.hl-retry'), hint = root.querySelector('.hl-hint'), btn = {},
-    veil = root.querySelector('.hl-veil'), veilTxt = veil.querySelector('span'), note = root.querySelector('.hl-note');
+    veil = root.querySelector('.hl-veil'), veilTxt = veil.querySelector('span'), note = root.querySelector('.hl-note'),
+    camBox = root.querySelector('.hl-cam'), camImg = camBox.querySelector('img');
+  let camUrl = null, camTex = null, camFrames = 0;
+  camBox.onclick = () => { camBox.classList.toggle('big'); };
+  camImg.onload = () => { if (camTex) { camTex.image = camImg; camTex.needsUpdate = true; dirty = 2; } };
+  function camFrame(blob) {                          // one JPEG from the server: the image the policy is given, live
+    const u = URL.createObjectURL(blob), old = camUrl; camUrl = u; camImg.src = u; if (old) setTimeout(() => URL.revokeObjectURL(old), 500);
+    if (!camFrames++) ui();
+  }
   root.querySelectorAll('[data-act]').forEach(b => { btn[b.dataset.act] = b; b.onclick = () => act(b.dataset.act); });
 
   // ---------- state
@@ -42,27 +50,30 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     // the stage never sits there black and silent: a veil while the scene loads or the 3-D context is being
     // restored, and a small note between pressing Run and the arm's first motion (the first plan takes ~0.3 s,
     // longer on a slow connection)
-    const v = glBroken ? '3-D graphics could not start in this browser. Close other tabs that use 3-D, or restart the browser, then reload this page.' : glLost ? 'Restoring the 3-D view' : !ready ? 'Loading the scene' : conn === 'connecting' ? 'Connecting to the simulation' : '';
+    const v = glBroken && camFrames ? '' : glBroken ? '3-D graphics could not start in this browser. Close other tabs that use 3-D, or restart the browser, then reload this page.' : glLost ? 'Restoring the 3-D view' : !ready ? 'Loading the scene' : conn === 'connecting' ? 'Connecting to the simulation' : '';
     veil.hidden = !v; veilTxt.textContent = v; veil.dataset.s = glBroken ? 'off' : '';
     if (waitRun && (conn !== 'open' || !st || st.phase === 'done' || (st.phase === 'running' && st.t > 0.4) || performance.now() - waitRun > 8000)) waitRun = 0;
     note.hidden = !waitRun; note.textContent = 'The policy is planning its first move';
-    const phase = glBroken ? 'nogl' : conn !== 'open' ? conn : !st ? 'connecting' : st.phase === 'done' ? (st.result || 'missed') : st.phase;
+    const noView = glBroken && !camFrames;            // without 3-D the camera view alone still shows the run
+    const phase = noView ? 'nogl' : conn !== 'open' ? conn : !st ? 'connecting' : st.phase === 'done' ? (st.result || 'missed') : st.phase === 'running' && st.result === 'stacked' ? 'stacked' : st.phase;
     const [label, cls] = STATUS[phase] || STATUS.connecting;
-    statusTxt.textContent = label + (phase === 'running' || phase === 'paused' ? ' · ' + st.t.toFixed(1) + ' s' : '');
+    statusTxt.textContent = label;                    // no timer: the policy runs until Pause or Reset
+    camBox.hidden = !camFrames || conn !== 'open'; camBox.classList.toggle('only', glBroken && !!camFrames);
     statusEl.dataset.s = cls;
     retry.hidden = !(conn === 'offline' || conn === 'busy');
-    const live = conn === 'open' && st && !glBroken;      // no blind runs: without the 3-D view the controls stay off
+    const live = conn === 'open' && st && !noView;        // no blind runs: without any view the controls stay off
     btn.run.disabled = !live || st.phase === 'running';
     btn.pause.disabled = !live || st.phase !== 'running';
     btn.reset.disabled = !live;
     btn.run.textContent = live && st.phase === 'paused' ? 'Resume' : live && st.phase === 'done' ? 'Run again' : 'Run';
     hint.textContent = !live ? (conn === 'offline' || conn === 'busy' ? 'You can still look around the scene.' : ' ')
-      : st.phase === 'idle' ? 'Drag a cube to place it, then press Run. Drag anywhere else to look around.'
-      : st.phase === 'done' ? (st.result === 'stacked' ? 'The policy stacked the cubes on its own. Reset to place them again.' : 'Not this time. The policy does not succeed from every placement. Reset to try another.')
+      : st.phase === 'idle' ? (glBroken ? 'Press Run. Reset deals a new layout.' : 'Drag a cube to place it, then press Run. Reset deals a new random layout.')
+      : st.phase === 'done' ? 'Reset to try another layout.'
+      : st.phase === 'running' && st.result === 'stacked' ? 'The policy stacked the cubes on its own. It keeps running; Reset deals a new layout.'
       : touch ? 'Drag a cube to push it.' : 'Hold ⌘ or Ctrl and drag a cube to push it.';
   }
   const send = m => { if (ws && ws.readyState === 1) ws.send(JSON.stringify(m)); };
-  function act(a) { if (a === 'reset') hold = {}; if (a === 'run' && st && st.phase !== 'paused') waitRun = performance.now(); if (a !== 'run') waitRun = 0; send({ type: a }); ui(); }
+  function act(a) { if (a === 'reset') { hold = {}; waitRun = 0; send({ type: 'reset', random: true }); ui(); return; } if (a === 'run' && st && st.phase !== 'paused') waitRun = performance.now(); if (a !== 'run') waitRun = 0; send({ type: a }); ui(); }
 
   // ---------- connection
   function connect() {
@@ -70,10 +81,11 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     conn = 'connecting'; st = null; ui();
     let sock, settled = false;
     try { sock = new WebSocket(WS_URL); } catch (e) { conn = 'offline'; ui(); return; }
-    ws = sock;
+    ws = sock; sock.binaryType = 'blob';
     const timer = setTimeout(() => { if (!settled && ws === sock) { settled = true; conn = 'offline'; ui(); try { sock.close(); } catch (e) {} } }, CONNECT_TIMEOUT_MS);
     sock.onmessage = ev => {
       if (ws !== sock) return;
+      if (typeof ev.data !== 'string') { camFrame(ev.data); return; }
       let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
       if (m.type === 'state') { st = m; if (conn !== 'open') { conn = 'open'; } apply(); ui(); }
       else if (m.type === 'hello') { settled = true; clearTimeout(timer); hello = m; conn = 'open'; drawRegions(m.bounds); ui(); }
@@ -85,6 +97,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     sock.onerror = () => {};
   }
   retry.onclick = connect;
+  setInterval(() => { if (visible && !document.hidden) send({ type: 'ping' }); }, 20000);   // an open, visible page is never timed out
   addEventListener('pagehide', () => { if (ws) try { ws.close(); } catch (e) {} });
 
   // ---------- 3-D scene (functions from the Stack Data Studio, unchanged in look)
@@ -135,7 +148,8 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     const T = S.T_base_cam, W = S.image_size[0], H = S.image_size[1], o = new THREE.Vector3(T[0][3], T[1][3], T[2][3]);
     const pt = (u, v, d) => { const x = (u - S.cx) / S.fx * d, y = (v - S.cy) / S.fy * d; return new THREE.Vector3(T[0][0] * x + T[0][1] * y + T[0][2] * d + T[0][3], T[1][0] * x + T[1][1] * y + T[1][2] * d + T[1][3], T[2][0] * x + T[2][1] * y + T[2][2] * d + T[2][3]); };
     const c = [pt(0, 0, .22), pt(W, 0, .22), pt(W, H, .22), pt(0, H, .22)], g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array([].concat(...c.map(p => [p.x, p.y, p.z]))), 3));
-    g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array([0, 1, 1, 1, 1, 0, 0, 0]), 2)); g.setIndex([0, 1, 2, 0, 2, 3]); sc.add(new THREE.Mesh(g, new THREE.MeshBasicMaterial({ map: tex(A.scene + '/bg.jpg'), side: THREE.DoubleSide, transparent: true, opacity: .96 })));
+    g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array([0, 1, 1, 1, 1, 0, 0, 0]), 2)); g.setIndex([0, 1, 2, 0, 2, 3]); camTex = tex(A.scene + '/bg.jpg'); camTex.minFilter = THREE.LinearFilter; camTex.generateMipmaps = false;   // replaced by the live camera frames
+    sc.add(new THREE.Mesh(g, new THREE.MeshBasicMaterial({ map: camTex, side: THREE.DoubleSide, transparent: true, opacity: .96 })));
     const pts = []; c.forEach((p, i) => { pts.push(o, p, p, c[(i + 1) % 4]); }); sc.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xC25B2A })));
     const hs = headset(); hs.applyMatrix4(camPose(S).multiply(new THREE.Matrix4().makeRotationZ(Math.PI))); sc.add(hs);
     out.cubeMat = (rgb, fallback) => new THREE.MeshStandardMaterial({ color: rgb ? new THREE.Color(rgb[0], rgb[1], rgb[2]).convertSRGBToLinear() : fallback, roughness: .7 });
@@ -275,5 +289,5 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     visible = es[0].isIntersecting; if (visible) dirty = 3;
     if (visible && !started) { started = true; build(); connect(); }
   }, { rootMargin: '200px' }).observe(stage);
-  window.heLive = { get state() { return st; }, get conn() { return conn; }, get meshes() { return mesh; }, get view() { return view; }, get ready() { return ready; }, get glLost() { return glLost; } };   // for tests
+  window.heLive = { get state() { return st; }, get conn() { return conn; }, get meshes() { return mesh; }, get view() { return view; }, get ready() { return ready; }, get glLost() { return glLost; }, get camFrames() { return camFrames; } };   // for tests
 })();
