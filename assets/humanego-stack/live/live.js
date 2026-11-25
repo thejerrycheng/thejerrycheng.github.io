@@ -77,7 +77,8 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     const v = glBroken && camFrames ? '' : glBroken ? '3-D graphics could not start in this browser. Close other tabs that use 3-D, or restart the browser, then reload this page.' : glLost ? 'Restoring the 3-D view' : !ready ? 'Loading the scene' : conn === 'connecting' ? 'Connecting to the simulation' : '';
     veil.hidden = !v; veilTxt.textContent = v; veil.dataset.s = glBroken ? 'off' : '';
     if (waitRun && (conn !== 'open' || !st || st.phase === 'done' || (st.phase === 'running' && st.t > 0.4) || performance.now() - waitRun > 8000)) waitRun = 0;
-    note.hidden = !waitRun; note.textContent = 'The policy is planning its first move';
+    const unseen = !!(st && st.phase === 'running' && st.unseen);     // perception has no pose for a cube (outside the camera image)
+    note.hidden = !waitRun && !unseen; note.textContent = unseen ? 'The camera cannot see both cubes, so the policy has nothing to plan from. Move the cube into view.' : 'The policy is planning its first move';
     const noView = glBroken && !camFrames;            // without 3-D the camera view alone still shows the run
     const phase = noView ? 'nogl' : conn !== 'open' ? conn : !st ? 'connecting' : st.phase === 'done' ? (st.result || 'missed') : st.phase === 'running' && st.result === 'stacked' ? 'stacked' : st.phase;
     const [label, cls] = STATUS[phase] || STATUS.connecting;
