@@ -21,7 +21,9 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   root.innerHTML =
     '<div class="hl-stage" aria-label="3-D scene: Franka arm, table, a yellow and a blue cube"><div class="hl-veil"><span></span><b></b></div><div class="hl-note" hidden></div><div class="hl-view" role="group" aria-label="View"><button type="button" data-view="3d" aria-pressed="true">3-D view</button><button type="button" data-view="cam" aria-pressed="false">Camera view</button></div><button type="button" class="hl-cam" hidden aria-label="Camera view: what the policy sees. Click to enlarge."><img alt=""><span>Camera view · what the policy sees</span></button></div>' +
     '<div class="hl-pol" role="radiogroup" aria-label="Policy" hidden><span>Policy</span><div></div></div>' +
-    '<div class="hl-pol hl-camsel" role="radiogroup" aria-label="Camera" hidden><span>Camera</span><div></div></div>' +
+    '<div class="hl-pol hl-camsel" role="radiogroup" aria-label="Camera" hidden><span>Camera</span><div></div><button type="button" class="hl-mini" data-cam="move">Move the camera</button><button type="button" class="hl-mini" data-cam="home">Recording pose</button></div>' +
+    '<div class="hl-pol hl-layers"><span>Show</span><label><input type="checkbox" data-layer="est" checked> What perception estimates</label><label><input type="checkbox" data-layer="path" checked> What the policy plans</label></div>' +
+    '<div class="hl-tour"><div class="hl-tour-head"><b></b><span></span></div><p></p><div class="hl-tour-nav"><button type="button" data-tour="-1">Back</button><button type="button" data-tour="1" class="main">Next</button></div></div>' +
     '<div class="hl-bar"><p class="hl-status" role="status" aria-live="polite"><i></i><span></span><button type="button" class="hl-retry" hidden>Try again</button></p>' +
     '<div class="hl-btns"><button type="button" data-act="run" class="main">Run</button><button type="button" data-act="pause">Pause</button><button type="button" data-act="reset">Reset</button></div></div>' +
     '<p class="hl-hint"></p>';
@@ -119,6 +121,36 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   }
   // camera picker: which camera the deployment uses (perception runs on its frame; the policy gets it rectified to the Magic Leap view)
   const csBox = root.querySelector('.hl-camsel'), csList = csBox.querySelector('div');
+  csBox.querySelectorAll('[data-cam]').forEach(b => { b.onclick = () => send({ type: 'camera_move', random: b.dataset.cam === 'move' }); });
+  root.querySelectorAll('[data-layer]').forEach(cb => { cb.onchange = () => { show[cb.dataset.layer] = cb.checked; applyOverlays(); dirty = 2; }; });
+  // ---- walkthrough: five steps, each sets what is shown and where the viewer stands
+  const TOUR = [
+    { t: 'The scene, rebuilt from the recording', p: 'This is the real workcell reconstructed in simulation: the robot arm, the table with its real texture, and the two cubes. Drag in the view to look around. Drag a cube to put it somewhere else.', view: '3d', est: false, path: false, eye: [1.12, -1.22, 0.86], at: [0.26, -0.14, 0.16] },
+    { t: 'The camera', p: 'The orange pyramid is the camera, with its live image on the image plane. Pick the Magic Leap 2 or a RealSense D435, or press "Move the camera" to put it at a new position and angle that still sees the whole cube region. The dots mark where it has been.', view: '3d', est: false, path: false, eye: [0.75, -1.45, 0.70], at: [0.24, -0.45, 0.20] },
+    { t: 'What perception estimates', p: 'The policy is never told where the cubes are. The wire boxes are the cube positions estimated from the camera\'s colour and depth image. Press Run, then drag a cube: the wire box follows once the camera sees it again.', view: '3d', est: true, path: false, eye: [0.70, -0.85, 0.55], at: [0.27, -0.22, 0.02] },
+    { t: 'What the policy plans', p: 'The orange line is the next second of hand motion the policy has planned. It re-plans several times a second from the newest camera frame, so the line bends when the scene changes.', view: '3d', est: true, path: true, eye: [0.85, -0.95, 0.60], at: [0.27, -0.22, 0.08] },
+    { t: 'Through the camera', p: 'Switch to the camera view to see what the system sees. Then try to break it: move a cube while the arm is on its way, pull the cube out of the gripper, or press Reset for a new layout.', view: 'cam', est: true, path: true, eye: [1.12, -1.22, 0.86], at: [0.26, -0.14, 0.16] },
+  ];
+  const tourBox = root.querySelector('.hl-tour'), tourT = tourBox.querySelector('b'), tourN = tourBox.querySelector('.hl-tour-head span'), tourP = tourBox.querySelector('p');
+  let tourI = 0, fly = null;
+  function tour(i, moveView) {
+    tourI = Math.max(0, Math.min(TOUR.length - 1, i)); const s = TOUR[tourI];
+    tourT.textContent = s.t; tourN.textContent = (tourI + 1) + ' of ' + TOUR.length; tourP.textContent = s.p;
+    tourBox.querySelector('[data-tour="-1"]').disabled = tourI === 0; tourBox.querySelector('[data-tour="1"]').disabled = tourI === TOUR.length - 1;
+    if (!moveView) return;
+    show.est = s.est; show.path = s.path; root.querySelectorAll('[data-layer]').forEach(cb => { cb.checked = show[cb.dataset.layer]; });
+    setView(s.view); applyOverlays();
+    if (view) fly = { t0: performance.now(), p0: view.cam.position.clone(), a0: view.ctl.target.clone(), p1: new THREE.Vector3(...s.eye), a1: new THREE.Vector3(...s.at) };
+    dirty = 3;
+  }
+  function stepFly() {
+    if (!fly || !view) return;
+    const w = Math.min(1, (performance.now() - fly.t0) / 900), e = w * w * (3 - 2 * w);
+    view.cam.position.lerpVectors(fly.p0, fly.p1, e); view.ctl.target.lerpVectors(fly.a0, fly.a1, e); view.ctl.update(); dirty = 2;
+    if (w >= 1) fly = null;
+  }
+  tourBox.querySelectorAll('[data-tour]').forEach(b => { b.onclick = () => tour(tourI + Number(b.dataset.tour), true); });
+  tour(0, false);
   let cameraId = null;
   function drawCameras(list, current) {
     csList.textContent = '';
@@ -201,6 +233,66 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     g.traverse(o => { if (o.isMesh) o.castShadow = true; }); return g;
   }
   function camPose(S) { const T = S.T_base_cam, m = new THREE.Matrix4(); m.set(T[0][0], T[0][1], T[0][2], T[0][3], T[1][0], T[1][1], T[1][2], T[1][3], T[2][0], T[2][1], T[2][2], T[2][3], 0, 0, 0, 1); return m; }
+  // ---- camera rig: frustum + image plane + headset at a pose T (3x4, base frame) with intrinsics K = [fx, fy, cx, cy] (1280 x 720)
+  let rig = null, rigKey = '', rigFrom = null, rigGoal = null, rigT0 = 0, rigK = null;
+  const trail = [];
+  function rigMatrix(T) { const m = new THREE.Matrix4(); m.set(T[0][0], T[0][1], T[0][2], T[0][3], T[1][0], T[1][1], T[1][2], T[1][3], T[2][0], T[2][1], T[2][2], T[2][3], 0, 0, 0, 1); return m; }
+  function buildRig(K) {
+    const W = 1280, H = 720, d = .22, g0 = new THREE.Group();
+    const pt = (u, v) => new THREE.Vector3((u - K[2]) / K[0] * d, (v - K[3]) / K[1] * d, d);
+    const c = [pt(0, 0), pt(W, 0), pt(W, H), pt(0, H)], g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array([].concat(...c.map(p => [p.x, p.y, p.z]))), 3));
+    g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array([0, 1, 1, 1, 1, 0, 0, 0]), 2)); g.setIndex([0, 1, 2, 0, 2, 3]);
+    g0.add(new THREE.Mesh(g, new THREE.MeshBasicMaterial({ map: camTex, side: THREE.DoubleSide, transparent: true, opacity: .96 })));
+    const o = new THREE.Vector3(), pts = []; c.forEach((p, i) => { pts.push(o, p, p, c[(i + 1) % 4]); });
+    g0.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xC25B2A })));
+    const hs = headset(); hs.applyMatrix4(new THREE.Matrix4().makeRotationZ(Math.PI)); g0.add(hs);
+    g0.matrixAutoUpdate = false;
+    return g0;
+  }
+  function rigTo(T, K, instant) {                     // move (or rebuild, when the intrinsics change) the rig; animated over 0.6 s
+    if (!sc || !T) return;
+    const key = K.join(','), goal = rigMatrix(T);
+    if (!rig || key !== rigKey) { if (rig) sc.remove(rig); rig = buildRig(K); rigKey = key; rigK = K; sc.add(rig); instant = instant || !rigGoal; }
+    if (rigGoal && rigGoal.equals(goal) && !instant) return;
+    if (instant || !rigGoal) { rig.matrix.copy(goal); rigFrom = null; }
+    else { rigFrom = rig.matrix.clone(); rigT0 = performance.now(); const p = new THREE.Vector3().setFromMatrixPosition(rigFrom); addTrail(p); }
+    rigGoal = goal; dirty = 3;
+  }
+  function addTrail(p) {                              // where the camera has been
+    const m = new THREE.Mesh(new THREE.SphereGeometry(0.008, 10, 8), new THREE.MeshBasicMaterial({ color: 0xC25B2A, transparent: true, opacity: .55 })); m.position.copy(p); sc.add(m); trail.push(m);
+    if (trail.length > 12) sc.remove(trail.shift());
+  }
+  function stepRig() {
+    if (!rig || !rigFrom) return;
+    const w = Math.min(1, (performance.now() - rigT0) / 600), e = w * w * (3 - 2 * w);
+    const p0 = new THREE.Vector3(), q0 = new THREE.Quaternion(), s0 = new THREE.Vector3(), p1 = new THREE.Vector3(), q1 = new THREE.Quaternion();
+    rigFrom.decompose(p0, q0, s0); rigGoal.decompose(p1, q1, s0);
+    rig.matrix.compose(p0.lerp(p1, e), q0.slerp(q1, e), new THREE.Vector3(1, 1, 1)); dirty = 2;
+    if (w >= 1) rigFrom = null;
+  }
+  // ---- overlays: what perception estimates (wire cubes) and what the policy plans (tool path)
+  const show = { est: true, path: true };
+  let estBox = {}, pathLine = null;
+  function buildOverlays(edge) {
+    const col = { yellow: 0xFFD23F, blue: 0x5AA9FF };
+    for (const c of ['yellow', 'blue']) {
+      const b = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(edge * 1.06, edge * 1.06, edge * 1.06)), new THREE.LineBasicMaterial({ color: col[c], depthTest: false, transparent: true, opacity: .95 }));
+      b.renderOrder = 8; b.visible = false; sc.add(b); estBox[c] = b;
+    }
+    pathLine = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xFF9500, depthTest: false, transparent: true, opacity: .9 })); pathLine.renderOrder = 8; pathLine.visible = false; pathLine.frustumCulled = false; sc.add(pathLine);
+  }
+  function applyOverlays() {
+    if (!pathLine || !st) return;
+    for (const c of ['yellow', 'blue']) {
+      const e = st.est && st.est[c], b = estBox[c];
+      b.visible = !!(show.est && e); if (e) { b.position.set(...e.pos); b.quaternion.set(...e.quat); }
+    }
+    const P = st.path || [];
+    pathLine.visible = show.path && P.length > 1;
+    if (pathLine.visible) pathLine.geometry.setFromPoints(P.map(p => new THREE.Vector3(p[0], p[1], p[2])));
+    if (st.cam_T) { const cam = (hello && hello.cameras || []).find(x => x.id === (st.camera || cameraId)); rigTo(st.cam_T, cam && cam.K ? cam.K : (rigK || [1038.5, 1038.5, 634, 364.5]), false); }
+  }
   function addSetup(sc, S) {
     const zt = S.table_z, out = {};
     sc.add(new THREE.HemisphereLight(0xffffff, 0x3a3632, 0.55));
@@ -212,14 +304,9 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
       const top = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshStandardMaterial({ map: tex(A.scene + '/table.jpg'), roughness: .55, metalness: .25 })); top.position.set((tt.x[0] + tt.x[1]) / 2, (tt.y[0] + tt.y[1]) / 2, zt); top.receiveShadow = true; sc.add(top);
       const slab = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.05), new THREE.MeshStandardMaterial({ color: 0x161412, roughness: .8 })); slab.position.set(top.position.x, top.position.y, zt - 0.0255); sc.add(slab);
     }
-    // the camera the policy sees through: headset model, frustum, and the real image on its image plane
-    const T = S.T_base_cam, W = S.image_size[0], H = S.image_size[1], o = new THREE.Vector3(T[0][3], T[1][3], T[2][3]);
-    const pt = (u, v, d) => { const x = (u - S.cx) / S.fx * d, y = (v - S.cy) / S.fy * d; return new THREE.Vector3(T[0][0] * x + T[0][1] * y + T[0][2] * d + T[0][3], T[1][0] * x + T[1][1] * y + T[1][2] * d + T[1][3], T[2][0] * x + T[2][1] * y + T[2][2] * d + T[2][3]); };
-    const c = [pt(0, 0, .22), pt(W, 0, .22), pt(W, H, .22), pt(0, H, .22)], g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array([].concat(...c.map(p => [p.x, p.y, p.z]))), 3));
-    g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array([0, 1, 1, 1, 1, 0, 0, 0]), 2)); g.setIndex([0, 1, 2, 0, 2, 3]); camTex = tex(A.scene + '/bg.jpg'); camTex.minFilter = THREE.LinearFilter; camTex.generateMipmaps = false;   // replaced by the live camera frames
-    sc.add(new THREE.Mesh(g, new THREE.MeshBasicMaterial({ map: camTex, side: THREE.DoubleSide, transparent: true, opacity: .96 })));
-    const pts = []; c.forEach((p, i) => { pts.push(o, p, p, c[(i + 1) % 4]); }); sc.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xC25B2A })));
-    const hs = headset(); hs.applyMatrix4(camPose(S).multiply(new THREE.Matrix4().makeRotationZ(Math.PI))); sc.add(hs);
+    // the camera the policy sees through: headset model, frustum, and the live image on its image plane (rebuilt when the camera moves)
+    camTex = tex(A.scene + '/bg.jpg'); camTex.minFilter = THREE.LinearFilter; camTex.generateMipmaps = false;   // replaced by the live camera frames
+    rigTo([S.T_base_cam[0], S.T_base_cam[1], S.T_base_cam[2]], [S.fx, S.fy, S.cx, S.cy], true);
     out.cubeMat = (rgb, fallback) => new THREE.MeshStandardMaterial({ color: rgb ? new THREE.Color(rgb[0], rgb[1], rgb[2]).convertSRGBToLinear() : fallback, roughness: .7 });
     return out;
   }
@@ -322,10 +409,12 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
       if (h && st.phase === 'idle') { if (now < h.until) { m.position.x = h.x; m.position.y = h.y; } else hold[c] = null; }
     }
     poseFranka(franka, st.q, st.width);
+    applyOverlays();
   }
   function frame() {
     requestAnimationFrame(frame);
     if (!visible || !view || glLost || glBroken) return;
+    stepRig(); stepFly();
     if (drag || pull) dirty = 2;
     if (dirty <= 0) return;
     dirty--;
@@ -345,6 +434,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     const U = addSetup(sc, S), e = S.cube_edge, z = S.table_z + e / 2, P = S.live.place;
     mesh.yellow = cube(sc, e, U.cubeMat(S.yellow_rgb, 0xe7c24b)); mesh.blue = cube(sc, e, U.cubeMat(S.blue_rgb, 0x2a55c0));
     for (const c of ['yellow', 'blue']) { mesh[c].position.set(P[c].x, P[c].y, z); mesh[c].rotation.z = P[c].yaw; }
+    buildOverlays(S.cube_edge);
     const accent = new THREE.Color(getComputedStyle(root).getPropertyValue('--hl-accent').trim() || '#FF9500');
     pullLine = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: accent, depthTest: false })); pullLine.renderOrder = 9; pullLine.visible = false; pullLine.frustumCulled = false; sc.add(pullLine);
     pullDot = new THREE.Mesh(new THREE.SphereGeometry(0.004, 16, 12), new THREE.MeshBasicMaterial({ color: accent, depthTest: false })); pullDot.renderOrder = 9; pullDot.visible = false; sc.add(pullDot);
