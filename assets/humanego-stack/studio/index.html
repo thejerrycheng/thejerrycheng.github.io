@@ -78,6 +78,7 @@ html,body{max-width:100%;overflow-x:hidden}
   <div class="top">
     <h1>Stack Data Studio</h1>
     <span class="sub" id="sub">Magic Leap 2 fixed camera, handheld tracked gripper, yellow cube onto blue cube</span>
+    <div class="seg" id="batchNav" role="group" aria-label="Recording batch" hidden></div>
     <div class="seg" role="group" aria-label="View">
       <button id="tabO" aria-pressed="true">Overview</button><button id="tabT" aria-pressed="false">Trial</button>
     </div>
@@ -176,7 +177,7 @@ function drawMap(S){const [g,w,h]=ctx2($('pMap'));const span=0.95,cx=0.38,cy=0.0
   g.strokeStyle=css('--hairline');for(let v=-1;v<=1.5;v+=0.1){g.beginPath();g.moveTo(X(v),0);g.lineTo(X(v),h);g.stroke();g.beginPath();g.moveTo(0,Y(v));g.lineTo(w,Y(v));g.stroke();}
   g.fillStyle=css('--ink-soft');g.beginPath();g.arc(X(0),Y(0),0.09*sc,0,7);g.globalAlpha=.25;g.fill();g.globalAlpha=1;g.fillStyle=css('--ash');g.textAlign='center';g.fillText('robot base',X(0),Y(0)+0.09*sc+12);
   S.forEach(s=>{g.strokeStyle='rgba(77,255,138,.28)';g.lineWidth=1;g.beginPath();s.tcp.forEach((p,i)=>i?g.lineTo(X(p[1]),Y(p[0])):g.moveTo(X(p[1]),Y(p[0])));g.stroke();});
-  S.forEach(s=>{const e=s.edge*sc;g.fillStyle=css('--blue');g.fillRect(X(s.blue[1])-e/2,Y(s.blue[0])-e/2,e,e);const y=s.yellow0;g.fillStyle=css('--yellow');g.fillRect(X(y[1])-e/2,Y(y[0])-e/2,e,e);});
+  S.forEach(s=>{const e=s.edge*sc;if(DS.virtual_anchor){g.strokeStyle=css('--ink');g.lineWidth=2;const bx=X(s.blue[1]),by=Y(s.blue[0]),h=e*0.3;g.beginPath();g.moveTo(bx-h,by-h);g.lineTo(bx+h,by+h);g.moveTo(bx-h,by+h);g.lineTo(bx+h,by-h);g.stroke();}else{g.fillStyle=css('--blue');g.fillRect(X(s.blue[1])-e/2,Y(s.blue[0])-e/2,e,e);}const y=s.yellow0;g.fillStyle=css('--yellow');g.fillRect(X(y[1])-e/2,Y(y[0])-e/2,e,e);});
   if(DS.camera_in_base){const p=DS.camera_in_base.pos,f=DS.camera_in_base.forward;g.strokeStyle=css('--accent-soft');g.lineWidth=1.5;g.beginPath();g.moveTo(X(p[1]),Y(p[0]));g.lineTo(X(p[1]+f[1]*0.12),Y(p[0]+f[0]*0.12));g.stroke();g.fillStyle=css('--accent-soft');g.beginPath();g.arc(X(p[1]),Y(p[0]),4,0,7);g.fill();g.fillText('ML2 camera',X(p[1]),Y(p[0])+15);}
   g.fillStyle=css('--ash');g.textAlign='left';g.fillText('base +x ↑   base +y ←',8,14);}
 function drawGap(S){const [g,w,h]=ctx2($('pGap'));const [X,Y]=axes(g,w,h,0,1,0,95,'normalised time','mm');S.forEach(s=>{const n=s.gap.length;line(g,X,Y,s.gap.map((_,i)=>i/(n-1)),s.gap,'rgba(240,182,139,.45)',1);});}
@@ -265,11 +266,13 @@ function orbit(el,target,pos){let r;try{r=makeGL({antialias:true});if(r.getConte
   v.fromHeadset=(S)=>{const T=S.T_base_cam,o=new THREE.Vector3(T[0][3],T[1][3],T[2][3]),f=new THREE.Vector3(T[0][2],T[1][2],T[2][2]);cam.position.copy(o);cam.up.set(-T[0][1],-T[1][1],-T[2][1]);ctl.target.copy(o.clone().add(f.multiplyScalar(0.6)));cam.fov=2*Math.atan(S.image_size[1]/2/S.fy)*180/Math.PI;cam.updateProjectionMatrix();ctl.update();};
   v.reset=()=>{cam.up.set(0,0,1);cam.position.set(...v.home.pos);ctl.target.set(...v.home.target);cam.fov=45;cam.updateProjectionMatrix();ctl.update();};
   return v;}
+// single-cube batch: the anchor is a mark on the table, drawn as an X (no blue cube exists)
+function markX(sc,p,e,z){const g=new THREE.Group(),m=new THREE.MeshBasicMaterial({color:0x1b1b1b});for(const a of[Math.PI/4,-Math.PI/4]){const b=new THREE.Mesh(new THREE.BoxGeometry(e*0.7,e*0.07,0.0008),m);b.rotation.z=a;g.add(b);}g.position.set(p[0],p[1],z+0.0008);sc.add(g);return g;}
 function cube(sc,e,mat){const m=new THREE.Mesh(new THREE.BoxGeometry(e,e,e),mat);m.castShadow=true;m.receiveShadow=true;sc.add(m);return m;}
 let sceneView=null;
 async function buildScene(){const S=DS.scene3d;if(!S||sceneView)return;const el=$('scene3d');const v=orbit(el,[0.35,-0.1,0.1],[1.25,-1.35,0.95]);sceneView=v;const sc=new THREE.Scene();sc.background=new THREE.Color(0x0a0908);
   const A=addSetup(sc,S);const e=S.cube_edge;
-  S.blue_starts.forEach(p=>cube(sc,e,A.cubeMat(S.blue_rgb,0x2a55c0)).position.set(...p));S.yellow_starts.forEach(p=>cube(sc,e,A.cubeMat(S.yellow_rgb,0xe7c24b)).position.set(...p));
+  if(DS.virtual_anchor){if(S.blue_starts.length)markX(sc,S.blue_starts[0],e,S.table_z);}else S.blue_starts.forEach(p=>cube(sc,e,A.cubeMat(S.blue_rgb,0x2a55c0)).position.set(...p));S.yellow_starts.forEach(p=>cube(sc,e,A.cubeMat(S.yellow_rgb,0xe7c24b)).position.set(...p));
   $('btnML').onclick=()=>v.fromHeadset(S);$('btnOrbit').onclick=()=>v.reset();
   const T=S.T_base_cam,o=[T[0][3],T[1][3],T[2][3]],dist=Math.hypot(...o),pitch=Math.asin(-T[2][2])*180/Math.PI;
   $('sceneNote').textContent=`Camera is ${dist.toFixed(2)} m from the robot base, at (${o.map(x=>x.toFixed(2)).join(', ')}) m, looking ${pitch.toFixed(0)}° below horizontal. Table surface is ${(-S.table_z*1e3).toFixed(0)} mm below the base origin (mounting plate). Field of view ${(2*Math.atan(S.image_size[0]/2/S.fx)*180/Math.PI).toFixed(0)}° × ${(2*Math.atan(S.image_size[1]/2/S.fy)*180/Math.PI).toFixed(0)}°. Table texture: real camera pixels re-projected onto the table plane (${((S.table_texture||{}).observed_frac*100||0).toFixed(0)}% observed, the rest filled in). Robot: Franka meshes at the depth-registered base pose (about 1° uncertain). Headset: stylised model, not vendor CAD.`;
@@ -284,7 +287,7 @@ async function build3d(){const el=$('view3d');if(!three){const v=orbit(el,[0.35,
   const vt=new THREE.VideoTexture($('vid'));vt.encoding=THREE.sRGBEncoding;vt.repeat.set(1/3,1);vt.offset.set(2/3,0);     // right third of the video = robot view
   const A=addSetup(sc,S,vt);
   const path=new THREE.BufferGeometry().setFromPoints(T.tcp.map(p=>new THREE.Vector3(...p)));sc.add(new THREE.Line(path,new THREE.LineBasicMaterial({color:0x4dff8a})));
-  three.yel=cube(sc,T.edge,A.cubeMat(S.yellow_rgb,0xe7c24b));three.blu=cube(sc,T.edge,A.cubeMat(S.blue_rgb,0x2a55c0));three.blu.position.set(...T.blue);three.blu.quaternion.set(...T.blue_q);
+  three.yel=cube(sc,T.edge,A.cubeMat(S.yellow_rgb,0xe7c24b));if(DS.virtual_anchor){three.blu=markX(sc,T.blue,T.edge,S.table_z);}else{three.blu=cube(sc,T.edge,A.cubeMat(S.blue_rgb,0x2a55c0));three.blu.position.set(...T.blue);three.blu.quaternion.set(...T.blue_q);}
   three.arm=new THREE.Line(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0xefeae3}));three.arm.visible=false;sc.add(three.arm);
   three.grip=new THREE.AxesHelper(0.07);sc.add(three.grip);three.tcpAx=new THREE.AxesHelper(0.04);sc.add(three.tcpAx);three.franka=null;
   three.clouds=[];three.cloudsFor=null;
@@ -305,7 +308,7 @@ function update3d(kf){if(!three||!three.scene||!three.yel)return;
   three.grip.position.set(...L(T.cad[k0],T.cad[k1]));three.grip.quaternion.set(...Q(T.cad_q[k0],T.cad_q[k1]));three.tcpAx.position.set(...L(T.tcp[k0],T.tcp[k1]));three.tcpAx.quaternion.set(...Q(T.tcp_q[k0],T.tcp_q[k1]));
   const k=Math.round(kf);if(three.clouds.length){let best=three.clouds[0];three.clouds.forEach(c=>{if(Math.abs(c.k-k)<Math.abs(best.k-k))best=c;});three.clouds.forEach(c=>c.pts.visible=$('cCloud').checked&&c===best);}}
 
-fetch('dataset.json').then(r=>r.json()).then(d=>{DS=d;const dl=d.trials.filter(t=>t.downloaded).length;$('sub').textContent+=` · ${dl} of ${d.share_trials} trials on disk`;renderList();overview();})
+fetch('dataset.json').then(r=>r.json()).then(d=>{DS=d;if(d.title)$('sub').textContent=d.title;if(d.batches&&d.batches.length>1){const nav=$('batchNav');nav.hidden=false;nav.innerHTML=d.batches.map(b=>b.current?`<button aria-pressed="true">${b.label}</button>`:`<a href="${b.href}"><button aria-pressed="false">${b.label}</button></a>`).join('');}const dl=d.trials.filter(t=>t.downloaded).length;$('sub').textContent+=` · ${dl} of ${d.share_trials} trials on disk`;renderList();overview();})
   .catch(e=>{$('kpis').innerHTML='<div class="empty">dataset.json could not be loaded: '+e+'</div>';});
 addEventListener('resize',()=>{if(!$('overview').hidden&&DS)overview();else if(T)drawPlots(curK());});
 </script>
