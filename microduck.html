@@ -359,6 +359,26 @@
   </div>
 </section>
 
+<section class="md-sec" id="flight">
+  <div class="md-wrap">
+    <h2>Next: it flies.</h2>
+    <p class="md-sub">Four ducted fans and a battery on its back. Run, lift off, hover, land. Designed and simulated so far; not built.</p>
+  </div>
+  <div class="md-rail" tabindex="0" aria-label="Flight design figures, scroll sideways">
+    <figure><img src="assets/projects/microduck/figures/flight_frame_assembly.png" alt="Three-view drawing of the printed flight frame: two fan pods joined by spars across the trunk roof, with a battery tray at the back" loading="lazy"><figcaption><b>The frame.</b> Five printed parts, 142 g. Two spars cross the roof and each side carries two 50 mm fans.</figcaption></figure>
+    <figure><img src="assets/projects/microduck/figures/flight_pack_opt.png" alt="Thrust-to-weight, battery heating and charge used against battery capacity, with the chosen 1300 mAh pack marked" loading="lazy"><figcaption><b>The battery.</b> Sellers quote thrust at 16 V; under load the pack sags to 12. Sized with that in: thrust is 1.67 times weight on a 4S 1300 mAh pack.</figcaption></figure>
+    <figure><img src="assets/projects/microduck/figures/flight_fea.png" alt="Finite-element deflection of the frame at full thrust and its first six vibration frequencies" loading="lazy"><figcaption><b>Stiffness.</b> At full thrust the fan rings lift 0.4 mm and tilt half a degree. The first design tilted six.</figcaption></figure>
+    <figure><img src="assets/projects/microduck/figures/flight_rollout.png" alt="Simulated height, speed, tilt, fan thrust and battery voltage through a run, take-off, hover and landing" loading="lazy"><figcaption><b>Run, then lift off.</b> In simulation it runs at 0.48 m/s, takes off, holds height within 11 mm and lands on its feet.</figcaption></figure>
+  </div>
+  <div class="md-wrap md-end">
+    <p>This section is design and simulation only. No fan has been on a test bench, and the flight in the last figure uses a hand-written controller. A first learned flight policy, trained on a laptop, does not beat it yet. Carrying the 684 g of flight hardware, today's walking and running policies fall every time, so both are being retrained.</p>
+    <div class="md-links">
+      <a href="assets/projects/microduck/duck_flight.pdf" target="_blank" rel="noopener">Flight design (PDF)</a>
+      <a href="https://github.com/thejerrycheng/microduck_replication_feetech/blob/duck-studio/docs/duck_flight_bom.md" target="_blank" rel="noopener">Parts list</a>
+    </div>
+  </div>
+</section>
+
 <section class="md-sec" id="data">
   <div class="md-wrap">
     <h2>Measured, not promised.</h2>
