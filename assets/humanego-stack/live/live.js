@@ -14,6 +14,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   const local = /^(localhost|127\.0\.0\.1|\[::1\]|)$/.test(location.hostname);
   const WS_URL = (local && new URLSearchParams(location.search).get('ws')) || root.dataset.ws || LIVE_WS_URL;   // ?ws= only on a local page (testing)
   const CONNECT_TIMEOUT_MS = 5000, PLACE_MS = 33, FORCE_MS = 100;
+  let autoRetry = 2;                                // automatic reconnects left after a connection time-out
   const touch = matchMedia('(pointer: coarse)').matches;
 
   // ---------- DOM
@@ -182,7 +183,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     let sock, settled = false;
     try { sock = new WebSocket(WS_URL); } catch (e) { conn = 'offline'; ui(); return; }
     ws = sock; sock.binaryType = 'blob';
-    const timer = setTimeout(() => { if (!settled && ws === sock) { settled = true; conn = 'offline'; ui(); try { sock.close(); } catch (e) {} } }, CONNECT_TIMEOUT_MS);
+    const timer = setTimeout(() => { if (!settled && ws === sock) { settled = true; try { sock.close(); } catch (e) {} if (autoRetry-- > 0) { ws = null; connect(); return; } conn = 'offline'; ui(); } }, CONNECT_TIMEOUT_MS);   // a slow device can miss the first window while it builds the scene: try once more by itself
     sock.onmessage = ev => {
       if (ws !== sock) return;
       if (typeof ev.data !== 'string') { camFrame(ev.data); return; }
