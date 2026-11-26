@@ -10,9 +10,12 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   const root = document.getElementById('he-live');
   if (!root) return;
   const here = document.currentScript ? new URL('.', document.currentScript.src).href : '';
-  const A = { robots: root.dataset.robots || here + 'robots', scene: root.dataset.scene || here + 'scene', json: root.dataset.json || here + 'scene.json' };
+  // Two tasks, two servers, two scenes: ?task=place shows the pick-and-place scene (its own policy, table and camera placement)
+  const PLACE = new URLSearchParams(location.search).get('task') === 'place' && !!root.dataset.wsPlace;
+  const A = PLACE ? { robots: root.dataset.robots || here + 'robots', scene: root.dataset.scenePlace, json: root.dataset.jsonPlace }
+                  : { robots: root.dataset.robots || here + 'robots', scene: root.dataset.scene || here + 'scene', json: root.dataset.json || here + 'scene.json' };
   const local = /^(localhost|127\.0\.0\.1|\[::1\]|)$/.test(location.hostname);
-  const WS_URL = (local && new URLSearchParams(location.search).get('ws')) || root.dataset.ws || LIVE_WS_URL;   // ?ws= only on a local page (testing)
+  const WS_URL = (local && new URLSearchParams(location.search).get('ws')) || (PLACE ? root.dataset.wsPlace : root.dataset.ws) || LIVE_WS_URL;   // ?ws= only on a local page (testing)
   const CONNECT_TIMEOUT_MS = 5000, PLACE_MS = 33, FORCE_MS = 100;
   let autoRetry = 2;                                // automatic reconnects left after a connection time-out
   const touch = matchMedia('(pointer: coarse)').matches;
@@ -21,6 +24,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   root.classList.add('hl');
   root.innerHTML =
     '<div class="hl-stage" aria-label="3-D scene: Franka arm, table, a yellow and a blue cube"><div class="hl-veil"><span></span><b></b></div><div class="hl-note" hidden></div><div class="hl-view" role="group" aria-label="View"><button type="button" data-view="3d" aria-pressed="true">3-D view</button><button type="button" data-view="cam" aria-pressed="false">Camera view</button></div><button type="button" class="hl-cam" hidden aria-label="Camera view: what the policy sees. Click to enlarge."><img alt=""><span>Camera view · what the policy sees</span></button></div>' +
+    (root.dataset.wsPlace ? '<div class="hl-pol hl-task" role="radiogroup" aria-label="Task"><span>Task</span><div><a href="?#live"><button type="button" role="radio" aria-checked="' + (!PLACE) + '">Stack on the blue cube</button></a><a href="?task=place#live"><button type="button" role="radio" aria-checked="' + PLACE + '">Place on the mark</button></a></div></div>' : '') +
     '<div class="hl-pol" role="radiogroup" aria-label="Policy" hidden><span>Policy</span><div></div></div>' +
     '<div class="hl-pol hl-camsel" role="radiogroup" aria-label="Camera" hidden><span>Camera</span><div></div><button type="button" class="hl-mini" data-cam="move">Move the camera</button><button type="button" class="hl-mini" data-cam="home">Recording pose</button></div>' +
     '<div class="hl-pol hl-layers"><span>Show</span><label><input type="checkbox" data-layer="est" checked> What perception estimates</label><label><input type="checkbox" data-layer="path" checked> What the policy plans</label></div>' +
@@ -72,7 +76,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
 
   const STATUS = {
     connecting: ['Connecting', ''], offline: ['The live server is offline right now', 'off'], busy: ['Busy · both simulations are in use', 'off'],
-    idle: ['Idle', ''], running: ['Running', 'on'], paused: ['Paused', ''], stacked: ['Stacked', 'ok'], missed: ['Missed', 'off'], nogl: ['3-D is not available in this browser', 'off'],
+    idle: ['Idle', ''], running: ['Running', 'on'], paused: ['Paused', ''], stacked: [PLACE ? 'Placed on the mark' : 'Stacked', 'ok'], missed: ['Missed', 'off'], nogl: ['3-D is not available in this browser', 'off'],
   };
   function ui() {
     // the stage never sits there black and silent: a veil while the scene loads or the 3-D context is being
@@ -98,12 +102,12 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     hint.textContent = !live ? (conn === 'offline' || conn === 'busy' ? 'You can still look around the scene.' : ' ')
       : st.phase === 'idle' ? (glBroken ? 'Press Run. Reset deals a new layout.' : 'Drag a cube to place it, then press Run. Reset deals a new random layout.')
       : st.phase === 'done' ? 'Reset to try another layout.'
-      : st.phase === 'running' && st.result === 'stacked' ? 'The policy stacked the cubes on its own. It keeps running; Reset deals a new layout.'
+      : st.phase === 'running' && st.result === 'stacked' ? (PLACE ? 'The policy placed the cube on the mark on its own. It keeps running; Reset deals a new layout.' : 'The policy stacked the cubes on its own. It keeps running; Reset deals a new layout.')
       : touch ? 'Drag a cube to push it.' : 'Hold ⌘ or Ctrl and drag a cube to push it.';
   }
   const send = m => { if (ws && ws.readyState === 1) ws.send(JSON.stringify(m)); };
   // policy picker: the server lists the policies it has loaded; choosing one restarts the scene with the same cube layout
-  const polBox = root.querySelector('.hl-pol:not(.hl-camsel)'), polList = polBox.querySelector('div');
+  const polBox = root.querySelector('.hl-pol:not(.hl-camsel):not(.hl-task)'), polList = polBox.querySelector('div');
   let policyId = null;
   function drawPolicies(list, current) {
     polList.textContent = '';
@@ -126,7 +130,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   root.querySelectorAll('[data-layer]').forEach(cb => { cb.onchange = () => { show[cb.dataset.layer] = cb.checked; applyOverlays(); dirty = 2; }; });
   // ---- walkthrough: five steps, each sets what is shown and where the viewer stands
   const TOUR = [
-    { t: 'The scene, rebuilt from the recording', p: 'This is the real workcell reconstructed in simulation: the robot arm, the table with its real texture, and the two cubes. Drag in the view to look around. Drag a cube to put it somewhere else.', view: '3d', est: false, path: false, eye: [1.12, -1.22, 0.86], at: [0.26, -0.14, 0.16] },
+    { t: 'The scene, rebuilt from the recording', p: 'This is the real workcell reconstructed in simulation: the robot arm, the table with its real texture, and ' + (PLACE ? 'the cube and the marked sheet of paper.' : 'the two cubes.') + ' Drag in the view to look around. Drag a cube to put it somewhere else.', view: '3d', est: false, path: false, eye: [1.12, -1.22, 0.86], at: [0.26, -0.14, 0.16] },
     { t: 'The camera', p: 'The orange pyramid is the camera, with its live image on the image plane. Pick the Magic Leap 2 or a RealSense D435, or press "Move the camera" to put it at a new position and angle that still sees the whole cube region. The dots mark where it has been.', view: '3d', est: false, path: false, eye: [0.75, -1.45, 0.70], at: [0.24, -0.45, 0.20] },
     { t: 'What perception estimates', p: 'The policy is never told where the cubes are. The wire boxes are the cube positions estimated from the camera\'s colour and depth image. Press Run, then drag a cube: the wire box follows once the camera sees it again.', view: '3d', est: true, path: false, eye: [0.70, -0.85, 0.55], at: [0.27, -0.22, 0.02] },
     { t: 'What the policy plans', p: 'The orange line is the next second of hand motion the policy has planned. It re-plans several times a second from the newest camera frame, so the line bends when the scene changes.', view: '3d', est: true, path: true, eye: [0.85, -0.95, 0.60], at: [0.27, -0.22, 0.08] },
@@ -336,7 +340,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   // ---------- pointer: place (idle) and push (running), mouse and touch
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), plane = new THREE.Plane(), hit = new THREE.Vector3(), tmp = new THREE.Vector3();
   function cast(ev, cam, el) { const b = el.getBoundingClientRect(); ndc.set((ev.clientX - b.left) / b.width * 2 - 1, -(ev.clientY - b.top) / b.height * 2 + 1); ray.setFromCamera(ndc, cam); }
-  function pick() { const h = ray.intersectObjects([mesh.yellow, mesh.blue].filter(Boolean)); return h.length ? h[0] : null; }
+  function pick() { const h = ray.intersectObjects([mesh.yellow, mesh.blue].filter(m => m && m.visible)); return h.length ? h[0] : null; }
   function allowed(c, x, y) {                        // clamp to the region, keep clear of the other cube; null = no valid spot
     const b = hello.bounds[c], o = mesh[c === 'yellow' ? 'blue' : 'yellow'].position, dmin = hello.edge * Math.SQRT2 + 0.006;
     const cl = () => { x = Math.min(Math.max(x, b.x[0]), b.x[1]); y = Math.min(Math.max(y, b.y[0]), b.y[1]); };
@@ -406,6 +410,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     const now = performance.now();
     for (const c of ['yellow', 'blue']) {
       const m = mesh[c], s = st[c], h = hold[c];
+      if (s.virtual) { m.visible = false; continue; }   // single-cube task: no blue cube, the mark is on the table texture
       m.position.set(...s.pos); m.quaternion.set(...s.quat);
       if (h && st.phase === 'idle') { if (now < h.until) { m.position.x = h.x; m.position.y = h.y; } else hold[c] = null; }
     }
@@ -435,6 +440,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     const U = addSetup(sc, S), e = S.cube_edge, z = S.table_z + e / 2, P = S.live.place;
     mesh.yellow = cube(sc, e, U.cubeMat(S.yellow_rgb, 0xe7c24b)); mesh.blue = cube(sc, e, U.cubeMat(S.blue_rgb, 0x2a55c0));
     for (const c of ['yellow', 'blue']) { mesh[c].position.set(P[c].x, P[c].y, z); mesh[c].rotation.z = P[c].yaw; }
+    if (S.live.task === 'place') mesh.blue.visible = false;
     buildOverlays(S.cube_edge);
     const accent = new THREE.Color(getComputedStyle(root).getPropertyValue('--hl-accent').trim() || '#FF9500');
     pullLine = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: accent, depthTest: false })); pullLine.renderOrder = 9; pullLine.visible = false; pullLine.frustumCulled = false; sc.add(pullLine);

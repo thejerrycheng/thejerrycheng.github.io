@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/gotham.css?v=20261123m">
-  <link rel="stylesheet" href="assets/humanego-stack/live/live.css?v=12">
+  <link rel="stylesheet" href="assets/humanego-stack/live/live.css?v=13">
   <script>document.documentElement.classList.add('js');</script>
   <script>(function(){try{var t=localStorage.getItem("theme-v2");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
   <style>
@@ -205,8 +205,8 @@
 <section class="he-sec" id="live">
   <div class="he-wrap">
     <h2>Run the policy yourself.</h2>
-    <p class="he-sub">Put the two cubes where you like and press Run. The learned policy does the rest, live, in the simulator.</p>
-    <div id="he-live" data-robots="assets/humanego-stack/studio/robots" data-scene="assets/humanego-stack/studio/scene" data-json="assets/humanego-stack/live/scene.json" data-ws="wss://jerrys-5080-desktop.taile5c63a.ts.net/stack/ws"></div>
+    <p class="he-sub">Two tasks, each with its own policy: stacking the yellow cube on the blue one, and placing it on a marked X. Pick the task, the policy and the camera, drag a cube where you like and press Run. The learned policy does the rest, live, in the simulator.</p>
+    <div id="he-live" data-robots="assets/humanego-stack/studio/robots" data-scene="assets/humanego-stack/studio/scene" data-json="assets/humanego-stack/live/scene.json" data-ws="wss://jerrys-5080-desktop.taile5c63a.ts.net/stack/ws" data-ws-place="wss://jerrys-5080-desktop.taile5c63a.ts.net/place/ws" data-scene-place="assets/humanego-stack/studio-pp/scene" data-json-place="assets/humanego-stack/live/scene_pp.json"></div>
     <p class="he-note">The simulation runs on one desktop computer, for two visitors at a time. The policy only knows the part of the table the demonstrations covered, so the cubes stay inside it, and it does not succeed from every placement.</p>
   </div>
 </section>
@@ -282,7 +282,7 @@
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" defer></script>
-<script src="assets/humanego-stack/live/live.js?v=12" defer></script>
+<script src="assets/humanego-stack/live/live.js?v=13" defer></script>
 <script src="assets/js/site.js?v=20261123m"></script>
 </body>
 </html>
