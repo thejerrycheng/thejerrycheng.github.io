@@ -21,6 +21,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   root.innerHTML =
     '<div class="hl-stage" aria-label="3-D scene: Franka arm, table, a yellow and a blue cube"><div class="hl-veil"><span></span><b></b></div><div class="hl-note" hidden></div><div class="hl-view" role="group" aria-label="View"><button type="button" data-view="3d" aria-pressed="true">3-D view</button><button type="button" data-view="cam" aria-pressed="false">Camera view</button></div><button type="button" class="hl-cam" hidden aria-label="Camera view: what the policy sees. Click to enlarge."><img alt=""><span>Camera view · what the policy sees</span></button></div>' +
     '<div class="hl-pol" role="radiogroup" aria-label="Policy" hidden><span>Policy</span><div></div></div>' +
+    '<div class="hl-pol hl-camsel" role="radiogroup" aria-label="Camera" hidden><span>Camera</span><div></div></div>' +
     '<div class="hl-bar"><p class="hl-status" role="status" aria-live="polite"><i></i><span></span><button type="button" class="hl-retry" hidden>Try again</button></p>' +
     '<div class="hl-btns"><button type="button" data-act="run" class="main">Run</button><button type="button" data-act="pause">Pause</button><button type="button" data-act="reset">Reset</button></div></div>' +
     '<p class="hl-hint"></p>';
@@ -99,7 +100,7 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
   }
   const send = m => { if (ws && ws.readyState === 1) ws.send(JSON.stringify(m)); };
   // policy picker: the server lists the policies it has loaded; choosing one restarts the scene with the same cube layout
-  const polBox = root.querySelector('.hl-pol'), polList = polBox.querySelector('div');
+  const polBox = root.querySelector('.hl-pol:not(.hl-camsel)'), polList = polBox.querySelector('div');
   let policyId = null;
   function drawPolicies(list, current) {
     polList.textContent = '';
@@ -116,6 +117,25 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
     policyId = id;
     polList.querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.id === id)));
   }
+  // camera picker: which camera the deployment uses (perception runs on its frame; the policy gets it rectified to the Magic Leap view)
+  const csBox = root.querySelector('.hl-camsel'), csList = csBox.querySelector('div');
+  let cameraId = null;
+  function drawCameras(list, current) {
+    csList.textContent = '';
+    (list || []).forEach(p => { const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'radio'); b.dataset.id = p.id; b.textContent = p.label; csList.appendChild(b); });
+    csBox.hidden = !list || list.length < 2;
+    markCamera(current);
+  }
+  function markCamera(id) {
+    if (!id || id === cameraId && csList.querySelector('[aria-checked="true"]')) return;
+    cameraId = id;
+    csList.querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.id === id)));
+  }
+  csList.onclick = ev => {
+    const b = ev.target.closest('button[data-id]');
+    if (!b || b.dataset.id === cameraId) return;
+    markCamera(b.dataset.id); send({ type: 'camera', id: b.dataset.id });
+  };
   polList.onclick = ev => {
     const b = ev.target.closest('button[data-id]');
     if (!b || b.dataset.id === policyId) return;
@@ -135,8 +155,8 @@ const LIVE_WS_URL = 'ws://100.120.87.113:8811/ws';
       if (ws !== sock) return;
       if (typeof ev.data !== 'string') { camFrame(ev.data); return; }
       let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
-      if (m.type === 'state') { st = m; if (m.policy) markPolicy(m.policy); if (conn !== 'open') { conn = 'open'; } apply(); ui(); }
-      else if (m.type === 'hello') { settled = true; clearTimeout(timer); hello = m; conn = 'open'; drawPolicies(m.policies, policyId && (m.policies || []).some(p => p.id === policyId) ? policyId : m.policy); if (policyId && policyId !== m.policy) send({ type: 'policy', id: policyId }); drawRegions(m.bounds); ui(); }
+      if (m.type === 'state') { st = m; if (m.policy) markPolicy(m.policy); if (m.camera) markCamera(m.camera); if (conn !== 'open') { conn = 'open'; } apply(); ui(); }
+      else if (m.type === 'hello') { settled = true; clearTimeout(timer); hello = m; conn = 'open'; drawPolicies(m.policies, policyId && (m.policies || []).some(p => p.id === policyId) ? policyId : m.policy); if (policyId && policyId !== m.policy) send({ type: 'policy', id: policyId }); drawCameras(m.cameras, cameraId && (m.cameras || []).some(p => p.id === cameraId) ? cameraId : m.camera); if (cameraId && cameraId !== m.camera) send({ type: 'camera', id: cameraId }); drawRegions(m.bounds); ui(); }
       else if (m.type === 'busy') { settled = true; clearTimeout(timer); conn = 'busy'; ui(); }
       else if (m.type === 'bye') { settled = true; conn = 'offline'; ui(); }
       else if (m.type === 'error' && drag) { hold[drag.cube] = null; }
