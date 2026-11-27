@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Franka camera mount: assembly — Jerry (Qilong) Cheng</title>
+  <meta name="description" content="Step-by-step assembly of a one-piece printed bracket that puts a Sony a7R III on a Franka arm: one print, five screws, two hex keys.">
+  <meta name="author" content="Jerry Cheng">
+  <link rel="canonical" href="https://thejerrycheng.github.io/cinema_robot_mount.html">
+  <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+  <link rel="shortcut icon" href="assets/images/favicon.v4.ico">
+  <meta name="theme-color" content="#F4EEE2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/gotham.css?v=20261123m">
+  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){try{var t=localStorage.getItem("theme-v2");if(t==="day"||t==="night")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <style>
+    .as { --stage: #1c1e22; --hot: #ff671f; }
+    .as h1, .as h2 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.03em; line-height: 1.04; }
+    .as-wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+    .as-head { padding-top: clamp(36px, 7vw, 84px); }
+    .as-head .eyebrow { font-size: 14px; color: var(--ash); text-decoration: none; }
+    .as-head h1 { margin: 10px 0 0; font-size: clamp(40px, 7vw, 76px); }
+    .as-head p { margin-top: 14px; font-size: clamp(17px, 1.8vw, 21px); color: var(--ash); }
+    .as-links { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .as-links a { display: inline-flex; align-items: center; height: 42px; padding: 0 18px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); color: var(--ink); font-size: 14.5px; font-weight: 500; text-decoration: none; }
+    .as-links a:hover { background: var(--panel-2); }
+    .as-links a.main { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+    .as-need { margin-top: clamp(36px, 6vw, 64px); display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+    .as-need div { padding: 14px 16px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); }
+    .as-need b { display: block; font-size: 26px; font-weight: 600; letter-spacing: -0.03em; }
+    .as-need span { font-size: 13.5px; color: var(--ash); }
+
+    .as-guide { margin-top: clamp(36px, 6vw, 64px); display: grid; grid-template-columns: 1fr; gap: 12px; width: min(1720px, 100vw - 32px); margin-left: 50%; transform: translateX(-50%); }
+    .as-stage { position: relative; border-radius: 28px; overflow: hidden; background: radial-gradient(120% 100% at 50% 0%, #3a3f4b, var(--stage) 70%); height: clamp(460px, calc(100vh - 250px), 1100px); }
+    .as-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+    .as-stage canvas:active { cursor: grabbing; }
+    .as-hint { position: absolute; left: 16px; bottom: 14px; font-size: 12.5px; color: rgba(255,255,255,.55); pointer-events: none; }
+    .as-replay { position: absolute; right: 12px; bottom: 10px; height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.24); background: rgba(255,255,255,.12); color: #fff; font: inherit; font-size: 13px; cursor: pointer; }
+    .as-load { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(255,255,255,.7); font-size: 14px; }
+    .as-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 380px); gap: 8px 32px; align-items: center; padding: clamp(18px, 2.4vw, 26px) clamp(20px, 3vw, 34px); border-radius: 28px; background: var(--panel); border: 1px solid var(--line); }
+    .as-card p { max-width: 62ch; }
+    .as-n { font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--hot); }
+    .as-card h2 { margin: 10px 0 0; font-size: clamp(28px, 3.4vw, 40px); }
+    .as-card p { margin-top: 12px; font-size: 17px; line-height: 1.45; color: var(--ink-soft); }
+    .as-chips { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .as-chips span { display: inline-flex; align-items: center; height: 32px; padding: 0 13px; border-radius: 999px; border: 1px solid var(--line); font-size: 13.5px; font-weight: 500; background: var(--panel-2); }
+    .as-chips span.warn { border-color: var(--hot); color: var(--hot); background: transparent; }
+    .as-ctl { display: flex; align-items: center; gap: 10px; }
+    .as-ctl button { height: 46px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink); font: inherit; font-size: 15px; font-weight: 500; padding: 0 20px; cursor: pointer; }
+    .as-ctl button.next { background: var(--ink); color: var(--paper); border-color: var(--ink); flex: 1; }
+    .as-ctl button:disabled { opacity: .35; cursor: default; }
+    .as-dots { margin-top: 16px; display: flex; gap: 6px; }
+    .as-dots button { flex: 1; height: 6px; padding: 0; border: 0; border-radius: 3px; background: var(--line); cursor: pointer; }
+    .as-dots button.done { background: var(--ash-light); }
+    .as-dots button.on { background: var(--hot); }
+
+    .as-sec { margin-top: clamp(56px, 9vw, 104px); }
+    .as-sec h2 { font-size: clamp(28px, 4vw, 44px); }
+    .as-table { margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 15.5px; }
+    .as-table th, .as-table td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--line); }
+    .as-table th { font-size: 12.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ash); }
+    .as-table td:nth-child(2) { font-variant-numeric: tabular-nums; }
+    .as-note { margin-top: 14px; font-size: 13.5px; color: var(--ash); max-width: 70ch; }
+    .as-check { margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+    .as-check div { padding: 18px; border-radius: 18px; border: 1px solid var(--line); background: var(--panel); font-size: 15.5px; line-height: 1.4; }
+    .as-check b { display: block; margin-bottom: 4px; }
+    .as-end { height: clamp(64px, 10vw, 120px); }
+    @media (max-width: 860px) { .as-stage { height: clamp(380px, 68vh, 720px); } .as-card { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="bulb" aria-hidden="true"></span><img src="assets/images/favicon.v4.svg" alt="" width="24" height="24">Jerry Cheng</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="news.html">News</a>
+      <a href="cv.html">CV</a>
+    </div>
+    <button type="button" class="theme-btn" aria-label="Switch between day and night" aria-pressed="false">
+      <span class="if-night"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Day</span></span>
+      <span class="if-day"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="lbl">Night</span></span>
+    </button>
+    <button id="menuButton" class="menu-btn" aria-controls="mobileMenu" aria-expanded="false">Menu ▾</button>
+  </div>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<div id="mobileMenu" class="mobile-menu" role="menu" hidden>
+  <a href="index.html">Home</a>
+  <a href="publications.html">Publications</a>
+  <a href="projects.html">Projects</a>
+      <a href="news.html">News</a>
+      <a href="cv.html">CV</a>
+</div>
+
+
+<main class="as">
+<div class="as-wrap">
+
+  <header class="as-head">
+    <a class="eyebrow" href="projects.html#cinema-arm">Projects &rsaquo; Cinema robot arm</a>
+    <h1>Mount the camera on the Franka</h1>
+    <p>One print. Five screws. Two hex keys.</p>
+    <div class="as-links">
+      <a class="main" href="assets/projects/cinema_mount/franka_a7r3_bracket_print.zip" download>Download 3MF + STL</a>
+      <a href="assets/projects/cinema_mount/franka_a7r3_bracket_step.zip" download>STEP</a>
+      <a href="assets/projects/cinema_mount/camera_mount.pdf" target="_blank" rel="noopener">Design notes (PDF)</a>
+    </div>
+  </header>
+
+  <div class="as-need" aria-label="What you need">
+    <div><b>1</b><span>printed bracket, PLA</span></div>
+    <div><b>4</b><span>M6 &times; 16 socket head screws</span></div>
+    <div><b>1</b><span>1/4&Prime;-20 &times; 1/2&Prime; socket head screw</span></div>
+    <div><b>5</b><span>M6 fender washers, 18 mm wide, 1.6 mm thick</span></div>
+    <div><b>2</b><span>hex keys: 5 mm and 3/16&Prime;</span></div>
+    <div><b>1</b><span>&Oslash;6 &times; 12 dowel pin, optional</span></div>
+  </div>
+
+  <section class="as-guide" aria-label="Assembly steps">
+    <div class="as-stage">
+      <canvas id="asCanvas" aria-label="3D view of the current assembly step. Drag to turn."></canvas>
+      <div class="as-load" id="asLoad">Loading model&hellip;</div>
+      <div class="as-hint">Drag to turn</div>
+      <button class="as-replay" id="asReplay" type="button">Replay</button>
+    </div>
+    <div class="as-card" aria-live="polite">
+      <div>
+        <div class="as-n" id="asN"></div>
+        <h2 id="asT"></h2>
+        <p id="asP"></p>
+        <div class="as-chips" id="asC"></div>
+      </div>
+      <div>
+      <div class="as-ctl">
+        <button type="button" id="asPrev">Back</button>
+        <button type="button" class="next" id="asNext">Next</button>
+      </div>
+      <div class="as-dots" id="asDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="as-sec" id="print">
+    <h2>Print</h2>
+    <table class="as-table">
+      <thead><tr><th>Setting</th><th>Value</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Printer</td><td>Bambu Lab A2L</td><td>82 &times; 106 &times; 89 mm on the plate</td></tr>
+        <tr><td>On the bed</td><td>on its side, as in the 3MF</td><td>layers run around the corner of the L</td></tr>
+        <tr><td>Supports</td><td>none</td><td>every bore has a 45&deg; roof</td></tr>
+        <tr><td>Layer</td><td>0.2 mm</td><td></td></tr>
+        <tr><td>Walls</td><td>6</td><td>solid plastic under every washer</td></tr>
+        <tr><td>Infill</td><td>40 % gyroid</td><td></td></tr>
+        <tr><td>Brim</td><td>5 mm</td><td>tall, narrow footprint</td></tr>
+      </tbody>
+    </table>
+    <p class="as-note">PLA, about 232 g. The 3MF carries the orientation only: set walls and infill in Bambu Studio.</p>
+  </section>
+
+  <section class="as-sec" id="measure">
+    <h2>Measure first</h2>
+    <table class="as-table">
+      <thead><tr><th>On the camera</th><th>Assumed</th><th>If yours differs</th></tr></thead>
+      <tbody>
+        <tr><td>Tripod socket to the rear lower edge</td><td>24 mm</td><td>16 to 32 mm fits: the screw sits in a slot</td></tr>
+        <tr><td>Lens axis above the base</td><td>37 mm</td><td>edit <code>AXIS_H</code>, rebuild, reprint</td></tr>
+        <tr><td>Eyepiece behind the screen</td><td>11 mm</td><td>16 mm is clear</td></tr>
+      </tbody>
+    </table>
+    <p class="as-note">Sony does not publish these three numbers. The flange side is exact, from the Franka drawing. The camera and lens in the 3D view are outlines built from Sony's outer dimensions.</p>
+  </section>
+
+  <section class="as-sec" id="check">
+    <h2>Before you move</h2>
+    <div class="as-check">
+      <div><b>Tell the robot</b>Load: 1.44 kg. Centre of mass 82 mm out from the flange.</div>
+      <div><b>Thread check</b>4 to 5 mm of the camera screw above the shelf. More than 5.5 mm damages the camera.</div>
+      <div><b>Tighten again</b>After a day, and after 100 hours. PLA settles.</div>
+      <div><b>Heat</b>PLA softens near 55 &deg;C. Stop if the flange is hot to hold.</div>
+    </div>
+    <p class="as-note">Status: design and analysis. This bracket has not been printed or fitted yet.</p>
+  </section>
+  <div class="as-end"></div>
+</div>
+</main>
+
+<footer class="site-footer night">
+  <div class="night-sky" aria-hidden="true"><span class="beam"></span></div>
+  <div class="skyline" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="footer-name">Personal Website of Jerry (Qilong) Cheng</div>
+    <div class="footer-note">Designed in New York City with love, in a tiny studio apartment.</div>
+    <div class="footer-rule"></div>
+    <div class="footer-copy">© 2025 Personal Website of Jerry (Qilong) Cheng. All rights reserved.</div>
+  </div>
+</footer>
+
+
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { toCreasedNormals } from "three/addons/utils/BufferGeometryUtils.js";
+
+const BASE = "assets/projects/cinema_mount/", VER = "?v=2bb50cfb";
+let SCREWS = {}, AX = {};
+// each step: show = parts in place, add = parts that arrive (from = offset in metres along [flange-out, up]), screws, focus, cam = view direction
+const STEPS = [
+  { t: "Print the bracket", p: "PLA, on its side. No supports.", chips: ["6 walls", "40 % gyroid", "0.2 mm layers"],
+    add: ["bracket"], cam: [.9, .7, .45] },
+  { t: "Bolt it to the flange", p: "Shelf opposite the pin hole. Spigot into the bore. Four screws, a washer under each.", chips: ["4× M6×16", "4× washer", "5 mm key", "4 N·m"],
+    show: ["wrist"], add: ["bracket"], from: [.07, 0], screws: ["m6"], pin: true, focus: .11, cam: [.9, .55, .35] },
+  { t: "Set the camera on the shelf", p: "Push it back against the lip. Lens on, eyecup off.", chips: ["lip stops twist"],
+    show: ["wrist", "bracket"], add: ["camera", "lens"], from: [.04, .09], cam: [.75, .8, .3] },
+  { t: "One screw from below", p: "Up through the tunnel, with a washer. Hold the camera against the lip while you tighten.", chips: ["1× 1/4″-20 × 1/2″", "1× washer", "3/16″ key", "2.5 N·m"], warn: "Washer on, always",
+    show: ["wrist", "bracket", "camera", "lens"], screws: ["cam"], focus: .12, cam: [.55, .6, -.75] },
+  { t: "Done", p: "Camera upright at joint 7 = 0. Lens on the flange axis.", chips: ["1.44 kg on the flange", "one screw to take the camera off"],
+    show: ["arm", "wrist", "bracket", "camera", "lens"], cam: [.8, .9, .35] },
+];
+
+const $ = id => document.getElementById(id);
+const canvas = $("asCanvas");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(32, 1, .01, 20); camera.up.set(0, 0, 1);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x30343c, 1.35));
+const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(.8, .6, 1.2); scene.add(key);
+const rim = new THREE.DirectionalLight(0xffd9b8, 1.0); rim.position.set(-.8, -.6, .3); scene.add(rim);
+const controls = new OrbitControls(camera, canvas);
+controls.enablePan = false; controls.enableDamping = true; controls.minDistance = .08; controls.maxDistance = 4;
+const HOT = new THREE.Color("#ff671f");
+const parts = {}, extras = new THREE.Group(); scene.add(extras);
+let cur = 0, t0 = 0, camFrom = null, camTo = null, running = true, userMoved = false;
+controls.addEventListener("start", () => { userMoved = true; });
+
+function fit() {
+  const r = canvas.parentElement.getBoundingClientRect();
+  renderer.setSize(r.width, r.height, false); camera.aspect = r.width / r.height; camera.updateProjectionMatrix();
+}
+new ResizeObserver(fit).observe(canvas.parentElement);
+
+function fastener(s, travel) {                   // p = point under the head, d = insertion direction, L = shank length
+  const grp = new THREE.Group(), d = new THREE.Vector3(...s.d);
+  const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), d);
+  const mat = new THREE.MeshStandardMaterial({ color: "#c9ccd1", metalness: .9, roughness: .3, emissive: "#40200a" });
+  const add = (geo, along) => { const m = new THREE.Mesh(geo, mat); m.position.copy(d).multiplyScalar(along); m.quaternion.copy(q); grp.add(m); };
+  add(new THREE.CylinderGeometry(s.r, s.r, s.L, 18), s.L / 2);
+  add(new THREE.CylinderGeometry(s.hr, s.hr, s.hh, 22), -s.hh / 2);
+  if (s.wr) add(new THREE.CylinderGeometry(s.wr, s.wr, .0016, 28), .0008);
+  grp.userData = { home: new THREE.Vector3(...s.p), dir: d, travel };
+  return grp;
+}
+
+function setStep(i, replay) {
+  cur = i; const S = STEPS[i];
+  $("asN").textContent = "Step " + (i + 1) + " of " + STEPS.length;
+  $("asT").textContent = S.t; $("asP").textContent = S.p;
+  $("asC").innerHTML = (S.warn ? '<span class="warn">' + S.warn + "</span>" : "") + S.chips.map(c => "<span>" + c + "</span>").join("");
+  $("asPrev").disabled = i === 0; $("asNext").textContent = i === STEPS.length - 1 ? "Start over" : "Next";
+  [...$("asDots").children].forEach((b, k) => { b.className = k === i ? "on" : k < i ? "done" : ""; });
+  const add = new Set(S.add || []), show = new Set(S.show || []);
+  const from = S.from && AX.flange_out ? new THREE.Vector3(...AX.flange_out).multiplyScalar(S.from[0]).add(new THREE.Vector3(...AX.up).multiplyScalar(S.from[1])) : null;
+  for (const [n, o] of Object.entries(parts)) {
+    o.visible = add.has(n) || show.has(n);
+    o.userData.from = add.has(n) && from ? from.clone() : null;
+    o.userData.isNew = add.has(n);
+    o.material.transparent = !!o.userData.from; o.material.opacity = 1;
+    o.material.emissive.copy(o.userData.isNew && i > 0 ? HOT : new THREE.Color(0)); o.material.emissiveIntensity = .12;
+    o.position.set(0, 0, 0);
+  }
+  extras.clear();
+  for (const k of S.screws || []) for (const s of SCREWS[k] || []) extras.add(fastener(s, .05));
+  if (S.pin) for (const s of SCREWS.pin || []) extras.add(fastener(s, .03));
+  // frame: the screws on a screw step, otherwise every visible part
+  const box = new THREE.Box3();
+  if (S.focus && SCREWS.m6) { for (const k of S.screws) for (const s of SCREWS[k]) box.expandByPoint(new THREE.Vector3(...s.p)); box.expandByScalar(S.focus); }
+  else for (const o of Object.values(parts)) if (o.visible) { if (!o.geometry.boundingBox) o.geometry.computeBoundingBox(); box.union(o.geometry.boundingBox); }
+  const ctr = box.getCenter(new THREE.Vector3());
+  const vfov = camera.fov * Math.PI / 360, hfov = Math.atan(Math.tan(vfov) * camera.aspect);
+  const dir = new THREE.Vector3(...S.cam).normalize();
+  const right = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 0, 1), dir).normalize(), up = new THREE.Vector3().crossVectors(dir, right);
+  let dist = 0;
+  for (let c = 0; c < 8; c++) {
+    const v = new THREE.Vector3(c & 1 ? box.max.x : box.min.x, c & 2 ? box.max.y : box.min.y, c & 4 ? box.max.z : box.min.z).sub(ctr);
+    dist = Math.max(dist, Math.abs(v.dot(right)) / Math.tan(hfov) + v.dot(dir), Math.abs(v.dot(up)) / Math.tan(vfov) + v.dot(dir));
+  }
+  dist *= 1.12;
+  camTo = { p: ctr.clone().addScaledVector(dir, dist), t: ctr.clone() };
+  if (!replay || !userMoved) { camFrom = { p: camera.position.clone(), t: controls.target.clone() }; userMoved = false; } else camFrom = null;
+  t0 = performance.now();
+}
+
+const ease = x => 1 - Math.pow(1 - Math.min(Math.max(x, 0), 1), 3);
+function frame(now) {
+  requestAnimationFrame(frame);
+  if (!running) return;
+  const e = (now - t0) / 1000, a = ease((e - .25) / 1.1), b = ease((e - 1.2) / .9);
+  for (const o of Object.values(parts)) {
+    if (!o.visible) continue;
+    if (o.userData.from) { o.position.copy(o.userData.from).multiplyScalar(1 - a); o.material.opacity = Math.min(1, .15 + a); }
+    if (o.userData.isNew && cur > 0) o.material.emissiveIntensity = .2 - .14 * ease((e - 1.8) / 1.2);
+  }
+  for (const f of extras.children) {
+    const u = f.userData;
+    f.position.copy(u.home).addScaledVector(u.dir, -(1 - b) * u.travel);
+    f.visible = b > .01;
+  }
+  if (camFrom) {
+    const k = ease(e / .9);
+    camera.position.lerpVectors(camFrom.p, camTo.p, k);
+    controls.target.lerpVectors(camFrom.t, camTo.t, k);
+    if (k >= 1) camFrom = null;
+  }
+  controls.update(); renderer.render(scene, camera);
+}
+
+function dots() { STEPS.forEach((_, k) => { const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", "Step " + (k + 1)); b.onclick = () => setStep(k); $("asDots").appendChild(b); }); }
+async function load() {
+  const [man, buf] = await Promise.all([fetch(BASE + "parts.json" + VER).then(r => r.json()), fetch(BASE + "parts.bin" + VER).then(r => r.arrayBuffer())]);
+  SCREWS = man.screws; AX = man.axes;
+  for (const p of man.parts) {
+    let g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(buf, p.v_off, p.v_n * 3), 3));
+    g.setIndex(new THREE.BufferAttribute(new Uint32Array(buf, p.f_off, p.f_n * 3), 1));
+    g = toCreasedNormals(g, Math.PI / 5);
+    const robot = p.name === "arm" || p.name === "wrist";
+    const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: p.color, roughness: robot ? .5 : .62, metalness: robot ? .15 : .02 }));
+    scene.add(m); parts[p.name] = m;
+  }
+  dots(); $("asLoad").remove(); fit();
+  camera.position.set(1.4, 1.2, 1.2); controls.target.set(.55, 0, .7);
+  setStep(0); requestAnimationFrame(frame);
+}
+$("asPrev").onclick = () => setStep(Math.max(cur - 1, 0));
+$("asNext").onclick = () => setStep(cur === STEPS.length - 1 ? 0 : cur + 1);
+$("asReplay").onclick = () => setStep(cur, true);
+addEventListener("keydown", e => { if (e.target.closest("input,textarea")) return; if (e.key === "ArrowRight") $("asNext").click(); if (e.key === "ArrowLeft") $("asPrev").click(); });
+new IntersectionObserver(es => { running = es[0].isIntersecting; }).observe(canvas);
+load().catch(err => { $("asLoad").textContent = "The 3D view could not load. The steps still work."; console.error(err); dots(); setStep(0); });
+</script>
+<script src="assets/js/site.js?v=20261123m"></script>
+</body>
+</html>
