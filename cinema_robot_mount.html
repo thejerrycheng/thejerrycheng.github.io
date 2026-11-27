@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Franka camera mount: assembly — Jerry (Qilong) Cheng</title>
-  <meta name="description" content="Step-by-step assembly of a one-piece printed bracket that puts a Sony a7R III on a Franka arm: one print, five screws, two hex keys.">
+  <meta name="description" content="Step-by-step assembly of a one-piece printed bracket that puts a Sony a7R III on a Franka arm: one print, five screws, one hex key.">
   <meta name="author" content="Jerry Cheng">
   <link rel="canonical" href="https://thejerrycheng.github.io/cinema_robot_mount.html">
   <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
@@ -107,7 +107,7 @@
   <header class="as-head">
     <a class="eyebrow" href="projects.html#cinema-arm">Projects &rsaquo; Cinema robot arm</a>
     <h1>Mount the camera on the Franka</h1>
-    <p>One print. Five screws. Two hex keys.</p>
+    <p>One print. Five screws. One hex key.</p>
     <div class="as-links">
       <a class="main" href="assets/projects/cinema_mount/franka_a7r3_bracket_print.zip" download>Download 3MF + STL</a>
       <a href="assets/projects/cinema_mount/franka_a7r3_bracket_step.zip" download>STEP</a>
@@ -118,9 +118,9 @@
   <div class="as-need" aria-label="What you need">
     <div><b>1</b><span>printed bracket, PLA</span></div>
     <div><b>4</b><span>M6 &times; 16 socket head screws</span></div>
-    <div><b>1</b><span>1/4&Prime;-20 &times; 1/2&Prime; socket head screw</span></div>
-    <div><b>5</b><span>M6 fender washers, 18 mm wide, 1.6 mm thick</span></div>
-    <div><b>2</b><span>hex keys: 5 mm and 3/16&Prime;</span></div>
+    <div><b>1</b><span>1/4&Prime; D-ring camera screw</span></div>
+    <div><b>4</b><span>M6 fender washers, 18 mm wide, 1.6 mm thick</span></div>
+    <div><b>1</b><span>5 mm hex key</span></div>
     <div><b>1</b><span>&Oslash;6 &times; 12 dowel pin, optional</span></div>
   </div>
 
@@ -162,7 +162,7 @@
         <tr><td>Brim</td><td>5 mm</td><td>tall, narrow footprint</td></tr>
       </tbody>
     </table>
-    <p class="as-note">PLA, about 232 g. The 3MF carries the orientation only: set walls and infill in Bambu Studio.</p>
+    <p class="as-note">PLA, about 231 g. The 3MF carries the orientation only: set walls and infill in Bambu Studio.</p>
   </section>
 
   <section class="as-sec" id="measure">
@@ -173,15 +173,16 @@
         <tr><td>Tripod socket to the rear lower edge</td><td>24 mm</td><td>16 to 32 mm fits: the screw sits in a slot</td></tr>
         <tr><td>Lens axis above the base</td><td>37 mm</td><td>edit <code>AXIS_H</code>, rebuild, reprint</td></tr>
         <tr><td>Eyepiece behind the screen</td><td>11 mm</td><td>16 mm is clear</td></tr>
+        <tr><td>D-ring screw, length under the head</td><td>9.5 mm</td><td>edit <code>CAM_SCREW_LEN</code>, rebuild, reprint</td></tr>
       </tbody>
     </table>
-    <p class="as-note">Sony does not publish these three numbers. The flange side is exact, from the Franka drawing. The camera and lens in the 3D view are outlines built from Sony's outer dimensions.</p>
+    <p class="as-note">Sony does not publish the three camera numbers. The flange side is exact, from the Franka drawing. The camera and lens in the 3D view are outlines built from Sony's outer dimensions.</p>
   </section>
 
   <section class="as-sec" id="check">
     <h2>Before you move</h2>
     <div class="as-check">
-      <div><b>Tell the robot</b>Load: 1.44 kg. Centre of mass 82 mm out from the flange.</div>
+      <div><b>Tell the robot</b>Load: 1.43 kg. Centre of mass 82 mm out from the flange.</div>
       <div><b>Thread check</b>4 to 5 mm of the camera screw above the shelf. More than 5.5 mm damages the camera.</div>
       <div><b>Tighten again</b>After a day, and after 100 hours. PLA settles.</div>
       <div><b>Heat</b>PLA softens near 55 &deg;C. Stop if the flange is hot to hold.</div>
@@ -210,7 +211,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { toCreasedNormals } from "three/addons/utils/BufferGeometryUtils.js";
 
-const BASE = "assets/projects/cinema_mount/", VER = "?v=2bb50cfb";
+const BASE = "assets/projects/cinema_mount/", VER = "?v=d27c102e";
 let SCREWS = {}, AX = {};
 // each step: show = parts in place, add = parts that arrive (from = offset in metres along [flange-out, up]), screws, focus, cam = view direction
 const STEPS = [
@@ -220,9 +221,9 @@ const STEPS = [
     show: ["wrist"], add: ["bracket"], from: [.07, 0], screws: ["m6"], pin: true, focus: .11, cam: [.9, .55, .35] },
   { t: "Set the camera on the shelf", p: "Push it back against the lip. Lens on, eyecup off.", chips: ["lip stops twist"],
     show: ["wrist", "bracket"], add: ["camera", "lens"], from: [.04, .09], cam: [.75, .8, .3] },
-  { t: "One screw from below", p: "Up through the tunnel, with a washer. Hold the camera against the lip while you tighten.", chips: ["1× 1/4″-20 × 1/2″", "1× washer", "3/16″ key", "2.5 N·m"], warn: "Washer on, always",
+  { t: "One screw from below", p: "Up through the tunnel. Flip the ring up and turn by hand. Hold the camera against the lip while you tighten.", chips: ["1× D-ring screw", "no tools", "firm hand-tight"], warn: "Check the thread first",
     show: ["wrist", "bracket", "camera", "lens"], screws: ["cam"], focus: .12, cam: [.55, .6, -.75] },
-  { t: "Done", p: "Camera upright at joint 7 = 0. Lens on the flange axis.", chips: ["1.44 kg on the flange", "one screw to take the camera off"],
+  { t: "Done", p: "Camera upright at joint 7 = 0. Lens on the flange axis.", chips: ["1.43 kg on the flange", "one screw to take the camera off"],
     show: ["arm", "wrist", "bracket", "camera", "lens"], cam: [.8, .9, .35] },
 ];
 
@@ -258,6 +259,7 @@ function fastener(s, travel) {                   // p = point under the head, d 
   add(new THREE.CylinderGeometry(s.r, s.r, s.L, 18), s.L / 2);
   add(new THREE.CylinderGeometry(s.hr, s.hr, s.hh, 22), -s.hh / 2);
   if (s.wr) add(new THREE.CylinderGeometry(s.wr, s.wr, .0016, 28), .0008);
+  if (s.ring) { const m = new THREE.Mesh(new THREE.TorusGeometry(s.ring / 2, .0012, 10, 28, Math.PI), mat); m.quaternion.copy(q); m.rotateZ(Math.PI); m.position.copy(d).multiplyScalar(-s.hh); grp.add(m); }
   grp.userData = { home: new THREE.Vector3(...s.p), dir: d, travel };
   return grp;
 }
