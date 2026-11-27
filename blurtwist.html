@@ -48,12 +48,57 @@ figcaption{font-size:14px;color:var(--ink-2);margin-top:10px} figcaption b{color
 .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .tile{background:var(--band);border-radius:20px;padding:18px} .tile b{display:block;font:700 34px/1.05 var(--display);letter-spacing:-.02em}
 .tile span{display:block;font:500 13px/1.3 var(--text);color:var(--ink-2);margin-top:6px} .tile.key b{color:var(--hi)}
-.plots{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px} .plots div{background:var(--band);border-radius:20px;padding:18px}
+.plots{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px} .two>div{background:var(--band);border-radius:20px;padding:22px}
 .two h3{font:600 21px/1.2 var(--display);margin:0 0 10px} .two ul{margin:0;padding-left:18px;color:var(--ink-2);font-size:15px} .two li{margin-bottom:6px} .two li::marker{color:var(--hi)}
 .links{display:flex;gap:10px;justify-content:center;margin-top:28px;flex-wrap:wrap}
 .links a{font:500 15px/1 var(--text);padding:12px 20px;border-radius:999px;background:var(--ink);color:#fff} .links a.ghost{background:var(--band);color:var(--ink)}
 footer{margin-top:96px;padding:22px 22px 40px;border-top:1px solid var(--hair);font-size:12px;color:var(--ink-2);text-align:center}
+/* motion */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)} .rv.in{opacity:1;transform:none}
+.hero img.sharp{animation:kb 16s ease-in-out infinite alternate} .hero img.blur{animation:kb 16s ease-in-out infinite alternate,shutter 7s ease-in-out infinite}
+@keyframes kb{from{transform:scale(1.02)}to{transform:scale(1.1) translate(-1.2%,.6%)}}
+@keyframes shutter{0%,12%{opacity:0}38%,74%{opacity:1}100%{opacity:0}}
+.hero .over>*{animation:rise .9s cubic-bezier(.2,.7,.2,1) both} .hero .over>:nth-child(2){animation-delay:.12s} .hero .over>:nth-child(3){animation-delay:.26s}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}}
+.bt-fig{position:relative} .bt-fig svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.bt-fig line{stroke:var(--hi);stroke-width:1.6;vector-effect:non-scaling-stroke;stroke-dasharray:5 7;animation:ray 1.2s linear infinite}
+@keyframes ray{to{stroke-dashoffset:-12}}
+.pulse{position:absolute;width:14px;height:14px;margin:-7px;border-radius:50%;background:var(--hi)}
+.pulse::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--hi);animation:ping 1.8s ease-out infinite}
+@keyframes ping{to{transform:scale(4.2);opacity:0}}
+.viz{height:92px;margin:14px 0 2px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:8px;overflow:hidden} .viz svg{height:100%}
+.v1 .streak{stroke:var(--ink);stroke-width:11;stroke-linecap:round;stroke-dasharray:62;animation:smear 3.2s ease-in-out infinite}
+@keyframes smear{0%,10%{stroke-dashoffset:61}45%,80%{stroke-dashoffset:0}100%{stroke-dashoffset:61}}
+.v1 .ring{fill:none;stroke:var(--hair)} .v1 .axis{stroke:var(--hi);stroke-width:1.5;stroke-dasharray:60;animation:smear 3.2s ease-in-out infinite} .v1 .dc{fill:var(--ink-2)}
+.v1 .pk{fill:none;stroke:var(--hi);stroke-width:2.5;transform-box:fill-box;transform-origin:center;animation:pk 3.2s ease-in-out infinite}
+@keyframes pk{0%,40%{opacity:0;transform:scale(.2)}55%,82%{opacity:1;transform:scale(1)}100%{opacity:0}}
+.v1 .arrow{fill:none;stroke:var(--ink-2);stroke-width:1.5}
+.v2 span{font:600 13px/1 var(--text);padding:9px 11px;border-radius:999px;background:var(--band);animation:chip 3.6s ease-in-out infinite} .v2 b{color:var(--ink-2);font-weight:400}
+.v2 span:nth-of-type(2){animation-delay:.5s} .v2 span.m{animation-name:chipm;animation-delay:1s}
+@keyframes chip{0%,100%{transform:none}12%{transform:translateY(-5px)}24%{transform:none}}
+@keyframes chipm{0%,100%{background:var(--band);color:var(--ink)}12%,40%{background:var(--hi);color:#fff;transform:translateY(-5px)}55%{transform:none}}
+.v3 line{stroke:var(--ink);stroke-width:4;stroke-linecap:round;transform-box:fill-box;transform-origin:center;animation:align 3.4s ease-in-out infinite;animation-delay:var(--d)}
+@keyframes align{0%,14%{transform:rotate(var(--r));stroke:var(--ink-2)}46%,84%{transform:none;stroke:var(--hi)}100%{transform:rotate(var(--r));stroke:var(--ink-2)}}
+.six span,.bt-presets button,.links a,.tile,.step{transition:transform .35s cubic-bezier(.3,1.5,.5,1),background .3s,color .3s,box-shadow .3s}
+.bt-presets button:hover,.links a:hover{transform:scale(1.05)} .bt-presets button:active,.links a:active{transform:scale(.95)}
+.tile:hover,.step:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.08)}
+/* live charts */
+.bt-chart{position:relative;background:var(--band);border-radius:20px;padding:14px 12px 8px} .bt-chart svg{width:100%;display:block;touch-action:pan-y}
+.bt-chart .ttl{font:600 14px var(--text);fill:var(--ink)} .bt-chart .tick{font:500 11px var(--text);fill:var(--ink)} .bt-chart .tick.dim{fill:var(--ink-2)}
+.bt-chart .grid{stroke:var(--hair);stroke-width:1} .bt-chart .truth{stroke:var(--ink);stroke-width:1.2;stroke-dasharray:5 5}
+.bt-chart .range{fill:var(--hi);opacity:0;transition:opacity .9s .2s} .bt-chart.in .range{opacity:.1}
+.bt-chart .rangelab{font:600 11px var(--text);fill:var(--hi-deep);text-anchor:middle}
+.bt-chart .line{fill:none;stroke-width:3.5;stroke-linejoin:round;stroke-linecap:round;transition:stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)} .bt-chart.in .line{stroke-dashoffset:0!important}
+.bt-chart .band{opacity:0;transition:opacity .9s 1s} .bt-chart.in .band{opacity:.18}
+.bt-chart .pt{stroke:var(--band);stroke-width:2;transform-box:fill-box;transform-origin:center;transform:scale(0);transition:transform .45s cubic-bezier(.3,1.6,.5,1)} .bt-chart.in .pt{transform:scale(1)}
+.bt-chart .so{stroke:var(--hi)} .bt-chart .sg{stroke:#8e8e93} .bt-chart .band.so,.bt-chart .pt.so{fill:var(--hi)} .bt-chart .band.sg,.bt-chart .pt.sg{fill:#8e8e93}
+.bt-chart .band{stroke:none!important} .bt-chart .leg{font:600 12px var(--text);stroke:none!important} .bt-chart .leg.so{fill:var(--hi-deep)} .bt-chart .leg.sg{fill:#6e6e73}
+.bt-chart .cursor{stroke:var(--ink);stroke-width:1;opacity:0;transition:opacity .2s}
+.bt-tip{position:absolute;top:44px;pointer-events:none;opacity:0;transition:opacity .2s;background:#fff;border-radius:12px;padding:9px 11px;box-shadow:0 6px 22px rgba(0,0,0,.14);font:500 12px/1.5 var(--text);display:grid;white-space:nowrap}
+.bt-tip b{font-weight:600} .bt-tip .so{color:var(--hi-deep)} .bt-tip .sg{color:#6e6e73}
+#bt-shutter img{transition:opacity .25s}
+@media (prefers-reduced-motion: reduce){*,*::after{animation:none!important;transition:none!important} .hero img.blur{opacity:1}}
 /* blur lab */
 #bt-lab{background:var(--band);border-radius:28px;padding:18px}
 #bt-lab canvas{width:100%;display:block;border-radius:18px;background:#060607}
@@ -94,7 +139,8 @@ footer{margin-top:96px;padding:22px 22px 40px;border-top:1px solid var(--hair);f
 <nav class="toc" aria-label="Sections"><div class="in"><b>BlurTwist</b><a href="#try">Try it</a><a href="#hardware">Hardware</a><a href="#how">Method</a><a href="#results">Results</a><a href="#cinema">Cinema</a><a href="projects.html">Projects</a><a href="index.html">Home</a></div></nav>
 
 <header class="hero">
-<img src="assets/images/projects/blurtwist/hero_blur.jpg" alt="A chess set photographed by a moving camera; every light is smeared into a short streak">
+<img class="sharp" src="assets/images/projects/blurtwist/hero_sharp.jpg" alt="">
+<img class="blur" src="assets/images/projects/blurtwist/hero_blur.jpg" alt="A chess set photographed by a moving camera; every light is smeared into a short streak">
 <div class="over">
 <div class="eyebrow">Computational imaging · CSC2529 · University of Toronto · 2026</div>
 <h1>One blurred photo is a speedometer.</h1>
@@ -130,7 +176,9 @@ footer{margin-top:96px;padding:22px 22px 40px;border-top:1px solid var(--hair);f
 <section id="setup">
 <div class="open"><div class="eyebrow">Setup</div><h2>The robot is the ruler.</h2><p>It knows exactly how the camera moved, so the photo can be checked.</p></div>
 <div class="stage">
-<img src="assets/images/projects/blurtwist/setup.png" alt="A Franka FR3 arm carrying a camera, pointed at a chess set">
+<div class="bt-fig"><img src="assets/images/projects/blurtwist/setup.png" alt="A Franka FR3 arm carrying a camera, pointed at a chess set">
+<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="54.1" y1="37.5" x2="0" y2="100"/><line x1="54.1" y1="37.5" x2="49.4" y2="100"/></svg>
+<i class="pulse" style="left:54.1%;top:37.5%"></i></div>
 <div class="pair">
 <figure><img src="assets/images/projects/blurtwist/hero_blur.jpg" alt="The blurred photo" loading="lazy"><figcaption><b>Input.</b> One photo, 1/30 s.</figcaption></figure>
 <figure><img src="assets/images/projects/blurtwist/hero_vectors.jpg" alt="Blur vectors measured in each patch" loading="lazy"><figcaption><b>Measured.</b> A blur vector per patch.</figcaption></figure>
@@ -156,9 +204,9 @@ footer{margin-top:96px;padding:22px 22px 40px;border-top:1px solid var(--hair);f
 <section id="how">
 <div class="open"><div class="eyebrow">Method</div><h2>Three steps. No learning.</h2></div>
 <div class="steps">
-<div class="step"><i>1</i><h3>Measure</h3><p>The cepstrum of each patch peaks at its blur vector.</p></div>
-<div class="step"><i>2</i><h3>Model</h3><p class="eq"><b>d</b> = τ <b>J</b>(x, Z) <u>ξ</u></p><p>Streak = shutter × geometry × motion.</p></div>
-<div class="step"><i>3</i><h3>Solve</h3><p>A robust fit over the patches gives the motion.</p></div>
+<div class="step"><i>1</i><div class="viz v1"><svg viewBox="0 0 200 90"><line class="streak" x1="38" y1="58" x2="92" y2="32"/><g transform="translate(150 45)"><circle class="ring" r="30"/><line class="axis" x1="-27" y1="13" x2="27" y2="-13"/><circle class="pk a" cx="-27" cy="13" r="5"/><circle class="pk b" cx="27" cy="-13" r="5"/><circle class="dc" r="2.5"/></g><path class="arrow" d="M104 45h12m-5-5l5 5-5 5"/></svg></div><h3>Measure</h3><p>The cepstrum of each patch peaks at its blur vector.</p></div>
+<div class="step"><i>2</i><div class="viz v2"><span>shutter</span><b>×</b><span>geometry</span><b>×</b><span class="m">motion</span></div><h3>Model</h3><p class="eq"><b>d</b> = τ <b>J</b>(x, Z) <u>ξ</u></p><p>Streak = shutter × geometry × motion.</p></div>
+<div class="step"><i>3</i><div class="viz v3"><svg viewBox="0 0 200 90"><line style="--r:-75deg;--d:0ms" x1="13" y1="27" x2="31" y2="21"/><line style="--r:-38deg;--d:90ms" x1="44" y1="27" x2="62" y2="21"/><line style="--r:-1deg;--d:180ms" x1="75" y1="27" x2="93" y2="21"/><line style="--r:36deg;--d:270ms" x1="106" y1="27" x2="124" y2="21"/><line style="--r:73deg;--d:360ms" x1="137" y1="27" x2="155" y2="21"/><line style="--r:-40deg;--d:0ms" x1="168" y1="27" x2="186" y2="21"/><line style="--r:-3deg;--d:90ms" x1="13" y1="49" x2="31" y2="43"/><line style="--r:34deg;--d:180ms" x1="44" y1="49" x2="62" y2="43"/><line style="--r:71deg;--d:270ms" x1="75" y1="49" x2="93" y2="43"/><line style="--r:-42deg;--d:360ms" x1="106" y1="49" x2="124" y2="43"/><line style="--r:-5deg;--d:0ms" x1="137" y1="49" x2="155" y2="43"/><line style="--r:32deg;--d:90ms" x1="168" y1="49" x2="186" y2="43"/><line style="--r:69deg;--d:180ms" x1="13" y1="71" x2="31" y2="65"/><line style="--r:-44deg;--d:270ms" x1="44" y1="71" x2="62" y2="65"/><line style="--r:-7deg;--d:360ms" x1="75" y1="71" x2="93" y2="65"/><line style="--r:30deg;--d:0ms" x1="106" y1="71" x2="124" y2="65"/><line style="--r:67deg;--d:90ms" x1="137" y1="71" x2="155" y2="65"/><line style="--r:-46deg;--d:180ms" x1="168" y1="71" x2="186" y2="65"/></svg></div><h3>Solve</h3><p>A robust fit over the patches gives the motion.</p></div>
 </div>
 </section>
 
@@ -170,7 +218,8 @@ footer{margin-top:96px;padding:22px 22px 40px;border-top:1px solid var(--hair);f
 <div class="tile"><b>7.0×</b><span>better than rotation-only</span></div>
 <div class="tile"><b>5–25 px</b><span>blur length where it works</span></div>
 </div>
-<div class="plots"><div><img src="assets/images/projects/blurtwist/plot_w_c.svg" alt="Angular velocity error against blur length" loading="lazy"></div><div><img src="assets/images/projects/blurtwist/plot_v_c.svg" alt="Linear velocity error against blur length" loading="lazy"></div></div>
+<div class="plots"><div class="bt-chart" data-chart="{&quot;title&quot;: &quot;Turning-rate error (\u00b0/s)&quot;, &quot;x&quot;: [1.29, 2.59, 5.39, 10.77, 21.55, 40.4], &quot;shutters&quot;: [&quot;1/250&quot;, &quot;1/125&quot;, &quot;1/60&quot;, &quot;1/30&quot;, &quot;1/15&quot;, &quot;1/8&quot;], &quot;truth&quot;: 14.999999999999998, &quot;unit&quot;: &quot;\u00b0/s&quot;, &quot;dec&quot;: 2, &quot;ymin&quot;: 0.2, &quot;ymax&quot;: 300, &quot;yticks&quot;: [1, 10, 100], &quot;series&quot;: [{&quot;name&quot;: &quot;rotation only&quot;, &quot;cls&quot;: &quot;g&quot;, &quot;med&quot;: [97.621, 49.12, 11.429, 4.171, 3.416, 14.84], &quot;q25&quot;: [95.223, 47.328, 9.849, 3.683, 2.743, 14.574], &quot;q75&quot;: [99.837, 49.645, 13.689, 4.827, 3.637, 14.963]}, {&quot;name&quot;: &quot;BlurTwist&quot;, &quot;cls&quot;: &quot;o&quot;, &quot;med&quot;: [129.454, 69.677, 1.782, 0.593, 0.539, 15.197], &quot;q25&quot;: [119.015, 62.738, 1.411, 0.482, 0.325, 14.386], &quot;q75&quot;: [134.721, 72.334, 5.891, 0.807, 7.552, 15.734]}]}"></div><div class="bt-chart" data-chart="{&quot;title&quot;: &quot;Speed error (mm/s)&quot;, &quot;x&quot;: [1.29, 2.59, 5.39, 10.77, 21.55, 40.4], &quot;shutters&quot;: [&quot;1/250&quot;, &quot;1/125&quot;, &quot;1/60&quot;, &quot;1/30&quot;, &quot;1/15&quot;, &quot;1/8&quot;], &quot;truth&quot;: 150.0, &quot;unit&quot;: &quot;mm/s&quot;, &quot;dec&quot;: 0, &quot;ymin&quot;: 5, &quot;ymax&quot;: 4000, &quot;yticks&quot;: [10, 100, 1000], &quot;series&quot;: [{&quot;name&quot;: &quot;BlurTwist&quot;, &quot;cls&quot;: &quot;o&quot;, &quot;med&quot;: [1796.105, 819.33, 35.152, 12.441, 19.529, 149.407], &quot;q25&quot;: [1594.813, 756.693, 26.642, 8.689, 9.554, 107.928], &quot;q75&quot;: [2321.221, 931.302, 139.065, 36.213, 199.845, 173.152]}]}"></div></div>
+<figcaption style="text-align:center">Median over 12 motions; band: middle half of the trials. Hover or tap for values.</figcaption>
 </section>
 
 <section id="shutter">
@@ -201,5 +250,5 @@ footer{margin-top:96px;padding:22px 22px 40px;border-top:1px solid var(--hair);f
 
 </div></div>
 <footer>Qilong (Jerry) Cheng · CSC2529 Computational Imaging · all figures are MuJoCo simulation · builds on Image as an IMU (Chen &amp; Clark, ICCV 2025), HDR+ (Hasinoff et al., 2016) and VibES (Polizzi et al., 3DV 2026) · <a href="index.html">thejerrycheng.github.io</a></footer>
-<script src="assets/js/blurtwist.js?v=1"></script>
+<script src="assets/js/blurtwist.js?v=2"></script>
 </body></html>
