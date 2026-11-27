@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BlurTwist — camera motion from one blurred photo</title>
+<meta name="description" content="BlurTwist: 6-DoF camera velocity from a single motion-blurred photo, checked against a robot arm.">
+<meta name="author" content="Jerry Cheng">
+<link rel="canonical" href="https://thejerrycheng.github.io/blurtwist.html">
+<meta property="og:title" content="BlurTwist — one blurred photo is a speedometer">
+<meta property="og:image" content="https://thejerrycheng.github.io/assets/images/projects/blurtwist/poster.jpg">
+<link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.v4.png">
+<style>
+/* Same layout system as the ChopChop page: Apple product-page structure, full-bleed hero, 980px column. */
+:root{--bg:#fff;--band:#f5f5f7;--ink:#1d1d1f;--ink-2:#6e6e73;--hair:#d2d2d7;--hi:#ff9500;--hi-deep:#bf4800;
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --text:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif}
+*{box-sizing:border-box}
+html,body{overflow-x:clip;max-width:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.47 var(--text);letter-spacing:-.022em;-webkit-font-smoothing:antialiased}
+a{color:var(--ink);text-decoration:none} img{max-width:100%;display:block}
+nav.toc{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.78);backdrop-filter:saturate(1.8) blur(20px);-webkit-backdrop-filter:saturate(1.8) blur(20px);border-bottom:1px solid rgba(210,210,215,.6)}
+nav.toc .in{max-width:1024px;margin:0 auto;padding:12px 22px;display:flex;gap:22px;align-items:center;font:400 12px/1 var(--text);white-space:nowrap;overflow-x:auto}
+nav.toc b{font:600 14px/1 var(--display);margin-right:auto} nav.toc a{opacity:.8} nav.toc a:hover{opacity:1}
+.hero{position:relative;height:calc(100svh - 41px);min-height:480px;max-height:900px;display:grid;align-items:end;overflow:hidden;background:#000;color:#f5f5f7}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 35%,rgba(0,0,0,.78) 100%)}
+.hero .over{position:relative;z-index:1;max-width:1024px;width:100%;margin:0 auto;padding:0 22px 64px;display:grid;gap:14px}
+.eyebrow{font:600 12px/1 var(--text);letter-spacing:.08em;text-transform:uppercase;color:var(--hi-deep)}
+.hero .eyebrow{color:#f5f5f7;opacity:.85}
+.hero h1{font:600 clamp(40px,7vw,80px)/1.05 var(--display);letter-spacing:-.015em;margin:0;max-width:13ch;text-wrap:balance}
+.hero p{color:rgba(245,245,247,.86);font-size:clamp(17px,1.9vw,21px);max-width:44ch;margin:0}
+.page{padding-inline:22px} .canvas{max-width:980px;margin:0 auto}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);margin-top:64px}
+.fact{padding:6px 18px;display:grid;gap:6px;border-left:1px solid var(--hair)} .fact:first-child{border-left:0}
+.fact .v{font:600 40px/1 var(--display);letter-spacing:-.02em} .fact .v small{font:600 17px/1 var(--text);color:var(--ink-2);margin-left:3px}
+.fact .k{font:400 14px/1.4 var(--text);color:var(--ink-2)} .fact.key .v{color:var(--hi)}
+section{padding-block:96px 8px}
+.open{text-align:center;max-width:720px;margin:0 auto 36px}
+h2{font:600 clamp(32px,4.8vw,56px)/1.06 var(--display);letter-spacing:-.015em;margin:12px 0 0;text-wrap:balance}
+.open p{font-size:21px;color:var(--ink-2);margin:14px auto 0;max-width:40ch}
+.stage{background:var(--band);border-radius:28px;padding:36px 36px 28px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px} .pair figure{margin:0} .pair img{border-radius:18px;width:100%}
+figcaption{font-size:14px;color:var(--ink-2);margin-top:10px} figcaption b{color:var(--ink);font-weight:600}
+.six{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:20px}
+.six span{background:var(--hi);color:#fff;font:600 17px/1 var(--display);text-align:center;border-radius:999px;padding:11px 0}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.step{background:var(--band);border-radius:20px;padding:22px}
+.step i{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--hi);color:#fff;font:600 14px/1 var(--display);font-style:normal}
+.step h3{font:600 21px/1.2 var(--display);margin:14px 0 6px} .step p{margin:0;color:var(--ink-2);font-size:15px}
+.step .eq{font:400 22px/1 var(--display);color:var(--ink);margin:2px 0 8px} .step .eq b{font-weight:600} .step .eq u{text-decoration:none;color:var(--hi);font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tile{background:var(--band);border-radius:20px;padding:18px} .tile b{display:block;font:700 34px/1.05 var(--display);letter-spacing:-.02em}
+.tile span{display:block;font:500 13px/1.3 var(--text);color:var(--ink-2);margin-top:6px} .tile.key b{color:var(--hi)}
+.plots{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px} .plots div{background:var(--band);border-radius:20px;padding:18px}
+.strip{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.shot{margin:0} .shot img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:14px}
+.shot figcaption{display:grid;gap:2px;margin-top:8px;font-size:13px} .shot span{color:var(--ink-2)} .shot i{font-style:normal;color:var(--ink-2)} .shot.ok i{color:var(--hi-deep);font-weight:600}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px} .two div{background:var(--band);border-radius:20px;padding:22px}
+.two h3{font:600 21px/1.2 var(--display);margin:0 0 10px} .two ul{margin:0;padding-left:18px;color:var(--ink-2);font-size:15px} .two li{margin-bottom:6px} .two li::marker{color:var(--hi)}
+.links{display:flex;gap:10px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+.links a{font:500 15px/1 var(--text);padding:12px 20px;border-radius:999px;background:var(--ink);color:#fff} .links a.ghost{background:var(--band);color:var(--ink)}
+footer{margin-top:96px;padding:22px 22px 40px;border-top:1px solid var(--hair);font-size:12px;color:var(--ink-2);text-align:center}
+@media (max-width:760px){body{font-size:16px} .page{padding-inline:16px} .hero .over{padding:0 16px 36px} .facts,.tiles{grid-template-columns:1fr 1fr;gap:20px 0} .tiles{gap:10px}
+  .fact{border-left:0;padding:0 8px} .fact .v{font-size:30px} section{padding-block:56px 4px} .steps,.plots,.pair,.two{grid-template-columns:1fr} .strip{grid-template-columns:repeat(3,1fr)}
+  .stage{padding:18px;border-radius:20px} .six span{font-size:14px;padding:9px 0} .open p{font-size:17px}}
+</style></head>
+<body>
+<nav class="toc" aria-label="Sections"><div class="in"><b>BlurTwist</b><a href="#setup">Setup</a><a href="#how">Method</a><a href="#results">Results</a><a href="#limits">Limits</a><a href="projects.html">Projects</a><a href="index.html">Home</a></div></nav>
+
+<header class="hero">
+<img src="assets/images/projects/blurtwist/hero_blur.jpg" alt="A chess set photographed by a moving camera; every light is smeared into a short streak">
+<div class="over">
+<div class="eyebrow">Computational imaging · CSC2529 · University of Toronto · 2026</div>
+<h1>One blurred photo is a speedometer.</h1>
+<p>Motion blur records how the camera moved. BlurTwist reads it back: all six numbers, from a single frame.</p>
+</div>
+</header>
+
+<div class="page"><div class="canvas">
+
+<div class="facts">
+<div class="fact"><div class="v">1<small>photo</small></div><div class="k">in</div></div>
+<div class="fact"><div class="v">6<small>DoF</small></div><div class="k">velocity out</div></div>
+<div class="fact key"><div class="v">0.75<small>°/s</small></div><div class="k">median error, simulation</div></div>
+<div class="fact"><div class="v">0</div><div class="k">training images</div></div>
+</div>
+
+<section id="setup">
+<div class="open"><div class="eyebrow">Setup</div><h2>The robot is the ruler.</h2><p>It knows exactly how the camera moved, so the photo can be checked.</p></div>
+<div class="stage">
+<img src="assets/images/projects/blurtwist/setup.png" alt="A Franka FR3 arm carrying a camera, pointed at a chess set">
+<div class="pair">
+<figure><img src="assets/images/projects/blurtwist/hero_blur.jpg" alt="The blurred photo" loading="lazy"><figcaption><b>Input.</b> One photo, 1/30 s.</figcaption></figure>
+<figure><img src="assets/images/projects/blurtwist/hero_vectors.jpg" alt="Blur vectors measured in each patch" loading="lazy"><figcaption><b>Measured.</b> A blur vector per patch.</figcaption></figure>
+</div>
+<div class="six"><span>v<sub>x</sub></span><span>v<sub>y</sub></span><span>v<sub>z</sub></span><span>ω<sub>x</sub></span><span>ω<sub>y</sub></span><span>ω<sub>z</sub></span></div>
+</div>
+</section>
+
+<section id="how">
+<div class="open"><div class="eyebrow">Method</div><h2>Three steps. No learning.</h2></div>
+<div class="steps">
+<div class="step"><i>1</i><h3>Measure</h3><p>The cepstrum of each patch peaks at its blur vector.</p></div>
+<div class="step"><i>2</i><h3>Model</h3><p class="eq"><b>d</b> = τ <b>J</b>(x, Z) <u>ξ</u></p><p>Streak = shutter × geometry × motion.</p></div>
+<div class="step"><i>3</i><h3>Solve</h3><p>A robust fit over the patches gives the motion.</p></div>
+</div>
+</section>
+
+<section id="results">
+<div class="open"><div class="eyebrow">Results · simulation</div><h2>Within 5% of the true turning rate.</h2><p>72 photos. 12 motions, 6 shutter speeds.</p></div>
+<div class="tiles">
+<div class="tile key"><b>0.75°/s</b><span>turning-rate error · 5%</span></div>
+<div class="tile"><b>17 mm/s</b><span>speed error · 11%</span></div>
+<div class="tile"><b>5.6×</b><span>better than rotation-only</span></div>
+<div class="tile"><b>5–25 px</b><span>blur length where it works</span></div>
+</div>
+<div class="plots"><div><img src="assets/images/projects/blurtwist/plot_w_c.png" alt="Angular velocity error against blur length" loading="lazy"></div><div><img src="assets/images/projects/blurtwist/plot_v_c.png" alt="Linear velocity error against blur length" loading="lazy"></div></div>
+</section>
+
+<section id="shutter">
+<div class="open"><div class="eyebrow">Shutter speed</div><h2>Too fast, no streak. Too slow, no signal.</h2></div>
+<div class="strip"><figure class="shot"><img src="assets/images/projects/blurtwist/strip_1_250.jpg" alt="Detail at 1/250 s" loading="lazy"><figcaption><b>1/250 s</b><span>1 px</span><i>fails</i></figcaption></figure><figure class="shot"><img src="assets/images/projects/blurtwist/strip_1_125.jpg" alt="Detail at 1/125 s" loading="lazy"><figcaption><b>1/125 s</b><span>3 px</span><i>fails</i></figcaption></figure><figure class="shot ok"><img src="assets/images/projects/blurtwist/strip_1_60.jpg" alt="Detail at 1/60 s" loading="lazy"><figcaption><b>1/60 s</b><span>5 px</span><i>2.7°/s</i></figcaption></figure><figure class="shot ok"><img src="assets/images/projects/blurtwist/strip_1_30.jpg" alt="Detail at 1/30 s" loading="lazy"><figcaption><b>1/30 s</b><span>11 px</span><i>0.7°/s</i></figcaption></figure><figure class="shot ok"><img src="assets/images/projects/blurtwist/strip_1_15.jpg" alt="Detail at 1/15 s" loading="lazy"><figcaption><b>1/15 s</b><span>22 px</span><i>0.8°/s</i></figcaption></figure><figure class="shot"><img src="assets/images/projects/blurtwist/strip_1_8.jpg" alt="Detail at 1/8 s" loading="lazy"><figcaption><b>1/8 s</b><span>40 px</span><i>fails</i></figcaption></figure></div>
+</section>
+
+<section id="limits">
+<div class="open"><div class="eyebrow">Status</div><h2>Simulation today. The real arm next.</h2></div>
+<div class="two">
+<div><h3>Limits</h3><ul><li>Fails under 5 px or near 40 px of blur.</li><li>Needs texture.</li><li>Direction sign needs a second frame.</li><li>Static scenes only.</li></ul></div>
+<div><h3>Next</h3><ul><li>Real photos on the Franka.</li><li>Predict the error before shooting.</li><li>Compare with the learned method.</li></ul></div>
+</div>
+<div class="links"><a href="assets/pdf/projects/BlurTwist_CSC2529_poster.pdf" target="_blank" rel="noopener">Poster</a><a class="ghost" href="projects.html">All projects</a></div>
+</section>
+
+</div></div>
+<footer>Qilong (Jerry) Cheng · CSC2529 Computational Imaging · all figures are MuJoCo simulation · builds on Image as an IMU (Chen &amp; Clark, ICCV 2025) · <a href="index.html">thejerrycheng.github.io</a></footer>
+</body></html>
