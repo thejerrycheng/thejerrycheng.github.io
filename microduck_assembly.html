@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MicroDuck flight pack: assembly — Jerry (Qilong) Cheng</title>
-  <meta name="description" content="Step-by-step assembly of the MicroDuck flight pack: eight printed parts, four 50 mm fans, ten screws.">
+  <meta name="description" content="Step-by-step assembly of the MicroDuck flight pack: ten printed parts, four 50 mm fans, ten screws.">
   <meta name="author" content="Jerry Cheng">
   <link rel="canonical" href="https://thejerrycheng.github.io/microduck_assembly.html">
   <link rel="icon" href="assets/images/favicon.v4.svg" type="image/svg+xml">
@@ -194,7 +194,7 @@ const EXPL = { backpack: [-.02, 0, -.05], bottom_cap: [-.02, 0, -.12], wing_left
 const side = (n, v) => (/_left|_FL|_RL/.test(n) ? v : [v[0], -v[1], v[2]]);
 // each step: show = parts already in place, add = parts that arrive {from: offset}, screws/inserts, camera [pos, target]
 const STEPS = [
-  { t: "Print 8 parts", p: "PLA. 3 walls. 15 % gyroid.", chips: ["1 backpack", "1 cap", "2 wings", "2 nacelles", "4 rings"],
+  { t: "Print 10 parts", p: "PLA. 3 walls. 15 % gyroid.", chips: ["1 backpack", "1 cap", "2 wings", "2 nacelles", "4 rings"],
     add: PRINTED, expl: true, cam: [[.42, -.48, .42], [0, 0, .17]] },
   { t: "Melt in 10 inserts", p: "Soldering iron, 220 °C. Flush with the surface.", chips: ["10× M3 insert", "2 per wing root", "2 per nacelle", "2 in the backpack"],
     show: PRINTED.filter(n => !n.startsWith("ring") && n !== "bottom_cap"), expl: true, inserts: ["root", "tongue", "cap"], cam: [[-.30, -.50, .05], [0, 0, .17]] },
