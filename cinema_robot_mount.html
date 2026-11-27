@@ -157,12 +157,12 @@
         <tr><td>On the bed</td><td>on its side, as in the 3MF</td><td>layers run around the corner of the L</td></tr>
         <tr><td>Supports</td><td>none</td><td>every bore has a 45&deg; roof</td></tr>
         <tr><td>Layer</td><td>0.2 mm</td><td></td></tr>
-        <tr><td>Walls</td><td>6</td><td>solid plastic under every washer</td></tr>
-        <tr><td>Infill</td><td>40 % gyroid</td><td></td></tr>
+        <tr><td>Walls</td><td>4</td><td>as printed</td></tr>
+        <tr><td>Infill</td><td>25 %</td><td>as printed</td></tr>
         <tr><td>Brim</td><td>5 mm</td><td>tall, narrow footprint</td></tr>
       </tbody>
     </table>
-    <p class="as-note">PLA, about 231 g. The 3MF carries the orientation only: set walls and infill in Bambu Studio.</p>
+    <p class="as-note">PLA, 153 g and 3 h 18 min by the slicer. The 3MF carries the orientation only: set walls and infill in Bambu Studio.</p>
   </section>
 
   <section class="as-sec" id="measure">
@@ -182,7 +182,7 @@
   <section class="as-sec" id="check">
     <h2>Before you move</h2>
     <div class="as-check">
-      <div><b>Tell the robot</b>Load: 1.43 kg. Centre of mass 82 mm out from the flange.</div>
+      <div><b>Tell the robot</b>Load: 1.36 kg. Centre of mass 85 mm out from the flange.</div>
       <div><b>Thread check</b>4 to 5 mm of the camera screw above the shelf. More than 5.5 mm damages the camera.</div>
       <div><b>Tighten again</b>After a day, and after 100 hours. PLA settles.</div>
       <div><b>Heat</b>PLA softens near 55 &deg;C. Stop if the flange is hot to hold.</div>
@@ -215,15 +215,15 @@ const BASE = "assets/projects/cinema_mount/", VER = "?v=d27c102e";
 let SCREWS = {}, AX = {};
 // each step: show = parts in place, add = parts that arrive (from = offset in metres along [flange-out, up]), screws, focus, cam = view direction
 const STEPS = [
-  { t: "Print the bracket", p: "PLA, on its side. No supports.", chips: ["6 walls", "40 % gyroid", "0.2 mm layers"],
+  { t: "Print the bracket", p: "PLA, on its side. No supports.", chips: ["4 walls", "25 % infill", "0.2 mm layers"],
     add: ["bracket"], cam: [.9, .7, .45] },
-  { t: "Bolt it to the flange", p: "Shelf opposite the pin hole. Spigot into the bore. Four screws, a washer under each.", chips: ["4× M6×16", "4× washer", "5 mm key", "4 N·m"],
+  { t: "Bolt it to the flange", p: "Shelf opposite the pin hole. Spigot into the bore. Four screws, a washer under each.", chips: ["4× M6×16", "4× washer", "5 mm key", "1.5 N·m, snug"],
     show: ["wrist"], add: ["bracket"], from: [.07, 0], screws: ["m6"], pin: true, focus: .11, cam: [.9, .55, .35] },
   { t: "Set the camera on the shelf", p: "Push it back against the lip. Lens on, eyecup off.", chips: ["lip stops twist"],
     show: ["wrist", "bracket"], add: ["camera", "lens"], from: [.04, .09], cam: [.75, .8, .3] },
   { t: "One screw from below", p: "Up through the tunnel. Flip the ring up and turn by hand. Hold the camera against the lip while you tighten.", chips: ["1× D-ring screw", "no tools", "firm hand-tight"], warn: "Check the thread first",
     show: ["wrist", "bracket", "camera", "lens"], screws: ["cam"], focus: .12, cam: [.55, .6, -.75] },
-  { t: "Done", p: "Camera upright at joint 7 = 0. Lens on the flange axis.", chips: ["1.43 kg on the flange", "one screw to take the camera off"],
+  { t: "Done", p: "Camera upright at joint 7 = 0. Lens on the flange axis.", chips: ["1.36 kg on the flange", "one screw to take the camera off"],
     show: ["arm", "wrist", "bracket", "camera", "lens"], cam: [.8, .9, .35] },
 ];
 
