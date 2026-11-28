@@ -179,26 +179,25 @@
     set([9, -6, 8, 7, -10, 9]);
   }
 
-  /* ---------- shutter scrubber ---------- */
-  var sc = document.getElementById('bt-shutter');
-  if (sc) {
+  /* ---------- scrubbers: one picture per setting (shutter speeds, apertures) ---------- */
+  document.querySelectorAll('.bt-scrub').forEach(function (sc) {
     var img = sc.querySelector('img'), rg = sc.querySelector('input'), cap = sc.querySelector('.bt-cap'), data = JSON.parse(sc.getAttribute('data-info'));
     var upd = function () {
       var d = data[+rg.value]; img.src = d.src;
-      cap.innerHTML = '<b>' + d.s + ' s</b><span>' + d.blur + ' px of blur</span><i class="' + (d.ok ? 'ok' : '') + '">' + d.res + '</i>';
+      cap.innerHTML = '<b>' + d.s + (/^1\//.test(d.s) ? ' s' : '') + '</b><span>' + d.blur + ' ' + (d.unit || 'px of blur') + '</span><i class="' + (d.ok ? 'ok' : '') + '">' + d.res + '</i>';
     };
     data.forEach(function (d) { var im = new Image(); im.src = d.src; });
-    var playing = !REDUCED, dir = 1;
+    var playing = !REDUCED, dir = 1, max = data.length - 1;
     rg.addEventListener('input', function (e) { if (e.isTrusted) playing = false; upd(); }); upd();
     rg.addEventListener('pointerdown', function () { playing = false; });
     onSeen(sc, function () {
       var id = setInterval(function () {
         if (!playing) { clearInterval(id); return; }
-        var v = +rg.value + dir; if (v > 5 || v < 0) { dir = -dir; v = +rg.value + dir; }
+        var v = +rg.value + dir; if (v > max || v < 0) { dir = -dir; v = +rg.value + dir; }
         rg.value = v; upd();
       }, 1100);
     });
-  }
+  });
 
   /* ---------- before / after wipes ---------- */
   document.querySelectorAll('.bt-wipe').forEach(function (w) {
@@ -222,7 +221,7 @@
 
   /* ---------- scroll reveals ---------- */
   (function () {
-    var sel = '.open, .facts .fact, .stage, .tiles > *, .steps > *, .cine > *, .two > *, #bt-lab, #bt-shutter, .plots > *, .links, .bt-fig';
+    var sel = '.open, .facts .fact, .stage, .tiles > *, .steps > *, .cine > *, .two > *, #bt-lab, .bt-scrub, .plots > *, .links, .bt-fig';
     var els = Array.prototype.slice.call(document.querySelectorAll(sel));
     if (REDUCED || !('IntersectionObserver' in window)) return;
     els.forEach(function (el) {

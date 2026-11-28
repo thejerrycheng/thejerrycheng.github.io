@@ -116,9 +116,10 @@ footer{margin-top:96px;padding:22px 22px 40px;border-top:1px solid var(--hair);f
 .bt-read .est span{background:var(--hi);color:#fff} .bt-read .est span b{color:rgba(255,255,255,.8)} .bt-read .est span.off{background:var(--hair)}
 .bt-note{font-size:14px;color:var(--ink-2);margin:12px 4px 2px;min-height:1.5em}
 /* shutter scrubber + wipes */
-#bt-shutter{background:var(--band);border-radius:28px;padding:18px}
+#bt-shutter,.bt-scrub{background:var(--band);border-radius:28px;padding:18px}
 #bt-shutter img{width:100%;aspect-ratio:1200/776;object-fit:cover;border-radius:18px}
-#bt-shutter input{width:100%;accent-color:var(--hi);margin-top:16px}
+.bt-scrub img{width:100%;aspect-ratio:1280/536;object-fit:cover;border-radius:18px}
+#bt-shutter input,.bt-scrub input{width:100%;accent-color:var(--hi);margin-top:16px}
 .bt-ticks{display:flex;justify-content:space-between;font:500 12px/1 var(--text);color:var(--ink-2);margin:6px 2px 0}
 .bt-cap{display:flex;gap:14px;align-items:baseline;justify-content:center;margin-top:14px} .bt-cap b{font:600 28px/1 var(--display)} .bt-cap span{color:var(--ink-2)}
 .bt-cap i{font-style:normal;color:var(--ink-2)} .bt-cap i.ok{color:var(--hi-deep);font-weight:600}
@@ -136,7 +137,7 @@ footer{margin-top:96px;padding:22px 22px 40px;border-top:1px solid var(--hair);f
   .bt-read{grid-template-columns:repeat(3,1fr)} .bt-read>em{grid-column:1/-1;margin-top:6px} .cine .full{grid-template-columns:1fr}}
 </style></head>
 <body>
-<nav class="toc" aria-label="Sections"><div class="in"><b>BlurTwist</b><a href="#try">Try it</a><a href="#hardware">Hardware</a><a href="#how">Method</a><a href="#results">Results</a><a href="#cinema">Cinema</a><a href="projects.html">Projects</a><a href="index.html">Home</a></div></nav>
+<nav class="toc" aria-label="Sections"><div class="in"><b>BlurTwist</b><a href="#try">Try it</a><a href="#hardware">Hardware</a><a href="#how">Method</a><a href="#results">Results</a><a href="#aperture">Aperture</a><a href="#cinema">Cinema</a><a href="projects.html">Projects</a><a href="index.html">Home</a></div></nav>
 
 <header class="hero">
 <img class="sharp" src="assets/images/projects/blurtwist/hero_sharp.jpg" alt="">
@@ -224,8 +225,15 @@ footer{margin-top:96px;padding:22px 22px 40px;border-top:1px solid var(--hair);f
 
 <section id="shutter">
 <div class="open"><div class="eyebrow">Shutter speed</div><h2>Too fast, no streak. Too slow, no signal.</h2><p>Drag through six shutter speeds of the same move.</p></div>
-<div id="bt-shutter" data-info="[{&quot;s&quot;: &quot;1/250&quot;, &quot;blur&quot;: &quot;1&quot;, &quot;ok&quot;: false, &quot;src&quot;: &quot;assets/images/projects/blurtwist/strip_1_250.jpg&quot;, &quot;res&quot;: &quot;cannot be read&quot;}, {&quot;s&quot;: &quot;1/125&quot;, &quot;blur&quot;: &quot;3&quot;, &quot;ok&quot;: false, &quot;src&quot;: &quot;assets/images/projects/blurtwist/strip_1_125.jpg&quot;, &quot;res&quot;: &quot;cannot be read&quot;}, {&quot;s&quot;: &quot;1/60&quot;, &quot;blur&quot;: &quot;5&quot;, &quot;ok&quot;: true, &quot;src&quot;: &quot;assets/images/projects/blurtwist/strip_1_60.jpg&quot;, &quot;res&quot;: &quot;1.8\u00b0/s \u00b7 35 mm/s&quot;}, {&quot;s&quot;: &quot;1/30&quot;, &quot;blur&quot;: &quot;11&quot;, &quot;ok&quot;: true, &quot;src&quot;: &quot;assets/images/projects/blurtwist/strip_1_30.jpg&quot;, &quot;res&quot;: &quot;0.6\u00b0/s \u00b7 12 mm/s&quot;}, {&quot;s&quot;: &quot;1/15&quot;, &quot;blur&quot;: &quot;22&quot;, &quot;ok&quot;: true, &quot;src&quot;: &quot;assets/images/projects/blurtwist/strip_1_15.jpg&quot;, &quot;res&quot;: &quot;0.5\u00b0/s \u00b7 20 mm/s&quot;}, {&quot;s&quot;: &quot;1/8&quot;, &quot;blur&quot;: &quot;40&quot;, &quot;ok&quot;: false, &quot;src&quot;: &quot;assets/images/projects/blurtwist/strip_1_8.jpg&quot;, &quot;res&quot;: &quot;cannot be read&quot;}]"><img src="assets/images/projects/blurtwist/strip_1_30.jpg" alt="Detail of the simulated photo at the chosen shutter speed">
+<div id="bt-shutter" class="bt-scrub" data-info="[{&quot;s&quot;: &quot;1/250&quot;, &quot;blur&quot;: &quot;1&quot;, &quot;ok&quot;: false, &quot;src&quot;: &quot;assets/images/projects/blurtwist/strip_1_250.jpg&quot;, &quot;res&quot;: &quot;cannot be read&quot;}, {&quot;s&quot;: &quot;1/125&quot;, &quot;blur&quot;: &quot;3&quot;, &quot;ok&quot;: false, &quot;src&quot;: &quot;assets/images/projects/blurtwist/strip_1_125.jpg&quot;, &quot;res&quot;: &quot;cannot be read&quot;}, {&quot;s&quot;: &quot;1/60&quot;, &quot;blur&quot;: &quot;5&quot;, &quot;ok&quot;: true, &quot;src&quot;: &quot;assets/images/projects/blurtwist/strip_1_60.jpg&quot;, &quot;res&quot;: &quot;1.8\u00b0/s \u00b7 35 mm/s&quot;}, {&quot;s&quot;: &quot;1/30&quot;, &quot;blur&quot;: &quot;11&quot;, &quot;ok&quot;: true, &quot;src&quot;: &quot;assets/images/projects/blurtwist/strip_1_30.jpg&quot;, &quot;res&quot;: &quot;0.6\u00b0/s \u00b7 12 mm/s&quot;}, {&quot;s&quot;: &quot;1/15&quot;, &quot;blur&quot;: &quot;22&quot;, &quot;ok&quot;: true, &quot;src&quot;: &quot;assets/images/projects/blurtwist/strip_1_15.jpg&quot;, &quot;res&quot;: &quot;0.5\u00b0/s \u00b7 20 mm/s&quot;}, {&quot;s&quot;: &quot;1/8&quot;, &quot;blur&quot;: &quot;40&quot;, &quot;ok&quot;: false, &quot;src&quot;: &quot;assets/images/projects/blurtwist/strip_1_8.jpg&quot;, &quot;res&quot;: &quot;cannot be read&quot;}]"><img src="assets/images/projects/blurtwist/strip_1_30.jpg" alt="Detail of the simulated photo at the chosen shutter speed">
 <input type="range" min="0" max="5" step="1" value="3" aria-label="Shutter speed"><div class="bt-ticks"><span>1/250</span><span>1/125</span><span>1/60</span><span>1/30</span><span>1/15</span><span>1/8</span></div><div class="bt-cap"></div></div>
+</section>
+
+<section id="aperture">
+<div class="open"><div class="eyebrow">Aperture</div><h2>Bokeh hides the streaks.</h2><p>The same move through a 50 mm lens. Open the aperture and the lights turn into discs.</p></div>
+<div class="bt-scrub" data-info="[{&quot;s&quot;: &quot;f/1.4&quot;, &quot;blur&quot;: &quot;52&quot;, &quot;ok&quot;: false, &quot;unit&quot;: &quot;px defocus disc&quot;, &quot;src&quot;: &quot;assets/images/projects/blurtwist/ap_f1p4.jpg&quot;, &quot;res&quot;: &quot;14\u00b0/s: unusable&quot;}, {&quot;s&quot;: &quot;f/2.8&quot;, &quot;blur&quot;: &quot;26&quot;, &quot;ok&quot;: false, &quot;unit&quot;: &quot;px defocus disc&quot;, &quot;src&quot;: &quot;assets/images/projects/blurtwist/ap_f2p8.jpg&quot;, &quot;res&quot;: &quot;14\u00b0/s: unusable&quot;}, {&quot;s&quot;: &quot;f/5.6&quot;, &quot;blur&quot;: &quot;13&quot;, &quot;ok&quot;: false, &quot;unit&quot;: &quot;px defocus disc&quot;, &quot;src&quot;: &quot;assets/images/projects/blurtwist/ap_f5p6.jpg&quot;, &quot;res&quot;: &quot;8.0\u00b0/s: poor&quot;}, {&quot;s&quot;: &quot;f/11&quot;, &quot;blur&quot;: &quot;7&quot;, &quot;ok&quot;: false, &quot;unit&quot;: &quot;px defocus disc&quot;, &quot;src&quot;: &quot;assets/images/projects/blurtwist/ap_f11p0.jpg&quot;, &quot;res&quot;: &quot;8.4\u00b0/s: poor&quot;}, {&quot;s&quot;: &quot;f/22&quot;, &quot;blur&quot;: &quot;3&quot;, &quot;ok&quot;: true, &quot;unit&quot;: &quot;px defocus disc&quot;, &quot;src&quot;: &quot;assets/images/projects/blurtwist/ap_f22p0.jpg&quot;, &quot;res&quot;: &quot;2.3\u00b0/s \u00b7 19 mm/s&quot;}, {&quot;s&quot;: &quot;pinhole&quot;, &quot;blur&quot;: &quot;0&quot;, &quot;ok&quot;: true, &quot;unit&quot;: &quot;px defocus disc&quot;, &quot;src&quot;: &quot;assets/images/projects/blurtwist/ap_finf.jpg&quot;, &quot;res&quot;: &quot;0.6\u00b0/s \u00b7 12 mm/s&quot;}]" data-start="4"><img src="assets/images/projects/blurtwist/ap_f22p0.jpg" alt="The simulated photo at the chosen aperture">
+<input type="range" min="0" max="5" step="1" value="4" aria-label="Aperture"><div class="bt-ticks"><span>f/1.4</span><span>f/2.8</span><span>f/5.6</span><span>f/11</span><span>f/22</span><span>pinhole</span></div><div class="bt-cap"></div></div>
+<figcaption style="text-align:center">Thin-lens simulation, 1/30 s, focused on the near chess piece. Stop down to measure motion; wide open needs a defocus model that is not built yet.</figcaption>
 </section>
 
 <section id="cinema">
@@ -250,5 +258,5 @@ footer{margin-top:96px;padding:22px 22px 40px;border-top:1px solid var(--hair);f
 
 </div></div>
 <footer>Qilong (Jerry) Cheng · CSC2529 Computational Imaging · all figures are MuJoCo simulation · builds on Image as an IMU (Chen &amp; Clark, ICCV 2025), HDR+ (Hasinoff et al., 2016) and VibES (Polizzi et al., 3DV 2026) · <a href="index.html">thejerrycheng.github.io</a></footer>
-<script src="assets/js/blurtwist.js?v=2"></script>
+<script src="assets/js/blurtwist.js?v=3"></script>
 </body></html>
