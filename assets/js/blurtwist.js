@@ -181,9 +181,14 @@
 
   /* ---------- scrubbers: one picture per setting (shutter speeds, apertures) ---------- */
   document.querySelectorAll('.bt-scrub').forEach(function (sc) {
-    var img = sc.querySelector('img'), rg = sc.querySelector('input'), cap = sc.querySelector('.bt-cap'), data = JSON.parse(sc.getAttribute('data-info'));
+    var layers = sc.querySelectorAll('.stack img'), front = 0, rg = sc.querySelector('input'), cap = sc.querySelector('.bt-cap'), data = JSON.parse(sc.getAttribute('data-info'));
     var upd = function () {
-      var d = data[+rg.value]; img.src = d.src;
+      var d = data[+rg.value];
+      if (layers.length === 2) {                          // cross-dissolve: the new picture comes into focus over the old one
+        if (layers[front].getAttribute('src') !== d.src) {
+          var next = layers[1 - front]; next.src = d.src; next.classList.remove('off'); layers[front].classList.add('off'); front = 1 - front;
+        }
+      } else if (layers[0]) layers[0].src = d.src;
       cap.innerHTML = '<b>' + d.s + (/^1\//.test(d.s) ? ' s' : '') + '</b><span>' + d.blur + ' ' + (d.unit || 'px of blur') + '</span><i class="' + (d.ok ? 'ok' : '') + '">' + d.res + '</i>';
     };
     data.forEach(function (d) { var im = new Image(); im.src = d.src; });
@@ -203,21 +208,35 @@
   document.querySelectorAll('.bt-wipe').forEach(function (w) {
     var top = w.querySelector('.top'), bar = w.querySelector('.bar'), drag = false;
     var setp = function (cx) { var r = w.getBoundingClientRect(), p = Math.max(0, Math.min(1, (cx - r.left) / r.width)); top.style.clipPath = 'inset(0 ' + (100 - p * 100) + '% 0 0)'; bar.style.left = (p * 100) + '%'; };
-    var demo = null;
-    onSeen(w, function () {                               // sweep once so the reader sees that it moves
-      if (REDUCED) return;
-      var t0 = performance.now(), r = w.getBoundingClientRect();
-      demo = function (now) {
-        var u = (now - t0) / 2200; if (u >= 1 || drag) { if (!drag) setp(w.getBoundingClientRect().left + r.width / 2); demo = null; return; }
-        setp(w.getBoundingClientRect().left + r.width * (0.5 + 0.32 * Math.sin(u * 6.2832))); requestAnimationFrame(demo);
-      };
-      requestAnimationFrame(demo);
-    });
+    var touched = false, seen = false, t0 = 0, phase = Math.random() * 6.28;
+    function sway(now) {                                 // until someone grabs it, the handle drifts slowly side to side
+      if (touched || !seen) return;
+      var r = w.getBoundingClientRect(), u = (now - t0) / 1000;
+      setp(r.left + r.width * (0.5 + 0.30 * Math.sin(u * 0.9 + phase))); requestAnimationFrame(sway);
+    }
+    if (!REDUCED && 'IntersectionObserver' in window) new IntersectionObserver(function (en) {
+      var was = seen; seen = en[0].isIntersecting;
+      if (seen && !was && !touched) { t0 = performance.now(); requestAnimationFrame(sway); }
+    }, { threshold: 0.35 }).observe(w);
+    w.addEventListener('pointerdown', function () { touched = true; });
     w.addEventListener('pointerdown', function (e) { drag = true; w.setPointerCapture(e.pointerId); setp(e.clientX); });
     w.addEventListener('pointermove', function (e) { if (drag) setp(e.clientX); });
     w.addEventListener('pointerup', function () { drag = false; });
     w.addEventListener('pointercancel', function () { drag = false; });
   });
+
+  /* ---------- progress line and current section in the nav ---------- */
+  (function () {
+    var bar = document.getElementById('bt-bar'), links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a[href^="#"]'));
+    var secs = links.map(function (l) { return document.querySelector(l.getAttribute('href')); });
+    function tick() {
+      var h = document.documentElement, y = h.scrollTop || document.body.scrollTop, max = h.scrollHeight - h.clientHeight;
+      if (bar) bar.style.transform = 'scaleX(' + (max > 0 ? y / max : 0) + ')';
+      var cur = -1; secs.forEach(function (s, i) { if (s && s.getBoundingClientRect().top < window.innerHeight * 0.4) cur = i; });
+      links.forEach(function (l, i) { l.classList.toggle('cur', i === cur); });
+    }
+    window.addEventListener('scroll', tick, { passive: true }); tick();
+  })();
 
   /* ---------- scroll reveals ---------- */
   (function () {
